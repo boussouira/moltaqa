@@ -12,6 +12,7 @@
 #define RAKEM       QObject::trUtf8("رقم")
 #define AYANUMBER   QObject::trUtf8("الاية")
 #define ANASS       QObject::trUtf8("النص")
+#define SEARCHRESULTS   QObject::trUtf8("نتائج البحث %1 :")
 
 #ifdef WIN32
     #define DEFAUTFONT "Traditional Arabic,20,-1,5,50,0,0,0,0,0"

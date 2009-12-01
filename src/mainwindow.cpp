@@ -46,7 +46,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionChangeFont, SIGNAL(triggered()), this, SLOT(textChangeFont()));
     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(aboutQR()));
 
-
+    connect(ui->dockWidget, SIGNAL(visibilityChanged(bool)), ui->actionSelectWindows, SLOT(setChecked(bool)));
+    connect(ui->dockWidget_2, SIGNAL(visibilityChanged(bool)), ui->actionSearchWindow, SLOT(setChecked(bool)));
+    connect(ui->actionSelectWindows, SIGNAL(toggled(bool)), ui->dockWidget, SLOT(setShown(bool)));
+    connect(ui->actionSearchWindow, SIGNAL(toggled(bool)), ui->dockWidget_2, SLOT(setShown(bool)));
 }
 
 MainWindow::~MainWindow()

@@ -10,6 +10,7 @@ QuranSearch::QuranSearch(QWidget *parent, QSqlQuery *pQuery) :
 
     connect(m_ui->searchButton, SIGNAL(clicked()), this, SLOT(searchForText()));
     connect(m_ui->tableView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(gotoSora(QModelIndex)));
+
 }
 
 QuranSearch::~QuranSearch()
@@ -58,14 +59,14 @@ void QuranSearch::searchForText()
     }
 
     QStringList headersList;
+
     headersList << SORAT << RAKEM << AYANUMBER << ANASS;
     resultModel->setHorizontalHeaderLabels(headersList);
     m_ui->tableView->setModel(resultModel);
     m_ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    this->setResultCount(resultModel->rowCount(QModelIndex()));
 
     resultsList.clear();
-//    m_ui->lineEdit->setText(m_query->lastError().text());
-
 }
 
 void QuranSearch::gotoSora(QModelIndex pselection)
@@ -76,4 +77,9 @@ void QuranSearch::gotoSora(QModelIndex pselection)
 
     emit resultSelected(selectedSora, selectedAya);
 
+}
+
+void QuranSearch::setResultCount(int pResultsCount)
+{
+    m_ui->groupBox->setTitle(QString(SEARCHRESULTS).arg(pResultsCount));
 }

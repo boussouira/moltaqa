@@ -26,6 +26,7 @@ signals:
 private slots:
     void searchForText();
     void gotoSora(QModelIndex pselection);
+    void setResultCount(int pResultsCount);
 private:
     Ui::QuranSearch *m_ui;
     QSqlQuery *m_query;
