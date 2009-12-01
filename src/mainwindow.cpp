@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     m_textCrusor = new CTextCrusor(ui->textBrowser);
+    m_sora = new SoraInfo();
     LoadSettings();
 
     m_db = QSqlDatabase::addDatabase("QSQLITE", "QuranDB");
@@ -61,46 +62,46 @@ MainWindow::~MainWindow()
 void MainWindow::selectSora(int psoraNumber, int payaNumber, bool pDisplay)
 {
     m_textCrusor->clearAll();
+    m_sora->setNumber(psoraNumber);
 
-    m_currentSoraNumber = psoraNumber ;
     m_query->prepare("SELECT SoraName, ayatCount, SoraDescent "
                      "FROM QuranSowar "
                      "WHERE QuranSowar.id = :id LIMIT 1");
 
-    m_query->bindValue(":id", m_currentSoraNumber);
+    m_query->bindValue(":id", m_sora->number());
     m_query->exec();
 
     if (m_query->first()){
-        m_currentSoraName  = m_query->value(0).toString();
-        m_currentSoraAyatCount = m_query->value(1).toInt();
-        m_currentSoraDescent   = m_query->value(2).toString();
+        m_sora->setName(m_query->value(0).toString());
+        m_sora->setAyatCount(m_query->value(1).toInt());
+        m_sora->setDescent(m_query->value(2).toString());
     }
 
     m_query->prepare("SELECT MIN(QuranText.pageNumber) AS MinPNum, MAX(QuranText.pageNumber) AS MaxPNum "
                      "FROM QuranText "
                      "WHERE QuranText.soraNumber = :m_currentSoraNumber ");
 
-    m_query->bindValue(":m_currentSoraNumber", m_currentSoraNumber);
+    m_query->bindValue(":m_currentSoraNumber", m_sora->number());
     m_query->exec();
 
     if(m_query->first())
     {
-        m_currentPageNumber = m_query->value(0).toInt();
+        m_sora->setCurrentPage(m_query->value(0).toInt());
     }
 
     if(pDisplay)
-        this->display(m_currentPageNumber, m_currentSoraNumber, payaNumber);
+        this->display(m_sora->currentPage(), m_sora->number(), payaNumber);
     this->setSoraDetials();
-    ui->spinBoxPageNumber->setValue(m_currentPageNumber);
+    ui->spinBoxPageNumber->setValue(m_sora->currentPage());
 
 }
 
 void MainWindow::setSoraDetials()
 {
-    QTableWidgetItem *itemSoraName      = new QTableWidgetItem(m_currentSoraName);
-    QTableWidgetItem *itemSoraNumber    = new QTableWidgetItem(QString::number(m_currentSoraNumber));
-    QTableWidgetItem *itemSoraAyatCount = new QTableWidgetItem(QString::number(m_currentSoraAyatCount));
-    QTableWidgetItem *itemSoraDescent   = new QTableWidgetItem(m_currentSoraDescent);
+    QTableWidgetItem *itemSoraName      = new QTableWidgetItem(m_sora->name());
+    QTableWidgetItem *itemSoraNumber    = new QTableWidgetItem(QString::number(m_sora->number()));
+    QTableWidgetItem *itemSoraAyatCount = new QTableWidgetItem(QString::number(m_sora->ayatCount()));
+    QTableWidgetItem *itemSoraDescent   = new QTableWidgetItem(m_sora->descent());
 
     ui->tableWidget->setItem(0, 1, itemSoraName);
     ui->tableWidget->setItem(1, 1, itemSoraNumber);
@@ -108,17 +109,17 @@ void MainWindow::setSoraDetials()
     ui->tableWidget->setItem(3, 1, itemSoraDescent);
 
     // set ayat count in the spin box
-    ui->spinBoxAyaNumber->setMaximum(m_currentSoraAyatCount);
-    ui->spinBoxAyaNumber->setSuffix(QString(" / %1").arg(m_currentSoraAyatCount));
+    ui->spinBoxAyaNumber->setMaximum(m_sora->ayatCount());
+    ui->spinBoxAyaNumber->setSuffix(QString(" / %1").arg(m_sora->ayatCount()));
     ui->spinBoxAyaNumber->setValue(1);
 
     // Select sora in the list view
-    this->setSelectedSora(m_currentSoraNumber);
+    this->setSelectedSora(m_sora->number());
 }
 
 void MainWindow::display(int pPageNumber, int pSoraNumber, int pAyaNumber)
 {
-   m_textCrusor->clearAll();
+    m_textCrusor->clearAll();
 
     m_query->prepare("SELECT QuranText.id, QuranText.ayaText, QuranText.ayaNumber, "
                      "QuranText.pageNumber, QuranText.soraNumber, QuranSowar.SoraName "
@@ -132,7 +133,7 @@ void MainWindow::display(int pPageNumber, int pSoraNumber, int pAyaNumber)
     m_query->exec();
     m_textCrusor->setSoraAndAyaToHighLight(pSoraNumber, pAyaNumber);
 
-    m_currentAyaNumber = pAyaNumber;
+    m_sora->setCurrentAya(pAyaNumber);
     ui->spinBoxAyaNumber->setValue(pAyaNumber);
 
     while (m_query->next())
@@ -184,26 +185,26 @@ void MainWindow::pageNumberChange(int pNewPageNumbe)
 
 void MainWindow::ayaNumberChange(int pNewAyaNumber)
 {
-    if (m_currentAyaNumber == pNewAyaNumber)
+    if (m_sora->currentAya() == pNewAyaNumber)
         return ;
-    int tmpPageNumber = this->getAyaPageNumber(m_currentSoraNumber, pNewAyaNumber);
+    int tmpPageNumber = this->getAyaPageNumber(m_sora->number(), pNewAyaNumber);
 
-    if(tmpPageNumber != m_currentPageNumber)
+    if(tmpPageNumber != m_sora->currentPage())
     {
-        m_currentAyaNumber = pNewAyaNumber;
-        m_currentPageNumber = tmpPageNumber;
-        this->display(m_currentPageNumber, m_currentSoraNumber, m_currentAyaNumber);
-        //this->display(m_currentPageNumber
+        m_sora->setCurrentAya(pNewAyaNumber);
+        m_sora->setCurrentPage(tmpPageNumber);
+        this->display(m_sora->currentPage(), m_sora->number(), m_sora->currentAya());
+
         ui->spinBoxPageNumber->setValue(tmpPageNumber);
     }
-    this->scrollToAya(m_currentSoraNumber, pNewAyaNumber);
+    this->scrollToAya(m_sora->number(), pNewAyaNumber);
 
 }
 
 void MainWindow::selectedSoraChange(QModelIndex pselection)
 {
-    m_currentSoraNumber = pselection.row() + 1 ;
-    this->selectSora(m_currentSoraNumber);
+    m_sora->setNumber(pselection.row() + 1);
+    this->selectSora(m_sora->number());
 }
 
 int MainWindow::getAyaPageNumber(int pSoraNumber, int pAyaNumber)
@@ -224,7 +225,7 @@ int MainWindow::getAyaPageNumber(int pSoraNumber, int pAyaNumber)
     }
     return 1;
 }
-
+/*
 void MainWindow::getFirsLastAyaNumberInPage(int pSoraNumber, int pPageNumber, int *pFirstAya, int *pLastAya)
 {
     m_query->prepare("SELECT MIN(QuranText.ayaNumber) AS FirstAyaInPage, "
@@ -261,7 +262,7 @@ void MainWindow::getFirsLastSoraNumberInPage(int pPageNumber, int *pFirstSoraNum
         *pLastSoraNumber  = m_query->value(1).toInt();
     }
 }
-
+*/
 void MainWindow::textChangeFont()
 {
     ui->textBrowser->setFont(QFontDialog::getFont(0, ui->textBrowser->font()));
@@ -298,7 +299,7 @@ void MainWindow::LoadSettings()
             break;
     }
 }
-
+ 
 void MainWindow::scrollToAya(int pSoraNumber, int pAyaNumber)
 {
     ui->textBrowser->setTextCursor(m_textCrusor->getCursorPosition(pSoraNumber, pAyaNumber));

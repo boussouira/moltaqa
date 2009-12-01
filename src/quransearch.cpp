@@ -27,7 +27,7 @@ void QuranSearch::searchForText()
 
     resultModel->clear();
     m_query->prepare("SELECT id, Word, QURANTEXT_ID FROM QuranIndexs WHERE QuranIndexs.Word LIKE :text LIMIT 0, 20");
-    m_query->bindValue(":text", m_ui->lineEdit->text());
+    m_query->bindValue(":text", QString("%%1%").arg(m_ui->lineEdit->text()));
     m_query->exec();
 
     { // Indexs list

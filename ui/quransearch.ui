@@ -29,7 +29,7 @@
         <enum>Qt::RightToLeft</enum>
        </property>
        <property name="text">
-        <string>%ز%</string>
+        <string>المؤمنون</string>
        </property>
       </widget>
      </item>

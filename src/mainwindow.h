@@ -18,6 +18,7 @@
 #include "constant.h"
 #include "ctextcrusor.h"
 #include "quransearch.h"
+#include "sorainfo.h"
 
 #define DATABASEPATH "Quran.db"
 
@@ -47,8 +48,8 @@ private slots:
     void ayaNumberChange(int pNewAyaNumber);
     void selectedSoraChange(QModelIndex pselection);
     int getAyaPageNumber(int pSoraNumber, int pAyaNumber);
-    void getFirsLastAyaNumberInPage(int pSoraNumber, int pPageNumber, int *pFirstAya, int *pLastAya);
-    void getFirsLastSoraNumberInPage(int pPageNumber, int *pFirstSoraNumber, int *pLastSoraNumber);
+//    void getFirsLastAyaNumberInPage(int pSoraNumber, int pPageNumber, int *pFirstAya, int *pLastAya);
+//    void getFirsLastSoraNumberInPage(int pPageNumber, int *pFirstSoraNumber, int *pLastSoraNumber);
     void textChangeFont();
     void aboutQR();
     void selectResult(int pSoraNumber, int pAyaNumber);
@@ -56,17 +57,20 @@ private slots:
 private:
     QuranSearch *m_search;
     CTextCrusor *m_textCrusor;
+    SoraInfo *m_sora;
     QSqlDatabase m_db;
     QStringListModel *m_sowarNamesModel;
     QSqlQuery *m_query;
     QSettings *settings;
     QString m_databasePATH;
-    QString m_currentSoraName ;
-    QString m_currentSoraDescent;
-    int m_currentSoraNumber;
-    int m_currentAyaNumber;
-    int m_currentSoraAyatCount ;
-    int m_currentPageNumber;
+//
+//    QString m_currentSoraName ;
+//    QString m_currentSoraDescent;
+//    int m_currentSoraNumber;
+//    int m_currentAyaNumber;
+//    int m_currentSoraAyatCount ;
+//    int m_currentPageNumber;
+//
     Ui::MainWindow *ui;
 };
 
