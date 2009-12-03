@@ -7,13 +7,16 @@
  you can edit it in Projects -> Editor Settings -> Defaut file Encoding -> UTF-8
 */
 
-#define BASMALA     QObject::trUtf8("بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ")
-#define SORAT       QObject::trUtf8("سورة")
-#define RAKEM       QObject::trUtf8("رقم")
-#define AYANUMBER   QObject::trUtf8("الاية")
-#define ANASS       QObject::trUtf8("النص")
+#define DATABASEPATH "Quran.db"
+
+#define BASMALA         QObject::trUtf8("بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ")
+#define SORAT           QObject::trUtf8("سورة")
+#define RAKEM           QObject::trUtf8("رقم")
+#define AYANUMBER       QObject::trUtf8("الاية")
+#define ANASS           QObject::trUtf8("النص")
 #define SEARCHRESULTS   QObject::trUtf8("نتائج البحث %1 :")
 
+// Defaut font settings
 #ifdef WIN32
     #define DEFAUTFONT "Traditional Arabic,20,-1,5,50,0,0,0,0,0"
     #define CONFIGFILE "settings.ini"

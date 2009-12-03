@@ -7,10 +7,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     m_textCrusor = new CTextCrusor(ui->textBrowser);
     m_sora = new SoraInfo();
-    LoadSettings();
+    m_settings = new Settings(this);
+
+    this->loadSettings();
 
     m_db = QSqlDatabase::addDatabase("QSQLITE", "QuranDB");
-    m_db.setDatabaseName(m_databasePATH);
+    m_db.setDatabaseName(m_settings->dbPath());
 
     if (!m_db.open()) {
         QMessageBox::critical(this,
@@ -44,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionCopy, SIGNAL(triggered()), ui->textBrowser, SLOT(copy()));
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
     connect(ui->actionChangeFont, SIGNAL(triggered()), this, SLOT(textChangeFont()));
-    connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(aboutQR()));
+    connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(aboutAlKotobiya()));
 
     connect(ui->dockWidget, SIGNAL(visibilityChanged(bool)), ui->actionSelectWindows, SLOT(setChecked(bool)));
     connect(ui->dockWidget_2, SIGNAL(visibilityChanged(bool)), ui->actionSearchWindow, SLOT(setChecked(bool)));
@@ -55,9 +57,10 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
 
-    settings->setValue("textBrowser/font", ui->textBrowser->font().toString());
+//    settings->setValue("textBrowser/font", ui->textBrowser->font().toString());
 //    settings->setValue("textBrowser/size", ui->textBrowser->font().pointSize());
-    settings->setValue("app/db", m_databasePATH);
+//    settings->setValue("app/db", m_databasePATH);
+    m_settings->setTextFont(ui->textBrowser->font());
 
     delete ui;
 }
@@ -271,36 +274,21 @@ void MainWindow::textChangeFont()
     ui->textBrowser->setFont(QFontDialog::getFont(0, ui->textBrowser->font()));
 }
 
-void MainWindow::aboutQR()
+void MainWindow::aboutAlKotobiya()
 {
     QMessageBox::information(this, "About", "Quran Reader");
 }
 
-void MainWindow::LoadSettings()
+void MainWindow::loadSettings()
 {
-    QFont font;
-    settings = new QSettings(CONFIGFILE, QSettings::IniFormat, this);
+//    QFont font;
+//    settings = new QSettings(CONFIGFILE, QSettings::IniFormat, this);
+//
+//    QString fontName = settings->value("textBrowser/font", QVariant(DEFAUTFONT)).toString();
+//    m_databasePATH = settings->value("app/db", QVariant(DATABASEPATH)).toString();
+//    font.fromString(fontName);
+    ui->textBrowser->setFont(m_settings->textFont());
 
-    QString fontName = settings->value("textBrowser/font", QVariant(DEFAUTFONT)).toString();
-    m_databasePATH = settings->value("app/db", QVariant(DATABASEPATH)).toString();
-    font.fromString(fontName);
-    ui->textBrowser->setFont(font);
-
-    while (!QFile::exists(m_databasePATH))
-    {
-        int rep = QMessageBox::critical(this,
-                              tr("Cannot open database"),
-                              tr("Unable to establish a database connection\n"
-                                 "You need to select database."),
-                              QMessageBox::Yes | QMessageBox::No);
-        if (rep == QMessageBox::No)
-            exit(1);
-         m_databasePATH = QFileDialog::getOpenFileName(this,
-                                                       tr("Select the database"), "",
-                                                       tr("SQLITE (*.db);;All files (*.*)"));
-         if(!m_databasePATH.isEmpty())
-            break;
-    }
 }
  
 void MainWindow::scrollToAya(int pSoraNumber, int pAyaNumber)

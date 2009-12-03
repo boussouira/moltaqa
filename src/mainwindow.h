@@ -19,8 +19,7 @@
 #include "ctextcrusor.h"
 #include "quransearch.h"
 #include "sorainfo.h"
-
-#define DATABASEPATH "Quran.db"
+#include "settings.h"
 
 namespace Ui
 {
@@ -39,7 +38,7 @@ public:
 private:
     void setSoraDetials();
     void display(int pPageNumber , int pSoraNumber, int pAyaNumber = 1);
-    void LoadSettings();
+    void loadSettings();
     void scrollToAya(int pSoraNumber, int pAyaNumber);
     void setSelectedSora(int pSoraNumber);
 
@@ -51,19 +50,20 @@ private slots:
 //    void getFirsLastAyaNumberInPage(int pSoraNumber, int pPageNumber, int *pFirstAya, int *pLastAya);
 //    void getFirsLastSoraNumberInPage(int pPageNumber, int *pFirstSoraNumber, int *pLastSoraNumber);
     void textChangeFont();
-    void aboutQR();
+    void aboutAlKotobiya();
     void selectResult(int pSoraNumber, int pAyaNumber);
 
 private:
     QuranSearch *m_search;
     CTextCrusor *m_textCrusor;
     SoraInfo *m_sora;
+    Settings *m_settings;
     QSqlDatabase m_db;
     QStringListModel *m_sowarNamesModel;
     QSqlQuery *m_query;
-    QSettings *settings;
     QString m_databasePATH;
 //
+//    QSettings *settings;
 //    QString m_currentSoraName ;
 //    QString m_currentSoraDescent;
 //    int m_currentSoraNumber;
