@@ -16,7 +16,7 @@
 #include <QFileDialog>
 
 #include "constant.h"
-#include "ctextcrusor.h"
+#include "ktext.h"
 #include "quransearch.h"
 #include "sorainfo.h"
 #include "settings.h"
@@ -55,7 +55,7 @@ private slots:
 
 private:
     QuranSearch *m_search;
-    CTextCrusor *m_textCrusor;
+    KText *m_text;
     SoraInfo *m_sora;
     Settings *m_settings;
     QSqlDatabase m_db;

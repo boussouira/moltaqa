@@ -34,7 +34,7 @@ void QuranSearch::searchForText()
     { // Indexs list
     while (m_query->next())
         indexsList << QString("%1").arg(m_query->value(2).toString()).split(",");
-    for (int i=0; i <= indexsList.size()-1; i++)
+    for (int i=0; i < indexsList.size(); i++)
         indexsString.append(QString("%1,").arg(indexsList.at(i).toLocal8Bit().constData()));
     indexsString.remove(QRegExp(",$"));
     indexsString.prepend("(");

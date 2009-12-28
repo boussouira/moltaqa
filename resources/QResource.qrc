@@ -1,5 +1,6 @@
 <RCC>
-    <qresource prefix="/" >
-        <file>../images/QuranReader.ico</file>
+    <qresource prefix="/">
+        <file>images/main.ico</file>
+        <file>css/defaut.css</file>
     </qresource>
 </RCC>

@@ -1,0 +1,34 @@
+body {
+	border:1px solid #CCCCCC;
+	direction:rtl;
+	font-family:Traditional arabic;
+	font-size:30px;
+	padding:15px;
+	text-align:right;
+}
+.txt {
+	padding:10px 0;
+}
+.soraname {
+	border:1px solid #CCCCCC;
+	color:#444444;
+	font-size:30px;
+	margin:0 30%;
+	text-align:center;
+}
+.ayanumber {
+	color:Teal;
+	padding:0 5px;
+}
+.ayatxt {
+	font-size:30px;
+}
+.bassemala {
+	color:DarkBlue;
+	margin-bottom:5px;
+	margin-top:20px;
+	text-align:center;
+}
+.highlighted{
+	color: #4169E1;
+}
