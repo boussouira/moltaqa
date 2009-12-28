@@ -22,7 +22,6 @@ HEADERS += src/mainwindow.h \
     src/sorainfo.h \
     src/settings.h \
     src/ktext.h \
-    src/htmltemplates.h
 FORMS += src/ui/mainwindow.ui \
     src/ui/quransearch.ui
 RESOURCES += resources/QResource.qrc

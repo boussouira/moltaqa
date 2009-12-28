@@ -9,7 +9,6 @@
 #include <QFile>
 
 #include "constant.h"
-#include "htmltemplates.h"
 
 class KText
 {
