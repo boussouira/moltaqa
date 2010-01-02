@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     m_tab = new KTab(ui->centralWidget);
     ui->verticalLayout_4->addWidget(m_tab);
 
-    m_search = new QuranSearch(this, m_query);
+    m_search = new QuranSearch(this, m_db);
     ui->verticalLayout_5->addWidget(m_search);
 
     m_tab->addNewOnglet();

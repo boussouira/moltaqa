@@ -2,8 +2,10 @@
 #define QURANSEARCH_H
 
 #include <QtGui/QWidget>
+#include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QSqlQueryModel>
 #include <QStringListModel>
 #include <QList>
 #include <QDebug>
@@ -18,19 +20,20 @@ namespace Ui {
 class QuranSearch : public QWidget {
     Q_OBJECT
 public:
-    QuranSearch(QWidget *parent = 0, QSqlQuery *pQuery = 0);
+    QuranSearch(QWidget *parent, QSqlDatabase pDB);
     ~QuranSearch();
 signals:
     void resultSelected(int sora, int aya);
 
 private slots:
     void searchForText();
-    void gotoSora(QModelIndex pselection);
+    void gotoSora(QModelIndex pSelection);
     void setResultCount(int pResultsCount);
 private:
     Ui::QuranSearch *m_ui;
+    QSqlDatabase m_db;
     QSqlQuery *m_query;
-    QStandardItemModel *resultModel;
+    QSqlQueryModel *m_resultModel;
 
 };
 
