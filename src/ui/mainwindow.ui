@@ -24,50 +24,7 @@
    <locale language="Arabic" country="Morocco"/>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout_4">
-    <item>
-     <widget class="QTabWidget" name="tabWidget">
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <widget class="QWidget" name="quranTab">
-       <attribute name="icon">
-        <iconset resource="../../resources/QResource.qrc">
-         <normaloff>:/images/main.ico</normaloff>:/images/main.ico</iconset>
-       </attribute>
-       <attribute name="title">
-        <string>القران الكريم</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <widget class="QWebView" name="webView">
-          <property name="styleSheet">
-           <string notr="true">*
-{
-	color: red;
-}</string>
-          </property>
-          <property name="url">
-           <url>
-            <string>about:blank</string>
-           </url>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tafesirTab">
-       <attribute name="icon">
-        <iconset resource="../../resources/QResource.qrc">
-         <normaloff>:/images/main.ico</normaloff>:/images/main.ico</iconset>
-       </attribute>
-       <attribute name="title">
-        <string>التفسير</string>
-       </attribute>
-      </widget>
-     </widget>
-    </item>
-   </layout>
+   <layout class="QVBoxLayout" name="verticalLayout_4"/>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -75,7 +32,7 @@
      <x>0</x>
      <y>0</y>
      <width>537</width>
-     <height>20</height>
+     <height>24</height>
     </rect>
    </property>
    <property name="locale">
@@ -88,6 +45,8 @@
     <property name="title">
      <string>ملف</string>
     </property>
+    <addaction name="actionNewTab"/>
+    <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuEdition">
@@ -120,8 +79,8 @@
     <property name="title">
      <string>نوافذ</string>
     </property>
-    <addaction name="actionSelectWindows"/>
-    <addaction name="actionSearchWindow"/>
+    <addaction name="actionIndexDock"/>
+    <addaction name="actionSearchDock"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdition"/>
@@ -134,13 +93,7 @@
     <string>background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0, stop:0 rgba(255, 228, 203, 255), stop:1 rgba(255, 255, 255, 0));</string>
    </property>
   </widget>
-  <widget class="QDockWidget" name="dockWidget">
-   <property name="maximumSize">
-    <size>
-     <width>182</width>
-     <height>524287</height>
-    </size>
-   </property>
+  <widget class="QDockWidget" name="dockIndexs">
    <property name="accessibleName">
     <string>الفهرس</string>
    </property>
@@ -165,7 +118,7 @@
        </property>
        <property name="maximumSize">
         <size>
-         <width>164</width>
+         <width>184</width>
          <height>16777215</height>
         </size>
        </property>
@@ -181,6 +134,9 @@
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
          <widget class="QListView" name="listView">
+          <property name="contextMenuPolicy">
+           <enum>Qt::ActionsContextMenu</enum>
+          </property>
           <property name="editTriggers">
            <set>QAbstractItemView::NoEditTriggers</set>
           </property>
@@ -191,6 +147,12 @@
         </item>
         <item>
          <layout class="QFormLayout" name="formLayout">
+          <property name="horizontalSpacing">
+           <number>10</number>
+          </property>
+          <property name="verticalSpacing">
+           <number>0</number>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="label">
             <property name="maximumSize">
@@ -206,12 +168,6 @@
           </item>
           <item row="0" column="1">
            <widget class="QSpinBox" name="spinBoxAyaNumber">
-            <property name="maximumSize">
-             <size>
-              <width>75</width>
-              <height>16777215</height>
-             </size>
-            </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
             </property>
@@ -235,12 +191,6 @@
           </item>
           <item row="1" column="1">
            <widget class="QSpinBox" name="spinBoxPageNumber">
-            <property name="maximumSize">
-             <size>
-              <width>75</width>
-              <height>16777215</height>
-             </size>
-            </property>
             <property name="wrapping">
              <bool>true</bool>
             </property>
@@ -256,8 +206,14 @@
             <property name="suffix">
              <string> / 604</string>
             </property>
+            <property name="minimum">
+             <number>1</number>
+            </property>
             <property name="maximum">
              <number>604</number>
+            </property>
+            <property name="value">
+             <number>1</number>
             </property>
            </widget>
           </item>
@@ -268,12 +224,6 @@
      </item>
      <item>
       <widget class="QGroupBox" name="groupBox_3">
-       <property name="maximumSize">
-        <size>
-         <width>164</width>
-         <height>112</height>
-        </size>
-       </property>
        <property name="title">
         <string>التفاصيل :</string>
        </property>
@@ -379,7 +329,7 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="dockWidget_2">
+  <widget class="QDockWidget" name="dockSearch">
    <property name="toolTip">
     <string>نافذة البحث في القرآن الكريم</string>
    </property>
@@ -443,7 +393,7 @@
     <string>تغيير خط العرض</string>
    </property>
   </action>
-  <action name="actionSelectWindows">
+  <action name="actionIndexDock">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -454,7 +404,7 @@
     <string>اظهر أو اخفاء نافذة الفهرس</string>
    </property>
   </action>
-  <action name="actionSearchWindow">
+  <action name="actionSearchDock">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -465,15 +415,13 @@
     <string>اظهار أو اخفاء نافذة البحث في القرآن الكريم</string>
    </property>
   </action>
+  <action name="actionNewTab">
+   <property name="text">
+    <string>تبويب جديد</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>QWebView</class>
-   <extends>QWidget</extends>
-   <header>QtWebKit/QWebView</header>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="../../resources/QResource.qrc"/>
  </resources>

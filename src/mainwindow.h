@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QtGui/QMainWindow>
+#include <QMainWindow>
 #include <QtDebug>
 #include <QMessageBox>
 #include <QSqlDatabase>
@@ -14,12 +14,14 @@
 #include <QSettings>
 #include <QFile>
 #include <QFileDialog>
+#include <QtWebKit>
 
 #include "constant.h"
 #include "ktext.h"
 #include "quransearch.h"
 #include "sorainfo.h"
 #include "settings.h"
+#include "ktab.h"
 
 namespace Ui
 {
@@ -33,9 +35,13 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void selectSora(int psoraNumber, int payaNumber = 1, bool pDisplay = true);
+    void selectSora(int pSoraNumber, int pAyaNumber = 1, bool pDisplay = true);
 
 private:
+    void setupActions();
+    void setupConnections();
+    void setupDataBases();
+    void setupQuranIndex();
     void setSoraDetials();
     void display(int pPageNumber , int pSoraNumber, int pAyaNumber = 1);
     void loadSettings();
@@ -43,34 +49,32 @@ private:
     void setSelectedSora(int pSoraNumber);
 
 private slots:
-//    void pageNumberChange(int pNewPageNumbe);
+    void hideDockIndex();
+    void hideDockSearch();
     void ayaNumberChange(int pNewAyaNumber);
-    void selectedSoraChange(QModelIndex pselection);
+    void openSora(QModelIndex pSelection);
     int getAyaPageNumber(int pSoraNumber, int pAyaNumber);
-//    void getFirsLastAyaNumberInPage(int pSoraNumber, int pPageNumber, int *pFirstAya, int *pLastAya);
-//    void getFirsLastSoraNumberInPage(int pPageNumber, int *pFirstSoraNumber, int *pLastSoraNumber);
-    void textChangeFont();
     void aboutAlKotobiya();
     void selectResult(int pSoraNumber, int pAyaNumber);
+    void reloadSoraInfo();
+    void openSora();
+    void openSoraInNewTab();
+    void addNewTab();
+
 
 private:
     QuranSearch *m_search;
     KText *m_text;
     SoraInfo *m_sora;
     Settings *m_settings;
+    KTab *m_tab;
     QSqlDatabase m_db;
     QStringListModel *m_sowarNamesModel;
     QSqlQuery *m_query;
     QString m_databasePATH;
-//
-//    QSettings *settings;
-//    QString m_currentSoraName ;
-//    QString m_currentSoraDescent;
-//    int m_currentSoraNumber;
-//    int m_currentAyaNumber;
-//    int m_currentSoraAyatCount ;
-//    int m_currentPageNumber;
-//
+    bool freez;
+
+
     Ui::MainWindow *ui;
 };
 

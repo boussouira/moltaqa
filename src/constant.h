@@ -9,12 +9,16 @@
 
 #define DATABASEPATH "Quran.db"
 
+#define QURAN           QObject::trUtf8("القرآن الكريم")
 #define BASMALA         QObject::trUtf8("بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ")
 #define SORAT           QObject::trUtf8("سورة")
 #define RAKEM           QObject::trUtf8("رقم")
 #define AYANUMBER       QObject::trUtf8("الاية")
 #define ANASS           QObject::trUtf8("النص")
 #define SEARCHRESULTS   QObject::trUtf8("نتائج البحث %1 :")
+#define OPENSORA        QObject::trUtf8("فتح السورة")
+#define OPENSORAINTAB   QObject::trUtf8("فتح في تبويب جديد")
+
 
 // Defaut font settings
 #ifdef WIN32
