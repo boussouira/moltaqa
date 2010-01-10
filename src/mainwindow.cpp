@@ -246,7 +246,7 @@ int MainWindow::getAyaPageNumber(int pSoraNumber, int pAyaNumber)
 
 void MainWindow::aboutAlKotobiya()
 {
-    QMessageBox::information(this, "About", "El Kotobiya");
+    QMessageBox::information(this, "About", "Al Kotobiya");
 }
 
 void MainWindow::loadSettings()

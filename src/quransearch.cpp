@@ -21,9 +21,7 @@ QuranSearch::~QuranSearch()
 void QuranSearch::searchForText()
 {
 
-    QList<QStandardItem *> listItems;
     QStringList indexsList;
-    QStringList resultsList;
     QString indexsString;
 
     //m_resultModel->clear();
@@ -59,7 +57,6 @@ void QuranSearch::searchForText()
 
     this->setResultCount(m_resultModel->rowCount(QModelIndex()));
 
-    resultsList.clear();
 }
 
 void QuranSearch::gotoSora(QModelIndex pSelection)

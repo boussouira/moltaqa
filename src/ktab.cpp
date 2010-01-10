@@ -3,7 +3,6 @@
 KTab::KTab(QWidget *parent) : QTabWidget(parent)
 {
     this->setTabsClosable(false);
-    this->setMovable(true);
 }
 
 QWidget *KTab::newOnglet()
