@@ -4,6 +4,8 @@
 #include <QTabWidget>
 #include <QWebView>
 #include <QVBoxLayout>
+#include <QTabBar>
+#include <QDebug>
 
 #include "constant.h"
 #include "sorainfo.h"
@@ -20,12 +22,15 @@ public slots:
     QWidget *newOnglet();
     QWebView *currentPage();
     SoraInfo *currentSoraInfo();
+    void tabIsMoved(int from, int to);
 
 signals:
     void reloadCurrentSoraInfo();
+    void tabMoved(int from, int to);
 
 private:
     QList<SoraInfo* > m_sowarInfo;
+    QTabBar *m_tab;
 
 };
 

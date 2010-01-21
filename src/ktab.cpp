@@ -1,8 +1,13 @@
 #include "ktab.h"
 
-KTab::KTab(QWidget *parent) : QTabWidget(parent)
+KTab::KTab(QWidget *parent) : QTabWidget(parent), m_tab(new QTabBar(this))
 {
     this->setTabsClosable(false);
+    this->setTabBar(m_tab);
+    this->setMovable(true);
+
+    connect(m_tab, SIGNAL(tabMoved(int, int)), this, SLOT(tabIsMoved(int,int)));
+
 }
 
 QWidget *KTab::newOnglet()
@@ -50,4 +55,9 @@ void KTab::closeTab(int tabIndex)
     // Let's make sure that the last tab well never get closed!
     if(this->count() == 1)
         this->setTabsClosable(false);
+}
+void KTab::tabIsMoved(int from, int to)
+{
+    m_sowarInfo.move(from, to);
+    emit tabMoved(from, to);
 }
