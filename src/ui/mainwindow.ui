@@ -14,7 +14,7 @@
    <string>Al Kotobiya</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../resources/QResource.qrc">
+   <iconset resource="../../resources/qt_rc.qrc">
     <normaloff>:/images/main.ico</normaloff>:/images/main.ico</iconset>
   </property>
   <property name="layoutDirection">
@@ -397,7 +397,7 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="../../resources/QResource.qrc"/>
+  <include location="../../resources/qt_rc.qrc"/>
  </resources>
  <connections/>
 </ui>
