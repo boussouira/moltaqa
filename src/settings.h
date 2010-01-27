@@ -22,7 +22,6 @@ public:
 
 private:
     QSettings *m_setting;
-    QFont m_textFont;
     QString m_dbPath;
 
 };

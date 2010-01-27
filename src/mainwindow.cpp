@@ -253,7 +253,6 @@ void MainWindow::aboutAlKotobiya()
 
 void MainWindow::loadSettings()
 {
-    //ui->webView->setFont(m_settings->textFont());
     freez = false;
 }
  

@@ -7,7 +7,7 @@
  you can edit it in Projects -> Editor Settings -> Defaut file Encoding -> UTF-8
 */
 
-#define DATABASEPATH "Quran.db"
+#define DATABASEPATH "quran.db"
 
 #define QURAN           QObject::trUtf8("القرآن الكريم")
 #define BASMALA         QObject::trUtf8("بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ")
@@ -19,14 +19,6 @@
 #define OPENSORA        QObject::trUtf8("فتح السورة")
 #define OPENSORAINTAB   QObject::trUtf8("فتح في تبويب جديد")
 
-
-// Defaut font settings
-#ifdef WIN32
-    #define DEFAUTFONT "Traditional Arabic,20,-1,5,50,0,0,0,0,0"
-    #define CONFIGFILE "settings.ini"
-#else
-    #define DEFAUTFONT "KacstBook,26,-1,5,50,0,0,0,0,0"
-    #define CONFIGFILE "settings.cfg"
-#endif
+#define CONFIGFILE "settings.ini"
 
 #endif // CONSTANT_H
