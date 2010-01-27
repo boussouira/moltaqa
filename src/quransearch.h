@@ -29,6 +29,8 @@ private slots:
     void searchForText();
     void gotoSora(QModelIndex pSelection);
     void setResultCount(int pResultsCount);
+    QString getIdsList(QString pWord);
+    QStringList spiltText(QString str);
 private:
     Ui::QuranSearch *m_ui;
     QSqlDatabase m_db;

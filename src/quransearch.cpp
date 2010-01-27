@@ -21,28 +21,18 @@ QuranSearch::~QuranSearch()
 void QuranSearch::searchForText()
 {
 
-    QStringList indexsList;
     QString indexsString;
+    QStringList wordsList = this->spiltText(m_ui->lineEdit->text());
 
-    //m_resultModel->clear();
-    m_query->prepare("SELECT id, Word, QURANTEXT_ID FROM QuranIndexs WHERE QuranIndexs.Word LIKE :text LIMIT 0, 20");
-    m_query->bindValue(":text", QString("%%1%").arg(m_ui->lineEdit->text()));
-    m_query->exec();
-
-    { // Indexs list
-    while (m_query->next())
-        indexsList << QString("%1").arg(m_query->value(2).toString()).split(",");
-    for (int i=0; i < indexsList.size(); i++)
-        indexsString.append(QString("%1,").arg(indexsList.at(i).toLocal8Bit().constData()));
-    indexsString.remove(QRegExp(",$"));
-    indexsString.prepend("(");
-    indexsString.append(")");
+    for (int i=0; i<=wordsList.count()-1; i++ )
+    {
+        indexsString.append(QString("%1 QuranText.id IN %2 ").arg((i) ? "AND" : "WHERE").arg(this->getIdsList(wordsList.at(i))));
     }
+
     QString sqlQuery("SELECT QuranSowar.SoraName, QuranText.soraNumber, QuranText.ayaNumber, QuranText.ayaText "
                      "FROM QuranText "
                      "LEFT JOIN QuranSowar "
-                     "ON QuranSowar.id = QuranText.soraNumber "
-                     "WHERE QuranText.id IN ");
+                     "ON QuranSowar.id = QuranText.soraNumber ");
     sqlQuery.append(indexsString);
     
     m_resultModel->setQuery(sqlQuery, m_db);
@@ -72,4 +62,40 @@ void QuranSearch::gotoSora(QModelIndex pSelection)
 void QuranSearch::setResultCount(int pResultsCount)
 {
     m_ui->groupBox->setTitle(QString(SEARCHRESULTS).arg(pResultsCount));
+}
+
+QString QuranSearch::getIdsList(QString pWord)
+{
+    QStringList indexsList;
+    QString indexsString;
+
+    m_query->prepare("SELECT id, Word, QURANTEXT_ID FROM QuranIndexs WHERE QuranIndexs.Word LIKE :text LIMIT 0, 20");
+    m_query->bindValue(":text", QString("%%1%").arg(pWord));
+    m_query->exec();
+
+    // Indexs list
+    while (m_query->next())
+        indexsList << QString("%1").arg(m_query->value(2).toString()).split(",");
+    for (int i=0; i < indexsList.size(); i++)
+        indexsString.append(QString("%1,").arg(indexsList.at(i).toLocal8Bit().constData()));
+    indexsString.remove(QRegExp(",$"));
+    indexsString.prepend("(");
+    indexsString.append(")");
+
+    return indexsString;
+}
+
+QStringList QuranSearch::spiltText(QString str)
+{
+    QStringList list;
+    QRegExp regEx("([^ ]+)");
+    int pos = 0;
+
+    while ((pos = regEx.indexIn(str, pos)) != -1) {
+        list << regEx.cap(1);
+        pos += regEx.matchedLength();
+    }
+
+    return list;
+
 }
