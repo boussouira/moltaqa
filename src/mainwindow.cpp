@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QScrollBar>
+#include <QPropertyAnimation>
 
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
@@ -259,17 +261,16 @@ void MainWindow::scrollToAya(int pSoraNumber, int pAyaNumber)
 {
 
     QWebFrame *frame = m_tab->currentPage()->page()->mainFrame();
-    // First we unhighlight every highlighted AYA, let's just keep it easy by using javascript
-    frame->evaluateJavaScript("var arrayLen = document.getElementsByClassName('ayatxt highlighted').length ;"
-                              "for(i=0;i<arrayLen ;i++){"
-                              "document.getElementsByClassName('ayatxt highlighted')[0].className= 'ayatxt';}");
 
-    // Since each AYA has it own uniq id, we can highlight any AYA in the current page by changing it class name.
-    frame->evaluateJavaScript(QString("document.getElementById('s%1a%2').className = 'ayatxt highlighted'")
-                              .arg(pSoraNumber).arg(pAyaNumber));
+    // First we unhighlight the highlighted AYA
+    frame->findFirstElement("span.highlighted").removeClass("highlighted");
 
-    // I don't know if it's a good idea to scroll to the selected AYA using this method.
-    frame->evaluateJavaScript(QString("location = '#s%1a%2'").arg(pSoraNumber).arg(pAyaNumber));
+    // Since each AYA has it own uniq id, we can highlight any AYA in the current page by adding the class "highlighted"
+    frame->findFirstElement(QString("span#s%1a%2").arg(pSoraNumber).arg(pAyaNumber)).addClass("highlighted");
+
+    // Scroll to the selected AYA
+    QRect highElement = frame->findFirstElement("span.highlighted").geometry();
+    frame->setScrollBarValue(Qt::Vertical, (highElement.y() - (frame->geometry().height() / 2)) + (highElement.height() / 2));
 
 }
 
