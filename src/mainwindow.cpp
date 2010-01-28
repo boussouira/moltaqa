@@ -1,7 +1,4 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include <QScrollBar>
-#include <QPropertyAnimation>
 
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
@@ -267,10 +264,17 @@ void MainWindow::scrollToAya(int pSoraNumber, int pAyaNumber)
     // Since each AYA has it own uniq id, we can highlight any AYA in the current page by adding the class "highlighted"
     frame->findFirstElement(QString("span#s%1a%2").arg(pSoraNumber).arg(pAyaNumber)).addClass("highlighted");
 
-    // Scroll to the selected AYA
+    // Get the postion of the selected AYA
     QRect highElement = frame->findFirstElement("span.highlighted").geometry();
-    frame->setScrollBarValue(Qt::Vertical, (highElement.y() - (frame->geometry().height() / 2)) + (highElement.height() / 2));
+    unsigned int ayaPosition = (highElement.y() - (frame->geometry().height() / 2)) + (highElement.height() / 2);
 
+    // Animation the scrolling to the selected AYA
+    QPropertyAnimation *animation = new QPropertyAnimation(frame, "scrollPosition");
+    animation->setDuration(1000);
+    animation->setStartValue(frame->scrollPosition());
+    animation->setEndValue(QPoint(0, ayaPosition));
+
+    animation->start();
 }
 
 void MainWindow::selectResult(int pSoraNumber, int pAyaNumber)

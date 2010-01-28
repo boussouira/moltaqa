@@ -15,6 +15,7 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QtWebKit>
+#include <QPropertyAnimation>
 
 #include "constant.h"
 #include "ktext.h"
@@ -22,6 +23,7 @@
 #include "sorainfo.h"
 #include "settings.h"
 #include "ktab.h"
+#include "ui_mainwindow.h"
 
 namespace Ui
 {
