@@ -9,8 +9,10 @@
 #include <QStringListModel>
 #include <QList>
 #include <QStandardItemModel>
+#include <QKeyEvent>
 
 #include "constant.h"
+#include "ui_quransearch.h"
 
 namespace Ui {
     class QuranSearch;
@@ -21,6 +23,9 @@ class QuranSearch : public QWidget {
 public:
     QuranSearch(QWidget *parent, QSqlDatabase pDB);
     ~QuranSearch();
+private:
+    bool event(QEvent *event);
+
 signals:
     void resultSelected(int sora, int aya);
 
@@ -30,6 +35,7 @@ private slots:
     void setResultCount(int pResultsCount);
     QString getIdsList(QString pWord);
     QStringList spiltText(QString str);
+
 private:
     Ui::QuranSearch *m_ui;
     QSqlDatabase m_db;

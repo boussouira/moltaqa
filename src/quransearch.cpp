@@ -1,5 +1,4 @@
 #include "quransearch.h"
-#include "ui_quransearch.h"
 
 QuranSearch::QuranSearch(QWidget *parent, QSqlDatabase pDB) :
         QWidget(parent), m_ui(new Ui::QuranSearch), m_db(pDB)
@@ -98,4 +97,17 @@ QStringList QuranSearch::spiltText(QString str)
 
     return list;
 
+}
+
+bool QuranSearch::event(QEvent *event)
+{
+    if (event->type() == QEvent::KeyPress) {
+        QKeyEvent *ke = static_cast<QKeyEvent *>(event);
+        if (ke->key() == Qt::Key_Return) {
+            this->searchForText();
+            return true;
+        }
+    }
+
+    return QWidget::event(event);
 }
