@@ -2,28 +2,16 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QtDebug>
-#include <QMessageBox>
-#include <QSqlDatabase>
-#include <QSqlError>
-#include <QSqlQuery>
-#include <QSqlQueryModel>
-#include <QStringList>
-#include <QStringListModel>
-#include <QFontDialog>
-#include <QSettings>
-#include <QFile>
-#include <QFileDialog>
-#include <QtWebKit>
-#include <QPropertyAnimation>
+#include <QtSql>
 
-#include "constant.h"
-#include "ktext.h"
-#include "quransearch.h"
-#include "sorainfo.h"
-#include "settings.h"
-#include "ktab.h"
 #include "ui_mainwindow.h"
+
+class QStringListModel;
+class QuranSearch;
+class KText;
+class SoraInfo;
+class Settings;
+class KTab;
 
 namespace Ui
 {

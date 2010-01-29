@@ -8,7 +8,6 @@
 #include <QSqlQueryModel>
 #include <QStringListModel>
 #include <QList>
-#include <QDebug>
 #include <QStandardItemModel>
 
 #include "constant.h"

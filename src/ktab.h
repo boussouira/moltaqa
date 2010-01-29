@@ -5,7 +5,6 @@
 #include <QWebView>
 #include <QVBoxLayout>
 #include <QTabBar>
-#include <QDebug>
 
 #include "constant.h"
 #include "sorainfo.h"

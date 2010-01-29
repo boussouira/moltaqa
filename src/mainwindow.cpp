@@ -1,5 +1,16 @@
 #include "mainwindow.h"
 
+#include <QtWebKit>
+#include <QSettings>
+#include <QStringListModel>
+#include <QMessageBox>
+
+#include "constant.h"
+#include "ktext.h"
+#include "quransearch.h"
+#include "sorainfo.h"
+#include "settings.h"
+#include "ktab.h"
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {
