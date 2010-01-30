@@ -154,10 +154,6 @@ void MainWindow::selectSora(int pSoraNumber, int pAyaNumber, bool pDisplay)
 void MainWindow::setSoraDetials()
 {
     freez = true;
-    ui->tableWidget->setItem(0, 1, new QTableWidgetItem(m_tab->currentSoraInfo()->name()));
-    ui->tableWidget->setItem(1, 1, new QTableWidgetItem(QString::number(m_tab->currentSoraInfo()->number())));
-    ui->tableWidget->setItem(2, 1, new QTableWidgetItem(QString::number(m_tab->currentSoraInfo()->ayatCount())));
-    ui->tableWidget->setItem(3, 1, new QTableWidgetItem(m_tab->currentSoraInfo()->descent()));
 
     // Set AYAT count and current AYA number in the spin box
     ui->spinBoxAyaNumber->setMaximum(m_tab->currentSoraInfo()->ayatCount());
