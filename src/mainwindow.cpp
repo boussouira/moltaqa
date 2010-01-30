@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     m_tab->addNewOnglet();
 
     this->setupConnections();
+    ui->dockSearch->setShown(false);
 
 }
 
