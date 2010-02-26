@@ -9,7 +9,6 @@
 #include "ktext.h"
 #include "quransearch.h"
 #include "sorainfo.h"
-#include "settings.h"
 #include "ktab.h"
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
@@ -18,7 +17,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     ui->setupUi(this);
 
     m_text = new KText();
-    m_settings = new Settings(this);
 
     this->loadSettings();
     this->setupActions();
@@ -73,13 +71,13 @@ void MainWindow::setupConnections()
 void MainWindow::setupDataBases()
 {
     m_db = QSqlDatabase::addDatabase("QSQLITE", "QuranDB");
-    m_db.setDatabaseName(m_settings->dbPath());
+    m_db.setDatabaseName(m_databasePATH);
 
     if (!m_db.open()) {
         QMessageBox::critical(this,
                               tr("Cannot open database"),
                               tr("Unable to establish a database connection."));
-        exit(1);
+        this->close();
     }
     m_query = new QSqlQuery(m_db);
 }
@@ -113,6 +111,7 @@ void MainWindow::hideDockSearch()
 
 MainWindow::~MainWindow()
 {
+    this->saveSettings();
     delete ui;
 }
 
@@ -258,9 +257,17 @@ void MainWindow::aboutAlKotobiya()
 
 void MainWindow::loadSettings()
 {
+    QSettings settings(CONFIGFILE, QSettings::IniFormat, this);
+    m_databasePATH = settings.value("app/db").toString();
     freez = false;
 }
- 
+
+void MainWindow::saveSettings()
+{
+    QSettings settings(CONFIGFILE, QSettings::IniFormat, this);;
+    settings.setValue("app/db", m_databasePATH);
+}
+
 void MainWindow::scrollToAya(int pSoraNumber, int pAyaNumber)
 {
 

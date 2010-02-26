@@ -35,6 +35,7 @@ private:
     void setSoraDetials();
     void display(int pPageNumber , int pSoraNumber, int pAyaNumber = 1);
     void loadSettings();
+    void saveSettings();
     void scrollToAya(int pSoraNumber, int pAyaNumber);
     void setSelectedSora(int pSoraNumber);
 
