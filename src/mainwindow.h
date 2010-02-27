@@ -8,7 +8,6 @@
 
 class QStringListModel;
 class QuranSearch;
-class KText;
 class SoraInfo;
 class Settings;
 class KTab;
@@ -26,6 +25,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
+public slots:
     void selectSora(int pSoraNumber, int pAyaNumber = 1, bool pDisplay = true);
 
 private:
@@ -43,27 +43,22 @@ private slots:
     void hideDockIndex();
     void hideDockSearch();
     void ayaNumberChange(int pNewAyaNumber);
+    void openSora();
     void openSora(QModelIndex pSelection);
     void aboutAlKotobiya();
-    void selectResult(int pSoraNumber, int pAyaNumber);
     void reloadSoraInfo();
-    void openSora();
     void openSoraInNewTab();
     void addNewTab();
-
 
 private:
     QuranModel *m_quranModel;
     QuranSearch *m_search;
-    KText *m_text;
     SoraInfo *m_sora;
     Settings *m_settings;
     KTab *m_tab;
-
     QStringListModel *m_sowarNamesModel;
     QString m_databasePATH;
     bool freez;
-
 
     Ui::MainWindow *ui;
 };

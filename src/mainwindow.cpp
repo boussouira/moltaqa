@@ -6,7 +6,6 @@
 #include <QMessageBox>
 
 #include "constant.h"
-#include "ktext.h"
 #include "quransearch.h"
 #include "sorainfo.h"
 #include "ktab.h"
@@ -48,15 +47,13 @@ void MainWindow::setupActions()
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(aboutAlKotobiya()));
     connect(ui->actionNewTab, SIGNAL(triggered()), this, SLOT(addNewTab()));
-
-
 }
 
 void MainWindow::setupConnections()
 {
     connect(ui->listView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(openSora(QModelIndex)));
     connect(ui->spinBoxAyaNumber, SIGNAL(valueChanged(int)), this, SLOT(ayaNumberChange(int)));
-    connect(m_search, SIGNAL(resultSelected(int,int)), this, SLOT(selectResult(int,int)));
+    connect(m_search, SIGNAL(resultSelected(int,int)), this, SLOT(selectSora(int,int)));
 
     connect(ui->dockIndexs, SIGNAL(visibilityChanged(bool)), this, SLOT(hideDockIndex()));
     connect(ui->dockSearch, SIGNAL(visibilityChanged(bool)), this, SLOT(hideDockSearch()));
@@ -72,7 +69,6 @@ void MainWindow::setupQuranIndex()
     m_sowarNamesModel = new QStringListModel();
     m_quranModel->getSowarList(m_sowarNamesModel);
     ui->listView->setModel(m_sowarNamesModel);
-
 }
 
 void MainWindow::hideDockIndex()
@@ -135,6 +131,11 @@ void MainWindow::ayaNumberChange(int pNewAyaNumber)
     this->display(m_tab->currentSoraInfo());
 }
 
+void MainWindow::openSora()
+{
+    openSora(ui->listView->currentIndex());
+}
+
 void MainWindow::openSora(QModelIndex pSelection)
 {
     if(!freez)
@@ -172,7 +173,15 @@ void MainWindow::scrollToAya(int pSoraNumber, int pAyaNumber)
 
     // Get the postion of the selected AYA
     QRect highElement = frame->findFirstElement("span.highlighted").geometry();
-    unsigned int ayaPosition = (highElement.y() - (frame->geometry().height() / 2)) + (highElement.height() / 2);
+    // Frame heihgt
+    int frameHeihgt = frame->geometry().height() / 2;
+    // The height that should be added to center the selected aya
+    int addHeight = highElement.height() / 2 ;
+    // it must be less than frameHeight
+    while (frameHeihgt < addHeight )
+        addHeight = addHeight / 2;
+    // The aya position equal ((ayaHeight - frameHeight) + addHeight)
+    unsigned int ayaPosition = (highElement.y() - frameHeihgt) + addHeight;
 
     // Animation the scrolling to the selected AYA
     QPropertyAnimation *animation = new QPropertyAnimation(frame, "scrollPosition");
@@ -181,11 +190,6 @@ void MainWindow::scrollToAya(int pSoraNumber, int pAyaNumber)
     animation->setEndValue(QPoint(0, ayaPosition));
 
     animation->start();
-}
-
-void MainWindow::selectResult(int pSoraNumber, int pAyaNumber)
-{
-    this->selectSora(pSoraNumber, pAyaNumber);
 }
 
 void MainWindow::setSelectedSora(int pSoraNumber)
@@ -200,11 +204,6 @@ void MainWindow::setSelectedSora(int pSoraNumber)
 void MainWindow::reloadSoraInfo()
 {
     setSoraDetials(m_tab->currentSoraInfo());
-}
-
-void MainWindow::openSora()
-{
-    openSora(ui->listView->currentIndex());
 }
 
 void MainWindow::openSoraInNewTab()
