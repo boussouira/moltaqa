@@ -12,6 +12,7 @@ class KText;
 class SoraInfo;
 class Settings;
 class KTab;
+class QuranModel;
 
 namespace Ui
 {
@@ -30,10 +31,9 @@ public:
 private:
     void setupActions();
     void setupConnections();
-    void setupDataBases();
     void setupQuranIndex();
-    void setSoraDetials();
-    void display(int pPageNumber , int pSoraNumber, int pAyaNumber = 1);
+    void setSoraDetials(SoraInfo *pSoraInfo);
+    void display(SoraInfo *pSoranInfo);
     void loadSettings();
     void saveSettings();
     void scrollToAya(int pSoraNumber, int pAyaNumber);
@@ -44,7 +44,6 @@ private slots:
     void hideDockSearch();
     void ayaNumberChange(int pNewAyaNumber);
     void openSora(QModelIndex pSelection);
-    int getAyaPageNumber(int pSoraNumber, int pAyaNumber);
     void aboutAlKotobiya();
     void selectResult(int pSoraNumber, int pAyaNumber);
     void reloadSoraInfo();
@@ -54,14 +53,14 @@ private slots:
 
 
 private:
+    QuranModel *m_quranModel;
     QuranSearch *m_search;
     KText *m_text;
     SoraInfo *m_sora;
     Settings *m_settings;
     KTab *m_tab;
-    QSqlDatabase m_db;
+
     QStringListModel *m_sowarNamesModel;
-    QSqlQuery *m_query;
     QString m_databasePATH;
     bool freez;
 

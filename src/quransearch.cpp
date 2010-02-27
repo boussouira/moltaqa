@@ -1,9 +1,14 @@
 #include "quransearch.h"
 
-QuranSearch::QuranSearch(QWidget *parent, QSqlDatabase pDB) :
-        QWidget(parent), m_ui(new Ui::QuranSearch), m_db(pDB)
+QuranSearch::QuranSearch(QWidget *parent, QString pQuranDbPath) :
+        QWidget(parent), m_ui(new Ui::QuranSearch)
 {
     m_ui->setupUi(this);
+    m_db = QSqlDatabase::addDatabase("QSQLITE", "QuranDBSearchl");
+    m_db.setDatabaseName(pQuranDbPath);
+    if (!m_db.open()) {
+        qFatal("Cannot open database.");
+    }
     m_query = new QSqlQuery(m_db);
     m_resultModel = new QSqlQueryModel(this);
 
@@ -111,3 +116,4 @@ bool QuranSearch::event(QEvent *event)
 
     return QWidget::event(event);
 }
+

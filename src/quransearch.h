@@ -21,7 +21,7 @@ namespace Ui {
 class QuranSearch : public QWidget {
     Q_OBJECT
 public:
-    QuranSearch(QWidget *parent, QSqlDatabase pDB);
+    QuranSearch(QWidget *parent, QString pQuranDbPath);
     ~QuranSearch();
 private:
     bool event(QEvent *event);
@@ -45,3 +45,4 @@ private:
 };
 
 #endif // QURANSEARCH_H
+

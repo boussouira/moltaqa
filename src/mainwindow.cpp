@@ -10,29 +10,28 @@
 #include "quransearch.h"
 #include "sorainfo.h"
 #include "ktab.h"
+#include "quranmodel.h"
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {
     
     ui->setupUi(this);
 
-    m_text = new KText();
-
     this->loadSettings();
-    this->setupActions();
-    this->setupDataBases();
-    this->setupQuranIndex();
 
+    m_quranModel = new QuranModel(this, m_databasePATH);
     m_tab = new KTab(ui->centralWidget);
+    m_search = new QuranSearch(this, m_databasePATH);
     ui->verticalLayout_4->addWidget(m_tab);
-
-    m_search = new QuranSearch(this, m_db);
     ui->verticalLayout_5->addWidget(m_search);
 
     m_tab->addNewOnglet();
 
+    this->setupActions();
+    this->setupQuranIndex();
     this->setupConnections();
     ui->dockSearch->setShown(false);
+
 
 }
 
@@ -68,33 +67,10 @@ void MainWindow::setupConnections()
     connect(m_tab, SIGNAL(reloadCurrentSoraInfo()), this, SLOT(reloadSoraInfo()));
 }
 
-void MainWindow::setupDataBases()
-{
-    m_db = QSqlDatabase::addDatabase("QSQLITE", "QuranDB");
-    m_db.setDatabaseName(m_databasePATH);
-
-    if (!m_db.open()) {
-        QMessageBox::critical(this,
-                              tr("Cannot open database"),
-                              tr("Unable to establish a database connection."));
-        this->close();
-    }
-    m_query = new QSqlQuery(m_db);
-}
-
 void MainWindow::setupQuranIndex()
 {
     m_sowarNamesModel = new QStringListModel();
-    QStringList sowarNamesList;
-    m_query->exec("SELECT * FROM QuranSowar");
-    while (m_query->next())
-    {
-      sowarNamesList << QString("%1. %2")
-              .arg(m_query->value(0).toString())
-              .arg(m_query->value(1).toString() );
-    }
-
-    m_sowarNamesModel->setStringList(sowarNamesList);
+    m_quranModel->getSowarList(m_sowarNamesModel);
     ui->listView->setModel(m_sowarNamesModel);
 
 }
@@ -117,89 +93,33 @@ MainWindow::~MainWindow()
 
 void MainWindow::selectSora(int pSoraNumber, int pAyaNumber, bool pDisplay)
 {
-    m_tab->currentSoraInfo()->setNumber(pSoraNumber);
-
-    m_query->prepare("SELECT SoraName, ayatCount, SoraDescent "
-                     "FROM QuranSowar "
-                     "WHERE QuranSowar.id = :id LIMIT 1");
-
-    m_query->bindValue(":id", m_tab->currentSoraInfo()->number());
-    m_query->exec();
-
-    if (m_query->first()){
-        m_tab->currentSoraInfo()->setName(m_query->value(0).toString());
-        m_tab->currentSoraInfo()->setAyatCount(m_query->value(1).toInt());
-        m_tab->currentSoraInfo()->setDescent(m_query->value(2).toString());
-    }
-
-    m_query->prepare("SELECT MIN(QuranText.pageNumber) AS MinPNum, MAX(QuranText.pageNumber) AS MaxPNum "
-                     "FROM QuranText "
-                     "WHERE QuranText.soraNumber = :m_currentSoraNumber ");
-
-    m_query->bindValue(":m_currentSoraNumber", m_tab->currentSoraInfo()->number());
-    m_query->exec();
-
-    if(m_query->first())
-    {
-        m_tab->currentSoraInfo()->setCurrentPage(m_query->value(0).toInt());
-    }
-
+    m_quranModel->getSoraInfo(pSoraNumber, pAyaNumber, m_tab->currentSoraInfo());
     if(pDisplay)
-        this->display(m_tab->currentSoraInfo()->currentPage(), m_tab->currentSoraInfo()->number(), pAyaNumber);
-    this->setSoraDetials();
-    ui->spinBoxPageNumber->setValue(m_tab->currentSoraInfo()->currentPage());
-
+        this->display(m_tab->currentSoraInfo());
 }
 
-void MainWindow::setSoraDetials()
+void MainWindow::setSoraDetials(SoraInfo *pSoraInfo)
 {
     freez = true;
 
     // Set AYAT count and current AYA number in the spin box
-    ui->spinBoxAyaNumber->setMaximum(m_tab->currentSoraInfo()->ayatCount());
-    ui->spinBoxAyaNumber->setSuffix(QString(" / %1").arg(m_tab->currentSoraInfo()->ayatCount()));
-    ui->spinBoxAyaNumber->setValue(m_tab->currentSoraInfo()->currentAya());
+    ui->spinBoxAyaNumber->setMaximum(pSoraInfo->ayatCount());
+    ui->spinBoxAyaNumber->setSuffix(QString(" / %1").arg(pSoraInfo->ayatCount()));
+    ui->spinBoxAyaNumber->setValue(pSoraInfo->currentAya());
 
-    this->setSelectedSora(m_tab->currentSoraInfo()->number());
+    this->setSelectedSora(pSoraInfo->number());
     freez = false;
 }
 
-void MainWindow::display(int pPageNumber, int pSoraNumber, int pAyaNumber)
+void MainWindow::display(SoraInfo *pSoraInfo)
 {
-    m_text->clear();
-
-    m_query->prepare("SELECT QuranText.id, QuranText.ayaText, QuranText.ayaNumber, "
-                     "QuranText.pageNumber, QuranText.soraNumber, QuranSowar.SoraName "
-                     "FROM QuranText "
-                     "LEFT JOIN QuranSowar "
-                     "ON QuranSowar.id = QuranText.soraNumber "
-                     "WHERE QuranText.pageNumber = :m_pageNumber "
-                     "ORDER BY QuranText.id ");
-
-    m_query->bindValue(":m_pageNumber", pPageNumber);
-    m_query->exec();
-
-    m_tab->currentSoraInfo()->setCurrentAya(pAyaNumber);
-    ui->spinBoxAyaNumber->setValue(pAyaNumber);
-
-    while (m_query->next())
-    {
-        if(m_query->value(2).toInt() == 1) // at the first vers we insert the sora name and bassemala
-        {
-            m_text->insertSoraName(m_query->value(5).toString());
-            if(pSoraNumber != 1 and pSoraNumber != 9) // we escape putting bassemala before Fateha and Tawba
-            {
-                m_text->insertBassemala();
-            }
-        }
-        m_text->insertAyaText(m_query->value(1).toString(),
-                                     m_query->value(2).toInt(),
-                                     m_query->value(4).toInt());
-    }
-
-    m_tab->currentPage()->page()->mainFrame()->setHtml(m_text->text());
-    m_tab->setTabText(m_tab->currentIndex(), QString("%1 %2").arg(SORAT).arg(m_tab->currentSoraInfo()->name()));
-    this->scrollToAya(pSoraNumber, pAyaNumber);
+    if(pSoraInfo->currentPage() != ui->spinBoxPageNumber->value())
+        m_tab->currentPage()->page()->mainFrame()->setHtml(m_quranModel->getQuranPage(pSoraInfo));
+    m_tab->setTabText(m_tab->currentIndex(), QString("%1 %2").arg(SORAT).arg(pSoraInfo->name()));
+    this->scrollToAya(pSoraInfo->number(), pSoraInfo->currentAya());
+    this->setSoraDetials(m_tab->currentSoraInfo());
+    ui->spinBoxAyaNumber->setValue(pSoraInfo->currentAya());
+    ui->spinBoxPageNumber->setValue(pSoraInfo->currentPage());
 }
 
 void MainWindow::ayaNumberChange(int pNewAyaNumber)
@@ -207,47 +127,18 @@ void MainWindow::ayaNumberChange(int pNewAyaNumber)
     // If freez == true then break.
     if (m_tab->currentSoraInfo()->currentAya() == pNewAyaNumber or freez)
         return ;
-    int page = this->getAyaPageNumber(m_tab->currentSoraInfo()->number(), pNewAyaNumber);
-
-    if(page != m_tab->currentSoraInfo()->currentPage())
-    {
+    int page = m_quranModel->getAyaPageNumber(m_tab->currentSoraInfo()->number(), pNewAyaNumber);
+    if(page != m_tab->currentSoraInfo()->currentPage()) {
         m_tab->currentSoraInfo()->setCurrentPage(page);
-        this->display(m_tab->currentSoraInfo()->currentPage(), m_tab->currentSoraInfo()->number(), m_tab->currentSoraInfo()->currentAya());
-
-        ui->spinBoxPageNumber->setValue(page);
     }
-
     m_tab->currentSoraInfo()->setCurrentAya(pNewAyaNumber);
-    this->scrollToAya(m_tab->currentSoraInfo()->number(), pNewAyaNumber);
-
+    this->display(m_tab->currentSoraInfo());
 }
 
 void MainWindow::openSora(QModelIndex pSelection)
 {
     if(!freez)
-    {
-        m_tab->currentSoraInfo()->setNumber(pSelection.row() + 1);
-        this->selectSora(m_tab->currentSoraInfo()->number());
-    }
-}
-
-int MainWindow::getAyaPageNumber(int pSoraNumber, int pAyaNumber)
-{
-    m_query->prepare("SELECT QuranText.pageNumber "
-                     "FROM QuranText "
-                     "WHERE QuranText.soraNumber = :s_soraNumber "
-                     "AND QuranText.ayaNumber = :s_ayaNumber "
-                     "LIMIT 1 ");
-
-    m_query->bindValue(":s_soraNumber", pSoraNumber);
-    m_query->bindValue(":s_ayaNumber", pAyaNumber);
-    m_query->exec();
-
-    if(m_query->first())
-    {
-        return m_query->value(0).toInt();
-    }
-    return 1;
+        this->selectSora(pSelection.row()+1);
 }
 
 void MainWindow::aboutAlKotobiya()
@@ -294,11 +185,7 @@ void MainWindow::scrollToAya(int pSoraNumber, int pAyaNumber)
 
 void MainWindow::selectResult(int pSoraNumber, int pAyaNumber)
 {
-    int pageNumber = this->getAyaPageNumber(pSoraNumber, pAyaNumber);
-
-    this->selectSora(pSoraNumber, pAyaNumber, false);
-    this->display(pageNumber, pSoraNumber, pAyaNumber);
-
+    this->selectSora(pSoraNumber, pAyaNumber);
 }
 
 void MainWindow::setSelectedSora(int pSoraNumber)
@@ -312,7 +199,7 @@ void MainWindow::setSelectedSora(int pSoraNumber)
 
 void MainWindow::reloadSoraInfo()
 {
-    setSoraDetials();
+    setSoraDetials(m_tab->currentSoraInfo());
 }
 
 void MainWindow::openSora()
