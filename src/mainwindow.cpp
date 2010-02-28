@@ -149,14 +149,14 @@ void MainWindow::aboutAlKotobiya()
 
 void MainWindow::loadSettings()
 {
-    QSettings settings(CONFIGFILE, QSettings::IniFormat, this);
+    QSettings settings;
     m_databasePATH = settings.value("app/db").toString();
     freez = false;
 }
 
 void MainWindow::saveSettings()
 {
-    QSettings settings(CONFIGFILE, QSettings::IniFormat, this);;
+    QSettings settings;
     settings.setValue("app/db", m_databasePATH);
 }
 
