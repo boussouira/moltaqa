@@ -41,8 +41,8 @@ void MainWindow::setupActions()
     ui->listView->addAction(actionOpenSora);
     ui->listView->addAction(actionOpenSoraInNewTab);
 
-    connect(actionOpenSora, SIGNAL(triggered()), this, SLOT(openSora()));
-    connect(actionOpenSoraInNewTab, SIGNAL(triggered()), this, SLOT(openSoraInNewTab()));
+    connect(actionOpenSora, SIGNAL(triggered()), this, SLOT(openSelectedSora()));
+    connect(actionOpenSoraInNewTab, SIGNAL(triggered()), this, SLOT(openSelectedSoraInNewTab()));
 
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(aboutAlKotobiya()));
@@ -51,7 +51,7 @@ void MainWindow::setupActions()
 
 void MainWindow::setupConnections()
 {
-    connect(ui->listView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(openSora(QModelIndex)));
+    connect(ui->listView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(openSelectedSora(QModelIndex)));
     connect(ui->spinBoxAyaNumber, SIGNAL(valueChanged(int)), this, SLOT(ayaNumberChange(int)));
     connect(m_search, SIGNAL(resultSelected(int,int)), this, SLOT(selectSora(int,int)));
 
@@ -131,12 +131,12 @@ void MainWindow::ayaNumberChange(int pNewAyaNumber)
     this->display(m_tab->currentSoraInfo());
 }
 
-void MainWindow::openSora()
+void MainWindow::openSelectedSora()
 {
-    openSora(ui->listView->currentIndex());
+    openSelectedSora(ui->listView->currentIndex());
 }
 
-void MainWindow::openSora(QModelIndex pSelection)
+void MainWindow::openSelectedSora(QModelIndex pSelection)
 {
     if(!freez)
         this->selectSora(pSelection.row()+1);
@@ -206,10 +206,10 @@ void MainWindow::reloadSoraInfo()
     setSoraDetials(m_tab->currentSoraInfo());
 }
 
-void MainWindow::openSoraInNewTab()
+void MainWindow::openSelectedSoraInNewTab()
 {
     m_tab->addNewOnglet();
-    openSora();
+    openSelectedSora();
 }
 
 void MainWindow::addNewTab()

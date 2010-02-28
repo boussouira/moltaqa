@@ -43,11 +43,11 @@ private slots:
     void hideDockIndex();
     void hideDockSearch();
     void ayaNumberChange(int pNewAyaNumber);
-    void openSora();
-    void openSora(QModelIndex pSelection);
+    void openSelectedSora();
+    void openSelectedSora(QModelIndex pSelection);
     void aboutAlKotobiya();
     void reloadSoraInfo();
-    void openSoraInNewTab();
+    void openSelectedSoraInNewTab();
     void addNewTab();
 
 private:
