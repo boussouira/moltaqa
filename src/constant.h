@@ -14,7 +14,7 @@
 #define SEARCHRESULTS   QObject::trUtf8("نتائج البحث %1 :")
 #define OPENSORA        QObject::trUtf8("فتح السورة")
 #define OPENSORAINTAB   QObject::trUtf8("فتح في تبويب جديد")
-
-#define CONFIGFILE "settings.ini"
+#define QURAN_DATABASE   QObject::trUtf8("قاعدة البيانات")
+#define WRONG_DATABASE      QObject::trUtf8("قاعدة البيانات التي قمت بتحديدها غير موجود")
 
 #endif // CONSTANT_H

@@ -18,15 +18,18 @@ SOURCES += src/main.cpp \
     src/sorainfo.cpp \
     src/ktext.cpp \
     src/ktab.cpp \
-    src/quranmodel.cpp
+    src/quranmodel.cpp \
+    src/ksetting.cpp
 HEADERS += src/mainwindow.h \
     src/constant.h \
     src/quransearch.h \
     src/sorainfo.h \
     src/ktext.h \
     src/ktab.h \
-    src/quranmodel.h
+    src/quranmodel.h \
+    src/ksetting.h
 FORMS += src/ui/mainwindow.ui \
-    src/ui/quransearch.ui
+    src/ui/quransearch.ui \
+    src/ui/ksetting.ui
 RESOURCES += resources/qt_rc.qrc
 win32:RC_FILE = resources/win_rc.rc

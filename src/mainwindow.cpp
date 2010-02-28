@@ -4,22 +4,24 @@
 #include <QSettings>
 #include <QStringListModel>
 #include <QMessageBox>
+#include <QDebug>
 
 #include "constant.h"
 #include "quransearch.h"
 #include "sorainfo.h"
 #include "ktab.h"
 #include "quranmodel.h"
+#include "ksetting.h"
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {
     
     ui->setupUi(this);
+    m_ksetting = new KSetting(this);
+    m_tab = new KTab(ui->centralWidget);
 
     this->loadSettings();
-
     m_quranModel = new QuranModel(this, m_databasePATH);
-    m_tab = new KTab(ui->centralWidget);
     m_search = new QuranSearch(this, m_databasePATH);
     ui->verticalLayout_4->addWidget(m_tab);
     ui->verticalLayout_5->addWidget(m_search);
@@ -47,6 +49,7 @@ void MainWindow::setupActions()
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(aboutAlKotobiya()));
     connect(ui->actionNewTab, SIGNAL(triggered()), this, SLOT(addNewTab()));
+    connect(ui->actionSettings, SIGNAL(triggered()), this, SLOT(settingDialog()));
 }
 
 void MainWindow::setupConnections()
@@ -54,7 +57,6 @@ void MainWindow::setupConnections()
     connect(ui->listView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(openSelectedSora(QModelIndex)));
     connect(ui->spinBoxAyaNumber, SIGNAL(valueChanged(int)), this, SLOT(ayaNumberChange(int)));
     connect(m_search, SIGNAL(resultSelected(int,int)), this, SLOT(selectSora(int,int)));
-
     connect(ui->dockIndexs, SIGNAL(visibilityChanged(bool)), this, SLOT(hideDockIndex()));
     connect(ui->dockSearch, SIGNAL(visibilityChanged(bool)), this, SLOT(hideDockSearch()));
     connect(ui->actionIndexDock, SIGNAL(toggled(bool)), ui->dockIndexs, SLOT(setShown(bool)));
@@ -83,7 +85,6 @@ void MainWindow::hideDockSearch()
 
 MainWindow::~MainWindow()
 {
-    this->saveSettings();
     delete ui;
 }
 
@@ -151,13 +152,21 @@ void MainWindow::loadSettings()
 {
     QSettings settings;
     m_databasePATH = settings.value("app/db").toString();
+    if(!QFile::exists(m_databasePATH)) {
+        int rep = m_ksetting->exec();
+        if(rep == 0) {
+            qDebug("Error: No database selected");
+            exit(1);
+        } else {
+            m_databasePATH = settings.value("app/db").toString();
+        }
+    }
     freez = false;
 }
 
-void MainWindow::saveSettings()
+void MainWindow::settingDialog()
 {
-    QSettings settings;
-    settings.setValue("app/db", m_databasePATH);
+    m_ksetting->exec();
 }
 
 void MainWindow::scrollToAya(int pSoraNumber, int pAyaNumber)

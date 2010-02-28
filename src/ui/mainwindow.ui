@@ -62,7 +62,7 @@
     <property name="title">
      <string>اعدادات</string>
     </property>
-    <addaction name="actionChangeFont"/>
+    <addaction name="actionSettings"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -262,15 +262,18 @@
     <string>معلومات حول البرنامج</string>
    </property>
   </action>
-  <action name="actionChangeFont">
+  <action name="actionSettings">
    <property name="text">
-    <string>تغيير الخط</string>
+    <string>تعديلات...</string>
+   </property>
+   <property name="iconText">
+    <string>تعديلات...</string>
    </property>
    <property name="toolTip">
-    <string>تغيير خط العرض</string>
+    <string>تعديل خصائص البرنامج</string>
    </property>
    <property name="statusTip">
-    <string>تغيير خط العرض</string>
+    <string>تعديل خصائص البرنامج</string>
    </property>
   </action>
   <action name="actionIndexDock">

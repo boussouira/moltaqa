@@ -12,6 +12,7 @@ class SoraInfo;
 class Settings;
 class KTab;
 class QuranModel;
+class KSetting;
 
 namespace Ui
 {
@@ -35,7 +36,6 @@ private:
     void setSoraDetials(SoraInfo *pSoraInfo);
     void display(SoraInfo *pSoranInfo);
     void loadSettings();
-    void saveSettings();
     void scrollToAya(int pSoraNumber, int pAyaNumber);
     void setSelectedSora(int pSoraNumber);
 
@@ -46,11 +46,13 @@ private slots:
     void openSelectedSora();
     void openSelectedSora(QModelIndex pSelection);
     void aboutAlKotobiya();
+    void settingDialog();
     void reloadSoraInfo();
     void openSelectedSoraInNewTab();
     void addNewTab();
 
 private:
+    KSetting *m_ksetting;
     QuranModel *m_quranModel;
     QuranSearch *m_search;
     SoraInfo *m_sora;
