@@ -49,17 +49,6 @@ void QuranModel::getSoraInfo(int pSoraNumber, int pAyaNumber, SoraInfo *pSoraInf
         pSoraInfo->setDescent(m_quranQuery->value(2).toString());
     }
 
-    m_quranQuery->prepare("SELECT MIN(QuranText.pageNumber) AS MinPNum, MAX(QuranText.pageNumber) AS MaxPNum "
-                     "FROM QuranText "
-                     "WHERE QuranText.soraNumber = :m_currentSoraNumber ");
-
-    m_quranQuery->bindValue(":m_currentSoraNumber", pSoraInfo->number());
-    m_quranQuery->exec();
-
-    if(m_quranQuery->first())
-    {
-        pSoraInfo->setCurrentPage(m_quranQuery->value(0).toInt());
-    }
     if (pAyaNumber <= pSoraInfo->ayatCount())
         pSoraInfo->setCurrentAya(pAyaNumber);
      else
@@ -120,4 +109,40 @@ QString QuranModel::getQuranPage(SoraInfo *pSoraInfo)
     return m_text->text();
 }
 
+void QuranModel::getSoraInfoByPage(int pPageNumber, SoraInfo *pSoraInfo)
+{
+    int soraNumber = getFirsSoraNumberInPage(pPageNumber);
+    m_quranQuery->prepare("SELECT MIN(QuranText.ayaNumber) AS FirstAyaInPage "
+                     "FROM QuranText "
+                     "WHERE QuranText.soraNumber = :s_soraNumber "
+                     "AND QuranText.pageNumber = :s_pageNumber "
+                     "LIMIT 1 ");
 
+    m_quranQuery->bindValue(":s_soraNumber", soraNumber);
+    m_quranQuery->bindValue(":s_pageNumber", pPageNumber);
+    m_quranQuery->exec();
+
+    if(m_quranQuery->first()) {
+        pSoraInfo->setNumber(soraNumber);
+        pSoraInfo->setCurrentPage(pPageNumber);
+        //The first AYA in the page
+        pSoraInfo->setCurrentAya(m_quranQuery->value(0).toInt());
+
+    }
+}
+
+int QuranModel::getFirsSoraNumberInPage(int pPageNumber)
+{
+    m_quranQuery->prepare("SELECT MIN(QuranText.soraNumber) AS FirstSoraInPage "
+                     "FROM QuranText "
+                     "WHERE QuranText.pageNumber = :s_pageNumber "
+                     "LIMIT 1 ");
+    m_quranQuery->bindValue(":s_pageNumber", pPageNumber);
+    m_quranQuery->exec();
+
+    if(m_quranQuery->first()) {
+        // The first SORA in the page
+        return m_quranQuery->value(0).toInt();
+    }
+    return 0;
+}

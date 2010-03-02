@@ -21,6 +21,8 @@ public slots:
     void getSoraInfo(int pSoraNumber, int pAyaNumber, SoraInfo *pSoraInfo);
     int getAyaPageNumber(int pSoraNumber, int pAyaNumber);
     QString getQuranPage(SoraInfo *pSoraInfo);
+    void getSoraInfoByPage(int pPageNumber, SoraInfo *pSoraInfo);
+    int getFirsSoraNumberInPage(int pPageNumber);
 
 private:
     KText *m_text;

@@ -3,4 +3,14 @@
         <file>images/main.ico</file>
         <file>css/defaut.css</file>
     </qresource>
+    <qresource prefix="/menu">
+        <file>images/bookmark-new.png</file>
+        <file>images/find.png</file>
+        <file>images/edit_fahrass.png</file>
+        <file>images/go-first.png</file>
+        <file>images/go-last.png</file>
+        <file>images/go-next.png</file>
+        <file>images/go-previous.png</file>
+        <file>images/arrow-left.png</file>
+    </qresource>
 </RCC>
