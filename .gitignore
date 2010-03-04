@@ -1,0 +1,13 @@
+# Lines starting with '#' are comments.
+# Ignore the Makefile
+Makefile
+# The build directory
+build
+# Qt Creator user config file
+alkotobiya.pro.user
+# Windows stuff
+Makefile.Debug
+Makefile.Release
+alkotobiya.pro.user
+object_script.alkotobiya.Debug
+object_script.alkotobiya.Release
