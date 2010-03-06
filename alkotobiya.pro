@@ -31,5 +31,5 @@ HEADERS += src/mainwindow.h \
 FORMS += src/ui/mainwindow.ui \
     src/ui/quransearch.ui \
     src/ui/ksetting.ui
-RESOURCES += resources/qt_rc.qrc
-win32:RC_FILE = resources/win_rc.rc
+RESOURCES += res/qt_rc.qrc
+win32:RC_FILE = res/win_rc.rc
