@@ -11,3 +11,5 @@ Makefile.Release
 alkotobiya.pro.user
 object_script.alkotobiya.Debug
 object_script.alkotobiya.Release
+# Documentation
+doc/html

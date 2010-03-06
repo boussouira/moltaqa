@@ -14,9 +14,6 @@ QuranModel::QuranModel(QObject *parent, QString pQuranDBPath) :
     m_quranQuery = new QSqlQuery(m_quranDB);
     m_text = new KText();
 }
-QuranModel::~QuranModel()
-{
-}
 
 void QuranModel::getSowarList(QStringListModel *pSowarModel)
 {

@@ -95,11 +95,10 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::selectSora(int pSoraNumber, int pAyaNumber, bool pDisplay)
+void MainWindow::selectSora(int pSoraNumber, int pAyaNumber)
 {
     m_quranModel->getSoraInfo(pSoraNumber, pAyaNumber, m_tab->currentSoraInfo());
-    if(pDisplay)
-        this->display(m_tab->currentSoraInfo());
+    this->display(m_tab->currentSoraInfo());
     // Update navigation *buttons*
     updateNavigationActions();
 }
@@ -108,7 +107,6 @@ void MainWindow::setSoraDetials(SoraInfo *pSoraInfo)
 {
     ignoreSignals = true;
 
-    // Set AYAT count and current AYA number in the spin box
     ui->spinBoxAyaNumber->setMaximum(pSoraInfo->ayatCount());
     ui->spinBoxAyaNumber->setSuffix(QString(" / %1").arg(pSoraInfo->ayatCount()));
     ui->spinBoxAyaNumber->setValue(pSoraInfo->currentAya());

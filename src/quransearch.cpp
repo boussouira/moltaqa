@@ -26,7 +26,7 @@ void QuranSearch::searchForText()
 {
 
     QString indexsString;
-    QStringList wordsList = this->spiltText(m_ui->lineEdit->text());
+    QStringList wordsList = m_ui->lineEdit->text().split(" ", QString::SkipEmptyParts);
 
     for (int i=0; i<=wordsList.count()-1; i++ )
     {
@@ -87,21 +87,6 @@ QString QuranSearch::getIdsList(QString pWord)
     indexsString.append(")");
 
     return indexsString;
-}
-
-QStringList QuranSearch::spiltText(QString str)
-{
-    QStringList list;
-    QRegExp regEx("([^ ]+)");
-    int pos = 0;
-
-    while ((pos = regEx.indexIn(str, pos)) != -1) {
-        list << regEx.cap(1);
-        pos += regEx.matchedLength();
-    }
-
-    return list;
-
 }
 
 bool QuranSearch::event(QEvent *event)
