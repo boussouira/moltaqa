@@ -21,8 +21,8 @@ QWidget *KTab::newOnglet()
     layout->addWidget(pageWeb);
     pageOnglet->setLayout(layout);
 
-    SoraInfo *soraInfo = new SoraInfo();
-    m_sowarInfo.append(soraInfo);
+    PageInfo *pageInfo = new PageInfo();
+    m_sowarInfo.append(pageInfo);
 
     return pageOnglet;
 }
@@ -41,7 +41,7 @@ QWebView *KTab::currentPage()
     return this->currentWidget()->findChild<QWebView *>();
 }
 
-SoraInfo *KTab::currentSoraInfo()
+PageInfo *KTab::currentPageInfo()
 {
     return m_sowarInfo.value(this->currentIndex());
 }
@@ -50,7 +50,7 @@ void KTab::closeTab(int tabIndex)
 {
     this->removeTab(tabIndex);
     m_sowarInfo.removeAt(tabIndex);
-    emit reloadCurrentSoraInfo();
+    emit reloadCurrentPageInfo();
 
     // Let's make sure that the last tab well never get closed!
     if(this->count() == 1)

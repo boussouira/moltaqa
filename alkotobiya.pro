@@ -15,7 +15,7 @@ DESTDIR += build
 SOURCES += src/main.cpp \
     src/mainwindow.cpp \
     src/quransearch.cpp \
-    src/sorainfo.cpp \
+    src/pageinfo.cpp \
     src/ktext.cpp \
     src/ktab.cpp \
     src/quranmodel.cpp \
@@ -23,7 +23,7 @@ SOURCES += src/main.cpp \
 HEADERS += src/mainwindow.h \
     src/constant.h \
     src/quransearch.h \
-    src/sorainfo.h \
+    src/pageinfo.h \
     src/ktext.h \
     src/ktab.h \
     src/quranmodel.h \

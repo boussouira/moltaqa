@@ -7,7 +7,7 @@
 #include <QTabBar>
 
 #include "constant.h"
-#include "sorainfo.h"
+#include "pageinfo.h"
 
 /**
   @brief This class handle displaying Quran pages in tabs.
@@ -39,7 +39,7 @@ public slots:
     /**
       @brief Create a new widget in order to add it to the QTabWidget(\em this).
 
-      By calling this method, a new SoraInfo well be added to the m_sowarInfo.
+      By calling this method, a new PageInfo well be added to the m_sowarInfo.
       @return A QWebView contained in a QWidget.
       */
     QWidget *newOnglet();
@@ -51,16 +51,16 @@ public slots:
     QWebView *currentPage();
 
     /**
-      @brief Get the a pointer to the current SoraInfo.
-      @return A pointer to the current SoraInfo.
+      @brief Get the a pointer to the current PageInfo.
+      @return A pointer to the current PageInfo.
       */
-    SoraInfo *currentSoraInfo();
+    PageInfo *currentPageInfo();
 
     /**
       @brief Capture the signale when the tab is moved from an index position to an other one.
 
       When the tab has moved from an index postion to an other one, we need to do the same thing
-      with the SoraInfo contiand in m_sowarInfo.
+      with the PageInfo contiand in m_sowarInfo.
       @param from   The previous position index.
       @param to     The new position index.
       */
@@ -68,9 +68,9 @@ public slots:
 
 signals:
     /**
-      @brief Force the MainWindow class to reload the current SoraInfo.
+      @brief Force the MainWindow class to reload the current PageInfo.
       */
-    void reloadCurrentSoraInfo();
+    void reloadCurrentPageInfo();
 
     /**
       @brief this signal does the same thing as QTabBar::tabMoved().
@@ -78,7 +78,7 @@ signals:
     void tabMoved(int from, int to);
 
 private:
-    QList<SoraInfo* > m_sowarInfo;
+    QList<PageInfo* > m_sowarInfo;
     QTabBar *m_tab;
 
 };

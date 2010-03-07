@@ -8,7 +8,7 @@
 #include <QSqlError>
 #include <QStringListModel>
 
-class SoraInfo;
+class PageInfo;
 class KText;
 
 /**
@@ -37,9 +37,9 @@ public slots:
     @brief Get information about a SORA.
     @param pSoraNumber      The SORA number.
     @param pAyaNumber       AYA number
-    @param pSoraInfo        Pointer to SoraInfo.
+    @param pPageInfo        Pointer to PageInfo.
       */
-    void getSoraInfo(int pSoraNumber, int pAyaNumber, SoraInfo *pSoraInfo);
+    void getPageInfo(int pSoraNumber, int pAyaNumber, PageInfo *pPageInfo);
 
     /**
       @brief Get the page number of a SORA and AYA number.
@@ -50,20 +50,20 @@ public slots:
     int getAyaPageNumber(int pSoraNumber, int pAyaNumber);
 
     /**
-      @brief Get formated Quran text of the given SoraInfo from the database.
-      @param pSoraInfo      Page information(SORA, AYA and page...)
+      @brief Get formated Quran text of the given PageInfo from the database.
+      @param pPageInfo      Page information(SORA, AYA and page...)
       @return Formatted text.
       @see KText::text()
       */
-    QString getQuranPage(SoraInfo *pSoraInfo);
+    QString getQuranPage(PageInfo *pPageInfo);
 
     /**
       @brief Get information about the first SORA in the given page number.
       @param pPageNumber        The page number.
-      @param pSoraInfo          Pointer to a SoraInfo which well be fill in with the information.
+      @param pPageInfo          Pointer to a PageInfo which well be fill in with the information.
       @see getFirsSoraNumberInPage
       */
-    void getSoraInfoByPage(int pPageNumber, SoraInfo *pSoraInfo);
+    void getPageInfoByPage(int pPageNumber, PageInfo *pPageInfo);
 
     /**
       @brief Get the first SORA number in the given page number.

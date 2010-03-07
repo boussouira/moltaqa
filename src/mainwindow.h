@@ -8,7 +8,7 @@
 
 class QStringListModel;
 class QuranSearch;
-class SoraInfo;
+class PageInfo;
 class Settings;
 class KTab;
 class QuranModel;
@@ -61,15 +61,15 @@ protected:
      @brief Display the given SORA information.
 
      Update displayed information such as The current page, AYAT count...
-     @param pSoraInfo   The current SORA information.
+     @param pPageInfo   The current SORA information.
      */
-    void setSoraDetials(SoraInfo *pSoraInfo);
+    void setSoraDetials(PageInfo *pPageInfo);
 
     /**
-      @brief Dispay the given SoraInfo on the current visible QWebFrame.
+      @brief Dispay the given PageInfo on the current visible QWebFrame.
       @param pSoranInfo     SORA to display.
       */
-    void display(SoraInfo *pSoranInfo);
+    void display(PageInfo *pSoranInfo);
 
     /// @brief Load setting and do some tests.
     void loadSettings();
@@ -121,7 +121,7 @@ protected slots:
 
     /// @brief Update the current displayed information.
     /// @see setSoraDetials
-    void reloadSoraInfo();
+    void reloadPageInfo();
 
     /// @brief Open the selected SORA in a new tab.
     void openSelectedSoraInNewTab();
@@ -145,7 +145,7 @@ private:
     KSetting *m_ksetting;
     QuranModel *m_quranModel;
     QuranSearch *m_search;
-    SoraInfo *m_sora;
+    PageInfo *m_sora;
     Settings *m_settings;
     KTab *m_tab;
     QStringListModel *m_sowarNamesModel;

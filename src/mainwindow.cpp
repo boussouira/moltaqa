@@ -9,7 +9,7 @@
 
 #include "constant.h"
 #include "quransearch.h"
-#include "sorainfo.h"
+#include "pageinfo.h"
 #include "ktab.h"
 #include "quranmodel.h"
 #include "ksetting.h"
@@ -68,9 +68,9 @@ void MainWindow::setupConnections()
     connect(ui->dockSearch, SIGNAL(visibilityChanged(bool)), this, SLOT(hideDockSearch()));
     connect(ui->actionIndexDock, SIGNAL(toggled(bool)), ui->dockIndexs, SLOT(setShown(bool)));
     connect(ui->actionSearchDock, SIGNAL(toggled(bool)), ui->dockSearch, SLOT(setShown(bool)));
-    connect(m_tab, SIGNAL(currentChanged(int)), this, SLOT(reloadSoraInfo()));
+    connect(m_tab, SIGNAL(currentChanged(int)), this, SLOT(reloadPageInfo()));
     connect(m_tab, SIGNAL(tabCloseRequested(int)), m_tab, SLOT(closeTab(int)));
-    connect(m_tab, SIGNAL(reloadCurrentSoraInfo()), this, SLOT(reloadSoraInfo()));
+    connect(m_tab, SIGNAL(reloadCurrentPageInfo()), this, SLOT(reloadPageInfo()));
 }
 
 void MainWindow::setupQuranIndex()
@@ -97,48 +97,49 @@ MainWindow::~MainWindow()
 
 void MainWindow::selectSora(int pSoraNumber, int pAyaNumber)
 {
-    m_quranModel->getSoraInfo(pSoraNumber, pAyaNumber, m_tab->currentSoraInfo());
-    this->display(m_tab->currentSoraInfo());
+    m_quranModel->getPageInfo(pSoraNumber, pAyaNumber, m_tab->currentPageInfo());
+    this->display(m_tab->currentPageInfo());
     // Update navigation *buttons*
     updateNavigationActions();
 }
 
-void MainWindow::setSoraDetials(SoraInfo *pSoraInfo)
+void MainWindow::setSoraDetials(PageInfo *pPageInfo)
 {
     ignoreSignals = true;
 
-    ui->spinBoxAyaNumber->setMaximum(pSoraInfo->ayatCount());
-    ui->spinBoxAyaNumber->setSuffix(QString(" / %1").arg(pSoraInfo->ayatCount()));
-    ui->spinBoxAyaNumber->setValue(pSoraInfo->currentAya());
+    ui->spinBoxAyaNumber->setMaximum(pPageInfo->currentSoraAyatCount());
+    ui->spinBoxAyaNumber->setSuffix(QString(" / %1").arg(pPageInfo->currentSoraAyatCount()));
+    ui->spinBoxAyaNumber->setValue(pPageInfo->currentAya());
 
-    this->setSelectedSora(pSoraInfo->number());
+    this->setSelectedSora(pPageInfo->currentSoraNumber());
     ignoreSignals = false;
 }
 
-void MainWindow::display(SoraInfo *pSoraInfo)
+void MainWindow::display(PageInfo *pPageInfo)
 {
     bool emptyPage = m_tab->currentPage()->page()->mainFrame()->toPlainText().isEmpty();
 
-    if(emptyPage or pSoraInfo->currentPage() != ui->spinBoxPageNumber->value())
-        m_tab->currentPage()->page()->mainFrame()->setHtml(m_quranModel->getQuranPage(pSoraInfo));
+    if(emptyPage or pPageInfo->currentPage() != ui->spinBoxPageNumber->value())
+        m_tab->currentPage()->page()->mainFrame()->setHtml(m_quranModel->getQuranPage(pPageInfo));
 
-    m_tab->setTabText(m_tab->currentIndex(), QString("%1 %2").arg(SORAT).arg(pSoraInfo->name()));
-    this->scrollToAya(pSoraInfo->number(), pSoraInfo->currentAya());
-    this->setSoraDetials(m_tab->currentSoraInfo());
-    ui->spinBoxAyaNumber->setValue(pSoraInfo->currentAya());
-    ui->spinBoxPageNumber->setValue(pSoraInfo->currentPage());
+    m_tab->setTabText(m_tab->currentIndex(), QString("%1 %2").arg(SORAT).arg(pPageInfo->currentSoraName()));
+    this->scrollToAya(pPageInfo->currentSoraNumber(), pPageInfo->currentAya());
+    this->setSoraDetials(m_tab->currentPageInfo());
+    ui->spinBoxAyaNumber->setValue(pPageInfo->currentAya());
+    ui->spinBoxPageNumber->setValue(pPageInfo->currentPage());
 }
 
 void MainWindow::ayaNumberChange(int pNewAyaNumber)
 {
-    if (m_tab->currentSoraInfo()->currentAya() == pNewAyaNumber or ignoreSignals)
+    if (m_tab->currentPageInfo()->currentAya() == pNewAyaNumber or ignoreSignals)
         return ;
-    int page = m_quranModel->getAyaPageNumber(m_tab->currentSoraInfo()->number(), pNewAyaNumber);
-    if(page != m_tab->currentSoraInfo()->currentPage()) {
-        m_tab->currentSoraInfo()->setCurrentPage(page);
+    int page = m_quranModel->getAyaPageNumber(m_tab->currentPageInfo()->currentSoraNumber(),
+                                              pNewAyaNumber);
+    if(page != m_tab->currentPageInfo()->currentPage()) {
+        m_tab->currentPageInfo()->setCurrentPage(page);
     }
-    m_tab->currentSoraInfo()->setCurrentAya(pNewAyaNumber);
-    this->display(m_tab->currentSoraInfo());
+    m_tab->currentPageInfo()->setCurrentAya(pNewAyaNumber);
+    this->display(m_tab->currentPageInfo());
 }
 
 void MainWindow::openSelectedSora()
@@ -219,9 +220,9 @@ void MainWindow::setSelectedSora(int pSoraNumber)
 
 }
 
-void MainWindow::reloadSoraInfo()
+void MainWindow::reloadPageInfo()
 {
-    setSoraDetials(m_tab->currentSoraInfo());
+    setSoraDetials(m_tab->currentPageInfo());
 }
 
 void MainWindow::openSelectedSoraInNewTab()
@@ -241,7 +242,7 @@ void MainWindow::on_actionNextAYA_triggered()
     int newAyaNumber = ui->spinBoxAyaNumber->value()+1;
     if(newAyaNumber > ui->spinBoxAyaNumber->maximum()) {
         // Goto next SORA
-        int nextSora = m_tab->currentSoraInfo()->number()+1;
+        int nextSora = m_tab->currentPageInfo()->currentSoraNumber()+1;
         // SORA number must be less than 114
         if (nextSora >= 115) {
             // If it's less greater 114 we go to the first SORA in the Quran
@@ -259,7 +260,7 @@ void MainWindow::on_actionPrevAYA_triggered()
     int newAyaNumber = ui->spinBoxAyaNumber->value()-1;
     if(newAyaNumber < ui->spinBoxAyaNumber->minimum()) {
         // Goto previous SORA
-        int prevSora = m_tab->currentSoraInfo()->number()-1;
+        int prevSora = m_tab->currentPageInfo()->currentSoraNumber()-1;
         // We make sure that our SORA number is greater than 0
         if (prevSora <= 0) {
             // less than 0, go to the last SORA
@@ -273,20 +274,20 @@ void MainWindow::on_actionPrevAYA_triggered()
 
 void MainWindow::on_actionNextPage_triggered()
 {
-    m_quranModel->getSoraInfoByPage(ui->spinBoxPageNumber->value()+1,
-                                    m_tab->currentSoraInfo());
+    m_quranModel->getPageInfoByPage(ui->spinBoxPageNumber->value()+1,
+                                    m_tab->currentPageInfo());
 
-    this->selectSora(m_tab->currentSoraInfo()->number(),
-                     m_tab->currentSoraInfo()->currentAya());
+    this->selectSora(m_tab->currentPageInfo()->currentSoraNumber(),
+                     m_tab->currentPageInfo()->currentAya());
 }
 
 void MainWindow::on_actionPrevPage_triggered()
 {
-    m_quranModel->getSoraInfoByPage(ui->spinBoxPageNumber->value()-1,
-                                    m_tab->currentSoraInfo());
+    m_quranModel->getPageInfoByPage(ui->spinBoxPageNumber->value()-1,
+                                    m_tab->currentPageInfo());
 
-    this->selectSora(m_tab->currentSoraInfo()->number(),
-                     m_tab->currentSoraInfo()->currentAya());
+    this->selectSora(m_tab->currentPageInfo()->currentSoraNumber(),
+                     m_tab->currentPageInfo()->currentAya());
 }
 
 void MainWindow::updateNavigationActions()

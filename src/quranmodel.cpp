@@ -1,5 +1,5 @@
 #include "quranmodel.h"
-#include "sorainfo.h"
+#include "pageinfo.h"
 #include "ktext.h"
 
 QuranModel::QuranModel(QObject *parent, QString pQuranDBPath) :
@@ -29,30 +29,30 @@ void QuranModel::getSowarList(QStringListModel *pSowarModel)
     pSowarModel->setStringList(sowarNamesList);
 }
 
-void QuranModel::getSoraInfo(int pSoraNumber, int pAyaNumber, SoraInfo *pSoraInfo)
+void QuranModel::getPageInfo(int pSoraNumber, int pAyaNumber, PageInfo *pPageInfo)
 {
-    pSoraInfo->setNumber(pSoraNumber);
+    pPageInfo->setCurrentSoraNumber(pSoraNumber);
 
     m_quranQuery->prepare("SELECT SoraName, ayatCount, SoraDescent "
                      "FROM QuranSowar "
                      "WHERE QuranSowar.id = :id LIMIT 1");
 
-    m_quranQuery->bindValue(":id", pSoraInfo->number());
+    m_quranQuery->bindValue(":id", pPageInfo->currentSoraNumber());
     m_quranQuery->exec();
 
     if (m_quranQuery->first()){
-        pSoraInfo->setName(m_quranQuery->value(0).toString());
-        pSoraInfo->setAyatCount(m_quranQuery->value(1).toInt());
-        pSoraInfo->setDescent(m_quranQuery->value(2).toString());
+        pPageInfo->setCurrentSoraName(m_quranQuery->value(0).toString());
+        pPageInfo->setCurrentSoraAyatCount(m_quranQuery->value(1).toInt());
+        pPageInfo->setCurrentSoraDescent(m_quranQuery->value(2).toString());
     }
 
-    if (pAyaNumber <= pSoraInfo->ayatCount())
-        pSoraInfo->setCurrentAya(pAyaNumber);
+    if (pAyaNumber <= pPageInfo->currentSoraAyatCount())
+        pPageInfo->setCurrentAya(pAyaNumber);
      else
-        pSoraInfo->setCurrentAya(1);
+        pPageInfo->setCurrentAya(1);
 
-    int ayaPage = getAyaPageNumber(pSoraInfo->number(), pSoraInfo->currentAya());
-    pSoraInfo->setCurrentPage(ayaPage);
+    int ayaPage = getAyaPageNumber(pPageInfo->currentSoraNumber(), pPageInfo->currentAya());
+    pPageInfo->setCurrentPage(ayaPage);
 
 }
 
@@ -73,7 +73,7 @@ int QuranModel::getAyaPageNumber(int pSoraNumber, int pAyaNumber)
     else
         return 1;
 }
-QString QuranModel::getQuranPage(SoraInfo *pSoraInfo)
+QString QuranModel::getQuranPage(PageInfo *pPageInfo)
 {
     m_text->clear();
 
@@ -85,7 +85,7 @@ QString QuranModel::getQuranPage(SoraInfo *pSoraInfo)
                      "WHERE QuranText.pageNumber = :m_pageNumber "
                      "ORDER BY QuranText.id ");
 
-    m_quranQuery->bindValue(":m_pageNumber", pSoraInfo->currentPage());
+    m_quranQuery->bindValue(":m_pageNumber", pPageInfo->currentPage());
     m_quranQuery->exec();
 
     while (m_quranQuery->next())
@@ -93,7 +93,8 @@ QString QuranModel::getQuranPage(SoraInfo *pSoraInfo)
         if(m_quranQuery->value(2).toInt() == 1) // at the first vers we insert the sora name and bassemala
         {
             m_text->insertSoraName(m_quranQuery->value(5).toString());
-            if(pSoraInfo->number() != 1 and pSoraInfo->number() != 9) // we escape putting bassemala before Fateha and Tawba
+            // we escape putting bassemala before Fateha and Tawba
+            if(pPageInfo->currentSoraNumber() != 1 and pPageInfo->currentSoraNumber() != 9)
             {
                 m_text->insertBassemala();
             }
@@ -106,7 +107,7 @@ QString QuranModel::getQuranPage(SoraInfo *pSoraInfo)
     return m_text->text();
 }
 
-void QuranModel::getSoraInfoByPage(int pPageNumber, SoraInfo *pSoraInfo)
+void QuranModel::getPageInfoByPage(int pPageNumber, PageInfo *pPageInfo)
 {
     int soraNumber = getFirsSoraNumberInPage(pPageNumber);
     m_quranQuery->prepare("SELECT MIN(QuranText.ayaNumber) AS FirstAyaInPage "
@@ -120,10 +121,10 @@ void QuranModel::getSoraInfoByPage(int pPageNumber, SoraInfo *pSoraInfo)
     m_quranQuery->exec();
 
     if(m_quranQuery->first()) {
-        pSoraInfo->setNumber(soraNumber);
-        pSoraInfo->setCurrentPage(pPageNumber);
+        pPageInfo->setCurrentSoraNumber(soraNumber);
+        pPageInfo->setCurrentPage(pPageNumber);
         //The first AYA in the page
-        pSoraInfo->setCurrentAya(m_quranQuery->value(0).toInt());
+        pPageInfo->setCurrentAya(m_quranQuery->value(0).toInt());
 
     }
 }
