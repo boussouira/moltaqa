@@ -34,7 +34,7 @@ QString KText::text()
                    "</div></body></html>").arg(m_text);
 }
 
-void KText::clear()
+void KText::clearText()
 {
     m_text.clear();
 }

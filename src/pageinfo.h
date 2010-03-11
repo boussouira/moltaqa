@@ -14,8 +14,6 @@ namespace Page {
 class PageInfo
 {
 public:
-
-    /// @brief The constructor.
     PageInfo();
 
     /// @brief Change the current SORA name to the given one.

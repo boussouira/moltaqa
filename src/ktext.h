@@ -16,7 +16,6 @@
 class KText
 {
 public:
-    /// @brief The constructor.
     KText();
     /**
       @brief Insert and format a SORA name.
@@ -44,7 +43,7 @@ public:
     /**
       @brief Clear the current formatted text.
       */
-    void clear();
+    void clearText();
 
 private:
     QString m_text;

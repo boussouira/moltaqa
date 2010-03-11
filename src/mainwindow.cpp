@@ -11,8 +11,8 @@
 #include "quransearch.h"
 #include "pageinfo.h"
 #include "ktab.h"
-#include "quranmodel.h"
 #include "ksetting.h"
+#include "qurantextmodel.h"
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -23,7 +23,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     m_tab = new KTab(ui->centralWidget);
 
     this->loadSettings();
-    m_quranModel = new QuranModel(this, m_databasePATH);
+    m_quranModel = new QuranTextModel(this);
+    m_quranModel->openQuranDB(m_databasePATH);
     m_search = new QuranSearch(this, m_databasePATH);
     ui->verticalLayout_4->addWidget(m_tab);
     ui->verticalLayout_5->addWidget(m_search);

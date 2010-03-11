@@ -1,4 +1,6 @@
 #include "ktab.h"
+#include "constant.h"
+#include "pageinfo.h"
 
 KTab::KTab(QWidget *parent) : QTabWidget(parent), m_tab(new QTabBar(this))
 {

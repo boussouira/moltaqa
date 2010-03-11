@@ -6,8 +6,7 @@
 #include <QVBoxLayout>
 #include <QTabBar>
 
-#include "constant.h"
-#include "pageinfo.h"
+class PageInfo;
 
 /**
   @brief This class handle displaying Quran pages in tabs.
@@ -18,16 +17,11 @@ class KTab : public QTabWidget
 {
     Q_OBJECT
 public:
-    /**
-      @brief The constructor.
-      @param parent     The parent widget.
-      */
     KTab(QWidget *parent = 0);
 
 public slots:
-    /**
-      @brief Add a new tab.
-      */
+
+    /// @brief Add a new tab.
     void addNewOnglet();
 
     /**

@@ -1,18 +1,17 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "ui_mainwindow.h"
 #include <QMainWindow>
 #include <QtSql>
-
-#include "ui_mainwindow.h"
 
 class QStringListModel;
 class QuranSearch;
 class PageInfo;
 class Settings;
 class KTab;
-class QuranModel;
 class KSetting;
+class QuranTextModel;
 
 namespace Ui
 {
@@ -27,14 +26,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-
-    /**
-      @brief The constructor.
-      @param parent         The parent widget.
-      */
     MainWindow(QWidget *parent = 0);
-
-    /// @brief The destructor.
     ~MainWindow();
 public slots:
 
@@ -143,9 +135,8 @@ protected slots:
 
 private:
     KSetting *m_ksetting;
-    QuranModel *m_quranModel;
+    QuranTextModel *m_quranModel;
     QuranSearch *m_search;
-    PageInfo *m_sora;
     Settings *m_settings;
     KTab *m_tab;
     QStringListModel *m_sowarNamesModel;
