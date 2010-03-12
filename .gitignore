@@ -1,15 +1,57 @@
-# Lines starting with '#' are comments.
-# Ignore the Makefile
-Makefile
-# The build directory
+# This file is used to ignore files which are generated
+# ----------------------------------------------------------------------------
+*~
+*.a
+*.core
+*.moc
+*.o
+*.obj
+*.orig
+*.rej
+*.so
+*_pch.h.cpp
+*_resource.rc
+*.qm
+.#*
+*.*#
+core
+.qmake.cache
+tags
+.DS_Store
+*.debug
+Makefile*
+*.prl
+*.app
+moc_*.cpp
+ui_*.h
+qrc_*.cpp
+
+# qtcreator generated files
+*.pro.user
+
+# xemacs temporary files
+*.flc
+
+# Vim temporary files
+.*.swp
+
+# Visual Studio generated files
+*.ib_pdb_index
+*.idb
+*.ilk
+*.pdb
+*.sln
+*.suo
+*.vcproj
+*vcproj.*.*.user
+*.ncb
+
+# MinGW generated files
+*.Debug
+*.Release
+
+# Directories to ignore
+# ---------------------
+
 build
-# Qt Creator user config file
-alkotobiya.pro.user
-# Windows stuff
-Makefile.Debug
-Makefile.Release
-alkotobiya.pro.user
-object_script.alkotobiya.Debug
-object_script.alkotobiya.Release
-# Documentation
 doc/html
