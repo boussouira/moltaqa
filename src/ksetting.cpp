@@ -57,6 +57,20 @@ QString KSetting::getFilePath()
         return QString();
 }
 
+QString KSetting::getFolderPath()
+{
+    QFileDialog dialog(this);
+    dialog.setFileMode(QFileDialog::Directory);
+    dialog.setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
+    dialog.setViewMode(QFileDialog::Detail);
+    dialog.setOptions(QFileDialog::ShowDirsOnly
+                     | QFileDialog::DontResolveSymlinks);
+
+    if (dialog.exec())
+        return dialog.selectedFiles().first();
+    else
+        return QString();
+}
 void KSetting::changeQuranDBPath()
 {
     QString filePath = getFilePath();

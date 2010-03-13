@@ -39,6 +39,7 @@ protected:
       */
     QString getFilePath();
 
+    QString getFolderPath();
 protected slots:
     /**
       @brief Select the Quran database (\em SQLite).
