@@ -59,6 +59,8 @@ void MainWindow::setupActions()
     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(aboutAlKotobiya()));
     connect(ui->actionNewTab, SIGNAL(triggered()), this, SLOT(addNewTab()));
     connect(ui->actionSettings, SIGNAL(triggered()), this, SLOT(settingDialog()));
+    //
+    connect(openSelectedTafsir, SIGNAL(triggered()), this, SLOT(openTafessir()));
 }
 
 void MainWindow::setupConnections()
@@ -304,4 +306,13 @@ void MainWindow::updateNavigationActions()
         ui->actionPrevPage->setEnabled(false);
     else
         ui->actionPrevPage->setEnabled(true);
+}
+
+void MainWindow::openTafessir()
+{
+    PageInfo *pinfo = m_tab->currentPageInfo();
+    TafessirTextBase *ta = new TafessirTextBase(this);
+    m_tab->addNewOnglet();
+    m_tab->currentPage()->setHtml(ta->getTafessirPage(pinfo));
+
 }

@@ -133,6 +133,7 @@ protected slots:
     /// This slot is called when the user press the previous page button.
     void on_actionPrevPage_triggered();
 
+    void openTafessir();
 private:
     KSetting *m_ksetting;
     QuranTextModel *m_quranModel;

@@ -6,19 +6,30 @@ TafessirTextFormat::TafessirTextFormat()
 }
 void TafessirTextFormat::appendTafessirText(QString pTafessirText)
 {
-    //qDebug() << pTafessirText.split(QRegExp("\\[co\\]")).count() ;
-    pTafessirText.replace(QRegExp("\\(([0-9]{1,2})\\)"), "<a href=\"#fn\\1\">(\\1)</a>");
-    pTafessirText.replace("[br]","<br/>");
-    pTafessirText.replace("[co]","<br>______<br><code>");
-    pTafessirText.replace("[/co]","</code>");
-    m_text.append(pTafessirText);
+    QString tafessirText = pTafessirText.split(QRegExp("\\[co\\]")).first();
+    QString footnoteText = pTafessirText.split(QRegExp("\\[co\\]")).last();
+
+    tafessirText.replace(QRegExp("\\(([0-9]{1,2})\\)"), "<a class=\"footn\" id=\"fnb\\1\" href=\"#fn\\1\">(\\1)</a>");
+    tafessirText.replace("[br]","<br/>");
+
+    footnoteText.replace("[br]","<br/>");
+    footnoteText.prepend("<br>______<br><footnote>");
+    footnoteText.replace("[/co]","</footnote>");
+    footnoteText.replace(QRegExp("\\(([0-9]{1,2})\\)"), "<a href=\"#fnb\\1\" id=\"fn\\1\">(\\1)</a>");
+    m_text.append(tafessirText);
+    m_text.append(footnoteText);
 }
 
 QString TafessirTextFormat::getTafessirText()
 {
-    return QString("<html><heade><style>body{border:1px solid #CCCCCC;direction:rtl;font-family:Traditional arabic;font-size:30px;padding:5px;text-align:right;}"
-                   "code{font-size:20px}</style>"
-                   "</head><body>%1</body></html>").arg(m_text);
+    return QString("<html>"
+                   "<head>"
+                   "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />"
+                   "<link href= \"qrc:/css/defaut.css\"  rel=\"stylesheet\" type=\"text/css\"/>"
+                   "</head>"
+                   "<body>"
+                   "<div id=\"tafessir\">%1</div>"
+                   "</div></body></html>").arg(m_text);
 }
 
 void TafessirTextFormat::clearTafessirText()

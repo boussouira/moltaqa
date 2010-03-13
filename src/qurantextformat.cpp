@@ -30,7 +30,7 @@ QString QuranTextFormat::text()
                    "<link href= \"qrc:/css/defaut.css\"  rel=\"stylesheet\" type=\"text/css\"/>"
                    "</head>"
                    "<body>"
-                   "%1"
+                   "<div id=\"quran\">%1</div>"
                    "</div></body></html>").arg(m_text);
 }
 
