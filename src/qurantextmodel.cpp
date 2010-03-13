@@ -6,7 +6,7 @@ QuranTextModel::QuranTextModel(QObject *parent) : QuranTextBase(parent)
 
 QString QuranTextModel::getQuranPage(PageInfo *pPageInfo)
 {
-    this->clearText();
+    this->clearQuranText();
 
     m_quranQuery->prepare("SELECT QuranText.id, QuranText.ayaText, QuranText.ayaNumber, "
                      "QuranText.pageNumber, QuranText.soraNumber, QuranSowar.SoraName "

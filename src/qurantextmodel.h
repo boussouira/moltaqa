@@ -4,9 +4,9 @@
 #include <QObject>
 #include "qurantextbase.h"
 #include "pageinfo.h"
-#include "ktext.h"
+#include "qurantextformat.h"
 
-class QuranTextModel : public QuranTextBase, public KText
+class QuranTextModel : public QuranTextBase, public QuranTextFormat
 {
 public:
     QuranTextModel(QObject *parent);

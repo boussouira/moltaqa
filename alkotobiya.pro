@@ -16,22 +16,26 @@ SOURCES += src/main.cpp \
     src/mainwindow.cpp \
     src/quransearch.cpp \
     src/pageinfo.cpp \
-    src/ktext.cpp \
+    src/qurantextformat.cpp \
     src/ktab.cpp \
     src/ksetting.cpp \
     src/abstractqurantext.cpp \
     src/qurantextbase.cpp \
-    src/qurantextmodel.cpp
+    src/qurantextmodel.cpp \
+    src/tafessirtextbase.cpp \
+    src/tafessirtextformat.cpp
 HEADERS += src/mainwindow.h \
     src/constant.h \
     src/quransearch.h \
     src/pageinfo.h \
-    src/ktext.h \
+    src/qurantextformat.h \
     src/ktab.h \
     src/ksetting.h \
     src/abstractqurantext.h \
     src/qurantextbase.h \
-    src/qurantextmodel.h
+    src/qurantextmodel.h \
+    src/tafessirtextbase.h \
+    src/tafessirtextformat.h
 FORMS += src/ui/mainwindow.ui \
     src/ui/quransearch.ui \
     src/ui/ksetting.ui

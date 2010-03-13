@@ -13,6 +13,7 @@
 #include "ktab.h"
 #include "ksetting.h"
 #include "qurantextmodel.h"
+#include "tafessirtextbase.h"
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {

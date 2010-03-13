@@ -1,22 +1,17 @@
 #ifndef KTEXT_H
 #define KTEXT_H
 
-#include <QtGui/QApplication>
-#include <QtGui/QMainWindow>
-#include <QTextEdit>
-#include <QMessageBox>
-#include <QHash>
-#include <QFile>
+#include <QtCore>
 
 #include "constant.h"
 
 /**
   @brief This class handle the formatting of the Quran pages.
   */
-class KText
+class QuranTextFormat
 {
 public:
-    KText();
+    QuranTextFormat();
     /**
       @brief Insert and format a SORA name.
       @param pSoraName      The SORA name.
@@ -43,7 +38,7 @@ public:
     /**
       @brief Clear the current formatted text.
       */
-    void clearText();
+    void clearQuranText();
 
 private:
     QString m_text;
