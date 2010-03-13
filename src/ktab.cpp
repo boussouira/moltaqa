@@ -1,6 +1,5 @@
 #include "ktab.h"
 #include "constant.h"
-#include "pageinfo.h"
 
 KTab::KTab(QWidget *parent) : QTabWidget(parent), m_tab(new QTabBar(this))
 {
@@ -12,7 +11,7 @@ KTab::KTab(QWidget *parent) : QTabWidget(parent), m_tab(new QTabBar(this))
 
 }
 
-QWidget *KTab::newOnglet()
+QWidget *KTab::newOnglet(Page::Type pPageType)
 {
 
     QWidget *pageOnglet = new QWidget;
@@ -24,14 +23,15 @@ QWidget *KTab::newOnglet()
     pageOnglet->setLayout(layout);
 
     PageInfo *pageInfo = new PageInfo();
+    pageInfo->setPageType(pPageType);
     m_sowarInfo.append(pageInfo);
 
     return pageOnglet;
 }
 
-void KTab::addNewOnglet()
+void KTab::addNewOnglet(Page::Type pPageType)
 {
-    this->addTab(newOnglet(), QURAN);
+    this->addTab(newOnglet(pPageType), QURAN);
     this->setCurrentIndex(this->count()-1);
 
     if(this->count() > 1)

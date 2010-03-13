@@ -5,8 +5,7 @@
 #include <QWebView>
 #include <QVBoxLayout>
 #include <QTabBar>
-
-class PageInfo;
+#include "pageinfo.h"
 
 /**
   @brief This class handle displaying Quran pages in tabs.
@@ -22,7 +21,7 @@ public:
 public slots:
 
     /// @brief Add a new tab.
-    void addNewOnglet();
+    void addNewOnglet(Page::Type pPageType = Page::QuranPage);
 
     /**
       @brief Close a specific tab.
@@ -36,7 +35,7 @@ public slots:
       By calling this method, a new PageInfo well be added to the m_sowarInfo.
       @return A QWebView contained in a QWidget.
       */
-    QWidget *newOnglet();
+    QWidget *newOnglet(Page::Type pPageType);
 
     /**
       @brief Get the a pointer to the current displayed QWebView.

@@ -41,7 +41,7 @@ public:
     void setCurrentPage(int pPageNumber){m_currentPageNumber = pPageNumber ;}
 
     /// @brief Set the current page Type.
-    void pageType(Page::Type pPageType) { m_pageType = pPageType; }
+    void setPageType(Page::Type pPageType) { m_pageType = pPageType; }
 
 
     /// @brief Get the current SORA name.
