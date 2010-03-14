@@ -1,41 +1,8 @@
-# -------------------------------------------------
-# Project created by QtCreator 2009-11-13T15:47:40
-# -------------------------------------------------
-QT += sql  webkit
+lessThan(QT_VERSION, 4.6) {
+    error("Al Kotobiya requires Qt 4.6 or greater")
+}
 
-TEMPLATE = app
-TARGET = alkotobiya
+TEMPLATE = subdirs
+SUBDIRS  = src
 
-MOC_DIR += build
-OBJECTS_DIR += build
-UI_DIR += build
-RCC_DIR += build
-DESTDIR += build
 
-SOURCES += src/main.cpp \
-    src/mainwindow.cpp \
-    src/quransearch.cpp \
-    src/pageinfo.cpp \
-    src/qurantextformat.cpp \
-    src/ktab.cpp \
-    src/ksetting.cpp \
-    src/qurantextbase.cpp \
-    src/qurantextmodel.cpp \
-    src/tafessirtextbase.cpp \
-    src/tafessirtextformat.cpp
-HEADERS += src/mainwindow.h \
-    src/constant.h \
-    src/quransearch.h \
-    src/pageinfo.h \
-    src/qurantextformat.h \
-    src/ktab.h \
-    src/ksetting.h \
-    src/qurantextbase.h \
-    src/qurantextmodel.h \
-    src/tafessirtextbase.h \
-    src/tafessirtextformat.h
-FORMS += src/ui/mainwindow.ui \
-    src/ui/quransearch.ui \
-    src/ui/ksetting.ui
-RESOURCES += res/qt_rc.qrc
-win32:RC_FILE = res/win_rc.rc

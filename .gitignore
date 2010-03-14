@@ -49,6 +49,9 @@ qrc_*.cpp
 # MinGW generated files
 *.Debug
 *.Release
+# Binary files
+alkotobiya
+alkotobiya.exe
 
 # Directories to ignore
 # ---------------------

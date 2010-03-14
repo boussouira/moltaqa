@@ -165,7 +165,7 @@ void MainWindow::aboutAlKotobiya()
 void MainWindow::loadSettings()
 {
     QSettings settings;
-    m_databasePATH = settings.value("app/db").toString();
+    m_databasePATH = settings.value("app/db", QURAN_DB_PATH).toString();
     if(!QFile::exists(m_databasePATH)) {
         int rep = m_ksetting->exec();
         if(rep == 0) {

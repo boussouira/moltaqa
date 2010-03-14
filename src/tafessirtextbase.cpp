@@ -2,7 +2,7 @@
 
 TafessirTextBase::TafessirTextBase(QObject *parent) : QuranTextBase(parent)
 {
-    m_tafessirDBPath = "../res/db/t-ibnkatir.db";
+    m_tafessirDBPath = "books/t-ibnkatir.db";
 
     m_tafessirDB = QSqlDatabase::addDatabase("QSQLITE", "QuranTafessirDB");
     m_tafessirDB.setDatabaseName(m_tafessirDBPath);

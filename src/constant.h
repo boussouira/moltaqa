@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#define DATABASEPATH "quran.db"
+#define QURAN_DB_PATH "books/quran.db"
 
 #define QURAN           QObject::trUtf8("القرآن الكريم")
 #define BASMALA         QObject::trUtf8("بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ")
