@@ -19,7 +19,6 @@ SOURCES += src/main.cpp \
     src/qurantextformat.cpp \
     src/ktab.cpp \
     src/ksetting.cpp \
-    src/abstractqurantext.cpp \
     src/qurantextbase.cpp \
     src/qurantextmodel.cpp \
     src/tafessirtextbase.cpp \
@@ -31,7 +30,6 @@ HEADERS += src/mainwindow.h \
     src/qurantextformat.h \
     src/ktab.h \
     src/ksetting.h \
-    src/abstractqurantext.h \
     src/qurantextbase.h \
     src/qurantextmodel.h \
     src/tafessirtextbase.h \

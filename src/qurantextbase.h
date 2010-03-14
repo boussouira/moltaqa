@@ -2,13 +2,30 @@
 #define QURANTEXTBASE_H
 
 #include <QObject>
-#include "abstractqurantext.h"
+#include <QDebug>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QStringListModel>
 #include "pageinfo.h"
 
-class QuranTextBase : public AbstractQuranText
+class QuranTextBase : public QObject
 {
 public:
     QuranTextBase(QObject *parent);
+
+    /**
+      @brief Open the Quran database.
+      @param pQuranDBPath   Quran database path.
+      */
+    void openQuranDB(QString pQuranDBPath);
+
+    /**
+      @brief Get all SOWAR names as QStringListModel.
+      @param pSowarModel    Pointer to a QStringListModel.
+      */
+    void getSowarList(QStringListModel *pSowarModel);
+
     /**
     @brief Get information about a SORA.
     @param pSoraNumber      The SORA number.
@@ -16,6 +33,7 @@ public:
     @param pPageInfo        Pointer to PageInfo.
       */
     void getPageInfo(int pSoraNumber, int pAyaNumber, PageInfo *pPageInfo);
+
     /**
       @brief Get the page number of a SORA and AYA number.
       @param pSoraNumber    The SORA number.
@@ -30,6 +48,11 @@ public:
       @return The first SORA number in the given page.
       */
     int getFirsSoraNumberInPage(int pPageNumber);
+
+protected:
+    QSqlDatabase m_quranDB;
+    QSqlQuery *m_quranQuery;
+    QString m_quranDBPath;
 };
 
 #endif // QURANTEXTBASE_H
