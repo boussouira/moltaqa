@@ -1,6 +1,6 @@
 #include "tafessirtextbase.h"
 
-TafessirTextBase::TafessirTextBase(QObject *parent) : QuranTextBase(parent)
+TafessirTextBase::TafessirTextBase() : QuranTextBase()
 {
     m_tafessirDBPath = "books/t-ibnkatir.db";
 

@@ -14,7 +14,7 @@
 class TafessirTextBase : public QuranTextBase, public TafessirTextFormat
 {
 public:
-    TafessirTextBase(QObject *parent);
+    TafessirTextBase();
     QString getTafessirPage(PageInfo *pPageInfo);
 
 protected:

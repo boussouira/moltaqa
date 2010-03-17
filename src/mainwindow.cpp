@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     m_tab = new KTab(ui->centralWidget);
 
     this->loadSettings();
-    m_quranModel = new QuranTextModel(this);
+    m_quranModel = new QuranTextModel();
     m_quranModel->openQuranDB(m_databasePATH);
     m_search = new QuranSearch(this, m_databasePATH);
     ui->verticalLayout_4->addWidget(m_tab);
@@ -311,7 +311,7 @@ void MainWindow::updateNavigationActions()
 void MainWindow::openTafessir()
 {
     PageInfo *pinfo = m_tab->currentPageInfo();
-    TafessirTextBase *ta = new TafessirTextBase(this);
+    TafessirTextBase *ta = new TafessirTextBase();
     m_tab->addNewOnglet();
     m_tab->currentPage()->setHtml(ta->getTafessirPage(pinfo));
 

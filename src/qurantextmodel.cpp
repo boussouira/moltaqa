@@ -1,6 +1,6 @@
 #include "qurantextmodel.h"
 
-QuranTextModel::QuranTextModel(QObject *parent) : QuranTextBase(parent)
+QuranTextModel::QuranTextModel() : QuranTextBase()
 {
 }
 

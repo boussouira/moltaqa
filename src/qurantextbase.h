@@ -9,10 +9,10 @@
 #include <QStringListModel>
 #include "pageinfo.h"
 
-class QuranTextBase : public QObject
+class QuranTextBase
 {
 public:
-    QuranTextBase(QObject *parent);
+    QuranTextBase();
 
     /**
       @brief Open the Quran database.

@@ -1,6 +1,6 @@
 #include "qurantextbase.h"
 
-QuranTextBase::QuranTextBase(QObject *parent) : QObject(parent)
+QuranTextBase::QuranTextBase()
 {
 }
 

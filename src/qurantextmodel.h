@@ -9,7 +9,7 @@
 class QuranTextModel : public QuranTextBase, public QuranTextFormat
 {
 public:
-    QuranTextModel(QObject *parent);
+    QuranTextModel();
     /**
       @brief Get formated Quran text of the given PageInfo from the database.
       @param pPageInfo      Page information(SORA, AYA and page...)
