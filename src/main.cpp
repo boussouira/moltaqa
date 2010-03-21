@@ -19,7 +19,6 @@ int main(int argc, char *argv[])
     app.setApplicationVersion("0.5");
 
     MainWindow w;
-    w.selectSora(1);
     w.show();
     return app.exec();
 }

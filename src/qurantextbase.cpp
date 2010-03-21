@@ -111,3 +111,8 @@ int QuranTextBase::getFirsSoraNumberInPage(int pPageNumber)
     }
     return 0;
 }
+
+void QuranTextBase::closeDataBase()
+{
+    m_quranDB.close();
+}

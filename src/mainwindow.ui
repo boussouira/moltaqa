@@ -14,7 +14,7 @@
    <string>Al Kotobiya</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="data/qt_rc.qrc">
     <normaloff>:/images/main.ico</normaloff>:/images/main.ico</iconset>
   </property>
   <property name="layoutDirection">
@@ -23,9 +23,7 @@
   <property name="locale">
    <locale language="Arabic" country="Morocco"/>
   </property>
-  <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout_4"/>
-  </widget>
+  <widget class="QWidget" name="centralWidget"/>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
@@ -77,156 +75,6 @@
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <widget class="QDockWidget" name="dockIndexs">
-   <property name="accessibleName">
-    <string>الفهرس</string>
-   </property>
-   <property name="accessibleDescription">
-    <string>الفهرس</string>
-   </property>
-   <property name="locale">
-    <locale language="Arabic" country="Morocco"/>
-   </property>
-   <property name="windowTitle">
-    <string>الفهرس</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>2</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContents_3">
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <item>
-      <widget class="QGroupBox" name="groupBox">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>184</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="title">
-        <string>السور :</string>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-       <property name="checkable">
-        <bool>false</bool>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="QListView" name="listView">
-          <property name="contextMenuPolicy">
-           <enum>Qt::ActionsContextMenu</enum>
-          </property>
-          <property name="editTriggers">
-           <set>QAbstractItemView::NoEditTriggers</set>
-          </property>
-          <property name="showDropIndicator" stdset="0">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QFormLayout" name="formLayout">
-          <property name="horizontalSpacing">
-           <number>10</number>
-          </property>
-          <property name="verticalSpacing">
-           <number>0</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label">
-            <property name="maximumSize">
-             <size>
-              <width>34</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>الآية :</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QSpinBox" name="spinBoxAyaNumber">
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-            <property name="minimum">
-             <number>1</number>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_2">
-            <property name="maximumSize">
-             <size>
-              <width>43</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>الصفحة :</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QSpinBox" name="spinBoxPageNumber">
-            <property name="wrapping">
-             <bool>true</bool>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-            <property name="buttonSymbols">
-             <enum>QAbstractSpinBox::NoButtons</enum>
-            </property>
-            <property name="suffix">
-             <string> / 604</string>
-            </property>
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>604</number>
-            </property>
-            <property name="value">
-             <number>1</number>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-  </widget>
-  <widget class="QDockWidget" name="dockSearch">
-   <property name="toolTip">
-    <string>نافذة البحث في القرآن الكريم</string>
-   </property>
-   <property name="windowTitle">
-    <string>البحث</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>8</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContents">
-    <layout class="QVBoxLayout" name="verticalLayout_6">
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_5"/>
-     </item>
-    </layout>
-   </widget>
-  </widget>
   <widget class="QToolBar" name="toolBarGeneral">
    <property name="windowTitle">
     <string>عام</string>
@@ -306,7 +154,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="data/qt_rc.qrc">
      <normaloff>:/menu/images/edit_fahrass.png</normaloff>:/menu/images/edit_fahrass.png</iconset>
    </property>
    <property name="text">
@@ -321,7 +169,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="data/qt_rc.qrc">
      <normaloff>:/menu/images/find.png</normaloff>:/menu/images/find.png</iconset>
    </property>
    <property name="text">
@@ -333,7 +181,7 @@
   </action>
   <action name="actionNewTab">
    <property name="icon">
-    <iconset>
+    <iconset resource="data/qt_rc.qrc">
      <normaloff>:/menu/images/bookmark-new.png</normaloff>:/menu/images/bookmark-new.png</iconset>
    </property>
    <property name="text">
@@ -345,7 +193,7 @@
   </action>
   <action name="actionNextAYA">
    <property name="icon">
-    <iconset>
+    <iconset resource="data/qt_rc.qrc">
      <normaloff>:/menu/images/go-first.png</normaloff>:/menu/images/go-first.png</iconset>
    </property>
    <property name="text">
@@ -357,7 +205,7 @@
   </action>
   <action name="actionNextPage">
    <property name="icon">
-    <iconset>
+    <iconset resource="data/qt_rc.qrc">
      <normaloff>:/menu/images/go-previous.png</normaloff>:/menu/images/go-previous.png</iconset>
    </property>
    <property name="text">
@@ -369,7 +217,7 @@
   </action>
   <action name="actionPrevAYA">
    <property name="icon">
-    <iconset>
+    <iconset resource="data/qt_rc.qrc">
      <normaloff>:/menu/images/go-last.png</normaloff>:/menu/images/go-last.png</iconset>
    </property>
    <property name="text">
@@ -381,7 +229,7 @@
   </action>
   <action name="actionPrevPage">
    <property name="icon">
-    <iconset>
+    <iconset resource="data/qt_rc.qrc">
      <normaloff>:/menu/images/go-next.png</normaloff>:/menu/images/go-next.png</iconset>
    </property>
    <property name="text">
@@ -393,6 +241,8 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="data/qt_rc.qrc"/>
+ </resources>
  <connections/>
 </ui>

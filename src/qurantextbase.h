@@ -49,6 +49,9 @@ public:
       */
     int getFirsSoraNumberInPage(int pPageNumber);
 
+    /// @brief Close database connections.
+    void closeDataBase();
+
 protected:
     QSqlDatabase m_quranDB;
     QSqlQuery *m_quranQuery;
