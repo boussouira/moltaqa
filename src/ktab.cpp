@@ -2,9 +2,9 @@
 
 KTab::KTab(QWidget *parent) : QTabWidget(parent), m_tab(new QTabBar(this))
 {
-    this->setTabsClosable(false);
-    this->setTabBar(m_tab);
-    this->setMovable(true);
+    setTabsClosable(false);
+    setTabBar(m_tab);
+    setMovable(true);
 
     connect(m_tab, SIGNAL(tabMoved(int, int)), this, SLOT(tabIsMoved(int,int)));
 
@@ -30,32 +30,32 @@ QWidget *KTab::newOnglet(Page::Type pPageType)
 
 void KTab::addNewOnglet(Page::Type pPageType)
 {
-    this->addTab(newOnglet(pPageType), trUtf8("القرآن الكريم"));
-    this->setCurrentIndex(this->count()-1);
+    addTab(newOnglet(pPageType), trUtf8("القرآن الكريم"));
+    setCurrentIndex(count()-1);
 
-    if(this->count() > 1)
-        this->setTabsClosable(true);
+    if(count() > 1)
+        setTabsClosable(true);
 }
 
 QWebView *KTab::currentPage()
 {
-    return this->currentWidget()->findChild<QWebView *>();
+    return currentWidget()->findChild<QWebView *>();
 }
 
 PageInfo *KTab::currentPageInfo()
 {
-    return m_sowarInfo.value(this->currentIndex());
+    return m_sowarInfo.value(currentIndex());
 }
 
 void KTab::closeTab(int tabIndex)
 {
-    this->removeTab(tabIndex);
+    removeTab(tabIndex);
     m_sowarInfo.removeAt(tabIndex);
     emit reloadCurrentPageInfo();
 
     // Let's make sure that the last tab well never get closed!
-    if(this->count() == 1)
-        this->setTabsClosable(false);
+    if(count() == 1)
+        setTabsClosable(false);
 }
 void KTab::tabIsMoved(int from, int to)
 {

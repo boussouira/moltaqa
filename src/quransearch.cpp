@@ -30,7 +30,7 @@ void QuranSearch::searchForText()
 
     for (int i=0; i<=wordsList.count()-1; i++ )
     {
-        indexsString.append(QString("%1 QuranText.id IN %2 ").arg((i) ? "AND" : "WHERE").arg(this->getIdsList(wordsList.at(i))));
+        indexsString.append(QString("%1 QuranText.id IN %2 ").arg((i) ? "AND" : "WHERE").arg(getIdsList(wordsList.at(i))));
     }
 
     QString sqlQuery("SELECT QuranSowar.SoraName, QuranText.soraNumber, QuranText.ayaNumber, QuranText.ayaText "
@@ -49,7 +49,7 @@ void QuranSearch::searchForText()
     m_ui->tableView->resizeColumnsToContents();
     m_ui->tableView->setAlternatingRowColors(true);
 
-    this->setResultCount(m_resultModel->rowCount(QModelIndex()));
+    setResultCount(m_resultModel->rowCount(QModelIndex()));
 
 }
 
@@ -94,7 +94,7 @@ bool QuranSearch::event(QEvent *event)
     if (event->type() == QEvent::KeyPress) {
         QKeyEvent *ke = static_cast<QKeyEvent *>(event);
         if (ke->key() == Qt::Key_Return) {
-            this->searchForText();
+            searchForText();
             return true;
         }
     }

@@ -55,7 +55,7 @@ void IndexDockWidget::setSoraDetials(PageInfo *pPageInfo)
     ui->spinBoxAyaNumber->setSuffix(QString(" / %1").arg(pPageInfo->currentSoraAyatCount()));
     ui->spinBoxAyaNumber->setValue(pPageInfo->currentAya());
     ui->spinBoxPageNumber->setValue(pPageInfo->currentPage());
-    this->setSelectedSora(pPageInfo->currentSoraNumber());
+    setSelectedSora(pPageInfo->currentSoraNumber());
 
     sendSignals = true;
 }

@@ -4,9 +4,7 @@ BooksViewer::BooksViewer(QMainWindow *parent): QMainWindow(parent->centralWidget
 {
     m_indexDock = new IndexDockWidget();
 
-    this->addDockWidget(Qt::RightDockWidgetArea, m_indexDock);
-    this->setLayoutDirection(Qt::RightToLeft);
-    this->setAttribute(Qt::WA_DeleteOnClose);
+    addDockWidget(Qt::RightDockWidgetArea, m_indexDock);
 
     QWidget *tabWidget = new QWidget;
     QHBoxLayout *layout = new QHBoxLayout;
@@ -16,7 +14,7 @@ BooksViewer::BooksViewer(QMainWindow *parent): QMainWindow(parent->centralWidget
     layout->setMargin(5);
     tabWidget->setLayout(layout);
 
-    this->setCentralWidget(tabWidget);
+    setCentralWidget(tabWidget);
 
     m_quranModel = new QuranTextModel();
     m_quranModel->openQuranDB("books/quran.db");

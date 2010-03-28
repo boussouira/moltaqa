@@ -14,7 +14,7 @@ TafessirTextBase::TafessirTextBase() : QuranTextBase()
 }
 QString TafessirTextBase::getTafessirPage(PageInfo *pPageInfo)
 {
-    this->clearTafessirText();
+    clearTafessirText();
     m_tafessirQuery->prepare("SELECT id, text, part, page, sora, aya "
                           "FROM tafesirText "
                           "WHERE sora = :m_sora AND aya = :m_aya "
@@ -23,7 +23,7 @@ QString TafessirTextBase::getTafessirPage(PageInfo *pPageInfo)
     m_tafessirQuery->bindValue(":m_aya", pPageInfo->currentAya());
     m_tafessirQuery->exec();
     while (m_tafessirQuery->next()) {
-        this->appendTafessirText(m_tafessirQuery->value(1).toString());
+        appendTafessirText(m_tafessirQuery->value(1).toString());
     }
-    return this->getTafessirText();
+    return getTafessirText();
 }
