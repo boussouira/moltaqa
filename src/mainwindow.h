@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMdiArea>
 
 class KSetting;
 class BooksViewer;
@@ -33,12 +34,12 @@ protected slots:
 
     /// @brief Show the KSetting dialog.
     void settingDialog();
-    void updateNavigationActions();
 
 private:
     KSetting *m_ksetting;
-    BooksViewer *m_booksViewr;
+    BooksViewer *m_bookView;
     Ui::MainWindow *ui;
+
 };
 
 #endif // MAINWINDOW_H

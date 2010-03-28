@@ -23,7 +23,13 @@
   <property name="locale">
    <locale language="Arabic" country="Morocco"/>
   </property>
-  <widget class="QWidget" name="centralWidget"/>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="margin">
+     <number>0</number>
+    </property>
+   </layout>
+  </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
@@ -43,8 +49,6 @@
     <property name="title">
      <string>ملف</string>
     </property>
-    <addaction name="actionNewTab"/>
-    <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -62,60 +66,11 @@
     </property>
     <addaction name="actionSettings"/>
    </widget>
-   <widget class="QMenu" name="menu_2">
-    <property name="title">
-     <string>عرض</string>
-    </property>
-    <addaction name="actionIndexDock"/>
-    <addaction name="actionSearchDock"/>
-   </widget>
    <addaction name="menuFile"/>
-   <addaction name="menu_2"/>
    <addaction name="menu"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <widget class="QToolBar" name="toolBarGeneral">
-   <property name="windowTitle">
-    <string>عام</string>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="actionNewTab"/>
-   <addaction name="separator"/>
-   <addaction name="actionIndexDock"/>
-   <addaction name="actionSearchDock"/>
-  </widget>
-  <widget class="QToolBar" name="toolBarNavigation">
-   <property name="windowTitle">
-    <string>التنقل</string>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="actionPrevPage"/>
-   <addaction name="actionPrevAYA"/>
-   <addaction name="actionNextAYA"/>
-   <addaction name="actionNextPage"/>
-  </widget>
-  <widget class="QToolBar" name="toolBarTafesir">
-   <property name="windowTitle">
-    <string>التفاسير</string>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-  </widget>
   <action name="actionExit">
    <property name="text">
     <string>الخروج</string>
@@ -147,96 +102,6 @@
    </property>
    <property name="statusTip">
     <string>تعديل خصائص البرنامج</string>
-   </property>
-  </action>
-  <action name="actionIndexDock">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="data/qt_rc.qrc">
-     <normaloff>:/menu/images/edit_fahrass.png</normaloff>:/menu/images/edit_fahrass.png</iconset>
-   </property>
-   <property name="text">
-    <string>نافذة الفهرس</string>
-   </property>
-   <property name="statusTip">
-    <string>اظهار أو اخفاء نافذة الفهرس</string>
-   </property>
-  </action>
-  <action name="actionSearchDock">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="data/qt_rc.qrc">
-     <normaloff>:/menu/images/find.png</normaloff>:/menu/images/find.png</iconset>
-   </property>
-   <property name="text">
-    <string>نافذة البحث</string>
-   </property>
-   <property name="statusTip">
-    <string>اظهار أو اخفاء نافذة البحث في القرآن الكريم</string>
-   </property>
-  </action>
-  <action name="actionNewTab">
-   <property name="icon">
-    <iconset resource="data/qt_rc.qrc">
-     <normaloff>:/menu/images/bookmark-new.png</normaloff>:/menu/images/bookmark-new.png</iconset>
-   </property>
-   <property name="text">
-    <string>تبويب جديد</string>
-   </property>
-   <property name="statusTip">
-    <string>فتح تبويب جديد</string>
-   </property>
-  </action>
-  <action name="actionNextAYA">
-   <property name="icon">
-    <iconset resource="data/qt_rc.qrc">
-     <normaloff>:/menu/images/go-first.png</normaloff>:/menu/images/go-first.png</iconset>
-   </property>
-   <property name="text">
-    <string>الاية التالية</string>
-   </property>
-   <property name="toolTip">
-    <string>الاية التالية</string>
-   </property>
-  </action>
-  <action name="actionNextPage">
-   <property name="icon">
-    <iconset resource="data/qt_rc.qrc">
-     <normaloff>:/menu/images/go-previous.png</normaloff>:/menu/images/go-previous.png</iconset>
-   </property>
-   <property name="text">
-    <string>الصفحة التالية</string>
-   </property>
-   <property name="toolTip">
-    <string>الصفحة التالية</string>
-   </property>
-  </action>
-  <action name="actionPrevAYA">
-   <property name="icon">
-    <iconset resource="data/qt_rc.qrc">
-     <normaloff>:/menu/images/go-last.png</normaloff>:/menu/images/go-last.png</iconset>
-   </property>
-   <property name="text">
-    <string>الاية السابقة</string>
-   </property>
-   <property name="toolTip">
-    <string>الاية السابقة</string>
-   </property>
-  </action>
-  <action name="actionPrevPage">
-   <property name="icon">
-    <iconset resource="data/qt_rc.qrc">
-     <normaloff>:/menu/images/go-next.png</normaloff>:/menu/images/go-next.png</iconset>
-   </property>
-   <property name="text">
-    <string>الصفحة السابقة</string>
-   </property>
-   <property name="toolTip">
-    <string>الصفحة السابقة</string>
    </property>
   </action>
  </widget>

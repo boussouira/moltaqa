@@ -4,20 +4,18 @@
 #include "booksviewer.h"
 #include "ksetting.h"
 #include <QMessageBox>
+#include <QMdiSubWindow>
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {
-    
     ui->setupUi(this);
-    this->setWindowTitle(APP_NAME);
+    setWindowTitle(APP_NAME);
+    setupActions();
 
-    QHBoxLayout *layout = new QHBoxLayout;
-    m_booksViewr = new BooksViewer(this);
-    layout->addWidget(m_booksViewr);
-    ui->centralWidget->setLayout(layout);
-
-    this->setupActions();
-    m_booksViewr->openSoraInNewTab(1);
+    m_ksetting = new KSetting(this);
+    m_bookView = new BooksViewer(this);
+    setCentralWidget(m_bookView);
+    m_bookView->openSoraInNewTab(1);
 }
 
 void MainWindow::setupActions()
@@ -27,21 +25,8 @@ void MainWindow::setupActions()
             this, SLOT(close()));
     connect(ui->actionAbout, SIGNAL(triggered()),
             this, SLOT(aboutAlKotobiya()));
-    connect(ui->actionNewTab, SIGNAL(triggered()),
-            m_booksViewr, SLOT(openSoraInNewTab()));
     connect(ui->actionSettings, SIGNAL(triggered()),
             this, SLOT(settingDialog()));
-    connect(m_booksViewr, SIGNAL(updateNavigationButtons()),
-            this, SLOT(updateNavigationActions()));
-
-    connect(ui->actionNextAYA, SIGNAL(triggered()),
-            m_booksViewr, SLOT(nextAya()));
-    connect(ui->actionPrevAYA, SIGNAL(triggered()),
-            m_booksViewr, SLOT(previousAYA()));
-    connect(ui->actionNextPage, SIGNAL(triggered()),
-            m_booksViewr, SLOT(nextPage()));
-    connect(ui->actionPrevPage, SIGNAL(triggered()),
-            m_booksViewr, SLOT(previousPage()));
 }
 
 MainWindow::~MainWindow()
@@ -56,15 +41,5 @@ void MainWindow::aboutAlKotobiya()
 
 void MainWindow::settingDialog()
 {
-    m_ksetting = new KSetting(this);
     m_ksetting->exec();
-    delete m_ksetting;
 }
-
-void MainWindow::updateNavigationActions()
-{
-    // Page navigation
-    ui->actionNextPage->setEnabled(m_booksViewr->showNextPageButton());
-    ui->actionPrevPage->setEnabled(m_booksViewr->showPrevPageButton());
-}
-

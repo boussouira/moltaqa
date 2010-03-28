@@ -1,16 +1,22 @@
 #include "booksviewer.h"
 
-BooksViewer::BooksViewer(QMainWindow *parent) : QWidget(parent)
+BooksViewer::BooksViewer(QMainWindow *parent): QMainWindow(parent->centralWidget())
 {
-    m_indexDock = new IndexDockWidget(parent);
-    m_tab = new KTab(parent);
-    parent->addDockWidget(Qt::RightDockWidgetArea, m_indexDock);
+    m_indexDock = new IndexDockWidget();
 
+    this->addDockWidget(Qt::RightDockWidgetArea, m_indexDock);
+    this->setLayoutDirection(Qt::RightToLeft);
+    this->setAttribute(Qt::WA_DeleteOnClose);
+
+    QWidget *tabWidget = new QWidget;
     QHBoxLayout *layout = new QHBoxLayout;
-    layout->addWidget(m_tab);
-    layout->setMargin(0);
+    m_tab = new KTab(tabWidget);
 
-    setLayout(layout);
+    layout->addWidget(m_tab);
+    layout->setMargin(5);
+    tabWidget->setLayout(layout);
+
+    this->setCentralWidget(tabWidget);
 
     m_quranModel = new QuranTextModel();
     m_quranModel->openQuranDB("books/quran.db");
@@ -18,20 +24,95 @@ BooksViewer::BooksViewer(QMainWindow *parent) : QWidget(parent)
     m_quranModel->getSowarList(quranIndex);
     m_indexDock->setIndex(quranIndex);
 
-    m_showNextPageButton = true;
-    m_showPrevPageButton = true;
-
     connect(m_tab, SIGNAL(tabCloseRequested(int)), m_tab, SLOT(closeTab(int)));
     connect(m_tab, SIGNAL(currentChanged(int)), this, SLOT(updateSoraDetials()));
     connect(m_tab, SIGNAL(reloadCurrentPageInfo()), this, SLOT(updateSoraDetials()));
     connect(m_indexDock, SIGNAL(ayaNumberChange(int)), this, SLOT(ayaNumberChange(int)));
     connect(m_indexDock, SIGNAL(openSora(int)), this, SLOT(openSora(int)));
     connect(m_indexDock, SIGNAL(openSoraInNewTab(int)), this, SLOT(openSoraInNewTab(int)));
+
+    createMenus(parent);
 }
 
 BooksViewer::~BooksViewer()
 {
-    m_quranModel->closeDataBase();
+}
+
+void BooksViewer::createMenus(QMainWindow *parent)
+{
+
+    // General Actions
+    actionNewTab = new QAction(QIcon(":/menu/images/bookmark-new.png"),
+                                        trUtf8("تبويب جديد"),
+                                        this);
+
+    actionIndexDock = new QAction(QIcon(":/menu/images/edit_fahrass.png"),
+                                           trUtf8("نافذة الفهرس"),
+                                           this);
+
+    actionSearchDock = new QAction(QIcon(":/menu/images/find.png"),
+                                            trUtf8("نافذة البحث"),
+                                            this);
+
+    actionIndexDock->setCheckable(true);
+    actionSearchDock->setCheckable(true);
+
+    // Navigation actions
+    actionNextAYA = new QAction(QIcon(":/menu/images/go-first.png"),
+                                trUtf8("الآية التالية"),
+                                this);
+    actionNextPage = new QAction(QIcon(":/menu/images/go-previous.png"),
+                                 trUtf8("الصفحة التالية"),
+                                 this);
+    actionPrevAYA = new QAction(QIcon(":/menu/images/go-last.png"),
+                                trUtf8("الآية السابقة"),
+                                this);
+    actionPrevPage = new QAction(QIcon(":/menu/images/go-next.png"),
+                                 trUtf8("الصفحة السابقة"),
+                                 this);
+
+    // Tafressir actions
+    openSelectedTafsir =  new QAction(QIcon(":/menu/images/arrow-left.png"),
+                                               trUtf8("فتح السورة"),
+                                               this);
+    comboTafasir = new QComboBox(this);
+    comboTafasir->addItem(trUtf8("تفسير ابن كثير"));
+
+    toolBarGeneral = new QToolBar(trUtf8("عام"), this);
+    toolBarGeneral->addAction(actionNewTab);
+    toolBarGeneral->addSeparator();
+    toolBarGeneral->addAction(actionIndexDock);
+    toolBarGeneral->addAction(actionSearchDock);
+
+    toolBarNavigation = new QToolBar(trUtf8("التصفح"), this);
+    toolBarNavigation->addAction(actionPrevPage);
+    toolBarNavigation->addAction(actionPrevAYA);
+    toolBarNavigation->addAction(actionNextAYA);
+    toolBarNavigation->addAction(actionNextPage);
+
+    toolBarTafesir = new QToolBar(trUtf8("التفسير"), this);
+    toolBarTafesir->addWidget(comboTafasir);
+    toolBarTafesir->addAction(openSelectedTafsir);
+
+    parent->addToolBar(toolBarGeneral);
+    parent->addToolBar(toolBarNavigation);
+    parent->addToolBar(toolBarTafesir);
+
+    // Setup connections
+    connect(actionNextPage, SIGNAL(triggered()),
+            this, SLOT(nextPage()));
+    connect(actionPrevPage, SIGNAL(triggered()),
+            this, SLOT(previousPage()));
+    connect(actionNextAYA, SIGNAL(triggered()),
+            this, SLOT(nextAya()));
+    connect(actionPrevAYA, SIGNAL(triggered()),
+            this, SLOT(previousAYA()));
+
+    connect(actionIndexDock, SIGNAL(toggled(bool)),
+            m_indexDock, SLOT(setShown(bool)));
+    connect(m_indexDock, SIGNAL(visibilityChanged(bool)),
+            this, SLOT(showIndexDock(bool)));
+
 }
 
 void BooksViewer::openSora(int pSoraNumber, int pAyaNumber)
@@ -54,7 +135,7 @@ void BooksViewer::displayPage(PageInfo *pPageInfo)
 
     m_indexDock->updatePageAndAyaNum(pPageInfo->currentPage(),
                                      pPageInfo->currentAya());
-    navigationButtonsStat();
+    updateNavigationButtons();
 }
 
 void BooksViewer::scrollToAya(int pSoraNumber, int pAyaNumber)
@@ -168,23 +249,21 @@ void BooksViewer::previousPage()
              m_tab->currentPageInfo()->currentAya());
 }
 
-void BooksViewer::navigationButtonsStat()
+void BooksViewer::updateNavigationButtons()
 {
     if(m_tab->currentPageInfo()->currentPage() >= 604)
-        m_showNextPageButton = false;
+        actionNextPage->setEnabled(false);
     else
-        m_showNextPageButton = true;
+        actionNextPage->setEnabled(true);
 
     if(m_tab->currentPageInfo()->currentPage() <= 1)
-        m_showPrevPageButton = false;
+        actionPrevPage->setEnabled(false);
     else
-        m_showPrevPageButton = true;
-
-    emit updateNavigationButtons();
-
+        actionPrevPage->setEnabled(true);
 }
 
 void BooksViewer::showIndexDock(bool pShowIndexDock)
 {
-    m_indexDock->setShown(pShowIndexDock);
+    Q_UNUSED(pShowIndexDock)
+    actionIndexDock->setChecked(m_indexDock->isVisible());
 }

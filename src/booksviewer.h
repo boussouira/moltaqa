@@ -3,16 +3,22 @@
 
 #include <QMainWindow>
 #include <QtWebKit>
+#include <QMenuBar>
+#include <QMenu>
+#include <QAction>
+#include <QToolBar>
+#include <QComboBox>
+
 #include "ktab.h"
 #include "indexdockwidget.h"
 #include "qurantextmodel.h"
 #include "tafessirtextbase.h"
 
-class BooksViewer : public QWidget
+class BooksViewer : public QMainWindow
 {
     Q_OBJECT
 public:
-    BooksViewer(QMainWindow *parent = 0);
+    BooksViewer(QMainWindow *parent = 0) ;
     ~BooksViewer();
 
 public slots:
@@ -26,22 +32,28 @@ public slots:
     void previousAYA();
     void nextPage();
     void previousPage();
-    inline int showNextPageButton() const {return m_showNextPageButton; }
-    inline int showPrevPageButton() const {return m_showPrevPageButton; }
     void showIndexDock(bool pShowIndexDock);
-private:
-    void navigationButtonsStat();
-
-signals:
+protected:
     void updateNavigationButtons();
+    void createMenus(QMainWindow *parent);
 
 private:
     KTab *m_tab;
     IndexDockWidget *m_indexDock;
     QuranTextModel *m_quranModel;
-    TafessirTextBase *m_tafessir;
-    bool m_showNextPageButton;
-    bool m_showPrevPageButton;
+//    TafessirTextBase *m_tafessir;
+    QAction *actionNewTab;
+    QAction *actionIndexDock;
+    QAction *actionSearchDock;
+    QAction *actionNextAYA;
+    QAction *actionNextPage;
+    QAction *actionPrevAYA;
+    QAction *actionPrevPage;
+    QAction *openSelectedTafsir;
+    QToolBar *toolBarGeneral;
+    QToolBar *toolBarNavigation;
+    QToolBar *toolBarTafesir;
+    QComboBox *comboTafasir;
 };
 
 #endif // BOOKSVIEWER_H
