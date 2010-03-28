@@ -3,7 +3,6 @@
 #include <QMessageBox>
 #include <QFileDialog>
 
-#include "constant.h"
 #include "ksetting.h"
 #include "ui_ksetting.h"
 
@@ -86,7 +85,9 @@ void KSetting::saveSettings()
         settings.setValue("app/db", quranDBPath);
         accept();
     } else {
-        QMessageBox::warning(this, QURAN_DATABASE, WRONG_DATABASE);
+        QMessageBox::warning(this,
+                             trUtf8("قاعدة البيانات"),
+                             trUtf8("قاعدة البيانات التي قمت بتحديدها غير موجود"));
     }
 }
 

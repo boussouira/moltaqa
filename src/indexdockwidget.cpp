@@ -1,6 +1,5 @@
 #include "indexdockwidget.h"
 #include "ui_indexdockwidget.h"
-#include "constant.h"
 #include "pageinfo.h"
 
 IndexDockWidget::IndexDockWidget(QWidget *parent) :
@@ -9,8 +8,9 @@ IndexDockWidget::IndexDockWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     sendSignals = true;
-    QAction *actionOpenSora = new QAction(OPENSORA, ui->listView);
-    QAction *actionOpenSoraInNewTab = new QAction(OPENSORAINTAB, this);
+    QAction *actionOpenSora = new QAction(trUtf8("فتح السورة"), ui->listView);
+    QAction *actionOpenSoraInNewTab = new QAction(trUtf8("فتح في تبويب جديد"), this);
+
     ui->listView->addAction(actionOpenSora);
     ui->listView->addAction(actionOpenSoraInNewTab);
 

@@ -7,12 +7,13 @@ QuranTextFormat::QuranTextFormat()
 
 void QuranTextFormat::insertSoraName(QString pSoraName)
 {
-    m_text.append(QString("<div class=\"soraname\">%1 %2</div>").arg(SORAT).arg(pSoraName));
+    m_text.append(QObject::trUtf8("<div class=\"soraname\">سورة %1</div>").arg(pSoraName));
 }
 
 void QuranTextFormat::insertBassemala()
 {
-    m_text.append(QString("<div class=\"txt\"><div class=\"bassemala\">%1</div>").arg(BASMALA));
+    m_text.append(QString("<div class=\"txt\"><div class=\"bassemala\">%1</div>")
+                  .arg(QObject::trUtf8("بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ")));
 }
 
 void QuranTextFormat::insertAyaText(QString pAyaText, int pAyaNumber, int pSoraNumber)

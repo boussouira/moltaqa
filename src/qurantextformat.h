@@ -3,8 +3,6 @@
 
 #include <QtCore>
 
-#include "constant.h"
-
 /**
   @brief This class handle the formatting of the Quran pages.
   */

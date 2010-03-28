@@ -30,7 +30,6 @@ SOURCES += mainwindow.cpp \
     indexdockwidget.cpp \
     booksviewer.cpp
 HEADERS += mainwindow.h \
-    constant.h \
     quransearch.h \
     pageinfo.h \
     qurantextformat.h \

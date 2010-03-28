@@ -40,10 +40,10 @@ void QuranSearch::searchForText()
     sqlQuery.append(indexsString);
     
     m_resultModel->setQuery(sqlQuery, m_db);
-    m_resultModel->setHeaderData(0, Qt::Horizontal, SORAT);
-    m_resultModel->setHeaderData(1, Qt::Horizontal, RAKEM);
-    m_resultModel->setHeaderData(2, Qt::Horizontal, AYANUMBER);
-    m_resultModel->setHeaderData(3, Qt::Horizontal, ANASS);
+    m_resultModel->setHeaderData(0, Qt::Horizontal, trUtf8("سورة"));
+    m_resultModel->setHeaderData(1, Qt::Horizontal, trUtf8("رقم"));
+    m_resultModel->setHeaderData(2, Qt::Horizontal, trUtf8("الاية"));
+    m_resultModel->setHeaderData(3, Qt::Horizontal, trUtf8("النص"));
 
     m_ui->tableView->setModel(m_resultModel);
     m_ui->tableView->resizeColumnsToContents();
@@ -65,7 +65,7 @@ void QuranSearch::gotoSora(QModelIndex pSelection)
 
 void QuranSearch::setResultCount(int pResultsCount)
 {
-    m_ui->groupBox->setTitle(QString(SEARCHRESULTS).arg(pResultsCount));
+    m_ui->groupBox->setTitle(trUtf8("نتائج البحث %1 :").arg(pResultsCount));
 }
 
 QString QuranSearch::getIdsList(QString pWord)

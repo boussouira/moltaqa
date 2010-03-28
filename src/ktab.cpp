@@ -1,5 +1,4 @@
 #include "ktab.h"
-#include "constant.h"
 
 KTab::KTab(QWidget *parent) : QTabWidget(parent), m_tab(new QTabBar(this))
 {
@@ -31,7 +30,7 @@ QWidget *KTab::newOnglet(Page::Type pPageType)
 
 void KTab::addNewOnglet(Page::Type pPageType)
 {
-    this->addTab(newOnglet(pPageType), QURAN);
+    this->addTab(newOnglet(pPageType), trUtf8("القرآن الكريم"));
     this->setCurrentIndex(this->count()-1);
 
     if(this->count() > 1)

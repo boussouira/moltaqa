@@ -1,4 +1,3 @@
-#include "constant.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "booksviewer.h"
@@ -9,7 +8,7 @@
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    setWindowTitle(APP_NAME);
+    setWindowTitle(trUtf8("برنامج الكتبية"));
     setupActions();
 
     m_ksetting = new KSetting(this);
@@ -36,7 +35,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::aboutAlKotobiya()
 {
-    QMessageBox::information(this, APP_NAME, ABOUT_APP);
+    QMessageBox::information(this,
+                             trUtf8("برنامج الكتبية"),
+                             trUtf8("برنامج الكتبية لقراءة القرءان الكريم"));
 }
 
 void MainWindow::settingDialog()

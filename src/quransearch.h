@@ -11,7 +11,6 @@
 #include <QStandardItemModel>
 #include <QKeyEvent>
 
-#include "constant.h"
 #include "ui_quransearch.h"
 
 namespace Ui {

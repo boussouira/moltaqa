@@ -129,7 +129,7 @@ void BooksViewer::displayPage(PageInfo *pPageInfo)
         m_tab->currentPage()->page()->mainFrame()->setHtml(m_quranModel->getQuranPage(pPageInfo));
 
     m_tab->setTabText(m_tab->currentIndex(),
-                      QString("%1 %2").arg(SORAT).arg(pPageInfo->currentSoraName()));
+                      trUtf8("سورة %1").arg(pPageInfo->currentSoraName()));
     scrollToAya(pPageInfo->currentSoraNumber(), pPageInfo->currentAya());
     m_indexDock->setSoraDetials(m_tab->currentPageInfo());
 
