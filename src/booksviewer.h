@@ -13,6 +13,7 @@
 #include "indexdockwidget.h"
 #include "qurantextmodel.h"
 #include "tafessirtextbase.h"
+#include "quransearch.h"
 
 class BooksViewer : public QMainWindow
 {
@@ -33,6 +34,7 @@ public slots:
     void nextPage();
     void previousPage();
     void showIndexDock(bool pShowIndexDock);
+    void showSearchDock(bool pShowSearchDock);
 protected:
     void updateNavigationButtons();
     void createMenus(QMainWindow *parent);
@@ -41,6 +43,8 @@ private:
     KTab *m_tab;
     IndexDockWidget *m_indexDock;
     QuranTextModel *m_quranModel;
+    QDockWidget *m_quranSearchDock;
+    QuranSearch *m_quranSearch ;
 //    TafessirTextBase *m_tafessir;
     QAction *actionNewTab;
     QAction *actionIndexDock;

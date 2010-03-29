@@ -22,6 +22,12 @@ BooksViewer::BooksViewer(QMainWindow *parent): QMainWindow(parent->centralWidget
     m_quranModel->getSowarList(quranIndex);
     m_indexDock->setIndex(quranIndex);
 
+    m_quranSearchDock = new QDockWidget(trUtf8("البحث"), this);
+    m_quranSearch = new QuranSearch(this, "books/quran.db");
+    m_quranSearchDock->setWidget(m_quranSearch);
+    m_quranSearchDock->setVisible(false);
+    addDockWidget(Qt::BottomDockWidgetArea, m_quranSearchDock);
+
     connect(m_tab, SIGNAL(tabCloseRequested(int)), m_tab, SLOT(closeTab(int)));
     connect(m_tab, SIGNAL(currentChanged(int)), this, SLOT(updateSoraDetials()));
     connect(m_tab, SIGNAL(reloadCurrentPageInfo()), this, SLOT(updateSoraDetials()));
@@ -106,10 +112,20 @@ void BooksViewer::createMenus(QMainWindow *parent)
     connect(actionPrevAYA, SIGNAL(triggered()),
             this, SLOT(previousAYA()));
 
+    // Index Dock
     connect(actionIndexDock, SIGNAL(toggled(bool)),
             m_indexDock, SLOT(setShown(bool)));
     connect(m_indexDock, SIGNAL(visibilityChanged(bool)),
             this, SLOT(showIndexDock(bool)));
+
+    // Search Dock
+    connect(actionSearchDock, SIGNAL(toggled(bool)),
+            m_quranSearchDock, SLOT(setShown(bool)));
+    connect(m_quranSearchDock, SIGNAL(visibilityChanged(bool)),
+            this, SLOT(showSearchDock(bool)));
+    connect(m_quranSearch, SIGNAL(resultSelected(int,int)),
+            this, SLOT(openSora(int,int)));
+
 
 }
 
@@ -265,3 +281,10 @@ void BooksViewer::showIndexDock(bool pShowIndexDock)
     Q_UNUSED(pShowIndexDock)
     actionIndexDock->setChecked(m_indexDock->isVisible());
 }
+
+void BooksViewer::showSearchDock(bool pShowSearchDock)
+{
+    Q_UNUSED(pShowSearchDock)
+    actionSearchDock->setChecked(m_quranSearchDock->isVisible());
+}
+
