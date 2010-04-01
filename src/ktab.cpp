@@ -30,8 +30,8 @@ QWidget *KTab::newOnglet(Page::Type pPageType)
 
 void KTab::addNewOnglet(Page::Type pPageType)
 {
-    addTab(newOnglet(pPageType), trUtf8("القرآن الكريم"));
-    setCurrentIndex(count()-1);
+    int newTabIndex = addTab(newOnglet(pPageType), trUtf8("القرآن الكريم"));
+    setCurrentIndex(newTabIndex);
 
     if(count() > 1)
         setTabsClosable(true);
