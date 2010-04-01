@@ -6,7 +6,7 @@ include_directories()
 link_directories ()
 set(alkotobiya_SRCS
 	booksviewer.cpp
-	indexdockwidget.cpp
+	indexwidget.cpp
 	ksetting.cpp
 	ktab.cpp
 	main.cpp
@@ -21,14 +21,14 @@ set(alkotobiya_SRCS
 )
 set(alkotobiya_MOCS_SRCS
 	booksviewer.h
-	indexdockwidget.h
+	indexwidget.h
 	ksetting.h
 	ktab.h
 	mainwindow.h
 	quransearch.h
 )
 set(alkotobiya_UIS
-	indexdockwidget.ui
+	indexwidget.ui
 	ksetting.ui
 	mainwindow.ui
 	quransearch.ui

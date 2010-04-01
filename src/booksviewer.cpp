@@ -2,10 +2,6 @@
 
 BooksViewer::BooksViewer(QMainWindow *parent): QMainWindow(parent->centralWidget())
 {
-    m_indexDock = new IndexDockWidget();
-
-    addDockWidget(Qt::RightDockWidgetArea, m_indexDock);
-
     QWidget *tabWidget = new QWidget;
     QHBoxLayout *layout = new QHBoxLayout;
     m_tab = new KTab(tabWidget);
@@ -13,14 +9,18 @@ BooksViewer::BooksViewer(QMainWindow *parent): QMainWindow(parent->centralWidget
     layout->addWidget(m_tab);
     layout->setMargin(5);
     tabWidget->setLayout(layout);
-
     setCentralWidget(tabWidget);
+
+    m_indexWidget = new IndexWidget(this);
+    m_indexWidgetDock = new QDockWidget(trUtf8("الفهرس"), this);
+    m_indexWidgetDock->setWidget(m_indexWidget);
+    addDockWidget(Qt::RightDockWidgetArea, m_indexWidgetDock);
 
     m_quranModel = new QuranTextModel();
     m_quranModel->openQuranDB("books/quran.db");
     QStringListModel *quranIndex = new QStringListModel();
     m_quranModel->getSowarList(quranIndex);
-    m_indexDock->setIndex(quranIndex);
+    m_indexWidget->setIndex(quranIndex);
 
     m_quranSearchDock = new QDockWidget(trUtf8("البحث"), this);
     m_quranSearch = new QuranSearch(this, "books/quran.db");
@@ -31,9 +31,9 @@ BooksViewer::BooksViewer(QMainWindow *parent): QMainWindow(parent->centralWidget
     connect(m_tab, SIGNAL(tabCloseRequested(int)), m_tab, SLOT(closeTab(int)));
     connect(m_tab, SIGNAL(currentChanged(int)), this, SLOT(updateSoraDetials()));
     connect(m_tab, SIGNAL(reloadCurrentPageInfo()), this, SLOT(updateSoraDetials()));
-    connect(m_indexDock, SIGNAL(ayaNumberChange(int)), this, SLOT(ayaNumberChange(int)));
-    connect(m_indexDock, SIGNAL(openSora(int)), this, SLOT(openSora(int)));
-    connect(m_indexDock, SIGNAL(openSoraInNewTab(int)), this, SLOT(openSoraInNewTab(int)));
+    connect(m_indexWidget, SIGNAL(ayaNumberChange(int)), this, SLOT(ayaNumberChange(int)));
+    connect(m_indexWidget, SIGNAL(openSora(int)), this, SLOT(openSora(int)));
+    connect(m_indexWidget, SIGNAL(openSoraInNewTab(int)), this, SLOT(openSoraInNewTab(int)));
 
     createMenus(parent);
 }
@@ -114,8 +114,8 @@ void BooksViewer::createMenus(QMainWindow *parent)
 
     // Index Dock
     connect(actionIndexDock, SIGNAL(toggled(bool)),
-            m_indexDock, SLOT(setShown(bool)));
-    connect(m_indexDock, SIGNAL(visibilityChanged(bool)),
+            m_indexWidgetDock, SLOT(setShown(bool)));
+    connect(m_indexWidgetDock, SIGNAL(visibilityChanged(bool)),
             this, SLOT(showIndexDock(bool)));
 
     // Search Dock
@@ -139,15 +139,15 @@ void BooksViewer::displayPage(PageInfo *pPageInfo)
 {
     bool emptyPage = m_tab->currentPage()->page()->mainFrame()->toPlainText().isEmpty();
 
-    if(emptyPage or pPageInfo->currentPage() != m_indexDock->currentPageNmber())
+    if(emptyPage or pPageInfo->currentPage() != m_indexWidget->currentPageNmber())
         m_tab->currentPage()->page()->mainFrame()->setHtml(m_quranModel->getQuranPage(pPageInfo));
 
     m_tab->setTabText(m_tab->currentIndex(),
                       trUtf8("سورة %1").arg(pPageInfo->currentSoraName()));
     scrollToAya(pPageInfo->currentSoraNumber(), pPageInfo->currentAya());
-    m_indexDock->setSoraDetials(m_tab->currentPageInfo());
+    m_indexWidget->setSoraDetials(m_tab->currentPageInfo());
 
-    m_indexDock->updatePageAndAyaNum(pPageInfo->currentPage(),
+    m_indexWidget->updatePageAndAyaNum(pPageInfo->currentPage(),
                                      pPageInfo->currentAya());
     updateNavigationButtons();
 }
@@ -207,7 +207,7 @@ void BooksViewer::ayaNumberChange(int pNewAyaNum)
 
 void BooksViewer::updateSoraDetials()
 {
-    m_indexDock->setSoraDetials(m_tab->currentPageInfo());
+    m_indexWidget->setSoraDetials(m_tab->currentPageInfo());
 }
 
 void BooksViewer::nextAya()
@@ -224,7 +224,7 @@ void BooksViewer::nextAya()
         // Then we select it
         openSora(nextSora);
     } else {
-        m_indexDock->updateAyaNumber(newAyaNumber);
+        m_indexWidget->updateAyaNumber(newAyaNumber);
     }
 }
 
@@ -241,7 +241,7 @@ void BooksViewer::previousAYA()
         }
         openSora(prevSora);
     } else {
-        m_indexDock->updateAyaNumber(newAyaNumber);
+        m_indexWidget->updateAyaNumber(newAyaNumber);
     }
 }
 
@@ -279,7 +279,7 @@ void BooksViewer::updateNavigationButtons()
 void BooksViewer::showIndexDock(bool pShowIndexDock)
 {
     Q_UNUSED(pShowIndexDock)
-    actionIndexDock->setChecked(m_indexDock->isVisible());
+    actionIndexDock->setChecked(m_indexWidgetDock->isVisible());
 }
 
 void BooksViewer::showSearchDock(bool pShowSearchDock)

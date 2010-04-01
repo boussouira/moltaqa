@@ -27,7 +27,7 @@ SOURCES += mainwindow.cpp \
     qurantextmodel.cpp \
     tafessirtextbase.cpp \
     tafessirtextformat.cpp \
-    indexdockwidget.cpp \
+    indexwidget.cpp \
     booksviewer.cpp
 HEADERS += mainwindow.h \
     quransearch.h \
@@ -39,9 +39,9 @@ HEADERS += mainwindow.h \
     qurantextmodel.h \
     tafessirtextbase.h \
     tafessirtextformat.h \
-    indexdockwidget.h \
+    indexwidget.h \
     booksviewer.h
 FORMS += mainwindow.ui quransearch.ui ksetting.ui \
-    indexdockwidget.ui
+    indexwidget.ui
 RESOURCES += data/qt_rc.qrc
 win32:RC_FILE = data/win_rc.rc

@@ -10,7 +10,7 @@
 #include <QComboBox>
 
 #include "ktab.h"
-#include "indexdockwidget.h"
+#include "indexwidget.h"
 #include "qurantextmodel.h"
 #include "tafessirtextbase.h"
 #include "quransearch.h"
@@ -41,10 +41,11 @@ protected:
 
 private:
     KTab *m_tab;
-    IndexDockWidget *m_indexDock;
+    IndexWidget *m_indexWidget;
     QuranTextModel *m_quranModel;
     QDockWidget *m_quranSearchDock;
-    QuranSearch *m_quranSearch ;
+    QDockWidget *m_indexWidgetDock;
+        QuranSearch *m_quranSearch ;
 //    TafessirTextBase *m_tafessir;
     QAction *actionNewTab;
     QAction *actionIndexDock;

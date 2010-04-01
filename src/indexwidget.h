@@ -1,21 +1,21 @@
-#ifndef INDEXDOCKWIDGET_H
-#define INDEXDOCKWIDGET_H
+#ifndef INDEXWIDGET_H
+#define INDEXWIDGET_H
 
 #include <QDockWidget>
 #include <QStringListModel>
 
 namespace Ui {
-    class IndexDockWidget;
+    class IndexWidget;
 }
 
 class PageInfo;
 
-class IndexDockWidget : public QDockWidget
+class IndexWidget : public QWidget
 {
     Q_OBJECT
 public:
-    IndexDockWidget(QWidget *parent = 0);
-    ~IndexDockWidget();
+    IndexWidget(QWidget *parent = 0);
+    ~IndexWidget();
 
 protected:
     void changeEvent(QEvent *e);
@@ -40,8 +40,8 @@ signals:
     void openSoraInNewTab(int pSoraNumber);
 
 private:
-    Ui::IndexDockWidget *ui;
+    Ui::IndexWidget *ui;
     bool sendSignals;
 };
 
-#endif // INDEXDOCKWIDGET_H
+#endif // INDEXWIDGET_H

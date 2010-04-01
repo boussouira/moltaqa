@@ -1,10 +1,10 @@
-#include "indexdockwidget.h"
-#include "ui_indexdockwidget.h"
+#include "indexwidget.h"
+#include "ui_indexwidget.h"
 #include "pageinfo.h"
 
-IndexDockWidget::IndexDockWidget(QWidget *parent) :
-    QDockWidget(parent),
-    ui(new Ui::IndexDockWidget)
+IndexWidget::IndexWidget(QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::IndexWidget)
 {
     ui->setupUi(this);
     sendSignals = true;
@@ -25,14 +25,14 @@ IndexDockWidget::IndexDockWidget(QWidget *parent) :
 
 }
 
-IndexDockWidget::~IndexDockWidget()
+IndexWidget::~IndexWidget()
 {
     delete ui;
 }
 
-void IndexDockWidget::changeEvent(QEvent *e)
+void IndexWidget::changeEvent(QEvent *e)
 {
-    QDockWidget::changeEvent(e);
+    QWidget::changeEvent(e);
     switch (e->type()) {
     case QEvent::LanguageChange:
         ui->retranslateUi(this);
@@ -42,12 +42,12 @@ void IndexDockWidget::changeEvent(QEvent *e)
     }
 }
 
-void IndexDockWidget::setIndex(QStringListModel *pList)
+void IndexWidget::setIndex(QStringListModel *pList)
 {
     ui->listView->setModel(pList);
 }
 
-void IndexDockWidget::setSoraDetials(PageInfo *pPageInfo)
+void IndexWidget::setSoraDetials(PageInfo *pPageInfo)
 {
     sendSignals = false;
 
@@ -60,7 +60,7 @@ void IndexDockWidget::setSoraDetials(PageInfo *pPageInfo)
     sendSignals = true;
 }
 
-void IndexDockWidget::setSelectedSora(int pSoraNumber)
+void IndexWidget::setSelectedSora(int pSoraNumber)
 {
     QItemSelectionModel *selection = ui->listView->selectionModel();
     QModelIndex itemToSelect = ui->listView->model()->index(pSoraNumber - 1, 0, QModelIndex());
@@ -69,7 +69,7 @@ void IndexDockWidget::setSelectedSora(int pSoraNumber)
     ui->listView->scrollTo(itemToSelect);
 }
 
-void IndexDockWidget::updatePageAndAyaNum(int pPageNumber, int pAyaNumber)
+void IndexWidget::updatePageAndAyaNum(int pPageNumber, int pAyaNumber)
 {
     sendSignals = false;
     ui->spinBoxPageNumber->setValue(pPageNumber);
@@ -77,34 +77,34 @@ void IndexDockWidget::updatePageAndAyaNum(int pPageNumber, int pAyaNumber)
     sendSignals = true;
 }
 
-int IndexDockWidget::currentPageNmber()
+int IndexWidget::currentPageNmber()
 {
     return ui->spinBoxPageNumber->value();
 }
 
-void IndexDockWidget::ayaNumChange(int pAyaNum)
+void IndexWidget::ayaNumChange(int pAyaNum)
 {
     if(sendSignals)
         emit ayaNumberChange(pAyaNum);
 }
 
-void IndexDockWidget::listDoubleClicked(QModelIndex pIndex)
+void IndexWidget::listDoubleClicked(QModelIndex pIndex)
 {
     if(sendSignals)
         emit openSora(pIndex.row()+1);
 }
 
-void IndexDockWidget::openSoraInCurrentTab()
+void IndexWidget::openSoraInCurrentTab()
 {
     emit openSora(ui->listView->currentIndex().row()+1);
 }
 
-void IndexDockWidget::openSoraInNewTab()
+void IndexWidget::openSoraInNewTab()
 {
     emit openSoraInNewTab(ui->listView->currentIndex().row()+1);
 }
 
-void IndexDockWidget::updateAyaNumber(int pAyaNumber)
+void IndexWidget::updateAyaNumber(int pAyaNumber)
 {
     ui->spinBoxAyaNumber->setValue(pAyaNumber);
 }
