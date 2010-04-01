@@ -103,28 +103,23 @@ void BooksViewer::createMenus(QMainWindow *parent)
     parent->addToolBar(toolBarTafesir);
 
     // Setup connections
-    connect(actionNextPage, SIGNAL(triggered()),
-            this, SLOT(nextPage()));
-    connect(actionPrevPage, SIGNAL(triggered()),
-            this, SLOT(previousPage()));
-    connect(actionNextAYA, SIGNAL(triggered()),
-            this, SLOT(nextAya()));
-    connect(actionPrevAYA, SIGNAL(triggered()),
-            this, SLOT(previousAYA()));
+    // New tab
+    connect(actionNewTab, SIGNAL(triggered()), this, SLOT(openSoraInNewTab()));
+
+    // Navigation actions
+    connect(actionNextPage, SIGNAL(triggered()), this, SLOT(nextPage()));
+    connect(actionPrevPage, SIGNAL(triggered()), this, SLOT(previousPage()));
+    connect(actionNextAYA, SIGNAL(triggered()), this, SLOT(nextAya()));
+    connect(actionPrevAYA, SIGNAL(triggered()), this, SLOT(previousAYA()));
 
     // Index Dock
-    connect(actionIndexDock, SIGNAL(toggled(bool)),
-            m_indexWidgetDock, SLOT(setShown(bool)));
-    connect(m_indexWidgetDock, SIGNAL(visibilityChanged(bool)),
-            this, SLOT(showIndexDock(bool)));
+    connect(actionIndexDock, SIGNAL(toggled(bool)), m_indexWidgetDock, SLOT(setShown(bool)));
+    connect(m_indexWidgetDock, SIGNAL(visibilityChanged(bool)), this, SLOT(showIndexDock(bool)));
 
     // Search Dock
-    connect(actionSearchDock, SIGNAL(toggled(bool)),
-            m_quranSearchDock, SLOT(setShown(bool)));
-    connect(m_quranSearchDock, SIGNAL(visibilityChanged(bool)),
-            this, SLOT(showSearchDock(bool)));
-    connect(m_quranSearch, SIGNAL(resultSelected(int,int)),
-            this, SLOT(openSora(int,int)));
+    connect(actionSearchDock, SIGNAL(toggled(bool)), m_quranSearchDock, SLOT(setShown(bool)));
+    connect(m_quranSearchDock, SIGNAL(visibilityChanged(bool)), this, SLOT(showSearchDock(bool)));
+    connect(m_quranSearch, SIGNAL(resultSelected(int,int)), this, SLOT(openSora(int,int)));
 
 
 }
@@ -218,7 +213,7 @@ void BooksViewer::nextAya()
         int nextSora = m_tab->currentPageInfo()->currentSoraNumber()+1;
         // SORA number must be less than 114
         if (nextSora >= 115) {
-            // If it's less greater 114 we go to the first SORA in the Quran
+            // If it's greater than 114, we go to the first SORA in the Quran
             nextSora = 1;
         }
         // Then we select it

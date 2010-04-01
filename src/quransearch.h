@@ -20,7 +20,8 @@ namespace Ui {
 /**
   @brief Simple search in The Quran database.
   */
-class QuranSearch : public QWidget {
+class QuranSearch : public QWidget
+{
     Q_OBJECT
 public:
     /**

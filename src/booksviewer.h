@@ -19,7 +19,7 @@ class BooksViewer : public QMainWindow
 {
     Q_OBJECT
 public:
-    BooksViewer(QMainWindow *parent = 0) ;
+    BooksViewer(QMainWindow *parent = 0);
     ~BooksViewer();
 
 public slots:
@@ -43,10 +43,9 @@ private:
     KTab *m_tab;
     IndexWidget *m_indexWidget;
     QuranTextModel *m_quranModel;
+    QuranSearch *m_quranSearch ;
     QDockWidget *m_quranSearchDock;
     QDockWidget *m_indexWidgetDock;
-        QuranSearch *m_quranSearch ;
-//    TafessirTextBase *m_tafessir;
     QAction *actionNewTab;
     QAction *actionIndexDock;
     QAction *actionSearchDock;
