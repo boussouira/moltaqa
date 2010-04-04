@@ -8,6 +8,7 @@
 #include <QAction>
 #include <QToolBar>
 #include <QComboBox>
+#include <QStackedWidget>
 
 #include "ktab.h"
 #include "indexwidget.h"
@@ -38,12 +39,13 @@ public slots:
 protected:
     void updateNavigationButtons();
     void createMenus(QMainWindow *parent);
+    IndexWidget *currentIndexWidget();
 
 private:
     KTab *m_tab;
-    IndexWidget *m_indexWidget;
     QuranTextModel *m_quranModel;
     QuranSearch *m_quranSearch ;
+    QStackedWidget *m_stackedWidget;
     QDockWidget *m_quranSearchDock;
     QDockWidget *m_indexWidgetDock;
     QAction *actionNewTab;

@@ -21,7 +21,8 @@ public:
 public slots:
 
     /// @brief Add a new tab.
-    void addNewOnglet(Page::Type pPageType = Page::QuranPage);
+    /// @return The index of the new tab.
+    int addNewOnglet(Page::Type pPageType = Page::QuranPage);
 
     /**
       @brief Close a specific tab.

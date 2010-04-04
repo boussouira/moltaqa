@@ -11,16 +11,14 @@ BooksViewer::BooksViewer(QMainWindow *parent): QMainWindow(parent->centralWidget
     tabWidget->setLayout(layout);
     setCentralWidget(tabWidget);
 
-    m_indexWidget = new IndexWidget(this);
     m_indexWidgetDock = new QDockWidget(trUtf8("الفهرس"), this);
-    m_indexWidgetDock->setWidget(m_indexWidget);
-    addDockWidget(Qt::RightDockWidgetArea, m_indexWidgetDock);
+    m_stackedWidget = new QStackedWidget(this);
+    m_indexWidgetDock->setWidget(m_stackedWidget);
+    m_indexWidgetDock->setMaximumWidth(220);
 
     m_quranModel = new QuranTextModel();
     m_quranModel->openQuranDB("books/quran.db");
-    QStringListModel *quranIndex = new QStringListModel();
-    m_quranModel->getSowarList(quranIndex);
-    m_indexWidget->setIndex(quranIndex);
+    addDockWidget(Qt::RightDockWidgetArea, m_indexWidgetDock);
 
     m_quranSearchDock = new QDockWidget(trUtf8("البحث"), this);
     m_quranSearch = new QuranSearch(this, "books/quran.db");
@@ -29,11 +27,8 @@ BooksViewer::BooksViewer(QMainWindow *parent): QMainWindow(parent->centralWidget
     addDockWidget(Qt::BottomDockWidgetArea, m_quranSearchDock);
 
     connect(m_tab, SIGNAL(tabCloseRequested(int)), m_tab, SLOT(closeTab(int)));
+    connect(m_tab, SIGNAL(currentChanged(int)), m_stackedWidget, SLOT(setCurrentIndex(int)));
     connect(m_tab, SIGNAL(currentChanged(int)), this, SLOT(updateSoraDetials()));
-    connect(m_tab, SIGNAL(reloadCurrentPageInfo()), this, SLOT(updateSoraDetials()));
-    connect(m_indexWidget, SIGNAL(ayaNumberChange(int)), this, SLOT(ayaNumberChange(int)));
-    connect(m_indexWidget, SIGNAL(openSora(int)), this, SLOT(openSora(int)));
-    connect(m_indexWidget, SIGNAL(openSoraInNewTab(int)), this, SLOT(openSoraInNewTab(int)));
 
     createMenus(parent);
 }
@@ -134,15 +129,15 @@ void BooksViewer::displayPage(PageInfo *pPageInfo)
 {
     bool emptyPage = m_tab->currentPage()->page()->mainFrame()->toPlainText().isEmpty();
 
-    if(emptyPage or pPageInfo->currentPage() != m_indexWidget->currentPageNmber())
+    if(emptyPage or pPageInfo->currentPage() != currentIndexWidget()->currentPageNmber())
         m_tab->currentPage()->page()->mainFrame()->setHtml(m_quranModel->getQuranPage(pPageInfo));
 
     m_tab->setTabText(m_tab->currentIndex(),
                       trUtf8("سورة %1").arg(pPageInfo->currentSoraName()));
     scrollToAya(pPageInfo->currentSoraNumber(), pPageInfo->currentAya());
-    m_indexWidget->setSoraDetials(m_tab->currentPageInfo());
+    currentIndexWidget()->setSoraDetials(m_tab->currentPageInfo());
 
-    m_indexWidget->updatePageAndAyaNum(pPageInfo->currentPage(),
+    currentIndexWidget()->updatePageAndAyaNum(pPageInfo->currentPage(),
                                      pPageInfo->currentAya());
     updateNavigationButtons();
 }
@@ -183,8 +178,21 @@ void BooksViewer::scrollToAya(int pSoraNumber, int pAyaNumber)
 
 void BooksViewer::openSoraInNewTab(int pSoraNumber)
 {
-    m_tab->addNewOnglet();
+    int tabIndex = m_tab->addNewOnglet();
+
+    IndexWidget *indexWidget = new IndexWidget(this);
+    m_stackedWidget->insertWidget(tabIndex, indexWidget);
+    m_stackedWidget->setCurrentIndex(tabIndex);
+
+    QStringListModel *quranIndex = new QStringListModel();
+    m_quranModel->getSowarList(quranIndex);
+    indexWidget->setIndex(quranIndex);
+
     openSora(pSoraNumber);
+
+    connect(indexWidget, SIGNAL(ayaNumberChange(int)), this, SLOT(ayaNumberChange(int)));
+    connect(indexWidget, SIGNAL(openSora(int)), this, SLOT(openSora(int)));
+    connect(indexWidget, SIGNAL(openSoraInNewTab(int)), this, SLOT(openSoraInNewTab(int)));
 }
 
 void BooksViewer::ayaNumberChange(int pNewAyaNum)
@@ -202,7 +210,8 @@ void BooksViewer::ayaNumberChange(int pNewAyaNum)
 
 void BooksViewer::updateSoraDetials()
 {
-    m_indexWidget->setSoraDetials(m_tab->currentPageInfo());
+    if(currentIndexWidget())
+        currentIndexWidget()->setSoraDetials(m_tab->currentPageInfo());
 }
 
 void BooksViewer::nextAya()
@@ -219,7 +228,7 @@ void BooksViewer::nextAya()
         // Then we select it
         openSora(nextSora);
     } else {
-        m_indexWidget->updateAyaNumber(newAyaNumber);
+        currentIndexWidget()->updateAyaNumber(newAyaNumber);
     }
 }
 
@@ -236,7 +245,7 @@ void BooksViewer::previousAYA()
         }
         openSora(prevSora);
     } else {
-        m_indexWidget->updateAyaNumber(newAyaNumber);
+        currentIndexWidget()->updateAyaNumber(newAyaNumber);
     }
 }
 
@@ -283,3 +292,15 @@ void BooksViewer::showSearchDock(bool pShowSearchDock)
     actionSearchDock->setChecked(m_quranSearchDock->isVisible());
 }
 
+IndexWidget *BooksViewer::currentIndexWidget()
+{
+    int currIndex = m_tab->currentIndex();
+    // Is there any tabs ?
+    if(currIndex >= 0) {
+        IndexWidget *indexWidget =  qobject_cast<IndexWidget *>(m_stackedWidget->widget(currIndex));
+        return indexWidget;
+    } else {
+        return 0;
+    }
+
+}

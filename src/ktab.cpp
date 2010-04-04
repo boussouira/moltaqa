@@ -28,13 +28,14 @@ QWidget *KTab::newOnglet(Page::Type pPageType)
     return pageOnglet;
 }
 
-void KTab::addNewOnglet(Page::Type pPageType)
+int KTab::addNewOnglet(Page::Type pPageType)
 {
     int newTabIndex = addTab(newOnglet(pPageType), trUtf8("القرآن الكريم"));
     setCurrentIndex(newTabIndex);
 
     if(count() > 1)
         setTabsClosable(true);
+    return newTabIndex;
 }
 
 QWebView *KTab::currentPage()
