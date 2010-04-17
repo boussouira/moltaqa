@@ -2,8 +2,6 @@
 #include "ui_mainwindow.h"
 #include "booksviewer.h"
 #include "ksetting.h"
-#include <QMessageBox>
-#include <QMdiSubWindow>
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {

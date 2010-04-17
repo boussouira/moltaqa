@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QMdiArea>
+#include <QMessageBox>
 
 class KSetting;
 class BooksViewer;
