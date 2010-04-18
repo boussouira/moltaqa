@@ -26,6 +26,13 @@ moc_*.cpp
 ui_*.h
 qrc_*.cpp
 
+# CMake generated files and directories
+moc_*.cxx
+qrc_*.cxx
+CMakeFiles
+CMakeCache.txt
+cmake_install.cmake
+
 # qtcreator generated files
 *.pro.user
 

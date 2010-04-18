@@ -7,6 +7,8 @@ link_directories ()
 set(alkotobiya_SRCS
 	booksviewer.cpp
 	booksbrowser.cpp
+	bookslistmodel.cpp
+	bookslistnode.cpp
 	indexwidget.cpp
 	ksetting.cpp
 	ktab.cpp
@@ -22,6 +24,7 @@ set(alkotobiya_SRCS
 )
 set(alkotobiya_MOCS_SRCS
 	booksviewer.h
+	booksbrowser.h
 	indexwidget.h
 	ksetting.h
 	ktab.h
