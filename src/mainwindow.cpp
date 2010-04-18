@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "booksviewer.h"
+#include "booksbrowser.h"
 #include "ksetting.h"
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
@@ -9,10 +10,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     setWindowTitle(trUtf8("برنامج الكتبية"));
     setupActions();
 
-    m_ksetting = new KSetting(this);
-    m_bookView = new BooksViewer(this);
-    setCentralWidget(m_bookView);
-    m_bookView->openSoraInNewTab(1);
+    connect(ui->pushOpenQuran, SIGNAL(clicked()), this, SLOT(quranWindow()));
+    connect(ui->pushBooksList, SIGNAL(clicked()), this, SLOT(showBooksList()));
 }
 
 void MainWindow::setupActions()
@@ -40,5 +39,19 @@ void MainWindow::aboutAlKotobiya()
 
 void MainWindow::settingDialog()
 {
-    m_ksetting->exec();
+    KSetting *ksetting = new KSetting(this);
+    ksetting->exec();
+}
+
+void MainWindow::quranWindow()
+{
+    m_bookView = new BooksViewer(this);
+    setCentralWidget(m_bookView);
+    m_bookView->openSoraInNewTab(1);
+}
+
+void MainWindow::showBooksList()
+{
+    BooksBrowser *booksList = new BooksBrowser(this);
+    booksList->show();
 }

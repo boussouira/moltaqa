@@ -35,8 +35,11 @@ protected slots:
     /// @brief Show the KSetting dialog.
     void settingDialog();
 
+public slots:
+    void quranWindow();
+    void showBooksList();
+
 private:
-    KSetting *m_ksetting;
     BooksViewer *m_bookView;
     Ui::MainWindow *ui;
 

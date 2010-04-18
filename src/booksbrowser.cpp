@@ -7,11 +7,13 @@ BooksBrowser::BooksBrowser(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    setAttribute(Qt::WA_DeleteOnClose);
     loadBooks();
 }
 
 BooksBrowser::~BooksBrowser()
 {
+    QSqlDatabase::removeDatabase("BookLib");
     delete ui;
 }
 
