@@ -48,7 +48,6 @@ void BooksBrowser::loadBooks()
             BooksListNode *secondChild = new BooksListNode(BooksListNode::Book,
                                          bookQuery->value(0).toString(),
                                          bookQuery->value(1).toString());
-            BooksListNode *parent2 = getNodeByDepth(firstChild, 1);
             firstChild->appendChild(secondChild);
 
             bookcount++;
