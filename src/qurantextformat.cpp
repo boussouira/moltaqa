@@ -7,7 +7,8 @@ QuranTextFormat::QuranTextFormat()
 
 void QuranTextFormat::insertSoraName(QString pSoraName)
 {
-    m_text.append(QObject::trUtf8("<div class=\"soraname\">سورة %1</div>").arg(pSoraName));
+    QString soraName = QObject::trUtf8("سورة %1").arg(pSoraName);
+    m_text.append(QString("<div class=\"soraname\">%1</div>").arg(soraName));
 }
 
 void QuranTextFormat::insertBassemala()
