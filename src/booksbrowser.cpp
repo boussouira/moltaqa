@@ -49,13 +49,13 @@ void BooksBrowser::loadBooks()
                                          bookQuery->value(0).toString(),
                                          bookQuery->value(1).toString());
             BooksListNode *parent2 = getNodeByDepth(firstChild, 1);
-            parent2->appendChild(secondChild);
+            firstChild->appendChild(secondChild);
 
             bookcount++;
         }
 
         if(bookcount > 0) {
-            firstChild->setId(tid);
+            firstChild->setID(tid);
             parent->appendChild(firstChild);
         }
 
@@ -76,7 +76,7 @@ BooksListNode *BooksBrowser::getNodeByDepth(BooksListNode *pNode, int pDepth)
     BooksListNode *n = pNode;
 
     while(--pDepth > 0) {
-        n = n->children.last();
+        n = n->childrenList().last();
     }
     return n;
 }

@@ -24,7 +24,7 @@ QModelIndex BooksListModel::index(int row, int column,
     if (!rootNode || row < 0 || column < 0)
         return QModelIndex();
     BooksListNode *parentNode = nodeFromIndex(parent);
-    BooksListNode *childNode = parentNode->children.value(row);
+    BooksListNode *childNode = parentNode->childrenList().value(row);
     if (!childNode)
         return QModelIndex();
     return createIndex(row, column, childNode);
@@ -46,7 +46,7 @@ int BooksListModel::rowCount(const QModelIndex &parent) const
     BooksListNode *parentNode = nodeFromIndex(parent);
     if (!parentNode)
         return 0;
-    return parentNode->children.count();
+    return parentNode->childrenList().count();
 }
 
 int BooksListModel::columnCount(const QModelIndex & /* parent */) const
@@ -59,13 +59,13 @@ QModelIndex BooksListModel::parent(const QModelIndex &child) const
     BooksListNode *node = nodeFromIndex(child);
     if (!node)
         return QModelIndex();
-    BooksListNode *parentNode = node->parent;
+    BooksListNode *parentNode = node->parentNode();
     if (!parentNode)
         return QModelIndex();
-    BooksListNode *grandparentNode = parentNode->parent;
+    BooksListNode *grandparentNode = parentNode->parentNode();
     if (!grandparentNode)
         return QModelIndex();
-    int row = grandparentNode->children.indexOf(parentNode);
+    int row = grandparentNode->childrenList().indexOf(parentNode);
     return createIndex(row, 0, parentNode);
 }
 
@@ -99,19 +99,19 @@ QVariant BooksListModel::data(const QModelIndex &index, int role) const
             return tr("Unknown");
         }
         */
-            return BooksListNode->title;
+            return BooksListNode->getTitle();
         } else if (index.column() == 1) {
-            return BooksListNode->authorName;
+            return BooksListNode->getAuthorName();
 //            return trUtf8("<strong>%1</strong>").arg(BooksListNode->authorName);
         }
     } else if (role == Qt::ToolTipRole) {
 
-        if(BooksListNode->type != BooksListNode::Book) return QVariant();
+        if(BooksListNode->getNodeType() != BooksListNode::Book) return QVariant();
 
         if (index.column() == 0) {
-            return trUtf8("<strong>كتاب : </strong>%1").arg(BooksListNode->title);
+            return trUtf8("<strong>كتاب : </strong>%1").arg(BooksListNode->getTitle());
         } else if (index.column() == 1) {
-            return trUtf8("<strong>اسم المؤلف : </strong>%1").arg(BooksListNode->authorName);
+            return trUtf8("<strong>اسم المؤلف : </strong>%1").arg(BooksListNode->getAuthorName());
         }
     }
     return QVariant();

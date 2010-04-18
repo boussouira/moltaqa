@@ -13,13 +13,20 @@ public:
     BooksListNode(Type pType, QString pTitle = "", QString pAuth = "", int pId = 0);
     ~BooksListNode();
     void appendChild(BooksListNode *pNode);
-    void setId(int pId);
+    void setID(int pId);
 
-public:
+    Type getNodeType() const { return type; }
+    BooksListNode *parentNode() const { return parent; }
+    int getID() const { return nodeID; }
+    QList<BooksListNode *> childrenList() const { return children; }
+    QString getTitle() const { return title; }
+    QString getAuthorName() const { return authorName; }
+
+protected:
     Type type;
     QString title;
     QString authorName;
-    int bid;
+    int nodeID;
     BooksListNode *parent;
     QList<BooksListNode *> children;
 };
