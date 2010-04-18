@@ -15,6 +15,7 @@
 #include "qurantextmodel.h"
 #include "tafessirtextbase.h"
 #include "quransearch.h"
+#include "booksbrowser.h"
 
 class BooksViewer : public QMainWindow
 {

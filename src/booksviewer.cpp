@@ -189,7 +189,8 @@ void BooksViewer::openSoraInNewTab(int pSoraNumber)
     indexWidget->setIndex(quranIndex);
 
     openSora(pSoraNumber);
-
+BooksBrowser *pp = new BooksBrowser(this);
+pp->show();
     connect(indexWidget, SIGNAL(ayaNumberChange(int)), this, SLOT(ayaNumberChange(int)));
     connect(indexWidget, SIGNAL(openSora(int)), this, SLOT(openSora(int)));
     connect(indexWidget, SIGNAL(openSoraInNewTab(int)), this, SLOT(openSoraInNewTab(int)));
