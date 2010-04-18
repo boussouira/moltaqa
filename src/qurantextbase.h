@@ -13,6 +13,7 @@ class QuranTextBase
 {
 public:
     QuranTextBase();
+    ~QuranTextBase();
 
     /**
       @brief Open the Quran database.

@@ -20,6 +20,7 @@ QuranSearch::QuranSearch(QWidget *parent, QString pQuranDbPath) :
 QuranSearch::~QuranSearch()
 {
     delete m_ui;
+    delete m_query;
 }
 
 void QuranSearch::searchForText()

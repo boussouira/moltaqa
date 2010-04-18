@@ -4,6 +4,11 @@ QuranTextBase::QuranTextBase()
 {
 }
 
+QuranTextBase::~QuranTextBase()
+{
+    delete m_quranQuery;
+}
+
 void QuranTextBase::openQuranDB(QString pQuranDBPath)
 {
     m_quranDB = QSqlDatabase::addDatabase("QSQLITE", "QuranTextDB");

@@ -35,6 +35,8 @@ BooksViewer::BooksViewer(QMainWindow *parent): QMainWindow(parent->centralWidget
 
 BooksViewer::~BooksViewer()
 {
+    delete m_quranModel;
+    delete m_quranSearch;
 }
 
 void BooksViewer::createMenus(QMainWindow *parent)
