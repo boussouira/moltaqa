@@ -25,7 +25,7 @@ QString QuranTextModel::getQuranPage(PageInfo *pPageInfo)
         {
             insertSoraName(m_quranQuery->value(5).toString());
             // we escape putting bassemala before Fateha and Tawba
-            if(pPageInfo->currentSoraNumber() != 1 and pPageInfo->currentSoraNumber() != 9)
+            if(pPageInfo->currentSoraNumber() != 1 && pPageInfo->currentSoraNumber() != 9)
             {
                 insertBassemala();
             }

@@ -19,8 +19,14 @@ BooksBrowser::~BooksBrowser()
 
 void BooksBrowser::loadBooks()
 {
-    QSqlDatabase booksLib = QSqlDatabase::addDatabase("QSQLITE", "BookLib");
-    booksLib.setDatabaseName("books/books_index.db");
+    QSqlDatabase booksLib;
+
+    if(QSqlDatabase::contains("BookLib")) {
+        booksLib = QSqlDatabase::database("BookLib");
+    } else {
+        booksLib = QSqlDatabase::addDatabase("QSQLITE", "BookLib");
+        booksLib.setDatabaseName("books/books_index.db");
+    }
 
     if (!booksLib.open()) {
         qDebug() << "Cannot open database.";

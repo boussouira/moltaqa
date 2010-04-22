@@ -37,16 +37,21 @@ public slots:
     void previousPage();
     void showIndexDock(bool pShowIndexDock);
     void showSearchDock(bool pShowSearchDock);
+    void tabChangePosition(int fromIndex, int toIndex);
+    void tabCloseRequest(int tabIndex);
+
 protected:
     void updateNavigationButtons();
     void createMenus(QMainWindow *parent);
     IndexWidget *currentIndexWidget();
+    QuranTextModel *databaseHandler();
+    PageInfo *pageInfo();
 
 private:
     KTab *m_tab;
-    QuranTextModel *m_quranModel;
     QuranSearch *m_quranSearch ;
     QStackedWidget *m_stackedWidget;
+    QList<QuranTextModel *> m_databases;
     QDockWidget *m_quranSearchDock;
     QDockWidget *m_indexWidgetDock;
     QAction *actionNewTab;

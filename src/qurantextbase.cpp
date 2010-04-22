@@ -11,8 +11,12 @@ QuranTextBase::~QuranTextBase()
 
 void QuranTextBase::openQuranDB(QString pQuranDBPath)
 {
-    m_quranDB = QSqlDatabase::addDatabase("QSQLITE", "QuranTextDB");
-    m_quranDB.setDatabaseName(pQuranDBPath);
+    if(QSqlDatabase::contains("QuranTextDB")) {
+        m_quranDB = QSqlDatabase::database("QuranTextDB");
+    } else {
+        m_quranDB = QSqlDatabase::addDatabase("QSQLITE", "QuranTextDB");
+        m_quranDB.setDatabaseName(pQuranDBPath);
+    }
 
     if (!m_quranDB.open()) {
         qDebug() << "Cannot open database.";
