@@ -306,7 +306,8 @@ IndexWidget *BooksViewer::currentIndexWidget()
     if(currIndex >= 0) {
         IndexWidget *indexWidget =  qobject_cast<IndexWidget *>(m_stackedWidget->widget(currIndex));
         return indexWidget;
-    } else {      return 0;
+    } else {
+        return 0;
     }
 
 }
@@ -324,9 +325,16 @@ PageInfo *BooksViewer::pageInfo()
 void BooksViewer::tabChangePosition(int fromIndex, int toIndex)
 {
     m_databases.move(fromIndex, toIndex);
+
+    IndexWidget *indexWidget = qobject_cast<IndexWidget *>(m_stackedWidget->widget(fromIndex));
+    m_stackedWidget->removeWidget(indexWidget);
+    m_stackedWidget->insertWidget(toIndex, indexWidget);
 }
 
 void BooksViewer::tabCloseRequest(int tabIndex)
 {
     m_databases.removeAt(tabIndex);
+
+    IndexWidget *indexWidget = qobject_cast<IndexWidget *>(m_stackedWidget->widget(tabIndex));
+    m_stackedWidget->removeWidget(indexWidget);
 }
