@@ -1,5 +1,5 @@
-#ifndef BOOKSBROWSER_H
-#define BOOKSBROWSER_H
+#ifndef BOOKSLISTBROWSER_H
+#define BOOKSLISTBROWSER_H
 
 #include <QDialog>
 #include <QDebug>
@@ -10,21 +10,21 @@
 #include "bookslistnode.h"
 
 namespace Ui {
-    class BooksBrowser;
+    class BooksListBrowser;
 }
 
-class BooksBrowser : public QDialog {
+class BooksListBrowser : public QDialog {
     Q_OBJECT
 public:
-    BooksBrowser(QWidget *parent = 0);
-    ~BooksBrowser();
+    BooksListBrowser(QWidget *parent = 0);
+    ~BooksListBrowser();
 
 private slots:
     void loadBooks();
     BooksListNode *getNodeByDepth(BooksListNode *pNode, int pDepth);
 
 private:
-    Ui::BooksBrowser *ui;
+    Ui::BooksListBrowser *ui;
 };
 
-#endif // BOOKSBROWSER_H
+#endif // BOOKSLISTBROWSER_H

@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "booksviewer.h"
-#include "booksbrowser.h"
+#include "bookslistbrowser.h"
 #include "ksetting.h"
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
@@ -52,6 +52,6 @@ void MainWindow::quranWindow()
 
 void MainWindow::showBooksList()
 {
-    BooksBrowser *booksList = new BooksBrowser(this);
+    BooksListBrowser *booksList = new BooksListBrowser(this);
     booksList->show();
 }

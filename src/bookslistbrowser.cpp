@@ -1,9 +1,9 @@
-#include "booksbrowser.h"
-#include "ui_booksbrowser.h"
+#include "bookslistbrowser.h"
+#include "ui_bookslistbrowser.h"
 
-BooksBrowser::BooksBrowser(QWidget *parent) :
+BooksListBrowser::BooksListBrowser(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::BooksBrowser)
+    ui(new Ui::BooksListBrowser)
 {
     ui->setupUi(this);
 
@@ -11,13 +11,13 @@ BooksBrowser::BooksBrowser(QWidget *parent) :
     loadBooks();
 }
 
-BooksBrowser::~BooksBrowser()
+BooksListBrowser::~BooksListBrowser()
 {
     QSqlDatabase::removeDatabase("BookLib");
     delete ui;
 }
 
-void BooksBrowser::loadBooks()
+void BooksListBrowser::loadBooks()
 {
     QSqlDatabase booksLib;
 
@@ -78,7 +78,7 @@ void BooksBrowser::loadBooks()
     ui->treeView->setSortingEnabled(true);
 }
 
-BooksListNode *BooksBrowser::getNodeByDepth(BooksListNode *pNode, int pDepth)
+BooksListNode *BooksListBrowser::getNodeByDepth(BooksListNode *pNode, int pDepth)
 {
     BooksListNode *n = pNode;
 
