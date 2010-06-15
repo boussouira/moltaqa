@@ -12,5 +12,7 @@
         <file>images/go-next.png</file>
         <file>images/go-previous.png</file>
         <file>images/arrow-left.png</file>
+        <file>images/book-cat.png</file>
+        <file>images/book.png</file>
     </qresource>
 </RCC>

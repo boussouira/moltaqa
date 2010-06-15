@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QAbstractItemModel>
+#include <QIcon>
 #include "bookslistnode.h"
 
 class BooksListModel : public QAbstractItemModel

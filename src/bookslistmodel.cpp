@@ -76,43 +76,20 @@ QVariant BooksListModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     if (role == Qt::DisplayRole) {
-        if (index.column() == 0) {
-            /*
-        switch (BooksListNode->type) {
-        case BooksListNode::Root:
-             return tr("Root");
-        case BooksListNode::OrExpression:
-            return tr("OR Expression");
-        case BooksListNode::AndExpression:
-            return tr("AND Expression");
-        case BooksListNode::NotExpression:
-            return tr("NOT Expression");
-        case BooksListNode::Atom:
-            return tr("Atom");
-        case BooksListNode::Identifier:
-            return tr("Identifier");
-        case BooksListNode::Operator:
-            return tr("Operator");
-        case BooksListNode::Punctuator:
-            return tr("Punctuator");
-        default:
-            return tr("Unknown");
-        }
-        */
+        if (index.column() == 0)
             return BooksListNode->getTitle();
-        } else if (index.column() == 1) {
+        else if (index.column() == 1)
             return BooksListNode->getAuthorName();
-//            return trUtf8("<strong>%1</strong>").arg(BooksListNode->authorName);
-        }
-    } else if (role == Qt::ToolTipRole) {
 
-        if(BooksListNode->getNodeType() != BooksListNode::Book) return QVariant();
+    } else if (role == Qt::ToolTipRole && BooksListNode->getNodeType() == BooksListNode::Book) {
+        if (index.column() == 0)
+            return BooksListNode->getInfoToolTip();
 
-        if (index.column() == 0) {
-            return trUtf8("<strong>كتاب : </strong>%1").arg(BooksListNode->getTitle());
-        } else if (index.column() == 1) {
-            return trUtf8("<strong>اسم المؤلف : </strong>%1").arg(BooksListNode->getAuthorName());
-        }
+    } else if (role == Qt::DecorationRole && index.column() == 0) {
+        if(BooksListNode->getNodeType() == BooksListNode::Categorie)
+            return QIcon(":/menu/images/book-cat.png");
+        else if (BooksListNode->getNodeType() == BooksListNode::Book)
+            return QIcon(":/menu/images/book.png");
     }
     return QVariant();
 }

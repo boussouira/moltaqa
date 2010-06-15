@@ -2,25 +2,25 @@
 
 BooksListNode::BooksListNode(Type pType, QString pTitle, QString pAuth, int pId)
 {
-    this->type = pType;
-    this->title = pTitle;
-    this->authorName = pAuth;
-    this->nodeID = pId;
-    this->parent = 0;
+    this->m_type = pType;
+    this->m_title = pTitle;
+    this->m_authorName = pAuth;
+    this->m_nodeID = pId;
+    this->m_parentNode = 0;
 }
 
 BooksListNode::~BooksListNode()
 {
-    qDeleteAll(children);
+    qDeleteAll(m_childrenNode);
 }
 
 void BooksListNode::appendChild(BooksListNode *pNode)
 {
-    pNode->parent = this;
-    this->children.append(pNode);
+    pNode->m_parentNode = this;
+    this->m_childrenNode.append(pNode);
 }
 
 void BooksListNode::setID(int pId)
 {
-    this->nodeID = pId;
+    this->m_nodeID = pId;
 }
