@@ -16,6 +16,7 @@
 #include "tafessirtextbase.h"
 #include "quransearch.h"
 #include "bookslistbrowser.h"
+#include "simpledbhandler.h"
 
 class BooksViewer : public QMainWindow
 {
@@ -25,6 +26,7 @@ public:
     ~BooksViewer();
 
 public slots:
+    void openBook(int pBookID);
     void openSora(int pSoraNumber, int pAyaNumber = 1);
     void displayPage(PageInfo *pPageInfo);
     void scrollToAya(int pSoraNumber, int pAyaNumber);

@@ -6,8 +6,9 @@ BooksListBrowser::BooksListBrowser(QWidget *parent) :
     ui(new Ui::BooksListBrowser)
 {
     ui->setupUi(this);
-
     setAttribute(Qt::WA_DeleteOnClose);
+    m_listModel = new BooksListModel();
+
     showBooksList();
 }
 
@@ -32,9 +33,8 @@ void BooksListBrowser::showBooksList()
     BooksListNode *firstNode = new BooksListNode(BooksListNode::Root);
     childCats(firstNode, 0);
 
-    BooksListModel *booleanModel = new BooksListModel();
-    booleanModel->setRootNode(firstNode);
-    ui->treeView->setModel(booleanModel);
+    m_listModel->setRootNode(firstNode);
+    ui->treeView->setModel(m_listModel);
     ui->treeView->expandAll();
     ui->treeView->resizeColumnToContents(0);
     ui->treeView->resizeColumnToContents(1);
@@ -61,7 +61,7 @@ void BooksListBrowser::childCats(BooksListNode *parentNode, int pID)
 void BooksListBrowser::booksCat(BooksListNode *parentNode, int catID)
 {
     QSqlQuery *bookQuery = new QSqlQuery(m_booksListDB);
-    bookQuery->exec(QString("SELECT bookID, bookName, authorName, bookInfo FROM booksList "
+    bookQuery->exec(QString("SELECT id, bookName, authorName, bookInfo FROM booksList "
                             "WHERE bookCat = %1 ").arg(catID));
     while(bookQuery->next())
     {
@@ -77,4 +77,11 @@ void BooksListBrowser::booksCat(BooksListNode *parentNode, int catID)
 void BooksListBrowser::on_pushButton_clicked()
 {
     accept();
+}
+
+void BooksListBrowser::on_treeView_doubleClicked(QModelIndex index)
+{
+    BooksListNode *node = m_listModel->nodeFromIndex(index);
+    if(node->getNodeType() == BooksListNode::Book)
+        emit bookSelected(node->getID());
 }

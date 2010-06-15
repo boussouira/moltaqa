@@ -10,8 +10,12 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     setWindowTitle(trUtf8("برنامج الكتبية"));
     setupActions();
 
+    m_bookView = new BooksViewer(this);
+    m_booksList = new BooksListBrowser(this);
+
     connect(ui->pushOpenQuran, SIGNAL(clicked()), this, SLOT(quranWindow()));
     connect(ui->pushBooksList, SIGNAL(clicked()), this, SLOT(showBooksList()));
+    connect(m_booksList, SIGNAL(bookSelected(int)), this, SLOT(openBook(int)));
 }
 
 void MainWindow::setupActions()
@@ -45,13 +49,17 @@ void MainWindow::settingDialog()
 
 void MainWindow::quranWindow()
 {
-    m_bookView = new BooksViewer(this);
     setCentralWidget(m_bookView);
     m_bookView->openSoraInNewTab(1);
 }
 
+void MainWindow::openBook(int pBookID)
+{
+    m_bookView->openBook(pBookID);
+    setCentralWidget(m_bookView);
+}
+
 void MainWindow::showBooksList()
 {
-    BooksListBrowser *booksList = new BooksListBrowser(this);
-    booksList->show();
+    m_booksList->show();
 }

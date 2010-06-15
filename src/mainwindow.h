@@ -6,6 +6,7 @@
 
 class KSetting;
 class BooksViewer;
+class BooksListBrowser;
 
 namespace Ui
 {
@@ -38,9 +39,11 @@ protected slots:
 public slots:
     void quranWindow();
     void showBooksList();
+    void openBook(int pBookID);
 
 private:
     BooksViewer *m_bookView;
+    BooksListBrowser *m_booksList;
     Ui::MainWindow *ui;
 
 };

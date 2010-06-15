@@ -22,11 +22,16 @@ public:
     void childCats(BooksListNode *parentNode, int pID);
 
 private slots:
+    void on_treeView_doubleClicked(QModelIndex index);
     void on_pushButton_clicked();
     void showBooksList();
 
+signals:
+    void bookSelected(int bookID);
+
 private:
     QSqlDatabase m_booksListDB;
+    BooksListModel *m_listModel;
     Ui::BooksListBrowser *ui;
 };
 

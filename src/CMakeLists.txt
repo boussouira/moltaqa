@@ -9,6 +9,7 @@ set(alkotobiya_SRCS
 	bookslistbrowser.cpp
 	bookslistmodel.cpp
 	bookslistnode.cpp
+	abstractdbhandler.cpp
 	indexwidget.cpp
 	ksetting.cpp
 	ktab.cpp
@@ -19,6 +20,7 @@ set(alkotobiya_SRCS
 	qurantextbase.cpp
 	qurantextformat.cpp
 	qurantextmodel.cpp
+	simpledbhandler.cpp
 	tafessirtextbase.cpp
 	tafessirtextformat.cpp
 )

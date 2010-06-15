@@ -31,7 +31,10 @@ SOURCES += mainwindow.cpp \
     booksviewer.cpp \
     bookslistbrowser.cpp \
     bookslistmodel.cpp \
-    bookslistnode.cpp
+    bookslistnode.cpp \
+    abstractdbhandler.cpp \
+    qurandbhandler.cpp \
+    simpledbhandler.cpp
 HEADERS += mainwindow.h \
     quransearch.h \
     pageinfo.h \
@@ -46,7 +49,10 @@ HEADERS += mainwindow.h \
     booksviewer.h \
     bookslistbrowser.h \
     bookslistmodel.h \
-    bookslistnode.h
+    bookslistnode.h \
+    abstractdbhandler.h \
+    qurandbhandler.h \
+    simpledbhandler.h
 FORMS += mainwindow.ui quransearch.ui ksetting.ui \
     indexwidget.ui \
     bookslistbrowser.ui
