@@ -8,68 +8,31 @@ BooksListBrowser::BooksListBrowser(QWidget *parent) :
     ui->setupUi(this);
 
     setAttribute(Qt::WA_DeleteOnClose);
-    loadBooks();
+    showBooksList();
 }
 
 BooksListBrowser::~BooksListBrowser()
 {
-    QSqlDatabase::removeDatabase("BookLib");
     delete ui;
 }
 
-void BooksListBrowser::loadBooks()
+void BooksListBrowser::showBooksList()
 {
-    QSqlDatabase booksLib;
-
-    if(QSqlDatabase::contains("BookLib")) {
-        booksLib = QSqlDatabase::database("BookLib");
+    if(QSqlDatabase::contains("BooksListDB")) {
+        m_booksListDB = QSqlDatabase::database("BooksListDB");
     } else {
-        booksLib = QSqlDatabase::addDatabase("QSQLITE", "BookLib");
-        booksLib.setDatabaseName("books/books_index.db");
+        m_booksListDB = QSqlDatabase::addDatabase("QSQLITE", "BooksListDB");
+        m_booksListDB.setDatabaseName("books/books_index.db");
     }
 
-    if (!booksLib.open()) {
+    if (!m_booksListDB.open()) {
         qDebug() << "Cannot open database.";
     }
-    QSqlQuery *bookQuery = new QSqlQuery(booksLib);
-    QSqlQuery *catQuery = new QSqlQuery(booksLib);
 
-//    BooksListNode *rootNode = new BooksListNode(BooksListNode::Root);
-    BooksListNode *firstNode = new BooksListNode(BooksListNode::Root, trUtf8("الفهرس"));
-
-//    rootNode->appendChild(firstNode);
-    catQuery->exec("SELECT id, name, catord, level FROM books_cats ORDER BY catord");
-
-    while(catQuery->next())
-    {
-        int bookcount = 0;
-        int tid = catQuery->value(0).toInt();
-        int level = catQuery->value(3).toInt();
-        BooksListNode *firstChild = new BooksListNode(BooksListNode::Categorie,
-                                                      catQuery->value(1).toString());
-        BooksListNode *parent = getNodeByDepth(firstNode, level+1);
-
-        bookQuery->exec(QString("SELECT book_name, auth FROM books_list WHERE parent_cat_id = %1 ")
-                        .arg(tid));
-        while(bookQuery->next())
-        {
-            BooksListNode *secondChild = new BooksListNode(BooksListNode::Book,
-                                         bookQuery->value(0).toString(),
-                                         bookQuery->value(1).toString());
-            firstChild->appendChild(secondChild);
-
-            bookcount++;
-        }
-
-        if(bookcount > 0) {
-            firstChild->setID(tid);
-            parent->appendChild(firstChild);
-        }
-
-    }
+    BooksListNode *firstNode = new BooksListNode(BooksListNode::Root);
+    childCats(firstNode, 0);
 
     BooksListModel *booleanModel = new BooksListModel();
-//    booleanModel->setRootNode(rootNode);
     booleanModel->setRootNode(firstNode);
     ui->treeView->setModel(booleanModel);
     ui->treeView->expandAll();
@@ -78,12 +41,40 @@ void BooksListBrowser::loadBooks()
     ui->treeView->setSortingEnabled(true);
 }
 
-BooksListNode *BooksListBrowser::getNodeByDepth(BooksListNode *pNode, int pDepth)
+void BooksListBrowser::childCats(BooksListNode *parentNode, int pID)
 {
-    BooksListNode *n = pNode;
-
-    while(--pDepth > 0) {
-        n = n->childrenList().last();
+    QSqlQuery *catQuery = new QSqlQuery(m_booksListDB);
+    catQuery->exec(QString("SELECT id, title, catOrder, parentID FROM catList "
+                           "WHERE parentID = %1 ORDER BY catOrder").arg(pID));
+    while(catQuery->next())
+    {
+        BooksListNode *catNode = new BooksListNode(BooksListNode::Categorie,
+                                                   catQuery->value(1).toString(),
+                                                   QString(),
+                                                   catQuery->value(0).toInt());
+        childCats(catNode, catQuery->value(0).toInt());
+        parentNode->appendChild(catNode);
     }
-    return n;
+    booksCat(parentNode, pID);
+}
+
+void BooksListBrowser::booksCat(BooksListNode *parentNode, int catID)
+{
+    QSqlQuery *bookQuery = new QSqlQuery(m_booksListDB);
+    bookQuery->exec(QString("SELECT bookID, bookName, authorName, bookInfo FROM booksList "
+                            "WHERE bookCat = %1 ").arg(catID));
+    while(bookQuery->next())
+    {
+        BooksListNode *secondChild = new BooksListNode(BooksListNode::Book,
+                                                       bookQuery->value(1).toString(),
+                                                       bookQuery->value(2).toString(),
+                                                       bookQuery->value(0).toInt());
+        secondChild->setInfoToolTip(bookQuery->value(3).toString());
+        parentNode->appendChild(secondChild);
+    }
+}
+
+void BooksListBrowser::on_pushButton_clicked()
+{
+    accept();
 }

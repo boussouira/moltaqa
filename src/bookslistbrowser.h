@@ -18,12 +18,15 @@ class BooksListBrowser : public QDialog {
 public:
     BooksListBrowser(QWidget *parent = 0);
     ~BooksListBrowser();
+    void booksCat(BooksListNode *parentNode, int catID);
+    void childCats(BooksListNode *parentNode, int pID);
 
 private slots:
-    void loadBooks();
-    BooksListNode *getNodeByDepth(BooksListNode *pNode, int pDepth);
+    void on_pushButton_clicked();
+    void showBooksList();
 
 private:
+    QSqlDatabase m_booksListDB;
     Ui::BooksListBrowser *ui;
 };
 
