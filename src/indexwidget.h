@@ -21,7 +21,7 @@ protected:
     void changeEvent(QEvent *e);
 
 public slots:
-    void setIndex(QStringListModel *pList);
+    void setIndex(QAbstractItemModel *pList);
     void setSoraDetials(PageInfo *pPageInfo);
     void setSelectedSora(int pSoraNumber);
     void updatePageAndAyaNum(int pPageNumber, int pAyaNumber);

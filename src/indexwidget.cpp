@@ -8,15 +8,15 @@ IndexWidget::IndexWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     sendSignals = true;
-    QAction *actionOpenSora = new QAction(trUtf8("فتح السورة"), ui->listView);
+    QAction *actionOpenSora = new QAction(trUtf8("فتح السورة"), ui->treeView);
     QAction *actionOpenSoraInNewTab = new QAction(trUtf8("فتح في تبويب جديد"), this);
 
-    ui->listView->addAction(actionOpenSora);
-    ui->listView->addAction(actionOpenSoraInNewTab);
+    ui->treeView->addAction(actionOpenSora);
+    ui->treeView->addAction(actionOpenSoraInNewTab);
 
     connect(ui->spinBoxAyaNumber, SIGNAL(valueChanged(int)),
             this, SLOT(ayaNumChange(int)));
-    connect(ui->listView, SIGNAL(doubleClicked(QModelIndex)),
+    connect(ui->treeView, SIGNAL(doubleClicked(QModelIndex)),
             this, SLOT(listDoubleClicked(QModelIndex)));
     connect(actionOpenSora, SIGNAL(triggered()),
             this, SLOT(openSoraInCurrentTab()));
@@ -42,9 +42,12 @@ void IndexWidget::changeEvent(QEvent *e)
     }
 }
 
-void IndexWidget::setIndex(QStringListModel *pList)
+void IndexWidget::setIndex(QAbstractItemModel *pList)
 {
-    ui->listView->setModel(pList);
+    ui->treeView->setModel(pList);
+    ui->treeView->expandAll();
+    ui->treeView->resizeColumnToContents(0);
+    ui->treeView->setHeaderHidden(true);
 }
 
 void IndexWidget::setSoraDetials(PageInfo *pPageInfo)
@@ -62,11 +65,11 @@ void IndexWidget::setSoraDetials(PageInfo *pPageInfo)
 
 void IndexWidget::setSelectedSora(int pSoraNumber)
 {
-    QItemSelectionModel *selection = ui->listView->selectionModel();
-    QModelIndex itemToSelect = ui->listView->model()->index(pSoraNumber - 1, 0, QModelIndex());
+    QItemSelectionModel *selection = ui->treeView->selectionModel();
+    QModelIndex itemToSelect = ui->treeView->model()->index(pSoraNumber - 1, 0, QModelIndex());
     selection->select(itemToSelect,
                       QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
-    ui->listView->scrollTo(itemToSelect);
+    ui->treeView->scrollTo(itemToSelect);
 }
 
 void IndexWidget::updatePageAndAyaNum(int pPageNumber, int pAyaNumber)
@@ -96,12 +99,12 @@ void IndexWidget::listDoubleClicked(QModelIndex pIndex)
 
 void IndexWidget::openSoraInCurrentTab()
 {
-    emit openSora(ui->listView->currentIndex().row()+1);
+    emit openSora(ui->treeView->currentIndex().row()+1);
 }
 
 void IndexWidget::openSoraInNewTab()
 {
-    emit openSoraInNewTab(ui->listView->currentIndex().row()+1);
+    emit openSoraInNewTab(ui->treeView->currentIndex().row()+1);
 }
 
 void IndexWidget::updateAyaNumber(int pAyaNumber)
