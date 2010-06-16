@@ -9,6 +9,8 @@ set(alkotobiya_SRCS
 	bookslistbrowser.cpp
 	bookslistmodel.cpp
 	bookslistnode.cpp
+	bookindexmodel.cpp
+	bookindexnode.cpp
 	abstractdbhandler.cpp
 	indexwidget.cpp
 	ksetting.cpp

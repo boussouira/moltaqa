@@ -34,7 +34,9 @@ SOURCES += mainwindow.cpp \
     bookslistnode.cpp \
     abstractdbhandler.cpp \
     qurandbhandler.cpp \
-    simpledbhandler.cpp
+    simpledbhandler.cpp \
+    bookindexmodel.cpp \
+    bookindexnode.cpp
 HEADERS += mainwindow.h \
     quransearch.h \
     pageinfo.h \
@@ -52,7 +54,9 @@ HEADERS += mainwindow.h \
     bookslistnode.h \
     abstractdbhandler.h \
     qurandbhandler.h \
-    simpledbhandler.h
+    simpledbhandler.h \
+    bookindexmodel.h \
+    bookindexnode.h
 FORMS += mainwindow.ui quransearch.ui ksetting.ui \
     indexwidget.ui \
     bookslistbrowser.ui

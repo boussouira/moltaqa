@@ -7,6 +7,7 @@
 #include <QSqlQuery>
 #include <QStringListModel>
 #include "pageinfo.h"
+#include "bookindexmodel.h"
 
 class AbstractDBHandler
 {
@@ -30,6 +31,7 @@ protected:
 
 protected:
     PageInfo *m_pageInfo;
+    BookIndexModel *m_indexModel;
     QSqlDatabase m_bookDB;
     QSqlQuery *m_bookQuery;
     QString m_bookDBPath;
