@@ -49,7 +49,7 @@ int BookIndexModel::rowCount(const QModelIndex &parent) const
 
 int BookIndexModel::columnCount(const QModelIndex & /* parent */) const
 {
-    return 2;
+    return 1;
 }
 
 QModelIndex BookIndexModel::parent(const QModelIndex &child) const
@@ -73,10 +73,9 @@ QVariant BookIndexModel::data(const QModelIndex &index, int role) const
     if (!node)
         return QVariant();
 
-    if (role == Qt::DisplayRole) {
-        if (index.column() == 0)
-            return node->title();
-    }
+    if (role == Qt::DisplayRole) // there is only one column
+        return node->title();
+
     return QVariant();
 }
 

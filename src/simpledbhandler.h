@@ -16,8 +16,11 @@ public:
     bool canGoNext(){}
     bool canGoPrev(){}
 
-    QAbstractItemModel *indexModel(){}
+    QAbstractItemModel *indexModel();
     QString getFormattedPage(){}
+
+protected:
+    BookIndexNode *getNodeByDepth(BookIndexNode *pNode, int pDepth);
 };
 
 #endif // SIMPLEDBHANDLER_H
