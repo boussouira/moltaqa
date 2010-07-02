@@ -23,6 +23,7 @@ public:
 
 protected:
     BookIndexNode *getNodeByDepth(BookIndexNode *pNode, int pDepth);
+    void getBookInfo();
 };
 
 #endif // SIMPLEDBHANDLER_H

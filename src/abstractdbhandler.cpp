@@ -19,4 +19,5 @@ void AbstractDBHandler::openQuranDB(QString pQuranDBPath)
         qDebug() << "Cannot open database.";
     }
     m_bookQuery = new QSqlQuery(m_bookDB);
+    getBookInfo();
 }

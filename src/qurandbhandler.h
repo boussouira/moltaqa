@@ -20,6 +20,7 @@ public:
 
     QAbstractItemModel *indexModel(){}
     QString getFormattedPage(){}
+    void getBookInfo(){}
 };
 
 #endif // QURANDBHANDLER_H

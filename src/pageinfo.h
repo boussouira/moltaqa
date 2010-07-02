@@ -71,7 +71,7 @@ public:
     /// @brief Get the current page Type.
     Page::Type pageType() const { return m_pageType; }
 
-private:
+protected:
     Page::Type m_pageType;
     QString m_currentSoraName ;
     QString m_currentSoraDescent;
