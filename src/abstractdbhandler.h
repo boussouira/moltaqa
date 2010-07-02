@@ -6,7 +6,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QStringListModel>
-#include "pageinfo.h"
+#include "bookinfo.h"
 #include "bookindexmodel.h"
 
 class AbstractDBHandler
@@ -31,7 +31,7 @@ protected:
 
 
 protected:
-    PageInfo *m_pageInfo;
+    BookInfo *m_bookInfo;
     BookIndexModel *m_indexModel;
     QSqlDatabase m_bookDB;
     QSqlQuery *m_bookQuery;

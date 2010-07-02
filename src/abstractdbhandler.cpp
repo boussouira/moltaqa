@@ -3,7 +3,7 @@
 AbstractDBHandler::AbstractDBHandler()
 {
     m_indexModel = new BookIndexModel();
-    m_pageInfo = new PageInfo();
+    m_bookInfo = new BookInfo();
 }
 
 void AbstractDBHandler::openQuranDB(QString pQuranDBPath)
