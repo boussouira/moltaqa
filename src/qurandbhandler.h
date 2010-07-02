@@ -7,6 +7,8 @@ class QuranDBHandler : public AbstractDBHandler
 {
 public:
     QuranDBHandler();
+
+    QString page(int pid){}
     QString nextPage(){}
     QString prevPage(){}
 

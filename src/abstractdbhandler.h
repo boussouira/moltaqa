@@ -16,6 +16,7 @@ public:
     void openQuranDB(QString pQuranDBPath);
 
 protected:
+    virtual QString page(int pid) = 0;
     virtual QString nextPage() = 0;
     virtual QString prevPage() = 0;
 

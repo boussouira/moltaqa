@@ -7,6 +7,8 @@ class simpleDBHandler : public AbstractDBHandler
 {
 public:
     simpleDBHandler();
+
+    QString page(int pid){}
     QString nextPage(){}
     QString prevPage(){}
 
