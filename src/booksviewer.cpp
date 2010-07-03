@@ -138,7 +138,17 @@ void BooksViewer::openBook(int pBookID)
         bookName = bQuery->value(0).toString();
     simpleDBHandler *bookdb = new simpleDBHandler();
     bookdb->openQuranDB(QString("books/%1").arg(bookName));
-    qDebug() << "TEXT:" << bookdb->nextPage();
+    //qDebug() << "TEXT:" << bookdb->nextPage();
+
+    int tabIndex = m_tab->addNewOnglet();
+
+    IndexWidget *indexWidget = new IndexWidget(this);
+    m_stackedWidget->insertWidget(tabIndex, indexWidget);
+    m_stackedWidget->setCurrentIndex(tabIndex);
+
+    indexWidget->setIndex(bookdb->indexModel());
+    m_tab->setTabText(m_tab->currentIndex(), bookdb->bookInfo()->bookName());
+    m_tab->currentPage()->page()->mainFrame()->setHtml(bookdb->page(1));
 
 }
 

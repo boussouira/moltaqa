@@ -3,6 +3,13 @@
 simpleDBHandler::simpleDBHandler()
 {
 }
+QString simpleDBHandler::page(int pid)
+{
+    m_bookQuery->exec(QString("SELECT id, nass, part, page from %1 WHERE id = %2 ")
+                      .arg(m_bookInfo->bookTable()).arg(pid));
+    if(m_bookQuery->next())
+        return m_bookQuery->value(1).toString();
+}
 
 QAbstractItemModel *simpleDBHandler::indexModel()
 {
@@ -61,8 +68,8 @@ void simpleDBHandler::getBookInfo()
         } else if(parts > 1) {
             m_bookInfo->setPartsCount(parts);
             for(int i=1;i<=parts;i++) {
-                m_bookQuery->exec(QString("SELECT MAX(page) from b1 WHERE part = %1 ")
-                                  .arg(i));
+                m_bookQuery->exec(QString("SELECT MAX(page) from %1 WHERE part = %2 ")
+                                  .arg(m_bookInfo->bookTable()).arg(i));
                 if(m_bookQuery->next())
                     m_bookInfo->setPagesCount(m_bookQuery->value(0).toInt(), i);
             }

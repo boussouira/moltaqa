@@ -14,6 +14,7 @@ class AbstractDBHandler
 public:
     AbstractDBHandler();
     void openQuranDB(QString pQuranDBPath);
+    BookInfo *bookInfo() { return m_bookInfo; }
 
 protected:
     virtual QString page(int pid) = 0;
