@@ -2,18 +2,20 @@
 
 simpleDBHandler::simpleDBHandler()
 {
+    m_textFormat = new SimpleTextFormat();
 }
+
 QString simpleDBHandler::page(int pid)
 {
     m_bookQuery->exec(QString("SELECT id, nass, part, page from %1 WHERE id = %2 ")
                       .arg(m_bookInfo->bookTable()).arg(pid));
     if(m_bookQuery->next())
-        return m_bookQuery->value(1).toString();
+        m_textFormat->setText(m_bookQuery->value(1).toString());
+    return m_textFormat->formatText();
 }
 
 QAbstractItemModel *simpleDBHandler::indexModel()
 {
-    m_bookInfo->debug();
     BookIndexNode *rootNode = new BookIndexNode();
 //    BookIndexNode *firstNode = new BookIndexNode(QObject::trUtf8("الفهرس")
 //                                                 ,0);

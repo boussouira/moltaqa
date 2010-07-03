@@ -148,7 +148,7 @@ void BooksViewer::openBook(int pBookID)
 
     indexWidget->setIndex(bookdb->indexModel());
     m_tab->setTabText(m_tab->currentIndex(), bookdb->bookInfo()->bookName());
-    m_tab->currentPage()->page()->mainFrame()->setHtml(bookdb->page(1));
+    m_tab->currentPage()->page()->mainFrame()->setHtml(bookdb->page(24));
 
 }
 

@@ -2,6 +2,7 @@
 #define SIMPLEDBHANDLER_H
 
 #include "abstractdbhandler.h"
+#include "simpletextformat.h"
 
 class simpleDBHandler : public AbstractDBHandler
 {
@@ -24,6 +25,7 @@ public:
 protected:
     BookIndexNode *getNodeByDepth(BookIndexNode *pNode, int pDepth);
     void getBookInfo();
+    SimpleTextFormat *m_textFormat;
 };
 
 #endif // SIMPLEDBHANDLER_H
