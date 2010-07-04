@@ -63,6 +63,7 @@ void KTab::tabIsMoved(int from, int to)
 void KTab::setPageHtml(const QString &text)
 {
     currentPage()->page()->mainFrame()->setHtml(text);
+//    currentPage()->page()->mainFrame()->setScrollPosition(QPoint(0,0));
 }
 
 void KTab::scrollToAya(int pSoraNumber, int pAyaNumber)
@@ -91,10 +92,50 @@ void KTab::scrollToAya(int pSoraNumber, int pAyaNumber)
     unsigned int ayaPosition = (highElement.y() - frameHeihgt) + addHeight;
 
     // Animation the scrolling to the selected AYA
+    scrollToPosition(QPoint(0, ayaPosition));
+}
+
+void KTab::pageDown()
+{
+    QWebFrame *frame = currentPage()->page()->mainFrame();
+    int ypos = frame->scrollPosition().y();
+    int xpos = frame->scrollPosition().x();
+    ypos += frame->geometry().height();
+    ypos -= frame->geometry().height()/10;
+
+    scrollToPosition(QPoint(xpos, ypos));
+}
+
+void KTab::pageUp()
+{
+    QWebFrame *frame = currentPage()->page()->mainFrame();
+    int ypos = frame->scrollPosition().y();
+    int xpos = frame->scrollPosition().x();
+    ypos -= frame->geometry().height();
+    ypos += frame->geometry().height()/10;
+
+    scrollToPosition(QPoint(xpos, ypos));
+}
+
+void KTab::scrollToPosition(const QPoint &pos, int duration)
+{
+    QWebFrame *frame = currentPage()->page()->mainFrame();
     QPropertyAnimation *animation = new QPropertyAnimation(frame, "scrollPosition");
-    animation->setDuration(1000);
+    animation->setDuration(duration);
     animation->setStartValue(frame->scrollPosition());
-    animation->setEndValue(QPoint(0, ayaPosition));
+    animation->setEndValue(pos);
 
     animation->start();
+}
+
+bool KTab::maxDown()
+{
+    return (currentPage()->page()->mainFrame()->scrollBarMaximum(Qt::Vertical)==
+            currentPage()->page()->mainFrame()->scrollPosition().y());
+}
+
+bool KTab::maxUp()
+{
+    return (currentPage()->page()->mainFrame()->scrollBarMinimum(Qt::Vertical)==
+            currentPage()->page()->mainFrame()->scrollPosition().y());
 }

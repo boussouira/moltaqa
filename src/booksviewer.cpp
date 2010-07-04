@@ -115,7 +115,7 @@ void BooksViewer::createMenus(QMainWindow *parent)
 
 }
 
-void BooksViewer::openBook(int pBookID)
+void BooksViewer::openBook(int pBookID, bool newTab)
 {
     qDebug() << "BOOK:" << pBookID ;
     QSqlDatabase m_booksListDB;
@@ -142,19 +142,30 @@ void BooksViewer::openBook(int pBookID)
 
     indexWidget->setIndex(bookdb->indexModel());
     m_tab->setTabText(m_tab->currentIndex(), bookdb->bookInfo()->bookName());
-    m_tab->setPageHtml(bookdb->page());
-
     m_databases.append(bookdb);
+
+    m_tab->setPageHtml(bookdb->page());
     connect(indexWidget, SIGNAL(openPage(int)), this, SLOT(openPage(int)));
-    qDebug() << "TYPE:"   << bookdb->bookInfo()->bookType();
 }
 
 void BooksViewer::nextUnit()
 {
+    if(databaseHandler()->bookInfo()->bookType() == BookInfo::NormalBook) {
+        if(!m_tab->maxDown())
+            m_tab->pageDown();
+        else
+            nextPage();
+    }
 }
 
 void BooksViewer::previousUnit()
 {
+    if(databaseHandler()->bookInfo()->bookType() == BookInfo::NormalBook) {
+        if(!m_tab->maxUp())
+            m_tab->pageUp();
+        else
+            previousPage();
+    }
 }
 
 void BooksViewer::nextPage()

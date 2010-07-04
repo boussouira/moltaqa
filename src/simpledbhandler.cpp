@@ -26,7 +26,7 @@ QString simpleDBHandler::page(int pid)
         m_textFormat->setText(m_bookQuery->value(1).toString());
         m_bookInfo->setCurrentID(m_bookQuery->value(0).toInt());
     }
-    qDebug("CURRENT PAGE: %d", m_bookInfo->currentID());
+//    qDebug("CURRENT PAGE: %d", m_bookInfo->currentID());
     return m_textFormat->formatText();
 }
 

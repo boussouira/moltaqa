@@ -26,7 +26,7 @@ public:
     ~BooksViewer();
 
 public slots:
-    void openBook(int pBookID);
+    void openBook(int pBookID, bool newTab = true);
     void nextUnit();
     void previousUnit();
     void nextPage();

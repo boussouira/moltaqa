@@ -64,6 +64,11 @@ public slots:
     void tabIsMoved(int from, int to);
     void setPageHtml(const QString &text);
     void scrollToAya(int pSoraNumber, int pAyaNumber);
+    void pageDown();
+    void pageUp();
+    void scrollToPosition(const QPoint &pos, int duration=1000);
+    bool maxDown();
+    bool maxUp();
 
 signals:
     /**
