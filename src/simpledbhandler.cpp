@@ -8,7 +8,7 @@ simpleDBHandler::simpleDBHandler()
 QString simpleDBHandler::page(int pid)
 {
     int id;
-    if(pid = -1) // First page
+    if(pid == -1) // First page
         id = m_bookInfo->firstID();
     else if(pid == -2) //Last page
         id = m_bookInfo->lastID();
@@ -94,4 +94,36 @@ void simpleDBHandler::getBookInfo()
     m_bookQuery->exec(QString("SELECT bk from Main"));
     if(m_bookQuery->next())
         m_bookInfo->setBookName(m_bookQuery->value(0).toString());
+}
+
+QString simpleDBHandler::nextPage()
+{
+    if(hasNext())
+        return this->page(m_bookInfo->currentID()+1);
+     else
+        return QString();
+}
+
+QString simpleDBHandler::prevPage()
+{
+    if(hasPrev())
+        return this->page(m_bookInfo->currentID()-1);
+    else
+        return QString();
+}
+
+bool simpleDBHandler::hasNext()
+{
+    if(m_bookInfo->currentID() < m_bookInfo->lastID())
+        return true;
+    else
+        return false;
+}
+
+bool simpleDBHandler::hasPrev()
+{
+    if(m_bookInfo->currentID() > m_bookInfo->firstID())
+        return true;
+    else
+        return false;
 }

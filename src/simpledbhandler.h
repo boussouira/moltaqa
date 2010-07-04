@@ -10,14 +10,14 @@ public:
     simpleDBHandler();
 
     QString page(int pid = -1);
-    QString nextPage(){}
-    QString prevPage(){}
+    QString nextPage();
+    QString prevPage();
 
     void nextUnit(){}
     void prevUnit(){}
 
-    bool hasNext(){}
-    bool hasPrev(){}
+    bool hasNext();
+    bool hasPrev();
 
     QAbstractItemModel *indexModel();
     QString getFormattedPage(){}

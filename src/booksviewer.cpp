@@ -150,6 +150,7 @@ void BooksViewer::openBook(int pBookID)
     m_tab->setTabText(m_tab->currentIndex(), bookdb->bookInfo()->bookName());
     m_tab->currentPage()->page()->mainFrame()->setHtml(bookdb->page());
 
+    m_tab->currentPage()->page()->mainFrame()->setHtml(bookdb->nextPage());
 }
 
 void BooksViewer::openSora(int pSoraNumber, int pAyaNumber)
