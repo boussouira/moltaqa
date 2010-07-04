@@ -148,9 +148,9 @@ void BooksViewer::openBook(int pBookID)
 
     indexWidget->setIndex(bookdb->indexModel());
     m_tab->setTabText(m_tab->currentIndex(), bookdb->bookInfo()->bookName());
-    m_tab->currentPage()->page()->mainFrame()->setHtml(bookdb->page());
+    m_tab->setPageHtml(bookdb->page());
 
-    m_tab->currentPage()->page()->mainFrame()->setHtml(bookdb->nextPage());
+    m_tab->setPageHtml(bookdb->page(111));
 }
 
 void BooksViewer::openSora(int pSoraNumber, int pAyaNumber)

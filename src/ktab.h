@@ -3,6 +3,7 @@
 
 #include <QTabWidget>
 #include <QWebView>
+#include <QWebFrame>
 #include <QVBoxLayout>
 #include <QTabBar>
 #include "pageinfo.h"
@@ -59,6 +60,7 @@ public slots:
       @param to     The new position index.
       */
     void tabIsMoved(int from, int to);
+    void setPageHtml(const QString &text);
 
 signals:
     /**

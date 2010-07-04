@@ -63,3 +63,8 @@ void KTab::tabIsMoved(int from, int to)
     m_sowarInfo.move(from, to);
     emit tabMoved(from, to);
 }
+
+void KTab::setPageHtml(const QString &text)
+{
+    currentPage()->page()->mainFrame()->setHtml(text);
+}
