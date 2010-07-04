@@ -17,15 +17,15 @@ public:
     BookInfo *bookInfo() { return m_bookInfo; }
 
 protected:
-    virtual QString page(int pid) = 0;
+    virtual QString page(int pid = -1) = 0;
     virtual QString nextPage() = 0;
     virtual QString prevPage() = 0;
 
     virtual void nextUnit() = 0;
     virtual void prevUnit() = 0;
 
-    virtual bool canGoNext() = 0;
-    virtual bool canGoPrev() = 0;
+    virtual bool hasNext() = 0;
+    virtual bool hasPrev() = 0;
 
     virtual QAbstractItemModel *indexModel() = 0;
     virtual QString getFormattedPage() = 0;

@@ -7,10 +7,20 @@ simpleDBHandler::simpleDBHandler()
 
 QString simpleDBHandler::page(int pid)
 {
+    int id;
+    if(pid = -1) // First page
+        id = m_bookInfo->firstID();
+    else if(pid == -2) //Last page
+        id = m_bookInfo->lastID();
+    else // The given page id
+        id = pid;
+
     m_bookQuery->exec(QString("SELECT id, nass, part, page from %1 WHERE id = %2 ")
-                      .arg(m_bookInfo->bookTable()).arg(pid));
-    if(m_bookQuery->next())
+                      .arg(m_bookInfo->bookTable()).arg(id));
+    if(m_bookQuery->next()) {
         m_textFormat->setText(m_bookQuery->value(1).toString());
+        m_bookInfo->setCurrentID(m_bookQuery->value(0).toInt());
+    }
     return m_textFormat->formatText();
 }
 
@@ -58,11 +68,14 @@ void simpleDBHandler::getBookInfo()
             m_bookInfo->setBookTable(ta);
     }
 
-    m_bookQuery->exec(QString("SELECT MAX(part), MAX(page) from %1 ")
+    m_bookQuery->exec(QString("SELECT MAX(part), MAX(page), MIN(id), MAX(id) from %1 ")
                       .arg(m_bookInfo->bookTable()));
     if(m_bookQuery->next()) {
         int parts = m_bookQuery->value(0).toInt();
         int pages = m_bookQuery->value(1).toInt();
+
+        m_bookInfo->setFirstID(m_bookQuery->value(2).toInt());
+        m_bookInfo->setLastID(m_bookQuery->value(3).toInt());
 
         if(parts == 1) {
             m_bookInfo->setPartsCount(parts);

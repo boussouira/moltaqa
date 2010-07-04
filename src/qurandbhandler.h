@@ -15,8 +15,8 @@ public:
     void nextUnit(){}
     void prevUnit(){}
 
-    bool canGoNext(){}
-    bool canGoPrev(){}
+    bool hasNext(){}
+    bool hasPrev(){}
 
     QAbstractItemModel *indexModel(){}
     QString getFormattedPage(){}

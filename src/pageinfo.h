@@ -43,6 +43,8 @@ public:
     /// @brief Set the current page Type.
     void setPageType(Page::Type pPageType) { m_pageType = pPageType; }
 
+    /// @brief Set The current page ID.
+    void setCurrentID(int id) { m_currentID = id; }
 
     /// @brief Get the current SORA name.
     /// @return Current SORA name.
@@ -68,6 +70,7 @@ public:
     /// @return  Current displayed page number
     int currentPage() const { return m_currentPageNumber; }
 
+    int currentID() const { return m_currentID; }
     /// @brief Get the current page Type.
     Page::Type pageType() const { return m_pageType; }
 
@@ -79,6 +82,7 @@ protected:
     int m_currentAyaNumber;
     int m_currentSoraAyatCount ;
     int m_currentPageNumber;
+    int m_currentID;
 
 };
 
