@@ -10,7 +10,7 @@ public:
     BookInfo();
 
     enum Type {
-        QuranBook,
+        QuranBook = 1,
         TafessirBook,
         HadditBook,
         NormalBook };

@@ -146,6 +146,7 @@ void BooksViewer::openBook(int pBookID)
 
     m_databases.append(bookdb);
     connect(indexWidget, SIGNAL(openPage(int)), this, SLOT(openPage(int)));
+    qDebug() << "TYPE:"   << bookdb->bookInfo()->bookType();
 }
 
 void BooksViewer::nextUnit()
