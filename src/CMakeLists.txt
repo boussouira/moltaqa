@@ -11,6 +11,7 @@ set(alkotobiya_SRCS
 	bookslistnode.cpp
 	bookindexmodel.cpp
 	bookindexnode.cpp
+        bookinfo.cpp
 	abstractdbhandler.cpp
 	indexwidget.cpp
 	ksetting.cpp
@@ -23,6 +24,7 @@ set(alkotobiya_SRCS
 	qurantextformat.cpp
 	qurantextmodel.cpp
 	simpledbhandler.cpp
+        simpletextformat.cpp
 	tafessirtextbase.cpp
 	tafessirtextformat.cpp
 )
