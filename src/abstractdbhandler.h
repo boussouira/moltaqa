@@ -16,7 +16,7 @@ public:
     void openQuranDB(QString pQuranDBPath);
     BookInfo *bookInfo() { return m_bookInfo; }
 
-protected:
+public:
     virtual QString page(int pid = -1) = 0;
     virtual QString nextPage() = 0;
     virtual QString prevPage() = 0;

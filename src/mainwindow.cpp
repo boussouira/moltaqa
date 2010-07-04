@@ -50,7 +50,6 @@ void MainWindow::settingDialog()
 void MainWindow::quranWindow()
 {
     setCentralWidget(m_bookView);
-    m_bookView->openSoraInNewTab(1);
 }
 
 void MainWindow::openBook(int pBookID)

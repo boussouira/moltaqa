@@ -38,6 +38,7 @@ signals:
     void ayaNumberChange(int pNewAyaNumber);
     void openSora(int pSoraNumber);
     void openSoraInNewTab(int pSoraNumber);
+    void openPage(int pageID);
 
 private:
     Ui::IndexWidget *ui;

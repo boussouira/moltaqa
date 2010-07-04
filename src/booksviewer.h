@@ -27,33 +27,27 @@ public:
 
 public slots:
     void openBook(int pBookID);
-    void openSora(int pSoraNumber, int pAyaNumber = 1);
-    void displayPage(PageInfo *pPageInfo);
-    void scrollToAya(int pSoraNumber, int pAyaNumber);
-    void openSoraInNewTab(int pSoraNumber = 1);
-    void ayaNumberChange(int pNewAyaNum);
-    void updateSoraDetials();
-    void nextAya();
-    void previousAYA();
+    void nextUnit();
+    void previousUnit();
     void nextPage();
     void previousPage();
     void showIndexDock(bool pShowIndexDock);
     void showSearchDock(bool pShowSearchDock);
     void tabChangePosition(int fromIndex, int toIndex);
     void tabCloseRequest(int tabIndex);
+    void openPage(int pageID);
 
 protected:
     void updateNavigationButtons();
     void createMenus(QMainWindow *parent);
     IndexWidget *currentIndexWidget();
-    QuranTextModel *databaseHandler();
-    PageInfo *pageInfo();
+    AbstractDBHandler *databaseHandler();
 
 private:
     KTab *m_tab;
     QuranSearch *m_quranSearch ;
     QStackedWidget *m_stackedWidget;
-    QList<QuranTextModel *> m_databases;
+    QList<AbstractDBHandler *> m_databases;
     QDockWidget *m_quranSearchDock;
     QDockWidget *m_indexWidgetDock;
     QAction *actionNewTab;

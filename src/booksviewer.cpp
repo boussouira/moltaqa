@@ -26,7 +26,6 @@ BooksViewer::BooksViewer(QMainWindow *parent): QMainWindow(parent->centralWidget
 
     connect(m_tab, SIGNAL(tabCloseRequested(int)), m_tab, SLOT(closeTab(int)));
     connect(m_tab, SIGNAL(currentChanged(int)), m_stackedWidget, SLOT(setCurrentIndex(int)));
-    connect(m_tab, SIGNAL(currentChanged(int)), this, SLOT(updateSoraDetials()));
     connect(m_tab, SIGNAL(tabMoved(int,int)), this, SLOT(tabChangePosition(int,int)));
     connect(m_tab, SIGNAL(tabCloseRequested(int)), this, SLOT(tabCloseRequest(int)));
 
@@ -100,14 +99,11 @@ void BooksViewer::createMenus(QMainWindow *parent)
     parent->addToolBar(toolBarTafesir);
 
     // Setup connections
-    // New tab
-    connect(actionNewTab, SIGNAL(triggered()), this, SLOT(openSoraInNewTab()));
-
     // Navigation actions
     connect(actionNextPage, SIGNAL(triggered()), this, SLOT(nextPage()));
     connect(actionPrevPage, SIGNAL(triggered()), this, SLOT(previousPage()));
-    connect(actionNextAYA, SIGNAL(triggered()), this, SLOT(nextAya()));
-    connect(actionPrevAYA, SIGNAL(triggered()), this, SLOT(previousAYA()));
+    connect(actionNextAYA, SIGNAL(triggered()), this, SLOT(nextUnit()));
+    connect(actionPrevAYA, SIGNAL(triggered()), this, SLOT(previousUnit()));
 
     // Index Dock
     connect(actionIndexDock, SIGNAL(toggled(bool)), m_indexWidgetDock, SLOT(setShown(bool)));
@@ -116,8 +112,6 @@ void BooksViewer::createMenus(QMainWindow *parent)
     // Search Dock
     connect(actionSearchDock, SIGNAL(toggled(bool)), m_quranSearchDock, SLOT(setShown(bool)));
     connect(m_quranSearchDock, SIGNAL(visibilityChanged(bool)), this, SLOT(showSearchDock(bool)));
-    connect(m_quranSearch, SIGNAL(resultSelected(int,int)), this, SLOT(openSora(int,int)));
-
 
 }
 
@@ -150,173 +144,32 @@ void BooksViewer::openBook(int pBookID)
     m_tab->setTabText(m_tab->currentIndex(), bookdb->bookInfo()->bookName());
     m_tab->setPageHtml(bookdb->page());
 
-    m_tab->setPageHtml(bookdb->page(111));
+    m_databases.append(bookdb);
+    connect(indexWidget, SIGNAL(openPage(int)), this, SLOT(openPage(int)));
 }
 
-void BooksViewer::openSora(int pSoraNumber, int pAyaNumber)
+void BooksViewer::nextUnit()
 {
-    databaseHandler()->getPageInfo(pSoraNumber, pAyaNumber, pageInfo());
-    displayPage(pageInfo());
 }
 
-void BooksViewer::displayPage(PageInfo *pPageInfo)
+void BooksViewer::previousUnit()
 {
-    bool emptyPage = m_tab->currentPage()->page()->mainFrame()->toPlainText().isEmpty();
-
-    if(emptyPage || pPageInfo->currentPage() != currentIndexWidget()->currentPageNmber()) {
-        QString text = databaseHandler()->getQuranPage(pPageInfo);
-        m_tab->currentPage()->page()->mainFrame()->setHtml(text);
-    }
-    m_tab->setTabText(m_tab->currentIndex(),
-                      trUtf8("سورة %1").arg(pPageInfo->currentSoraName()));
-    scrollToAya(pPageInfo->currentSoraNumber(), pPageInfo->currentAya());
-    currentIndexWidget()->setSoraDetials(pageInfo());
-
-    currentIndexWidget()->updatePageAndAyaNum(pPageInfo->currentPage(),
-                                     pPageInfo->currentAya());
-    updateNavigationButtons();
-}
-
-void BooksViewer::scrollToAya(int pSoraNumber, int pAyaNumber)
-{
-
-    QWebFrame *frame = m_tab->currentPage()->page()->mainFrame();
-
-    // First we unhighlight the highlighted AYA
-    frame->findFirstElement("span.highlighted").removeClass("highlighted");
-
-    // Since each AYA has it own uniq id, we can highlight
-    // any AYA in the current page by adding the class "highlighted"
-    frame->findFirstElement(QString("span#s%1a%2")
-                            .arg(pSoraNumber).arg(pAyaNumber)).addClass("highlighted");
-
-    // Get the postion of the selected AYA
-    QRect highElement = frame->findFirstElement("span.highlighted").geometry();
-    // Frame heihgt
-    int frameHeihgt = frame->geometry().height() / 2;
-    // The height that should be added to center the selected aya
-    int addHeight = highElement.height() / 2 ;
-    // it must be less than frameHeight
-    while (frameHeihgt < addHeight )
-        addHeight = addHeight / 2;
-    // The aya position equal ((ayaHeight - frameHeight) + addHeight)
-    unsigned int ayaPosition = (highElement.y() - frameHeihgt) + addHeight;
-
-    // Animation the scrolling to the selected AYA
-    QPropertyAnimation *animation = new QPropertyAnimation(frame, "scrollPosition");
-    animation->setDuration(1000);
-    animation->setStartValue(frame->scrollPosition());
-    animation->setEndValue(QPoint(0, ayaPosition));
-
-    animation->start();
-}
-
-void BooksViewer::openSoraInNewTab(int pSoraNumber)
-{
-    int tabIndex = m_tab->addNewOnglet();
-
-    IndexWidget *indexWidget = new IndexWidget(this);
-    m_stackedWidget->insertWidget(tabIndex, indexWidget);
-    m_stackedWidget->setCurrentIndex(tabIndex);
-
-    QuranTextModel *quranModel = new QuranTextModel();
-    quranModel->openQuranDB("books/quran.db");
-    m_databases.insert(tabIndex, quranModel);
-
-    QStringListModel *quranIndex = new QStringListModel();
-    quranModel->getSowarList(quranIndex);
-    indexWidget->setIndex(quranIndex);
-
-    openSora(pSoraNumber);
-
-    connect(indexWidget, SIGNAL(ayaNumberChange(int)), this, SLOT(ayaNumberChange(int)));
-    connect(indexWidget, SIGNAL(openSora(int)), this, SLOT(openSora(int)));
-    connect(indexWidget, SIGNAL(openSoraInNewTab(int)), this, SLOT(openSoraInNewTab(int)));
-}
-
-void BooksViewer::ayaNumberChange(int pNewAyaNum)
-{
-    if (pageInfo()->currentAya() == pNewAyaNum)
-        return ;
-    int page = databaseHandler()->getAyaPageNumber(pageInfo()->currentSoraNumber(),
-                                              pNewAyaNum);
-    if(page != pageInfo()->currentPage()) {
-        pageInfo()->setCurrentPage(page);
-    }
-    pageInfo()->setCurrentAya(pNewAyaNum);
-    displayPage(pageInfo());
-}
-
-void BooksViewer::updateSoraDetials()
-{
-    if(currentIndexWidget())
-        currentIndexWidget()->setSoraDetials(pageInfo());
-}
-
-void BooksViewer::nextAya()
-{
-    int newAyaNumber = pageInfo()->currentAya()+1;
-    if(newAyaNumber > pageInfo()->currentSoraAyatCount()) {
-        // Goto next SORA
-        int nextSora = pageInfo()->currentSoraNumber()+1;
-        // SORA number must be less than 114
-        if (nextSora >= 115) {
-            // If it's greater than 114, we go to the first SORA in the Quran
-            nextSora = 1;
-        }
-        // Then we select it
-        openSora(nextSora);
-    } else {
-        currentIndexWidget()->updateAyaNumber(newAyaNumber);
-    }
-}
-
-void BooksViewer::previousAYA()
-{
-    int newAyaNumber = pageInfo()->currentAya()-1;
-    if(newAyaNumber < 1) {
-        // Goto previous SORA
-        int prevSora = pageInfo()->currentSoraNumber()-1;
-        // We make sure that our SORA number is greater than 0
-        if (prevSora <= 0) {
-            // less than 0, go to the last SORA
-            prevSora = 114;
-        }
-        openSora(prevSora);
-    } else {
-        currentIndexWidget()->updateAyaNumber(newAyaNumber);
-    }
 }
 
 void BooksViewer::nextPage()
 {
-    databaseHandler()->getPageInfoByPage(pageInfo()->currentPage()+1,
-                                    pageInfo());
 
-    openSora(pageInfo()->currentSoraNumber(),
-             pageInfo()->currentAya());
+    m_tab->setPageHtml(databaseHandler()->nextPage());
 }
 
 void BooksViewer::previousPage()
 {
-    databaseHandler()->getPageInfoByPage(pageInfo()->currentPage()-1,
-                                    pageInfo());
-
-    openSora(pageInfo()->currentSoraNumber(),
-             pageInfo()->currentAya());
+    m_tab->setPageHtml(databaseHandler()->prevPage());
 }
 
 void BooksViewer::updateNavigationButtons()
 {
-    if(pageInfo()->currentPage() >= 604)
-        actionNextPage->setEnabled(false);
-    else
-        actionNextPage->setEnabled(true);
 
-    if(pageInfo()->currentPage() <= 1)
-        actionPrevPage->setEnabled(false);
-    else
-        actionPrevPage->setEnabled(true);
 }
 
 void BooksViewer::showIndexDock(bool pShowIndexDock)
@@ -344,14 +197,9 @@ IndexWidget *BooksViewer::currentIndexWidget()
 
 }
 
-QuranTextModel *BooksViewer::databaseHandler()
+AbstractDBHandler *BooksViewer::databaseHandler()
 {
     return m_databases.at(m_tab->currentIndex());
-}
-
-PageInfo *BooksViewer::pageInfo()
-{
-    return m_tab->currentPageInfo();
 }
 
 void BooksViewer::tabChangePosition(int fromIndex, int toIndex)
@@ -369,4 +217,9 @@ void BooksViewer::tabCloseRequest(int tabIndex)
 
     IndexWidget *indexWidget = qobject_cast<IndexWidget *>(m_stackedWidget->widget(tabIndex));
     m_stackedWidget->removeWidget(indexWidget);
+}
+
+void BooksViewer::openPage(int pageID)
+{
+    m_tab->setPageHtml(databaseHandler()->page(pageID));
 }

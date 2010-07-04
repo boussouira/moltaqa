@@ -1,6 +1,7 @@
 #include "indexwidget.h"
 #include "ui_indexwidget.h"
 #include "pageinfo.h"
+#include "bookindexmodel.h"
 
 IndexWidget::IndexWidget(QWidget *parent) :
     QWidget(parent),
@@ -95,6 +96,8 @@ void IndexWidget::listDoubleClicked(QModelIndex pIndex)
 {
     if(sendSignals)
         emit openSora(pIndex.row()+1);
+    BookIndexModel *model = static_cast<BookIndexModel*>(ui->treeView->model());
+    emit openPage(model->nodeFromIndex(pIndex)->id());
 }
 
 void IndexWidget::openSoraInCurrentTab()

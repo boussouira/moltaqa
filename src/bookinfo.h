@@ -8,6 +8,13 @@ class BookInfo : public PageInfo
 {
 public:
     BookInfo();
+
+    enum Type {
+        QuranBook,
+        TafessirBook,
+        HadditBook,
+        NormalBook };
+
     int pagesCount(int part);
     int partsCount() { return m_partsCount; }
     int firstID() { return m_firstID; }
@@ -15,6 +22,7 @@ public:
     QString bookName() { return m_bookName; }
     QString bookTable() { return m_bookTable; }
     QString titleTable() { return m_titleTable; }
+    BookInfo::Type bookType() const { return m_bookType; }
 
     void setPagesCount(int count, int part=1);
     void setPartsCount(int count) { m_partsCount = count; }
@@ -23,8 +31,10 @@ public:
     void setBookName(const QString &name) { m_bookName = name; }
     void setBookTable(const QString &table) { m_bookTable = table; }
     void setTitleTable(const QString &title) { m_titleTable = title; }
+    void setBookType(BookInfo::Type type) { m_bookType = type; }
 
 protected:
+    BookInfo::Type m_bookType;
     QString m_bookName;
     QString m_bookTable;
     QString m_titleTable;

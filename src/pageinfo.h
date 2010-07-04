@@ -3,13 +3,6 @@
 
 #include <QString>
 
-namespace Page {
-    enum Type {
-        QuranPage,
-        TafessirPage
-    };
-}
-
 /// @brief This class hold information about pages.
 class PageInfo
 {
@@ -40,8 +33,6 @@ public:
     /// @param pPageNumber    The current displayed page number.
     void setCurrentPage(int pPageNumber){m_currentPageNumber = pPageNumber ;}
 
-    /// @brief Set the current page Type.
-    void setPageType(Page::Type pPageType) { m_pageType = pPageType; }
 
     /// @brief Set The current page ID.
     void setCurrentID(int id) { m_currentID = id; }
@@ -72,10 +63,8 @@ public:
 
     int currentID() const { return m_currentID; }
     /// @brief Get the current page Type.
-    Page::Type pageType() const { return m_pageType; }
 
 protected:
-    Page::Type m_pageType;
     QString m_currentSoraName ;
     QString m_currentSoraDescent;
     int m_currentSoraNumber;

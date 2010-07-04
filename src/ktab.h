@@ -4,9 +4,11 @@
 #include <QTabWidget>
 #include <QWebView>
 #include <QWebFrame>
+#include <QWebElement>
+#include <QPropertyAnimation>
 #include <QVBoxLayout>
 #include <QTabBar>
-#include "pageinfo.h"
+#include "bookinfo.h"
 
 /**
   @brief This class handle displaying Quran pages in tabs.
@@ -23,7 +25,7 @@ public slots:
 
     /// @brief Add a new tab.
     /// @return The index of the new tab.
-    int addNewOnglet(Page::Type pPageType = Page::QuranPage);
+    int addNewOnglet(BookInfo::Type pBookType = BookInfo::QuranBook);
 
     /**
       @brief Close a specific tab.
@@ -37,7 +39,7 @@ public slots:
       By calling this method, a new PageInfo well be added to the m_sowarInfo.
       @return A QWebView contained in a QWidget.
       */
-    QWidget *newOnglet(Page::Type pPageType);
+    QWidget *newOnglet(BookInfo::Type pBookType);
 
     /**
       @brief Get the a pointer to the current displayed QWebView.
@@ -61,6 +63,7 @@ public slots:
       */
     void tabIsMoved(int from, int to);
     void setPageHtml(const QString &text);
+    void scrollToAya(int pSoraNumber, int pAyaNumber);
 
 signals:
     /**

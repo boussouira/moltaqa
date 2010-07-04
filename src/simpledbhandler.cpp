@@ -14,13 +14,19 @@ QString simpleDBHandler::page(int pid)
         id = m_bookInfo->lastID();
     else // The given page id
         id = pid;
-
-    m_bookQuery->exec(QString("SELECT id, nass, part, page from %1 WHERE id = %2 ")
-                      .arg(m_bookInfo->bookTable()).arg(id));
+    if(id >= m_bookInfo->currentID())
+        m_bookQuery->exec(QString("SELECT id, nass, part, page from %1 "
+                                  "WHERE id >= %2 ORDER BY id ASC LIMIT 1")
+                          .arg(m_bookInfo->bookTable()).arg(id));
+    else
+        m_bookQuery->exec(QString("SELECT id, nass, part, page from %1 "
+                                  "WHERE id <= %2 ORDER BY id DESC LIMIT 1")
+                          .arg(m_bookInfo->bookTable()).arg(id));
     if(m_bookQuery->next()) {
         m_textFormat->setText(m_bookQuery->value(1).toString());
         m_bookInfo->setCurrentID(m_bookQuery->value(0).toInt());
     }
+    qDebug("CURRENT PAGE: %d", m_bookInfo->currentID());
     return m_textFormat->formatText();
 }
 
