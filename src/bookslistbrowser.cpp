@@ -43,6 +43,7 @@ void BooksListBrowser::showBooksList()
 
 void BooksListBrowser::childCats(BooksListNode *parentNode, int pID)
 {
+    booksCat(parentNode, pID); // Start with books
     QSqlQuery *catQuery = new QSqlQuery(m_booksListDB);
     catQuery->exec(QString("SELECT id, title, catOrder, parentID FROM catList "
                            "WHERE parentID = %1 ORDER BY catOrder").arg(pID));
@@ -55,7 +56,6 @@ void BooksListBrowser::childCats(BooksListNode *parentNode, int pID)
         childCats(catNode, catQuery->value(0).toInt());
         parentNode->appendChild(catNode);
     }
-    booksCat(parentNode, pID);
 }
 
 void BooksListBrowser::booksCat(BooksListNode *parentNode, int catID)

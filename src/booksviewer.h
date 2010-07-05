@@ -17,6 +17,7 @@
 #include "quransearch.h"
 #include "bookslistbrowser.h"
 #include "simpledbhandler.h"
+#include "qurandbhandler.h"
 
 class BooksViewer : public QMainWindow
 {

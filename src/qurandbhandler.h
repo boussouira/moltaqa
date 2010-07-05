@@ -2,13 +2,14 @@
 #define QURANDBHANDLER_H
 
 #include "abstractdbhandler.h"
+#include "qurantextformat.h"
 
 class QuranDBHandler : public AbstractDBHandler
 {
 public:
     QuranDBHandler();
 
-    QString page(int pid){}
+    QString page(int pid);
     QString nextPage(){}
     QString prevPage(){}
 
@@ -18,9 +19,13 @@ public:
     bool hasNext(){}
     bool hasPrev(){}
 
-    QAbstractItemModel *indexModel(){}
+    QAbstractItemModel *indexModel();
     QString getFormattedPage(){}
-    void getBookInfo(){}
+protected:
+    void getBookInfo();
+    int getPageNumber(int soraNumber);
+    QuranTextFormat *m_quranFormat;
+
 };
 
 #endif // QURANDBHANDLER_H

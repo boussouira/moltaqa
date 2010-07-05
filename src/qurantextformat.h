@@ -8,7 +8,7 @@
   */
 class QuranTextFormat
 {
-protected:
+public:
     QuranTextFormat();
     /**
       @brief Insert and format a SORA name.
