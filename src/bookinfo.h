@@ -23,6 +23,7 @@ public:
     QString bookTable() { return m_bookTable; }
     QString titleTable() { return m_titleTable; }
     BookInfo::Type bookType() const { return m_bookType; }
+    int bookID() const { return m_bookID; }
 
     void setPagesCount(int count, int part=1);
     void setPartsCount(int count) { m_partsCount = count; }
@@ -32,6 +33,7 @@ public:
     void setBookTable(const QString &table) { m_bookTable = table; }
     void setTitleTable(const QString &title) { m_titleTable = title; }
     void setBookType(BookInfo::Type type) { m_bookType = type; }
+    void setBookID(int id) { m_bookID = id; }
 
 protected:
     BookInfo::Type m_bookType;
@@ -42,6 +44,7 @@ protected:
     int m_partsCount;
     int m_firstID;
     int m_lastID;
+    int m_bookID;
 };
 
 #endif // BOOKINFO_H

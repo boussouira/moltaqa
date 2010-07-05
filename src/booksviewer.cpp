@@ -117,7 +117,6 @@ void BooksViewer::createMenus(QMainWindow *parent)
 
 void BooksViewer::openBook(int pBookID, bool newTab)
 {
-    qDebug() << "BOOK:" << pBookID ;
     QSqlDatabase m_booksListDB;
     QString bookName;
     if(QSqlDatabase::contains("BooksListDB")) {
@@ -127,12 +126,23 @@ void BooksViewer::openBook(int pBookID, bool newTab)
         m_booksListDB.setDatabaseName("books/books_index.db");
     }
     QSqlQuery *bQuery = new QSqlQuery(m_booksListDB);
-    bQuery->exec(QString("SELECT fileName From booksList where id = %1 LIMIT 1").arg(pBookID));
-    if(bQuery->first())
+
+    BookInfo::Type type;
+    bQuery->exec(QString("SELECT fileName, bookType From booksList where id = %1 LIMIT 1")
+                 .arg(pBookID));
+    if(bQuery->first()) {
         bookName = bQuery->value(0).toString();
-    simpleDBHandler *bookdb = new simpleDBHandler();
+        type = (BookInfo::Type)bQuery->value(1).toInt();
+    }
+
+    AbstractDBHandler *bookdb;
+    if(type == BookInfo::QuranBook)
+        bookdb = new QuranDBHandler();
+    else
+        bookdb = new simpleDBHandler();
+
+    bookdb->bookInfo()->setBookID(pBookID);
     bookdb->openQuranDB(QString("books/%1").arg(bookName));
-    //qDebug() << "TEXT:" << bookdb->nextPage();
 
     int tabIndex = m_tab->addNewOnglet();
 
