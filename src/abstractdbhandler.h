@@ -13,6 +13,7 @@ class AbstractDBHandler
 {
 public:
     AbstractDBHandler();
+    ~AbstractDBHandler();
     void openQuranDB(QString pQuranDBPath);
     BookInfo *bookInfo() { return m_bookInfo; }
 

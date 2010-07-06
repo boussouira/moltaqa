@@ -6,6 +6,14 @@ AbstractDBHandler::AbstractDBHandler()
     m_bookInfo = new BookInfo();
 }
 
+AbstractDBHandler::~AbstractDBHandler()
+{
+    delete m_indexModel;
+    delete m_bookInfo;
+    delete m_bookQuery;
+    m_bookDB.close();
+}
+
 void AbstractDBHandler::openQuranDB(QString pQuranDBPath)
 {
     if(QSqlDatabase::contains("QuranTextDB")) {

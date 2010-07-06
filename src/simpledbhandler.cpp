@@ -5,6 +5,11 @@ simpleDBHandler::simpleDBHandler()
     m_textFormat = new SimpleTextFormat();
 }
 
+simpleDBHandler::~simpleDBHandler()
+{
+    delete m_textFormat;
+}
+
 QString simpleDBHandler::page(int pid)
 {
     int id;

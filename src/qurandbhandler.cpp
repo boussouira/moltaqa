@@ -7,6 +7,11 @@ QuranDBHandler::QuranDBHandler()
     m_quranFormat = new QuranTextFormat();
 }
 
+QuranDBHandler::~QuranDBHandler()
+{
+    delete m_quranFormat;
+}
+
 QString QuranDBHandler::page(int pid)
 {
     int page;

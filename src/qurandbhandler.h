@@ -8,6 +8,7 @@ class QuranDBHandler : public AbstractDBHandler
 {
 public:
     QuranDBHandler();
+    ~QuranDBHandler();
 
     QString page(int pid);
     QString openSora(int num);
