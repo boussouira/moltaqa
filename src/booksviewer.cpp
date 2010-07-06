@@ -243,5 +243,10 @@ void BooksViewer::tabCloseRequest(int tabIndex)
 
 void BooksViewer::openPage(int pageID)
 {
-    m_tab->setPageHtml(databaseHandler()->page(pageID));
+    if(databaseHandler()->bookInfo()->bookType() == BookInfo::QuranBook) {
+        QuranDBHandler *qDB = static_cast<QuranDBHandler*>(databaseHandler());
+        m_tab->setPageHtml(qDB->openSora(pageID));
+        m_tab->scrollToSora(pageID);
+    } else
+        m_tab->setPageHtml(databaseHandler()->page(pageID));
 }

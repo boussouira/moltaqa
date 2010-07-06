@@ -10,17 +10,17 @@ public:
     QuranDBHandler();
 
     QString page(int pid);
-    QString nextPage(){}
-    QString prevPage(){}
+    QString openSora(int num);
+    QString nextPage();
+    QString prevPage();
 
     void nextUnit(){}
     void prevUnit(){}
 
-    bool hasNext(){}
-    bool hasPrev(){}
+    bool hasNext();
+    bool hasPrev();
 
     QAbstractItemModel *indexModel();
-    QString getFormattedPage(){}
 protected:
     void getBookInfo();
     int getPageNumber(int soraNumber);

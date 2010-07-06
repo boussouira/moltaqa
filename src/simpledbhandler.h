@@ -20,7 +20,6 @@ public:
     bool hasPrev();
 
     QAbstractItemModel *indexModel();
-    QString getFormattedPage(){}
 
 protected:
     BookIndexNode *getNodeByDepth(BookIndexNode *pNode, int pDepth);

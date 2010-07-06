@@ -10,14 +10,17 @@ QuranDBHandler::QuranDBHandler()
 QString QuranDBHandler::page(int pid)
 {
     int page;
-    if(pid == -1)       // First SORA number
-        page = getPageNumber(1);
-    else if(pid == -2)  // Last SORA number
-        page = getPageNumber(114);
-    else                // The given SORA number
-        page = getPageNumber(pid);
+    if(pid == -1)       // First page number
+        page = m_bookInfo->firstPage();
+    else if(pid == -2)  // Last page number
+        page = m_bookInfo->lastPage();
+    else                // The given page number
+        page = pid;
 
     m_quranFormat->clearQuranText();
+    m_bookInfo->setCurrentPage(page);
+    m_bookInfo->setCurrentSoraNumber(pid);
+
     m_bookQuery->exec(QString("SELECT QuranText.id, QuranText.ayaText, QuranText.ayaNumber, "
                               "QuranText.pageNumber, QuranText.soraNumber, QuranSowar.SoraName "
                               "FROM QuranText LEFT JOIN QuranSowar "
@@ -26,8 +29,6 @@ QString QuranDBHandler::page(int pid)
                               "ORDER BY QuranText.id ").arg(page));
 
     while(m_bookQuery->next()) {
-        m_bookInfo->setCurrentPage(m_bookQuery->value(3).toInt());
-
         // at the first vers we insert the sora name and bassemala
         if(m_bookQuery->value(2).toInt() == 1) {
             m_quranFormat->insertSoraName(m_bookQuery->value(5).toString());
@@ -38,9 +39,14 @@ QString QuranDBHandler::page(int pid)
         }
         m_quranFormat->insertAyaText(m_bookQuery->value(1).toString(),
                                      m_bookQuery->value(2).toInt(),
-                                     m_bookQuery->value(3).toInt());
+                                     m_bookQuery->value(4).toInt());
     }
     return m_quranFormat->text();
+}
+
+QString QuranDBHandler::openSora(int num)
+{
+        return page(getPageNumber(num));
 }
 
 QAbstractItemModel *QuranDBHandler::indexModel()
@@ -64,6 +70,8 @@ void QuranDBHandler::getBookInfo()
     if(m_bookQuery->next()) {
         m_bookInfo->setPartsCount(1);
 
+        m_bookInfo->setFirstPage(1);
+        m_bookInfo->setLastPage(604);
         m_bookInfo->setPagesCount(m_bookQuery->value(0).toInt());
         m_bookInfo->setFirstID(m_bookQuery->value(1).toInt());
         m_bookInfo->setLastID(m_bookQuery->value(2).toInt());
@@ -93,4 +101,24 @@ int QuranDBHandler::getPageNumber(int soraNumber)
         return m_bookQuery->value(0).toInt();
     } else
         return 1;
+}
+
+QString QuranDBHandler::nextPage()
+{
+    return hasNext() ? page(m_bookInfo->currentPage()+1) : QString();
+}
+
+QString QuranDBHandler::prevPage()
+{
+    return hasPrev() ? page(m_bookInfo->currentPage()-1) : QString();
+}
+
+bool QuranDBHandler::hasNext()
+{
+    return m_bookInfo->currentPage() < m_bookInfo->lastPage();
+}
+
+bool QuranDBHandler::hasPrev()
+{
+    return m_bookInfo->currentPage() > m_bookInfo->firstPage();
 }

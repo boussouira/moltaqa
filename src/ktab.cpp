@@ -89,10 +89,15 @@ void KTab::scrollToAya(int pSoraNumber, int pAyaNumber)
     while (frameHeihgt < addHeight )
         addHeight = addHeight / 2;
     // The aya position equal ((ayaHeight - frameHeight) + addHeight)
-    unsigned int ayaPosition = (highElement.y() - frameHeihgt) + addHeight;
+    int ayaPosition = (highElement.y() - frameHeihgt) + addHeight;
 
     // Animation the scrolling to the selected AYA
     scrollToPosition(QPoint(0, ayaPosition));
+}
+
+void KTab::scrollToSora(int soraNumber)
+{
+    scrollToAya(soraNumber, 1);
 }
 
 void KTab::pageDown()

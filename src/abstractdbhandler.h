@@ -28,7 +28,6 @@ public:
     virtual bool hasPrev() = 0;
 
     virtual QAbstractItemModel *indexModel() = 0;
-    virtual QString getFormattedPage() = 0;
     virtual void getBookInfo() = 0;
 
 protected:
