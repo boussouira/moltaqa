@@ -71,15 +71,15 @@ QAbstractItemModel *QuranDBHandler::indexModel()
 
 void QuranDBHandler::getBookInfo()
 {
-    m_bookQuery->exec(QString("SELECT MAX(pageNumber), MIN(id), MAX(id) from QuranText "));
+    m_bookQuery->exec(QString("SELECT  MIN(pageNumber), MAX(pageNumber), MIN(id), MAX(id) "
+                              "FROM QuranText "));
     if(m_bookQuery->next()) {
         m_bookInfo->setPartsCount(1);
+        m_bookInfo->setFirstPage(m_bookQuery->value(0).toInt());
+        m_bookInfo->setLastPage(m_bookQuery->value(1).toInt());
 
-        m_bookInfo->setFirstPage(1);
-        m_bookInfo->setLastPage(604);
-        m_bookInfo->setPagesCount(m_bookQuery->value(0).toInt());
-        m_bookInfo->setFirstID(m_bookQuery->value(1).toInt());
-        m_bookInfo->setLastID(m_bookQuery->value(2).toInt());
+        m_bookInfo->setFirstID(m_bookQuery->value(2).toInt());
+        m_bookInfo->setLastID(m_bookQuery->value(3).toInt());
     }
 
     {
@@ -100,12 +100,15 @@ void QuranDBHandler::getBookInfo()
 
 int QuranDBHandler::getPageNumber(int soraNumber)
 {
+    int page = 1;
     m_bookQuery->exec(QString("SELECT MIN(pageNumber) FROM QuranText WHERE soraNumber = %1 ")
                       .arg(soraNumber));
     if(m_bookQuery->next()) {
-        return m_bookQuery->value(0).toInt();
-    } else
-        return 1;
+        page = m_bookQuery->value(0).toInt();
+        m_bookInfo->setCurrentAya(1);
+        m_bookInfo->setCurrentSoraNumber(soraNumber);
+    }
+    return page;
 }
 
 QString QuranDBHandler::nextPage()
