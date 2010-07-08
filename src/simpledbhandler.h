@@ -14,9 +14,6 @@ public:
     QString nextPage();
     QString prevPage();
 
-    void nextUnit(){}
-    void prevUnit(){}
-
     bool hasNext();
     bool hasPrev();
 

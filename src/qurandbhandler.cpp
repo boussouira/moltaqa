@@ -98,11 +98,11 @@ void QuranDBHandler::getBookInfo()
     QSqlDatabase::removeDatabase("GetInfo");
 }
 
-int QuranDBHandler::getPageNumber(int soraNumber)
+int QuranDBHandler::getPageNumber(int soraNumber, int ayaNumber)
 {
     int page = 1;
-    m_bookQuery->exec(QString("SELECT MIN(pageNumber) FROM QuranText WHERE soraNumber = %1 ")
-                      .arg(soraNumber));
+    m_bookQuery->exec(QString("SELECT pageNumber FROM QuranText WHERE soraNumber = %1 "
+                              "AND ayaNumber = %2").arg(soraNumber).arg(ayaNumber));
     if(m_bookQuery->next()) {
         page = m_bookQuery->value(0).toInt();
         m_bookInfo->setCurrentAya(1);
@@ -129,4 +129,14 @@ bool QuranDBHandler::hasNext()
 bool QuranDBHandler::hasPrev()
 {
     return m_bookInfo->currentPage() > m_bookInfo->firstPage();
+}
+
+QString QuranDBHandler::nextUnit()
+{
+//    int aya = m_bookInfo->currentAya()+1;
+}
+
+QString QuranDBHandler::prevUnit()
+{
+
 }

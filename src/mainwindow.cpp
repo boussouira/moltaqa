@@ -49,6 +49,7 @@ void MainWindow::settingDialog()
 
 void MainWindow::quranWindow()
 {
+    m_bookView->openBook(2);
     setCentralWidget(m_bookView);
 }
 

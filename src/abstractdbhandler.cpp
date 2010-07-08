@@ -29,3 +29,13 @@ void AbstractDBHandler::openQuranDB(QString pQuranDBPath)
     m_bookQuery = new QSqlQuery(m_bookDB);
     getBookInfo();
 }
+
+QString AbstractDBHandler::nextUnit()
+{
+    return QString();
+}
+
+QString AbstractDBHandler::prevUnit()
+{
+    return QString();
+}

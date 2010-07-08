@@ -13,7 +13,7 @@ class AbstractDBHandler
 {
 public:
     AbstractDBHandler();
-    ~AbstractDBHandler();
+    virtual ~AbstractDBHandler();
     void openQuranDB(QString pQuranDBPath);
     BookInfo *bookInfo() { return m_bookInfo; }
 
@@ -22,8 +22,8 @@ public:
     virtual QString nextPage() = 0;
     virtual QString prevPage() = 0;
 
-    virtual void nextUnit() = 0;
-    virtual void prevUnit() = 0;
+    virtual QString nextUnit();
+    virtual QString prevUnit();
 
     virtual bool hasNext() = 0;
     virtual bool hasPrev() = 0;

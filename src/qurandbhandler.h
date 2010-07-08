@@ -15,8 +15,8 @@ public:
     QString nextPage();
     QString prevPage();
 
-    void nextUnit(){}
-    void prevUnit(){}
+    QString nextUnit();
+    QString prevUnit();
 
     bool hasNext();
     bool hasPrev();
@@ -24,7 +24,7 @@ public:
     QAbstractItemModel *indexModel();
 protected:
     void getBookInfo();
-    int getPageNumber(int soraNumber);
+    int getPageNumber(int soraNumber, int ayaNumber=1);
     QuranTextFormat *m_quranFormat;
 
 };
