@@ -8,7 +8,7 @@ TafessirTextBase::TafessirTextBase() : QuranTextBase()
     m_tafessirDB.setDatabaseName(m_tafessirDBPath);
 
     if (!m_tafessirDB.open()) {
-        qDebug() << "Cannot open database.";
+        qDebug("[%s:%d] Cannot open database.", __FILE__, __LINE__);
     }
     m_tafessirQuery = new QSqlQuery(m_tafessirDB);
 }

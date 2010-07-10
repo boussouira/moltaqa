@@ -21,7 +21,7 @@ void BookInfoHandler::openDB()
     m_indexDB = QSqlDatabase::addDatabase("QSQLITE", "BooksInfoDB");
     m_indexDB.setDatabaseName(QString("%1/books_index.db").arg(m_booksPath));
     if(!m_indexDB.open())
-        qDebug() << "Can not open database";
+        qDebug("[%s:%d] Cannot open database.", __FILE__, __LINE__);
     m_query = new QSqlQuery(m_indexDB);
 }
 

@@ -19,7 +19,7 @@ void QuranTextBase::openQuranDB(QString pQuranDBPath)
     }
 
     if (!m_quranDB.open()) {
-        qDebug() << "Cannot open database.";
+        qDebug("[%s:%d] Cannot open database.", __FILE__, __LINE__);
     }
     m_quranQuery = new QSqlQuery(m_quranDB);
 }

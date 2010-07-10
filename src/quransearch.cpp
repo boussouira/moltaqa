@@ -7,7 +7,7 @@ QuranSearch::QuranSearch(QWidget *parent, QString pQuranDbPath) :
     m_db = QSqlDatabase::addDatabase("QSQLITE", "QuranDBSearchl");
     m_db.setDatabaseName(pQuranDbPath);
     if (!m_db.open()) {
-        qFatal("Cannot open database.");
+        qDebug("[%s:%d] Cannot open database.", __FILE__, __LINE__);
     }
     m_query = new QSqlQuery(m_db);
     m_resultModel = new QSqlQueryModel(this);

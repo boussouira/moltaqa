@@ -27,7 +27,7 @@ void BooksListBrowser::showBooksList()
     }
 
     if (!m_booksListDB.open()) {
-        qDebug() << "Cannot open database.";
+        qDebug("[%s:%d] Cannot open database.", __FILE__, __LINE__);
     }
 
     BooksListNode *firstNode = new BooksListNode(BooksListNode::Root);

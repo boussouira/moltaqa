@@ -25,7 +25,7 @@ void AbstractDBHandler::openBookDB(QString pBookDBPath)
     }
 
     if (!m_bookDB.open()) {
-        qDebug() << "Cannot open database.";
+        qDebug("[%s:%d] Cannot open database.", __FILE__, __LINE__);
     }
     m_bookQuery = new QSqlQuery(m_bookDB);
     getBookInfo();
