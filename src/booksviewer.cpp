@@ -128,7 +128,7 @@ void BooksViewer::openBook(int pBookID, bool newTab)
         bookdb = new simpleDBHandler();
 
     bookdb->setBookInfo(bookInfo);
-    bookdb->openQuranDB();
+    bookdb->openBookDB();
 
     int tabIndex = m_tab->addNewOnglet();
 

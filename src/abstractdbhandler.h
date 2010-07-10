@@ -14,7 +14,7 @@ class AbstractDBHandler
 public:
     AbstractDBHandler();
     virtual ~AbstractDBHandler();
-    void openQuranDB(QString pQuranDBPath=QString());
+    void openBookDB(QString pBookDBPath=QString());
     BookInfo *bookInfo() { return m_bookInfo; }
     void setBookInfo(BookInfo *bi);
 

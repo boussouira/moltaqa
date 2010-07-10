@@ -14,9 +14,9 @@ AbstractDBHandler::~AbstractDBHandler()
     m_bookDB.close();
 }
 
-void AbstractDBHandler::openQuranDB(QString pQuranDBPath)
+void AbstractDBHandler::openBookDB(QString pBookDBPath)
 {
-    QString bookPath = pQuranDBPath.isEmpty() ? m_bookInfo->bookPath() : pQuranDBPath;
+    QString bookPath = pBookDBPath.isEmpty() ? m_bookInfo->bookPath() : pBookDBPath;
     if(QSqlDatabase::contains("QuranTextDB")) {
         m_bookDB = QSqlDatabase::database("QuranTextDB");
     } else {
