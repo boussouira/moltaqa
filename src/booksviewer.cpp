@@ -38,6 +38,7 @@ BooksViewer::~BooksViewer()
 {
     qDeleteAll(m_databases);
     m_databases.clear();
+    delete m_infoDB;
 }
 
 void BooksViewer::createMenus(QMainWindow *parent)
