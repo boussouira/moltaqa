@@ -24,6 +24,8 @@ BooksViewer::BooksViewer(QMainWindow *parent): QMainWindow(parent->centralWidget
     m_quranSearchDock->setVisible(false);
     addDockWidget(Qt::BottomDockWidgetArea, m_quranSearchDock);
 
+    m_infoDB = new BookInfoHandler();
+
     connect(m_tab, SIGNAL(tabCloseRequested(int)), m_tab, SLOT(closeTab(int)));
     connect(m_tab, SIGNAL(currentChanged(int)), m_stackedWidget, SLOT(setCurrentIndex(int)));
     connect(m_tab, SIGNAL(tabMoved(int,int)), this, SLOT(tabChangePosition(int,int)));
@@ -117,32 +119,16 @@ void BooksViewer::createMenus(QMainWindow *parent)
 
 void BooksViewer::openBook(int pBookID, bool newTab)
 {
-    QSqlDatabase m_booksListDB;
-    QString bookName;
-    if(QSqlDatabase::contains("BooksListDB")) {
-        m_booksListDB = QSqlDatabase::database("BooksListDB");
-    } else {
-        m_booksListDB = QSqlDatabase::addDatabase("QSQLITE", "BooksListDB");
-        m_booksListDB.setDatabaseName("books/books_index.db");
-    }
-    QSqlQuery *bQuery = new QSqlQuery(m_booksListDB);
-
-    BookInfo::Type type;
-    bQuery->exec(QString("SELECT fileName, bookType From booksList where id = %1 LIMIT 1")
-                 .arg(pBookID));
-    if(bQuery->first()) {
-        bookName = bQuery->value(0).toString();
-        type = (BookInfo::Type)bQuery->value(1).toInt();
-    }
+    BookInfo *bookInfo = m_infoDB->getBookInfo(pBookID);
 
     AbstractDBHandler *bookdb;
-    if(type == BookInfo::QuranBook)
+    if(bookInfo->bookType() == BookInfo::QuranBook)
         bookdb = new QuranDBHandler();
     else
         bookdb = new simpleDBHandler();
 
-    bookdb->bookInfo()->setBookID(pBookID);
-    bookdb->openQuranDB(QString("books/%1").arg(bookName));
+    bookdb->setBookInfo(bookInfo);
+    bookdb->openQuranDB();
 
     int tabIndex = m_tab->addNewOnglet();
 

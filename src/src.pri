@@ -38,7 +38,8 @@ SOURCES += mainwindow.cpp \
     bookindexmodel.cpp \
     bookindexnode.cpp \
     bookinfo.cpp \
-    simpletextformat.cpp
+    simpletextformat.cpp \
+    bookinfohandler.cpp
 HEADERS += mainwindow.h \
     quransearch.h \
     pageinfo.h \
@@ -60,7 +61,8 @@ HEADERS += mainwindow.h \
     bookindexmodel.h \
     bookindexnode.h \
     bookinfo.h \
-    simpletextformat.h
+    simpletextformat.h \
+    bookinfohandler.h
 FORMS += mainwindow.ui quransearch.ui ksetting.ui \
     indexwidget.ui \
     bookslistbrowser.ui

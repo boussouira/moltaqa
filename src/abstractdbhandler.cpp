@@ -16,11 +16,12 @@ AbstractDBHandler::~AbstractDBHandler()
 
 void AbstractDBHandler::openQuranDB(QString pQuranDBPath)
 {
+    QString bookPath = pQuranDBPath.isEmpty() ? m_bookInfo->bookPath() : pQuranDBPath;
     if(QSqlDatabase::contains("QuranTextDB")) {
         m_bookDB = QSqlDatabase::database("QuranTextDB");
     } else {
         m_bookDB = QSqlDatabase::addDatabase("QSQLITE", "QuranTextDB");
-        m_bookDB.setDatabaseName(pQuranDBPath);
+        m_bookDB.setDatabaseName(bookPath);
     }
 
     if (!m_bookDB.open()) {
@@ -28,6 +29,12 @@ void AbstractDBHandler::openQuranDB(QString pQuranDBPath)
     }
     m_bookQuery = new QSqlQuery(m_bookDB);
     getBookInfo();
+}
+
+void AbstractDBHandler::setBookInfo(BookInfo *bi)
+{
+    delete m_bookInfo;
+    m_bookInfo = bi;
 }
 
 QString AbstractDBHandler::nextUnit()

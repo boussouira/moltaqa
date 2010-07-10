@@ -18,6 +18,7 @@
 #include "bookslistbrowser.h"
 #include "simpledbhandler.h"
 #include "qurandbhandler.h"
+#include "bookinfohandler.h"
 
 class BooksViewer : public QMainWindow
 {
@@ -47,6 +48,7 @@ protected:
 private:
     KTab *m_tab;
     QuranSearch *m_quranSearch ;
+    BookInfoHandler *m_infoDB;
     QStackedWidget *m_stackedWidget;
     QList<AbstractDBHandler *> m_databases;
     QDockWidget *m_quranSearchDock;

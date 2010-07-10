@@ -24,6 +24,7 @@ public:
     QString bookName() { return m_bookName; }
     QString bookTable() { return m_bookTable; }
     QString titleTable() { return m_titleTable; }
+    QString bookPath() { return m_bookPath; }
     BookInfo::Type bookType() const { return m_bookType; }
     int bookID() const { return m_bookID; }
 
@@ -36,11 +37,13 @@ public:
     void setBookName(const QString &name) { m_bookName = name; }
     void setBookTable(const QString &table) { m_bookTable = table; }
     void setTitleTable(const QString &title) { m_titleTable = title; }
+    void setBookPath(const QString &path) { m_bookPath = path; }
     void setBookType(BookInfo::Type type) { m_bookType = type; }
     void setBookID(int id) { m_bookID = id; }
 
 protected:
     BookInfo::Type m_bookType;
+    QString m_bookPath;
     QString m_bookName;
     QString m_bookTable;
     QString m_titleTable;

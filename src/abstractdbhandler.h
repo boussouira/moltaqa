@@ -14,10 +14,13 @@ class AbstractDBHandler
 public:
     AbstractDBHandler();
     virtual ~AbstractDBHandler();
-    void openQuranDB(QString pQuranDBPath);
+    void openQuranDB(QString pQuranDBPath=QString());
     BookInfo *bookInfo() { return m_bookInfo; }
+    void setBookInfo(BookInfo *bi);
 
 public:
+//    virtual QString page(int pid = -1, int part=1) = 0;
+//    virtual QString openID(int id) = 0;
     virtual QString page(int pid = -1) = 0;
     virtual QString nextPage() = 0;
     virtual QString prevPage() = 0;
