@@ -3,7 +3,7 @@
 BookInfoHandler::BookInfoHandler()
 {
     QSettings settings;
-    m_booksPath = settings.value("app/db").toString();
+    m_booksPath = settings.value("app/db", "books").toString();
     if(m_booksPath.endsWith(QChar('/')) || m_booksPath.endsWith(QChar('\\')))
         m_booksPath.remove(m_booksPath.size()-1, 1);
 
