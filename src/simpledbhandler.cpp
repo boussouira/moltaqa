@@ -103,21 +103,6 @@ void simpleDBHandler::getBookInfo()
             }
         }
     }
-
-    {
-        QSqlDatabase tmpDB = QSqlDatabase::addDatabase("QSQLITE", "GetInfo");
-        tmpDB.setDatabaseName("books/books_index.db");
-        if(!tmpDB.open())
-            qDebug("Can not open database");
-        QSqlQuery *tmpQuery = new QSqlQuery(tmpDB);
-        tmpQuery->exec(QString("SELECT bookName, bookType from booksList WHERE id = %1 ")
-                       .arg(m_bookInfo->bookID()));
-        if(tmpQuery->next()) {
-            m_bookInfo->setBookName(tmpQuery->value(0).toString());
-            m_bookInfo->setBookType((BookInfo::Type)tmpQuery->value(1).toInt());
-        }
-    }
-    QSqlDatabase::removeDatabase("GetInfo");
 }
 
 QString simpleDBHandler::nextPage()
