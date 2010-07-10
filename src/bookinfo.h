@@ -19,8 +19,8 @@ public:
     int partsCount() { return m_partsCount; }
     int firstID() { return m_firstID; }
     int lastID() { return m_lastID; }
-    int firstPage() { return m_firstPage; }
-    int lastPage() { return m_lastPage; }
+    int firstPage(int part=1);
+    int lastPage(int part=1);
     QString bookName() { return m_bookName; }
     QString bookTable() { return m_bookTable; }
     QString titleTable() { return m_titleTable; }
@@ -31,8 +31,8 @@ public:
     void setPartsCount(int count) { m_partsCount = count; }
     void setFirstID(int id) { m_firstID = id; }
     void setLastID(int id) { m_lastID = id; }
-    void setFirstPage(int page) { m_firstPage = page; }
-    void setLastPage(int page) { m_lastPage = page; }
+    void setFirstPage(int count, int part=1);
+    void setLastPage(int count, int part=1);
     void setBookName(const QString &name) { m_bookName = name; }
     void setBookTable(const QString &table) { m_bookTable = table; }
     void setTitleTable(const QString &title) { m_titleTable = title; }
@@ -44,12 +44,11 @@ protected:
     QString m_bookName;
     QString m_bookTable;
     QString m_titleTable;
-    QHash<int, int> m_pagesCount;
+    QHash<int, int> m_firstPages;
+    QHash<int, int> m_lastPages;
     int m_partsCount;
     int m_firstID;
     int m_lastID;
-    int m_firstPage;
-    int m_lastPage;
     int m_bookID;
 };
 

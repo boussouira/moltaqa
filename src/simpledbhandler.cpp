@@ -79,25 +79,27 @@ void simpleDBHandler::getBookInfo()
             m_bookInfo->setBookTable(ta);
     }
 
-    m_bookQuery->exec(QString("SELECT MAX(part), MAX(page), MIN(id), MAX(id) from %1 ")
+    m_bookQuery->exec(QString("SELECT MAX(part), MIN(page), MAX(page), MIN(id), MAX(id) from %1 ")
                       .arg(m_bookInfo->bookTable()));
     if(m_bookQuery->next()) {
         int parts = m_bookQuery->value(0).toInt();
-        int pages = m_bookQuery->value(1).toInt();
 
-        m_bookInfo->setFirstID(m_bookQuery->value(2).toInt());
-        m_bookInfo->setLastID(m_bookQuery->value(3).toInt());
+        m_bookInfo->setFirstID(m_bookQuery->value(3).toInt());
+        m_bookInfo->setLastID(m_bookQuery->value(4).toInt());
 
         if(parts == 1) {
             m_bookInfo->setPartsCount(parts);
-            m_bookInfo->setPagesCount(pages);
+            m_bookInfo->setFirstPage(m_bookQuery->value(1).toInt());
+            m_bookInfo->setLastPage(m_bookQuery->value(2).toInt());
         } else if(parts > 1) {
             m_bookInfo->setPartsCount(parts);
             for(int i=1;i<=parts;i++) {
-                m_bookQuery->exec(QString("SELECT MAX(page) from %1 WHERE part = %2 ")
+                m_bookQuery->exec(QString("SELECT MIN(page), MAX(page) from %1 WHERE part = %2 ")
                                   .arg(m_bookInfo->bookTable()).arg(i));
-                if(m_bookQuery->next())
-                    m_bookInfo->setPagesCount(m_bookQuery->value(0).toInt(), i);
+                if(m_bookQuery->next()) {
+                    m_bookInfo->setFirstPage(m_bookQuery->value(0).toInt(), i);
+                    m_bookInfo->setLastPage(m_bookQuery->value(1).toInt(), i);
+                }
             }
         }
     }
