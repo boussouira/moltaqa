@@ -14,7 +14,6 @@ BooksViewer::BooksViewer(QMainWindow *parent): QMainWindow(parent->centralWidget
     m_indexWidgetDock = new QDockWidget(trUtf8("الفهرس"), this);
     m_stackedWidget = new QStackedWidget(this);
     m_indexWidgetDock->setWidget(m_stackedWidget);
-    m_indexWidgetDock->setMaximumWidth(220);
 
     addDockWidget(Qt::RightDockWidgetArea, m_indexWidgetDock);
 
