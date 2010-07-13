@@ -10,17 +10,19 @@ AbstractDBHandler::~AbstractDBHandler()
 {
     delete m_indexModel;
     delete m_bookInfo;
-    delete m_bookQuery;
-    m_bookDB.close();
+    if(m_bookDB.isOpen()) {
+        delete m_bookQuery;
+        m_bookDB.close();
+    }
 }
 
 void AbstractDBHandler::openBookDB(QString pBookDBPath)
 {
     QString bookPath = pBookDBPath.isEmpty() ? m_bookInfo->bookPath() : pBookDBPath;
-    if(QSqlDatabase::contains("QuranTextDB")) {
-        m_bookDB = QSqlDatabase::database("QuranTextDB");
+    if(QSqlDatabase::contains(m_connectionName)) {
+        m_bookDB = QSqlDatabase::database(m_connectionName);
     } else {
-        m_bookDB = QSqlDatabase::addDatabase("QSQLITE", "QuranTextDB");
+        m_bookDB = QSqlDatabase::addDatabase("QSQLITE", m_connectionName);
         m_bookDB.setDatabaseName(bookPath);
     }
 
@@ -35,6 +37,7 @@ void AbstractDBHandler::setBookInfo(BookInfo *bi)
 {
     delete m_bookInfo;
     m_bookInfo = bi;
+    m_connectionName = QString("book_i%1").arg(m_bookInfo->bookID());
 }
 
 QString AbstractDBHandler::nextUnit()

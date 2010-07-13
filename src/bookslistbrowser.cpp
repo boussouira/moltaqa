@@ -84,6 +84,6 @@ void BooksListBrowser::on_treeView_doubleClicked(QModelIndex index)
     BooksListNode *node = m_listModel->nodeFromIndex(index);
     if(node->getNodeType() == BooksListNode::Book) {
         emit bookSelected(node->getID());
-        accept();
+//        accept();
     }
 }

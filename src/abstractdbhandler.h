@@ -40,6 +40,7 @@ protected:
     QSqlDatabase m_bookDB;
     QSqlQuery *m_bookQuery;
     QString m_bookDBPath;
+    QString m_connectionName;
 };
 
 #endif // ABSTRACTDBHANDLER_H

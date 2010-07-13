@@ -22,36 +22,11 @@ public:
     KTab(QWidget *parent = 0);
 
 public slots:
-
-    /// @brief Add a new tab.
-    /// @return The index of the new tab.
-    int addNewOnglet(BookInfo::Type pBookType = BookInfo::QuranBook);
-
     /**
       @brief Close a specific tab.
       @param tabIndex   The tab index.
       */
     void closeTab(int tabIndex);
-
-    /**
-      @brief Create a new widget in order to add it to the QTabWidget(\em this).
-
-      By calling this method, a new PageInfo well be added to the m_sowarInfo.
-      @return A QWebView contained in a QWidget.
-      */
-    QWidget *newOnglet(BookInfo::Type pBookType);
-
-    /**
-      @brief Get the a pointer to the current displayed QWebView.
-      @return A pointer to the current QWebView.
-      */
-    QWebView *currentPage();
-
-    /**
-      @brief Get the a pointer to the current PageInfo.
-      @return A pointer to the current PageInfo.
-      */
-    PageInfo *currentPageInfo();
 
     /**
       @brief Capture the signale when the tab is moved from an index position to an other one.
@@ -62,14 +37,6 @@ public slots:
       @param to     The new position index.
       */
     void tabIsMoved(int from, int to);
-    void setPageHtml(const QString &text);
-    void scrollToAya(int pSoraNumber, int pAyaNumber);
-    void scrollToSora(int soraNumber);
-    void pageDown();
-    void pageUp();
-    void scrollToPosition(const QPoint &pos, int duration=1000);
-    bool maxDown();
-    bool maxUp();
 
 signals:
     /**
@@ -83,7 +50,6 @@ signals:
     void tabMoved(int from, int to);
 
 private:
-    QList<PageInfo* > m_sowarInfo;
     QTabBar *m_tab;
 
 };

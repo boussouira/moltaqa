@@ -3,6 +3,7 @@
 #include "booksviewer.h"
 #include "bookslistbrowser.h"
 #include "ksetting.h"
+#include "bookwidget.h"
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -12,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     m_bookView = new BooksViewer(this);
     m_booksList = new BooksListBrowser(this);
+    m_createMenu = true;
 
     connect(ui->pushOpenQuran, SIGNAL(clicked()), this, SLOT(quranWindow()));
     connect(ui->pushBooksList, SIGNAL(clicked()), this, SLOT(showBooksList()));
@@ -49,14 +51,17 @@ void MainWindow::settingDialog()
 
 void MainWindow::quranWindow()
 {
-    m_bookView->openBook(2);
-    setCentralWidget(m_bookView);
+    openBook(2);
 }
 
 void MainWindow::openBook(int pBookID)
 {
     m_bookView->openBook(pBookID);
     setCentralWidget(m_bookView);
+    if(m_createMenu){
+        m_bookView->createMenus(this);
+        m_createMenu = false;
+    }
 }
 
 void MainWindow::showBooksList()

@@ -44,6 +44,7 @@ public slots:
 private:
     BooksViewer *m_bookView;
     BooksListBrowser *m_booksList;
+    bool m_createMenu;
     Ui::MainWindow *ui;
 
 };

@@ -2,7 +2,6 @@
 #define BOOKSVIEWER_H
 
 #include <QMainWindow>
-#include <QtWebKit>
 #include <QMenuBar>
 #include <QMenu>
 #include <QAction>
@@ -19,12 +18,13 @@
 #include "simpledbhandler.h"
 #include "qurandbhandler.h"
 #include "bookinfohandler.h"
+#include "bookwidget.h"
 
-class BooksViewer : public QMainWindow
+class BooksViewer : public QWidget
 {
     Q_OBJECT
 public:
-    BooksViewer(QMainWindow *parent = 0);
+    BooksViewer(QWidget *parent = 0);
     ~BooksViewer();
 
 public slots:
@@ -37,20 +37,17 @@ public slots:
     void showSearchDock(bool pShowSearchDock);
     void tabChangePosition(int fromIndex, int toIndex);
     void tabCloseRequest(int tabIndex);
-    void openPage(int pageID);
+    void createMenus(QMainWindow *parent);
+    BookWidget *currentBookWidget();
 
 protected:
     void updateNavigationButtons();
-    void createMenus(QMainWindow *parent);
-    IndexWidget *currentIndexWidget();
-    AbstractDBHandler *databaseHandler();
 
 private:
     KTab *m_tab;
     QuranSearch *m_quranSearch ;
     BookInfoHandler *m_infoDB;
-    QStackedWidget *m_stackedWidget;
-    QList<AbstractDBHandler *> m_databases;
+    QList<BookWidget *> m_bookWidgets;
     QDockWidget *m_quranSearchDock;
     QDockWidget *m_indexWidgetDock;
     QAction *actionNewTab;

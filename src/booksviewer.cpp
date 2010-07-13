@@ -1,16 +1,12 @@
 #include "booksviewer.h"
 
-BooksViewer::BooksViewer(QMainWindow *parent): QMainWindow(parent->centralWidget())
+BooksViewer::BooksViewer(QWidget *parent): QWidget(parent)
 {
-    QWidget *tabWidget = new QWidget;
-    QHBoxLayout *layout = new QHBoxLayout;
-    m_tab = new KTab(tabWidget);
-
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    m_tab = new KTab(this);
     layout->addWidget(m_tab);
-    layout->setMargin(5);
-    tabWidget->setLayout(layout);
-    setCentralWidget(tabWidget);
-
+    layout->setContentsMargins(0,6,0,0);
+/*
     m_indexWidgetDock = new QDockWidget(trUtf8("الفهرس"), this);
     m_stackedWidget = new QStackedWidget(this);
     m_indexWidgetDock->setWidget(m_stackedWidget);
@@ -22,21 +18,19 @@ BooksViewer::BooksViewer(QMainWindow *parent): QMainWindow(parent->centralWidget
     m_quranSearchDock->setWidget(m_quranSearch);
     m_quranSearchDock->setVisible(false);
     addDockWidget(Qt::BottomDockWidgetArea, m_quranSearchDock);
-
+*/
     m_infoDB = new BookInfoHandler();
-
+/*
     connect(m_tab, SIGNAL(tabCloseRequested(int)), m_tab, SLOT(closeTab(int)));
     connect(m_tab, SIGNAL(currentChanged(int)), m_stackedWidget, SLOT(setCurrentIndex(int)));
     connect(m_tab, SIGNAL(tabMoved(int,int)), this, SLOT(tabChangePosition(int,int)));
     connect(m_tab, SIGNAL(tabCloseRequested(int)), this, SLOT(tabCloseRequest(int)));
-
-    createMenus(parent);
+*/
+//    createMenus();
 }
 
 BooksViewer::~BooksViewer()
 {
-    qDeleteAll(m_databases);
-    m_databases.clear();
     delete m_infoDB;
 }
 
@@ -106,7 +100,7 @@ void BooksViewer::createMenus(QMainWindow *parent)
     connect(actionPrevPage, SIGNAL(triggered()), this, SLOT(previousPage()));
     connect(actionNextAYA, SIGNAL(triggered()), this, SLOT(nextUnit()));
     connect(actionPrevAYA, SIGNAL(triggered()), this, SLOT(previousUnit()));
-
+/*
     // Index Dock
     connect(actionIndexDock, SIGNAL(toggled(bool)), m_indexWidgetDock, SLOT(setShown(bool)));
     connect(m_indexWidgetDock, SIGNAL(visibilityChanged(bool)), this, SLOT(showIndexDock(bool)));
@@ -114,7 +108,7 @@ void BooksViewer::createMenus(QMainWindow *parent)
     // Search Dock
     connect(actionSearchDock, SIGNAL(toggled(bool)), m_quranSearchDock, SLOT(setShown(bool)));
     connect(m_quranSearchDock, SIGNAL(visibilityChanged(bool)), this, SLOT(showSearchDock(bool)));
-
+*/
 }
 
 void BooksViewer::openBook(int pBookID, bool newTab)
@@ -129,110 +123,66 @@ void BooksViewer::openBook(int pBookID, bool newTab)
 
     bookdb->setBookInfo(bookInfo);
     bookdb->openBookDB();
+    BookWidget *bookWidget = new BookWidget(bookdb, this);
+    m_bookWidgets.append(bookWidget);
+    int tid;
+    if(newTab) {
+        tid = m_tab->addTab(bookWidget, bookdb->bookInfo()->bookName());
+    } else {
+        m_tab->setCurrentWidget(bookWidget);
+        tid = m_tab->currentIndex();
+        m_tab->setTabText(tid, bookdb->bookInfo()->bookName());
+    }
 
-    int tabIndex = m_tab->addNewOnglet();
-
-    IndexWidget *indexWidget = new IndexWidget(this);
-    m_stackedWidget->insertWidget(tabIndex, indexWidget);
-    m_stackedWidget->setCurrentIndex(tabIndex);
-
-    indexWidget->setIndex(bookdb->indexModel());
-    m_tab->setTabText(m_tab->currentIndex(), bookdb->bookInfo()->bookName());
-    m_databases.append(bookdb);
-
-    m_tab->setPageHtml(bookdb->page());
-    connect(indexWidget, SIGNAL(openPage(int)), this, SLOT(openPage(int)));
+    m_tab->setCurrentIndex(tid);
+    bookWidget->firstPage();
 }
 
 void BooksViewer::nextUnit()
 {
-    if(databaseHandler()->bookInfo()->bookType() == BookInfo::NormalBook) {
-        if(!m_tab->maxDown())
-            m_tab->pageDown();
-        else
-            nextPage();
-    }
+    currentBookWidget()->nextUnit();
 }
 
 void BooksViewer::previousUnit()
 {
-    if(databaseHandler()->bookInfo()->bookType() == BookInfo::NormalBook) {
-        if(!m_tab->maxUp())
-            m_tab->pageUp();
-        else
-            previousPage();
-    }
+    currentBookWidget()->prevUnit();
 }
 
 void BooksViewer::nextPage()
 {
-
-    m_tab->setPageHtml(databaseHandler()->nextPage());
+    currentBookWidget()->nextPage();
 }
 
 void BooksViewer::previousPage()
 {
-    m_tab->setPageHtml(databaseHandler()->prevPage());
+    currentBookWidget()->prevPage();
 }
 
 void BooksViewer::updateNavigationButtons()
 {
-
 }
 
-void BooksViewer::showIndexDock(bool pShowIndexDock)
+void BooksViewer::showIndexDock(bool /*pShowIndexDock*/)
 {
-    Q_UNUSED(pShowIndexDock)
     actionIndexDock->setChecked(m_indexWidgetDock->isVisible());
 }
 
-void BooksViewer::showSearchDock(bool pShowSearchDock)
+void BooksViewer::showSearchDock(bool /*pShowSearchDock*/)
 {
-    Q_UNUSED(pShowSearchDock)
     actionSearchDock->setChecked(m_quranSearchDock->isVisible());
 }
 
-IndexWidget *BooksViewer::currentIndexWidget()
+BookWidget *BooksViewer::currentBookWidget()
 {
-    int currIndex = m_tab->currentIndex();
-    // Is there any tabs ?
-    if(currIndex >= 0) {
-        IndexWidget *indexWidget =  qobject_cast<IndexWidget *>(m_stackedWidget->widget(currIndex));
-        return indexWidget;
-    } else {
-        return 0;
-    }
-
-}
-
-AbstractDBHandler *BooksViewer::databaseHandler()
-{
-    return m_databases.at(m_tab->currentIndex());
+    return m_bookWidgets.at(m_tab->currentIndex());
 }
 
 void BooksViewer::tabChangePosition(int fromIndex, int toIndex)
 {
-    m_databases.move(fromIndex, toIndex);
-
-    IndexWidget *indexWidget = qobject_cast<IndexWidget *>(m_stackedWidget->widget(fromIndex));
-    m_stackedWidget->removeWidget(indexWidget);
-    m_stackedWidget->insertWidget(toIndex, indexWidget);
+    m_bookWidgets.move(fromIndex, toIndex);
 }
 
 void BooksViewer::tabCloseRequest(int tabIndex)
 {
-    m_databases.removeAt(tabIndex);
-
-    IndexWidget *indexWidget = qobject_cast<IndexWidget *>(m_stackedWidget->widget(tabIndex));
-    m_stackedWidget->removeWidget(indexWidget);
-}
-
-void BooksViewer::openPage(int pageID)
-{
-    if(databaseHandler()->bookInfo()->bookType() == BookInfo::QuranBook) {
-        QuranDBHandler *qDB = static_cast<QuranDBHandler*>(databaseHandler());
-        m_tab->setPageHtml(qDB->openSora(pageID));
-        m_tab->scrollToSora(pageID);
-    } else
-        m_tab->setPageHtml(databaseHandler()->page(pageID));
+    m_bookWidgets.removeAt(tabIndex);
 }
