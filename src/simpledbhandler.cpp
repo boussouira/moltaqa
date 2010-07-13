@@ -1,16 +1,16 @@
 #include "simpledbhandler.h"
 
-simpleDBHandler::simpleDBHandler()
+SimpleDBHandler::SimpleDBHandler()
 {
     m_textFormat = new SimpleTextFormat();
 }
 
-simpleDBHandler::~simpleDBHandler()
+SimpleDBHandler::~SimpleDBHandler()
 {
     delete m_textFormat;
 }
 
-QString simpleDBHandler::page(int pid)
+QString SimpleDBHandler::page(int pid)
 {
     int id;
     if(pid == -1) // First page
@@ -35,7 +35,7 @@ QString simpleDBHandler::page(int pid)
     return m_textFormat->formatText();
 }
 
-QAbstractItemModel *simpleDBHandler::indexModel()
+QAbstractItemModel *SimpleDBHandler::indexModel()
 {
     BookIndexNode *rootNode = new BookIndexNode();
 //    BookIndexNode *firstNode = new BookIndexNode(QObject::trUtf8("الفهرس")
@@ -59,7 +59,7 @@ QAbstractItemModel *simpleDBHandler::indexModel()
     return m_indexModel;
 }
 
-BookIndexNode *simpleDBHandler::getNodeByDepth(BookIndexNode *pNode, int pDepth)
+BookIndexNode *SimpleDBHandler::getNodeByDepth(BookIndexNode *pNode, int pDepth)
 {
     BookIndexNode *n = pNode;
 
@@ -69,7 +69,7 @@ BookIndexNode *simpleDBHandler::getNodeByDepth(BookIndexNode *pNode, int pDepth)
     return n;
 }
 
-void simpleDBHandler::getBookInfo()
+void SimpleDBHandler::getBookInfo()
 {
     QStringList tables = m_bookDB.tables();
     foreach(QString ta, tables) {
@@ -105,7 +105,7 @@ void simpleDBHandler::getBookInfo()
     }
 }
 
-QString simpleDBHandler::nextPage()
+QString SimpleDBHandler::nextPage()
 {
     if(hasNext())
         return this->page(m_bookInfo->currentID()+1);
@@ -113,7 +113,7 @@ QString simpleDBHandler::nextPage()
         return QString();
 }
 
-QString simpleDBHandler::prevPage()
+QString SimpleDBHandler::prevPage()
 {
     if(hasPrev())
         return this->page(m_bookInfo->currentID()-1);
@@ -121,7 +121,7 @@ QString simpleDBHandler::prevPage()
         return QString();
 }
 
-bool simpleDBHandler::hasNext()
+bool SimpleDBHandler::hasNext()
 {
     if(m_bookInfo->currentID() < m_bookInfo->lastID())
         return true;
@@ -129,7 +129,7 @@ bool simpleDBHandler::hasNext()
         return false;
 }
 
-bool simpleDBHandler::hasPrev()
+bool SimpleDBHandler::hasPrev()
 {
     if(m_bookInfo->currentID() > m_bookInfo->firstID())
         return true;

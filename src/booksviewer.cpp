@@ -125,7 +125,7 @@ void BooksViewer::openBook(int pBookID, bool newTab)
     if(bookInfo->bookType() == BookInfo::QuranBook)
         bookdb = new QuranDBHandler();
     else
-        bookdb = new simpleDBHandler();
+        bookdb = new SimpleDBHandler();
 
     bookdb->setBookInfo(bookInfo);
     bookdb->openBookDB();

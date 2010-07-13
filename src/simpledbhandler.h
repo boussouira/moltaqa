@@ -4,11 +4,11 @@
 #include "abstractdbhandler.h"
 #include "simpletextformat.h"
 
-class simpleDBHandler : public AbstractDBHandler
+class SimpleDBHandler : public AbstractDBHandler
 {
 public:
-    simpleDBHandler();
-    ~simpleDBHandler();
+    SimpleDBHandler();
+    ~SimpleDBHandler();
 
     QString page(int pid = -1);
     QString nextPage();
