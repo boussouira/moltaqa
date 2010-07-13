@@ -16,6 +16,9 @@ class IndexWidget : public QWidget
 public:
     IndexWidget(QWidget *parent = 0);
     ~IndexWidget();
+    void hideAyaSpin(bool visible);
+    void hidePageSpin(bool visible);
+    void hidePartSpin(bool visible);
 
 protected:
     void changeEvent(QEvent *e);

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>235</width>
-    <height>363</height>
+    <width>228</width>
+    <height>422</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,12 +20,6 @@
    <locale language="Arabic" country="Morocco"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="spacing">
-    <number>2</number>
-   </property>
-   <property name="margin">
-    <number>4</number>
-   </property>
    <item>
     <widget class="QTreeView" name="treeView">
      <property name="editTriggers">
@@ -34,29 +28,25 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="label">
+    <layout class="QFormLayout" name="formLayout">
+     <property name="verticalSpacing">
+      <number>2</number>
+     </property>
+     <property name="leftMargin">
+      <number>30</number>
+     </property>
+     <property name="rightMargin">
+      <number>30</number>
+     </property>
+     <item row="0" column="0">
+      <widget class="QLabel" name="labelAya">
        <property name="text">
         <string>الآية :</string>
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QSpinBox" name="spinBoxAyaNumber">
+     <item row="0" column="1">
+      <widget class="QSpinBox" name="spinAya">
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
        </property>
@@ -74,48 +64,15 @@
        </property>
       </widget>
      </item>
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <property name="bottomMargin">
-      <number>0</number>
-     </property>
-     <item>
-      <spacer name="horizontalSpacer_3">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_2">
+     <item row="1" column="0">
+      <widget class="QLabel" name="labelPage">
        <property name="text">
         <string>الصفحة :</string>
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QSpinBox" name="spinBoxPageNumber">
+     <item row="1" column="1">
+      <widget class="QSpinBox" name="spinPage">
        <property name="wrapping">
         <bool>true</bool>
        </property>
@@ -126,7 +83,7 @@
         <bool>true</bool>
        </property>
        <property name="buttonSymbols">
-        <enum>QAbstractSpinBox::NoButtons</enum>
+        <enum>QAbstractSpinBox::UpDownArrows</enum>
        </property>
        <property name="suffix">
         <string> / 604</string>
@@ -142,18 +99,25 @@
        </property>
       </widget>
      </item>
-     <item>
-      <spacer name="horizontalSpacer_4">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+     <item row="2" column="0">
+      <widget class="QLabel" name="labelPart">
+       <property name="text">
+        <string>الجزء:</string>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QSpinBox" name="spinPart">
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
        </property>
-      </spacer>
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="value">
+        <number>1</number>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

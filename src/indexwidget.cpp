@@ -15,7 +15,7 @@ IndexWidget::IndexWidget(QWidget *parent) :
     ui->treeView->addAction(actionOpenSora);
     ui->treeView->addAction(actionOpenSoraInNewTab);
 
-    connect(ui->spinBoxAyaNumber, SIGNAL(valueChanged(int)),
+    connect(ui->spinAya, SIGNAL(valueChanged(int)),
             this, SLOT(ayaNumChange(int)));
     connect(ui->treeView, SIGNAL(doubleClicked(QModelIndex)),
             this, SLOT(listDoubleClicked(QModelIndex)));
@@ -55,10 +55,10 @@ void IndexWidget::setSoraDetials(PageInfo *pPageInfo)
 {
     sendSignals = false;
 
-    ui->spinBoxAyaNumber->setMaximum(pPageInfo->currentSoraAyatCount());
-    ui->spinBoxAyaNumber->setSuffix(QString(" / %1").arg(pPageInfo->currentSoraAyatCount()));
-    ui->spinBoxAyaNumber->setValue(pPageInfo->currentAya());
-    ui->spinBoxPageNumber->setValue(pPageInfo->currentPage());
+    ui->spinAya->setMaximum(pPageInfo->currentSoraAyatCount());
+    ui->spinAya->setSuffix(QString(" / %1").arg(pPageInfo->currentSoraAyatCount()));
+    ui->spinAya->setValue(pPageInfo->currentAya());
+    ui->spinPage->setValue(pPageInfo->currentPage());
     setSelectedSora(pPageInfo->currentSoraNumber());
 
     sendSignals = true;
@@ -76,14 +76,14 @@ void IndexWidget::setSelectedSora(int pSoraNumber)
 void IndexWidget::updatePageAndAyaNum(int pPageNumber, int pAyaNumber)
 {
     sendSignals = false;
-    ui->spinBoxPageNumber->setValue(pPageNumber);
-    ui->spinBoxAyaNumber->setValue(pAyaNumber);
+    ui->spinPage->setValue(pPageNumber);
+    ui->spinAya->setValue(pAyaNumber);
     sendSignals = true;
 }
 
 int IndexWidget::currentPageNmber()
 {
-    return ui->spinBoxPageNumber->value();
+    return ui->spinPage->value();
 }
 
 void IndexWidget::ayaNumChange(int pAyaNum)
@@ -112,5 +112,23 @@ void IndexWidget::openSoraInNewTab()
 
 void IndexWidget::updateAyaNumber(int pAyaNumber)
 {
-    ui->spinBoxAyaNumber->setValue(pAyaNumber);
+    ui->spinAya->setValue(pAyaNumber);
+}
+
+void IndexWidget::hideAyaSpin(bool visible)
+{
+    ui->spinAya->setVisible(visible);
+    ui->labelAya->setVisible(visible);
+}
+
+void IndexWidget::hidePageSpin(bool visible)
+{
+    ui->spinPage->setVisible(visible);
+    ui->labelPage->setVisible(visible);
+}
+
+void IndexWidget::hidePartSpin(bool visible)
+{
+    ui->spinPart->setVisible(visible);
+    ui->labelPart->setVisible(visible);
 }
