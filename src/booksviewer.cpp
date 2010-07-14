@@ -20,13 +20,10 @@ BooksViewer::BooksViewer(QWidget *parent): QWidget(parent)
     addDockWidget(Qt::BottomDockWidgetArea, m_quranSearchDock);
 */
     m_infoDB = new BookInfoHandler();
-/*
-    connect(m_tab, SIGNAL(tabCloseRequested(int)), m_tab, SLOT(closeTab(int)));
-    connect(m_tab, SIGNAL(currentChanged(int)), m_stackedWidget, SLOT(setCurrentIndex(int)));
+
+    connect(m_tab, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
     connect(m_tab, SIGNAL(tabMoved(int,int)), this, SLOT(tabChangePosition(int,int)));
     connect(m_tab, SIGNAL(tabCloseRequested(int)), this, SLOT(tabCloseRequest(int)));
-*/
-//    createMenus();
 }
 
 BooksViewer::~BooksViewer()
@@ -184,5 +181,20 @@ void BooksViewer::tabChangePosition(int fromIndex, int toIndex)
 
 void BooksViewer::tabCloseRequest(int tabIndex)
 {
+    delete m_bookWidgets.at(tabIndex);
     m_bookWidgets.removeAt(tabIndex);
+    m_tab->closeTab(tabIndex);
+}
+
+void BooksViewer::tabChanged(int /*newIndex*/)
+{
+    if((m_bookWidgets.count() > 0)) {
+        if(currentBookWidget()->dbHandler()->bookInfo()->bookType() == BookInfo::QuranBook) {
+            toolBarTafesir->setVisible(true);
+            toolBarTafesir->setEnabled(true);
+        } else {
+            toolBarTafesir->setVisible(false);
+            toolBarTafesir->setEnabled(false);
+        }
+    }
 }

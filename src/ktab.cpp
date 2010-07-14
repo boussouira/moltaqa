@@ -2,7 +2,7 @@
 
 KTab::KTab(QWidget *parent) : QTabWidget(parent), m_tab(new QTabBar(this))
 {
-    setTabsClosable(false);
+    m_tab->setTabsClosable(true);
     setTabBar(m_tab);
     setMovable(true);
     setDocumentMode(true);
@@ -18,7 +18,7 @@ void KTab::closeTab(int tabIndex)
 
     // Let's make sure that the last tab well never get closed!
     if(count() == 1)
-        setTabsClosable(false);
+        m_tab->setTabsClosable(false);
 }
 void KTab::tabIsMoved(int from, int to)
 {

@@ -56,12 +56,12 @@ void MainWindow::quranWindow()
 
 void MainWindow::openBook(int pBookID)
 {
-    m_bookView->openBook(pBookID);
-    setCentralWidget(m_bookView);
     if(m_createMenu){
         m_bookView->createMenus(this);
         m_createMenu = false;
     }
+    m_bookView->openBook(pBookID);
+    setCentralWidget(m_bookView);
 }
 
 void MainWindow::showBooksList()

@@ -39,6 +39,7 @@ public slots:
     void tabCloseRequest(int tabIndex);
     void createMenus(QMainWindow *parent);
     BookWidget *currentBookWidget();
+    void tabChanged(int newIndex);
 
 protected:
     void updateNavigationButtons();
