@@ -23,12 +23,6 @@ public:
 
 public slots:
     /**
-      @brief Close a specific tab.
-      @param tabIndex   The tab index.
-      */
-    void closeTab(int tabIndex);
-
-    /**
       @brief Capture the signale when the tab is moved from an index position to an other one.
 
       When the tab has moved from an index postion to an other one, we need to do the same thing
@@ -37,16 +31,10 @@ public slots:
       @param to     The new position index.
       */
     void tabIsMoved(int from, int to);
+    void updateTabBar();
 
 signals:
-    /**
-      @brief Force the MainWindow class to reload the current PageInfo.
-      */
-    void reloadCurrentPageInfo();
-
-    /**
-      @brief this signal does the same thing as QTabBar::tabMoved().
-      */
+    /// this signal does the same thing as QTabBar::tabMoved().
     void tabMoved(int from, int to);
 
 private:

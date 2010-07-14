@@ -14,10 +14,12 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     m_bookView = new BooksViewer(this);
     m_booksList = new BooksListBrowser(this);
     m_createMenu = true;
+    m_bookView->hide();
 
     connect(ui->pushOpenQuran, SIGNAL(clicked()), this, SLOT(quranWindow()));
     connect(ui->pushBooksList, SIGNAL(clicked()), this, SLOT(showBooksList()));
     connect(m_booksList, SIGNAL(bookSelected(int)), this, SLOT(openBook(int)));
+    connect(ui->actionBooksList, SIGNAL(triggered()), this, SLOT(showBooksList()));
 }
 
 void MainWindow::setupActions()
@@ -60,6 +62,8 @@ void MainWindow::openBook(int pBookID)
         m_bookView->createMenus(this);
         m_createMenu = false;
     }
+    if(m_bookView->isHidden())
+        m_bookView->show();
     m_bookView->openBook(pBookID);
     setCentralWidget(m_bookView);
 }

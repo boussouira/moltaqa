@@ -84,7 +84,8 @@ border:1px solid qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0.006, stop:0 
         </property>
         <property name="font">
          <font>
-          <pointsize>15</pointsize>
+          <family>Arial</family>
+          <pointsize>20</pointsize>
          </font>
         </property>
         <property name="text">
@@ -138,7 +139,8 @@ border:1px solid qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0.006, stop:0 
         </property>
         <property name="font">
          <font>
-          <pointsize>15</pointsize>
+          <family>Arial</family>
+          <pointsize>20</pointsize>
          </font>
         </property>
         <property name="text">
@@ -195,6 +197,7 @@ border:1px solid qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0.006, stop:0 
     <property name="title">
      <string>ملف</string>
     </property>
+    <addaction name="actionBooksList"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -248,6 +251,14 @@ border:1px solid qlineargradient(spread:pad, x1:1, y1:1, x2:1, y2:0.006, stop:0 
    </property>
    <property name="statusTip">
     <string>تعديل خصائص البرنامج</string>
+   </property>
+  </action>
+  <action name="actionBooksList">
+   <property name="text">
+    <string>قائمة الكتب</string>
+   </property>
+   <property name="toolTip">
+    <string>عرض الكتب المتوفرة</string>
    </property>
   </action>
  </widget>

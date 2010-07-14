@@ -10,10 +10,8 @@ AbstractDBHandler::~AbstractDBHandler()
 {
     delete m_indexModel;
     delete m_bookInfo;
-    if(m_bookDB.isOpen()) {
+    if(m_bookDB.isOpen())
         delete m_bookQuery;
-        m_bookDB.close();
-    }
 }
 
 void AbstractDBHandler::openBookDB(QString pBookDBPath)

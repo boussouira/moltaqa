@@ -76,7 +76,7 @@ void BooksListBrowser::booksCat(BooksListNode *parentNode, int catID)
 
 void BooksListBrowser::on_pushButton_clicked()
 {
-    accept();
+    hide();
 }
 
 void BooksListBrowser::on_treeView_doubleClicked(QModelIndex index)

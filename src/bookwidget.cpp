@@ -12,6 +12,7 @@ BookWidget::BookWidget(AbstractDBHandler *db, QWidget *parent): QWidget(parent),
     m_layout->addWidget(m_splitter);
     m_layout->setMargin(0);
     setLayout(m_layout);
+    setAutoFillBackground(true);
 
     displayInfo();
     connect(m_indexWidget, SIGNAL(openPage(int)), this, SLOT(openID(int)));
