@@ -1,6 +1,6 @@
 project(alkotobiya)
 
-find_package(Qt4 4.6 COMPONENTS QtCore QtGui QtSql QtNetwork QtXmlPatterns QtWebKit REQUIRED)
+find_package(Qt4 4.5 COMPONENTS QtCore QtGui QtSql QtNetwork QtXmlPatterns QtWebKit REQUIRED)
 include(${QT_USE_FILE})
 include_directories()
 link_directories ()
@@ -12,10 +12,13 @@ set(alkotobiya_SRCS
 	bookindexmodel.cpp
 	bookindexnode.cpp
         bookinfo.cpp
+        bookinfohandler.cpp
+        bookwidget.cpp
 	abstractdbhandler.cpp
 	indexwidget.cpp
 	ksetting.cpp
 	ktab.cpp
+	kwebview.cpp
 	main.cpp
 	mainwindow.cpp
 	pageinfo.cpp
@@ -23,6 +26,7 @@ set(alkotobiya_SRCS
 	qurantextbase.cpp
 	qurantextformat.cpp
 	qurantextmodel.cpp
+	qurandbhandler.cpp
 	simpledbhandler.cpp
         simpletextformat.cpp
 	tafessirtextbase.cpp
@@ -32,8 +36,10 @@ set(alkotobiya_MOCS_SRCS
 	booksviewer.h
 	bookslistbrowser.h
 	indexwidget.h
+	bookwidget.h
 	ksetting.h
 	ktab.h
+	kwebview.h
 	mainwindow.h
 	quransearch.h
 )
