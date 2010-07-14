@@ -2,25 +2,28 @@
 
 KWebView::KWebView(QWidget *parent) : QWebView(parent)
 {
+    m_frame = page()->mainFrame();
+#if QT_VERSION >= 0x040600
+    m_animation = new QPropertyAnimation(m_frame, "scrollPosition", this);
+#else
+    m_timeLine = new QTimeLine(1000, this);
+#endif
 }
 
 void KWebView::scrollToAya(int pSoraNumber, int pAyaNumber)
 {
-
-    QWebFrame *frame = page()->mainFrame();
-
     // First we unhighlight the highlighted AYA
-    frame->findFirstElement("span.highlighted").removeClass("highlighted");
+    m_frame->findFirstElement("span.highlighted").removeClass("highlighted");
 
     // Since each AYA has it own uniq id, we can highlight
     // any AYA in the current page by adding the class "highlighted"
-    frame->findFirstElement(QString("span#s%1a%2")
+    m_frame->findFirstElement(QString("span#s%1a%2")
                             .arg(pSoraNumber).arg(pAyaNumber)).addClass("highlighted");
 
     // Get the postion of the selected AYA
-    QRect highElement = frame->findFirstElement("span.highlighted").geometry();
-    // Frame heihgt
-    int frameHeihgt = frame->geometry().height() / 2;
+    QRect highElement = m_frame->findFirstElement("span.highlighted").geometry();
+    // m_frame heihgt
+    int frameHeihgt = m_frame->geometry().height() / 2;
     // The height that should be added to center the selected aya
     int addHeight = highElement.height() / 2 ;
     // it must be less than frameHeight
@@ -40,35 +43,43 @@ void KWebView::scrollToSora(int soraNumber)
 
 void KWebView::pageDown()
 {
-    QWebFrame *frame = page()->mainFrame();
-    int ypos = frame->scrollPosition().y();
-    int xpos = frame->scrollPosition().x();
-    ypos += frame->geometry().height();
-    ypos -= frame->geometry().height()/10;
+    int ypos = m_frame->scrollPosition().y();
+    int xpos = m_frame->scrollPosition().x();
+    ypos += m_frame->geometry().height();
+    ypos -= m_frame->geometry().height()/10;
 
     scrollToPosition(QPoint(xpos, ypos));
 }
 
 void KWebView::pageUp()
 {
-    QWebFrame *frame = page()->mainFrame();
-    int ypos = frame->scrollPosition().y();
-    int xpos = frame->scrollPosition().x();
-    ypos -= frame->geometry().height();
-    ypos += frame->geometry().height()/10;
+    int ypos = m_frame->scrollPosition().y();
+    int xpos = m_frame->scrollPosition().x();
+    ypos -= m_frame->geometry().height();
+    ypos += m_frame->geometry().height()/10;
 
     scrollToPosition(QPoint(xpos, ypos));
 }
 
 void KWebView::scrollToPosition(const QPoint &pos, int duration)
 {
-    QWebFrame *frame = page()->mainFrame();
-    QPropertyAnimation *animation = new QPropertyAnimation(frame, "scrollPosition");
-    animation->setDuration(duration);
-    animation->setStartValue(frame->scrollPosition());
-    animation->setEndValue(pos);
+#if QT_VERSION >= 0x040600
+    if(m_animation->state() == QAbstractAnimation::Stopped) {
+        m_animation->setDuration(duration);
+        m_animation->setStartValue(m_frame->scrollPosition());
+        m_animation->setEndValue(pos);
 
-    animation->start();
+        m_animation->start();
+    }
+#else
+    m_timeLine->setDuration(duration);
+    if(m_timeLine->state() == QTimeLine::NotRunning) {
+        m_timeLine->setFrameRange(m_frame->scrollPosition().y(), pos.y());
+        connect(m_timeLine, SIGNAL(frameChanged(int)), this, SLOT(setY(int)));
+
+        m_timeLine->start();
+    }
+#endif
 }
 
 bool KWebView::maxDown()
@@ -81,4 +92,9 @@ bool KWebView::maxUp()
 {
     return (page()->mainFrame()->scrollBarMinimum(Qt::Vertical)==
             page()->mainFrame()->scrollPosition().y());
+}
+
+void KWebView::setY(int y)
+{
+    page()->mainFrame()->setScrollPosition(QPoint(0, y));
 }
