@@ -32,6 +32,7 @@ public:
     /// @brief    Change the current displayed page number.
     /// @param pPageNumber    The current displayed page number.
     void setCurrentPage(int pPageNumber){m_currentPageNumber = pPageNumber ;}
+    void setCurrentPart(int part) { m_currentPart = part; }
 
 
     /// @brief Set The current page ID.
@@ -62,7 +63,7 @@ public:
     int currentPage() const { return m_currentPageNumber; }
 
     int currentID() const { return m_currentID; }
-    /// @brief Get the current page Type.
+    int currentPart() const { return m_currentPart; }
 
 protected:
     QString m_currentSoraName ;
@@ -72,6 +73,7 @@ protected:
     int m_currentSoraAyatCount ;
     int m_currentPageNumber;
     int m_currentID;
+    int m_currentPart;
 
 };
 
