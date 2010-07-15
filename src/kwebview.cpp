@@ -64,21 +64,19 @@ void KWebView::pageUp()
 void KWebView::scrollToPosition(const QPoint &pos, int duration)
 {
 #if QT_VERSION >= 0x040600
-    if(m_animation->state() == QAbstractAnimation::Stopped) {
-        m_animation->setDuration(duration);
-        m_animation->setStartValue(m_frame->scrollPosition());
-        m_animation->setEndValue(pos);
+    m_animation->setDuration(duration);
+    m_animation->setStartValue(m_frame->scrollPosition());
+    m_animation->setEndValue(pos);
 
-        m_animation->start();
-    }
+    m_animation->start();
+
 #else
     m_timeLine->setDuration(duration);
-    if(m_timeLine->state() == QTimeLine::NotRunning) {
-        m_timeLine->setFrameRange(m_frame->scrollPosition().y(), pos.y());
-        connect(m_timeLine, SIGNAL(frameChanged(int)), this, SLOT(setY(int)));
+    m_timeLine->setFrameRange(m_frame->scrollPosition().y(), pos.y());
+    connect(m_timeLine, SIGNAL(frameChanged(int)), this, SLOT(setY(int)));
 
-        m_timeLine->start();
-    }
+    m_timeLine->start();
+
 #endif
 }
 
