@@ -10,7 +10,7 @@ SimpleDBHandler::~SimpleDBHandler()
     delete m_textFormat;
 }
 
-QString SimpleDBHandler::page(int pid)
+QString SimpleDBHandler::openID(int pid)
 {
     int id;
     if(pid == -1) // First page
@@ -30,9 +30,23 @@ QString SimpleDBHandler::page(int pid)
     if(m_bookQuery->next()) {
         m_textFormat->setText(m_bookQuery->value(1).toString());
         m_bookInfo->setCurrentID(m_bookQuery->value(0).toInt());
+        m_bookInfo->setCurrentPage(m_bookQuery->value(3).toInt());
+        m_bookInfo->setCurrentPart(m_bookQuery->value(2).toInt());
     }
 //    qDebug("CURRENT PAGE: %d", m_bookInfo->currentID());
     return m_textFormat->formatText();
+}
+
+QString SimpleDBHandler::openPage(int page, int part)
+{
+    m_bookQuery->exec(QString("SELECT id FROM %1 WHERE page >= %2 AND part = %3"
+                              " ORDER BY id ASC LIMIT 1")
+                      .arg(m_bookInfo->bookTable()).arg(page).arg(part));
+    if(m_bookQuery->next())
+        return openID(m_bookQuery->value(0).toInt());
+    else
+        return QString();
+
 }
 
 QAbstractItemModel *SimpleDBHandler::indexModel()
@@ -107,32 +121,20 @@ void SimpleDBHandler::getBookInfo()
 
 QString SimpleDBHandler::nextPage()
 {
-    if(hasNext())
-        return this->page(m_bookInfo->currentID()+1);
-     else
-        return QString();
+    return hasNext() ? this->openID(m_bookInfo->currentID()+1) : QString();
 }
 
 QString SimpleDBHandler::prevPage()
 {
-    if(hasPrev())
-        return this->page(m_bookInfo->currentID()-1);
-    else
-        return QString();
+    return hasPrev() ? this->openID(m_bookInfo->currentID()-1) : QString();
 }
 
 bool SimpleDBHandler::hasNext()
 {
-    if(m_bookInfo->currentID() < m_bookInfo->lastID())
-        return true;
-    else
-        return false;
+    return (m_bookInfo->currentID() < m_bookInfo->lastID());
 }
 
 bool SimpleDBHandler::hasPrev()
 {
-    if(m_bookInfo->currentID() > m_bookInfo->firstID())
-        return true;
-    else
-        return false;
+    return (m_bookInfo->currentID() > m_bookInfo->firstID());
 }

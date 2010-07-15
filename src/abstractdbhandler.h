@@ -19,9 +19,9 @@ public:
     void setBookInfo(BookInfo *bi);
 
 public:
-//    virtual QString page(int pid = -1, int part=1) = 0;
-//    virtual QString openID(int id) = 0;
-    virtual QString page(int pid = -1) = 0;
+    virtual QString openPage(int page, int part=1) = 0;
+    virtual QString openID(int id = -1) = 0;
+    virtual QString openIndexID(int pid = -1);
     virtual QString nextPage() = 0;
     virtual QString prevPage() = 0;
 

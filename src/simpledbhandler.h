@@ -10,7 +10,8 @@ public:
     SimpleDBHandler();
     ~SimpleDBHandler();
 
-    QString page(int pid = -1);
+    QString openID(int id = -1);
+    QString openPage(int page, int part =1);
     QString nextPage();
     QString prevPage();
 

@@ -47,3 +47,8 @@ QString AbstractDBHandler::prevUnit()
 {
     return QString();
 }
+
+QString AbstractDBHandler::openIndexID(int pid)
+{
+    return openID(pid);
+}
