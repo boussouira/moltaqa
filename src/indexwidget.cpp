@@ -51,15 +51,28 @@ void IndexWidget::setIndex(QAbstractItemModel *pList)
     ui->treeView->setHeaderHidden(true);
 }
 
-void IndexWidget::setSoraDetials(PageInfo *pPageInfo)
+void IndexWidget::displayBookInfo()
 {
     sendSignals = false;
+    int part = m_bookInfo->currentPart();
+    ui->spinPage->setMaximum(m_bookInfo->lastPage(part));
+    ui->spinPage->setMinimum(m_bookInfo->firstPage(part));
+    ui->spinPage->setSuffix(QString(" / %1").arg(m_bookInfo->lastPage(part)));
+    ui->spinPage->setValue(m_bookInfo->currentPage());
 
-    ui->spinAya->setMaximum(pPageInfo->currentSoraAyatCount());
-    ui->spinAya->setSuffix(QString(" / %1").arg(pPageInfo->currentSoraAyatCount()));
-    ui->spinAya->setValue(pPageInfo->currentAya());
-    ui->spinPage->setValue(pPageInfo->currentPage());
-    setSelectedSora(pPageInfo->currentSoraNumber());
+    if(part > 1) {
+        ui->spinPart->setMaximum(m_bookInfo->partsCount());
+        ui->spinPart->setMinimum(1);
+        ui->spinPart->setSuffix(QString(" / %1").arg(m_bookInfo->partsCount()));
+        ui->spinPart->setValue(part);
+    }
+
+    if(m_bookInfo->bookType() == BookInfo::QuranBook) {
+        ui->spinAya->setMaximum(m_bookInfo->currentSoraAyatCount());
+        ui->spinAya->setSuffix(QString(" / %1").arg(m_bookInfo->currentSoraAyatCount()));
+        ui->spinAya->setValue(m_bookInfo->currentAya());
+        setSelectedSora(m_bookInfo->currentSoraNumber());
+    }
 
     sendSignals = true;
 }

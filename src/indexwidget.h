@@ -1,6 +1,7 @@
 #ifndef INDEXWIDGET_H
 #define INDEXWIDGET_H
 
+#include "bookinfo.h"
 #include <QDockWidget>
 #include <QStringListModel>
 
@@ -19,13 +20,14 @@ public:
     void hideAyaSpin(bool visible);
     void hidePageSpin(bool visible);
     void hidePartSpin(bool visible);
+    void setBookInfo(BookInfo *bInfo) { m_bookInfo = bInfo; }
 
 protected:
     void changeEvent(QEvent *e);
 
 public slots:
     void setIndex(QAbstractItemModel *pList);
-    void setSoraDetials(PageInfo *pPageInfo);
+    void displayBookInfo();
     void setSelectedSora(int pSoraNumber);
     void updatePageAndAyaNum(int pPageNumber, int pAyaNumber);
     int currentPageNmber();
@@ -44,6 +46,7 @@ signals:
     void openPage(int pageID);
 
 private:
+    BookInfo *m_bookInfo;
     Ui::IndexWidget *ui;
     bool sendSignals;
 };
