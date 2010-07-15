@@ -12,8 +12,8 @@ BookInfoHandler::BookInfoHandler()
 
 BookInfoHandler::~BookInfoHandler()
 {
-    m_indexDB.close();
     delete m_query;
+    m_indexDB.close();
 }
 
 void BookInfoHandler::openDB()
@@ -30,7 +30,7 @@ BookInfo *BookInfoHandler::getBookInfo(int bookID)
     BookInfo *bookInfo = new BookInfo();
     m_query->exec(QString("SELECT bookName, bookType, fileName "
                           "From booksList where id = %1 LIMIT 1").arg(bookID));
-    if(m_query->first()) {
+    if(m_query->next()) {
         bookInfo->setBookName(m_query->value(0).toString());
         bookInfo->setBookType((BookInfo::Type)m_query->value(1).toInt());
         bookInfo->setBookID(bookID);

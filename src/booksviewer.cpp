@@ -29,6 +29,7 @@ BooksViewer::BooksViewer(QWidget *parent): QWidget(parent)
 BooksViewer::~BooksViewer()
 {
     delete m_infoDB;
+    QSqlDatabase::removeDatabase("BooksInfoDB");
 }
 
 void BooksViewer::createMenus(QMainWindow *parent)
