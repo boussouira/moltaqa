@@ -6,6 +6,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QSettings>
 #include "bookslistmodel.h"
 #include "bookslistnode.h"
 
@@ -31,6 +32,7 @@ signals:
 
 private:
     QSqlDatabase m_booksListDB;
+    QString m_appDir;
     BooksListModel *m_listModel;
     Ui::BooksListBrowser *ui;
 };

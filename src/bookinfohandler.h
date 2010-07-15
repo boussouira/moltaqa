@@ -19,7 +19,7 @@ public:
 protected:
     QSqlDatabase m_indexDB;
     QSqlQuery *m_query;
-    QString m_booksPath;
+    QString m_appDir;
 };
 
 #endif // BOOKINFOHANDLER_H

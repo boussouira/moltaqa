@@ -35,17 +35,20 @@
          <item>
           <widget class="QLabel" name="label">
            <property name="text">
-            <string>قاعدة البيانات :</string>
+            <string>مجلد البرنامج :</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineQuranDBPath">
+          <widget class="QLineEdit" name="lineAppDir">
            <property name="layoutDirection">
             <enum>Qt::LeftToRight</enum>
            </property>
            <property name="locale">
             <locale language="English" country="UnitedStates"/>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
            </property>
           </widget>
          </item>

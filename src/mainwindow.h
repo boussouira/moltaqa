@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QSettings>
 
 class KSetting;
 class BooksViewer;
@@ -27,6 +28,7 @@ public:
 protected:
     /// @brief Setup the application menus and actions.
     void setupActions();
+    void checkPaths();
 
 protected slots:
     /// @brief Display information about the application

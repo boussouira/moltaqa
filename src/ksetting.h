@@ -21,13 +21,9 @@ public:
 
     /// @brief The destructor.
     ~KSetting();
+    void hideCancelButton(bool hide);
 
 protected:
-    /**
-      @brief Event handler
-      */
-    void changeEvent(QEvent *e);
-
     /**
       @brief Load the application settings.
       */
@@ -47,7 +43,7 @@ protected slots:
       This method help us to force the user to choose an existing database.
       @todo Make a test to see if the selected database is a valid one.
       */
-    void changeQuranDBPath();
+    void changeAppDir();
 
     /**
       @brief Close the setting window without saving any thing.

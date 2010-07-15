@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 {
     ui->setupUi(this);
     setWindowTitle(trUtf8("برنامج الكتبية"));
+    checkPaths();
     setupActions();
 
     m_bookView = new BooksViewer(this);
@@ -47,8 +48,8 @@ void MainWindow::aboutAlKotobiya()
 
 void MainWindow::settingDialog()
 {
-    KSetting *ksetting = new KSetting(this);
-    ksetting->exec();
+    KSetting settingDialog(this);
+    settingDialog.exec();
 }
 
 void MainWindow::quranWindow()
@@ -71,4 +72,24 @@ void MainWindow::openBook(int pBookID)
 void MainWindow::showBooksList()
 {
     m_booksList->show();
+}
+
+void MainWindow::checkPaths()
+{
+    QSettings settings;
+    if(settings.value("General/app_dir").toString().isEmpty()) {
+        KSetting settingDialog(this);
+        settingDialog.hideCancelButton(true);
+        int ret;
+        while(1) {
+            ret = settingDialog.exec();
+            if(ret != 1)
+                QMessageBox::warning(this,
+                                     trUtf8("مجلد البرنامج"),
+                                     trUtf8("المرجوا اختيار مجلد البرنامج<br>"
+                                            "البرنامج سيحاول البحث عن مسار البرنامج، لدى في أغلب الأحوال يكفي الضغط على زر <b>حفظ</b> في <b>نافذة التعديلات</b>."));
+            else
+                break;
+        }
+    }
 }

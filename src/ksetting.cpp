@@ -13,7 +13,8 @@ KSetting::KSetting(QWidget *parent) :
     ui->setupUi(this);
     setModal(true);
     loadSettings();
-    connect(ui->pushChangeQuranDBPath, SIGNAL(clicked()), this, SLOT(changeQuranDBPath()));
+
+    connect(ui->pushChangeQuranDBPath, SIGNAL(clicked()), this, SLOT(changeAppDir()));
     connect(ui->pushSaveSettings, SIGNAL(clicked()), this, SLOT(saveSettings()));
     connect(ui->pushCancel, SIGNAL(clicked()), this, SLOT(cancel()));
 }
@@ -23,24 +24,13 @@ KSetting::~KSetting()
     delete ui;
 }
 
-void KSetting::changeEvent(QEvent *e)
-{
-    QWidget::changeEvent(e);
-    switch (e->type()) {
-    case QEvent::LanguageChange:
-        ui->retranslateUi(this);
-        break;
-    default:
-        break;
-    }
-}
-
 void KSetting::loadSettings()
 {
     QSettings settings;
-    QString quranDBPath = settings.value("app/db").toString();
+    QString quranDBPath = settings.value("General/app_dir",
+                                         QApplication::applicationDirPath()).toString();
     if(!quranDBPath.isEmpty())
-        ui->lineQuranDBPath->setText(quranDBPath);
+        ui->lineAppDir->setText(quranDBPath);
 }
 
 QString KSetting::getFilePath()
@@ -70,19 +60,28 @@ QString KSetting::getFolderPath()
     else
         return QString();
 }
-void KSetting::changeQuranDBPath()
+void KSetting::changeAppDir()
 {
-    QString filePath = getFilePath();
-    if(!filePath.isEmpty())
-        ui->lineQuranDBPath->setText(filePath);
+    QString filePath = getFolderPath();
+    if(!filePath.isEmpty()) {
+        if(filePath.endsWith(QChar('/')) || filePath.endsWith(QChar('\\')))
+            filePath.remove(filePath.size()-1, 1);
+        QDir appDir(filePath);
+        if(appDir.exists("books"))
+            ui->lineAppDir->setText(filePath);
+        else
+            QMessageBox::warning(this,
+                                 trUtf8("مجلد البرنامج"),
+                                 trUtf8("لقد قمت باختيار مجلد غير صحيح"));
+    }
 }
 
 void KSetting::saveSettings()
 {
     QSettings settings;
-    QString quranDBPath = ui->lineQuranDBPath->text();
+    QString quranDBPath = ui->lineAppDir->text();
     if(QFile::exists(quranDBPath)) {
-        settings.setValue("app/db", quranDBPath);
+        settings.setValue("General/app_dir", quranDBPath);
         accept();
     } else {
         QMessageBox::warning(this,
@@ -94,4 +93,9 @@ void KSetting::saveSettings()
 void KSetting::cancel()
 {
    reject();
+}
+
+void KSetting::hideCancelButton(bool hide)
+{
+    ui->pushCancel->setHidden(hide);
 }

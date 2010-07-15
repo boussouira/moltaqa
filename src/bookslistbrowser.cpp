@@ -9,6 +9,9 @@ BooksListBrowser::BooksListBrowser(QWidget *parent) :
     setAttribute(Qt::WA_DeleteOnClose);
     m_listModel = new BooksListModel();
 
+    QSettings settings;
+    m_appDir = settings.value("General/app_dir").toString();
+
     showBooksList();
 }
 
@@ -23,7 +26,7 @@ void BooksListBrowser::showBooksList()
         m_booksListDB = QSqlDatabase::database("BooksListDB");
     } else {
         m_booksListDB = QSqlDatabase::addDatabase("QSQLITE", "BooksListDB");
-        m_booksListDB.setDatabaseName("books/books_index.db");
+        m_booksListDB.setDatabaseName(QString("%1/books/books_index.db").arg(m_appDir));
     }
 
     if (!m_booksListDB.open()) {
