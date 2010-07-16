@@ -71,4 +71,3 @@ FORMS += mainwindow.ui quransearch.ui ksetting.ui \
     indexwidget.ui \
     bookslistbrowser.ui
 RESOURCES += data/qt_rc.qrc
-win32:RC_FILE = data/win_rc.rc
