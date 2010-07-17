@@ -48,9 +48,6 @@ void BooksViewer::createMenus(QMainWindow *parent)
                                             trUtf8("نافذة البحث"),
                                             this);
 
-    actionIndexDock->setCheckable(true);
-    actionSearchDock->setCheckable(true);
-
     // Navigation actions
     actionNextAYA = new QAction(QIcon(":/menu/images/go-first.png"),
                                 trUtf8("الآية التالية"),
@@ -98,15 +95,9 @@ void BooksViewer::createMenus(QMainWindow *parent)
     connect(actionPrevPage, SIGNAL(triggered()), this, SLOT(previousPage()));
     connect(actionNextAYA, SIGNAL(triggered()), this, SLOT(nextUnit()));
     connect(actionPrevAYA, SIGNAL(triggered()), this, SLOT(previousUnit()));
-/*
-    // Index Dock
-    connect(actionIndexDock, SIGNAL(toggled(bool)), m_indexWidgetDock, SLOT(setShown(bool)));
-    connect(m_indexWidgetDock, SIGNAL(visibilityChanged(bool)), this, SLOT(showIndexDock(bool)));
 
-    // Search Dock
-    connect(actionSearchDock, SIGNAL(toggled(bool)), m_quranSearchDock, SLOT(setShown(bool)));
-    connect(m_quranSearchDock, SIGNAL(visibilityChanged(bool)), this, SLOT(showSearchDock(bool)));
-*/
+    // Index widget
+    connect(actionIndexDock, SIGNAL(triggered()), this, SLOT(showIndexWidget()));
 }
 
 void BooksViewer::openBook(int pBookID, bool newTab)
@@ -134,35 +125,42 @@ void BooksViewer::openBook(int pBookID, bool newTab)
 
     m_tab->setCurrentIndex(tid);
     bookWidget->firstPage();
+    updateActions();
 }
 
 void BooksViewer::nextUnit()
 {
     currentBookWidget()->nextUnit();
+    updateActions();
 }
 
 void BooksViewer::previousUnit()
 {
     currentBookWidget()->prevUnit();
+    updateActions();
 }
 
 void BooksViewer::nextPage()
 {
     currentBookWidget()->nextPage();
+    updateActions();
 }
 
 void BooksViewer::previousPage()
 {
     currentBookWidget()->prevPage();
+    updateActions();
 }
 
-void BooksViewer::updateNavigationButtons()
+void BooksViewer::updateActions()
 {
+    actionNextPage->setEnabled(currentBookWidget()->dbHandler()->hasNext());
+    actionPrevPage->setEnabled(currentBookWidget()->dbHandler()->hasPrev());
 }
 
-void BooksViewer::showIndexDock(bool /*pShowIndexDock*/)
+void BooksViewer::showIndexWidget()
 {
-    actionIndexDock->setChecked(m_indexWidgetDock->isVisible());
+    currentBookWidget()->hideIndexWidget();
 }
 
 void BooksViewer::showSearchDock(bool /*pShowSearchDock*/)
@@ -172,7 +170,12 @@ void BooksViewer::showSearchDock(bool /*pShowSearchDock*/)
 
 BookWidget *BooksViewer::currentBookWidget()
 {
-    return m_bookWidgets.at(m_tab->currentIndex());
+    return currentBookWidget(m_tab->currentIndex());
+}
+
+BookWidget *BooksViewer::currentBookWidget(int index)
+{
+    return (m_bookWidgets.count() > 0) ? m_bookWidgets.at(index) : NULL;
 }
 
 void BooksViewer::tabChangePosition(int fromIndex, int toIndex)
@@ -182,21 +185,18 @@ void BooksViewer::tabChangePosition(int fromIndex, int toIndex)
 
 void BooksViewer::tabCloseRequest(int tabIndex)
 {
-    delete m_bookWidgets.at(tabIndex);
     m_bookWidgets.removeAt(tabIndex);
+    m_tab->removeTab(tabIndex);
     m_tab->updateTabBar();
 }
 
-void BooksViewer::tabChanged(int /*newIndex*/)
+void BooksViewer::tabChanged(int newIndex)
 {
-    if((m_bookWidgets.count() > 0)) {
-        if(currentBookWidget()->dbHandler()->bookInfo()->bookType() == BookInfo::QuranBook) {
-            toolBarTafesir->setVisible(true);
-            toolBarTafesir->setEnabled(true);
-        } else {
-            toolBarTafesir->setVisible(false);
-            toolBarTafesir->setEnabled(false);
-        }
+    if(newIndex != -1) {
+        bool showTafsssir = currentBookWidget()->dbHandler()->bookInfo()->bookType() == BookInfo::QuranBook;
+        toolBarTafesir->setVisible(showTafsssir);
+        toolBarTafesir->setEnabled(showTafsssir);
+        updateActions();
+        m_tab->updateTabBar();
     }
-    m_tab->updateTabBar();
 }

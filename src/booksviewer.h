@@ -33,16 +33,17 @@ public slots:
     void previousUnit();
     void nextPage();
     void previousPage();
-    void showIndexDock(bool pShowIndexDock);
+    void showIndexWidget();
     void showSearchDock(bool pShowSearchDock);
     void tabChangePosition(int fromIndex, int toIndex);
     void tabCloseRequest(int tabIndex);
     void createMenus(QMainWindow *parent);
     BookWidget *currentBookWidget();
+    BookWidget *currentBookWidget(int index);
     void tabChanged(int newIndex);
 
 protected:
-    void updateNavigationButtons();
+    void updateActions();
 
 private:
     KTab *m_tab;

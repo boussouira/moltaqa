@@ -14,6 +14,7 @@ BookWidget::BookWidget(AbstractDBHandler *db, QWidget *parent): QWidget(parent),
     m_layout->setMargin(0);
     setLayout(m_layout);
     setAutoFillBackground(true);
+    m_splitter->setChildrenCollapsible(false);
 
     displayInfo();
     connect(m_indexWidget, SIGNAL(openPage(int)), this, SLOT(openID(int)));
@@ -56,20 +57,24 @@ void BookWidget::firstPage()
 
 void BookWidget::nextPage()
 {
-    m_view->setHtml(m_db->nextPage());
-    if(m_db->bookInfo()->bookType() == BookInfo::QuranBook)
-        m_view->scrollToAya(m_db->bookInfo()->currentSoraNumber(),
-                            m_db->bookInfo()->currentAya());
-    m_indexWidget->displayBookInfo();
+    if(dbHandler()->hasNext()) {
+        m_view->setHtml(m_db->nextPage());
+        if(m_db->bookInfo()->bookType() == BookInfo::QuranBook)
+            m_view->scrollToAya(m_db->bookInfo()->currentSoraNumber(),
+                                m_db->bookInfo()->currentAya());
+        m_indexWidget->displayBookInfo();
+    }
 }
 
 void BookWidget::prevPage()
 {
-    m_view->setHtml(m_db->prevPage());
-    if(m_db->bookInfo()->bookType() == BookInfo::QuranBook)
-        m_view->scrollToAya(m_db->bookInfo()->currentSoraNumber(),
-                            m_db->bookInfo()->currentAya());
-    m_indexWidget->displayBookInfo();
+    if(dbHandler()->hasPrev()) {
+        m_view->setHtml(m_db->prevPage());
+        if(m_db->bookInfo()->bookType() == BookInfo::QuranBook)
+            m_view->scrollToAya(m_db->bookInfo()->currentSoraNumber(),
+                                m_db->bookInfo()->currentAya());
+        m_indexWidget->displayBookInfo();
+    }
 }
 
 void BookWidget::nextUnit()
@@ -104,4 +109,12 @@ void BookWidget::prevUnit()
         else
             prevPage();
     }
+}
+
+void BookWidget::hideIndexWidget()
+{
+    if(m_indexWidget->isHidden())
+        m_indexWidget->show();
+    else
+        m_indexWidget->hide();
 }

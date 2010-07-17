@@ -24,6 +24,7 @@ public:
     void prevPage();
     void nextUnit();
     void prevUnit();
+    void hideIndexWidget();
 
 public slots:
     void openID(int id);
