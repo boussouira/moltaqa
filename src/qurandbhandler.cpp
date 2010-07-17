@@ -191,5 +191,6 @@ void QuranDBHandler::firstSoraAndAya(int page)
         m_bookInfo->setCurrentSoraNumber(m_bookQuery->value(0).toInt());
         // First aya number in page
         m_bookInfo->setCurrentAya(m_bookQuery->value(1).toInt());
+        m_bookInfo->setCurrentSoraAyatCount(getSoraAyatCount(m_bookQuery->value(0).toInt()));
     }
 }
