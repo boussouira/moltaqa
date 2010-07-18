@@ -13,7 +13,6 @@ BooksListBrowser::BooksListBrowser(QWidget *parent) :
     ui(new Ui::BooksListBrowser)
 {
     ui->setupUi(this);
-    setAttribute(Qt::WA_DeleteOnClose);
     m_listModel = new BooksListModel();
 
     QSettings settings;
@@ -25,6 +24,7 @@ BooksListBrowser::BooksListBrowser(QWidget *parent) :
 BooksListBrowser::~BooksListBrowser()
 {
     delete ui;
+    delete m_listModel;
 }
 
 void BooksListBrowser::showBooksList()
@@ -48,7 +48,6 @@ void BooksListBrowser::showBooksList()
     ui->treeView->expandAll();
     ui->treeView->resizeColumnToContents(0);
     ui->treeView->resizeColumnToContents(1);
-    ui->treeView->setSortingEnabled(true);
 }
 
 void BooksListBrowser::childCats(BooksListNode *parentNode, int pID)
