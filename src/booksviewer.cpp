@@ -187,7 +187,6 @@ void BooksViewer::tabCloseRequest(int tabIndex)
 {
     m_bookWidgets.removeAt(tabIndex);
     m_tab->removeTab(tabIndex);
-    m_tab->updateTabBar();
 }
 
 void BooksViewer::tabChanged(int newIndex)
@@ -197,6 +196,5 @@ void BooksViewer::tabChanged(int newIndex)
         toolBarTafesir->setVisible(showTafsssir);
         toolBarTafesir->setEnabled(showTafsssir);
         updateActions();
-        m_tab->updateTabBar();
     }
 }
