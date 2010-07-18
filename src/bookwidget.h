@@ -1,13 +1,13 @@
 #ifndef BOOKWIDGET_H
 #define BOOKWIDGET_H
 
-#include "indexwidget.h"
-#include "abstractdbhandler.h"
-#include "kwebview.h"
 #include <qwidget.h>
-#include <qwebview.h>
-#include <qsplitter.h>
-#include <qboxlayout.h>
+
+class KWebView;
+class IndexWidget;
+class AbstractDBHandler;
+class QSplitter;
+class QVBoxLayout;
 
 class BookWidget: public QWidget
 {

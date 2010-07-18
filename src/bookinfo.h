@@ -2,7 +2,7 @@
 #define BOOKINFO_H
 
 #include "pageinfo.h"
-#include <QHash>
+#include <qhash.h>
 
 class BookInfo : public PageInfo
 {

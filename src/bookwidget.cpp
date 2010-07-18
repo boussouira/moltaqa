@@ -1,4 +1,10 @@
 #include "bookwidget.h"
+#include "indexwidget.h"
+#include "abstractdbhandler.h"
+#include "kwebview.h"
+
+#include <qsplitter.h>
+#include <qboxlayout.h>
 
 BookWidget::BookWidget(AbstractDBHandler *db, QWidget *parent): QWidget(parent), m_db(db)
 {

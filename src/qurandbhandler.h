@@ -3,8 +3,6 @@
 
 #include "abstractdbhandler.h"
 #include "qurantextformat.h"
-#include <qsqlerror.h>
-#include <qdebug.h>
 
 class QuranDBHandler : public AbstractDBHandler
 {

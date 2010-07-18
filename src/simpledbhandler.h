@@ -3,6 +3,7 @@
 
 #include "abstractdbhandler.h"
 #include "simpletextformat.h"
+#include "bookindexnode.h"
 
 class SimpleDBHandler : public AbstractDBHandler
 {

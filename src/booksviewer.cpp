@@ -1,4 +1,20 @@
 #include "booksviewer.h"
+#include "ktab.h"
+#include "indexwidget.h"
+#include "bookslistbrowser.h"
+#include "simpledbhandler.h"
+#include "qurandbhandler.h"
+#include "bookinfohandler.h"
+#include "bookwidget.h"
+
+#include <qmainwindow.h>
+#include <qmenubar.h>
+#include <qmenu.h>
+#include <qaction.h>
+#include <qtoolbar.h>
+#include <qcombobox.h>
+#include <qstackedwidget.h>
+#include <qboxlayout.h>
 
 BooksViewer::BooksViewer(QWidget *parent): QWidget(parent)
 {

@@ -1,9 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QMessageBox>
-#include <QSettings>
+#include <qmainwindow.h>
 
 class KSetting;
 class BooksViewer;

@@ -1,9 +1,9 @@
 #ifndef BOOKSLISTMODEL_H
 #define BOOKSLISTMODEL_H
 
-#include <QObject>
-#include <QAbstractItemModel>
-#include <QIcon>
+#include <qobject.h>
+#include <qabstractitemmodel.h>
+#include <qicon.h>
 #include "bookslistnode.h"
 
 class BooksListModel : public QAbstractItemModel

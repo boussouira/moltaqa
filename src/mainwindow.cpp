@@ -5,6 +5,9 @@
 #include "ksetting.h"
 #include "bookwidget.h"
 
+#include <qmessagebox.h>
+#include <qsettings.h>
+
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);

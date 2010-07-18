@@ -1,14 +1,8 @@
 #ifndef KTAB_H
 #define KTAB_H
 
-#include <QTabWidget>
-#include <QWebView>
-#include <QWebFrame>
-#include <QWebElement>
-#include <QPropertyAnimation>
-#include <QVBoxLayout>
-#include <QTabBar>
-#include "bookinfo.h"
+#include <qtabwidget.h>
+#include <qtabbar.h>
 
 /**
   @brief This class handle displaying Quran pages in tabs.

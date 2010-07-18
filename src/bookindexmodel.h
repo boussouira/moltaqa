@@ -1,7 +1,7 @@
 #ifndef BOOKINDEXMODEL_H
 #define BOOKINDEXMODEL_H
 
-#include <QAbstractItemModel>
+#include <qabstractitemmodel.h>
 #include "bookindexnode.h"
 
 class BookIndexModel : public QAbstractItemModel

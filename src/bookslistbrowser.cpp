@@ -1,5 +1,12 @@
 #include "bookslistbrowser.h"
 #include "ui_bookslistbrowser.h"
+#include "bookslistmodel.h"
+#include "bookslistnode.h"
+
+#include <qdebug.h>
+#include <qsqlquery.h>
+#include <qsqlerror.h>
+#include <qsettings.h>
 
 BooksListBrowser::BooksListBrowser(QWidget *parent) :
     QDialog(parent),

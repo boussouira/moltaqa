@@ -1,8 +1,7 @@
 #ifndef KSETTING_H
 #define KSETTING_H
 
-#include <QWidget>
-#include <QDialog>
+#include <qdialog.h>
 
 namespace Ui {
     class KSetting;
@@ -17,7 +16,7 @@ public:
       @brief The constructor.
       @param parent The parent widget.
       */
-    explicit KSetting(QWidget *parent = 0);
+    KSetting(QWidget *parent = 0);
 
     /// @brief The destructor.
     ~KSetting();

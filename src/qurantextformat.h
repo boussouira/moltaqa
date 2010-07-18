@@ -1,7 +1,8 @@
 #ifndef KTEXT_H
 #define KTEXT_H
 
-#include <QtCore>
+#include <qobject.h>
+#include <qstring.h>
 
 /**
   @brief This class handle the formatting of the Quran pages.

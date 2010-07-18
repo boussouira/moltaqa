@@ -1,13 +1,13 @@
 #ifndef ABSTRACTDBHANDLER_H
 #define ABSTRACTDBHANDLER_H
 
-#include <QObject>
-#include <QDebug>
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QStringListModel>
-#include "bookinfo.h"
-#include "bookindexmodel.h"
+#include <qobject.h>
+#include <qsqldatabase.h>
+
+class BookInfo;
+class BookIndexModel;
+class QAbstractItemModel;
+class QSqlQuery;
 
 class AbstractDBHandler
 {

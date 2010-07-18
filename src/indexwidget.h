@@ -2,8 +2,8 @@
 #define INDEXWIDGET_H
 
 #include "bookinfo.h"
-#include <QDockWidget>
-#include <QStringListModel>
+#include <qdockwidget.h>
+#include <qstringlistmodel.h>
 
 namespace Ui {
     class IndexWidget;

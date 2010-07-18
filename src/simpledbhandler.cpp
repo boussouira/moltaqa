@@ -1,4 +1,11 @@
 #include "simpledbhandler.h"
+#include "abstractdbhandler.h"
+#include "bookinfo.h"
+#include "bookindexmodel.h"
+
+#include <qdebug.h>
+#include <qsqlquery.h>
+#include <qstringlist.h>
 
 SimpleDBHandler::SimpleDBHandler()
 {

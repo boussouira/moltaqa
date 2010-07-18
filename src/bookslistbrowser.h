@@ -1,14 +1,12 @@
 #ifndef BOOKSLISTBROWSER_H
 #define BOOKSLISTBROWSER_H
 
-#include <QDialog>
-#include <QDebug>
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlError>
-#include <QSettings>
-#include "bookslistmodel.h"
-#include "bookslistnode.h"
+#include <qdialog.h>
+#include <qsqldatabase.h>
+#include "qabstractitemmodel.h"
+
+class BooksListModel;
+class BooksListNode;
 
 namespace Ui {
     class BooksListBrowser;

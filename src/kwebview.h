@@ -1,12 +1,16 @@
 #ifndef KWEBVIEW_H
 #define KWEBVIEW_H
 
-#include <QtWebKit>
+#include <qwebview.h>
+#include <qwebframe.h>
+#include <qwebelement.h>
+
 #if QT_VERSION >= 0x040600
-    #include <QPropertyAnimation>
+    #include <qpropertyanimation.h>
 #else
-    #include <QTimeLine>
+    #include <qtimeline.h>
 #endif
+
 class KWebView : public QWebView
 {
     Q_OBJECT

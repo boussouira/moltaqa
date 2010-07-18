@@ -1,8 +1,8 @@
 #ifndef SIMPLETEXTFORMAT_H
 #define SIMPLETEXTFORMAT_H
 
-#include <QString>
-#include <QRegExp>
+#include <qstring.h>
+#include <qregexp.h>
 
 class SimpleTextFormat
 {

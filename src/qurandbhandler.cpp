@@ -1,4 +1,9 @@
 #include "qurandbhandler.h"
+#include "bookinfo.h"
+#include "bookindexmodel.h"
+
+#include <qsqldatabase.h>
+#include <qsqlquery.h>
 
 QuranDBHandler::QuranDBHandler()
 {

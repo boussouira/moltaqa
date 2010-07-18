@@ -1,8 +1,8 @@
 #ifndef BOOKINDEXNODE_H
 #define BOOKINDEXNODE_H
 
-#include <QString>
-#include <QList>
+#include <qstring.h>
+#include <qlist.h>
 
 class BookIndexNode
 {

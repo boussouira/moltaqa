@@ -1,21 +1,14 @@
 #ifndef BOOKSVIEWER_H
 #define BOOKSVIEWER_H
 
-#include <QMainWindow>
-#include <QMenuBar>
-#include <QMenu>
-#include <QAction>
-#include <QToolBar>
-#include <QComboBox>
-#include <QStackedWidget>
+#include <qwidget.h>
 
-#include "ktab.h"
-#include "indexwidget.h"
-#include "bookslistbrowser.h"
-#include "simpledbhandler.h"
-#include "qurandbhandler.h"
-#include "bookinfohandler.h"
-#include "bookwidget.h"
+class BookWidget;
+class BookInfoHandler;
+class KTab;
+class QMainWindow;
+class QToolBar;
+class QComboBox;
 
 class BooksViewer : public QWidget
 {

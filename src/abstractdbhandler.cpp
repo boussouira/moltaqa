@@ -1,4 +1,12 @@
 #include "abstractdbhandler.h"
+#include "bookinfo.h"
+#include "bookindexmodel.h"
+
+#include <qdebug.h>
+#include <qsqldatabase.h>
+#include <qsqlquery.h>
+#include <qsqlerror.h>
+#include <qstringlistmodel.h>
 
 AbstractDBHandler::AbstractDBHandler()
 {
