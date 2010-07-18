@@ -11,9 +11,6 @@
 
 #include "ktab.h"
 #include "indexwidget.h"
-#include "qurantextmodel.h"
-#include "tafessirtextbase.h"
-#include "quransearch.h"
 #include "bookslistbrowser.h"
 #include "simpledbhandler.h"
 #include "qurandbhandler.h"
@@ -34,7 +31,6 @@ public slots:
     void nextPage();
     void previousPage();
     void showIndexWidget();
-    void showSearchDock(bool pShowSearchDock);
     void tabChangePosition(int fromIndex, int toIndex);
     void tabCloseRequest(int tabIndex);
     void createMenus(QMainWindow *parent);
@@ -47,11 +43,8 @@ protected:
 
 private:
     KTab *m_tab;
-    QuranSearch *m_quranSearch ;
     BookInfoHandler *m_infoDB;
     QList<BookWidget *> m_bookWidgets;
-    QDockWidget *m_quranSearchDock;
-    QDockWidget *m_indexWidgetDock;
     QAction *actionNewTab;
     QAction *actionIndexDock;
     QAction *actionSearchDock;

@@ -47,6 +47,7 @@ void BooksViewer::createMenus(QMainWindow *parent)
     actionSearchDock = new QAction(QIcon(":/menu/images/find.png"),
                                             trUtf8("نافذة البحث"),
                                             this);
+    actionSearchDock->setEnabled(false);
 
     // Navigation actions
     actionNextAYA = new QAction(QIcon(":/menu/images/go-first.png"),
@@ -161,11 +162,6 @@ void BooksViewer::updateActions()
 void BooksViewer::showIndexWidget()
 {
     currentBookWidget()->hideIndexWidget();
-}
-
-void BooksViewer::showSearchDock(bool /*pShowSearchDock*/)
-{
-    actionSearchDock->setChecked(m_quranSearchDock->isVisible());
 }
 
 BookWidget *BooksViewer::currentBookWidget()

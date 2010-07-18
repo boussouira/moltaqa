@@ -18,15 +18,10 @@ RCC_DIR += $$PWD/.rcc
 #}
 
 SOURCES += mainwindow.cpp \
-    quransearch.cpp \
     pageinfo.cpp \
     qurantextformat.cpp \
     ktab.cpp \
     ksetting.cpp \
-    qurantextbase.cpp \
-    qurantextmodel.cpp \
-    tafessirtextbase.cpp \
-    tafessirtextformat.cpp \
     indexwidget.cpp \
     booksviewer.cpp \
     bookslistbrowser.cpp \
@@ -43,15 +38,10 @@ SOURCES += mainwindow.cpp \
     bookwidget.cpp \
     kwebview.cpp
 HEADERS += mainwindow.h \
-    quransearch.h \
     pageinfo.h \
     qurantextformat.h \
     ktab.h \
     ksetting.h \
-    qurantextbase.h \
-    qurantextmodel.h \
-    tafessirtextbase.h \
-    tafessirtextformat.h \
     indexwidget.h \
     booksviewer.h \
     bookslistbrowser.h \
@@ -67,7 +57,7 @@ HEADERS += mainwindow.h \
     bookinfohandler.h \
     bookwidget.h \
     kwebview.h
-FORMS += mainwindow.ui quransearch.ui ksetting.ui \
+FORMS += mainwindow.ui ksetting.ui \
     indexwidget.ui \
     bookslistbrowser.ui
 RESOURCES += data/qt_rc.qrc
