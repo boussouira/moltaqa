@@ -14,6 +14,7 @@ IndexWidget::IndexWidget(QWidget *parent) :
 
     ui->treeView->addAction(actionOpenSora);
     ui->treeView->addAction(actionOpenSoraInNewTab);
+    ui->treeView->setExpandsOnDoubleClick(false);
 
     connect(ui->spinAya, SIGNAL(valueChanged(int)),
             this, SLOT(ayaNumChange(int)));
