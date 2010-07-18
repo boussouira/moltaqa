@@ -67,7 +67,7 @@ void IndexWidget::displayBookInfo()
         ui->spinPart->setValue(part);
     }
 
-    if(m_bookInfo->bookType() == BookInfo::QuranBook) {
+    if(m_bookInfo->isQuran()) {
         ui->spinAya->setMaximum(m_bookInfo->currentSoraAyatCount());
         ui->spinAya->setSuffix(QString(" / %1").arg(m_bookInfo->currentSoraAyatCount()));
         ui->spinAya->setValue(m_bookInfo->currentAya());

@@ -41,6 +41,9 @@ public:
     void setBookType(BookInfo::Type type) { m_bookType = type; }
     void setBookID(int id) { m_bookID = id; }
 
+    bool isQuran() { return m_bookType == QuranBook; }
+    bool isNormal() { return m_bookType == NormalBook; }
+
 protected:
     BookInfo::Type m_bookType;
     QString m_bookPath;

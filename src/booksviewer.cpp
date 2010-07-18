@@ -105,7 +105,7 @@ void BooksViewer::openBook(int pBookID, bool newTab)
     BookInfo *bookInfo = m_infoDB->getBookInfo(pBookID);
 
     AbstractDBHandler *bookdb;
-    if(bookInfo->bookType() == BookInfo::QuranBook)
+    if(bookInfo->isQuran())
         bookdb = new QuranDBHandler();
     else
         bookdb = new SimpleDBHandler();
@@ -192,7 +192,7 @@ void BooksViewer::tabCloseRequest(int tabIndex)
 void BooksViewer::tabChanged(int newIndex)
 {
     if(newIndex != -1) {
-        bool showTafsssir = currentBookWidget()->dbHandler()->bookInfo()->bookType() == BookInfo::QuranBook;
+        bool showTafsssir = currentBookWidget()->dbHandler()->bookInfo()->isQuran();
         toolBarTafesir->setVisible(showTafsssir);
         toolBarTafesir->setEnabled(showTafsssir);
         updateActions();

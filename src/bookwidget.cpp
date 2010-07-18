@@ -35,14 +35,14 @@ void BookWidget::setDBHandler(AbstractDBHandler *db)
 void BookWidget::displayInfo()
 {
     m_indexWidget->setIndex(m_db->indexModel());
-    m_indexWidget->hideAyaSpin(m_db->bookInfo()->bookType()==BookInfo::QuranBook);
+    m_indexWidget->hideAyaSpin(m_db->bookInfo()->isQuran());
     m_indexWidget->hidePartSpin(m_db->bookInfo()->partsCount() > 1);
 }
 
 void BookWidget::openID(int id)
 {
     m_view->setHtml(m_db->openIndexID(id));
-    if(m_db->bookInfo()->bookType() == BookInfo::QuranBook)
+    if(m_db->bookInfo()->isQuran())
         m_view->scrollToSora(id);
     m_indexWidget->displayBookInfo();
 }
@@ -50,7 +50,7 @@ void BookWidget::openID(int id)
 void BookWidget::firstPage()
 {
     m_view->setHtml(m_db->openIndexID());
-    if(m_db->bookInfo()->bookType() == BookInfo::QuranBook)
+    if(m_db->bookInfo()->isQuran())
         m_view->scrollToSora(1); // First sora
     m_indexWidget->displayBookInfo();
 }
@@ -59,7 +59,7 @@ void BookWidget::nextPage()
 {
     if(dbHandler()->hasNext()) {
         m_view->setHtml(m_db->nextPage());
-        if(m_db->bookInfo()->bookType() == BookInfo::QuranBook)
+        if(m_db->bookInfo()->isQuran())
             m_view->scrollToAya(m_db->bookInfo()->currentSoraNumber(),
                                 m_db->bookInfo()->currentAya());
         m_indexWidget->displayBookInfo();
@@ -70,7 +70,7 @@ void BookWidget::prevPage()
 {
     if(dbHandler()->hasPrev()) {
         m_view->setHtml(m_db->prevPage());
-        if(m_db->bookInfo()->bookType() == BookInfo::QuranBook)
+        if(m_db->bookInfo()->isQuran())
             m_view->scrollToAya(m_db->bookInfo()->currentSoraNumber(),
                                 m_db->bookInfo()->currentAya());
         m_indexWidget->displayBookInfo();
@@ -79,7 +79,7 @@ void BookWidget::prevPage()
 
 void BookWidget::nextUnit()
 {
-    if(m_db->bookInfo()->bookType() == BookInfo::QuranBook) {
+    if(m_db->bookInfo()->isQuran()) {
         QString page = m_db->nextUnit();
         if(!page.isEmpty())
             m_view->setHtml(page);
@@ -96,7 +96,7 @@ void BookWidget::nextUnit()
 
 void BookWidget::prevUnit()
 {
-    if(m_db->bookInfo()->bookType() == BookInfo::QuranBook) {
+    if(m_db->bookInfo()->isQuran()) {
         QString page = m_db->prevUnit();
         if(!page.isEmpty())
             m_view->setHtml(page);
