@@ -22,19 +22,7 @@ BooksViewer::BooksViewer(QWidget *parent): QWidget(parent)
     m_tab = new KTab(this);
     layout->addWidget(m_tab);
     layout->setContentsMargins(0,6,0,0);
-/*
-    m_indexWidgetDock = new QDockWidget(trUtf8("الفهرس"), this);
-    m_stackedWidget = new QStackedWidget(this);
-    m_indexWidgetDock->setWidget(m_stackedWidget);
 
-    addDockWidget(Qt::RightDockWidgetArea, m_indexWidgetDock);
-
-    m_quranSearchDock = new QDockWidget(trUtf8("البحث"), this);
-    m_quranSearch = new QuranSearch(this, "books/quran.db");
-    m_quranSearchDock->setWidget(m_quranSearch);
-    m_quranSearchDock->setVisible(false);
-    addDockWidget(Qt::BottomDockWidgetArea, m_quranSearchDock);
-*/
     m_infoDB = new BookInfoHandler();
 
     connect(m_tab, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
@@ -130,17 +118,18 @@ void BooksViewer::openBook(int pBookID, bool newTab)
     bookdb->setBookInfo(bookInfo);
     bookdb->openBookDB();
     BookWidget *bookWidget = new BookWidget(bookdb, this);
-    m_bookWidgets.append(bookWidget);
-    int tid;
+    int tabIndex;
     if(newTab) {
-        tid = m_tab->addTab(bookWidget, bookdb->bookInfo()->bookName());
+        m_bookWidgets.append(bookWidget);
+        tabIndex = m_tab->addTab(bookWidget, bookdb->bookInfo()->bookName());
     } else {
-        m_tab->setCurrentWidget(bookWidget);
-        tid = m_tab->currentIndex();
-        m_tab->setTabText(tid, bookdb->bookInfo()->bookName());
+        tabIndex = m_tab->currentIndex();
+        m_tab->removeTab(tabIndex);
+        m_tab->insertTab(tabIndex, bookWidget, bookdb->bookInfo()->bookName());
+        m_bookWidgets.replace(tabIndex, bookWidget);
     }
 
-    m_tab->setCurrentIndex(tid);
+    m_tab->setCurrentIndex(tabIndex);
     bookWidget->firstPage();
     updateActions();
 }
