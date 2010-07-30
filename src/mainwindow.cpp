@@ -13,28 +13,26 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     ui->setupUi(this);
     setWindowTitle(trUtf8("برنامج الكتبية"));
     checkPaths();
-    setupActions();
 
     m_bookView = new BooksViewer(this);
     m_booksList = new BooksListBrowser(this);
     m_createMenu = true;
     m_bookView->hide();
 
-    connect(ui->pushOpenQuran, SIGNAL(clicked()), this, SLOT(quranWindow()));
-    connect(ui->pushBooksList, SIGNAL(clicked()), this, SLOT(showBooksList()));
-    connect(m_booksList, SIGNAL(bookSelected(int)), this, SLOT(openBook(int)));
-    connect(ui->actionBooksList, SIGNAL(triggered()), this, SLOT(showBooksList()));
+    setupActions();
 }
 
 void MainWindow::setupActions()
 {
 
-    connect(ui->actionExit, SIGNAL(triggered()),
-            this, SLOT(close()));
-    connect(ui->actionAbout, SIGNAL(triggered()),
-            this, SLOT(aboutAlKotobiya()));
-    connect(ui->actionSettings, SIGNAL(triggered()),
-            this, SLOT(settingDialog()));
+    connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
+    connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(aboutAlKotobiya()));
+    connect(ui->actionSettings, SIGNAL(triggered()), this, SLOT(settingDialog()));
+
+    connect(ui->pushOpenQuran, SIGNAL(clicked()), this, SLOT(quranWindow()));
+    connect(ui->pushBooksList, SIGNAL(clicked()), this, SLOT(showBooksList()));
+    connect(m_booksList, SIGNAL(bookSelected(int)), this, SLOT(openBook(int)));
+    connect(ui->actionBooksList, SIGNAL(triggered()), this, SLOT(showBooksList()));
 }
 
 MainWindow::~MainWindow()
