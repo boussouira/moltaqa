@@ -31,6 +31,7 @@ set(alkotobiya_SRCS
         simpletextformat.cpp
 	tafessirtextbase.cpp
 	tafessirtextformat.cpp
+	settingschecker.cpp
 )
 set(alkotobiya_MOCS_SRCS
 	booksviewer.h

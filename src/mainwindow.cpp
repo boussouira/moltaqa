@@ -4,9 +4,9 @@
 #include "bookslistbrowser.h"
 #include "ksetting.h"
 #include "bookwidget.h"
+#include "settingschecker.h"
 
 #include <qmessagebox.h>
-#include <qsettings.h>
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -77,20 +77,6 @@ void MainWindow::showBooksList()
 
 void MainWindow::checkPaths()
 {
-    QSettings settings;
-    if(settings.value("General/app_dir").toString().isEmpty()) {
-        KSetting settingDialog(this);
-        settingDialog.hideCancelButton(true);
-        int ret;
-        while(1) {
-            ret = settingDialog.exec();
-            if(ret != 1)
-                QMessageBox::warning(this,
-                                     trUtf8("مجلد البرنامج"),
-                                     trUtf8("المرجوا اختيار مجلد البرنامج<br>"
-                                            "البرنامج سيحاول البحث عن مسار البرنامج، لدى في أغلب الأحوال يكفي الضغط على زر <b>حفظ</b> في <b>نافذة التعديلات</b>."));
-            else
-                break;
-        }
-    }
+    SettingsChecker checker(this);
+    checker.checkSettings();
 }
