@@ -1,25 +1,25 @@
-#ifndef KSETTING_H
-#define KSETTING_H
+#ifndef SETTINGSDIALOG_H
+#define SETTINGSDIALOG_H
 
 #include <qdialog.h>
 
 namespace Ui {
-    class KSetting;
+    class SettingsDialog;
 }
 /**
   @brief This class will handle the edit of the application settings.
   */
-class KSetting : public QDialog {
+class SettingsDialog : public QDialog {
     Q_OBJECT
 public:
     /**
       @brief The constructor.
       @param parent The parent widget.
       */
-    KSetting(QWidget *parent = 0);
+    SettingsDialog(QWidget *parent = 0);
 
     /// @brief The destructor.
-    ~KSetting();
+    ~SettingsDialog();
     void hideCancelButton(bool hide);
 
 protected:
@@ -54,7 +54,7 @@ protected slots:
       */
     void saveSettings();
 private:
-    Ui::KSetting *ui;
+    Ui::SettingsDialog *ui;
 };
 
-#endif // KSETTING_H
+#endif // SETTINGSDIALOG_H

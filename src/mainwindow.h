@@ -3,7 +3,7 @@
 
 #include <qmainwindow.h>
 
-class KSetting;
+class SettingsDialog;
 class BooksViewer;
 class BooksListBrowser;
 
@@ -32,8 +32,6 @@ protected slots:
     /// @brief Display information about the application
     /// @todo Improve this message.
     void aboutAlKotobiya();
-
-    /// @brief Show the KSetting dialog.
     void settingDialog();
 
 public slots:

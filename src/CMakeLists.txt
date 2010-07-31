@@ -16,7 +16,7 @@ set(alkotobiya_SRCS
         bookwidget.cpp
 	abstractdbhandler.cpp
 	indexwidget.cpp
-	ksetting.cpp
+        settingsdialog.cpp
 	ktab.cpp
 	kwebview.cpp
 	main.cpp
@@ -38,7 +38,7 @@ set(alkotobiya_MOCS_SRCS
 	bookslistbrowser.h
 	indexwidget.h
 	bookwidget.h
-	ksetting.h
+        settingsdialog.h
 	ktab.h
 	kwebview.h
 	mainwindow.h
@@ -47,7 +47,7 @@ set(alkotobiya_MOCS_SRCS
 set(alkotobiya_UIS
 	bookslistbrowser.ui
 	indexwidget.ui
-	ksetting.ui
+        settingsdialog.ui
 	mainwindow.ui
 	quransearch.ui
 )

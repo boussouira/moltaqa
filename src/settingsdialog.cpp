@@ -3,12 +3,12 @@
 #include <QMessageBox>
 #include <QFileDialog>
 
-#include "ksetting.h"
-#include "ui_ksetting.h"
+#include "settingsdialog.h"
+#include "ui_settingsdialog.h"
 
-KSetting::KSetting(QWidget *parent) :
+SettingsDialog::SettingsDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::KSetting)
+    ui(new Ui::SettingsDialog)
 {
     ui->setupUi(this);
     setModal(true);
@@ -19,12 +19,12 @@ KSetting::KSetting(QWidget *parent) :
     connect(ui->pushCancel, SIGNAL(clicked()), this, SLOT(cancel()));
 }
 
-KSetting::~KSetting()
+SettingsDialog::~SettingsDialog()
 {
     delete ui;
 }
 
-void KSetting::loadSettings()
+void SettingsDialog::loadSettings()
 {
     QSettings settings;
     QString appPath = settings.value("General/app_dir",
@@ -33,7 +33,7 @@ void KSetting::loadSettings()
         ui->lineAppDir->setText(appPath);
 }
 
-QString KSetting::getFilePath()
+QString SettingsDialog::getFilePath()
 {
     QFileDialog dialog(this);
     dialog.setFileMode(QFileDialog::ExistingFile);
@@ -46,7 +46,7 @@ QString KSetting::getFilePath()
         return QString();
 }
 
-QString KSetting::getFolderPath()
+QString SettingsDialog::getFolderPath()
 {
     QFileDialog dialog(this);
     dialog.setFileMode(QFileDialog::Directory);
@@ -60,7 +60,7 @@ QString KSetting::getFolderPath()
     else
         return QString();
 }
-void KSetting::changeAppDir()
+void SettingsDialog::changeAppDir()
 {
     QString filePath = getFolderPath();
     if(!filePath.isEmpty()) {
@@ -76,7 +76,7 @@ void KSetting::changeAppDir()
     }
 }
 
-void KSetting::saveSettings()
+void SettingsDialog::saveSettings()
 {
     QSettings settings;
     QString appPath = ui->lineAppDir->text();
@@ -90,12 +90,12 @@ void KSetting::saveSettings()
     }
 }
 
-void KSetting::cancel()
+void SettingsDialog::cancel()
 {
    reject();
 }
 
-void KSetting::hideCancelButton(bool hide)
+void SettingsDialog::hideCancelButton(bool hide)
 {
     ui->pushCancel->setHidden(hide);
 }

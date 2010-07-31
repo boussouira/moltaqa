@@ -21,7 +21,7 @@ SOURCES += mainwindow.cpp \
     pageinfo.cpp \
     qurantextformat.cpp \
     ktab.cpp \
-    ksetting.cpp \
+    settingsdialog.cpp \
     indexwidget.cpp \
     booksviewer.cpp \
     bookslistbrowser.cpp \
@@ -42,7 +42,7 @@ HEADERS += mainwindow.h \
     pageinfo.h \
     qurantextformat.h \
     ktab.h \
-    ksetting.h \
+    settingsdialog.h \
     indexwidget.h \
     booksviewer.h \
     bookslistbrowser.h \
@@ -59,7 +59,7 @@ HEADERS += mainwindow.h \
     bookwidget.h \
     kwebview.h \
     settingschecker.h
-FORMS += mainwindow.ui ksetting.ui \
+FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui
 RESOURCES += data/qt_rc.qrc

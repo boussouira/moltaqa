@@ -2,7 +2,7 @@
 #include "ui_mainwindow.h"
 #include "booksviewer.h"
 #include "bookslistbrowser.h"
-#include "ksetting.h"
+#include "settingsdialog.h"
 #include "bookwidget.h"
 #include "settingschecker.h"
 
@@ -50,7 +50,7 @@ void MainWindow::aboutAlKotobiya()
 
 void MainWindow::settingDialog()
 {
-    KSetting settingDialog(this);
+    SettingsDialog settingDialog(this);
     settingDialog.exec();
 }
 
