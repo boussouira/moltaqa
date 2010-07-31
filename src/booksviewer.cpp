@@ -1,5 +1,5 @@
 #include "booksviewer.h"
-#include "ktab.h"
+#include "tabwidget.h"
 #include "indexwidget.h"
 #include "bookslistbrowser.h"
 #include "simpledbhandler.h"
@@ -19,7 +19,7 @@
 BooksViewer::BooksViewer(QWidget *parent): QWidget(parent)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
-    m_tab = new KTab(this);
+    m_tab = new TabWidget(this);
     layout->addWidget(m_tab);
     layout->setContentsMargins(0,6,0,0);
 

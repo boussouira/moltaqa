@@ -17,7 +17,7 @@ set(alkotobiya_SRCS
 	abstractdbhandler.cpp
 	indexwidget.cpp
         settingsdialog.cpp
-	ktab.cpp
+        tabwidget.cpp
 	kwebview.cpp
 	main.cpp
 	mainwindow.cpp
@@ -39,7 +39,7 @@ set(alkotobiya_MOCS_SRCS
 	indexwidget.h
 	bookwidget.h
         settingsdialog.h
-	ktab.h
+        tabwidget.h
 	kwebview.h
 	mainwindow.h
 	quransearch.h

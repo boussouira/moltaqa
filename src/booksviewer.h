@@ -5,7 +5,7 @@
 
 class BookWidget;
 class BookInfoHandler;
-class KTab;
+class TabWidget;
 class QMainWindow;
 class QToolBar;
 class QComboBox;
@@ -35,7 +35,7 @@ protected:
     void updateActions();
 
 private:
-    KTab *m_tab;
+    TabWidget *m_tab;
     BookInfoHandler *m_infoDB;
     QList<BookWidget *> m_bookWidgets;
     QAction *actionNewTab;

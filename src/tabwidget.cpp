@@ -1,6 +1,6 @@
-#include "ktab.h"
+#include "tabwidget.h"
 
-KTab::KTab(QWidget *parent) : QTabWidget(parent), m_tab(new QTabBar(this))
+TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent), m_tab(new QTabBar(this))
 {
     m_tab->setTabsClosable(true);
     setTabBar(m_tab);
@@ -11,12 +11,12 @@ KTab::KTab(QWidget *parent) : QTabWidget(parent), m_tab(new QTabBar(this))
     connect(m_tab, SIGNAL(tabCloseRequested(int)), this, SLOT(updateTabBar()));
 }
 
-void KTab::tabIsMoved(int from, int to)
+void TabWidget::tabIsMoved(int from, int to)
 {
     emit tabMoved(from, to);
 }
 
-void KTab::updateTabBar()
+void TabWidget::updateTabBar()
 {
     if(m_tab->count() > 1)
         m_tab->setTabsClosable(true);

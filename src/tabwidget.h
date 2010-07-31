@@ -1,19 +1,14 @@
-#ifndef KTAB_H
-#define KTAB_H
+#ifndef TABWIDGET_H
+#define TABWIDGET_H
 
 #include <qtabwidget.h>
 #include <qtabbar.h>
 
-/**
-  @brief This class handle displaying Quran pages in tabs.
-
-  KTab class handle the adding, removing and navigation between tabs.
-  */
-class KTab : public QTabWidget
+class TabWidget : public QTabWidget
 {
     Q_OBJECT
 public:
-    KTab(QWidget *parent = 0);
+    TabWidget(QWidget *parent = 0);
 
 public slots:
     /**
@@ -36,4 +31,4 @@ private:
 
 };
 
-#endif // KTAB_H
+#endif // TABWIDGET_H

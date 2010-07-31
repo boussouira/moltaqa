@@ -20,7 +20,7 @@ RCC_DIR += $$PWD/.rcc
 SOURCES += mainwindow.cpp \
     pageinfo.cpp \
     qurantextformat.cpp \
-    ktab.cpp \
+    tabwidget.cpp \
     settingsdialog.cpp \
     indexwidget.cpp \
     booksviewer.cpp \
@@ -41,7 +41,7 @@ SOURCES += mainwindow.cpp \
 HEADERS += mainwindow.h \
     pageinfo.h \
     qurantextformat.h \
-    ktab.h \
+    tabwidget.h \
     settingsdialog.h \
     indexwidget.h \
     booksviewer.h \
