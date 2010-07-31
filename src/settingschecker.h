@@ -11,6 +11,7 @@ public:
     SettingsChecker(QObject *parent = 0);
     void checkSettings();
     void createIndexBD(const QString &dbPath);
+    void checkDefautQuran();
 
 protected:
     void fillCatListTable(QSqlQuery *query);

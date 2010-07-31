@@ -1,4 +1,5 @@
 #include "settingschecker.h"
+#include "bookinfo.h"
 #include <qsettings.h>
 #include <qapplication.h>
 #include <qdir.h>
@@ -33,7 +34,40 @@ void SettingsChecker::checkSettings()
     settings.setValue("app_dir", appDirPath);
     settings.setValue("books_folder", booksFolder);
     settings.setValue("index_db", indexDBName);
+    settings.setValue("index_db_full_path", QString("%1/%2/%3")
+                      .arg(appDirPath)
+                      .arg(booksFolder)
+                      .arg(indexDBName));
     settings.endGroup();
+
+    checkDefautQuran();
+}
+
+void SettingsChecker::checkDefautQuran()
+{
+    QSettings settings;
+
+    int quranID = settings.value("Books/default_quran", -1).toInt();
+    QString indexPath = settings.value("General/index_db_full_path").toString();
+    QSqlDatabase indexDB = QSqlDatabase::addDatabase("QSQLITE", "INDEX_DB");
+
+    indexDB.setDatabaseName(indexPath);
+    if(!indexDB.open())
+        return;
+    QSqlQuery *indexQuery = new QSqlQuery(indexDB);
+
+    if(quranID == -1) {
+        indexQuery->exec(QString("SELECT id FROM booksList WHERE bookType = %1 LIMIT 1")
+                         .arg(BookInfo::QuranBook));
+        if(indexQuery->next())
+            quranID = indexQuery->value(0).toInt();
+    } else {
+        indexQuery->exec(QString("SELECT * FROM booksList WHERE id = %1 ").arg(quranID));
+        if(!indexQuery->next())
+            quranID = -1; // Check next time for default quran
+    }
+
+    settings.setValue("Books/default_quran", quranID);
 }
 
 void SettingsChecker::createIndexBD(const QString &dbPath)
