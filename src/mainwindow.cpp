@@ -7,12 +7,13 @@
 #include "settingschecker.h"
 
 #include <qmessagebox.h>
+#include <qsettings.h>
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     setWindowTitle(trUtf8("برنامج الكتبية"));
-    checkPaths();
+    loadSettings();
 
     m_bookView = new BooksViewer(this);
     m_booksList = new BooksListBrowser(this);
@@ -55,7 +56,7 @@ void MainWindow::settingDialog()
 
 void MainWindow::quranWindow()
 {
-    openBook(2);
+    openBook(defaultQuran);
 }
 
 void MainWindow::openBook(int pBookID)
@@ -75,8 +76,12 @@ void MainWindow::showBooksList()
     m_booksList->show();
 }
 
-void MainWindow::checkPaths()
+void MainWindow::loadSettings()
 {
     SettingsChecker checker(this);
     checker.checkSettings();
+
+    QSettings settings;
+    defaultQuran = settings.value("Books/default_quran", -1).toInt();
+    ui->pushOpenQuran->setEnabled(defaultQuran != -1);
 }

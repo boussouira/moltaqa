@@ -26,7 +26,7 @@ public:
 protected:
     /// @brief Setup the application menus and actions.
     void setupActions();
-    void checkPaths();
+    void loadSettings();
 
 protected slots:
     /// @brief Display information about the application
@@ -45,6 +45,7 @@ private:
     BooksViewer *m_bookView;
     BooksListBrowser *m_booksList;
     bool m_createMenu;
+    int defaultQuran;
     Ui::MainWindow *ui;
 
 };

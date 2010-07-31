@@ -3,7 +3,12 @@
 BookInfoHandler::BookInfoHandler()
 {
     QSettings settings;
-    m_appDir = settings.value("General/app_dir").toString();
+
+    settings.beginGroup("General");
+    m_appDir = settings.value("app_dir").toString();
+    m_booksFolder = settings.value("books_folder").toString();
+    m_indexDBName = settings.value("index_db").toString();
+    settings.endGroup();
 
     openDB();
 }
@@ -17,7 +22,10 @@ BookInfoHandler::~BookInfoHandler()
 void BookInfoHandler::openDB()
 {
     m_indexDB = QSqlDatabase::addDatabase("QSQLITE", "BooksInfoDB");
-    m_indexDB.setDatabaseName(QString("%1/books/books_index.db").arg(m_appDir));
+    m_indexDB.setDatabaseName(QString("%1/%2/%3")
+                              .arg(m_appDir)
+                              .arg(m_booksFolder)
+                              .arg(m_indexDBName));
     if(!m_indexDB.open())
         qDebug("[%s:%d] Cannot open database.", __FILE__, __LINE__);
     m_query = new QSqlQuery(m_indexDB);
@@ -32,8 +40,9 @@ BookInfo *BookInfoHandler::getBookInfo(int bookID)
         bookInfo->setBookName(m_query->value(0).toString());
         bookInfo->setBookType((BookInfo::Type)m_query->value(1).toInt());
         bookInfo->setBookID(bookID);
-        bookInfo->setBookPath(QString("%1/books/%2")
+        bookInfo->setBookPath(QString("%1/%2/%3")
                               .arg(m_appDir)
+                              .arg(m_booksFolder)
                               .arg(m_query->value(2).toString()));
     } else
         qDebug() << "SQL error:" << m_query->lastError().text();

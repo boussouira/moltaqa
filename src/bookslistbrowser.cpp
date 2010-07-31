@@ -16,7 +16,11 @@ BooksListBrowser::BooksListBrowser(QWidget *parent) :
     m_listModel = new BooksListModel();
 
     QSettings settings;
-    m_appDir = settings.value("General/app_dir").toString();
+    settings.beginGroup("General");
+    m_appDir = settings.value("app_dir").toString();
+    m_booksFolder = settings.value("books_folder").toString();
+    m_indexDBName = settings.value("index_db").toString();
+    settings.endGroup();
 
     showBooksList();
 }
@@ -33,7 +37,10 @@ void BooksListBrowser::showBooksList()
         m_booksListDB = QSqlDatabase::database("BooksListDB");
     } else {
         m_booksListDB = QSqlDatabase::addDatabase("QSQLITE", "BooksListDB");
-        m_booksListDB.setDatabaseName(QString("%1/books/books_index.db").arg(m_appDir));
+        m_booksListDB.setDatabaseName(QString("%1/%2/%3")
+                                      .arg(m_appDir)
+                                      .arg(m_booksFolder)
+                                      .arg(m_indexDBName));
     }
 
     if (!m_booksListDB.open()) {

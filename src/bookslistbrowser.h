@@ -31,6 +31,8 @@ signals:
 private:
     QSqlDatabase m_booksListDB;
     QString m_appDir;
+    QString m_booksFolder;
+    QString m_indexDBName;
     BooksListModel *m_listModel;
     Ui::BooksListBrowser *ui;
 };

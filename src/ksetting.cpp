@@ -27,10 +27,10 @@ KSetting::~KSetting()
 void KSetting::loadSettings()
 {
     QSettings settings;
-    QString quranDBPath = settings.value("General/app_dir",
+    QString appPath = settings.value("General/app_dir",
                                          QApplication::applicationDirPath()).toString();
-    if(!quranDBPath.isEmpty())
-        ui->lineAppDir->setText(quranDBPath);
+    if(!appPath.isEmpty())
+        ui->lineAppDir->setText(appPath);
 }
 
 QString KSetting::getFilePath()
@@ -79,9 +79,9 @@ void KSetting::changeAppDir()
 void KSetting::saveSettings()
 {
     QSettings settings;
-    QString quranDBPath = ui->lineAppDir->text();
-    if(QFile::exists(quranDBPath)) {
-        settings.setValue("General/app_dir", quranDBPath);
+    QString appPath = ui->lineAppDir->text();
+    if(QFile::exists(appPath)) {
+        settings.setValue("General/app_dir", appPath);
         accept();
     } else {
         QMessageBox::warning(this,

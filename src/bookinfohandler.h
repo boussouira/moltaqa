@@ -20,6 +20,8 @@ protected:
     QSqlDatabase m_indexDB;
     QSqlQuery *m_query;
     QString m_appDir;
+    QString m_booksFolder;
+    QString m_indexDBName;
 };
 
 #endif // BOOKINFOHANDLER_H
