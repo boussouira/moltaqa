@@ -1,10 +1,10 @@
-#include <QSettings>
-#include <QFile>
-#include <QMessageBox>
-#include <QFileDialog>
-
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
+
+#include <qsettings.h>
+#include <qfile.h>
+#include <qmessagebox.h>
+#include <qfiledialog.h>
 
 SettingsDialog::SettingsDialog(QWidget *parent) :
     QDialog(parent),
@@ -14,9 +14,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     setModal(true);
     loadSettings();
 
-    connect(ui->pushChangeQuranDBPath, SIGNAL(clicked()), this, SLOT(changeAppDir()));
+    connect(ui->pushBooksDir, SIGNAL(clicked()), this, SLOT(changeBooksDir()));
     connect(ui->pushSaveSettings, SIGNAL(clicked()), this, SLOT(saveSettings()));
-    connect(ui->pushCancel, SIGNAL(clicked()), this, SLOT(cancel()));
+    connect(ui->pushCancel, SIGNAL(clicked()), this, SLOT(reject()));
 }
 
 SettingsDialog::~SettingsDialog()
@@ -27,10 +27,9 @@ SettingsDialog::~SettingsDialog()
 void SettingsDialog::loadSettings()
 {
     QSettings settings;
-    QString appPath = settings.value("General/app_dir",
-                                         QApplication::applicationDirPath()).toString();
-    if(!appPath.isEmpty())
-        ui->lineAppDir->setText(appPath);
+    QString booksPath = settings.value("General/books_folder").toString();
+    if(!booksPath.isEmpty())
+        ui->lineBooksDir->setText(booksPath);
 }
 
 QString SettingsDialog::getFilePath()
@@ -40,59 +39,44 @@ QString SettingsDialog::getFilePath()
     dialog.setNameFilter(tr("SQLite database (*.db);;All files (*.*)"));
     dialog.setViewMode(QFileDialog::Detail);
 
-    if (dialog.exec())
-        return dialog.selectedFiles().first();
-    else
-        return QString();
+    return (dialog.exec()) ? dialog.selectedFiles().first() : QString();
 }
 
-QString SettingsDialog::getFolderPath()
+QString SettingsDialog::getFolderPath(const QString &defaultPath, bool noRoot)
 {
-    QFileDialog dialog(this);
-    dialog.setFileMode(QFileDialog::Directory);
-    dialog.setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
-    dialog.setViewMode(QFileDialog::Detail);
-    dialog.setOptions(QFileDialog::ShowDirsOnly
-                     | QFileDialog::DontResolveSymlinks);
+    QString dir = QFileDialog::getExistingDirectory(this, trUtf8("اختر مجلد"),
+                                                    defaultPath,
+                                                    QFileDialog::ShowDirsOnly
+                                                    |QFileDialog::DontResolveSymlinks);
 
-    if (dialog.exec())
-        return dialog.selectedFiles().first();
-    else
-        return QString();
+    if(noRoot){
+#ifdef Q_OS_WIN32
+    if(dir.size() <= 3)
+#else
+    if(dir.size() <= 1)
+#endif
+        dir.clear();
+    }
+    if(dir.endsWith(QChar('/')) || dir.endsWith(QChar('\\')))
+        dir.remove(dir.size()-1, 1);
+    return dir;
 }
-void SettingsDialog::changeAppDir()
+
+void SettingsDialog::changeBooksDir()
 {
-    QString filePath = getFolderPath();
+    QString filePath = getFolderPath(ui->lineBooksDir->text(), true);
     if(!filePath.isEmpty()) {
-        if(filePath.endsWith(QChar('/')) || filePath.endsWith(QChar('\\')))
-            filePath.remove(filePath.size()-1, 1);
-        QDir appDir(filePath);
-        if(appDir.exists("books"))
-            ui->lineAppDir->setText(filePath);
-        else
-            QMessageBox::warning(this,
-                                 trUtf8("مجلد البرنامج"),
-                                 trUtf8("لقد قمت باختيار مجلد غير صحيح"));
+        ui->lineBooksDir->setText(filePath);
     }
 }
 
 void SettingsDialog::saveSettings()
 {
     QSettings settings;
-    QString appPath = ui->lineAppDir->text();
-    if(QFile::exists(appPath)) {
-        settings.setValue("General/app_dir", appPath);
-        accept();
-    } else {
-        QMessageBox::warning(this,
-                             trUtf8("قاعدة البيانات"),
-                             trUtf8("قاعدة البيانات التي قمت بتحديدها غير موجود"));
-    }
-}
+    QString appPath = ui->lineBooksDir->text();
 
-void SettingsDialog::cancel()
-{
-   reject();
+    settings.setValue("General/books_folder", appPath);
+    accept();
 }
 
 void SettingsDialog::hideCancelButton(bool hide)

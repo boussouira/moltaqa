@@ -34,7 +34,7 @@ protected:
       */
     QString getFilePath();
 
-    QString getFolderPath();
+    QString getFolderPath(const QString &defaultPath = QString(), bool noRoot = false);
 protected slots:
     /**
       @brief Select the Quran database (\em SQLite).
@@ -42,12 +42,7 @@ protected slots:
       This method help us to force the user to choose an existing database.
       @todo Make a test to see if the selected database is a valid one.
       */
-    void changeAppDir();
-
-    /**
-      @brief Close the setting window without saving any thing.
-      */
-    void cancel();
+    void changeBooksDir();
 
     /**
       @brief Close the setting window and save the selected settings.

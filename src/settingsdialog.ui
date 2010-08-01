@@ -35,12 +35,12 @@
          <item>
           <widget class="QLabel" name="label">
            <property name="text">
-            <string>مجلد البرنامج :</string>
+            <string>مجلد الكتب:</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineAppDir">
+          <widget class="QLineEdit" name="lineBooksDir">
            <property name="layoutDirection">
             <enum>Qt::LeftToRight</enum>
            </property>
@@ -53,7 +53,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushChangeQuranDBPath">
+          <widget class="QPushButton" name="pushBooksDir">
            <property name="text">
             <string>تغيير</string>
            </property>
