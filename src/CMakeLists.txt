@@ -65,5 +65,5 @@ add_executable(alkotobiya
 #   ${alkotobiya_MOC_UI}
     ${alkotobiya_UIS}
     ${alkotobiya_RCC_SRCS})
-set (EXECUTABLE_OUTPUT_PATH ../ )
+
 target_link_libraries(alkotobiya ${QT_LIBRARIES} pthread)
