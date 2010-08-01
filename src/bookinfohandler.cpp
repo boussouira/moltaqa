@@ -22,8 +22,7 @@ BookInfoHandler::~BookInfoHandler()
 void BookInfoHandler::openDB()
 {
     m_indexDB = QSqlDatabase::addDatabase("QSQLITE", "BooksInfoDB");
-    m_indexDB.setDatabaseName(QString("%1/%2/%3")
-                              .arg(m_appDir)
+    m_indexDB.setDatabaseName(QString("%1/%2")
                               .arg(m_booksFolder)
                               .arg(m_indexDBName));
     if(!m_indexDB.open())
@@ -40,8 +39,7 @@ BookInfo *BookInfoHandler::getBookInfo(int bookID)
         bookInfo->setBookName(m_query->value(0).toString());
         bookInfo->setBookType((BookInfo::Type)m_query->value(1).toInt());
         bookInfo->setBookID(bookID);
-        bookInfo->setBookPath(QString("%1/%2/%3")
-                              .arg(m_appDir)
+        bookInfo->setBookPath(QString("%1/%2")
                               .arg(m_booksFolder)
                               .arg(m_query->value(2).toString()));
     } else

@@ -37,8 +37,7 @@ void BooksListBrowser::showBooksList()
         m_booksListDB = QSqlDatabase::database("BooksListDB");
     } else {
         m_booksListDB = QSqlDatabase::addDatabase("QSQLITE", "BooksListDB");
-        m_booksListDB.setDatabaseName(QString("%1/%2/%3")
-                                      .arg(m_appDir)
+        m_booksListDB.setDatabaseName(QString("%1/%2")
                                       .arg(m_booksFolder)
                                       .arg(m_indexDBName));
     }

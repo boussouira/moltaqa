@@ -32,11 +32,10 @@ void SettingsChecker::checkSettings()
 
     settings.beginGroup("General");
     settings.setValue("app_dir", appDirPath);
-    settings.setValue("books_folder", booksFolder);
+    settings.setValue("books_folder", appDir.absolutePath());
     settings.setValue("index_db", indexDBName);
-    settings.setValue("index_db_full_path", QString("%1/%2/%3")
-                      .arg(appDirPath)
-                      .arg(booksFolder)
+    settings.setValue("index_db_full_path", QString("%1/%2")
+                      .arg(appDir.absolutePath())
                       .arg(indexDBName));
     settings.endGroup();
 
