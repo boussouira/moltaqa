@@ -21,8 +21,14 @@ void SettingsChecker::checkSettings()
     QString indexDBName = settings.value("index_db", "books_index.db").toString();
     settings.endGroup();
 
-    if(!appDir.exists(booksFolder))
-        appDir.mkdir(booksFolder);
+    if(booksFolder == "books") {
+        if(!appDir.exists(booksFolder))
+            appDir.mkdir(booksFolder);
+    } else {
+        QDir booksFolderDir(booksFolder);
+        if(!booksFolderDir.exists())
+            booksFolderDir.mkpath(booksFolder);
+    }
     appDir.cd(booksFolder);
 
     if(!appDir.exists(indexDBName)) {
