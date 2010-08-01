@@ -46,28 +46,32 @@ void SettingsChecker::checkSettings()
 void SettingsChecker::checkDefautQuran()
 {
     QSettings settings;
-
+    QList<int> quranIDs;
     int quranID = settings.value("Books/default_quran", -1).toInt();
-    QString indexPath = settings.value("General/index_db_full_path").toString();
-    QSqlDatabase indexDB = QSqlDatabase::addDatabase("QSQLITE", "INDEX_DB");
+    {
+        QString indexPath = settings.value("General/index_db_full_path").toString();
+        QSqlDatabase indexDB = QSqlDatabase::addDatabase("QSQLITE", "INDEX_DB");
 
-    indexDB.setDatabaseName(indexPath);
-    if(!indexDB.open())
-        return;
-    QSqlQuery *indexQuery = new QSqlQuery(indexDB);
+        indexDB.setDatabaseName(indexPath);
+        if(!indexDB.open())
+            return;
+        QSqlQuery *indexQuery = new QSqlQuery(indexDB);
 
-    if(quranID == -1) {
-        indexQuery->exec(QString("SELECT id FROM booksList WHERE bookType = %1 LIMIT 1")
+        indexQuery->exec(QString("SELECT id FROM booksList WHERE bookType = %1")
                          .arg(BookInfo::QuranBook));
-        if(indexQuery->next())
-            quranID = indexQuery->value(0).toInt();
-    } else {
-        indexQuery->exec(QString("SELECT * FROM booksList WHERE id = %1 ").arg(quranID));
-        if(!indexQuery->next())
-            quranID = -1; // Check next time for default quran
-    }
 
+        while(indexQuery->next())
+            quranIDs.append(indexQuery->value(0).toInt());
+
+        if((quranID == -1 || !quranIDs.contains(quranID)))
+            quranID =  (quranIDs.count() > 0) ? quranIDs.first() : -1;
+
+        delete indexQuery;
+        indexDB.close();
+    }
     settings.setValue("Books/default_quran", quranID);
+
+    QSqlDatabase::removeDatabase("INDEX_DB");
 }
 
 void SettingsChecker::createIndexBD(const QString &dbPath)
