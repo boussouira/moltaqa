@@ -1,10 +1,10 @@
 #include "settingschecker.h"
 #include "bookinfo.h"
-#include <qsettings.h>
 #include <qapplication.h>
 #include <qdir.h>
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
+#include <qdebug.h>
 
 SettingsChecker::SettingsChecker(QObject *parent): QObject(parent)
 {
@@ -12,14 +12,12 @@ SettingsChecker::SettingsChecker(QObject *parent): QObject(parent)
 
 void SettingsChecker::checkSettings()
 {
-    QSettings settings;
-
-    settings.beginGroup("General");
-    QDir appDir(settings.value("app_dir", QApplication::applicationDirPath()).toString());
+    m_settings.beginGroup("General");
+    QDir appDir(m_settings.value("app_dir", QApplication::applicationDirPath()).toString());
     QString appDirPath = appDir.absolutePath();
-    QString booksFolder = settings.value("books_folder", "books").toString();
-    QString indexDBName = settings.value("index_db", "books_index.db").toString();
-    settings.endGroup();
+    QString booksFolder = m_settings.value("books_folder", "books").toString();
+    QString indexDBName = m_settings.value("index_db", "books_index.db").toString();
+    m_settings.endGroup();
 
     if(booksFolder == "books") {
         if(!appDir.exists(booksFolder))
@@ -36,25 +34,25 @@ void SettingsChecker::checkSettings()
         createIndexBD(appDir.absoluteFilePath(indexDBName));
     }
 
-    settings.beginGroup("General");
-    settings.setValue("app_dir", appDirPath);
-    settings.setValue("books_folder", appDir.absolutePath());
-    settings.setValue("index_db", indexDBName);
-    settings.setValue("index_db_full_path", QString("%1/%2")
+    m_settings.beginGroup("General");
+    m_settings.setValue("app_dir", appDirPath);
+    m_settings.setValue("books_folder", appDir.absolutePath());
+    m_settings.setValue("index_db", indexDBName);
+    m_settings.setValue("index_db_full_path", QString("%1/%2")
                       .arg(appDir.absolutePath())
                       .arg(indexDBName));
-    settings.endGroup();
+    m_settings.endGroup();
 
     checkDefautQuran();
+    checkDefautStyle();
 }
 
 void SettingsChecker::checkDefautQuran()
 {
-    QSettings settings;
     QList<int> quranIDs;
-    int quranID = settings.value("Books/default_quran", -1).toInt();
+    int quranID = m_settings.value("Books/default_quran", -1).toInt();
     {
-        QString indexPath = settings.value("General/index_db_full_path").toString();
+        QString indexPath = m_settings.value("General/index_db_full_path").toString();
         QSqlDatabase indexDB = QSqlDatabase::addDatabase("QSQLITE", "INDEX_DB");
 
         indexDB.setDatabaseName(indexPath);
@@ -74,9 +72,36 @@ void SettingsChecker::checkDefautQuran()
         delete indexQuery;
         indexDB.close();
     }
-    settings.setValue("Books/default_quran", quranID);
+    m_settings.setValue("Books/default_quran", quranID);
 
     QSqlDatabase::removeDatabase("INDEX_DB");
+}
+
+void SettingsChecker::checkDefautStyle()
+{
+    QString appDir =  m_settings.value("General/app_dir").toString();
+    QString styleFolder = m_settings.value("General/styles_dir", "data/css").toString();
+    QString currentStyle =  m_settings.value("General/style", "Default").toString();
+    QString currentStyleFile = m_settings.value(QString("%1_style/style_file").arg(currentStyle),
+                                                "defaut.css").toString();
+    QString currentStyleName = m_settings.value(QString("%1_style/style_name").arg(currentStyle),
+                                                trUtf8("افتراضي")).toString();
+    QString currentStyleFilePath;
+
+    QDir styleDir(QString("%1/%2").arg(appDir).arg(styleFolder));
+    if(styleDir.exists()) {
+        if(styleDir.exists(currentStyleFile)) {
+            currentStyleFilePath = styleDir.absoluteFilePath(currentStyleFile);
+        }
+    }
+
+    m_settings.setValue("General/styles_dir", styleFolder);
+    m_settings.setValue("General/style", currentStyle);
+
+    m_settings.setValue(QString("%1_style/style_name").arg(currentStyle), currentStyleName);
+    m_settings.setValue(QString("%1_style/style_file").arg(currentStyle), currentStyleFile);
+    m_settings.setValue(QString("%1_style/style_file_path").arg(currentStyle),
+                        currentStyleFilePath);
 }
 
 void SettingsChecker::createIndexBD(const QString &dbPath)
