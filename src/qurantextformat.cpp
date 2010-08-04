@@ -29,11 +29,11 @@ QString QuranTextFormat::text()
     return QString("<html>"
                    "<head>"
                    "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />"
-                   "<link href= \"qrc:/css/defaut.css\"  rel=\"stylesheet\" type=\"text/css\"/>"
+                   "<link href= \"%1\"  rel=\"stylesheet\" type=\"text/css\"/>"
                    "</head>"
                    "<body>"
-                   "<div id=\"quran\">%1</div>"
-                   "</div></body></html>").arg(m_text);
+                   "<div id=\"quran\">%2</div>"
+                   "</div></body></html>").arg(m_styleFile).arg(m_text);
 }
 
 void QuranTextFormat::clearQuranText()

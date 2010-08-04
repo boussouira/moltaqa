@@ -1,10 +1,9 @@
 #ifndef SIMPLETEXTFORMAT_H
 #define SIMPLETEXTFORMAT_H
 
-#include <qstring.h>
-#include <qregexp.h>
+#include "textformatter.h"
 
-class SimpleTextFormat
+class SimpleTextFormat : public TextFormatter
 {
 public:
     SimpleTextFormat();

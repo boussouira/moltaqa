@@ -37,7 +37,8 @@ SOURCES += mainwindow.cpp \
     bookinfohandler.cpp \
     bookwidget.cpp \
     kwebview.cpp \
-    settingschecker.cpp
+    settingschecker.cpp \
+    textformatter.cpp
 HEADERS += mainwindow.h \
     pageinfo.h \
     qurantextformat.h \
@@ -58,7 +59,8 @@ HEADERS += mainwindow.h \
     bookinfohandler.h \
     bookwidget.h \
     kwebview.h \
-    settingschecker.h
+    settingschecker.h \
+    textformatter.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui
