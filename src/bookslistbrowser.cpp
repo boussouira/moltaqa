@@ -59,32 +59,32 @@ void BooksListBrowser::showBooksList()
 void BooksListBrowser::childCats(BooksListNode *parentNode, int pID)
 {
     booksCat(parentNode, pID); // Start with books
-    QSqlQuery *catQuery = new QSqlQuery(m_booksListDB);
-    catQuery->exec(QString("SELECT id, title, catOrder, parentID FROM catList "
+    QSqlQuery catQuery(m_booksListDB);
+    catQuery.exec(QString("SELECT id, title, catOrder, parentID FROM catList "
                            "WHERE parentID = %1 ORDER BY catOrder").arg(pID));
-    while(catQuery->next())
+    while(catQuery.next())
     {
         BooksListNode *catNode = new BooksListNode(BooksListNode::Categorie,
-                                                   catQuery->value(1).toString(),
+                                                   catQuery.value(1).toString(),
                                                    QString(),
-                                                   catQuery->value(0).toInt());
-        childCats(catNode, catQuery->value(0).toInt());
+                                                   catQuery.value(0).toInt());
+        childCats(catNode, catQuery.value(0).toInt());
         parentNode->appendChild(catNode);
     }
 }
 
 void BooksListBrowser::booksCat(BooksListNode *parentNode, int catID)
 {
-    QSqlQuery *bookQuery = new QSqlQuery(m_booksListDB);
-    bookQuery->exec(QString("SELECT id, bookName, authorName, bookInfo FROM booksList "
+    QSqlQuery bookQuery(m_booksListDB);
+    bookQuery.exec(QString("SELECT id, bookName, authorName, bookInfo FROM booksList "
                             "WHERE bookCat = %1 ").arg(catID));
-    while(bookQuery->next())
+    while(bookQuery.next())
     {
         BooksListNode *secondChild = new BooksListNode(BooksListNode::Book,
-                                                       bookQuery->value(1).toString(),
-                                                       bookQuery->value(2).toString(),
-                                                       bookQuery->value(0).toInt());
-        secondChild->setInfoToolTip(bookQuery->value(3).toString());
+                                                       bookQuery.value(1).toString(),
+                                                       bookQuery.value(2).toString(),
+                                                       bookQuery.value(0).toInt());
+        secondChild->setInfoToolTip(bookQuery.value(3).toString());
         parentNode->appendChild(secondChild);
     }
 }

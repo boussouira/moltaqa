@@ -18,10 +18,6 @@ AbstractDBHandler::~AbstractDBHandler()
 {
     delete m_indexModel;
     delete m_bookInfo;
-    if(m_bookDB.isOpen()) {
-        delete m_bookQuery;
-        m_bookDB.close();
-    }
 }
 
 void AbstractDBHandler::openBookDB(QString pBookDBPath)
@@ -37,7 +33,7 @@ void AbstractDBHandler::openBookDB(QString pBookDBPath)
     if (!m_bookDB.open()) {
         qDebug("[%s:%d] Cannot open database.", __FILE__, __LINE__);
     }
-    m_bookQuery = new QSqlQuery(m_bookDB);
+    m_bookQuery =  QSqlQuery(m_bookDB);
     getBookInfo();
 }
 

@@ -3,6 +3,7 @@
 
 #include <qobject.h>
 #include <qsqldatabase.h>
+#include <qsqlquery.h>
 
 class BookInfo;
 class BookIndexModel;
@@ -38,7 +39,7 @@ protected:
     BookInfo *m_bookInfo;
     BookIndexModel *m_indexModel;
     QSqlDatabase m_bookDB;
-    QSqlQuery *m_bookQuery;
+    QSqlQuery m_bookQuery;
     QString m_bookDBPath;
     QString m_connectionName;
 };

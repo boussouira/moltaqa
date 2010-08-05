@@ -15,8 +15,6 @@ BookInfoHandler::BookInfoHandler()
 
 BookInfoHandler::~BookInfoHandler()
 {
-    delete m_query;
-    m_indexDB.close();
 }
 
 void BookInfoHandler::openDB()
@@ -27,23 +25,23 @@ void BookInfoHandler::openDB()
                               .arg(m_indexDBName));
     if(!m_indexDB.open())
         qDebug("[%s:%d] Cannot open database.", __FILE__, __LINE__);
-    m_query = new QSqlQuery(m_indexDB);
+    m_query = QSqlQuery(m_indexDB);
 }
 
 BookInfo *BookInfoHandler::getBookInfo(int bookID)
 {
     BookInfo *bookInfo = new BookInfo();
-    m_query->exec(QString("SELECT bookName, bookType, fileName "
+    m_query.exec(QString("SELECT bookName, bookType, fileName "
                           "From booksList where id = %1 LIMIT 1").arg(bookID));
-    if(m_query->next()) {
-        bookInfo->setBookName(m_query->value(0).toString());
-        bookInfo->setBookType((BookInfo::Type)m_query->value(1).toInt());
+    if(m_query.next()) {
+        bookInfo->setBookName(m_query.value(0).toString());
+        bookInfo->setBookType((BookInfo::Type)m_query.value(1).toInt());
         bookInfo->setBookID(bookID);
         bookInfo->setBookPath(QString("%1/%2")
                               .arg(m_booksFolder)
-                              .arg(m_query->value(2).toString()));
+                              .arg(m_query.value(2).toString()));
     } else
-        qDebug() << "SQL error:" << m_query->lastError().text();
+        qDebug() << "SQL error:" << m_query.lastError().text();
 
     return bookInfo;
 }

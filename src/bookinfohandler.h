@@ -18,7 +18,7 @@ public:
 
 protected:
     QSqlDatabase m_indexDB;
-    QSqlQuery *m_query;
+    QSqlQuery m_query;
     QString m_appDir;
     QString m_booksFolder;
     QString m_indexDBName;

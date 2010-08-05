@@ -16,7 +16,7 @@ public:
     void checkDefautStyle();
 
 protected:
-    void fillCatListTable(QSqlQuery *query);
+    void fillCatListTable(QSqlQuery &query);
     QSettings m_settings;
 
 };
