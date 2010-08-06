@@ -14,7 +14,7 @@
    <string>Quran Reader</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="../resources/QResource.qrc">
     <normaloff>:/images/QuranReader.ico</normaloff>:/images/QuranReader.ico</iconset>
   </property>
   <property name="locale">
@@ -32,7 +32,7 @@
       </property>
       <widget class="QWidget" name="quranTab">
        <attribute name="icon">
-        <iconset>
+        <iconset resource="../resources/QResource.qrc">
          <normaloff>:/images/QuranReader.ico</normaloff>:/images/QuranReader.ico</iconset>
        </attribute>
        <attribute name="title">
@@ -56,7 +56,7 @@
       </widget>
       <widget class="QWidget" name="tafesirTab">
        <attribute name="icon">
-        <iconset>
+        <iconset resource="../resources/QResource.qrc">
          <normaloff>:/images/QuranReader.ico</normaloff>:/images/QuranReader.ico</iconset>
        </attribute>
        <attribute name="title">
@@ -73,7 +73,7 @@
      <x>0</x>
      <y>0</y>
      <width>537</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <property name="layoutDirection">
@@ -210,7 +210,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QSpinBox" name="spinBox_2">
+           <widget class="QSpinBox" name="spinBoxAyaNumber">
             <property name="maximumSize">
              <size>
               <width>75</width>
@@ -242,7 +242,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QSpinBox" name="spinBox">
+           <widget class="QSpinBox" name="spinBoxPageNumber">
             <property name="maximumSize">
              <size>
               <width>75</width>
@@ -453,6 +453,8 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="../resources/QResource.qrc"/>
+ </resources>
  <connections/>
 </ui>

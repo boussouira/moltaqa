@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->listView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(selectedSoraChange(QModelIndex)));
    // connect(ui->spinBox, SIGNAL(valueChanged(int)), this, SLOT(pageNumberChange(int)));
-    connect(ui->spinBox_2, SIGNAL(valueChanged(int)), this, SLOT(ayaNumberChange(int)));
+    connect(ui->spinBoxAyaNumber, SIGNAL(valueChanged(int)), this, SLOT(ayaNumberChange(int)));
     connect(m_search, SIGNAL(resultSelected(int,int)), this, SLOT(selectResult(int,int)));
 
     connect(ui->actionSelect_all, SIGNAL(triggered()), ui->textBrowser, SLOT(selectAll()));
@@ -91,7 +91,7 @@ void MainWindow::selectSora(int psoraNumber, int payaNumber, bool pDisplay)
     if(pDisplay)
         this->display(m_currentPageNumber, m_currentSoraNumber, payaNumber);
     this->setSoraDetials();
-    ui->spinBox->setValue(m_currentPageNumber);
+    ui->spinBoxPageNumber->setValue(m_currentPageNumber);
 
 }
 
@@ -108,9 +108,9 @@ void MainWindow::setSoraDetials()
     ui->tableWidget->setItem(3, 1, itemSoraDescent);
 
     // set ayat count in the spin box
-    ui->spinBox_2->setMaximum(m_currentSoraAyatCount);
-    ui->spinBox_2->setSuffix(QString(" / %1").arg(m_currentSoraAyatCount));
-    ui->spinBox_2->setValue(1);
+    ui->spinBoxAyaNumber->setMaximum(m_currentSoraAyatCount);
+    ui->spinBoxAyaNumber->setSuffix(QString(" / %1").arg(m_currentSoraAyatCount));
+    ui->spinBoxAyaNumber->setValue(1);
 
     // Select sora in the list view
     this->setSelectedSora(m_currentSoraNumber);
@@ -133,7 +133,7 @@ void MainWindow::display(int pPageNumber, int pSoraNumber, int pAyaNumber)
     m_textCrusor->setSoraAndAyaToHighLight(pSoraNumber, pAyaNumber);
 
     m_currentAyaNumber = pAyaNumber;
-    ui->spinBox_2->setValue(pAyaNumber);
+    ui->spinBoxAyaNumber->setValue(pAyaNumber);
 
     while (m_query->next())
     {
@@ -151,10 +151,10 @@ void MainWindow::display(int pPageNumber, int pSoraNumber, int pAyaNumber)
     }
     this->scrollToAya(pSoraNumber, pAyaNumber);
 }
-
+/*
 void MainWindow::pageNumberChange(int pNewPageNumbe)
 {
-    /*
+
     int tmpFirstAyaInPage;
     int tmpLastAyaInPage;
     int tmpFirstSoraInPage;
@@ -171,15 +171,16 @@ void MainWindow::pageNumberChange(int pNewPageNumbe)
     if((tmpFirstAyaInPage > m_currentAyaNumber) or (tmpLastAyaInPage < m_currentAyaNumber))
     {
         m_currentAyaNumber = tmpFirstAyaInPage;
-        ui->spinBox_2->setValue(tmpFirstAyaInPage);
+        ui->spinBoxAyaNumber->setValue(tmpFirstAyaInPage);
     }
     if((tmpFirstSoraInPage > m_currentSoraNumber) or (tmpLastSoraInPage < m_currentSoraNumber))
     {
         this->selectSora(tmpFirstSoraInPage,1, false);
     }
     this->display(m_currentPageNumber, m_currentSoraNumber, tmpFirstAyaInPage);
-    */
+
 }
+*/
 
 void MainWindow::ayaNumberChange(int pNewAyaNumber)
 {
@@ -193,7 +194,7 @@ void MainWindow::ayaNumberChange(int pNewAyaNumber)
         m_currentPageNumber = tmpPageNumber;
         this->display(m_currentPageNumber, m_currentSoraNumber, m_currentAyaNumber);
         //this->display(m_currentPageNumber
-        ui->spinBox->setValue(tmpPageNumber);
+        ui->spinBoxPageNumber->setValue(tmpPageNumber);
     }
     this->scrollToAya(m_currentSoraNumber, pNewAyaNumber);
 
@@ -307,18 +308,17 @@ void MainWindow::selectResult(int pSoraNumber, int pAyaNumber)
 {
     int pageNumber = this->getAyaPageNumber(pSoraNumber, pAyaNumber);
 
-//    this->setSelectedSora(pSoraNumber);
     this->selectSora(pSoraNumber, pAyaNumber, false);
     this->display(pageNumber, pSoraNumber, pAyaNumber);
-//    ui->spinBox_2->setValue(pAyaNumber);
+//    ui->spinBoxAyaNumber->setValue(pAyaNumber);
 }
 
 void MainWindow::setSelectedSora(int pSoraNumber)
 {
     QItemSelectionModel *selection = ui->listView->selectionModel();
     QModelIndex indexElementSelectionne = selection->currentIndex();
-    QModelIndex topLeft = m_sowarNamesModel->index(pSoraNumber - 1, 0, QModelIndex());
-    selection->select(topLeft, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
-    ui->listView->scrollTo(topLeft);
+    QModelIndex itemToSelect = m_sowarNamesModel->index(pSoraNumber - 1, 0, QModelIndex());
+    selection->select(itemToSelect, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+    ui->listView->scrollTo(itemToSelect);
 
 }

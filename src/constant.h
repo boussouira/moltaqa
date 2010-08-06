@@ -2,6 +2,10 @@
 #define CONSTANT_H
 
 #include <QObject>
+/*
+ Important: if you are using QtCreator you must set the editor's encoding to UTF-8
+ you can edit it in Projects -> Editor Settings -> Defaut file Encoding -> UTF-8
+*/
 
 #define BASMALA     QObject::trUtf8("بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ")
 #define SORAT       QObject::trUtf8("سورة")

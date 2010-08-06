@@ -43,7 +43,7 @@ private:
     void setSelectedSora(int pSoraNumber);
 
 private slots:
-    void pageNumberChange(int pNewPageNumbe);
+//    void pageNumberChange(int pNewPageNumbe);
     void ayaNumberChange(int pNewAyaNumber);
     void selectedSoraChange(QModelIndex pselection);
     int getAyaPageNumber(int pSoraNumber, int pAyaNumber);
