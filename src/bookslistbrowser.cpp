@@ -8,7 +8,7 @@
 #include <qsqlerror.h>
 #include <qsettings.h>
 
-BooksListBrowser::BooksListBrowser(QWidget *parent) :
+BooksListBrowser::BooksListBrowser(QWidget *parent,  bool showBooks) :
     QDialog(parent),
     ui(new Ui::BooksListBrowser)
 {
@@ -21,6 +21,12 @@ BooksListBrowser::BooksListBrowser(QWidget *parent) :
     m_booksFolder = settings.value("books_folder").toString();
     m_indexDBName = settings.value("index_db").toString();
     settings.endGroup();
+
+    m_showBooks = showBooks;
+    if(!showBooks) {
+        setWindowTitle(trUtf8("لائحة الأقسام"));
+        ui->label->setText(trUtf8("لائحة الأقسام المتوفرة، انقر مرتين على القسم المراد اختياره:"));
+    }
 
     showBooksList();
 }
@@ -58,7 +64,8 @@ void BooksListBrowser::showBooksList()
 
 void BooksListBrowser::childCats(BooksListNode *parentNode, int pID)
 {
-    booksCat(parentNode, pID); // Start with books
+    if(m_showBooks)
+        booksCat(parentNode, pID); // Start with books
     QSqlQuery catQuery(m_booksListDB);
     catQuery.exec(QString("SELECT id, title, catOrder, parentID FROM catList "
                            "WHERE parentID = %1 ORDER BY catOrder").arg(pID));
@@ -100,5 +107,14 @@ void BooksListBrowser::on_treeView_doubleClicked(QModelIndex index)
     if(node->getNodeType() == BooksListNode::Book) {
         emit bookSelected(node->getID());
 //        accept();
+    } else if(!m_showBooks) {
+        m_lastSelected = node->getTitle();
+        m_lastSelectedID = node->getID();
+        accept();
     }
+}
+
+void BooksListBrowser::hideViewHeaders(bool hide)
+{
+    ui->treeView->setHeaderHidden(hide);
 }

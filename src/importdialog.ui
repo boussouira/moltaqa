@@ -1,64 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>BooksListBrowser</class>
- <widget class="QDialog" name="BooksListBrowser">
+ <class>ImportDialog</class>
+ <widget class="QDialog" name="ImportDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
-    <height>350</height>
+    <width>545</width>
+    <height>315</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>قائمة الكتب</string>
+   <string>Dialog</string>
   </property>
   <property name="layoutDirection">
    <enum>Qt::RightToLeft</enum>
   </property>
-  <property name="locale">
-   <locale language="Arabic" country="Oman"/>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>لائحة الكتب المتوفرة :</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QTreeView" name="treeView">
-     <property name="editTriggers">
-      <set>QAbstractItemView::NoEditTriggers</set>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
      </property>
     </widget>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+      <widget class="QPushButton" name="pushAdd">
+       <property name="text">
+        <string>اضافة</string>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
+      </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
-       <property name="maximumSize">
-        <size>
-         <width>93</width>
-         <height>27</height>
-        </size>
-       </property>
+      <widget class="QPushButton" name="pushDelete">
        <property name="text">
-        <string>اغلاق</string>
+        <string>حذف</string>
+       </property>
+       <property name="shortcut">
+        <string>Del</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushImport">
+       <property name="text">
+        <string>بدأ الاستيراد</string>
        </property>
       </widget>
      </item>
@@ -74,6 +62,13 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushCancel">
+       <property name="text">
+        <string>الغاء</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

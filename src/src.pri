@@ -17,6 +17,14 @@ RCC_DIR += $$PWD/.rcc
 #    }
 #}
 
+unix {
+        HEADERS += mdbconverter.h
+        SOURCES += mdbconverter.cpp
+
+        LIBS += -L/usr/local/lib -lmdb -lglib-2.0 -lsqlite3
+        INCLUDEPATH += /usr/include/glib-2.0 /usr/lib/glib-2.0/include
+}
+
 SOURCES += mainwindow.cpp \
     pageinfo.cpp \
     qurantextformat.cpp \
@@ -38,7 +46,10 @@ SOURCES += mainwindow.cpp \
     bookwidget.cpp \
     kwebview.cpp \
     settingschecker.cpp \
-    textformatter.cpp
+    textformatter.cpp \
+    importdialog.cpp \
+    importmodel.cpp \
+    importdelegates.cpp
 HEADERS += mainwindow.h \
     pageinfo.h \
     qurantextformat.h \
@@ -60,8 +71,12 @@ HEADERS += mainwindow.h \
     bookwidget.h \
     kwebview.h \
     settingschecker.h \
-    textformatter.h
+    textformatter.h \
+    importdialog.h \
+    importmodel.h \
+    importdelegates.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
-    bookslistbrowser.ui
+    bookslistbrowser.ui \
+    importdialog.ui
 RESOURCES += data/qt_rc.qrc

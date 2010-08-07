@@ -5,6 +5,7 @@
 #include "settingsdialog.h"
 #include "bookwidget.h"
 #include "settingschecker.h"
+#include "importdialog.h"
 
 #include <qmessagebox.h>
 #include <qsettings.h>
@@ -14,6 +15,10 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     ui->setupUi(this);
     setWindowTitle(trUtf8("برنامج الكتبية"));
     loadSettings();
+
+    ImportDialog dialog(this);
+    dialog.exec();
+    exit(0);
 
     m_bookView = new BooksViewer(this);
     m_booksList = new BooksListBrowser(this);

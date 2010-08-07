@@ -1,0 +1,41 @@
+#ifndef MDBCONVERTER_H
+#define MDBCONVERTER_H
+
+#include <qobject.h>
+#include <qsqldatabase.h>
+
+#include <mdbtools.h>
+#include <glib.h>
+#include <sqlite3.h>
+
+#define is_text_type(x) (x==MDB_TEXT || x==MDB_MEMO || x==MDB_SDATETIME)
+using namespace std;
+
+/* SQLite data types */
+static const char *sqlite_types[] = {
+        "Text", "char", "int", "int", "int", "float",
+        "float", "float", "date", "varchar", "varchar",
+        "varchar", "text", "blob", "text", "numeric", "numeric" };
+
+class QSqlQuery;
+
+class MdbConverter : public QObject
+{
+public:
+    MdbConverter();
+    ~MdbConverter();
+    void exportFromMdb(const QString &mdb_path, const QString &sql_path);
+    void getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry);
+    void getTableSchema(MdbHandle *mdb, char *tabname);
+    int getTables(MdbHandle *mdb, char *buffer[]);
+    void print_col(QString &std, gchar *col_val, int quote_text, int col_type, char *quote_char, char *escape_char);
+    void generateTableSchema(MdbCatalogEntry *entry);
+    char *sanitizeName(char *str);
+    QSqlDatabase getDatabase();
+
+protected:
+    QSqlDatabase m_bookDB;
+    QSqlQuery *m_bookQuery;
+};
+
+#endif // MDBCONVERTER_H

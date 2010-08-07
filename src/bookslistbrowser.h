@@ -15,10 +15,14 @@ namespace Ui {
 class BooksListBrowser : public QDialog {
     Q_OBJECT
 public:
-    BooksListBrowser(QWidget *parent = 0);
+    BooksListBrowser(QWidget *parent = 0, bool showBooks = true);
     ~BooksListBrowser();
     void booksCat(BooksListNode *parentNode, int catID);
     void childCats(BooksListNode *parentNode, int pID);
+    void setShowBooks(bool show) { m_showBooks = show; }
+    void hideViewHeaders(bool hide);
+    QString lastSelectedName() { return m_lastSelected; }
+    int lastSelectedID() { return m_lastSelectedID; }
 
 private slots:
     void on_treeView_doubleClicked(QModelIndex index);
@@ -33,7 +37,10 @@ private:
     QString m_appDir;
     QString m_booksFolder;
     QString m_indexDBName;
+    QString m_lastSelected;
     BooksListModel *m_listModel;
+    bool m_showBooks;
+    int m_lastSelectedID;
     Ui::BooksListBrowser *ui;
 };
 
