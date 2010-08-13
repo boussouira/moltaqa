@@ -26,7 +26,7 @@ class CategorieDelegate: public QItemDelegate
 {
     Q_OBJECT
 public:
-    CategorieDelegate(QObject* parent = 0);
+    CategorieDelegate(QObject* parent = 0, QAbstractItemModel *model = 0);
 
 
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
@@ -40,8 +40,11 @@ public:
     void updateEditorGeometry(QWidget *editor,
                               const QStyleOptionViewItem &option,
                               const QModelIndex &/* index */) const;
-private slots:
+protected slots:
     void commitAndCloseEditor();
+
+protected:
+    QAbstractItemModel *m_model;
 };
 
 #endif // IMPORTDELEGATES_H

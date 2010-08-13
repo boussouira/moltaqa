@@ -2,6 +2,7 @@
 #include "ui_importdialog.h"
 #include "importmodel.h"
 #include "importdelegates.h"
+#include "booksindexdb.h"
 #ifdef Q_OS_LINUX
 #include "mdbconverter.h"
 #endif
@@ -21,12 +22,15 @@ ImportDialog::ImportDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     m_model = new ImportModel(ui->treeView);
+    m_indexDB = new BooksIndexDB;
 
     ImportModelNode *node = new ImportModelNode(BookInfo::NormalBook);
     m_model->setRootNode(node);
 
     ui->treeView->setItemDelegateForColumn(2, new BookTypeDelegate(ui->treeView));
-    ui->treeView->setItemDelegateForColumn(3, new CategorieDelegate(ui->treeView));
+    ui->treeView->setItemDelegateForColumn(3,
+                                           new CategorieDelegate(ui->treeView,
+                                                                 m_indexDB->getListModel(false)));
     ui->treeView->setModel(m_model);
 }
 
@@ -47,14 +51,27 @@ void ImportDialog::on_pushAdd_clicked()
         return;
 
     try {
-        ImportModelNode *node = getBookInfo(bokPath);
-        m_model->appendNode(node, QModelIndex());
+        QList<ImportModelNode*> nodesList;
+        getBookInfo(bokPath, nodesList);
+
+        foreach(ImportModelNode *node, nodesList)
+            m_model->appendNode(node, QModelIndex());
+
     } catch(QString &what) {
         QMessageBox::critical(this, trUtf8("خطأ عند الاستيراد"),
                               what);
     }
 
     QSqlDatabase::removeDatabase("ImportBookInfo");
+/*
+    ImportModelNode *node = new ImportModelNode(BookInfo::NormalBook);
+    node->setTypeName( trUtf8("عادي"));
+    node->setBookName(trUtf8("الصارم المنطي في الد على السبكي"));
+    node->setAuthorName(trUtf8("المقدسي"));
+    node->setCatName(trUtf8("شروح الحديث"));
+    node->setBookPath("/gil/dd.j");
+    m_model->appendNode(node, QModelIndex());
+    */
 }
 
 QString ImportDialog::selectShamelBook()
@@ -86,7 +103,7 @@ void ImportDialog::on_pushImport_clicked()
                             .arg("/home/naruto/Programming/alkotobiya"));
     if(!indexDB.open())
         qDebug("[%s:%d] Cannot open database.", __FILE__, __LINE__);
-    QSqlQuery *indexQuery = new QSqlQuery(indexDB);
+    QSqlQuery indexQuery(indexDB);
 
     foreach(ImportModelNode *node, rootNode->childrenList()) {
         QString qurey = QString("INSERT INTO booksList (id, bookID, bookType, bookFlags, bookCat,"
@@ -103,16 +120,16 @@ void ImportDialog::on_pushImport_clicked()
         QFile::copy(node->getBookPath(), QString("%1/books/%2")
                     .arg("/home/naruto/Programming/alkotobiya")
                     .arg(node->getBookPath().split("/").last()));
-         if(indexQuery->exec(qurey))
+         if(indexQuery.exec(qurey))
             qDebug() << "[+]" << node->getBookName();
          else {
-             qDebug() << "Error:" << indexQuery->lastError().text();
+             qDebug() << "Error:" << indexQuery.lastError().text();
              qDebug() << "Query:" << qurey ;
          }
     }
 }
 
-ImportModelNode *ImportDialog::getBookInfo(const QString &path)
+void ImportDialog::getBookInfo(const QString &path, QList<ImportModelNode*> &nodes)
 {
     QString dbPath = path;
 
@@ -141,33 +158,37 @@ ImportModelNode *ImportDialog::getBookInfo(const QString &path)
     if (!m_bookDB.open())
         throw trUtf8("لا يمكن فتح قاعدة البيانات");
 
-    QSqlQuery *m_bookQuery = new QSqlQuery(m_bookDB);
+    QSqlQuery bookQuery(m_bookDB);
 
-    if(!m_bookDB.tables().contains("Main", Qt::CaseInsensitive))
-        throw trUtf8("قاعدة البيانات المختار غير صحيحة")+"<br><b>"+
-                trUtf8("لم يتم العثور على جدول البيانات الرئيسي")+"</b>";
+    bookQuery.exec("SELECT * FROM Main");
+    while(bookQuery.next()) {
+        int bkCol = bookQuery.record().indexOf("bk");
+        int authCol = bookQuery.record().indexOf("Auth");
+        int catCol = bookQuery.record().indexOf("cat");
 
-    m_bookQuery->exec("SELECT bk, Auth, cat FROM Main");
-
-    if(m_bookQuery->next()) {
         ImportModelNode *node = new ImportModelNode(BookInfo::NormalBook);
         node->setTypeName(getBookType(m_bookDB));
-        node->setBookName(m_bookQuery->value(0).toString());
-        node->setAuthorName(m_bookQuery->value(1).toString());
-        node->setCatName(!m_bookQuery->value(2).toString().isEmpty() ?
-                         m_bookQuery->value(2).toString() :
-                         trUtf8("-- غير محدد --"));
-        node->setBookPath(dbPath);
-        return node;
-    } else
-        throw trUtf8("حدث خطأ أثناء سحب المعلومات من قاعدة البيانات");
+        node->setBookName(bookQuery.value(bkCol).toString());
+        node->setAuthorName(bookQuery.value(authCol).toString());
 
+        if(catCol != -1) { // Some old books doesn't have this column
+            node->setCatName(bookQuery.value(catCol).toString()); // Must be set before CatID
+            node->setCatID(m_indexDB->getCatIdFromName(bookQuery.value(2).toString()));
+        } else
+             node->setCatID(-1);
+
+        node->setBookPath(dbPath);
+        nodes.append(node);
+    }
+    if(bookQuery.lastError().isValid())
+        throw trUtf8("حدث خطأ أثناء سحب المعلومات من قاعدة البيانات"
+                     "<br><b style=\"direction:rtl\">%1</b>").arg(bookQuery.lastError().text());
 }
 
 QString ImportDialog::getBookType(const QSqlDatabase &bookDB)
 {
-    QSqlQuery *query = new QSqlQuery(bookDB);
-    QSqlQuery *hnoQuery = new QSqlQuery(bookDB);
+    QSqlQuery query(bookDB);
+    QSqlQuery hnoQuery(bookDB);
     QString bookTable;
 
     foreach(QString ta, bookDB.tables()) {
@@ -178,16 +199,16 @@ QString ImportDialog::getBookType(const QSqlDatabase &bookDB)
         throw trUtf8("قاعدة البيانات المختار غير صحيحة")+"<br><b>"+
                 trUtf8("لم يتم العثور على جدول البيانات")+"</b>";
 
-    query->exec(QString("SELECT * FROM %1").arg(bookTable));
-    if(query->next()) {
-        int hno = query->record().indexOf("hno");
-        int aya = query->record().indexOf("aya");
-        int sora = query->record().indexOf("sora");
+    query.exec(QString("SELECT * FROM %1").arg(bookTable));
+    if(query.next()) {
+        int hno = query.record().indexOf("hno");
+        int aya = query.record().indexOf("aya");
+        int sora = query.record().indexOf("sora");
 
         if (hno != -1 && aya == -1  && sora == -1){
-            hnoQuery->exec(QString("SELECT MAX(hno) FROM %1").arg(bookTable));
-            if(hnoQuery->next()){
-                if(!hnoQuery->value(0).toString().isEmpty())
+            hnoQuery.exec(QString("SELECT MAX(hno) FROM %1").arg(bookTable));
+            if(hnoQuery.next()){
+                if(!hnoQuery.value(0).toString().isEmpty())
                     return trUtf8("متن حديث");
                 else
                     return trUtf8("عادي");

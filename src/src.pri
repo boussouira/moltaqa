@@ -49,7 +49,9 @@ SOURCES += mainwindow.cpp \
     textformatter.cpp \
     importdialog.cpp \
     importmodel.cpp \
-    importdelegates.cpp
+    importdelegates.cpp \
+    booksindexdb.cpp \
+    catslistwidget.cpp
 HEADERS += mainwindow.h \
     pageinfo.h \
     qurantextformat.h \
@@ -74,7 +76,9 @@ HEADERS += mainwindow.h \
     textformatter.h \
     importdialog.h \
     importmodel.h \
-    importdelegates.h
+    importdelegates.h \
+    booksindexdb.h \
+    catslistwidget.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

@@ -4,7 +4,7 @@ BookIndexNode::BookIndexNode(): m_parent(0)
 {
 }
 
-BookIndexNode::BookIndexNode(QString title, int id): m_title(title), m_id(id), m_parent(0)
+BookIndexNode::BookIndexNode(QString title, int id): m_parent(0), m_id(id), m_title(title)
 {
 }
 

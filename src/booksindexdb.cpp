@@ -1,20 +1,11 @@
-#include "bookslistbrowser.h"
-#include "ui_bookslistbrowser.h"
+#include "booksindexdb.h"
 #include "bookslistmodel.h"
-#include "bookslistnode.h"
-
-#include <qdebug.h>
 #include <qsqlquery.h>
 #include <qsqlerror.h>
-#include <qsettings.h>
+#include <qdebug.h>
 
-BooksListBrowser::BooksListBrowser(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::BooksListBrowser)
+BooksIndexDB::BooksIndexDB()
 {
-    ui->setupUi(this);
-    m_listModel = new BooksListModel();
-
     QSettings settings;
     settings.beginGroup("General");
     m_appDir = settings.value("app_dir").toString();
@@ -22,17 +13,6 @@ BooksListBrowser::BooksListBrowser(QWidget *parent) :
     m_indexDBName = settings.value("index_db").toString();
     settings.endGroup();
 
-    showBooksList();
-}
-
-BooksListBrowser::~BooksListBrowser()
-{
-    delete ui;
-    delete m_listModel;
-}
-
-void BooksListBrowser::showBooksList()
-{
     if(QSqlDatabase::contains("BooksListDB")) {
         m_booksListDB = QSqlDatabase::database("BooksListDB");
     } else {
@@ -45,20 +25,23 @@ void BooksListBrowser::showBooksList()
     if (!m_booksListDB.open()) {
         qDebug("[%s:%d] Cannot open database.", __FILE__, __LINE__);
     }
-
-    BooksListNode *firstNode = new BooksListNode(BooksListNode::Root);
-    childCats(firstNode, 0);
-
-    m_listModel->setRootNode(firstNode);
-    ui->treeView->setModel(m_listModel);
-    ui->treeView->expandAll();
-    ui->treeView->resizeColumnToContents(0);
-    ui->treeView->resizeColumnToContents(1);
 }
 
-void BooksListBrowser::childCats(BooksListNode *parentNode, int pID)
+QAbstractItemModel *BooksIndexDB::getListModel(bool books)
 {
-    booksCat(parentNode, pID); // Start with books
+    BooksListModel *model = new BooksListModel();
+    BooksListNode *firstNode = new BooksListNode(BooksListNode::Root);
+    childCats(firstNode, 0, books);
+
+    model->setRootNode(firstNode);
+    return model;
+}
+
+void BooksIndexDB::childCats(BooksListNode *parentNode, int pID, bool books)
+{
+    if(books)
+        booksCat(parentNode, pID); // Start with books
+
     QSqlQuery catQuery(m_booksListDB);
     catQuery.exec(QString("SELECT id, title, catOrder, parentID FROM catList "
                            "WHERE parentID = %1 ORDER BY catOrder").arg(pID));
@@ -68,12 +51,12 @@ void BooksListBrowser::childCats(BooksListNode *parentNode, int pID)
                                                    catQuery.value(1).toString(),
                                                    QString(),
                                                    catQuery.value(0).toInt());
-        childCats(catNode, catQuery.value(0).toInt());
+        childCats(catNode, catQuery.value(0).toInt(), books);
         parentNode->appendChild(catNode);
     }
 }
 
-void BooksListBrowser::booksCat(BooksListNode *parentNode, int catID)
+void BooksIndexDB::booksCat(BooksListNode *parentNode, int catID)
 {
     QSqlQuery bookQuery(m_booksListDB);
     bookQuery.exec(QString("SELECT id, bookName, authorName, bookInfo FROM booksList "
@@ -89,16 +72,21 @@ void BooksListBrowser::booksCat(BooksListNode *parentNode, int catID)
     }
 }
 
-void BooksListBrowser::on_pushButton_clicked()
+int BooksIndexDB::getCatIdFromName(const QString &cat)
 {
-    hide();
-}
+    int count = 0;
+    int catID = -1;
 
-void BooksListBrowser::on_treeView_doubleClicked(QModelIndex index)
-{
-    BooksListNode *node = m_listModel->nodeFromIndex(index);
-    if(node->getNodeType() == BooksListNode::Book) {
-        emit bookSelected(node->getID());
-//        accept();
+    if(cat.isEmpty())
+        return catID;
+
+    QSqlQuery bookQuery(m_booksListDB);
+    bookQuery.exec(QString("SELECT id FROM catList WHERE title LIKE \"%%1%\" ").arg(cat));
+    while(bookQuery.next()) {
+        catID = bookQuery.value(0).toInt();
+        count++;
+
     }
+
+    return (count == 1) ? catID : -1;
 }

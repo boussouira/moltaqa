@@ -8,6 +8,7 @@ namespace Ui {
 }
 class ImportModel;
 class ImportModelNode;
+class BooksIndexDB;
 class QSqlDatabase;
 
 class ImportDialog : public QDialog {
@@ -16,12 +17,13 @@ public:
     ImportDialog(QWidget *parent = 0);
     ~ImportDialog();
     QString selectShamelBook();
-    ImportModelNode *getBookInfo(const QString &path);
+    void getBookInfo(const QString &path, QList<ImportModelNode*> &nodes);
     QString getBookType(const QSqlDatabase &bookDB);
 
 private:
     Ui::ImportDialog *ui;
     ImportModel *m_model;
+    BooksIndexDB *m_indexDB;
 
 private slots:
     void on_pushImport_clicked();

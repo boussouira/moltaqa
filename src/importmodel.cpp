@@ -31,6 +31,13 @@ void ImportModelNode::setID(int pId)
     m_nodeID = pId;
 }
 
+void ImportModelNode::setCatID(int id)
+{
+     m_catID = id;
+     if(id == -1)
+         setCatName(QObject::trUtf8("-- غير محدد --"));
+}
+
 // The model
 ImportModel::ImportModel(QObject *parent)
     : QAbstractItemModel(parent)

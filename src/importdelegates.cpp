@@ -1,6 +1,7 @@
 #include "importdelegates.h"
 #include "importmodel.h"
-#include "bookslistbrowser.h"
+#include "catslistwidget.h"
+#include "booksindexdb.h"
 #include <qcombobox.h>
 
 BookTypeDelegate::BookTypeDelegate(QObject* parent): QItemDelegate(parent)
@@ -50,7 +51,8 @@ void BookTypeDelegate::updateEditorGeometry(QWidget *editor,
 }
 
 // Cat delegate
-CategorieDelegate::CategorieDelegate(QObject* parent): QItemDelegate(parent)
+CategorieDelegate::CategorieDelegate(QObject* parent, QAbstractItemModel *model):
+        QItemDelegate(parent), m_model(model)
 {
 }
 
@@ -59,25 +61,21 @@ QWidget *CategorieDelegate::createEditor(QWidget *parent,
                                        const QStyleOptionViewItem &/*option*/,
                                        const QModelIndex &/*index*/) const
 {
-    BooksListBrowser *browser = new BooksListBrowser(parent, false);
-    browser->hideViewHeaders(true);
-    connect(browser, SIGNAL(accepted()),
-            this, SLOT(commitAndCloseEditor()));
-    return browser;
+    CatsListWidget *browser = new CatsListWidget(parent);
 
+    browser->setViewModel(m_model);
+    connect(browser, SIGNAL(itemSelected()), this, SLOT(commitAndCloseEditor()));
+
+    return browser;
 }
 
-void CategorieDelegate::setEditorData(QWidget */*editor*/,
-                                      const QModelIndex &/*index*/) const
+void CategorieDelegate::setEditorData(QWidget *editor,
+                                      const QModelIndex &index) const
 {
     /*
-    QString value = index.model()->data(index, Qt::EditRole).toString();
-
-    QComboBox *box = static_cast<QComboBox*>(editor);
-    for(int i=0; i<box->count(); i++){
-        if(value == box->itemText(i))
-            box->setCurrentIndex(i);
-    }*/
+    CatsListWidget *browser = qobject_cast<CatsListWidget*>(editor);
+    browser->selectIndex(index);
+    */
 }
 
 void CategorieDelegate::setModelData(QWidget *editor,
@@ -85,7 +83,8 @@ void CategorieDelegate::setModelData(QWidget *editor,
                                      const QModelIndex &index) const
 {
 
-    BooksListBrowser *browser = static_cast<BooksListBrowser*>(editor);
+    CatsListWidget *browser = qobject_cast<CatsListWidget*>(editor);
+
     QString catName = browser->lastSelectedName();
     int catID = browser->lastSelectedID();
     if(!catName.isEmpty()) {
@@ -100,13 +99,12 @@ void CategorieDelegate::updateEditorGeometry(QWidget *editor,
                                              const QStyleOptionViewItem &option,
                                              const QModelIndex &/* index */) const
 {
-    editor->setGeometry(option.rect.x(), option.rect.y(),
-                        400, 350);
+    editor->resize(option.rect.width(), editor->parentWidget()->height());
 }
 
 void CategorieDelegate::commitAndCloseEditor()
 {
-    BooksListBrowser *editor = qobject_cast<BooksListBrowser *>(sender());
+    CatsListWidget *editor = qobject_cast<CatsListWidget *>(sender());
     emit commitData(editor);
     emit closeEditor(editor);
 }

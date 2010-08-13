@@ -21,9 +21,9 @@ public:
 
 protected:
     BookIndexNode *m_parent;
-    QList<BookIndexNode *> m_childNode;
-    QString m_title;
     int m_id;
+    QString m_title;
+    QList<BookIndexNode *> m_childNode;
 };
 
 #endif // BOOKINDEXNODE_H

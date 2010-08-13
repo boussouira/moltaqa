@@ -33,7 +33,7 @@ public:
     void setBookPath(const QString &path) { m_bookPath = path; }
     void setTypeName(const QString &name) { m_typeName = name; }
     void setCatName(const QString &name) { m_catName = name; }
-    void setCatID(int id) { m_catID = id; }
+    void setCatID(int id);
 
 protected:
     BookInfo::Type m_type;

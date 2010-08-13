@@ -16,10 +16,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     setWindowTitle(trUtf8("برنامج الكتبية"));
     loadSettings();
 
-    ImportDialog dialog(this);
-    dialog.exec();
-    exit(0);
-
     m_bookView = new BooksViewer(this);
     m_booksList = new BooksListBrowser(this);
     m_createMenu = true;
