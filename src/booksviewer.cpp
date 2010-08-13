@@ -54,13 +54,13 @@ void BooksViewer::createMenus(QMainWindow *parent)
     actionSearchDock->setEnabled(false);
 
     // Navigation actions
-    actionNextAYA = new QAction(QIcon(":/menu/images/go-first.png"),
+    actionNextAYA = new QAction(QIcon(":/menu/images/go-down.png"),
                                 trUtf8("الآية التالية"),
                                 this);
     actionNextPage = new QAction(QIcon(":/menu/images/go-previous.png"),
                                  trUtf8("الصفحة التالية"),
                                  this);
-    actionPrevAYA = new QAction(QIcon(":/menu/images/go-last.png"),
+    actionPrevAYA = new QAction(QIcon(":/menu/images/go-up.png"),
                                 trUtf8("الآية السابقة"),
                                 this);
     actionPrevPage = new QAction(QIcon(":/menu/images/go-next.png"),
@@ -82,9 +82,9 @@ void BooksViewer::createMenus(QMainWindow *parent)
 
     toolBarNavigation = new QToolBar(trUtf8("التصفح"), this);
     toolBarNavigation->addAction(actionPrevPage);
-    toolBarNavigation->addAction(actionPrevAYA);
-    toolBarNavigation->addAction(actionNextAYA);
     toolBarNavigation->addAction(actionNextPage);
+    toolBarNavigation->addAction(actionNextAYA);
+    toolBarNavigation->addAction(actionPrevAYA);
 
     toolBarTafesir = new QToolBar(trUtf8("التفسير"), this);
     toolBarTafesir->addWidget(comboTafasir);

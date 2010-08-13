@@ -14,5 +14,7 @@
         <file>images/arrow-left.png</file>
         <file>images/book-cat.png</file>
         <file>images/book.png</file>
+        <file>images/go-down.png</file>
+        <file>images/go-up.png</file>
     </qresource>
 </RCC>
