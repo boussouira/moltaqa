@@ -67,13 +67,6 @@ void BooksViewer::createMenus(QMainWindow *parent)
                                  trUtf8("الصفحة السابقة"),
                                  this);
 
-    // Tafressir actions
-    openSelectedTafsir =  new QAction(QIcon(":/menu/images/arrow-left.png"),
-                                               trUtf8("فتح السورة"),
-                                               this);
-    comboTafasir = new QComboBox(this);
-    comboTafasir->addItem(trUtf8("تفسير ابن كثير"));
-
     toolBarGeneral = new QToolBar(trUtf8("عام"), this);
     toolBarGeneral->addAction(actionNewTab);
     toolBarGeneral->addSeparator();
@@ -86,13 +79,8 @@ void BooksViewer::createMenus(QMainWindow *parent)
     toolBarNavigation->addAction(actionNextAYA);
     toolBarNavigation->addAction(actionPrevAYA);
 
-    toolBarTafesir = new QToolBar(trUtf8("التفسير"), this);
-    toolBarTafesir->addWidget(comboTafasir);
-    toolBarTafesir->addAction(openSelectedTafsir);
-
     parent->addToolBar(toolBarGeneral);
     parent->addToolBar(toolBarNavigation);
-    parent->addToolBar(toolBarTafesir);
 
     // Setup connections
     // Navigation actions
@@ -193,9 +181,6 @@ void BooksViewer::tabCloseRequest(int tabIndex)
 void BooksViewer::tabChanged(int newIndex)
 {
     if(newIndex != -1) {
-        bool showTafsssir = currentBookWidget()->dbHandler()->bookInfo()->isQuran();
-        toolBarTafesir->setVisible(showTafsssir);
-        toolBarTafesir->setEnabled(showTafsssir);
         updateActions();
     }
 }
