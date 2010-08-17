@@ -30,14 +30,12 @@ void MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_pat
     // open the database
     if (!(mdb = mdb_open (qPrintable(mdb_path), MDB_NOFLAGS))) {
         qDebug() << "Couldn't open database.";
-        exit(1);
     }
 
 
     // read the catalog
     if (!mdb_read_catalog (mdb, MDB_TABLE)) {
         qDebug() << "File does not appear to be an Access database.";
-        exit(1);
     }
 
     m_bookDB = QSqlDatabase::addDatabase("QSQLITE", "bok2sql");
@@ -166,7 +164,6 @@ void MdbConverter::getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry)
        if(!m_bookQuery->exec(sqlCmd)) {
            qDebug() << "[2] SQL error: (" << m_bookQuery->lastError().text() << ")";
            qDebug() << sqlCmd;
-           exit(-1);
        }
     }
 
@@ -186,6 +183,13 @@ void MdbConverter::generateTableSchema(MdbCatalogEntry *entry)
     MdbColumn *col;
     QString sqlCmd;
 
+    /* Sqlite types */
+    const char *sqlite_types[] = {
+        "Text", "char", "int", "int", "int", "float",
+        "float", "float", "date", "varchar", "varchar",
+        "varchar", "text", "blob", "text", "numeric", "numeric"
+    };
+
     // create the table
     sqlCmd.append("CREATE TABLE IF NOT EXISTS ");
     sqlCmd.append(sanitizeName(entry->object_name));
@@ -197,7 +201,6 @@ void MdbConverter::generateTableSchema(MdbCatalogEntry *entry)
     mdb_read_columns (table);
 
     // loop over the columns, dumping the names and types
-
     for (unsigned int i = 0; i < table->num_cols; i++) {
         col = (MdbColumn*) g_ptr_array_index (table->columns, i);
 
@@ -221,7 +224,6 @@ void MdbConverter::generateTableSchema(MdbCatalogEntry *entry)
     if(!m_bookQuery->exec(sqlCmd)){
         qDebug() << "[1] SQL error: (" << m_bookQuery->lastError().text() << ")";
         qDebug() << sqlCmd;
-        exit(-1);
     }
 
     mdb_free_tabledef (table);

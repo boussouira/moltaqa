@@ -11,12 +11,6 @@
 #define is_text_type(x) (x==MDB_TEXT || x==MDB_MEMO || x==MDB_SDATETIME)
 using namespace std;
 
-/* SQLite data types */
-static const char *sqlite_types[] = {
-        "Text", "char", "int", "int", "int", "float",
-        "float", "float", "date", "varchar", "varchar",
-        "varchar", "text", "blob", "text", "numeric", "numeric" };
-
 class QSqlQuery;
 
 class MdbConverter : public QObject
