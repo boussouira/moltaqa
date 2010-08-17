@@ -5,8 +5,10 @@ KWebView::KWebView(QWidget *parent) : QWebView(parent)
     m_frame = page()->mainFrame();
 #if QT_VERSION >= 0x040600
     m_animation = new QPropertyAnimation(m_frame, "scrollPosition", this);
+    connect(m_frame, SIGNAL(contentsSizeChanged(QSize)), m_animation, SLOT(stop()));
 #else
     m_timeLine = new QTimeLine(1000, this);
+    connect(m_frame, SIGNAL(contentsSizeChanged(QSize)), m_timeLine, SLOT(stop()));
 #endif
 }
 
@@ -64,18 +66,25 @@ void KWebView::pageUp()
 void KWebView::scrollToPosition(const QPoint &pos, int duration)
 {
 #if QT_VERSION >= 0x040600
-    m_animation->setDuration(duration);
-    m_animation->setStartValue(m_frame->scrollPosition());
-    m_animation->setEndValue(pos);
 
-    m_animation->start();
+    if(m_animation->state() != QPropertyAnimation::Running)
+    {
+        m_animation->setDuration(duration);
+        m_animation->setStartValue(m_frame->scrollPosition());
+        m_animation->setEndValue(pos);
+
+        m_animation->start();
+    }
 
 #else
-    m_timeLine->setDuration(duration);
-    m_timeLine->setFrameRange(m_frame->scrollPosition().y(), pos.y());
-    connect(m_timeLine, SIGNAL(frameChanged(int)), this, SLOT(setY(int)));
 
-    m_timeLine->start();
+    if(m_timeLine->state() != QTimeLine::Running) {
+        m_timeLine->setDuration(duration);
+        m_timeLine->setFrameRange(m_frame->scrollPosition().y(), pos.y());
+        connect(m_timeLine, SIGNAL(frameChanged(int)), this, SLOT(setY(int)));
+
+        m_timeLine->start();
+    }
 
 #endif
 }
