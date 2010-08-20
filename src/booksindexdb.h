@@ -15,6 +15,7 @@ public:
     BooksIndexDB();
     QAbstractItemModel *getListModel(bool books=true);
     int getCatIdFromName(const QString &cat);
+    BookInfo *getBookInfo(int bookID);
 
 protected:
     void booksCat(BooksListNode *parentNode, int catID);

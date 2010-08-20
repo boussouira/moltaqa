@@ -5,8 +5,7 @@
 #include <qsqldatabase.h>
 #include "qabstractitemmodel.h"
 
-class BooksListModel;
-class BooksListNode;
+class BooksIndexDB;
 
 namespace Ui {
     class BooksListBrowser;
@@ -17,8 +16,6 @@ class BooksListBrowser : public QDialog {
 public:
     BooksListBrowser(QWidget *parent = 0);
     ~BooksListBrowser();
-    void booksCat(BooksListNode *parentNode, int catID);
-    void childCats(BooksListNode *parentNode, int pID);
 
 private slots:
     void on_treeView_doubleClicked(QModelIndex index);
@@ -29,11 +26,7 @@ signals:
     void bookSelected(int bookID);
 
 private:
-    QSqlDatabase m_booksListDB;
-    QString m_appDir;
-    QString m_booksFolder;
-    QString m_indexDBName;
-    BooksListModel *m_listModel;
+    BooksIndexDB *m_infoDB;
     Ui::BooksListBrowser *ui;
 };
 

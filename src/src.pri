@@ -42,7 +42,6 @@ SOURCES += mainwindow.cpp \
     bookindexnode.cpp \
     bookinfo.cpp \
     simpletextformat.cpp \
-    bookinfohandler.cpp \
     bookwidget.cpp \
     kwebview.cpp \
     settingschecker.cpp \
@@ -69,7 +68,6 @@ HEADERS += mainwindow.h \
     bookindexnode.h \
     bookinfo.h \
     simpletextformat.h \
-    bookinfohandler.h \
     bookwidget.h \
     kwebview.h \
     settingschecker.h \

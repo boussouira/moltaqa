@@ -69,8 +69,8 @@ QWidget *CategorieDelegate::createEditor(QWidget *parent,
     return browser;
 }
 
-void CategorieDelegate::setEditorData(QWidget *editor,
-                                      const QModelIndex &index) const
+void CategorieDelegate::setEditorData(QWidget */*editor*/,
+                                      const QModelIndex &/*index*/) const
 {
     /*
     CatsListWidget *browser = qobject_cast<CatsListWidget*>(editor);

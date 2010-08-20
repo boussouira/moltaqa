@@ -90,3 +90,22 @@ int BooksIndexDB::getCatIdFromName(const QString &cat)
 
     return (count == 1) ? catID : -1;
 }
+
+BookInfo *BooksIndexDB::getBookInfo(int bookID)
+{
+    BookInfo *bookInfo = new BookInfo();
+    QSqlQuery bookQuery(m_booksListDB);
+
+    bookQuery.exec(QString("SELECT bookName, bookType, fileName "
+                          "From booksList where id = %1 LIMIT 1").arg(bookID));
+    if(bookQuery.next()) {
+        bookInfo->setBookName(bookQuery.value(0).toString());
+        bookInfo->setBookType((BookInfo::Type)bookQuery.value(1).toInt());
+        bookInfo->setBookID(bookID);
+        bookInfo->setBookPath(QString("%1/%2")
+                              .arg(m_booksFolder)
+                              .arg(bookQuery.value(2).toString()));
+    }
+
+    return bookInfo;
+}

@@ -4,7 +4,7 @@
 #include <qwidget.h>
 
 class BookWidget;
-class BookInfoHandler;
+class BooksIndexDB;
 class TabWidget;
 class QMainWindow;
 class QToolBar;
@@ -36,7 +36,7 @@ protected:
 
 private:
     TabWidget *m_tab;
-    BookInfoHandler *m_infoDB;
+    BooksIndexDB *m_infoDB;
     QList<BookWidget *> m_bookWidgets;
     QAction *actionNewTab;
     QAction *actionIndexDock;

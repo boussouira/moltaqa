@@ -4,7 +4,7 @@
 #include "bookslistbrowser.h"
 #include "simpledbhandler.h"
 #include "qurandbhandler.h"
-#include "bookinfohandler.h"
+#include "booksindexdb.h"
 #include "bookwidget.h"
 
 #include <qmainwindow.h>
@@ -23,7 +23,7 @@ BooksViewer::BooksViewer(QWidget *parent): QWidget(parent)
     layout->addWidget(m_tab);
     layout->setContentsMargins(0,6,0,0);
 
-    m_infoDB = new BookInfoHandler();
+    m_infoDB = new BooksIndexDB();
 
     connect(m_tab, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
     connect(m_tab, SIGNAL(tabMoved(int,int)), this, SLOT(tabChangePosition(int,int)));
@@ -33,7 +33,6 @@ BooksViewer::BooksViewer(QWidget *parent): QWidget(parent)
 BooksViewer::~BooksViewer()
 {
     delete m_infoDB;
-    QSqlDatabase::removeDatabase("BooksInfoDB");
 }
 
 void BooksViewer::createMenus(QMainWindow *parent)
