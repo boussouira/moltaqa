@@ -11,15 +11,12 @@ a {
     padding:15px;
     text-align:center;
 }
-#tafessir, #simpleBook {
+#simpleBook {
     border:1px solid #CCCCCC;
     font-family:Traditional arabic;
     font-size:30px;
     padding:15px;
     text-align:right;
-}
-.txt {
-	padding:10px 0;
 }
 .soraname {
 	border:1px solid #CCCCCC;
@@ -41,7 +38,7 @@ a {
 }
 .bassemala {
 	color:DarkBlue;
-	margin-bottom:5px;
+	margin-bottom:10px;
 	text-align:center;
 }
 .highlighted{

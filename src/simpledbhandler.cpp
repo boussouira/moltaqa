@@ -19,6 +19,8 @@ SimpleDBHandler::~SimpleDBHandler()
 
 QString SimpleDBHandler::openID(int pid)
 {
+    m_textFormat->clearText();
+
     int id;
     if(pid == -1) // First page
         id = m_bookInfo->firstID();
@@ -35,13 +37,13 @@ QString SimpleDBHandler::openID(int pid)
                                   "WHERE id <= %2 ORDER BY id DESC LIMIT 1")
                           .arg(m_bookInfo->bookTable()).arg(id));
     if(m_bookQuery.next()) {
-        m_textFormat->setText(m_bookQuery.value(1).toString());
+        m_textFormat->insertText(m_bookQuery.value(1).toString());
         m_bookInfo->setCurrentID(m_bookQuery.value(0).toInt());
         m_bookInfo->setCurrentPage(m_bookQuery.value(3).toInt());
         m_bookInfo->setCurrentPart(m_bookQuery.value(2).toInt());
     }
-//    qDebug("CURRENT PAGE: %d", m_bookInfo->currentID());
-    return m_textFormat->formatText();
+
+    return m_textFormat->getText();
 }
 
 QString SimpleDBHandler::openPage(int page, int part)

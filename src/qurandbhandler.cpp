@@ -29,7 +29,7 @@ QString QuranDBHandler::openID(int pid)
 }
 QString QuranDBHandler::openPage(int page, int part)
 {
-    m_quranFormat->clearQuranText();
+    m_quranFormat->clearText();
     m_bookInfo->setCurrentPage(page);
     m_bookInfo->setCurrentPart(part);
 
@@ -53,7 +53,7 @@ QString QuranDBHandler::openPage(int page, int part)
                                      m_bookQuery.value(2).toInt(),
                                      m_bookQuery.value(4).toInt());
     }
-    return m_quranFormat->text();
+    return m_quranFormat->getText();
 }
 
 QString QuranDBHandler::openSora(int num)

@@ -2,42 +2,22 @@
 
 QuranTextFormat::QuranTextFormat()
 {
-
+    m_cssID = "quran";
 }
 
-void QuranTextFormat::insertSoraName(QString pSoraName)
+void QuranTextFormat::insertSoraName(const QString &pSoraName)
 {
     QString soraName = QObject::trUtf8("سورة %1").arg(pSoraName);
-    m_text.append(QString("<div class=\"soraname\">%1</div>").arg(soraName));
+    insertDivTag(soraName, "soraname");
 }
 
 void QuranTextFormat::insertBassemala()
 {
-    m_text.append(QString("<div class=\"txt\"><div class=\"bassemala\">%1</div>")
-                  .arg(QObject::trUtf8("بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ")));
+    insertDivTag(QObject::trUtf8("بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ"), "bassemala");
 }
 
-void QuranTextFormat::insertAyaText(QString pAyaText, int pAyaNumber, int pSoraNumber)
+void QuranTextFormat::insertAyaText(const QString &pAyaText, int pAyaNumber, int pSoraNumber)
 {
-    m_text.append(QString("<span id=\"s%1a%2\" class=\"ayatxt\">%3</span>")
-                  .arg(pSoraNumber).arg(pAyaNumber).arg(pAyaText));
-    m_text.append(QString("<span class=\"ayanumber\">(%1)</span>").arg(pAyaNumber));
+    insertSpanTag(pAyaText, "ayatxt", QString("s%1a%2").arg(pSoraNumber).arg(pAyaNumber));
+    insertSpanTag(QString("(%1)").arg(pAyaNumber), "ayanumber");
 }
-
-QString QuranTextFormat::text()
-{
-    return QString("<html>"
-                   "<head>"
-                   "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />"
-                   "<link href= \"%1\"  rel=\"stylesheet\" type=\"text/css\"/>"
-                   "</head>"
-                   "<body>"
-                   "<div id=\"quran\">%2</div>"
-                   "</div></body></html>").arg(m_styleFile).arg(m_text);
-}
-
-void QuranTextFormat::clearQuranText()
-{
-    m_text.clear();
-}
-

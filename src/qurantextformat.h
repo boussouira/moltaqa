@@ -7,9 +7,9 @@ class QuranTextFormat : public TextFormatter
 {
 public:
     QuranTextFormat();
-    void insertSoraName(QString pSoraName);
+    void insertSoraName(const QString &pSoraName);
     void insertBassemala();
-    void insertAyaText(QString pAyaText, int pAyaNumber, int pSoraNumber);
+    void insertAyaText(const QString &pAyaText, int pAyaNumber, int pSoraNumber);
     QString text();
     void clearQuranText();
 
