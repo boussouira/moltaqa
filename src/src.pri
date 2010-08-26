@@ -21,7 +21,7 @@ unix {
         HEADERS += mdbconverter.h
         SOURCES += mdbconverter.cpp
 
-        LIBS += -L/usr/local/lib -lmdb -lglib-2.0 -lsqlite3
+        LIBS += -L/usr/local/lib -lmdb -lglib-2.0
         INCLUDEPATH += /usr/include/glib-2.0 /usr/lib/glib-2.0/include
 }
 

@@ -6,7 +6,6 @@
 
 #include <mdbtools.h>
 #include <glib.h>
-#include <sqlite3.h>
 
 #define is_text_type(x) (x==MDB_TEXT || x==MDB_MEMO || x==MDB_SDATETIME)
 using namespace std;
