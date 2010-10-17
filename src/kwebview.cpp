@@ -3,13 +3,9 @@
 KWebView::KWebView(QWidget *parent) : QWebView(parent)
 {
     m_frame = page()->mainFrame();
-#if QT_VERSION >= 0x040600
+
     m_animation = new QPropertyAnimation(m_frame, "scrollPosition", this);
     connect(m_frame, SIGNAL(contentsSizeChanged(QSize)), m_animation, SLOT(stop()));
-#else
-    m_timeLine = new QTimeLine(1000, this);
-    connect(m_frame, SIGNAL(contentsSizeChanged(QSize)), m_timeLine, SLOT(stop()));
-#endif
 }
 
 void KWebView::scrollToAya(int pSoraNumber, int pAyaNumber)
@@ -65,8 +61,6 @@ void KWebView::pageUp()
 
 void KWebView::scrollToPosition(const QPoint &pos, int duration)
 {
-#if QT_VERSION >= 0x040600
-
     if(m_animation->state() != QPropertyAnimation::Running)
     {
         m_animation->setDuration(duration);
@@ -75,18 +69,6 @@ void KWebView::scrollToPosition(const QPoint &pos, int duration)
 
         m_animation->start();
     }
-
-#else
-
-    if(m_timeLine->state() != QTimeLine::Running) {
-        m_timeLine->setDuration(duration);
-        m_timeLine->setFrameRange(m_frame->scrollPosition().y(), pos.y());
-        connect(m_timeLine, SIGNAL(frameChanged(int)), this, SLOT(setY(int)));
-
-        m_timeLine->start();
-    }
-
-#endif
 }
 
 bool KWebView::maxDown()
@@ -99,9 +81,4 @@ bool KWebView::maxUp()
 {
     return (page()->mainFrame()->scrollBarMinimum(Qt::Vertical)==
             page()->mainFrame()->scrollPosition().y());
-}
-
-void KWebView::setY(int y)
-{
-    page()->mainFrame()->setScrollPosition(QPoint(0, y));
 }
