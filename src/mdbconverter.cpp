@@ -1,5 +1,4 @@
 #include "mdbconverter.h"
-#include <qsqlquery.h>
 #include <qsqlerror.h>
 #include <qdatetime.h>
 #include <qtextcodec.h>
@@ -11,8 +10,6 @@ MdbConverter::MdbConverter()
 
 MdbConverter::~MdbConverter()
 {
-    delete m_bookQuery;
-    m_bookDB.close();
 }
 
 void MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_path)
@@ -44,7 +41,7 @@ void MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_pat
     if (!m_bookDB.open()) {
         qDebug() << "Cannot open database.";
     }
-    m_bookQuery = new QSqlQuery(m_bookDB);
+    m_bookQuery = QSqlQuery(m_bookDB);
 
     // loop over each entry in the catalog
     MdbCatalogEntry *entry;
@@ -56,14 +53,11 @@ void MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_pat
 
         if (entry->object_type != MDB_TABLE || mdb_is_system_table(entry))
             continue;
-        qDebug() << "[*] Importing table:"
-                << entry->object_name << "->"
-                << sanitizeName(entry->object_name);
+        qDebug() << "[*] Importing" << entry->object_name << "...";
         generateTableSchema(entry);
         m_bookDB.transaction();
-        getTableContent(mdb, entry);
+        getTableContent(mdb, entry, false);
         m_bookDB.commit();
-//        qDebug("done.\n");
     }
 
     qDebug() << "[*] Done at" << timer.elapsed() << "ms.";
@@ -105,7 +99,7 @@ void MdbConverter::getTableSchema(MdbHandle *mdb, char *tabname)
     }
 }
 
-void MdbConverter::getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry)
+void MdbConverter::getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry, bool fieldsName)
 {
     MdbTableDef *table;
     MdbColumn *col;
@@ -136,14 +130,17 @@ void MdbConverter::getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry)
 
         sqlCmd.append("INSERT INTO ");
         sqlCmd.append(sanitizeName(entry->object_name));
-        sqlCmd.append(" (");
-        for (unsigned int k=0;k<table->num_cols;k++) {
-            if (k>0)
-                sqlCmd.append(", ");
-            col=(MdbColumn*) g_ptr_array_index(table->columns,k);
-            sqlCmd.append(sanitizeName(col->name));
+        if(fieldsName) {
+            sqlCmd.append(" (");
+            for (unsigned int k=0;k<table->num_cols;k++) {
+                if (k>0)
+                    sqlCmd.append(", ");
+                col=(MdbColumn*) g_ptr_array_index(table->columns,k);
+                sqlCmd.append(sanitizeName(col->name));
+            }
+            sqlCmd.append(")");
         }
-        sqlCmd.append(") VALUES (");
+        sqlCmd.append(" VALUES (");
 
         for (unsigned int p=0;p<table->num_cols;p++) {
             col=(MdbColumn*) g_ptr_array_index(table->columns,p);
@@ -161,8 +158,8 @@ void MdbConverter::getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry)
         }
        sqlCmd.append(");");
 
-       if(!m_bookQuery->exec(sqlCmd)) {
-           qDebug() << "[2] SQL error: (" << m_bookQuery->lastError().text() << ")";
+       if(!m_bookQuery.exec(sqlCmd)) {
+           qDebug() << "[2] SQL error: (" << m_bookQuery.lastError().text() << ")";
            qDebug() << sqlCmd;
        }
     }
@@ -221,8 +218,8 @@ void MdbConverter::generateTableSchema(MdbCatalogEntry *entry)
     }
 
     sqlCmd.append( ");");
-    if(!m_bookQuery->exec(sqlCmd)){
-        qDebug() << "[1] SQL error: (" << m_bookQuery->lastError().text() << ")";
+    if(!m_bookQuery.exec(sqlCmd)){
+        qDebug() << "[1] SQL error: (" << m_bookQuery.lastError().text() << ")";
         qDebug() << sqlCmd;
     }
 
@@ -264,10 +261,4 @@ void MdbConverter::print_col(QString &str,gchar *col_val, int quote_text, int co
     } else {
         str.append(value);
     }
-}
-
-QSqlDatabase MdbConverter::getDatabase()
-{
-    if(m_bookDB.isOpen())
-        return m_bookDB;
 }

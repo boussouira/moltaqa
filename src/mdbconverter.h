@@ -3,6 +3,7 @@
 
 #include <qobject.h>
 #include <qsqldatabase.h>
+#include <qsqlquery.h>
 
 #include <mdbtools.h>
 #include <glib.h>
@@ -18,17 +19,16 @@ public:
     MdbConverter();
     ~MdbConverter();
     void exportFromMdb(const QString &mdb_path, const QString &sql_path);
-    void getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry);
+    void getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry, bool fieldsName=true);
     void getTableSchema(MdbHandle *mdb, char *tabname);
     int getTables(MdbHandle *mdb, char *buffer[]);
     void print_col(QString &std, gchar *col_val, int quote_text, int col_type, char *quote_char, char *escape_char);
     void generateTableSchema(MdbCatalogEntry *entry);
     char *sanitizeName(char *str);
-    QSqlDatabase getDatabase();
 
 protected:
     QSqlDatabase m_bookDB;
-    QSqlQuery *m_bookQuery;
+    QSqlQuery m_bookQuery;
 };
 
 #endif // MDBCONVERTER_H

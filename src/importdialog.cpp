@@ -215,7 +215,7 @@ QString ImportDialog::getBookType(const QSqlDatabase &bookDB)
             }
         } else if(aya != -1 && sora != -1)
             return trUtf8("تفسير");
-        else
-            return trUtf8("عادي");
     }
+
+    return trUtf8("عادي");
 }
