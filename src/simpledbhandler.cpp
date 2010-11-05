@@ -87,7 +87,8 @@ BookIndexNode *SimpleDBHandler::getNodeByDepth(BookIndexNode *pNode, int pDepth)
     BookIndexNode *n = pNode;
 
     while(--pDepth > 0) {
-        n = n->childList()->last();
+        if(!n->childList()->isEmpty())
+            n = n->childList()->last();
     }
     return n;
 }
