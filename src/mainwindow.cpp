@@ -86,3 +86,9 @@ void MainWindow::loadSettings()
     defaultQuran = settings.value("Books/default_quran", -1).toInt();
     ui->pushOpenQuran->setEnabled(defaultQuran != -1);
 }
+
+void MainWindow::on_actionImportFromShamela_triggered()
+{
+    ImportDialog *dialog = new ImportDialog(this);
+    dialog->show();
+}

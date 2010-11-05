@@ -44,95 +44,56 @@ void ImportDialog::on_pushCancel_clicked()
     reject();
 }
 
-void ImportDialog::on_pushAdd_clicked()
-{
-    QString bokPath = selectShamelBook();
-    if(bokPath.isEmpty())
-        return;
-
-    try {
-        QList<ImportModelNode*> nodesList;
-        getBookInfo(bokPath, nodesList);
-
-        foreach(ImportModelNode *node, nodesList)
-            m_model->appendNode(node, QModelIndex());
-
-    } catch(QString &what) {
-        QMessageBox::critical(this, trUtf8("خطأ عند الاستيراد"),
-                              what);
-    }
-
-    QSqlDatabase::removeDatabase("ImportBookInfo");
-/*
-    ImportModelNode *node = new ImportModelNode(BookInfo::NormalBook);
-    node->setTypeName( trUtf8("عادي"));
-    node->setBookName(trUtf8("الصارم المنطي في الد على السبكي"));
-    node->setAuthorName(trUtf8("المقدسي"));
-    node->setCatName(trUtf8("شروح الحديث"));
-    node->setBookPath("/gil/dd.j");
-    m_model->appendNode(node, QModelIndex());
-    */
-}
-
-QString ImportDialog::selectShamelBook()
+void ImportDialog::on_pushAddFile_clicked()
 {
     QFileDialog dialog(this);
-    dialog.setFileMode(QFileDialog::ExistingFile);
+    dialog.setFileMode(QFileDialog::ExistingFiles);
     dialog.setNameFilter(tr("Shamela book (*.bok);; All files (*.*)"));
     dialog.setViewMode(QFileDialog::Detail);
 
-    if (dialog.exec())
-        return dialog.selectedFiles().first();
-    else
-        return QString();
+    if(dialog.exec())
+        ui->fileListWidget->addItems(dialog.selectedFiles());
 }
 
-void ImportDialog::on_pushDelete_clicked()
+void ImportDialog::on_pushDeleteFile_clicked()
 {
-    QModelIndexList indexes = ui->treeView->selectionModel()->selectedRows();
-    for(int i=0; i<indexes.count(); i++) {
-        m_model->removeRow(indexes.at(i).row(), indexes.at(i).parent());
-    }
+    foreach(QModelIndex index, ui->fileListWidget->selectionModel()->selectedIndexes())
+        ui->fileListWidget->takeItem(index.row());
 }
 
-void ImportDialog::on_pushImport_clicked()
+void ImportDialog::on_pushNext_clicked()
 {
-    ImportModelNode *rootNode = m_model->nodeFromIndex(QModelIndex());
-    QSqlDatabase indexDB = QSqlDatabase::addDatabase("QSQLITE", "BooksInfoDB");
-    indexDB.setDatabaseName(QString("%1/books/books_index.db")
-                            .arg("/home/naruto/Programming/alkotobiya"));
-    if(!indexDB.open())
-        qDebug("[%s:%d] Cannot open database.", __FILE__, __LINE__);
-    QSqlQuery indexQuery(indexDB);
+    if(ui->stackedWidget->currentIndex() == 0)
+    {
+        for(int i=0;i<ui->fileListWidget->count();i++){
+            try {
+                QList<ImportModelNode*> nodesList;
+                getBookInfo(ui->fileListWidget->item(i)->text(), nodesList);
 
-    foreach(ImportModelNode *node, rootNode->childrenList()) {
-        QString qurey = QString("INSERT INTO booksList (id, bookID, bookType, bookFlags, bookCat,"
-                                "bookName, bookInfo, authorName, authorID, fileName, bookFolder)"
-                                "VALUES(NULL, 0, %1, %2, %3, '%4', '%5', '%6', %7, '%8', '')")
-                .arg(node->getNodeType())
-                .arg(0)
-                .arg(node->getCatID())
-                .arg(node->getBookName())
-                .arg(node->getInfoToolTip())
-                .arg(node->getAuthorName())
-                .arg(0)
-                .arg(node->getBookPath().split("/").last());
-        QFile::copy(node->getBookPath(), QString("%1/books/%2")
-                    .arg("/home/naruto/Programming/alkotobiya")
-                    .arg(node->getBookPath().split("/").last()));
-         if(indexQuery.exec(qurey))
-            qDebug() << "[+]" << node->getBookName();
-         else {
-             qDebug() << "Error:" << indexQuery.lastError().text();
-             qDebug() << "Query:" << qurey ;
-         }
+                foreach(ImportModelNode *node, nodesList)
+                    m_model->appendNode(node, QModelIndex());
+
+            } catch(QString &what) {
+                QMessageBox::critical(this,
+                                      trUtf8("خطأ عند الاستيراد"),
+                                      what);
+            }
+        }
+
+        ui->stackedWidget->setCurrentIndex(1);
+    } else if(ui->stackedWidget->currentIndex() == 1){
+
+        foreach(ImportModelNode *node, m_model->nodeFromIndex(QModelIndex())->childrenList()) {
+             if(m_indexDB->addBook(node))
+                qDebug() << "[+]" << node->getBookName();
+            else
+                qDebug() << "Error:" << node->getBookName();
+        }
     }
 }
 
 void ImportDialog::getBookInfo(const QString &path, QList<ImportModelNode*> &nodes)
 {
-    QString dbPath = path;
-
 #ifdef Q_OS_WIN32
     QSqlDatabase m_bookDB = QSqlDatabase::addDatabase("QODBC", "mdb");
     QString mdbpath = QString("DRIVER={Microsoft Access Driver (*.mdb)};FIL={MS Access};DBQ=%1")
@@ -143,13 +104,8 @@ void ImportDialog::getBookInfo(const QString &path, QList<ImportModelNode*> &nod
         throw trUtf8("لا يمكن فتح قاعدة البيانات");
 
 #else
-    dbPath.append(".sqlite");
-    if(QFile::exists(dbPath)) {
-        QFile fi(dbPath);
-        fi.remove(dbPath);
-    }
     MdbConverter mdb;
-    mdb.exportFromMdb(path, dbPath);
+    QString dbPath = mdb.exportFromMdb(path);
     QSqlDatabase m_bookDB = QSqlDatabase::addDatabase("QSQLITE", "mdb");
     m_bookDB.setDatabaseName(dbPath);
 

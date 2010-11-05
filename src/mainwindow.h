@@ -46,6 +46,9 @@ private:
     int defaultQuran;
     Ui::MainWindow *ui;
 
+
+private slots:
+    void on_actionImportFromShamela_triggered();
 };
 
 #endif // MAINWINDOW_H

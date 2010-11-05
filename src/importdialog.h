@@ -16,7 +16,6 @@ class ImportDialog : public QDialog {
 public:
     ImportDialog(QWidget *parent = 0);
     ~ImportDialog();
-    QString selectShamelBook();
     void getBookInfo(const QString &path, QList<ImportModelNode*> &nodes);
     QString getBookType(const QSqlDatabase &bookDB);
 
@@ -26,9 +25,9 @@ private:
     BooksIndexDB *m_indexDB;
 
 private slots:
-    void on_pushImport_clicked();
-    void on_pushDelete_clicked();
-    void on_pushAdd_clicked();
+    void on_pushNext_clicked();
+    void on_pushDeleteFile_clicked();
+    void on_pushAddFile_clicked();
     void on_pushCancel_clicked();
 };
 
