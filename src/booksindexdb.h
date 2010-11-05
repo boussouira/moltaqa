@@ -8,6 +8,7 @@
 class QAbstractItemModel;
 class BooksListModel;
 class BooksListNode;
+class ImportModelNode;
 
 class BooksIndexDB
 {
@@ -16,6 +17,7 @@ public:
     QAbstractItemModel *getListModel(bool books=true);
     int getCatIdFromName(const QString &cat);
     BookInfo *getBookInfo(int bookID);
+    bool addBook(ImportModelNode *book);
 
 protected:
     void booksCat(BooksListNode *parentNode, int catID);

@@ -1,7 +1,9 @@
 #include "booksindexdb.h"
 #include "bookslistmodel.h"
+#include "importmodel.h"
 #include <qsqlquery.h>
 #include <qsqlerror.h>
+#include <qfile.h>
 #include <qdebug.h>
 
 BooksIndexDB::BooksIndexDB()
@@ -108,4 +110,30 @@ BookInfo *BooksIndexDB::getBookInfo(int bookID)
     }
 
     return bookInfo;
+}
+
+bool BooksIndexDB::addBook(ImportModelNode *book)
+{
+    QSqlQuery indexQuery(m_booksListDB);
+
+    QString qurey = QString("INSERT INTO booksList (id, bookID, bookType, bookFlags, bookCat,"
+                            "bookName, bookInfo, authorName, authorID, fileName, bookFolder)"
+                            "VALUES(NULL, 0, %1, %2, %3, '%4', '%5', '%6', %7, '%8', '')")
+            .arg(book->getNodeType())
+            .arg(0)
+            .arg(book->getCatID())
+            .arg(book->getBookName())
+            .arg(book->getInfoToolTip())
+            .arg(book->getAuthorName())
+            .arg(0)
+            .arg(book->getBookPath().split("/").last());
+
+    QString newPath = QString("%1/%2")
+                      .arg(m_booksFolder)
+                      .arg(book->getBookPath().split("/").last());
+    if(QFile::copy(book->getBookPath(), newPath)){
+        return indexQuery.exec(qurey);
+    } else {
+        return false;
+    }
 }
