@@ -17,6 +17,7 @@ void SettingsChecker::checkSettings()
     QString appDirPath = appDir.absolutePath();
     QString booksFolder = m_settings.value("books_folder", "books").toString();
     QString indexDBName = m_settings.value("index_db", "books_index.db").toString();
+    QString booksTemp = m_settings.value("books_temp", "temp").toString();
     m_settings.endGroup();
 
     if(booksFolder == "books") {
@@ -34,10 +35,14 @@ void SettingsChecker::checkSettings()
         createIndexBD(appDir.absoluteFilePath(indexDBName));
     }
 
+    if(!appDir.exists(booksTemp))
+        appDir.mkdir(booksTemp);
+
     m_settings.beginGroup("General");
     m_settings.setValue("app_dir", appDirPath);
     m_settings.setValue("books_folder", appDir.absolutePath());
     m_settings.setValue("index_db", indexDBName);
+    m_settings.setValue("books_temp", booksTemp);
     m_settings.setValue("index_db_full_path", QString("%1/%2")
                       .arg(appDir.absolutePath())
                       .arg(indexDBName));
