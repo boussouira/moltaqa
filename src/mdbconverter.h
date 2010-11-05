@@ -18,7 +18,9 @@ class MdbConverter : public QObject
 public:
     MdbConverter();
     ~MdbConverter();
-    void exportFromMdb(const QString &mdb_path, const QString &sql_path);
+    QString exportFromMdb(const QString &mdb_path, const QString &sql_path=QString());
+
+protected:
     void getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry, bool fieldsName=true);
     void getTableSchema(MdbHandle *mdb, char *tabname);
     int getTables(MdbHandle *mdb, char *buffer[]);
@@ -29,6 +31,7 @@ public:
 protected:
     QSqlDatabase m_bookDB;
     QSqlQuery m_bookQuery;
+    QString m_tempFolder;
 };
 
 #endif // MDBCONVERTER_H

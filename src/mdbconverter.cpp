@@ -2,17 +2,25 @@
 #include <qsqlerror.h>
 #include <qdatetime.h>
 #include <qtextcodec.h>
+#include <qsettings.h>
+#include <qstringlist.h>
 #include <qdebug.h>
 
 MdbConverter::MdbConverter()
 {
+    QSettings settings;
+    settings.beginGroup("General");
+    m_tempFolder = settings.value("books_folder").toString()
+                 + "/"
+                 + settings.value("books_temp").toString();
+
 }
 
 MdbConverter::~MdbConverter()
 {
 }
 
-void MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_path)
+QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_path)
 {
     QTime timer;
     timer.start();
@@ -21,25 +29,38 @@ void MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_pat
     putenv(strdup("MDB_JET3_CHARSET=cp1256"));
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("windows-1256"));
 
+    QString convert_path;
+    if(!sql_path.isEmpty()){
+        convert_path = sql_path;
+    } else {
+        convert_path = m_tempFolder;
+        convert_path.append("/");
+        convert_path.append(mdb_path.split("/").last());
+        convert_path.append(".sqlite");
+    }
+
     // initialize the library
     mdb_init();
 
     // open the database
     if (!(mdb = mdb_open (qPrintable(mdb_path), MDB_NOFLAGS))) {
         qDebug() << "Couldn't open database.";
+        return QString();
     }
 
 
     // read the catalog
     if (!mdb_read_catalog (mdb, MDB_TABLE)) {
         qDebug() << "File does not appear to be an Access database.";
+        return QString();
     }
 
     m_bookDB = QSqlDatabase::addDatabase("QSQLITE", "bok2sql");
-    m_bookDB.setDatabaseName(sql_path);
+    m_bookDB.setDatabaseName(convert_path);
 
     if (!m_bookDB.open()) {
         qDebug() << "Cannot open database.";
+        return QString();
     }
     m_bookQuery = QSqlQuery(m_bookDB);
 
@@ -47,23 +68,24 @@ void MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_pat
     MdbCatalogEntry *entry;
     unsigned int num_catalog = mdb->num_catalog;
 
-
     for (unsigned int i=0; i < num_catalog; i++) {
         entry = (MdbCatalogEntry*) g_ptr_array_index (mdb->catalog, i);
 
         if (entry->object_type != MDB_TABLE || mdb_is_system_table(entry))
             continue;
-        qDebug() << "[*] Importing" << entry->object_name << "...";
+        //qDebug() << "[*] Importing" << entry->object_name << "...";
         generateTableSchema(entry);
         m_bookDB.transaction();
         getTableContent(mdb, entry, false);
         m_bookDB.commit();
     }
 
-    qDebug() << "[*] Done at" << timer.elapsed() << "ms.";
+    qDebug() << "[*]" << mdb_path.split("/").last() << "Converted in" << timer.elapsed() << "ms.";
 
     mdb_close(mdb);
     mdb_exit();
+
+    return convert_path;
 }
 
 int MdbConverter::getTables(MdbHandle *mdb, char *buffer[])
