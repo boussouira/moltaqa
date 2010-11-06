@@ -1,4 +1,4 @@
-#include "mdbconverter.h"
+#include "mdbconverter_unix.h"
 #include <qsqlerror.h>
 #include <qdatetime.h>
 #include <qtextcodec.h>
@@ -208,6 +208,8 @@ void MdbConverter::generateTableSchema(MdbCatalogEntry *entry)
         "float", "float", "date", "varchar", "varchar",
         "varchar", "text", "blob", "text", "numeric", "numeric"
     };
+
+    m_bookQuery.exec(QString("DROP TABLE IF EXISTS %1; ").arg(sanitizeName(entry->object_name)));
 
     // create the table
     sqlCmd.append("CREATE TABLE IF NOT EXISTS ");

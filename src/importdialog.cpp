@@ -3,9 +3,7 @@
 #include "importmodel.h"
 #include "importdelegates.h"
 #include "booksindexdb.h"
-#ifdef Q_OS_LINUX
 #include "mdbconverter.h"
-#endif
 
 #include <qmessagebox.h>
 #include <qfiledialog.h>
@@ -94,22 +92,11 @@ void ImportDialog::on_pushNext_clicked()
 
 void ImportDialog::getBookInfo(const QString &path, QList<ImportModelNode*> &nodes)
 {
-#ifdef Q_OS_WIN32
-    QSqlDatabase m_bookDB = QSqlDatabase::addDatabase("QODBC", "mdb");
-    QString mdbpath = QString("DRIVER={Microsoft Access Driver (*.mdb)};FIL={MS Access};DBQ=%1")
-                      .arg(dbPath);
-    m_bookDB.setDatabaseName(mdbpath);
-
-    if (!m_bookDB.open())
-        throw trUtf8("لا يمكن فتح قاعدة البيانات");
-
-#else
     MdbConverter mdb;
     QString dbPath = mdb.exportFromMdb(path);
+
     QSqlDatabase m_bookDB = QSqlDatabase::addDatabase("QSQLITE", "mdb");
     m_bookDB.setDatabaseName(dbPath);
-
-#endif
 
     if (!m_bookDB.open())
         throw trUtf8("لا يمكن فتح قاعدة البيانات");
@@ -129,13 +116,14 @@ void ImportDialog::getBookInfo(const QString &path, QList<ImportModelNode*> &nod
 
         if(catCol != -1) { // Some old books doesn't have this column
             node->setCatName(bookQuery.value(catCol).toString()); // Must be set before CatID
-            node->setCatID(m_indexDB->getCatIdFromName(bookQuery.value(2).toString()));
+            node->setCatID(m_indexDB->getCatIdFromName(bookQuery.value(catCol).toString()));
         } else
              node->setCatID(-1);
 
         node->setBookPath(dbPath);
         nodes.append(node);
     }
+
     if(bookQuery.lastError().isValid())
         throw trUtf8("حدث خطأ أثناء سحب المعلومات من قاعدة البيانات"
                      "<br><b style=\"direction:rtl\">%1</b>").arg(bookQuery.lastError().text());

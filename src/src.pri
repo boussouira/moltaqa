@@ -18,11 +18,17 @@ RCC_DIR += $$PWD/.rcc
 #}
 
 unix {
-        HEADERS += mdbconverter.h
-        SOURCES += mdbconverter.cpp
+        DEFINES += USE_MDBTOOLS
+        HEADERS += mdbconverter_unix.h
+        SOURCES += mdbconverter_unix.cpp
 
-        LIBS += -L/usr/local/lib -lmdb -lglib-2.0
-        INCLUDEPATH += /usr/include/glib-2.0 /usr/lib/glib-2.0/include
+        QMAKE_CXXFLAGS += $$system(pkg-config libmdb --cflags)
+        QMAKE_LIBS += $$system(pkg-config libmdb --libs)
+}
+
+win32 {
+        HEADERS += mdbconverter_win.h
+        SOURCES += mdbconverter_win.cpp
 }
 
 SOURCES += mainwindow.cpp \
@@ -76,7 +82,8 @@ HEADERS += mainwindow.h \
     importmodel.h \
     importdelegates.h \
     booksindexdb.h \
-    catslistwidget.h
+    catslistwidget.h \
+    mdbconverter.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \
