@@ -63,6 +63,13 @@ void ImportDialog::on_pushNext_clicked()
 {
     if(ui->stackedWidget->currentIndex() == 0)
     {
+        if(ui->fileListWidget->count()==0) {
+            QMessageBox::warning(this,
+                                  trUtf8("خطأ عند الاستيراد"),
+                                  trUtf8("لم تقم باختيار أي ملف ليتم استيراده"));
+            return;
+        }
+
         for(int i=0;i<ui->fileListWidget->count();i++){
             try {
                 QList<ImportModelNode*> nodesList;
@@ -81,12 +88,49 @@ void ImportDialog::on_pushNext_clicked()
         ui->stackedWidget->setCurrentIndex(1);
     } else if(ui->stackedWidget->currentIndex() == 1){
 
-        foreach(ImportModelNode *node, m_model->nodeFromIndex(QModelIndex())->childrenList()) {
-             if(m_indexDB->addBook(node))
-                qDebug() << "[+]" << node->getBookName();
-            else
-                qDebug() << "Error:" << node->getBookName();
+        QStringList list;
+        QList<ImportModelNode *> nodesList = m_model->nodeFromIndex(QModelIndex())->childrenList();
+
+        if(checkNodes(nodesList)){
+            foreach(ImportModelNode *node, nodesList) {
+                if(m_indexDB->addBook(node)){
+                    list.append(node->getBookName());
+                    qDebug() << "[+]" << node->getBookName();
+                } else {
+                    qDebug() << "Error:" << node->getBookName();
+                }
+            }
+        } else {
+            QMessageBox::warning(this,
+                                 trUtf8("خطأ عند الاستيراد"),
+                                 trUtf8("لم تقم باختيار أقسام بعض الكتب"));
+            return;
         }
+
+        QWidget *widget = new QWidget(this);
+        QGridLayout *gridLayout = new QGridLayout(widget);
+
+        widget->setLayout(gridLayout);
+        ui->scrollArea->setWidget(widget);
+
+        foreach(QString book, list){
+            QPushButton *button = new QPushButton;
+            button->setMaximumSize(40,40);
+            button->setIcon(QIcon(":/menu/images/go-previous.png"));
+            button->setStyleSheet("padding:5px;");
+
+            QLabel *label = new QLabel(book);
+            label->setStyleSheet("padding:5px;border:1px solid #cccccc;");
+
+            int row = gridLayout->rowCount();
+            gridLayout->addWidget(button, row, 0);
+            gridLayout->addWidget(label, row, 1);
+        }
+        ui->pushCancel->hide();
+        ui->pushNext->setText(trUtf8("انتهى"));
+        ui->stackedWidget->setCurrentIndex(2);
+    } else if(ui->stackedWidget->currentIndex() == 2){
+        done(QDialog::Accepted);
     }
 }
 
@@ -162,4 +206,19 @@ QString ImportDialog::getBookType(const QSqlDatabase &bookDB)
     }
 
     return trUtf8("عادي");
+}
+
+bool ImportDialog::checkNodes(QList<ImportModelNode *> nodesList)
+{
+    int wrongNodes = 0;
+    foreach(ImportModelNode *node, nodesList) {
+        if(node->getCatID() == -1){
+            node->setBackgroundColor(QColor(200,200,200));
+            wrongNodes++;
+        } else {
+            node->setBackgroundColor(Qt::white);
+        }
+    }
+
+    return (!wrongNodes);
 }

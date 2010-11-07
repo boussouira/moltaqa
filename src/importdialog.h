@@ -18,6 +18,7 @@ public:
     ~ImportDialog();
     void getBookInfo(const QString &path, QList<ImportModelNode*> &nodes);
     QString getBookType(const QSqlDatabase &bookDB);
+    bool checkNodes(QList<ImportModelNode *> nodesList);
 
 private:
     Ui::ImportDialog *ui;

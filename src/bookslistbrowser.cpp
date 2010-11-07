@@ -8,6 +8,7 @@
 #include <qsqlquery.h>
 #include <qsqlerror.h>
 #include <qsettings.h>
+#include <qevent.h>
 
 BooksListBrowser::BooksListBrowser(QWidget *parent) :
     QDialog(parent),
@@ -15,6 +16,7 @@ BooksListBrowser::BooksListBrowser(QWidget *parent) :
 {
     ui->setupUi(this);
     m_infoDB = new BooksIndexDB();
+    m_updateList = false;
 
     showBooksList();
 }
@@ -23,6 +25,16 @@ BooksListBrowser::~BooksListBrowser()
 {
     delete ui;
     delete m_infoDB;
+}
+
+void BooksListBrowser::showEvent(QShowEvent* event){
+    if(event->type() == QEvent::Show && !event->spontaneous()){
+        if(m_updateList){
+            showBooksList();
+            m_updateList = false;
+            qDebug("Update books list");
+        }
+    }
 }
 
 void BooksListBrowser::showBooksList()

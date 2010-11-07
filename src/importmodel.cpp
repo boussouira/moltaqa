@@ -8,6 +8,7 @@ ImportModelNode::ImportModelNode(BookInfo::Type pType, QString pName, QString pA
     m_authorName = pAuth;
     m_nodeID = pId;
     m_parentNode = 0;
+    m_bgColor = Qt::white;
 }
 
 ImportModelNode::~ImportModelNode()
@@ -36,6 +37,11 @@ void ImportModelNode::setCatID(int id)
      m_catID = id;
      if(id == -1)
          setCatName(QObject::trUtf8("-- غير محدد --"));
+}
+
+void ImportModelNode::setBackgroundColor(const QBrush &color)
+{
+    m_bgColor = color;
 }
 
 // The model
@@ -127,6 +133,8 @@ QVariant ImportModel::data(const QModelIndex &index, int role) const
     } else if (role == Qt::ToolTipRole) {
         if (index.column() == 0)
             return node->getInfoToolTip();
+    } else if(role == Qt::BackgroundRole) {
+        return node->getBackgroundColor();
     }
     return QVariant();
 }

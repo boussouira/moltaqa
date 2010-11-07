@@ -5,6 +5,7 @@
 #include <qobject.h>
 #include <qabstractitemmodel.h>
 #include <qicon.h>
+#include <qbrush.h>
 
 class ImportModelNode
 {
@@ -26,6 +27,7 @@ public:
     QString getTypeName() { return m_typeName; }
     QString getCatName() { return m_catName; }
     int getCatID() { return m_catID; }
+    QBrush getBackgroundColor() { return m_bgColor; }
 
     void setBookName(const QString &name) { m_bookName = name; }
     void setAuthorName(const QString &name) { m_authorName = name; }
@@ -34,6 +36,7 @@ public:
     void setTypeName(const QString &name) { m_typeName = name; }
     void setCatName(const QString &name) { m_catName = name; }
     void setCatID(int id);
+    void setBackgroundColor(const QBrush &color);
 
 protected:
     BookInfo::Type m_type;
@@ -45,6 +48,7 @@ protected:
     QString m_catName;
     int m_catID;
     int m_nodeID;
+    QBrush m_bgColor;
     ImportModelNode *m_parentNode;
     QList<ImportModelNode *> m_childrenNode;
 };

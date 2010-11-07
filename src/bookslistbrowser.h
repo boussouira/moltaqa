@@ -16,6 +16,10 @@ class BooksListBrowser : public QDialog {
 public:
     BooksListBrowser(QWidget *parent = 0);
     ~BooksListBrowser();
+    void setUpdateList(bool update) { m_updateList = update; }
+
+protected:
+    void showEvent(QShowEvent* event);
 
 private slots:
     void on_treeView_doubleClicked(QModelIndex index);
@@ -28,6 +32,7 @@ signals:
 private:
     BooksIndexDB *m_infoDB;
     Ui::BooksListBrowser *ui;
+    bool m_updateList;
 };
 
 #endif // BOOKSLISTBROWSER_H
