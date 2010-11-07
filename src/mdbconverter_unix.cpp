@@ -80,7 +80,8 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
         m_bookDB.commit();
     }
 
-    qDebug() << "[*]" << mdb_path.split("/").last() << "Converted in" << timer.elapsed() << "ms.";
+    QString fileName = mdb_path.split("/").last().split(".").first();
+    qDebug() << fileName << " -> " << timer.elapsed() << "ms";
 
     mdb_close(mdb);
     mdb_exit();

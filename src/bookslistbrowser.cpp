@@ -32,7 +32,6 @@ void BooksListBrowser::showEvent(QShowEvent* event){
         if(m_updateList){
             showBooksList();
             m_updateList = false;
-            qDebug("Update books list");
         }
     }
 }

@@ -34,6 +34,7 @@ ImportDialog::ImportDialog(QWidget *parent) :
 
 ImportDialog::~ImportDialog()
 {
+    delete m_indexDB;
     delete ui;
 }
 
@@ -61,8 +62,7 @@ void ImportDialog::on_pushDeleteFile_clicked()
 
 void ImportDialog::on_pushNext_clicked()
 {
-    if(ui->stackedWidget->currentIndex() == 0)
-    {
+    if(ui->stackedWidget->currentIndex() == 0) {
         if(ui->fileListWidget->count()==0) {
             QMessageBox::warning(this,
                                   trUtf8("خطأ عند الاستيراد"),
@@ -77,6 +77,15 @@ void ImportDialog::on_pushNext_clicked()
 
                 foreach(ImportModelNode *node, nodesList)
                     m_model->appendNode(node, QModelIndex());
+
+#ifdef USE_MDBTOOLS
+                QSqlDatabase::removeDatabase("mdb");
+                QSqlDatabase::removeDatabase("bok2sql");
+#else
+                QSqlDatabase::removeDatabase("mdb");
+                QSqlDatabase::removeDatabase("ImportDB");
+                QSqlDatabase::removeDatabase("exportDB");
+#endif
 
             } catch(QString &what) {
                 QMessageBox::critical(this,
@@ -118,16 +127,20 @@ void ImportDialog::on_pushNext_clicked()
             button->setMaximumSize(40,40);
             button->setIcon(QIcon(":/menu/images/go-previous.png"));
             button->setStyleSheet("padding:5px;");
+            button->setToolTip(trUtf8("فتح كتاب %1").arg(book));
 
             QLabel *label = new QLabel(book);
             label->setStyleSheet("padding:5px;border:1px solid #cccccc;");
 
             int row = gridLayout->rowCount();
-            gridLayout->addWidget(button, row, 0);
-            gridLayout->addWidget(label, row, 1);
+            gridLayout->addWidget(label, row, 0);
+            gridLayout->addWidget(button, row, 1);
         }
+
+        setModal(false);
         ui->pushCancel->hide();
         ui->pushNext->setText(trUtf8("انتهى"));
+
         ui->stackedWidget->setCurrentIndex(2);
     } else if(ui->stackedWidget->currentIndex() == 2){
         done(QDialog::Accepted);
