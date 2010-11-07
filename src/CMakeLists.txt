@@ -49,9 +49,9 @@ set(alkotobiya_SRCS
 )
 
 IF(LIBMDB_FOUND)
-    list(APPEND ${alkotobiya_SRCS} mdbconverter_unix.cpp)
+    list(APPEND alkotobiya_SRCS mdbconverter_unix.cpp)
 ELSE(LIBMDB_FOUND)
-    list(APPEND ${alkotobiya_SRCS} mdbconverter_win.cpp)
+    list(APPEND alkotobiya_SRCS mdbconverter_win.cpp)
 ENDIF(LIBMDB_FOUND)
 
 file (GLOB alkotobiya_UIS *.ui)
