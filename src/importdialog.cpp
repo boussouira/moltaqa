@@ -62,89 +62,103 @@ void ImportDialog::on_pushDeleteFile_clicked()
 
 void ImportDialog::on_pushNext_clicked()
 {
-    if(ui->stackedWidget->currentIndex() == 0) {
-        if(ui->fileListWidget->count()==0) {
-            QMessageBox::warning(this,
-                                  trUtf8("خطأ عند الاستيراد"),
-                                  trUtf8("لم تقم باختيار أي ملف ليتم استيراده"));
-            return;
-        }
+    switch(ui->stackedWidget->currentIndex()){
+    case 0:
+        convertBooks();
+        break;
+    case 1:
+        importBooks();
+        break;
+    case 2:
+        done(QDialog::Accepted);
+        break;
+    }
+}
 
-        for(int i=0;i<ui->fileListWidget->count();i++){
-            try {
-                QList<ImportModelNode*> nodesList;
-                getBookInfo(ui->fileListWidget->item(i)->text(), nodesList);
+void ImportDialog::convertBooks()
+{
+    if(ui->fileListWidget->count()==0) {
+        QMessageBox::warning(this,
+                              trUtf8("خطأ عند الاستيراد"),
+                              trUtf8("لم تقم باختيار أي ملف ليتم استيراده"));
+        return;
+    }
 
-                foreach(ImportModelNode *node, nodesList)
-                    m_model->appendNode(node, QModelIndex());
+    for(int i=0;i<ui->fileListWidget->count();i++){
+        try {
+            QList<ImportModelNode*> nodesList;
+            getBookInfo(ui->fileListWidget->item(i)->text(), nodesList);
+
+            foreach(ImportModelNode *node, nodesList)
+                m_model->appendNode(node, QModelIndex());
 
 #ifdef USE_MDBTOOLS
-                QSqlDatabase::removeDatabase("mdb");
-                QSqlDatabase::removeDatabase("bok2sql");
+            QSqlDatabase::removeDatabase("mdb");
+            QSqlDatabase::removeDatabase("bok2sql");
 #else
-                QSqlDatabase::removeDatabase("mdb");
-                QSqlDatabase::removeDatabase("ImportDB");
-                QSqlDatabase::removeDatabase("exportDB");
+            QSqlDatabase::removeDatabase("mdb");
+            QSqlDatabase::removeDatabase("ImportDB");
+            QSqlDatabase::removeDatabase("exportDB");
 #endif
 
-            } catch(QString &what) {
-                QMessageBox::critical(this,
-                                      trUtf8("خطأ عند الاستيراد"),
-                                      what);
-            }
+        } catch(QString &what) {
+            QMessageBox::critical(this,
+                                  trUtf8("خطأ عند الاستيراد"),
+                                  what);
         }
-
-        ui->stackedWidget->setCurrentIndex(1);
-    } else if(ui->stackedWidget->currentIndex() == 1){
-
-        QStringList list;
-        QList<ImportModelNode *> nodesList = m_model->nodeFromIndex(QModelIndex())->childrenList();
-
-        if(checkNodes(nodesList)){
-            foreach(ImportModelNode *node, nodesList) {
-                if(m_indexDB->addBook(node)){
-                    list.append(node->getBookName());
-                    qDebug() << "[+]" << node->getBookName();
-                } else {
-                    qDebug() << "Error:" << node->getBookName();
-                }
-            }
-        } else {
-            QMessageBox::warning(this,
-                                 trUtf8("خطأ عند الاستيراد"),
-                                 trUtf8("لم تقم باختيار أقسام بعض الكتب"));
-            return;
-        }
-
-        QWidget *widget = new QWidget(this);
-        QGridLayout *gridLayout = new QGridLayout(widget);
-
-        widget->setLayout(gridLayout);
-        ui->scrollArea->setWidget(widget);
-
-        foreach(QString book, list){
-            QPushButton *button = new QPushButton;
-            button->setMaximumSize(40,40);
-            button->setIcon(QIcon(":/menu/images/go-previous.png"));
-            button->setStyleSheet("padding:5px;");
-            button->setToolTip(trUtf8("فتح كتاب %1").arg(book));
-
-            QLabel *label = new QLabel(book);
-            label->setStyleSheet("padding:5px;border:1px solid #cccccc;");
-
-            int row = gridLayout->rowCount();
-            gridLayout->addWidget(label, row, 0);
-            gridLayout->addWidget(button, row, 1);
-        }
-
-        setModal(false);
-        ui->pushCancel->hide();
-        ui->pushNext->setText(trUtf8("انتهى"));
-
-        ui->stackedWidget->setCurrentIndex(2);
-    } else if(ui->stackedWidget->currentIndex() == 2){
-        done(QDialog::Accepted);
     }
+
+    ui->stackedWidget->setCurrentIndex(1);
+}
+
+void ImportDialog::importBooks()
+{
+
+    QStringList list;
+    QList<ImportModelNode *> nodesList = m_model->nodeFromIndex(QModelIndex())->childrenList();
+
+    if(checkNodes(nodesList)){
+        foreach(ImportModelNode *node, nodesList) {
+            if(m_indexDB->addBook(node)){
+                list.append(node->getBookName());
+                qDebug() << "[+]" << node->getBookName();
+            } else {
+                qDebug() << "Error:" << node->getBookName();
+            }
+        }
+    } else {
+        QMessageBox::warning(this,
+                             trUtf8("خطأ عند الاستيراد"),
+                             trUtf8("لم تقم باختيار أقسام بعض الكتب"));
+        return;
+    }
+
+    QWidget *widget = new QWidget(this);
+    QGridLayout *gridLayout = new QGridLayout(widget);
+
+    widget->setLayout(gridLayout);
+    ui->scrollArea->setWidget(widget);
+
+    foreach(QString book, list){
+        QPushButton *button = new QPushButton;
+        button->setMaximumSize(40,40);
+        button->setIcon(QIcon(":/menu/images/go-previous.png"));
+        button->setStyleSheet("padding:5px;");
+        button->setToolTip(trUtf8("فتح كتاب %1").arg(book));
+
+        QLabel *label = new QLabel(book);
+        label->setStyleSheet("padding:5px;border:1px solid #cccccc;");
+
+        int row = gridLayout->rowCount();
+        gridLayout->addWidget(label, row, 0);
+        gridLayout->addWidget(button, row, 1);
+    }
+
+    setModal(false);
+    ui->pushCancel->hide();
+    ui->pushNext->setText(trUtf8("انتهى"));
+
+    ui->stackedWidget->setCurrentIndex(2);
 }
 
 void ImportDialog::getBookInfo(const QString &path, QList<ImportModelNode*> &nodes)

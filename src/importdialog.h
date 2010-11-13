@@ -16,9 +16,13 @@ class ImportDialog : public QDialog {
 public:
     ImportDialog(QWidget *parent = 0);
     ~ImportDialog();
+
+protected:
     void getBookInfo(const QString &path, QList<ImportModelNode*> &nodes);
     QString getBookType(const QSqlDatabase &bookDB);
     bool checkNodes(QList<ImportModelNode *> nodesList);
+    void convertBooks();
+    void importBooks();
 
 private:
     Ui::ImportDialog *ui;
