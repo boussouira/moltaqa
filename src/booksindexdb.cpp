@@ -131,8 +131,13 @@ int BooksIndexDB::addBook(ImportModelNode *book)
     QString newPath = QString("%1/%2")
                       .arg(m_booksFolder)
                       .arg(book->getBookPath().split("/").last());
-    if(QFile::copy(book->getBookPath(), newPath))
+    if(QFile::copy(book->getBookPath(), newPath)){
+        if(QFile::remove(book->getBookPath()))
+            qDebug() << "Remove:" << book->getBookPath();
+        else
+            qWarning() << "Can't remove:" << book->getBookPath();
         return indexQuery.exec(qurey) ? indexQuery.lastInsertId().toInt() : -1;
-     else
+    } else {
         return -1;
+    }
 }
