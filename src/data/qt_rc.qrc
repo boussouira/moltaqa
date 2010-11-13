@@ -17,4 +17,8 @@
         <file>images/go-down.png</file>
         <file>images/go-up.png</file>
     </qresource>
+    <qresource prefix="/import">
+        <file>images/add.png</file>
+        <file>images/remove.png</file>
+    </qresource>
 </RCC>

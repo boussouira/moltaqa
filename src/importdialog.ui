@@ -47,15 +47,29 @@
           <layout class="QVBoxLayout" name="verticalLayout">
            <item>
             <widget class="QPushButton" name="pushAddFile">
+             <property name="toolTip">
+              <string>اضافة ملف</string>
+             </property>
              <property name="text">
-              <string>اضافة</string>
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="data/qt_rc.qrc">
+               <normaloff>:/import/images/add.png</normaloff>:/import/images/add.png</iconset>
              </property>
             </widget>
            </item>
            <item>
             <widget class="QPushButton" name="pushDeleteFile">
+             <property name="toolTip">
+              <string>حذف ملف من القائمة</string>
+             </property>
              <property name="text">
-              <string>حذف</string>
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="data/qt_rc.qrc">
+               <normaloff>:/import/images/remove.png</normaloff>:/import/images/remove.png</iconset>
              </property>
              <property name="shortcut">
               <string>Del</string>
@@ -118,8 +132,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>535</width>
-            <height>264</height>
+            <width>98</width>
+            <height>28</height>
            </rect>
           </property>
          </widget>
@@ -162,6 +176,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="data/qt_rc.qrc"/>
+ </resources>
  <connections/>
 </ui>
