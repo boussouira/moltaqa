@@ -17,7 +17,7 @@ public:
     QAbstractItemModel *getListModel(bool books=true);
     int getCatIdFromName(const QString &cat);
     BookInfo *getBookInfo(int bookID);
-    bool addBook(ImportModelNode *book);
+    int addBook(ImportModelNode *book);
 
 protected:
     void booksCat(BooksListNode *parentNode, int catID);

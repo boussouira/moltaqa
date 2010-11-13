@@ -13,6 +13,7 @@
 #include <qsqlrecord.h>
 #include <qsqlerror.h>
 #include <qdebug.h>
+#include <qsignalmapper.h>
 
 ImportDialog::ImportDialog(QWidget *parent) :
     QDialog(parent),
@@ -21,6 +22,9 @@ ImportDialog::ImportDialog(QWidget *parent) :
     ui->setupUi(this);
     m_model = new ImportModel(ui->treeView);
     m_indexDB = new BooksIndexDB;
+
+    m_signalMapper = new QSignalMapper(this);
+    connect(m_signalMapper, SIGNAL(mapped(int)), this, SIGNAL(openBook(int)));
 
     ImportModelNode *node = new ImportModelNode(BookInfo::NormalBook);
     m_model->setRootNode(node);
@@ -114,14 +118,16 @@ void ImportDialog::convertBooks()
 void ImportDialog::importBooks()
 {
 
-    QStringList list;
+    QStringList booksName;
+    QList<int> booksId;
     QList<ImportModelNode *> nodesList = m_model->nodeFromIndex(QModelIndex())->childrenList();
 
     if(checkNodes(nodesList)){
         foreach(ImportModelNode *node, nodesList) {
-            if(m_indexDB->addBook(node)){
-                list.append(node->getBookName());
-                qDebug() << "[+]" << node->getBookName();
+            int lastInsert = m_indexDB->addBook(node);
+            if(lastInsert != -1){
+                booksName.append(node->getBookName());
+                booksId.append(lastInsert);
             } else {
                 qDebug() << "Error:" << node->getBookName();
             }
@@ -139,19 +145,23 @@ void ImportDialog::importBooks()
     widget->setLayout(gridLayout);
     ui->scrollArea->setWidget(widget);
 
-    foreach(QString book, list){
+    for (int i=0; i<booksName.count(); i++){
         QPushButton *button = new QPushButton;
         button->setMaximumSize(40,40);
         button->setIcon(QIcon(":/menu/images/go-previous.png"));
         button->setStyleSheet("padding:5px;");
-        button->setToolTip(trUtf8("فتح كتاب %1").arg(book));
+        button->setToolTip(trUtf8("فتح كتاب %1").arg(booksName.at(i)));
 
-        QLabel *label = new QLabel(book);
+        QLabel *label = new QLabel(booksName.at(i));
         label->setStyleSheet("padding:5px;border:1px solid #cccccc;");
 
         int row = gridLayout->rowCount();
         gridLayout->addWidget(label, row, 0);
         gridLayout->addWidget(button, row, 1);
+
+        connect(button, SIGNAL(clicked()), m_signalMapper, SLOT(map()));
+        m_signalMapper->setMapping(button, booksId.at(i));
+
     }
 
     setModal(false);

@@ -10,6 +10,7 @@ class ImportModel;
 class ImportModelNode;
 class BooksIndexDB;
 class QSqlDatabase;
+class QSignalMapper;
 
 class ImportDialog : public QDialog {
     Q_OBJECT
@@ -24,10 +25,14 @@ protected:
     void convertBooks();
     void importBooks();
 
+signals:
+    void openBook(int id);
+
 private:
     Ui::ImportDialog *ui;
     ImportModel *m_model;
     BooksIndexDB *m_indexDB;
+    QSignalMapper *m_signalMapper;
 
 private slots:
     void on_pushNext_clicked();

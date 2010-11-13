@@ -91,6 +91,8 @@ void MainWindow::on_actionImportFromShamela_triggered()
 {
     ImportDialog *dialog = new ImportDialog(this);
 
+    connect(dialog, SIGNAL(openBook(int)), this, SLOT(openBook(int)));
+
     if(dialog->exec() == QDialog::Accepted)
         m_booksList->setUpdateList(true);
 }

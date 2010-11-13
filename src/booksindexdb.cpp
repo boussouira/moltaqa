@@ -112,7 +112,7 @@ BookInfo *BooksIndexDB::getBookInfo(int bookID)
     return bookInfo;
 }
 
-bool BooksIndexDB::addBook(ImportModelNode *book)
+int BooksIndexDB::addBook(ImportModelNode *book)
 {
     QSqlQuery indexQuery(m_booksListDB);
 
@@ -131,9 +131,8 @@ bool BooksIndexDB::addBook(ImportModelNode *book)
     QString newPath = QString("%1/%2")
                       .arg(m_booksFolder)
                       .arg(book->getBookPath().split("/").last());
-    if(QFile::copy(book->getBookPath(), newPath)){
-        return indexQuery.exec(qurey);
-    } else {
-        return false;
-    }
+    if(QFile::copy(book->getBookPath(), newPath))
+        return indexQuery.exec(qurey) ? indexQuery.lastInsertId().toInt() : -1;
+     else
+        return -1;
 }
