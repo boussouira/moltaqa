@@ -71,24 +71,28 @@ QModelIndex BooksListModel::parent(const QModelIndex &child) const
 
 QVariant BooksListModel::data(const QModelIndex &index, int role) const
 {
-    BooksListNode *BooksListNode = nodeFromIndex(index);
-    if (!BooksListNode)
+    BooksListNode *node = nodeFromIndex(index);
+    if (!node)
         return QVariant();
 
     if (role == Qt::DisplayRole) {
-        if (index.column() == 0)
-            return BooksListNode->getTitle();
-        else if (index.column() == 1)
-            return BooksListNode->getAuthorName();
+        if (index.column() == 0){
+            return node->getTitle();
+        } else if (index.column() == 1) {
+            if((node->getNodeType()==BooksListNode::Categorie) && node->childrenList().count()>0)
+                return node->childrenList().count();
+            else
+                return node->getAuthorName();
+        }
 
-    } else if (role == Qt::ToolTipRole && BooksListNode->getNodeType() == BooksListNode::Book) {
+    } else if (role == Qt::ToolTipRole && node->getNodeType() == BooksListNode::Book) {
         if (index.column() == 0)
-            return BooksListNode->getInfoToolTip();
+            return node->getInfoToolTip();
 
     } else if (role == Qt::DecorationRole && index.column() == 0) {
-        if(BooksListNode->getNodeType() == BooksListNode::Categorie)
+        if(node->getNodeType() == BooksListNode::Categorie)
             return QIcon(":/menu/images/book-cat.png");
-        else if (BooksListNode->getNodeType() == BooksListNode::Book)
+        else if (node->getNodeType() == BooksListNode::Book)
             return QIcon(":/menu/images/book.png");
     }
     return QVariant();

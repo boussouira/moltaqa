@@ -17,7 +17,7 @@
    <enum>Qt::RightToLeft</enum>
   </property>
   <property name="locale">
-   <locale language="Arabic" country="Oman"/>
+   <locale language="Arabic" country="Morocco"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
