@@ -3,6 +3,7 @@
 #include "abstractdbhandler.h"
 #include "kwebview.h"
 
+#include <qdebug.h>
 #include <qsplitter.h>
 #include <qboxlayout.h>
 
@@ -20,7 +21,6 @@ BookWidget::BookWidget(AbstractDBHandler *db, QWidget *parent): QWidget(parent),
     m_layout->setMargin(0);
     setLayout(m_layout);
     setAutoFillBackground(true);
-    m_splitter->setChildrenCollapsible(false);
 
     displayInfo();
     connect(m_indexWidget, SIGNAL(openPage(int)), this, SLOT(openID(int)));
@@ -119,8 +119,9 @@ void BookWidget::prevUnit()
 
 void BookWidget::hideIndexWidget()
 {
-    if(m_indexWidget->isHidden())
-        m_indexWidget->show();
+    QList<int> sizesList;
+    if(m_splitter->sizes().at(0) > 0)
+        sizesList << 0;
     else
-        m_indexWidget->hide();
+        sizesList << m_indexWidget->sizeHint().width() << m_view->sizeHint().width();
 }
