@@ -30,6 +30,7 @@ set(alkotobiya_SRCS
     booksviewer.cpp
     bookwidget.cpp
     catslistwidget.cpp
+    convertthread.cpp
     importdelegates.cpp
     importdialog.cpp
     importmodel.cpp
@@ -58,6 +59,7 @@ file (GLOB alkotobiya_UIS *.ui)
 
 set(alkotobiya_MOCS_SRCS
     catslistwidget.h
+    convertthread.h
     importdelegates.h
     importdialog.h
     booksviewer.h

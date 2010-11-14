@@ -24,6 +24,7 @@ protected:
     bool checkNodes(QList<ImportModelNode *> nodesList);
     void convertBooks();
     void importBooks();
+    QString arPlural(int count, int word);
 
 signals:
     void openBook(int id);
@@ -33,6 +34,9 @@ private:
     ImportModel *m_model;
     BooksIndexDB *m_indexDB;
     QSignalMapper *m_signalMapper;
+
+protected slots:
+    void doneConverting();
 
 private slots:
     void on_pushNext_clicked();

@@ -100,7 +100,8 @@
        <item>
         <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>الكتب التي سيتم استيرادها:</string>
+          <string>تم تحويل %1 خلال %2،
+سيتم استيراد %3 :</string>
          </property>
         </widget>
        </item>
@@ -132,8 +133,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>98</width>
-            <height>28</height>
+            <width>535</width>
+            <height>233</height>
            </rect>
           </property>
          </widget>
@@ -141,6 +142,13 @@
        </item>
       </layout>
      </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QProgressBar" name="progressBar">
+     <property name="value">
+      <number>24</number>
+     </property>
     </widget>
    </item>
    <item>

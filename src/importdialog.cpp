@@ -4,6 +4,7 @@
 #include "importdelegates.h"
 #include "booksindexdb.h"
 #include "mdbconverter.h"
+#include "convertthread.h"
 
 #include <qmessagebox.h>
 #include <qfiledialog.h>
@@ -34,6 +35,7 @@ ImportDialog::ImportDialog(QWidget *parent) :
                                            new CategorieDelegate(ui->treeView,
                                                                  m_indexDB->getListModel(false)));
     ui->treeView->setModel(m_model);
+    ui->progressBar->hide();
 }
 
 ImportDialog::~ImportDialog()
@@ -88,29 +90,50 @@ void ImportDialog::convertBooks()
         return;
     }
 
-    for(int i=0;i<ui->fileListWidget->count();i++){
-        try {
-            QList<ImportModelNode*> nodesList;
-            getBookInfo(ui->fileListWidget->item(i)->text(), nodesList);
+    QStringList files;
+    for(int i=0;i<ui->fileListWidget->count();i++)
+        files.append(ui->fileListWidget->item(i)->text());
 
-            foreach(ImportModelNode *node, nodesList)
-                m_model->appendNode(node, QModelIndex());
+    ConvertThread *thread = new ConvertThread(this);
+    thread->setFiles(files);
+    thread->setModel(m_model);
+    thread->setIndexDB(m_indexDB);
 
-#ifdef USE_MDBTOOLS
-            QSqlDatabase::removeDatabase("mdb");
-            QSqlDatabase::removeDatabase("bok2sql");
-#else
-            QSqlDatabase::removeDatabase("mdb");
-            QSqlDatabase::removeDatabase("ImportDB");
-            QSqlDatabase::removeDatabase("exportDB");
-#endif
+    connect(thread, SIGNAL(finished()), this, SLOT(doneConverting()));
+    connect(thread, SIGNAL(setProgress(int)), ui->progressBar, SLOT(setValue(int)));
 
-        } catch(QString &what) {
-            QMessageBox::critical(this,
-                                  trUtf8("خطأ عند الاستيراد"),
-                                  what);
-        }
-    }
+    ui->pushAddFile->setEnabled(false);
+    ui->pushDeleteFile->setEnabled(false);
+    ui->pushNext->setEnabled(false);
+    ui->pushCancel->setEnabled(false);
+    ui->fileListWidget->setEnabled(false);
+
+    ui->progressBar->setMaximum(files.count());
+    ui->progressBar->setValue(0);
+    ui->progressBar->show();
+
+    thread->start();
+
+}
+
+
+void ImportDialog::doneConverting()
+{
+    ConvertThread *thread = static_cast<ConvertThread *>(sender());
+
+    ui->pushNext->setEnabled(true);
+    ui->pushCancel->setEnabled(true);
+    ui->progressBar->hide();
+
+    QString convertedFiles = arPlural(thread->convertedFiles(), 2);
+    QString convertTime = arPlural(thread->convertTime()/1000, 1);
+    QString importBooks = arPlural(m_model->nodeFromIndex(QModelIndex())->childrenList().count(),
+                                   0);
+
+    ui->label_2->setText(QString(ui->label_2->text())
+                         .arg(convertedFiles)
+                         .arg(convertTime)
+                         .arg(importBooks));
 
     ui->stackedWidget->setCurrentIndex(1);
 }
@@ -258,4 +281,27 @@ bool ImportDialog::checkNodes(QList<ImportModelNode *> nodesList)
     }
 
     return (!wrongNodes);
+}
+
+QString ImportDialog::arPlural(int count, int word)
+{
+    QStringList list;
+    if(word==0)
+        list <<  trUtf8("كتاب واحد") << trUtf8("كتابين") << trUtf8("كتب") << trUtf8("كتابا");
+    else if(word==1)
+        list <<  trUtf8("ثانية") << trUtf8("ثانيتين") << trUtf8("ثوان") << trUtf8("ثانية");
+    else if(word==2)
+        list <<  trUtf8("ملف واحد") << trUtf8("ملفين") << trUtf8("ملفات") << trUtf8("ملفا");
+
+    if(count == 1){
+        return list.at(0);
+    } else if(count == 2) {
+        return list.at(1);
+    } else if (count > 2 && count <= 10) {
+        return QString("%1 %2").arg(count).arg(list.at(2));
+    } else if (count > 10) {
+        return QString("%1 %2").arg(count).arg(list.at(3));
+    } else {
+        return QString();
+    }
 }
