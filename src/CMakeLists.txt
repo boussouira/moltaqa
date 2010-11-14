@@ -18,6 +18,9 @@ IF(NOT WIN32)
 
 ENDIF(NOT WIN32)
 
+include_directories( ${alkotobiya_SOURCE_DIR} )
+include_directories( ${alkotobiya_BINARY_DIR} )
+
 set(alkotobiya_SRCS
     abstractdbhandler.cpp
     bookindexmodel.cpp

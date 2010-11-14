@@ -3,10 +3,10 @@ DEPENDPATH += $$PWD
 
 QT += sql webkit
 
-MOC_DIR += $$PWD/.moc
-OBJECTS_DIR += $$PWD/.obj
-UI_DIR += $$PWD/.ui
-RCC_DIR += $$PWD/.rcc
+MOC_DIR += .moc
+OBJECTS_DIR += .obj
+UI_DIR += .ui
+RCC_DIR += .rcc
 
 #exists(../.git/HEAD) {
 #    GITVERSION=$$system(git log -n1 --pretty=format:%h)
