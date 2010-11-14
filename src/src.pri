@@ -57,7 +57,8 @@ SOURCES += mainwindow.cpp \
     importdelegates.cpp \
     booksindexdb.cpp \
     catslistwidget.cpp \
-    convertthread.cpp
+    convertthread.cpp \
+    importthread.cpp
 HEADERS += mainwindow.h \
     pageinfo.h \
     qurantextformat.h \
@@ -85,7 +86,8 @@ HEADERS += mainwindow.h \
     booksindexdb.h \
     catslistwidget.h \
     mdbconverter.h \
-    convertthread.h
+    convertthread.h \
+    importthread.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

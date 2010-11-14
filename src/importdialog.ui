@@ -33,6 +33,9 @@
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="spacing">
+          <number>3</number>
+         </property>
          <item>
           <widget class="QListWidget" name="fileListWidget">
            <property name="layoutDirection">
@@ -46,9 +49,12 @@
          <item>
           <layout class="QVBoxLayout" name="verticalLayout">
            <item>
-            <widget class="QPushButton" name="pushAddFile">
+            <widget class="QToolButton" name="pushAddFile">
              <property name="toolTip">
               <string>اضافة ملف</string>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">padding:5px;</string>
              </property>
              <property name="text">
               <string/>
@@ -60,9 +66,12 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushDeleteFile">
+            <widget class="QToolButton" name="pushDeleteFile">
              <property name="toolTip">
               <string>حذف ملف من القائمة</string>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">padding:5px;</string>
              </property>
              <property name="text">
               <string/>
@@ -133,8 +142,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>535</width>
-            <height>233</height>
+            <width>98</width>
+            <height>28</height>
            </rect>
           </property>
          </widget>

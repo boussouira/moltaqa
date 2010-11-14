@@ -37,6 +37,7 @@ private:
 
 protected slots:
     void doneConverting();
+    void doneImporting();
 
 private slots:
     void on_pushNext_clicked();

@@ -5,6 +5,7 @@
 #include "booksindexdb.h"
 #include "mdbconverter.h"
 #include "convertthread.h"
+#include "importthread.h"
 
 #include <qmessagebox.h>
 #include <qfiledialog.h>
@@ -15,6 +16,7 @@
 #include <qsqlerror.h>
 #include <qdebug.h>
 #include <qsignalmapper.h>
+#include <qtoolbutton.h>
 
 ImportDialog::ImportDialog(QWidget *parent) :
     QDialog(parent),
@@ -102,11 +104,7 @@ void ImportDialog::convertBooks()
     connect(thread, SIGNAL(finished()), this, SLOT(doneConverting()));
     connect(thread, SIGNAL(setProgress(int)), ui->progressBar, SLOT(setValue(int)));
 
-    ui->pushAddFile->setEnabled(false);
-    ui->pushDeleteFile->setEnabled(false);
-    ui->pushNext->setEnabled(false);
-    ui->pushCancel->setEnabled(false);
-    ui->fileListWidget->setEnabled(false);
+    setEnabled(false);
 
     ui->progressBar->setMaximum(files.count());
     ui->progressBar->setValue(0);
@@ -121,8 +119,7 @@ void ImportDialog::doneConverting()
 {
     ConvertThread *thread = static_cast<ConvertThread *>(sender());
 
-    ui->pushNext->setEnabled(true);
-    ui->pushCancel->setEnabled(true);
+    setEnabled(true);
     ui->progressBar->hide();
 
     QString convertedFiles = arPlural(thread->convertedFiles(), 2);
@@ -140,27 +137,38 @@ void ImportDialog::doneConverting()
 
 void ImportDialog::importBooks()
 {
+   if(checkNodes(m_model->nodeFromIndex(QModelIndex())->childrenList())){
 
-    QStringList booksName;
-    QList<int> booksId;
-    QList<ImportModelNode *> nodesList = m_model->nodeFromIndex(QModelIndex())->childrenList();
+        ImportThread *thread = new ImportThread(this);
 
-    if(checkNodes(nodesList)){
-        foreach(ImportModelNode *node, nodesList) {
-            int lastInsert = m_indexDB->addBook(node);
-            if(lastInsert != -1){
-                booksName.append(node->getBookName());
-                booksId.append(lastInsert);
-            } else {
-                qDebug() << "Error:" << node->getBookName();
-            }
-        }
+        thread->setModel(m_model);
+        thread->setIndexDB(m_indexDB);
+        thread->setSignalMapper(m_signalMapper);
+
+        connect(thread, SIGNAL(finished()), this, SLOT(doneImporting()));
+        connect(thread, SIGNAL(setProgress(int)), ui->progressBar, SLOT(setValue(int)));
+
+        setEnabled(false);
+
+        ui->progressBar->setMaximum(m_model->nodeFromIndex(QModelIndex())->childrenList().count());
+        ui->progressBar->setValue(0);
+        ui->progressBar->show();
+
+        thread->start();
+
     } else {
         QMessageBox::warning(this,
                              trUtf8("خطأ عند الاستيراد"),
                              trUtf8("لم تقم باختيار أقسام بعض الكتب"));
-        return;
     }
+}
+
+void ImportDialog::doneImporting()
+{
+    ImportThread *thread = static_cast<ImportThread *>(sender());
+    QHash<int, QString>  booksList = thread->booksList();
+
+    ui->progressBar->setMaximum(0);
 
     QWidget *widget = new QWidget(this);
     QGridLayout *gridLayout = new QGridLayout(widget);
@@ -168,14 +176,16 @@ void ImportDialog::importBooks()
     widget->setLayout(gridLayout);
     ui->scrollArea->setWidget(widget);
 
-    for (int i=0; i<booksName.count(); i++){
-        QPushButton *button = new QPushButton;
+    QHashIterator<int, QString> i(booksList);
+    while(i.hasNext()){
+        i.next();
+        QToolButton *button = new QToolButton;
         button->setMaximumSize(40,40);
         button->setIcon(QIcon(":/menu/images/go-previous.png"));
         button->setStyleSheet("padding:5px;");
-        button->setToolTip(trUtf8("فتح كتاب %1").arg(booksName.at(i)));
+        button->setToolTip(trUtf8("فتح كتاب %1").arg(i.value()));
 
-        QLabel *label = new QLabel(booksName.at(i));
+        QLabel *label = new QLabel(i.value());
         label->setStyleSheet("padding:5px;border:1px solid #cccccc;");
 
         int row = gridLayout->rowCount();
@@ -183,12 +193,13 @@ void ImportDialog::importBooks()
         gridLayout->addWidget(button, row, 1);
 
         connect(button, SIGNAL(clicked()), m_signalMapper, SLOT(map()));
-        m_signalMapper->setMapping(button, booksId.at(i));
-
+        m_signalMapper->setMapping(button, i.key());
     }
 
+    setEnabled(true);
     setModal(false);
     ui->pushCancel->hide();
+    ui->progressBar->hide();
     ui->pushNext->setText(trUtf8("انتهى"));
 
     ui->stackedWidget->setCurrentIndex(2);

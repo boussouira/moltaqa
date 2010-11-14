@@ -34,6 +34,7 @@ set(alkotobiya_SRCS
     importdelegates.cpp
     importdialog.cpp
     importmodel.cpp
+    importthread.cpp
     indexwidget.cpp
     kwebview.cpp
     main.cpp
@@ -62,6 +63,7 @@ set(alkotobiya_MOCS_SRCS
     convertthread.h
     importdelegates.h
     importdialog.h
+    importthread.h
     booksviewer.h
     bookslistbrowser.h
     indexwidget.h

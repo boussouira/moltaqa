@@ -3,8 +3,8 @@
 #include "mdbconverter.h"
 #include "booksindexdb.h"
 
-#include "qmessagebox.h"
-#include "qsqldatabase.h"
+#include <qmessagebox.h>
+#include <qsqldatabase.h>
 #include <qsqlquery.h>
 #include <qsqlrecord.h>
 #include <qsqlerror.h>
