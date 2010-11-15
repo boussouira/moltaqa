@@ -37,6 +37,31 @@ void ImportModelNode::setCatID(int id)
      if(id == -1)
          setCatName(QObject::trUtf8("-- غير محدد --"));
 }
+void ImportModelNode::setTypeName(const QString &name)
+{
+    m_typeName = name;
+    QStringList types;
+    types << QObject::trUtf8("مصحف")
+            << QObject::trUtf8("تفسير")
+            << QObject::trUtf8("متن حديث")
+            << QObject::trUtf8("عادي");
+
+    int index = types.indexOf(name)+1;
+    switch(index){
+    case 1:
+        m_type = BookInfo::QuranBook;
+        break;
+    case 2:
+        m_type = BookInfo::TafessirBook;
+        break;
+    case 3:
+        m_type = BookInfo::HadditBook;
+        break;
+    case 4:
+        m_type = BookInfo::NormalBook;
+        break;
+    }
+}
 
 void ImportModelNode::setBackgroundColor(const QBrush &color)
 {

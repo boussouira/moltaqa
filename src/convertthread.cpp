@@ -68,6 +68,7 @@ void ConvertThread::getBookInfo(const QString &path, QList<ImportModelNode *> &n
         int bkCol = bookQuery.record().indexOf("bk");
         int authCol = bookQuery.record().indexOf("Auth");
         int catCol = bookQuery.record().indexOf("cat");
+        int betakaCol = bookQuery.record().indexOf("Betaka");
 
         ImportModelNode *node = new ImportModelNode(BookInfo::NormalBook);
         node->setTypeName(getBookType(m_bookDB));
@@ -79,6 +80,10 @@ void ConvertThread::getBookInfo(const QString &path, QList<ImportModelNode *> &n
             node->setCatID(m_indexDB->getCatIdFromName(bookQuery.value(catCol).toString()));
         } else
              node->setCatID(-1);
+
+        if(betakaCol != -1) {
+             node->setBookInfo(bookQuery.value(betakaCol).toString());
+        }
 
         node->setBookPath(dbPath);
         nodes.append(node);

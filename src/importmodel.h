@@ -33,7 +33,7 @@ public:
     void setAuthorName(const QString &name) { m_authorName = name; }
     void setBookInfo(const QString &info) { m_bookInfo = info; }
     void setBookPath(const QString &path) { m_bookPath = path; }
-    void setTypeName(const QString &name) { m_typeName = name; }
+    void setTypeName(const QString &name);
     void setCatName(const QString &name) { m_catName = name; }
     void setCatID(int id);
     void setBackgroundColor(const QBrush &color);
