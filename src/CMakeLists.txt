@@ -30,6 +30,7 @@ set(alkotobiya_SRCS
     bookslistbrowser.cpp
     bookslistmodel.cpp
     bookslistnode.cpp
+    bookexception.cpp
     booksviewer.cpp
     bookwidget.cpp
     catslistwidget.cpp

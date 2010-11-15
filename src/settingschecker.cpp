@@ -4,7 +4,6 @@
 #include <qdir.h>
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
-#include <qdebug.h>
 
 SettingsChecker::SettingsChecker(QObject *parent): QObject(parent)
 {

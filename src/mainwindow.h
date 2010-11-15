@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <qmainwindow.h>
+#include <booksindexdb.h>
 
 class SettingsDialog;
 class BooksViewer;
@@ -40,6 +41,7 @@ public slots:
     void openBook(int pBookID);
 
 private:
+    BooksIndexDB m_indexDB;
     BooksViewer *m_bookView;
     BooksListBrowser *m_booksList;
     bool m_createMenu;

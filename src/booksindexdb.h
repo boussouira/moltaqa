@@ -14,6 +14,7 @@ class BooksIndexDB
 {
 public:
     BooksIndexDB();
+    void openDB();
     QAbstractItemModel *getListModel(bool books=true);
     int getCatIdFromName(const QString &cat);
     BookInfo *getBookInfo(int bookID);

@@ -15,8 +15,9 @@ class QSignalMapper;
 class ImportDialog : public QDialog {
     Q_OBJECT
 public:
-    ImportDialog(QWidget *parent = 0);
+    ImportDialog(BooksIndexDB *indexDB, QWidget *parent = 0);
     ~ImportDialog();
+    void setIndexDB(BooksIndexDB *indexDB) { m_indexDB = indexDB;}
     static QString arPlural(int count, int word);
 
 protected:

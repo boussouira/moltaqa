@@ -6,6 +6,7 @@
 #include "bookwidget.h"
 #include "settingschecker.h"
 #include "importdialog.h"
+#include "bookexception.h"
 
 #include <qmessagebox.h>
 #include <qsettings.h>
@@ -16,12 +17,22 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     setWindowTitle(trUtf8("برنامج الكتبية"));
     loadSettings();
 
-    m_bookView = new BooksViewer(this);
-    m_booksList = new BooksListBrowser(this);
-    m_createMenu = true;
-    m_bookView->hide();
+    try {
+        m_indexDB.openDB();
+        m_bookView = new BooksViewer(&m_indexDB, this);
+        m_booksList = new BooksListBrowser(&m_indexDB, this);
 
-    setupActions();
+        m_createMenu = true;
+        m_bookView->hide();
+
+        setupActions();
+    } catch(BookException &e) {
+        QMessageBox::information(this,
+                                 trUtf8("برنامج الكتبية"),
+                                 trUtf8("حدث خطأ أثناء تحميل البرنامج:"
+                                        "<br><em>%1</em>").arg(e.what()));
+        setEnabled(false);
+    }
 }
 
 void MainWindow::setupActions()
@@ -66,10 +77,21 @@ void MainWindow::openBook(int pBookID)
         m_bookView->createMenus(this);
         m_createMenu = false;
     }
-    if(m_bookView->isHidden())
-        m_bookView->show();
-    m_bookView->openBook(pBookID);
-    setCentralWidget(m_bookView);
+
+    try {
+        m_bookView->openBook(pBookID);
+
+        if(m_bookView->isHidden())
+            m_bookView->show();
+
+        setCentralWidget(m_bookView);
+
+    } catch(BookException &e) {
+        QMessageBox::information(this,
+                                 trUtf8("برنامج الكتبية"),
+                                 trUtf8("حدث خطأ أثناء فتح الكتاب:"
+                                        "<br><em>%1</em>").arg(e.what()));
+    }
 }
 
 void MainWindow::showBooksList()
@@ -89,10 +111,10 @@ void MainWindow::loadSettings()
 
 void MainWindow::on_actionImportFromShamela_triggered()
 {
-    ImportDialog *dialog = new ImportDialog(this);
+    ImportDialog *dialog = new ImportDialog(&m_indexDB, this);
 
     connect(dialog, SIGNAL(openBook(int)), this, SLOT(openBook(int)));
 
     if(dialog->exec() == QDialog::Accepted)
-        m_booksList->setUpdateList(true);
+        m_booksList->showBooksList();
 }

@@ -1,6 +1,8 @@
 #include "booksindexdb.h"
 #include "bookslistmodel.h"
 #include "importmodel.h"
+#include "bookexception.h"
+
 #include <qsqlquery.h>
 #include <qsqlerror.h>
 #include <qfile.h>
@@ -14,19 +16,26 @@ BooksIndexDB::BooksIndexDB()
     m_booksFolder = settings.value("books_folder").toString();
     m_indexDBName = settings.value("index_db").toString();
     settings.endGroup();
+}
+
+void BooksIndexDB::openDB()
+{
+
+    QString dbPath = QString("%1/%2").arg(m_booksFolder).arg(m_indexDBName);
+
+    if(!QFile::exists(dbPath))
+        throw BookException(QObject::trUtf8("لم يتم العثور على قاعدة البيانات الأساسية"), dbPath);
 
     if(QSqlDatabase::contains("BooksListDB")) {
         m_booksListDB = QSqlDatabase::database("BooksListDB");
     } else {
         m_booksListDB = QSqlDatabase::addDatabase("QSQLITE", "BooksListDB");
-        m_booksListDB.setDatabaseName(QString("%1/%2")
-                                      .arg(m_booksFolder)
-                                      .arg(m_indexDBName));
+        m_booksListDB.setDatabaseName(dbPath);
     }
 
-    if (!m_booksListDB.open()) {
-        qDebug("[%s:%d] Cannot open database.", __FILE__, __LINE__);
-    }
+    if (!m_booksListDB.open())
+        throw BookException(QObject::trUtf8("لم يمكن فتح قاعدة البيانات الأساسية"), dbPath);
+
 }
 
 QAbstractItemModel *BooksIndexDB::getListModel(bool books)
@@ -132,9 +141,7 @@ int BooksIndexDB::addBook(ImportModelNode *book)
                       .arg(m_booksFolder)
                       .arg(book->getBookPath().split("/").last());
     if(QFile::copy(book->getBookPath(), newPath)){
-        if(QFile::remove(book->getBookPath()))
-            qDebug() << "Remove:" << book->getBookPath();
-        else
+        if(!QFile::remove(book->getBookPath()))
             qWarning() << "Can't remove:" << book->getBookPath();
         return indexQuery.exec(qurey) ? indexQuery.lastInsertId().toInt() : -1;
     } else {

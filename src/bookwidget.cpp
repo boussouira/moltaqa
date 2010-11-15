@@ -3,7 +3,6 @@
 #include "abstractdbhandler.h"
 #include "kwebview.h"
 
-#include <qdebug.h>
 #include <qsplitter.h>
 #include <qboxlayout.h>
 

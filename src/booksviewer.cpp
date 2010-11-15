@@ -6,6 +6,7 @@
 #include "qurandbhandler.h"
 #include "booksindexdb.h"
 #include "bookwidget.h"
+#include "bookexception.h"
 
 #include <qmainwindow.h>
 #include <qmenubar.h>
@@ -16,14 +17,13 @@
 #include <qstackedwidget.h>
 #include <qboxlayout.h>
 
-BooksViewer::BooksViewer(QWidget *parent): QWidget(parent)
+BooksViewer::BooksViewer(BooksIndexDB *indexDB, QWidget *parent): QWidget(parent)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
     m_tab = new TabWidget(this);
+    m_indexDB = indexDB;
     layout->addWidget(m_tab);
     layout->setContentsMargins(0,6,0,0);
-
-    m_infoDB = new BooksIndexDB();
 
     connect(m_tab, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
     connect(m_tab, SIGNAL(tabMoved(int,int)), this, SLOT(tabChangePosition(int,int)));
@@ -32,7 +32,6 @@ BooksViewer::BooksViewer(QWidget *parent): QWidget(parent)
 
 BooksViewer::~BooksViewer()
 {
-    delete m_infoDB;
 }
 
 void BooksViewer::createMenus(QMainWindow *parent)
@@ -94,7 +93,10 @@ void BooksViewer::createMenus(QMainWindow *parent)
 
 void BooksViewer::openBook(int pBookID, bool newTab)
 {
-    BookInfo *bookInfo = m_infoDB->getBookInfo(pBookID);
+    BookInfo *bookInfo = m_indexDB->getBookInfo(pBookID);
+
+    if(!bookInfo->exists())
+        throw BookException(trUtf8("لم يتم العثور على ملف"), bookInfo->bookPath());
 
     AbstractDBHandler *bookdb;
     if(bookInfo->isQuran())
@@ -103,7 +105,14 @@ void BooksViewer::openBook(int pBookID, bool newTab)
         bookdb = new SimpleDBHandler();
 
     bookdb->setBookInfo(bookInfo);
-    bookdb->openBookDB();
+
+    try {
+        bookdb->openBookDB();
+    } catch (BookException &e) {
+        delete bookdb;
+        throw;
+    }
+
     BookWidget *bookWidget = new BookWidget(bookdb, this);
     int tabIndex;
     if(newTab) {

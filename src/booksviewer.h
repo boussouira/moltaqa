@@ -14,8 +14,9 @@ class BooksViewer : public QWidget
 {
     Q_OBJECT
 public:
-    BooksViewer(QWidget *parent = 0);
+    BooksViewer(BooksIndexDB *indexDB, QWidget *parent = 0);
     ~BooksViewer();
+    void setIndexDB(BooksIndexDB *indexDB) { m_indexDB = indexDB;}
 
 public slots:
     void openBook(int pBookID, bool newTab = true);
@@ -36,7 +37,7 @@ protected:
 
 private:
     TabWidget *m_tab;
-    BooksIndexDB *m_infoDB;
+    BooksIndexDB *m_indexDB;
     QList<BookWidget *> m_bookWidgets;
     QAction *actionNewTab;
     QAction *actionIndexDock;

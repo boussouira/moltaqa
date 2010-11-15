@@ -1,8 +1,8 @@
 #include "abstractdbhandler.h"
 #include "bookinfo.h"
 #include "bookindexmodel.h"
+#include "bookexception.h"
 
-#include <qdebug.h>
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
 #include <qsqlerror.h>
@@ -30,16 +30,15 @@ void AbstractDBHandler::openBookDB(QString pBookDBPath)
         m_bookDB.setDatabaseName(bookPath);
     }
 
-    if (!m_bookDB.open()) {
-        qDebug("[%s:%d] Cannot open database.", __FILE__, __LINE__);
-    }
+    if (!m_bookDB.open())
+        throw BookException(QObject::trUtf8("لم يمكن فتح قاعدة البيانات"), bookPath);
+
     m_bookQuery =  QSqlQuery(m_bookDB);
     getBookInfo();
 }
 
 void AbstractDBHandler::setBookInfo(BookInfo *bi)
 {
-    delete m_bookInfo;
     m_bookInfo = bi;
     m_connectionName = QString("book_i%1").arg(m_bookInfo->bookID());
 }

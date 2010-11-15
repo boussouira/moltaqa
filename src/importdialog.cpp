@@ -17,13 +17,13 @@
 #include <qsignalmapper.h>
 #include <qtoolbutton.h>
 
-ImportDialog::ImportDialog(QWidget *parent) :
+ImportDialog::ImportDialog(BooksIndexDB *indexDB, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ImportDialog)
 {
     ui->setupUi(this);
     m_model = new ImportModel(ui->treeView);
-    m_indexDB = new BooksIndexDB;
+    m_indexDB = indexDB;
 
     m_signalMapper = new QSignalMapper(this);
     connect(m_signalMapper, SIGNAL(mapped(int)), this, SIGNAL(openBook(int)));
@@ -41,7 +41,6 @@ ImportDialog::ImportDialog(QWidget *parent) :
 
 ImportDialog::~ImportDialog()
 {
-    delete m_indexDB;
     delete ui;
 }
 

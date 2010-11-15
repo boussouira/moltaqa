@@ -43,6 +43,7 @@ public:
 
     bool isQuran() { return m_bookType == QuranBook; }
     bool isNormal() { return m_bookType == NormalBook; }
+    bool exists();
 
 protected:
     BookInfo::Type m_bookType;

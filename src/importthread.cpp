@@ -29,7 +29,7 @@ void ImportThread::run()
             m_importedBooks++;
             m_booksList.insert(lastInsert, node->getBookName());
         } else {
-            qDebug() << "Error:" << node->getBookName();
+            qWarning() << "Error:" << node->getBookName();
         }
 
         emit setProgress(i+1);

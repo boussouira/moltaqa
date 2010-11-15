@@ -1,5 +1,4 @@
 #include "importmodel.h"
-#include "qdebug.h"
 
 ImportModelNode::ImportModelNode(BookInfo::Type pType, QString pName, QString pAuth, int pId)
 {
