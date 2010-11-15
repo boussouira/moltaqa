@@ -24,6 +24,7 @@ public:
 protected:
     BookIndexNode *getNodeByDepth(BookIndexNode *pNode, int pDepth);
     void getBookInfo();
+    int maxPartNum();
     SimpleTextFormat *m_textFormat;
 };
 

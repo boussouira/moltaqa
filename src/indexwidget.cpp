@@ -55,13 +55,13 @@ void IndexWidget::setIndex(QAbstractItemModel *pList)
 void IndexWidget::displayBookInfo()
 {
     sendSignals = false;
-    int part = m_bookInfo->currentPart();
+    int part = qMax(1, m_bookInfo->currentPart());
     ui->spinPage->setMaximum(m_bookInfo->lastPage(part));
     ui->spinPage->setMinimum(m_bookInfo->firstPage(part));
     ui->spinPage->setSuffix(QString(" / %1").arg(m_bookInfo->lastPage(part)));
-    ui->spinPage->setValue(m_bookInfo->currentPage());
+    ui->spinPage->setValue(qMax(1, m_bookInfo->currentPage()));
 
-    if(part > 1) {
+    if(m_bookInfo->partsCount() > 1) {
         ui->spinPart->setMaximum(m_bookInfo->partsCount());
         ui->spinPart->setMinimum(1);
         ui->spinPart->setSuffix(QString(" / %1").arg(m_bookInfo->partsCount()));

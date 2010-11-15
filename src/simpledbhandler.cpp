@@ -2,9 +2,11 @@
 #include "abstractdbhandler.h"
 #include "bookinfo.h"
 #include "bookindexmodel.h"
+#include "bookexception.h"
 
 #include <qsqlquery.h>
 #include <qstringlist.h>
+#include <qdebug.h>
 
 SimpleDBHandler::SimpleDBHandler()
 {
@@ -95,17 +97,17 @@ BookIndexNode *SimpleDBHandler::getNodeByDepth(BookIndexNode *pNode, int pDepth)
 void SimpleDBHandler::getBookInfo()
 {
     QStringList tables = m_bookDB.tables();
-    foreach(QString ta, tables) {
-        if( ta.contains(QRegExp("(t[0-9]+)")) )
-            m_bookInfo->setTitleTable(ta);
-        else if( ta.contains(QRegExp("(b[0-9]+)")) )
-            m_bookInfo->setBookTable(ta);
-    }
+
+    m_bookInfo->setTitleTable(tables.at(tables.indexOf(QRegExp("(t[0-9]+)"))));
+    m_bookInfo->setBookTable(tables.at(tables.indexOf(QRegExp("(b[0-9]+)"))));
 
     m_bookQuery.exec(QString("SELECT MAX(part), MIN(page), MAX(page), MIN(id), MAX(id) from %1 ")
                       .arg(m_bookInfo->bookTable()));
     if(m_bookQuery.next()) {
-        int parts = m_bookQuery.value(0).toInt();
+        bool ok;
+        int parts = m_bookQuery.value(0).toInt(&ok);
+        if(!ok)
+            parts = maxPartNum();
 
         m_bookInfo->setFirstID(m_bookQuery.value(3).toInt());
         m_bookInfo->setLastID(m_bookQuery.value(4).toInt());
@@ -126,6 +128,23 @@ void SimpleDBHandler::getBookInfo()
             }
         }
     }
+}
+
+int SimpleDBHandler::maxPartNum()
+{
+    QSqlQuery query(m_bookDB);
+    query.exec(QString("SELECT part FROM %1 ORDER BY id DESC")
+               .arg(m_bookInfo->bookTable()));
+    while(query.next()) {
+        QString val = query.value(0).toString().trimmed();
+        bool ok;
+        int parts = val.toInt(&ok);
+        if(ok){
+            return parts;
+        }
+    }
+
+    throw BookException(QObject::trUtf8("لم يمكن تحديد عدد أجزاء الكتاب"), m_bookInfo->bookPath());
 }
 
 QString SimpleDBHandler::nextPage()

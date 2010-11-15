@@ -3,6 +3,10 @@
 
 BookInfo::BookInfo()
 {
+    m_partsCount = 0;
+    m_firstID = 0;
+    m_lastID = 0;
+    m_bookID = 0;
 }
 
 void BookInfo::setFirstPage(int count, int part)

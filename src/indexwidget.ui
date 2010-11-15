@@ -47,11 +47,14 @@
      </item>
      <item row="0" column="1">
       <widget class="QSpinBox" name="spinAya">
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+       <property name="buttonSymbols">
+        <enum>QAbstractSpinBox::NoButtons</enum>
        </property>
        <property name="minimum">
         <number>1</number>
@@ -73,9 +76,6 @@
      </item>
      <item row="1" column="1">
       <widget class="QSpinBox" name="spinPage">
-       <property name="wrapping">
-        <bool>true</bool>
-       </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
        </property>
@@ -83,7 +83,7 @@
         <bool>true</bool>
        </property>
        <property name="buttonSymbols">
-        <enum>QAbstractSpinBox::UpDownArrows</enum>
+        <enum>QAbstractSpinBox::NoButtons</enum>
        </property>
        <property name="suffix">
         <string> / 604</string>
@@ -110,6 +110,12 @@
       <widget class="QSpinBox" name="spinPart">
        <property name="alignment">
         <set>Qt::AlignCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+       <property name="buttonSymbols">
+        <enum>QAbstractSpinBox::NoButtons</enum>
        </property>
        <property name="minimum">
         <number>1</number>
