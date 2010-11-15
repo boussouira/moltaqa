@@ -17,14 +17,12 @@ class ImportDialog : public QDialog {
 public:
     ImportDialog(QWidget *parent = 0);
     ~ImportDialog();
+    static QString arPlural(int count, int word);
 
 protected:
-    void getBookInfo(const QString &path, QList<ImportModelNode*> &nodes);
-    QString getBookType(const QSqlDatabase &bookDB);
     bool checkNodes(QList<ImportModelNode *> nodesList);
     void convertBooks();
     void importBooks();
-    QString arPlural(int count, int word);
 
 signals:
     void openBook(int id);
