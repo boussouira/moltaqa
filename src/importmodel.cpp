@@ -68,7 +68,7 @@ QModelIndex ImportModel::index(int row, int column,
     if (!m_rootNode || row < 0 || column < 0)
         return QModelIndex();
     ImportModelNode *parentNode = nodeFromIndex(parent);
-    ImportModelNode *childNode = parentNode->childrenList().value(row);
+    ImportModelNode *childNode = parentNode->childs().value(row);
     if (!childNode)
         return QModelIndex();
     return createIndex(row, column, childNode);
@@ -90,7 +90,7 @@ int ImportModel::rowCount(const QModelIndex &parent) const
     ImportModelNode *parentNode = nodeFromIndex(parent);
     if (!parentNode)
         return 0;
-    return parentNode->childrenList().count();
+    return parentNode->childs().count();
 }
 
 int ImportModel::columnCount(const QModelIndex & /* parent */) const
@@ -109,7 +109,7 @@ QModelIndex ImportModel::parent(const QModelIndex &child) const
     ImportModelNode *grandparentNode = parentNode->parentNode();
     if (!grandparentNode)
         return QModelIndex();
-    int row = grandparentNode->childrenList().indexOf(parentNode);
+    int row = grandparentNode->childs().indexOf(parentNode);
     return createIndex(row, 0, parentNode);
 }
 
@@ -121,19 +121,19 @@ QVariant ImportModel::data(const QModelIndex &index, int role) const
 
     if (role == Qt::DisplayRole || role == Qt::EditRole) {
         if (index.column() == 0)
-            return node->getBookName();
+            return node->bookName();
         else if (index.column() == 1)
-            return node->getAuthorName();
+            return node->authorName();
         else if (index.column() == 2)
-            return node->getTypeName();
+            return node->typeName();
         else if (index.column() == 3)
-            return node->getCatName();
+            return node->catName();
 
     } else if (role == Qt::ToolTipRole) {
         if (index.column() == 0)
-            return node->getInfoToolTip();
+            return node->bookInfo();
     } else if(role == Qt::BackgroundRole) {
-        return node->getBackgroundColor();
+        return node->backgroundColor();
     }
     return QVariant();
 }

@@ -128,21 +128,21 @@ int BooksIndexDB::addBook(ImportModelNode *book)
     QString qurey = QString("INSERT INTO booksList (id, bookID, bookType, bookFlags, bookCat,"
                             "bookName, bookInfo, authorName, authorID, fileName, bookFolder)"
                             "VALUES(NULL, 0, %1, %2, %3, '%4', '%5', '%6', %7, '%8', '')")
-            .arg(book->getNodeType())
+            .arg(book->nodeType())
             .arg(0)
-            .arg(book->getCatID())
-            .arg(book->getBookName())
-            .arg(book->getInfoToolTip())
-            .arg(book->getAuthorName())
+            .arg(book->catID())
+            .arg(book->bookName())
+            .arg(book->bookInfo())
+            .arg(book->authorName())
             .arg(0)
-            .arg(book->getBookPath().split("/").last());
+            .arg(book->bookPath().split("/").last());
 
     QString newPath = QString("%1/%2")
                       .arg(m_booksFolder)
-                      .arg(book->getBookPath().split("/").last());
-    if(QFile::copy(book->getBookPath(), newPath)){
-        if(!QFile::remove(book->getBookPath()))
-            qWarning() << "Can't remove:" << book->getBookPath();
+                      .arg(book->bookPath().split("/").last());
+    if(QFile::copy(book->bookPath(), newPath)){
+        if(!QFile::remove(book->bookPath()))
+            qWarning() << "Can't remove:" << book->bookPath();
         return indexQuery.exec(qurey) ? indexQuery.lastInsertId().toInt() : -1;
     } else {
         return -1;

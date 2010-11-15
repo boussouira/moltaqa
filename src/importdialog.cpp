@@ -122,7 +122,7 @@ void ImportDialog::doneConverting()
 
     QString convertedFiles = arPlural(thread->convertedFiles(), 2);
     QString convertTime = arPlural(thread->convertTime()/1000, 1);
-    QString importBooks = arPlural(m_model->nodeFromIndex(QModelIndex())->childrenList().count(),
+    QString importBooks = arPlural(m_model->nodeFromIndex(QModelIndex())->childs().count(),
                                    0);
 
     ui->label_2->setText(QString(ui->label_2->text())
@@ -135,7 +135,7 @@ void ImportDialog::doneConverting()
 
 void ImportDialog::importBooks()
 {
-   if(checkNodes(m_model->nodeFromIndex(QModelIndex())->childrenList())){
+   if(checkNodes(m_model->nodeFromIndex(QModelIndex())->childs())){
 
         ImportThread *thread = new ImportThread(this);
 
@@ -148,7 +148,7 @@ void ImportDialog::importBooks()
 
         setEnabled(false);
 
-        ui->progressBar->setMaximum(m_model->nodeFromIndex(QModelIndex())->childrenList().count());
+        ui->progressBar->setMaximum(m_model->nodeFromIndex(QModelIndex())->childs().count());
         ui->progressBar->setValue(0);
         ui->progressBar->show();
 
@@ -207,7 +207,7 @@ bool ImportDialog::checkNodes(QList<ImportModelNode *> nodesList)
 {
     int wrongNodes = 0;
     foreach(ImportModelNode *node, nodesList) {
-        if(node->getCatID() == -1){
+        if(node->catID() == -1){
             node->setBackgroundColor(QColor(200,200,200));
             wrongNodes++;
         } else {

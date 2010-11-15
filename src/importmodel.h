@@ -16,22 +16,22 @@ public:
     void deleteChild(int index);
     void setID(int pId);
 
-    BookInfo::Type getNodeType() const { return m_type; }
+    BookInfo::Type nodeType() const { return m_type; }
     ImportModelNode *parentNode() const { return m_parentNode; }
-    QList<ImportModelNode *> childrenList() const { return m_childrenNode; }
-    int getID() const { return m_nodeID; }
-    QString getBookName() const { return m_bookName; }
-    QString getAuthorName() const { return m_authorName; }
-    QString getInfoToolTip() { return m_infoToolTip; }
-    QString getBookPath() { return m_bookPath; }
-    QString getTypeName() { return m_typeName; }
-    QString getCatName() { return m_catName; }
-    int getCatID() { return m_catID; }
-    QBrush getBackgroundColor() { return m_bgColor; }
+    QList<ImportModelNode *> childs() const { return m_childrenNode; }
+    int id() const { return m_nodeID; }
+    QString bookName() const { return m_bookName; }
+    QString authorName() const { return m_authorName; }
+    QString bookInfo() { return m_bookInfo; }
+    QString bookPath() { return m_bookPath; }
+    QString typeName() { return m_typeName; }
+    QString catName() { return m_catName; }
+    int catID() { return m_catID; }
+    QBrush backgroundColor() { return m_bgColor; }
 
     void setBookName(const QString &name) { m_bookName = name; }
     void setAuthorName(const QString &name) { m_authorName = name; }
-    void setInfoToolTip(const QString &info) { m_infoToolTip = info; }
+    void setBookInfo(const QString &info) { m_bookInfo = info; }
     void setBookPath(const QString &path) { m_bookPath = path; }
     void setTypeName(const QString &name) { m_typeName = name; }
     void setCatName(const QString &name) { m_catName = name; }
@@ -42,7 +42,7 @@ protected:
     BookInfo::Type m_type;
     QString m_bookName;
     QString m_authorName;
-    QString m_infoToolTip;
+    QString m_bookInfo;
     QString m_bookPath;
     QString m_typeName;
     QString m_catName;
