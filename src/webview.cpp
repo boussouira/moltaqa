@@ -61,8 +61,9 @@ void WebView::pageUp()
 
 void WebView::scrollToPosition(const QPoint &pos, int duration)
 {
-    if(m_animation->state() != QPropertyAnimation::Running)
-    {
+    if(m_animation->state() == QPropertyAnimation::Running) {
+        m_animation->stop();
+    } else {
         m_animation->setDuration(duration);
         m_animation->setStartValue(m_frame->scrollPosition());
         m_animation->setEndValue(pos);
