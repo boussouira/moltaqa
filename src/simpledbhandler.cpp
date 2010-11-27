@@ -18,9 +18,9 @@ SimpleDBHandler::~SimpleDBHandler()
     delete m_textFormat;
 }
 
-QString SimpleDBHandler::openID(int pid)
+void SimpleDBHandler::openID(int pid)
 {
-    m_textFormat->clearText();
+    m_textFormat->start();
 
     int id;
     if(pid == -1) // First page
@@ -44,19 +44,16 @@ QString SimpleDBHandler::openID(int pid)
         m_bookInfo->setCurrentPart(m_bookQuery.value(2).toInt());
     }
 
-    return m_textFormat->getText();
+    m_textFormat->done();
 }
 
-QString SimpleDBHandler::openPage(int page, int part)
+void SimpleDBHandler::openPage(int page, int part)
 {
     m_bookQuery.exec(QString("SELECT id FROM %1 WHERE page >= %2 AND part = %3"
                               " ORDER BY id ASC LIMIT 1")
                       .arg(m_bookInfo->bookTable()).arg(page).arg(part));
     if(m_bookQuery.next())
-        return openID(m_bookQuery.value(0).toInt());
-    else
-        return QString();
-
+        openID(m_bookQuery.value(0).toInt());
 }
 
 QAbstractItemModel *SimpleDBHandler::indexModel()
@@ -143,14 +140,16 @@ int SimpleDBHandler::maxPartNum()
     throw BookException(tr("لم يمكن تحديد عدد أجزاء الكتاب"), m_bookInfo->bookPath());
 }
 
-QString SimpleDBHandler::nextPage()
+void SimpleDBHandler::nextPage()
 {
-    return hasNext() ? this->openID(m_bookInfo->currentID()+1) : QString();
+    if(hasNext())
+        openID(m_bookInfo->currentID()+1);
 }
 
-QString SimpleDBHandler::prevPage()
+void SimpleDBHandler::prevPage()
 {
-    return hasPrev() ? this->openID(m_bookInfo->currentID()-1) : QString();
+    if(hasPrev())
+        openID(m_bookInfo->currentID()-1);
 }
 
 bool SimpleDBHandler::hasNext()

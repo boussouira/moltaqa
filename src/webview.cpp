@@ -70,6 +70,8 @@ void WebView::scrollToPosition(const QPoint &pos, int duration)
 
         m_animation->start();
     }
+
+    emit textChanged();
 }
 
 bool WebView::maxDown()
@@ -82,4 +84,10 @@ bool WebView::maxUp()
 {
     return (page()->mainFrame()->scrollBarMinimum(Qt::Vertical)==
             page()->mainFrame()->scrollPosition().y());
+}
+
+void WebView::setText(const QString &text)
+{
+    setHtml(text);
+    emit textChanged();
 }

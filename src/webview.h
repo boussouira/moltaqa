@@ -20,6 +20,12 @@ public:
     bool maxDown();
     bool maxUp();
 
+public slots:
+    void setText(const QString &text);
+
+signals:
+    void textChanged();
+
 protected:
     QWebFrame *m_frame;
     QPropertyAnimation *m_animation;

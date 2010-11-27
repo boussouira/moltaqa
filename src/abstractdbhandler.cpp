@@ -2,6 +2,7 @@
 #include "bookinfo.h"
 #include "bookindexmodel.h"
 #include "bookexception.h"
+#include "textformatter.h"
 
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
@@ -43,17 +44,15 @@ void AbstractDBHandler::setBookInfo(BookInfo *bi)
     m_connectionName = QString("book_i%1").arg(m_bookInfo->bookID());
 }
 
-QString AbstractDBHandler::nextUnit()
+void AbstractDBHandler::nextUnit()
 {
-    return QString();
 }
 
-QString AbstractDBHandler::prevUnit()
+void AbstractDBHandler::prevUnit()
 {
-    return QString();
 }
 
-QString AbstractDBHandler::openIndexID(int pid)
+void AbstractDBHandler::openIndexID(int pid)
 {
-    return openID(pid);
+    openID(pid);
 }

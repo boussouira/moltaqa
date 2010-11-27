@@ -11,10 +11,10 @@ public:
     SimpleDBHandler();
     ~SimpleDBHandler();
 
-    QString openID(int id = -1);
-    QString openPage(int page, int part =1);
-    QString nextPage();
-    QString prevPage();
+    void openID(int id = -1);
+    void openPage(int page, int part =1);
+    void nextPage();
+    void prevPage();
 
     bool hasNext();
     bool hasPrev();
@@ -25,7 +25,6 @@ protected:
     BookIndexNode *getNodeByDepth(BookIndexNode *pNode, int pDepth);
     void getBookInfo();
     int maxPartNum();
-    SimpleTextFormat *m_textFormat;
 };
 
 #endif // SIMPLEDBHANDLER_H

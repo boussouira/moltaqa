@@ -76,6 +76,7 @@ set(alkotobiya_MOCS_SRCS
     tabwidget.h
     webview.h
     mainwindow.h
+    textformatter.h
 )
 set(alkotobiya_RCCS data/qt_rc.qrc)
 

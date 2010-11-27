@@ -6,23 +6,39 @@
 #include <qregexp.h>
 #include <qsettings.h>
 
-class TextFormatter
+class TextFormatter : public QObject
 {
+    Q_OBJECT
+
 public:
-    TextFormatter();
+    TextFormatter(QObject *parent = 0);
     void laodSettings();
     QString getText();
     void insertText(QString text);
-    void clearText();
     void insertHtmlTag(QString tag, QString text, QString className="", QString idName="");
     void insertDivTag(QString text, QString className="", QString idName="");
     void insertSpanTag(QString text, QString className="", QString idName="");
 
+    void insertSoraName(const QString &pSoraName);
+    void insertBassemala();
+    void insertAyaText(const QString &pAyaText, int pAyaNumber, int pSoraNumber);
+
+protected:
+    void clearText();
+
+public slots:
+    void start(bool clear=true);
+    void done();
+
+signals:
+    void startReading();
+    void doneReading(const QString &text);
 
 protected:
     QString m_styleFile;
-    QString m_text;
     QString m_cssID;
+    QString m_text;
+    QString m_html;
 };
 
 #endif // TEXTFORMATTER_H

@@ -10,15 +10,15 @@ public:
     QuranDBHandler();
     ~QuranDBHandler();
 
-    QString openID(int id = -1);
-    QString openPage(int page, int part =1);
-    QString openIndexID(int pid = -1);
-    QString openSora(int num);
-    QString nextPage();
-    QString prevPage();
+    void openID(int id = -1);
+    void openPage(int page, int part =1);
+    void openIndexID(int pid = -1);
+    void openSora(int num);
+    void nextPage();
+    void prevPage();
 
-    QString nextUnit();
-    QString prevUnit();
+    void nextUnit();
+    void prevUnit();
 
     bool hasNext();
     bool hasPrev();
@@ -29,8 +29,6 @@ protected:
     int getPageNumber(int soraNumber, int ayaNumber=1);
     int getSoraAyatCount(int sora);
     void firstSoraAndAya(int page);
-    QuranTextFormat *m_quranFormat;
-
 };
 
 #endif // QURANDBHANDLER_H
