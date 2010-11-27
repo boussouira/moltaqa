@@ -49,7 +49,7 @@ SOURCES += mainwindow.cpp \
     bookinfo.cpp \
     simpletextformat.cpp \
     bookwidget.cpp \
-    kwebview.cpp \
+    webview.cpp \
     settingschecker.cpp \
     textformatter.cpp \
     importdialog.cpp \
@@ -78,7 +78,7 @@ HEADERS += mainwindow.h \
     bookinfo.h \
     simpletextformat.h \
     bookwidget.h \
-    kwebview.h \
+    webview.h \
     settingschecker.h \
     textformatter.h \
     importdialog.h \

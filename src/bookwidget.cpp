@@ -1,7 +1,7 @@
 #include "bookwidget.h"
 #include "indexwidget.h"
 #include "abstractdbhandler.h"
-#include "kwebview.h"
+#include "webview.h"
 
 #include <qsplitter.h>
 #include <qboxlayout.h>
@@ -10,7 +10,7 @@ BookWidget::BookWidget(AbstractDBHandler *db, QWidget *parent): QWidget(parent),
 {
     m_layout = new QVBoxLayout(this);
     m_splitter = new QSplitter(this);
-    m_view = new KWebView(m_splitter);
+    m_view = new WebView(m_splitter);
     m_indexWidget = new IndexWidget(m_splitter);
     m_indexWidget->setBookInfo(db->bookInfo());
 

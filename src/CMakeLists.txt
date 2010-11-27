@@ -40,7 +40,7 @@ set(alkotobiya_SRCS
     importmodel.cpp
     importthread.cpp
     indexwidget.cpp
-    kwebview.cpp
+    webview.cpp
     main.cpp
     mainwindow.cpp
     pageinfo.cpp
@@ -74,7 +74,7 @@ set(alkotobiya_MOCS_SRCS
     bookwidget.h
     settingsdialog.h
     tabwidget.h
-    kwebview.h
+    webview.h
     mainwindow.h
 )
 set(alkotobiya_RCCS data/qt_rc.qrc)

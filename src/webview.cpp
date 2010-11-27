@@ -1,6 +1,6 @@
-#include "kwebview.h"
+#include "webview.h"
 
-KWebView::KWebView(QWidget *parent) : QWebView(parent)
+WebView::WebView(QWidget *parent) : QWebView(parent)
 {
     m_frame = page()->mainFrame();
 
@@ -8,7 +8,7 @@ KWebView::KWebView(QWidget *parent) : QWebView(parent)
     connect(m_frame, SIGNAL(contentsSizeChanged(QSize)), m_animation, SLOT(stop()));
 }
 
-void KWebView::scrollToAya(int pSoraNumber, int pAyaNumber)
+void WebView::scrollToAya(int pSoraNumber, int pAyaNumber)
 {
     // First we unhighlight the highlighted AYA
     m_frame->findFirstElement("span.highlighted").removeClass("highlighted");
@@ -34,12 +34,12 @@ void KWebView::scrollToAya(int pSoraNumber, int pAyaNumber)
     scrollToPosition(QPoint(0, ayaPosition));
 }
 
-void KWebView::scrollToSora(int soraNumber)
+void WebView::scrollToSora(int soraNumber)
 {
     scrollToAya(soraNumber, 1);
 }
 
-void KWebView::pageDown()
+void WebView::pageDown()
 {
     int ypos = m_frame->scrollPosition().y();
     int xpos = m_frame->scrollPosition().x();
@@ -49,7 +49,7 @@ void KWebView::pageDown()
     scrollToPosition(QPoint(xpos, ypos));
 }
 
-void KWebView::pageUp()
+void WebView::pageUp()
 {
     int ypos = m_frame->scrollPosition().y();
     int xpos = m_frame->scrollPosition().x();
@@ -59,7 +59,7 @@ void KWebView::pageUp()
     scrollToPosition(QPoint(xpos, ypos));
 }
 
-void KWebView::scrollToPosition(const QPoint &pos, int duration)
+void WebView::scrollToPosition(const QPoint &pos, int duration)
 {
     if(m_animation->state() != QPropertyAnimation::Running)
     {
@@ -71,13 +71,13 @@ void KWebView::scrollToPosition(const QPoint &pos, int duration)
     }
 }
 
-bool KWebView::maxDown()
+bool WebView::maxDown()
 {
     return (page()->mainFrame()->scrollBarMaximum(Qt::Vertical)==
             page()->mainFrame()->scrollPosition().y());
 }
 
-bool KWebView::maxUp()
+bool WebView::maxUp()
 {
     return (page()->mainFrame()->scrollBarMinimum(Qt::Vertical)==
             page()->mainFrame()->scrollPosition().y());

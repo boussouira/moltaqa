@@ -27,7 +27,7 @@ signals:
     void tabMoved(int from, int to);
 
 private:
-    QTabBar *m_tab;
+    QTabBar *m_tabBar;
 
 };
 

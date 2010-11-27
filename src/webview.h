@@ -7,11 +7,11 @@
 #include <qpropertyanimation.h>
 
 
-class KWebView : public QWebView
+class WebView : public QWebView
 {
     Q_OBJECT
 public:
-    KWebView(QWidget* parent = 0);
+    WebView(QWidget* parent = 0);
     void scrollToAya(int pSoraNumber, int pAyaNumber);
     void scrollToSora(int soraNumber);
     void pageDown();

@@ -1,14 +1,16 @@
 #include "tabwidget.h"
 
-TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent), m_tab(new QTabBar(this))
+TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)
 {
-    m_tab->setTabsClosable(true);
-    setTabBar(m_tab);
+    m_tabBar = new QTabBar(this);
+
+    m_tabBar->setTabsClosable(true);
+    setTabBar(m_tabBar);
     setMovable(true);
 
-    connect(m_tab, SIGNAL(tabMoved(int, int)), this, SLOT(tabIsMoved(int,int)));
-    connect(m_tab, SIGNAL(currentChanged(int)), this, SLOT(updateTabBar()));
-    connect(m_tab, SIGNAL(tabCloseRequested(int)), this, SLOT(updateTabBar()));
+    connect(m_tabBar, SIGNAL(tabMoved(int, int)), this, SLOT(tabIsMoved(int,int)));
+    connect(m_tabBar, SIGNAL(currentChanged(int)), this, SLOT(updateTabBar()));
+    connect(m_tabBar, SIGNAL(tabCloseRequested(int)), this, SLOT(updateTabBar()));
 }
 
 void TabWidget::tabIsMoved(int from, int to)
@@ -18,8 +20,8 @@ void TabWidget::tabIsMoved(int from, int to)
 
 void TabWidget::updateTabBar()
 {
-    if(m_tab->count() > 1)
-        m_tab->setTabsClosable(true);
+    if(m_tabBar->count() > 1)
+        m_tabBar->setTabsClosable(true);
     else
-        m_tab->setTabsClosable(false);
+        m_tabBar->setTabsClosable(false);
 }

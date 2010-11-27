@@ -3,7 +3,7 @@
 
 #include <qwidget.h>
 
-class KWebView;
+class WebView;
 class IndexWidget;
 class AbstractDBHandler;
 class QSplitter;
@@ -32,7 +32,7 @@ public slots:
 protected:
     QSplitter *m_splitter;
     QVBoxLayout *m_layout;
-    KWebView *m_view;
+    WebView *m_view;
     IndexWidget *m_indexWidget;
     AbstractDBHandler *m_db;
 };
