@@ -7,13 +7,13 @@ QuranTextFormat::QuranTextFormat()
 
 void QuranTextFormat::insertSoraName(const QString &pSoraName)
 {
-    QString soraName = QObject::trUtf8("سورة %1").arg(pSoraName);
+    QString soraName = tr("سورة %1").arg(pSoraName);
     insertDivTag(soraName, "soraname");
 }
 
 void QuranTextFormat::insertBassemala()
 {
-    insertDivTag(QObject::trUtf8("بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ"), "bassemala");
+    insertDivTag(tr("بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ"), "bassemala");
 }
 
 void QuranTextFormat::insertAyaText(const QString &pAyaText, int pAyaNumber, int pSoraNumber)

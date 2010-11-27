@@ -44,7 +44,7 @@ QString SettingsDialog::getFilePath()
 
 QString SettingsDialog::getFolderPath(const QString &defaultPath, bool noRoot)
 {
-    QString dir = QFileDialog::getExistingDirectory(this, trUtf8("اختر مجلد"),
+    QString dir = QFileDialog::getExistingDirectory(this, tr("اختر مجلد"),
                                                     defaultPath,
                                                     QFileDialog::ShowDirsOnly
                                                     |QFileDialog::DontResolveSymlinks);

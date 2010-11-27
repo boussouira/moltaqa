@@ -2,9 +2,12 @@
 #define QURANTEXTFORMAT_H
 
 #include "textformatter.h"
+#include <qcoreapplication.h>
 
 class QuranTextFormat : public TextFormatter
 {
+    Q_DECLARE_TR_FUNCTIONS(TextFormatter);
+
 public:
     QuranTextFormat();
     void insertSoraName(const QString &pSoraName);

@@ -35,16 +35,16 @@ void ImportModelNode::setCatID(int id)
 {
      m_catID = id;
      if(id == -1)
-         setCatName(QObject::trUtf8("-- غير محدد --"));
+         setCatName(tr("-- غير محدد --"));
 }
 void ImportModelNode::setTypeName(const QString &name)
 {
     m_typeName = name;
     QStringList types;
-    types << QObject::trUtf8("مصحف")
-            << QObject::trUtf8("تفسير")
-            << QObject::trUtf8("متن حديث")
-            << QObject::trUtf8("عادي");
+    types << tr("مصحف")
+            << tr("تفسير")
+            << tr("متن حديث")
+            << tr("عادي");
 
     int index = types.indexOf(name)+1;
     switch(index){
@@ -193,10 +193,10 @@ QVariant ImportModel::headerData(int section,
                                   int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-        if (section == 0)       return trUtf8("الكتاب");
-        else if (section == 1)  return trUtf8("المؤلف");
-        else if (section == 2)  return trUtf8("نوع الكتاب");
-        else if (section == 3)  return trUtf8("القسم");
+        if (section == 0)       return tr("الكتاب");
+        else if (section == 1)  return tr("المؤلف");
+        else if (section == 2)  return tr("نوع الكتاب");
+        else if (section == 3)  return tr("القسم");
 
     }
     return QVariant();

@@ -39,39 +39,39 @@ void BooksViewer::createMenus(QMainWindow *parent)
 
     // General Actions
     actionNewTab = new QAction(QIcon(":/menu/images/bookmark-new.png"),
-                                        trUtf8("تبويب جديد"),
+                                        tr("تبويب جديد"),
                                         this);
 
     actionIndexDock = new QAction(QIcon(":/menu/images/edit_fahrass.png"),
-                                           trUtf8("نافذة الفهرس"),
+                                           tr("نافذة الفهرس"),
                                            this);
 
     actionSearchDock = new QAction(QIcon(":/menu/images/find.png"),
-                                            trUtf8("نافذة البحث"),
+                                            tr("نافذة البحث"),
                                             this);
     actionSearchDock->setEnabled(false);
 
     // Navigation actions
     actionNextAYA = new QAction(QIcon(":/menu/images/go-down.png"),
-                                trUtf8("الآية التالية"),
+                                tr("الآية التالية"),
                                 this);
     actionNextPage = new QAction(QIcon(":/menu/images/go-previous.png"),
-                                 trUtf8("الصفحة التالية"),
+                                 tr("الصفحة التالية"),
                                  this);
     actionPrevAYA = new QAction(QIcon(":/menu/images/go-up.png"),
-                                trUtf8("الآية السابقة"),
+                                tr("الآية السابقة"),
                                 this);
     actionPrevPage = new QAction(QIcon(":/menu/images/go-next.png"),
-                                 trUtf8("الصفحة السابقة"),
+                                 tr("الصفحة السابقة"),
                                  this);
 
-    toolBarGeneral = new QToolBar(trUtf8("عام"), this);
+    toolBarGeneral = new QToolBar(tr("عام"), this);
     toolBarGeneral->addAction(actionNewTab);
     toolBarGeneral->addSeparator();
     toolBarGeneral->addAction(actionIndexDock);
     toolBarGeneral->addAction(actionSearchDock);
 
-    toolBarNavigation = new QToolBar(trUtf8("التصفح"), this);
+    toolBarNavigation = new QToolBar(tr("التصفح"), this);
     toolBarNavigation->addAction(actionPrevPage);
     toolBarNavigation->addAction(actionNextPage);
     toolBarNavigation->addAction(actionNextAYA);
@@ -96,7 +96,7 @@ void BooksViewer::openBook(int pBookID, bool newTab)
     BookInfo *bookInfo = m_indexDB->getBookInfo(pBookID);
 
     if(!bookInfo->exists())
-        throw BookException(trUtf8("لم يتم العثور على ملف"), bookInfo->bookPath());
+        throw BookException(tr("لم يتم العثور على ملف"), bookInfo->bookPath());
 
     AbstractDBHandler *bookdb;
     if(bookInfo->isQuran())

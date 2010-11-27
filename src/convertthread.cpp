@@ -42,7 +42,7 @@ void ConvertThread::run()
 
         } catch(QString &what) {
             QMessageBox::critical(0,
-                                  trUtf8("خطأ عند الاستيراد"),
+                                  tr("خطأ عند الاستيراد"),
                                   what);
         }
     }
@@ -59,7 +59,7 @@ void ConvertThread::getBookInfo(const QString &path, QList<ImportModelNode *> &n
     m_bookDB.setDatabaseName(dbPath);
 
     if (!m_bookDB.open())
-        throw trUtf8("لا يمكن فتح قاعدة البيانات");
+        throw tr("لا يمكن فتح قاعدة البيانات");
 
     QSqlQuery bookQuery(m_bookDB);
 
@@ -90,7 +90,7 @@ void ConvertThread::getBookInfo(const QString &path, QList<ImportModelNode *> &n
     }
 
     if(bookQuery.lastError().isValid())
-        throw trUtf8("حدث خطأ أثناء سحب المعلومات من قاعدة البيانات"
+        throw tr("حدث خطأ أثناء سحب المعلومات من قاعدة البيانات"
                      "<br><b style=\"direction:rtl\">%1</b>").arg(bookQuery.lastError().text());
 }
 
@@ -105,8 +105,8 @@ QString ConvertThread::getBookType(const QSqlDatabase &bookDB)
             bookTable = ta;
     }
     if(bookTable.isEmpty())
-        throw trUtf8("قاعدة البيانات المختار غير صحيحة")+"<br><b>"+
-                trUtf8("لم يتم العثور على جدول البيانات")+"</b>";
+        throw tr("قاعدة البيانات المختار غير صحيحة")+"<br><b>"+
+                tr("لم يتم العثور على جدول البيانات")+"</b>";
 
     query.exec(QString("SELECT * FROM %1").arg(bookTable));
     if(query.next()) {
@@ -118,13 +118,13 @@ QString ConvertThread::getBookType(const QSqlDatabase &bookDB)
             hnoQuery.exec(QString("SELECT MAX(hno) FROM %1").arg(bookTable));
             if(hnoQuery.next()){
                 if(!hnoQuery.value(0).toString().isEmpty())
-                    return trUtf8("متن حديث");
+                    return tr("متن حديث");
                 else
-                    return trUtf8("عادي");
+                    return tr("عادي");
             }
         } else if(aya != -1 && sora != -1)
-            return trUtf8("تفسير");
+            return tr("تفسير");
     }
 
-    return trUtf8("عادي");
+    return tr("عادي");
 }

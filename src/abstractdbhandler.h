@@ -4,6 +4,7 @@
 #include <qobject.h>
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
+#include <qcoreapplication.h>
 
 class BookInfo;
 class BookIndexModel;
@@ -12,6 +13,8 @@ class QSqlQuery;
 
 class AbstractDBHandler
 {
+    Q_DECLARE_TR_FUNCTIONS(AbstractDBHandler);
+
 public:
     AbstractDBHandler();
     virtual ~AbstractDBHandler();

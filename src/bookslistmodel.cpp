@@ -104,9 +104,9 @@ QVariant BooksListModel::headerData(int section,
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         if (section == 0) {
-            return trUtf8("الكتاب");
+            return tr("الكتاب");
         } else if (section == 1) {
-            return trUtf8("المؤلف");
+            return tr("المؤلف");
         }
     }
     return QVariant();

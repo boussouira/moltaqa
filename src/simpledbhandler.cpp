@@ -62,10 +62,6 @@ QString SimpleDBHandler::openPage(int page, int part)
 QAbstractItemModel *SimpleDBHandler::indexModel()
 {
     BookIndexNode *rootNode = new BookIndexNode();
-//    BookIndexNode *firstNode = new BookIndexNode(QObject::trUtf8("الفهرس")
-//                                                 ,0);
-
-//    rootNode->appendChild(firstNode);
 
     m_bookQuery.exec(QString("SELECT id, tit, lvl, sub FROM %1 ORDER BY id")
                       .arg(m_bookInfo->titleTable()));
@@ -144,7 +140,7 @@ int SimpleDBHandler::maxPartNum()
         }
     }
 
-    throw BookException(QObject::trUtf8("لم يمكن تحديد عدد أجزاء الكتاب"), m_bookInfo->bookPath());
+    throw BookException(tr("لم يمكن تحديد عدد أجزاء الكتاب"), m_bookInfo->bookPath());
 }
 
 QString SimpleDBHandler::nextPage()

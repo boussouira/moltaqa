@@ -6,9 +6,12 @@
 #include <qabstractitemmodel.h>
 #include <qicon.h>
 #include <qbrush.h>
+#include <qcoreapplication.h>
 
 class ImportModelNode
 {
+    Q_DECLARE_TR_FUNCTIONS(ImportModelNode);
+
 public:
     ImportModelNode(BookInfo::Type pType, QString pName = "", QString pAuth = "", int pId = 0);
     ~ImportModelNode();

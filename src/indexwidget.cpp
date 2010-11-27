@@ -9,8 +9,8 @@ IndexWidget::IndexWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     sendSignals = true;
-    QAction *actionOpenSora = new QAction(trUtf8("فتح السورة"), ui->treeView);
-    QAction *actionOpenSoraInNewTab = new QAction(trUtf8("فتح في تبويب جديد"), this);
+    QAction *actionOpenSora = new QAction(tr("فتح السورة"), ui->treeView);
+    QAction *actionOpenSoraInNewTab = new QAction(tr("فتح في تبويب جديد"), this);
 
     ui->treeView->addAction(actionOpenSora);
     ui->treeView->addAction(actionOpenSoraInNewTab);

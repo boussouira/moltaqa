@@ -31,7 +31,7 @@ void AbstractDBHandler::openBookDB(QString pBookDBPath)
     }
 
     if (!m_bookDB.open())
-        throw BookException(QObject::trUtf8("لم يمكن فتح قاعدة البيانات"), bookPath);
+        throw BookException(tr("لم يمكن فتح قاعدة البيانات"), bookPath);
 
     m_bookQuery =  QSqlQuery(m_bookDB);
     getBookInfo();

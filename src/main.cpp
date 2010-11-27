@@ -2,12 +2,14 @@
 #include <QTranslator>
 #include <QLocale>
 #include <QLibraryInfo>
+#include <QTextCodec>
 
 #include "mainwindow.h"
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+    QTextCodec::setCodecForTr(QTextCodec::codecForName("utf-8"));
 
     QTranslator translator;
     translator.load(QString("qt_ar"), QLibraryInfo::location(QLibraryInfo::TranslationsPath));

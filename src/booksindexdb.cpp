@@ -24,7 +24,7 @@ void BooksIndexDB::openDB()
     QString dbPath = QString("%1/%2").arg(m_booksFolder).arg(m_indexDBName);
 
     if(!QFile::exists(dbPath))
-        throw BookException(QObject::trUtf8("لم يتم العثور على قاعدة البيانات الأساسية"), dbPath);
+        throw BookException(tr("لم يتم العثور على قاعدة البيانات الأساسية"), dbPath);
 
     if(QSqlDatabase::contains("BooksListDB")) {
         m_booksListDB = QSqlDatabase::database("BooksListDB");
@@ -34,7 +34,7 @@ void BooksIndexDB::openDB()
     }
 
     if (!m_booksListDB.open())
-        throw BookException(QObject::trUtf8("لم يمكن فتح قاعدة البيانات الأساسية"), dbPath);
+        throw BookException(tr("لم يمكن فتح قاعدة البيانات الأساسية"), dbPath);
 
 }
 

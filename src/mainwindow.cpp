@@ -14,7 +14,7 @@
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    setWindowTitle(trUtf8("برنامج الكتبية"));
+    setWindowTitle(tr("برنامج الكتبية"));
     loadSettings();
 
     try {
@@ -28,8 +28,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
         setupActions();
     } catch(BookException &e) {
         QMessageBox::information(this,
-                                 trUtf8("برنامج الكتبية"),
-                                 trUtf8("حدث خطأ أثناء تحميل البرنامج:"
+                                 tr("برنامج الكتبية"),
+                                 tr("حدث خطأ أثناء تحميل البرنامج:"
                                         "<br><em>%1</em>").arg(e.what()));
         setEnabled(false);
     }
@@ -56,8 +56,8 @@ MainWindow::~MainWindow()
 void MainWindow::aboutAlKotobiya()
 {
     QMessageBox::information(this,
-                             trUtf8("برنامج الكتبية"),
-                             trUtf8("برنامج الكتبية لقراءة القرءان الكريم"));
+                             tr("برنامج الكتبية"),
+                             tr("برنامج الكتبية لقراءة القرءان الكريم"));
 }
 
 void MainWindow::settingDialog()
@@ -88,8 +88,8 @@ void MainWindow::openBook(int pBookID)
 
     } catch(BookException &e) {
         QMessageBox::information(this,
-                                 trUtf8("برنامج الكتبية"),
-                                 trUtf8("حدث خطأ أثناء فتح الكتاب:"
+                                 tr("برنامج الكتبية"),
+                                 tr("حدث خطأ أثناء فتح الكتاب:"
                                         "<br><em>%1</em>").arg(e.what()));
     }
 }

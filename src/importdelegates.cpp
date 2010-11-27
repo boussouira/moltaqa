@@ -14,10 +14,10 @@ QWidget *BookTypeDelegate::createEditor(QWidget *parent,
                                        const QModelIndex &/*index*/) const
 {
     QComboBox *box = new QComboBox(parent);
-    box->addItem(trUtf8("مصحف"));
-    box->addItem(trUtf8("تفسير"));
-    box->addItem(trUtf8("متن حديث"));
-    box->addItem(trUtf8("عادي"));
+    box->addItem(tr("مصحف"));
+    box->addItem(tr("تفسير"));
+    box->addItem(tr("متن حديث"));
+    box->addItem(tr("عادي"));
     return box;
 
 }

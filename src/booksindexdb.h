@@ -4,6 +4,7 @@
 #include "bookinfo.h"
 #include <qsettings.h>
 #include <qsqldatabase.h>
+#include <qcoreapplication.h>
 
 class QAbstractItemModel;
 class BooksListModel;
@@ -12,6 +13,8 @@ class ImportModelNode;
 
 class BooksIndexDB
 {
+    Q_DECLARE_TR_FUNCTIONS(BooksIndexDB);
+
 public:
     BooksIndexDB();
     void openDB();

@@ -89,8 +89,8 @@ void ImportDialog::convertBooks()
 {
     if(ui->fileListWidget->count()==0) {
         QMessageBox::warning(this,
-                              trUtf8("خطأ عند الاستيراد"),
-                              trUtf8("لم تقم باختيار أي ملف ليتم استيراده"));
+                              tr("خطأ عند الاستيراد"),
+                              tr("لم تقم باختيار أي ملف ليتم استيراده"));
         return;
     }
 
@@ -160,8 +160,8 @@ void ImportDialog::importBooks()
 
     } else {
         QMessageBox::warning(this,
-                             trUtf8("خطأ عند الاستيراد"),
-                             trUtf8("لم تقم باختيار أقسام بعض الكتب"));
+                             tr("خطأ عند الاستيراد"),
+                             tr("لم تقم باختيار أقسام بعض الكتب"));
     }
 }
 
@@ -185,7 +185,7 @@ void ImportDialog::doneImporting()
         button->setMaximumSize(40,40);
         button->setIcon(QIcon(":/menu/images/go-previous.png"));
         button->setStyleSheet("padding:5px;");
-        button->setToolTip(trUtf8("فتح كتاب %1").arg(i.value()));
+        button->setToolTip(tr("فتح كتاب %1").arg(i.value()));
 
         QLabel *label = new QLabel(i.value());
         label->setStyleSheet("padding:5px;border:1px solid #cccccc;");
@@ -202,7 +202,7 @@ void ImportDialog::doneImporting()
     setModal(false);
     ui->pushCancel->hide();
     ui->progressBar->hide();
-    ui->pushNext->setText(trUtf8("انتهى"));
+    ui->pushNext->setText(tr("انتهى"));
 
     ui->stackedWidget->setCurrentIndex(2);
 }
@@ -226,11 +226,11 @@ QString ImportDialog::arPlural(int count, int word)
 {
     QStringList list;
     if(word==0)
-        list <<  trUtf8("كتاب واحد") << trUtf8("كتابين") << trUtf8("كتب") << trUtf8("كتابا");
+        list <<  tr("كتاب واحد") << tr("كتابين") << tr("كتب") << tr("كتابا");
     else if(word==1)
-        list <<  trUtf8("ثانية") << trUtf8("ثانيتين") << trUtf8("ثوان") << trUtf8("ثانية");
+        list <<  tr("ثانية") << tr("ثانيتين") << tr("ثوان") << tr("ثانية");
     else if(word==2)
-        list <<  trUtf8("ملف واحد") << trUtf8("ملفين") << trUtf8("ملفات") << trUtf8("ملفا");
+        list <<  tr("ملف واحد") << tr("ملفين") << tr("ملفات") << tr("ملفا");
 
     if(count == 1){
         return list.at(0);
