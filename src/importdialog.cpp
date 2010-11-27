@@ -16,6 +16,8 @@
 #include <qsqlerror.h>
 #include <qsignalmapper.h>
 #include <qtoolbutton.h>
+#include <qevent.h>
+#include <qurl.h>
 
 ImportDialog::ImportDialog(BooksIndexDB *indexDB, QWidget *parent) :
     QDialog(parent),
@@ -24,6 +26,8 @@ ImportDialog::ImportDialog(BooksIndexDB *indexDB, QWidget *parent) :
     ui->setupUi(this);
     m_model = new ImportModel(ui->treeView);
     m_indexDB = indexDB;
+
+    setAcceptDrops(true);
 
     m_signalMapper = new QSignalMapper(this);
     connect(m_signalMapper, SIGNAL(mapped(int)), this, SIGNAL(openBook(int)));
@@ -238,5 +242,52 @@ QString ImportDialog::arPlural(int count, int word)
         return QString("%1 %2").arg(count).arg(list.at(3));
     } else {
         return QString();
+    }
+}
+
+void ImportDialog::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (event->mimeData()->hasFormat("text/uri-list"))
+        event->acceptProposedAction();
+}
+
+void ImportDialog::dropEvent(QDropEvent *event)
+{
+    const QMimeData *mimeData = event->mimeData();
+
+    if (mimeData->hasUrls()) {
+        foreach(QUrl url, mimeData->urls()){
+            QString path = url.toLocalFile();
+            QFileInfo info(path);
+
+            if(info.isFile())
+                addFile(path);
+            else if(info.isDir())
+                addDir(path);
+        }
+    } else {
+        qWarning("MimeType is not handled");
+    }
+
+    event->acceptProposedAction();
+}
+
+void ImportDialog::addFile(const QString &path)
+{
+    QFileInfo info(path);
+    if(info.isFile() && info.suffix() == "bok")
+        ui->fileListWidget->addItem(path);
+}
+
+void ImportDialog::addDir(const QString &path)
+{
+    QDir dir(path);
+    qDebug("[*] %s", qPrintable(path));
+    foreach(QString file, dir.entryList(QDir::Files|QDir::Dirs|QDir::NoDotAndDotDot)) {
+        QFileInfo info(dir.absoluteFilePath(file));
+        if(info.isFile())
+            addFile(info.absoluteFilePath());
+        else if(info.isDir())
+            addDir(info.absoluteFilePath());
     }
 }

@@ -19,20 +19,18 @@ public:
     ~ImportDialog();
     void setIndexDB(BooksIndexDB *indexDB) { m_indexDB = indexDB;}
     static QString arPlural(int count, int word);
+    void addFile(const QString &path);
+    void addDir(const QString &path);
 
 protected:
     bool checkNodes(QList<ImportModelNode *> nodesList);
     void convertBooks();
     void importBooks();
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dropEvent(QDropEvent *event);
 
 signals:
     void openBook(int id);
-
-private:
-    Ui::ImportDialog *ui;
-    ImportModel *m_model;
-    BooksIndexDB *m_indexDB;
-    QSignalMapper *m_signalMapper;
 
 protected slots:
     void doneConverting();
@@ -43,6 +41,12 @@ private slots:
     void on_pushDeleteFile_clicked();
     void on_pushAddFile_clicked();
     void on_pushCancel_clicked();
+
+private:
+    Ui::ImportDialog *ui;
+    ImportModel *m_model;
+    BooksIndexDB *m_indexDB;
+    QSignalMapper *m_signalMapper;
 };
 
 #endif // IMPORTDIALOG_H
