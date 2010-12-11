@@ -8,22 +8,13 @@ OBJECTS_DIR += .obj
 UI_DIR += .ui
 RCC_DIR += .rcc
 
-#exists(../.git/HEAD) {
-#    GITVERSION=$$system(git log -n1 --pretty=format:%h)
-#    !isEmpty(GITVERSION) {
-#        GITCHANGENUMBER=$$system(git log --pretty=format:%h | wc -l)
-#        DEFINES += GITVERSION=\"\\\"$$GITVERSION\\\"\"
-#        DEFINES += GITCHANGENUMBER=\"\\\"$$GITCHANGENUMBER\\\"\"
-#    }
-#}
-
 unix {
         DEFINES += USE_MDBTOOLS
         HEADERS += mdbconverter_unix.h
         SOURCES += mdbconverter_unix.cpp
 
         QMAKE_CXXFLAGS += $$system(pkg-config libmdb --cflags)
-        QMAKE_LIBS += $$system(pkg-config libmdb --libs)
+        LIBS += $$system(pkg-config libmdb --libs)
 }
 
 win32 {
