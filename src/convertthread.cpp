@@ -1,7 +1,7 @@
 #include "convertthread.h"
 #include "importmodel.h"
 #include "mdbconverter.h"
-#include "booksindexdb.h"
+#include "indexdb.h"
 
 #include <qmessagebox.h>
 #include <qsqldatabase.h>
@@ -77,7 +77,7 @@ void ConvertThread::getBookInfo(const QString &path, QList<ImportModelNode *> &n
 
         if(catCol != -1) { // Some old books doesn't have this column
             node->setCatName(bookQuery.value(catCol).toString()); // Must be set before CatID
-            node->setCatID(m_indexDB->getCatIdFromName(bookQuery.value(catCol).toString()));
+            node->setCatID(m_indexDB->catIdFromName(bookQuery.value(catCol).toString()));
         } else
              node->setCatID(-1);
 

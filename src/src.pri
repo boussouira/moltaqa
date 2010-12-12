@@ -46,11 +46,18 @@ SOURCES += mainwindow.cpp \
     importdialog.cpp \
     importmodel.cpp \
     importdelegates.cpp \
-    booksindexdb.cpp \
     catslistwidget.cpp \
     convertthread.cpp \
     importthread.cpp \
-    bookexception.cpp
+    bookexception.cpp \
+    connectioninfo.cpp \
+    sqliteconnection.cpp \
+    indexdb.cpp \
+    sqliteindexdb.cpp \
+    simplequery.cpp \
+    sqlitesimplequery.cpp \
+    quranquery.cpp \
+    sqlitequranquery.cpp
 HEADERS += mainwindow.h \
     pageinfo.h \
     qurantextformat.h \
@@ -75,12 +82,19 @@ HEADERS += mainwindow.h \
     importdialog.h \
     importmodel.h \
     importdelegates.h \
-    booksindexdb.h \
     catslistwidget.h \
     mdbconverter.h \
     convertthread.h \
     importthread.h \
-    bookexception.h
+    bookexception.h \
+    connectioninfo.h \
+    sqliteconnection.h \
+    indexdb.h \
+    sqliteindexdb.h \
+    simplequery.h \
+    sqlitesimplequery.h \
+    quranquery.h \
+    sqlitequranquery.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

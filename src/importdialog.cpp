@@ -2,7 +2,7 @@
 #include "ui_importdialog.h"
 #include "importmodel.h"
 #include "importdelegates.h"
-#include "booksindexdb.h"
+#include "indexdb.h"
 #include "mdbconverter.h"
 #include "convertthread.h"
 #include "importthread.h"
@@ -19,7 +19,7 @@
 #include <qevent.h>
 #include <qurl.h>
 
-ImportDialog::ImportDialog(BooksIndexDB *indexDB, QWidget *parent) :
+ImportDialog::ImportDialog(IndexDB *indexDB, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ImportDialog)
 {
@@ -38,7 +38,7 @@ ImportDialog::ImportDialog(BooksIndexDB *indexDB, QWidget *parent) :
     ui->treeView->setItemDelegateForColumn(2, new BookTypeDelegate(ui->treeView));
     ui->treeView->setItemDelegateForColumn(3,
                                            new CategorieDelegate(ui->treeView,
-                                                                 m_indexDB->getListModel(false)));
+                                                                 m_indexDB->booksList(true)));
     ui->treeView->setModel(m_model);
     ui->progressBar->hide();
 }

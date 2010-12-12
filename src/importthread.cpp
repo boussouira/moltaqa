@@ -1,6 +1,6 @@
 #include "importthread.h"
 #include "importmodel.h"
-#include "booksindexdb.h"
+#include "indexdb.h"
 
 #include <qdatetime.h>
 #include <qgridlayout.h>

@@ -1,4 +1,5 @@
 #include "abstractdbhandler.h"
+#include "connectioninfo.h"
 #include "bookinfo.h"
 #include "bookindexmodel.h"
 #include "bookexception.h"
@@ -35,6 +36,7 @@ void AbstractDBHandler::openBookDB(QString pBookDBPath)
         throw BookException(tr("لم يمكن فتح قاعدة البيانات"), bookPath);
 
     m_bookQuery =  QSqlQuery(m_bookDB);
+    connected();
     getBookInfo();
 }
 
@@ -42,6 +44,11 @@ void AbstractDBHandler::setBookInfo(BookInfo *bi)
 {
     m_bookInfo = bi;
     m_connectionName = QString("book_i%1").arg(m_bookInfo->bookID());
+}
+
+void AbstractDBHandler::setConnctionInfo(ConnectionInfo *info)
+{
+    m_connetionInfo = info;
 }
 
 void AbstractDBHandler::nextUnit()
@@ -55,4 +62,8 @@ void AbstractDBHandler::prevUnit()
 void AbstractDBHandler::openIndexID(int pid)
 {
     openID(pid);
+}
+
+void AbstractDBHandler::connected()
+{
 }

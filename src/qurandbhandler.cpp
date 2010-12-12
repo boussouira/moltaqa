@@ -1,9 +1,12 @@
 #include "qurandbhandler.h"
 #include "bookinfo.h"
 #include "bookindexmodel.h"
+#include "bookexception.h"
+#include "qurantextformat.h"
+#include "connectioninfo.h"
+#include "sqlitequranquery.h"
 
 #include <qsqldatabase.h>
-#include <qsqlquery.h>
 
 QuranDBHandler::QuranDBHandler()
 {
@@ -13,6 +16,17 @@ QuranDBHandler::QuranDBHandler()
 QuranDBHandler::~QuranDBHandler()
 {
     delete m_textFormat;
+    delete m_quranQuery;
+}
+
+void QuranDBHandler::connected()
+{
+    if(m_connetionInfo->type() == ConnectionInfo::SQLITE)
+        m_quranQuery = new SqliteQuranQuery(m_bookDB, m_bookInfo);
+    else
+        throw BookException(tr("لم يمكن تحديد نوع الكتاب"));
+
+    AbstractDBHandler::connected();
 }
 
 void QuranDBHandler::openID(int pid)
@@ -34,25 +48,20 @@ void QuranDBHandler::openPage(int page, int part)
     m_bookInfo->setCurrentPage(page);
     m_bookInfo->setCurrentPart(part);
 
-    m_bookQuery.exec(QString("SELECT QuranText.id, QuranText.ayaText, QuranText.ayaNumber, "
-                              "QuranText.pageNumber, QuranText.soraNumber, QuranSowar.SoraName "
-                              "FROM QuranText LEFT JOIN QuranSowar "
-                              "ON QuranSowar.id = QuranText.soraNumber "
-                              "WHERE QuranText.pageNumber = %1 "
-                              "ORDER BY QuranText.id ").arg(page));
+    m_quranQuery->page(page);
 
-    while(m_bookQuery.next()) {
+    while(m_quranQuery->next()) {
         // at the first vers we insert the sora name and bassemala
-        if(m_bookQuery.value(2).toInt() == 1) {
-            m_textFormat->insertSoraName(m_bookQuery.value(5).toString());
+        if(m_quranQuery->value(2).toInt() == 1) {
+            m_textFormat->insertSoraName(m_quranQuery->value(5).toString());
 
             // we escape putting bassemala before Fateha and Tawba
-            if(m_bookQuery.value(4).toInt() != 1 && m_bookQuery.value(4).toInt() != 9)
+            if(m_quranQuery->value(4).toInt() != 1 && m_quranQuery->value(4).toInt() != 9)
                 m_textFormat->insertBassemala();
         }
-        m_textFormat->insertAyaText(m_bookQuery.value(1).toString(),
-                                     m_bookQuery.value(2).toInt(),
-                                     m_bookQuery.value(4).toInt());
+        m_textFormat->insertAyaText(m_quranQuery->value(1).toString(),
+                                     m_quranQuery->value(2).toInt(),
+                                     m_quranQuery->value(4).toInt());
     }
     m_textFormat->done();
 }
@@ -76,10 +85,10 @@ QAbstractItemModel *QuranDBHandler::indexModel()
 {
     BookIndexNode *rootNode = new BookIndexNode();
 
-    m_bookQuery.exec("SELECT id, soraName FROM QuranSowar ORDER BY id");
-    while(m_bookQuery.next()) {
-        BookIndexNode *firstChild = new BookIndexNode(m_bookQuery.value(1).toString(),
-                                                      m_bookQuery.value(0).toInt());
+    m_quranQuery->index();
+    while(m_quranQuery->next()) {
+        BookIndexNode *firstChild = new BookIndexNode(m_quranQuery->value(1).toString(),
+                                                      m_quranQuery->value(0).toInt());
         rootNode->appendChild(firstChild);
     }
 
@@ -89,25 +98,25 @@ QAbstractItemModel *QuranDBHandler::indexModel()
 
 void QuranDBHandler::getBookInfo()
 {
-    m_bookQuery.exec(QString("SELECT  MIN(pageNumber), MAX(pageNumber), MIN(id), MAX(id) "
+    m_quranQuery->exec(QString("SELECT  MIN(pageNumber), MAX(pageNumber), MIN(id), MAX(id) "
                               "FROM QuranText "));
-    if(m_bookQuery.next()) {
+    if(m_quranQuery->next()) {
         m_bookInfo->setPartsCount(1);
-        m_bookInfo->setFirstPage(m_bookQuery.value(0).toInt());
-        m_bookInfo->setLastPage(m_bookQuery.value(1).toInt());
+        m_bookInfo->setFirstPage(m_quranQuery->value(0).toInt());
+        m_bookInfo->setLastPage(m_quranQuery->value(1).toInt());
 
-        m_bookInfo->setFirstID(m_bookQuery.value(2).toInt());
-        m_bookInfo->setLastID(m_bookQuery.value(3).toInt());
+        m_bookInfo->setFirstID(m_quranQuery->value(2).toInt());
+        m_bookInfo->setLastID(m_quranQuery->value(3).toInt());
     }
 }
 
 int QuranDBHandler::getPageNumber(int soraNumber, int ayaNumber)
 {
     int page = 1;
-    m_bookQuery.exec(QString("SELECT pageNumber FROM QuranText WHERE soraNumber = %1 "
-                              "AND ayaNumber = %2").arg(soraNumber).arg(ayaNumber));
-    if(m_bookQuery.next()) {
-        page = m_bookQuery.value(0).toInt();
+    m_quranQuery->pageNumber(ayaNumber, soraNumber);
+
+    if(m_quranQuery->next()) {
+        page = m_quranQuery->value(0).toInt();
         m_bookInfo->setCurrentAya(1);
         m_bookInfo->setCurrentSoraNumber(soraNumber);
     }
@@ -185,21 +194,19 @@ void QuranDBHandler::prevUnit()
 
 int QuranDBHandler::getSoraAyatCount(int sora)
 {
-    m_bookQuery.exec(QString("SELECT MAX(ayaNumber) FROM QuranText WHERE soraNumber = %1")
-                      .arg(sora));
+    m_quranQuery->soraAyatCount(sora);
 
-    return m_bookQuery.next() ? m_bookQuery.value(0).toInt() : 0;
+    return m_quranQuery->next() ? m_quranQuery->value(0).toInt() : 0;
 }
 
 void QuranDBHandler::firstSoraAndAya(int page)
 {
-    m_bookQuery.exec(QString("SELECT MIN(soraNumber), MIN(ayaNumber) "
-                              "FROM QuranText WHERE pageNumber = %1 ").arg(page));
-    if(m_bookQuery.next()) {
+    m_quranQuery->firstSoraAndAya(page);
+    if(m_quranQuery->next()) {
         // The first SORA number in page
-        m_bookInfo->setCurrentSoraNumber(m_bookQuery.value(0).toInt());
+        m_bookInfo->setCurrentSoraNumber(m_quranQuery->value(0).toInt());
         // First aya number in page
-        m_bookInfo->setCurrentAya(m_bookQuery.value(1).toInt());
-        m_bookInfo->setCurrentSoraAyatCount(getSoraAyatCount(m_bookQuery.value(0).toInt()));
+        m_bookInfo->setCurrentAya(m_quranQuery->value(1).toInt());
+        m_bookInfo->setCurrentSoraAyatCount(getSoraAyatCount(m_quranQuery->value(0).toInt()));
     }
 }

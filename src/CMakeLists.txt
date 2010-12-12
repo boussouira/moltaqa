@@ -23,35 +23,42 @@ include_directories( ${alkotobiya_BINARY_DIR} )
 
 set(alkotobiya_SRCS
     abstractdbhandler.cpp
+    bookexception.cpp
     bookindexmodel.cpp
     bookindexnode.cpp
     bookinfo.cpp
-    booksindexdb.cpp
     bookslistbrowser.cpp
     bookslistmodel.cpp
     bookslistnode.cpp
-    bookexception.cpp
     booksviewer.cpp
     bookwidget.cpp
     catslistwidget.cpp
+    connectioninfo.cpp
     convertthread.cpp
     importdelegates.cpp
     importdialog.cpp
     importmodel.cpp
     importthread.cpp
+    indexdb.cpp
     indexwidget.cpp
-    webview.cpp
     main.cpp
     mainwindow.cpp
     pageinfo.cpp
     qurandbhandler.cpp
+    quranquery.cpp
     qurantextformat.cpp
     settingschecker.cpp
     settingsdialog.cpp
     simpledbhandler.cpp
+    simplequery.cpp
     simpletextformat.cpp
+    sqliteconnection.cpp
+    sqliteindexdb.cpp
+    sqlitequranquery.cpp
+    sqlitesimplequery.cpp
     tabwidget.cpp
     textformatter.cpp
+    webview.cpp
 )
 
 IF(LIBMDB_FOUND)

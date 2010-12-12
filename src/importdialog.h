@@ -8,16 +8,16 @@ namespace Ui {
 }
 class ImportModel;
 class ImportModelNode;
-class BooksIndexDB;
+class IndexDB;
 class QSqlDatabase;
 class QSignalMapper;
 
 class ImportDialog : public QDialog {
     Q_OBJECT
 public:
-    ImportDialog(BooksIndexDB *indexDB, QWidget *parent = 0);
+    ImportDialog(IndexDB *indexDB, QWidget *parent = 0);
     ~ImportDialog();
-    void setIndexDB(BooksIndexDB *indexDB) { m_indexDB = indexDB;}
+    void setIndexDB(IndexDB *indexDB) { m_indexDB = indexDB;}
     static QString arPlural(int count, int word);
     void addFile(const QString &path);
     void addDir(const QString &path);
@@ -45,7 +45,7 @@ private slots:
 private:
     Ui::ImportDialog *ui;
     ImportModel *m_model;
-    BooksIndexDB *m_indexDB;
+    IndexDB *m_indexDB;
     QSignalMapper *m_signalMapper;
 };
 

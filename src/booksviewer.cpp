@@ -4,7 +4,7 @@
 #include "bookslistbrowser.h"
 #include "simpledbhandler.h"
 #include "qurandbhandler.h"
-#include "booksindexdb.h"
+#include "indexdb.h"
 #include "bookwidget.h"
 #include "bookexception.h"
 
@@ -17,7 +17,7 @@
 #include <qstackedwidget.h>
 #include <qboxlayout.h>
 
-BooksViewer::BooksViewer(BooksIndexDB *indexDB, QWidget *parent): QWidget(parent)
+BooksViewer::BooksViewer(IndexDB *indexDB, QWidget *parent): QWidget(parent)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
     m_tab = new TabWidget(this);
@@ -104,6 +104,7 @@ void BooksViewer::openBook(int pBookID, bool newTab)
     else
         bookdb = new SimpleDBHandler();
 
+    bookdb->setConnctionInfo(m_indexDB->connectionInfo());
     bookdb->setBookInfo(bookInfo);
 
     try {

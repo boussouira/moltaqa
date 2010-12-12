@@ -5,7 +5,7 @@
 #include <qhash.h>
 
 class ImportModel;
-class BooksIndexDB;
+class IndexDB;
 class QGridLayout;
 class QSignalMapper;
 
@@ -16,7 +16,7 @@ class ImportThread : public QThread
 public:
     ImportThread(QObject *parent = 0);
     void setModel(ImportModel *model) { m_model = model;}
-    void setIndexDB(BooksIndexDB *indexDB) { m_indexDB = indexDB;}
+    void setIndexDB(IndexDB *indexDB) { m_indexDB = indexDB;}
     void setSignalMapper(QSignalMapper *signalMapper) { m_signalMapper = signalMapper;}
     void setGridLayout(QGridLayout *gridLayout) { m_gridLayout = gridLayout;}
     int importTime() { return m_importTime; }
@@ -29,7 +29,7 @@ signals:
 
 protected:
     ImportModel *m_model;
-    BooksIndexDB *m_indexDB;
+    IndexDB *m_indexDB;
     QGridLayout *m_gridLayout;
     QSignalMapper *m_signalMapper;
     QHash<int, QString> m_booksList;

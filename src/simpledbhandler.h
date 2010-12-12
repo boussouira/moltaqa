@@ -2,8 +2,9 @@
 #define SIMPLEDBHANDLER_H
 
 #include "abstractdbhandler.h"
-#include "simpletextformat.h"
-#include "bookindexnode.h"
+
+class BookIndexNode;
+class SimpleQuery;
 
 class SimpleDBHandler : public AbstractDBHandler
 {
@@ -22,9 +23,13 @@ public:
     QAbstractItemModel *indexModel();
 
 protected:
+    void connected();
     BookIndexNode *getNodeByDepth(BookIndexNode *pNode, int pDepth);
     void getBookInfo();
     int maxPartNum();
+
+protected:
+    SimpleQuery *m_simpleQuery;
 };
 
 #endif // SIMPLEDBHANDLER_H

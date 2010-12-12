@@ -2,14 +2,14 @@
 #include "ui_bookslistbrowser.h"
 #include "bookslistmodel.h"
 #include "bookslistnode.h"
-#include "booksindexdb.h"
+#include "indexdb.h"
 
 #include <qsqlquery.h>
 #include <qsqlerror.h>
 #include <qsettings.h>
 #include <qevent.h>
 
-BooksListBrowser::BooksListBrowser(BooksIndexDB *indexDB, QWidget *parent) :
+BooksListBrowser::BooksListBrowser(IndexDB *indexDB, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::BooksListBrowser)
 {
@@ -34,7 +34,7 @@ void BooksListBrowser::showEvent(QShowEvent* event){
 
 void BooksListBrowser::showBooksList()
 {
-    ui->treeView->setModel(m_indexDB->getListModel());
+    ui->treeView->setModel(m_indexDB->booksList());
 
     ui->treeView->expandAll();
     ui->treeView->resizeColumnToContents(0);

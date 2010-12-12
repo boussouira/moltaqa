@@ -7,6 +7,9 @@
 #include "settingschecker.h"
 #include "importdialog.h"
 #include "bookexception.h"
+#include "connectioninfo.h"
+#include "sqliteconnection.h"
+#include "sqliteindexdb.h"
 
 #include <qmessagebox.h>
 #include <qsettings.h>
@@ -18,9 +21,28 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     loadSettings();
 
     try {
-        m_indexDB.openDB();
-        m_bookView = new BooksViewer(&m_indexDB, this);
-        m_booksList = new BooksListBrowser(&m_indexDB, this);
+        /* Temporary code */
+        QSettings settings;
+        settings.beginGroup("General");
+        QString booksFolder = settings.value("books_folder").toString();
+        QString indexDBName = settings.value("index_db").toString();
+        settings.endGroup();
+
+        ConnectionInfo *connection = new SqliteConnection;
+        connection->setPath(booksFolder + "/" + indexDBName);
+        connection->setBooksDir(booksFolder);
+        connection->setConnectionName("Conn_1");
+        /* Temporary code */
+
+        if(connection->type() == ConnectionInfo::SQLITE)
+            m_indexDB = new SqliteIndexDB(connection);
+        else
+            throw BookException(tr("لم يمكن تحديد نوع الكتاب"));
+
+        m_indexDB->open();
+
+        m_bookView = new BooksViewer(m_indexDB, this);
+        m_booksList = new BooksListBrowser(m_indexDB, this);
 
         m_createMenu = true;
         m_bookView->hide();
@@ -51,6 +73,7 @@ void MainWindow::setupActions()
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete m_indexDB;
 }
 
 void MainWindow::aboutAlKotobiya()
@@ -111,7 +134,7 @@ void MainWindow::loadSettings()
 
 void MainWindow::on_actionImportFromShamela_triggered()
 {
-    ImportDialog *dialog = new ImportDialog(&m_indexDB, this);
+    ImportDialog *dialog = new ImportDialog(m_indexDB, this);
 
     connect(dialog, SIGNAL(openBook(int)), this, SLOT(openBook(int)));
 

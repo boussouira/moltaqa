@@ -1,7 +1,6 @@
 #include "importdelegates.h"
 #include "importmodel.h"
 #include "catslistwidget.h"
-#include "booksindexdb.h"
 #include <qcombobox.h>
 
 BookTypeDelegate::BookTypeDelegate(QObject* parent): QItemDelegate(parent)

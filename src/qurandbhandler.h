@@ -2,7 +2,8 @@
 #define QURANDBHANDLER_H
 
 #include "abstractdbhandler.h"
-#include "qurantextformat.h"
+
+class QuranQuery;
 
 class QuranDBHandler : public AbstractDBHandler
 {
@@ -24,11 +25,16 @@ public:
     bool hasPrev();
 
     QAbstractItemModel *indexModel();
+
 protected:
+    void connected();
     void getBookInfo();
     int getPageNumber(int soraNumber, int ayaNumber=1);
     int getSoraAyatCount(int sora);
     void firstSoraAndAya(int page);
+
+protected:
+    QuranQuery *m_quranQuery;
 };
 
 #endif // QURANDBHANDLER_H

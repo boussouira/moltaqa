@@ -5,7 +5,7 @@
 #include <qsqldatabase.h>
 #include "qabstractitemmodel.h"
 
-class BooksIndexDB;
+class IndexDB;
 
 namespace Ui {
     class BooksListBrowser;
@@ -14,10 +14,10 @@ namespace Ui {
 class BooksListBrowser : public QDialog {
     Q_OBJECT
 public:
-    BooksListBrowser(BooksIndexDB *indexDB, QWidget *parent = 0);
+    BooksListBrowser(IndexDB *indexDB, QWidget *parent = 0);
     ~BooksListBrowser();
     void setUpdateList(bool update) { m_updateList = update; }
-    void setIndexDB(BooksIndexDB *indexDB) { m_indexDB = indexDB;}
+    void setIndexDB(IndexDB *indexDB) { m_indexDB = indexDB;}
 
 protected:
     void showEvent(QShowEvent* event);
@@ -33,7 +33,7 @@ signals:
     void bookSelected(int bookID);
 
 private:
-    BooksIndexDB *m_indexDB;
+    IndexDB *m_indexDB;
     Ui::BooksListBrowser *ui;
     bool m_updateList;
 };

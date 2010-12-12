@@ -6,6 +6,7 @@
 #include <qsqlquery.h>
 #include <qcoreapplication.h>
 
+class ConnectionInfo;
 class BookInfo;
 class BookIndexModel;
 class TextFormatter;
@@ -21,6 +22,8 @@ public:
     virtual ~AbstractDBHandler();
     void openBookDB(QString pBookDBPath=QString());
     void setBookInfo(BookInfo *bi);
+    void setConnctionInfo(ConnectionInfo *info);
+
     BookInfo *bookInfo() { return m_bookInfo; }
     TextFormatter *textFormatter() { return m_textFormat; }
 
@@ -41,6 +44,10 @@ public:
     virtual void getBookInfo() = 0;
 
 protected:
+    virtual void connected();
+
+protected:
+    ConnectionInfo *m_connetionInfo;
     BookInfo *m_bookInfo;
     BookIndexModel *m_indexModel;
     TextFormatter *m_textFormat;
