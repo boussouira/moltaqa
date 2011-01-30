@@ -24,6 +24,7 @@ public slots:
     void previousUnit();
     void nextPage();
     void previousPage();
+    void updateActions();
     void showIndexWidget();
     void tabChangePosition(int fromIndex, int toIndex);
     void tabCloseRequest(int tabIndex);
@@ -31,9 +32,6 @@ public slots:
     BookWidget *currentBookWidget();
     BookWidget *currentBookWidget(int index);
     void tabChanged(int newIndex);
-
-protected:
-    void updateActions();
 
 private:
     TabWidget *m_tab;

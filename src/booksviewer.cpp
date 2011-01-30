@@ -127,6 +127,9 @@ void BooksViewer::openBook(int pBookID, bool newTab)
 
     m_tab->setCurrentIndex(tabIndex);
     bookWidget->firstPage();
+
+    connect(bookWidget->indexWidget(), SIGNAL(openPage(int)), SLOT(updateActions()));
+
     updateActions();
 }
 
