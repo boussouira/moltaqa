@@ -22,6 +22,8 @@ BookWidget::BookWidget(AbstractDBHandler *db, QWidget *parent): QWidget(parent),
     setLayout(m_layout);
     setAutoFillBackground(true);
 
+    m_splitterSizes << 0;
+
     displayInfo();
     connect(m_indexWidget, SIGNAL(openPage(int)), this, SLOT(openID(int)));
     connect(m_db->textFormatter(), SIGNAL(doneReading(QString)), m_view, SLOT(setText(QString)));
@@ -113,9 +115,14 @@ void BookWidget::prevUnit()
 
 void BookWidget::hideIndexWidget()
 {
-    QList<int> sizesList;
-    if(m_splitter->sizes().at(0) > 0)
-        sizesList << 0;
-    else
-        sizesList << m_indexWidget->sizeHint().width() << m_view->sizeHint().width();
+    QList<int> hide;
+    hide << 0;
+
+    if(m_splitter->sizes().at(0) > 0){
+        m_splitterSizes.clear();
+        m_splitterSizes << m_indexWidget->width() << m_view->width();
+        m_splitter->setSizes(hide);
+    } else {
+        m_splitter->setSizes(m_splitterSizes);
+    }
 }

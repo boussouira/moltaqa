@@ -36,6 +36,7 @@ protected:
     WebView *m_view;
     IndexWidget *m_indexWidget;
     AbstractDBHandler *m_db;
+    QList<int> m_splitterSizes;
 };
 
 #endif // BOOKWIDGET_H
