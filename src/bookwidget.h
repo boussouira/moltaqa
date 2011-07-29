@@ -19,6 +19,7 @@ public:
     void setDBHandler(AbstractDBHandler *db);
     void displayInfo();
     AbstractDBHandler *dbHandler() { return m_db; }
+    IndexWidget *indexWidget() { return m_indexWidget; }
     void firstPage();
     void nextPage();
     void prevPage();
@@ -35,6 +36,7 @@ protected:
     WebView *m_view;
     IndexWidget *m_indexWidget;
     AbstractDBHandler *m_db;
+    QList<int> m_splitterSizes;
 };
 
 #endif // BOOKWIDGET_H
