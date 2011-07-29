@@ -30,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
         QMessageBox::information(this,
                                  tr("برنامج الكتبية"),
                                  tr("حدث خطأ أثناء تحميل البرنامج:"
-                                        "<br><em>%1</em>").arg(e.what()));
+                                    "<br>%1").arg(e.what()));
         setEnabled(false);
     }
 }
@@ -90,7 +90,7 @@ void MainWindow::openBook(int pBookID)
         QMessageBox::information(this,
                                  tr("برنامج الكتبية"),
                                  tr("حدث خطأ أثناء فتح الكتاب:"
-                                        "<br><em>%1</em>").arg(e.what()));
+                                    "<br>%1").arg(e.what()));
     }
 }
 
