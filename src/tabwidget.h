@@ -15,6 +15,7 @@ public slots:
 
 signals:
     void tabMoved(int from, int to);
+    void lastTabClosed();
 
 private:
     QTabBar *m_tabBar;

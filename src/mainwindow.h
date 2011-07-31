@@ -7,6 +7,7 @@ class IndexDB;
 class SettingsDialog;
 class BooksViewer;
 class BooksListBrowser;
+class WelcomeWidget;
 
 namespace Ui
 {
@@ -25,26 +26,24 @@ protected:
     void setupActions();
     void loadSettings();
 
-protected slots:
+public slots:
     void aboutAlKotobiya();
     void settingDialog();
-
-public slots:
     void quranWindow();
     void showBooksList();
     void openBook(int pBookID);
+    void lastTabClosed();
+
+private slots:
+    void on_actionImportFromShamela_triggered();
 
 private:
     IndexDB *m_indexDB;
     BooksViewer *m_bookView;
     BooksListBrowser *m_booksList;
-    bool m_createMenu;
+    WelcomeWidget *m_welcomeWidget;
     int defaultQuran;
     Ui::MainWindow *ui;
-
-
-private slots:
-    void on_actionImportFromShamela_triggered();
 };
 
 #endif // MAINWINDOW_H

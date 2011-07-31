@@ -10,6 +10,7 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+    app.setLayoutDirection(Qt::RightToLeft);
     QTextCodec::setCodecForTr(QTextCodec::codecForName("utf-8"));
     QSettings::setDefaultFormat(QSettings::IniFormat);
 
@@ -26,6 +27,7 @@ int main(int argc, char *argv[])
 //    checker.checkSettings();
 
     MainWindow w;
+    w.setLayoutDirection(Qt::RightToLeft);
     w.show();
     return app.exec();
 }

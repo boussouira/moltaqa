@@ -16,8 +16,9 @@
 #include <qcombobox.h>
 #include <qstackedwidget.h>
 #include <qboxlayout.h>
+#include <qdebug.h>
 
-BooksViewer::BooksViewer(IndexDB *indexDB, QWidget *parent): QWidget(parent)
+BooksViewer::BooksViewer(IndexDB *indexDB, QMainWindow *parent): QWidget(parent)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
     m_tab = new TabWidget(this);
@@ -25,9 +26,12 @@ BooksViewer::BooksViewer(IndexDB *indexDB, QWidget *parent): QWidget(parent)
     layout->addWidget(m_tab);
     layout->setContentsMargins(0,6,0,0);
 
-    connect(m_tab, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)));
-    connect(m_tab, SIGNAL(tabMoved(int,int)), this, SLOT(tabChangePosition(int,int)));
-    connect(m_tab, SIGNAL(tabCloseRequested(int)), this, SLOT(tabCloseRequest(int)));
+    createMenus(parent);
+
+    connect(m_tab, SIGNAL(currentChanged(int)), SLOT(tabChanged(int)));
+    connect(m_tab, SIGNAL(tabMoved(int,int)), SLOT(tabChangePosition(int,int)));
+    connect(m_tab, SIGNAL(tabCloseRequested(int)), SLOT(tabCloseRequest(int)));
+    connect(m_tab, SIGNAL(lastTabClosed()), SIGNAL(lastTabClosed()));
 }
 
 BooksViewer::~BooksViewer()
@@ -64,6 +68,14 @@ void BooksViewer::createMenus(QMainWindow *parent)
     actionPrevPage = new QAction(QIcon(":/menu/images/go-next.png"),
                                  tr("الصفحة السابقة"),
                                  this);
+    actionFirstPage = new QAction(QIcon(":/menu/images/go-last.png"),
+                                tr("الصفحة الاولى"),
+                                this);
+    actionLastPage = new QAction(QIcon(":/menu/images/go-first.png"),
+                                 tr("الصفحة الاخيرة"),
+                                 this);
+    actionGotToPage = new QAction(tr("انتقل الى الصفحة..."),
+                                  this);
 
     toolBarGeneral = new QToolBar(tr("عام"), this);
     toolBarGeneral->addAction(actionNewTab);
@@ -77,18 +89,51 @@ void BooksViewer::createMenus(QMainWindow *parent)
     toolBarNavigation->addAction(actionNextAYA);
     toolBarNavigation->addAction(actionPrevAYA);
 
+    m_navMenu = new QMenu(tr("التنقل"), this);
+    m_navMenu->addAction(actionFirstPage);
+    m_navMenu->addAction(actionPrevPage);
+    m_navMenu->addAction(actionNextPage);
+    m_navMenu->addAction(actionLastPage);
+    m_navMenu->addSeparator();
+    m_navMenu->addAction(actionGotToPage); // TODO: implement this
+
+
+    // Hide those toolbars
+    toolBarGeneral->hide();
+    toolBarNavigation->hide();
+    m_navMenu->setEnabled(false);
+
     parent->addToolBar(toolBarGeneral);
     parent->addToolBar(toolBarNavigation);
 
+    QAction *act = parent->menuBar()->actions().at(1);
+    parent->menuBar()->insertMenu(act, m_navMenu);
+
     // Setup connections
     // Navigation actions
-    connect(actionNextPage, SIGNAL(triggered()), this, SLOT(nextPage()));
-    connect(actionPrevPage, SIGNAL(triggered()), this, SLOT(previousPage()));
-    connect(actionNextAYA, SIGNAL(triggered()), this, SLOT(nextUnit()));
-    connect(actionPrevAYA, SIGNAL(triggered()), this, SLOT(previousUnit()));
+    connect(actionNextPage, SIGNAL(triggered()), SLOT(nextPage()));
+    connect(actionPrevPage, SIGNAL(triggered()), SLOT(previousPage()));
+    connect(actionNextAYA, SIGNAL(triggered()), SLOT(nextUnit()));
+    connect(actionPrevAYA, SIGNAL(triggered()), SLOT(previousUnit()));
+    connect(actionFirstPage, SIGNAL(triggered()), SLOT(firstPage()));
+    connect(actionLastPage, SIGNAL(triggered()), SLOT(lastPage()));
 
     // Index widget
-    connect(actionIndexDock, SIGNAL(triggered()), this, SLOT(showIndexWidget()));
+    connect(actionIndexDock, SIGNAL(triggered()), SLOT(showIndexWidget()));
+}
+
+void BooksViewer::removeToolBar()
+{
+    toolBarGeneral->hide();
+    toolBarNavigation->hide();
+    m_navMenu->setEnabled(false);
+}
+
+void BooksViewer::showToolBar()
+{
+    toolBarGeneral->show();
+    toolBarNavigation->show();
+    m_navMenu->setEnabled(true);
 }
 
 void BooksViewer::openBook(int pBookID, bool newTab)
@@ -158,10 +203,27 @@ void BooksViewer::previousPage()
     updateActions();
 }
 
+void BooksViewer::firstPage()
+{
+    currentBookWidget()->firstPage();
+    updateActions();
+}
+
+void BooksViewer::lastPage()
+{
+    currentBookWidget()->lastPage();
+    updateActions();
+}
+
 void BooksViewer::updateActions()
 {
-    actionNextPage->setEnabled(currentBookWidget()->dbHandler()->hasNext());
-    actionPrevPage->setEnabled(currentBookWidget()->dbHandler()->hasPrev());
+    bool hasNext = currentBookWidget()->dbHandler()->hasNext();
+    bool hasPrev = currentBookWidget()->dbHandler()->hasPrev();
+
+    actionNextPage->setEnabled(hasNext);
+    actionLastPage->setEnabled(hasNext);
+    actionPrevPage->setEnabled(hasPrev);
+    actionFirstPage->setEnabled(hasPrev);
 }
 
 void BooksViewer::showIndexWidget()

@@ -57,7 +57,8 @@ SOURCES += mainwindow.cpp \
     simplequery.cpp \
     sqlitesimplequery.cpp \
     quranquery.cpp \
-    sqlitequranquery.cpp
+    sqlitequranquery.cpp \
+    welcomewidget.cpp
 HEADERS += mainwindow.h \
     pageinfo.h \
     qurantextformat.h \
@@ -94,9 +95,11 @@ HEADERS += mainwindow.h \
     simplequery.h \
     sqlitesimplequery.h \
     quranquery.h \
-    sqlitequranquery.h
+    sqlitequranquery.h \
+    welcomewidget.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \
-    importdialog.ui
+    importdialog.ui \
+    welcomewidget.ui
 RESOURCES += data/qt_rc.qrc

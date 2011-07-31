@@ -8,13 +8,14 @@ class IndexDB;
 class TabWidget;
 class QMainWindow;
 class QToolBar;
+class QMenu;
 class QComboBox;
 
 class BooksViewer : public QWidget
 {
     Q_OBJECT
 public:
-    BooksViewer(IndexDB *indexDB, QWidget *parent = 0);
+    BooksViewer(IndexDB *indexDB, QMainWindow *parent);
     ~BooksViewer();
     void setIndexDB(IndexDB *indexDB) { m_indexDB = indexDB;}
 
@@ -24,14 +25,23 @@ public slots:
     void previousUnit();
     void nextPage();
     void previousPage();
+    void firstPage();
+    void lastPage();
     void updateActions();
     void showIndexWidget();
     void tabChangePosition(int fromIndex, int toIndex);
     void tabCloseRequest(int tabIndex);
-    void createMenus(QMainWindow *parent);
+    void showToolBar();
+    void removeToolBar();
     BookWidget *currentBookWidget();
     BookWidget *currentBookWidget(int index);
     void tabChanged(int newIndex);
+
+protected:
+    void createMenus(QMainWindow *parent);
+
+signals:
+    void lastTabClosed();
 
 private:
     TabWidget *m_tab;
@@ -44,10 +54,14 @@ private:
     QAction *actionNextPage;
     QAction *actionPrevAYA;
     QAction *actionPrevPage;
+    QAction *actionFirstPage;
+    QAction *actionLastPage;
+    QAction *actionGotToPage;
     QAction *openSelectedTafsir;
     QToolBar *toolBarGeneral;
     QToolBar *toolBarNavigation;
     QToolBar *toolBarTafesir;
+    QMenu *m_navMenu;
     QComboBox *comboTafasir;
 };
 

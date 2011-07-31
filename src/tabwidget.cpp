@@ -15,8 +15,6 @@ TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)
 
 void TabWidget::updateTabBar()
 {
-    if(m_tabBar->count() > 1)
-        m_tabBar->setTabsClosable(true);
-    else
-        m_tabBar->setTabsClosable(false);
+    if(m_tabBar->count() < 1)
+        emit lastTabClosed();
 }

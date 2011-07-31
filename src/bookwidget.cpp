@@ -65,6 +65,13 @@ void BookWidget::firstPage()
         m_view->scrollToSora(1); // First sora
 }
 
+void BookWidget::lastPage()
+{
+    m_db->openIndexID(-2);
+    if(m_db->bookInfo()->isQuran())
+        m_view->scrollToAya(114, 1);
+}
+
 void BookWidget::nextPage()
 {
     if(dbHandler()->hasNext()) {

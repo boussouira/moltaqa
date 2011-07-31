@@ -10,6 +10,7 @@
 #include "libraryinfo.h"
 #include "sqlitelibraryinfo.h"
 #include "sqliteindexdb.h"
+#include "welcomewidget.h"
 
 #include <qmessagebox.h>
 #include <qsettings.h>
@@ -19,6 +20,10 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     ui->setupUi(this);
     setWindowTitle(tr("برنامج الكتبية"));
     loadSettings();
+
+    m_welcomeWidget = new WelcomeWidget(this);
+    ui->stackedWidget->addWidget(m_welcomeWidget);
+    ui->stackedWidget->setCurrentIndex(0);
 
     try {
         /* Temporary code */
@@ -38,10 +43,9 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
         m_bookView = new BooksViewer(m_indexDB, this);
         m_booksList = new BooksListBrowser(m_indexDB, this);
 
-        m_createMenu = true;
-        m_bookView->hide();
-
         setupActions();
+
+        ui->stackedWidget->addWidget(m_bookView);
     } catch(BookException &e) {
         QMessageBox::information(this,
                                  tr("برنامج الكتبية"),
@@ -58,8 +62,9 @@ void MainWindow::setupActions()
     connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(aboutAlKotobiya()));
     connect(ui->actionSettings, SIGNAL(triggered()), this, SLOT(settingDialog()));
 
-    connect(ui->pushOpenQuran, SIGNAL(clicked()), this, SLOT(quranWindow()));
-    connect(ui->pushBooksList, SIGNAL(clicked()), this, SLOT(showBooksList()));
+    //TODO: open Quran quickly
+    connect(m_welcomeWidget, SIGNAL(showBooksList()), SLOT(showBooksList()));
+    connect(m_bookView, SIGNAL(lastTabClosed()), SLOT(lastTabClosed()));
     connect(m_booksList, SIGNAL(bookSelected(int)), this, SLOT(openBook(int)));
     connect(ui->actionBooksList, SIGNAL(triggered()), this, SLOT(showBooksList()));
 }
@@ -90,10 +95,7 @@ void MainWindow::quranWindow()
 
 void MainWindow::openBook(int pBookID)
 {
-    if(m_createMenu){
-        m_bookView->createMenus(this);
-        m_createMenu = false;
-    }
+    m_bookView->showToolBar();
 
     try {
         m_bookView->openBook(pBookID);
@@ -101,7 +103,7 @@ void MainWindow::openBook(int pBookID)
         if(m_bookView->isHidden())
             m_bookView->show();
 
-        setCentralWidget(m_bookView);
+        ui->stackedWidget->setCurrentIndex(1);
 
     } catch(BookException &e) {
         QMessageBox::information(this,
@@ -118,9 +120,9 @@ void MainWindow::showBooksList()
 
 void MainWindow::loadSettings()
 {
-    QSettings settings;
-    defaultQuran = settings.value("Books/default_quran", -1).toInt();
-    ui->pushOpenQuran->setEnabled(defaultQuran != -1);
+//    QSettings settings;
+//    defaultQuran = settings.value("Books/default_quran", -1).toInt();
+//    ui->pushOpenQuran->setEnabled(defaultQuran != -1);
 }
 
 void MainWindow::on_actionImportFromShamela_triggered()
@@ -131,4 +133,11 @@ void MainWindow::on_actionImportFromShamela_triggered()
 
     if(dialog->exec() == QDialog::Accepted)
         m_booksList->showBooksList();
+}
+
+void MainWindow::lastTabClosed()
+{
+    qDebug("Last tab");
+    ui->stackedWidget->setCurrentIndex(0);
+    m_bookView->removeToolBar();
 }

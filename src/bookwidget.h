@@ -21,6 +21,7 @@ public:
     AbstractDBHandler *dbHandler() { return m_db; }
     IndexWidget *indexWidget() { return m_indexWidget; }
     void firstPage();
+    void lastPage();
     void nextPage();
     void prevPage();
     void nextUnit();
