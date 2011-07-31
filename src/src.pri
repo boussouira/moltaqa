@@ -1,7 +1,7 @@
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
-QT += sql webkit
+QT += sql webkit xml
 
 MOC_DIR += .moc
 OBJECTS_DIR += .obj
@@ -50,8 +50,8 @@ SOURCES += mainwindow.cpp \
     convertthread.cpp \
     importthread.cpp \
     bookexception.cpp \
-    connectioninfo.cpp \
-    sqliteconnection.cpp \
+    libraryinfo.cpp \
+    sqlitelibraryinfo.cpp \
     indexdb.cpp \
     sqliteindexdb.cpp \
     simplequery.cpp \
@@ -87,8 +87,8 @@ HEADERS += mainwindow.h \
     convertthread.h \
     importthread.h \
     bookexception.h \
-    connectioninfo.h \
-    sqliteconnection.h \
+    libraryinfo.h \
+    sqlitelibraryinfo.h \
     indexdb.h \
     sqliteindexdb.h \
     simplequery.h \

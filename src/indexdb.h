@@ -4,7 +4,7 @@
 #include <qsqldatabase.h>
 #include <qcoreapplication.h>
 
-class ConnectionInfo;
+class LibraryInfo;
 class BookInfo;
 class BooksListModel;
 class BooksListNode;
@@ -17,18 +17,18 @@ class IndexDB
 
 public:
     IndexDB();
-    IndexDB(ConnectionInfo *info);
+    IndexDB(LibraryInfo *info);
     virtual ~IndexDB();
     virtual void open()=0;
     virtual QAbstractItemModel *booksList(bool onlyCats=false)=0;
     virtual int catIdFromName(const QString &cat)=0;
     virtual BookInfo *getBookInfo(int bookID)=0;
     virtual int addBook(ImportModelNode *book)=0;
-    void setConnectionInfo(ConnectionInfo *info);
-    ConnectionInfo *connectionInfo();
+    void setConnectionInfo(LibraryInfo *info);
+    LibraryInfo *connectionInfo();
 
 protected:
-    ConnectionInfo *m_connInfo;
+    LibraryInfo *m_libraryInfo;
     QSqlDatabase m_indexDB;
 };
 

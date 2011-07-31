@@ -1,27 +1,27 @@
 #include "indexdb.h"
-#include "connectioninfo.h"
+#include "libraryinfo.h"
 #include "bookinfo.h"
 
 IndexDB::IndexDB()
 {
 }
 
-IndexDB::IndexDB(ConnectionInfo *info)
+IndexDB::IndexDB(LibraryInfo *info)
 {
-    m_connInfo = info;
+    m_libraryInfo = info;
 }
 
 IndexDB::~IndexDB()
 {
-    delete m_connInfo;
+    delete m_libraryInfo;
 }
 
-void IndexDB::setConnectionInfo(ConnectionInfo *info)
+void IndexDB::setConnectionInfo(LibraryInfo *info)
 {
-    m_connInfo = info;
+    m_libraryInfo = info;
 }
 
-ConnectionInfo *IndexDB::connectionInfo()
+LibraryInfo *IndexDB::connectionInfo()
 {
-    return m_connInfo;
+    return m_libraryInfo;
 }

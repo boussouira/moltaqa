@@ -7,8 +7,8 @@
 #include "settingschecker.h"
 #include "importdialog.h"
 #include "bookexception.h"
-#include "connectioninfo.h"
-#include "sqliteconnection.h"
+#include "libraryinfo.h"
+#include "sqlitelibraryinfo.h"
 #include "sqliteindexdb.h"
 
 #include <qmessagebox.h>
@@ -23,18 +23,12 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     try {
         /* Temporary code */
         QSettings settings;
-        settings.beginGroup("General");
-        QString booksFolder = settings.value("books_folder").toString();
-        QString indexDBName = settings.value("index_db").toString();
-        settings.endGroup();
+        QString libDir = settings.value("General/library_dir").toString();
 
-        ConnectionInfo *connection = new SqliteConnection;
-        connection->setPath(booksFolder + "/" + indexDBName);
-        connection->setBooksDir(booksFolder);
-        connection->setConnectionName("Conn_1");
+        LibraryInfo *connection = new SqliteLibraryInfo(libDir);
         /* Temporary code */
 
-        if(connection->type() == ConnectionInfo::SQLITE)
+        if(connection->type() == LibraryInfo::SQLITE)
             m_indexDB = new SqliteIndexDB(connection);
         else
             throw BookException(tr("لم يمكن تحديد نوع الكتاب"));
@@ -124,9 +118,6 @@ void MainWindow::showBooksList()
 
 void MainWindow::loadSettings()
 {
-    SettingsChecker checker(this);
-    checker.checkSettings();
-
     QSettings settings;
     defaultQuran = settings.value("Books/default_quran", -1).toInt();
     ui->pushOpenQuran->setEnabled(defaultQuran != -1);

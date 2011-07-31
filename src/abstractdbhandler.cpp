@@ -1,5 +1,5 @@
 #include "abstractdbhandler.h"
-#include "connectioninfo.h"
+#include "libraryinfo.h"
 #include "bookinfo.h"
 #include "bookindexmodel.h"
 #include "bookexception.h"
@@ -46,7 +46,7 @@ void AbstractDBHandler::setBookInfo(BookInfo *bi)
     m_connectionName = QString("book_i%1").arg(m_bookInfo->bookID());
 }
 
-void AbstractDBHandler::setConnctionInfo(ConnectionInfo *info)
+void AbstractDBHandler::setConnctionInfo(LibraryInfo *info)
 {
     m_connetionInfo = info;
 }

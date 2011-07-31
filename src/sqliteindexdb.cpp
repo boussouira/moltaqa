@@ -1,5 +1,5 @@
 #include "sqliteindexdb.h"
-#include "connectioninfo.h"
+#include "libraryinfo.h"
 #include "bookinfo.h"
 #include "bookexception.h"
 #include "bookslistmodel.h"
@@ -8,13 +8,14 @@
 #include <qdebug.h>
 #include <qsqlquery.h>
 #include <qfile.h>
+#include <qdir.h>
 
 SqliteIndexDB::SqliteIndexDB()
 {
 }
 
 
-SqliteIndexDB::SqliteIndexDB(ConnectionInfo *info) : IndexDB(info)
+SqliteIndexDB::SqliteIndexDB(LibraryInfo *info) : IndexDB(info)
 {
 }
 
@@ -24,19 +25,20 @@ SqliteIndexDB::~SqliteIndexDB()
 
 void SqliteIndexDB::open()
 {
-    if(!QFile::exists(m_connInfo->path()))
-        throw BookException(tr("لم يتم العثور على قاعدة البيانات الأساسية"), m_connInfo->path());
+    QString booksIndexPath = m_libraryInfo->booksIndexPath();
+    if(!QFile::exists(booksIndexPath))
+        throw BookException(tr("لم يتم العثور على قاعدة البيانات الأساسية"), m_libraryInfo->path());
 
-    if(QSqlDatabase::contains(m_connInfo->connectionName())) {
-        m_indexDB = QSqlDatabase::database(m_connInfo->connectionName());
+    if(QSqlDatabase::contains(m_libraryInfo->connectionName())) {
+        m_indexDB = QSqlDatabase::database(m_libraryInfo->connectionName());
     } else {
-        m_indexDB = QSqlDatabase::addDatabase(m_connInfo->driverName(),
-                                                  m_connInfo->connectionName());
-        m_indexDB.setDatabaseName(m_connInfo->path());
+        m_indexDB = QSqlDatabase::addDatabase(m_libraryInfo->driverName(),
+                                                  m_libraryInfo->connectionName());
+        m_indexDB.setDatabaseName(booksIndexPath);
     }
 
     if (!m_indexDB.open())
-        throw BookException(tr("لم يمكن فتح قاعدة البيانات الأساسية"), m_connInfo->path());
+        throw BookException(tr("لم يمكن فتح قاعدة البيانات الأساسية"), booksIndexPath);
 }
 
 QAbstractItemModel *SqliteIndexDB::booksList(bool onlyCats)
@@ -79,9 +81,7 @@ BookInfo *SqliteIndexDB::getBookInfo(int bookID)
         bookInfo->setBookName(bookQuery.value(0).toString());
         bookInfo->setBookType((BookInfo::Type)bookQuery.value(1).toInt());
         bookInfo->setBookID(bookID);
-        bookInfo->setBookPath(QString("%1/%2")
-                              .arg(m_connInfo->booksDir())
-                              .arg(bookQuery.value(2).toString()));
+        bookInfo->setBookPath(m_libraryInfo->bookPath(bookQuery.value(2).toString()));
     }
 
     return bookInfo;
@@ -104,7 +104,7 @@ int SqliteIndexDB::addBook(ImportModelNode *book)
             .arg(book->bookPath().split("/").last());
 
     QString newPath = QString("%1/%2")
-                      .arg(m_connInfo->booksDir())
+                      .arg(m_libraryInfo->booksDir())
                       .arg(book->bookPath().split("/").last());
     if(QFile::copy(book->bookPath(), newPath)){
         if(!QFile::remove(book->bookPath()))
