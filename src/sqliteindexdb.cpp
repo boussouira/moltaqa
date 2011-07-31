@@ -9,11 +9,11 @@
 #include <qsqlquery.h>
 #include <qfile.h>
 #include <qdir.h>
+#include <qsqlerror.h>
 
 SqliteIndexDB::SqliteIndexDB()
 {
 }
-
 
 SqliteIndexDB::SqliteIndexDB(LibraryInfo *info) : IndexDB(info)
 {
@@ -103,14 +103,19 @@ int SqliteIndexDB::addBook(ImportModelNode *book)
             .arg(0)
             .arg(book->bookPath().split("/").last());
 
-    QString newPath = QString("%1/%2")
-                      .arg(m_libraryInfo->booksDir())
-                      .arg(book->bookPath().split("/").last());
+    QString newPath = m_libraryInfo->bookPath(book->bookPath().split("/").last());
+
     if(QFile::copy(book->bookPath(), newPath)){
         if(!QFile::remove(book->bookPath()))
             qWarning() << "Can't remove:" << book->bookPath();
-        return indexQuery.exec(qurey) ? indexQuery.lastInsertId().toInt() : -1;
+        if(indexQuery.exec(qurey)) {
+            qWarning() << indexQuery.lastError().text();
+            return indexQuery.lastInsertId().toInt();
+        } else {
+            return -1;
+        }
     } else {
+        qWarning() << "Can't copy" << book->bookPath() << "to" << newPath;
         return -1;
     }
 }

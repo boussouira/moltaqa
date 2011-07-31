@@ -30,6 +30,9 @@ public:
     QString server();
     QString driverName();
     QString connectionName();
+    /**
+      Get full path to books directory
+      */
     QString booksDir();
 
     void setType(ConnectionType type);

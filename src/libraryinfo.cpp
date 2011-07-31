@@ -130,6 +130,10 @@ void LibraryInfo::loafInfo(QString path)
     m_booksDir = booksDirElement.firstChild().nodeValue();
     m_connectionName = "BooksIndexDB";
 
+    QDir dir(m_path);
+    dir.cd(m_booksDir);
+    m_booksDir = dir.absolutePath();
+
     qDebug() << "Name:" << m_name; //DELETE ME!
     qDebug() << "Path:" << m_path; //DELETE ME!
     qDebug() << "Books path:" << m_booksDir; //DELETE ME!

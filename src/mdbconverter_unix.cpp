@@ -9,11 +9,11 @@
 MdbConverter::MdbConverter()
 {
     QSettings settings;
-    settings.beginGroup("General");
-    m_tempFolder = settings.value("books_folder").toString()
-                 + "/"
-                 + settings.value("books_temp").toString();
+    QDir dir(settings.value("General/library_dir").toString());
+    if(!dir.exists("temp"))
+        dir.mkdir("temp");
 
+    m_tempFolder = dir.filePath("temp");
 }
 
 MdbConverter::~MdbConverter()
