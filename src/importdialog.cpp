@@ -3,9 +3,12 @@
 #include "importmodel.h"
 #include "importdelegates.h"
 #include "indexdb.h"
-#include "mdbconverter.h"
 #include "convertthread.h"
 #include "importthread.h"
+
+#ifdef USE_MDBTOOLS
+    #include "mdbconverter.h"
+#endif
 
 #include <qmessagebox.h>
 #include <qfiledialog.h>

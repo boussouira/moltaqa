@@ -1,10 +1,11 @@
-#include "mdbconverter_unix.h"
+#include "mdbconverter.h"
 #include <qsqlerror.h>
 #include <qdatetime.h>
 #include <qtextcodec.h>
 #include <qsettings.h>
 #include <qstringlist.h>
 #include <qdebug.h>
+#include <qdir.h>
 
 MdbConverter::MdbConverter()
 {
