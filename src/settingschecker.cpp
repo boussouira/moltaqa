@@ -129,6 +129,11 @@ void SettingsChecker::createIndexBD(const QString &dbPath)
                            "description TEXT , "
                            "catOrder INTEGER , "
                            "parentID INTEGER )";
+    QString metaTable = "CREATE TABLE bookMeta("
+                        "id INTEGER PRIMARY KEY, "
+                        "book_info TEXT, "
+                        "add_time INTEGER, "
+                        "update_time INTEGER)";
     {
         QSqlDatabase indexDB = QSqlDatabase::addDatabase("QSQLITE", "INDEX_DB");
         indexDB.setDatabaseName(dbPath);
@@ -142,6 +147,8 @@ void SettingsChecker::createIndexBD(const QString &dbPath)
         // Create categories table and fill it
         if(indexQuery.exec(catListTable))
             fillCatListTable(indexQuery);
+
+        indexQuery.exec(metaTable);
 
     }
 

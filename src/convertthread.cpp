@@ -1,7 +1,11 @@
 #include "convertthread.h"
 #include "importmodel.h"
-#include "mdbconverter.h"
 #include "indexdb.h"
+#include "newbookwriter.h"
+
+#ifdef USE_MDBTOOLS
+    #include "mdbconverter.h"
+#endif
 
 #include <qmessagebox.h>
 #include <qsqldatabase.h>
@@ -9,6 +13,7 @@
 #include <qsqlrecord.h>
 #include <qsqlerror.h>
 #include <qdatetime.h>
+#include <qdebug.h>
 
 ConvertThread::ConvertThread(QObject *parent) : QThread(parent)
 {
@@ -23,7 +28,7 @@ void ConvertThread::run()
     for(int i=0; i<m_files.count(); i++){
         try {
             QList<ImportModelNode*> nodesList;
-            getBookInfo(m_files.at(i), nodesList);
+            ImportFromShamelaBook(m_files.at(i), nodesList);
 
             foreach(ImportModelNode *node, nodesList)
                 m_model->appendNode(node, QModelIndex());
@@ -50,48 +55,95 @@ void ConvertThread::run()
     m_convertTime = time.elapsed();
 }
 
-void ConvertThread::getBookInfo(const QString &path, QList<ImportModelNode *> &nodes)
+void ConvertThread::ImportFromShamelaBook(const QString &path, QList<ImportModelNode *> &nodes)
 {
+#ifdef  USE_MDBTOOLS
     MdbConverter mdb;
     QString dbPath = mdb.exportFromMdb(path);
 
-    QSqlDatabase m_bookDB = QSqlDatabase::addDatabase("QSQLITE", "mdb");
-    m_bookDB.setDatabaseName(dbPath);
+    QSqlDatabase bookDB = QSqlDatabase::addDatabase("QSQLITE", "mdb");
+    bookDB.setDatabaseName(dbPath);
+#else
+    QSqlDatabase bookDB = QSqlDatabase::addDatabase("QODBC", "mdb");
+    bookDB.setDatabaseName(QString("DRIVER={Microsoft Access Driver (*.mdb)};FIL={MS Access};DBQ=%1").arg(path));
+#endif
 
-    if (!m_bookDB.open())
+    if (!bookDB.open())
         throw tr("لا يمكن فتح قاعدة البيانات");
 
-    QSqlQuery bookQuery(m_bookDB);
+    QSqlQuery bookQuery(bookDB);
 
     bookQuery.exec("SELECT * FROM Main");
     while(bookQuery.next()) {
+        int bkIdCol = bookQuery.record().indexOf("BkId");
         int bkCol = bookQuery.record().indexOf("bk");
         int authCol = bookQuery.record().indexOf("Auth");
         int catCol = bookQuery.record().indexOf("cat");
         int betakaCol = bookQuery.record().indexOf("Betaka");
 
+        int bookID = bookQuery.value(bkIdCol).toInt();
+
         ImportModelNode *node = new ImportModelNode(BookInfo::NormalBook);
-        node->setTypeName(getBookType(m_bookDB));
+        node->setTypeName(getBookType(bookDB));
         node->setBookName(bookQuery.value(bkCol).toString());
         node->setAuthorName(bookQuery.value(authCol).toString());
 
         if(catCol != -1) { // Some old books doesn't have this column
             node->setCatName(bookQuery.value(catCol).toString()); // Must be set before CatID
             node->setCatID(m_indexDB->catIdFromName(bookQuery.value(catCol).toString()));
-        } else
-             node->setCatID(-1);
+        } else {
+            node->setCatID(-1);
+        }
 
         if(betakaCol != -1) {
              node->setBookInfo(bookQuery.value(betakaCol).toString());
         }
 
-        node->setBookPath(dbPath);
+        qDebug() << "Importing:" << node->bookName();
+
+        copyBookFromShamelaBook(node, bookDB, bookID);
         nodes.append(node);
+
+        QSqlDatabase::removeDatabase("newBookDB");
     }
 
     if(bookQuery.lastError().isValid())
         throw tr("حدث خطأ أثناء سحب المعلومات من قاعدة البيانات"
                      "<br><b style=\"direction:rtl\">%1</b>").arg(bookQuery.lastError().text());
+}
+
+void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDatabase &bookDB, int bookID)
+{
+    QSqlQuery query(bookDB);
+    NewBookWriter writer;
+    writer.createNewBook();
+    writer.startReading();
+
+    if(query.exec(QString("SELECT id, nass, page, part FROM b%1 ORDER BY id").arg(bookID))) {
+        while(query.next()) {
+            writer.addPage(query.value(1).toString(),
+                           query.value(0).toInt(),
+                           query.value(2).toInt(),
+                           query.value(3).toInt());
+        }
+    } else {
+        qDebug() << "Error 124:" << query.lastError().text();
+    }
+
+    if(query.exec(QString("SELECT id, tit, lvl, sub FROM t%1 ORDER BY id").arg(bookID))) {
+        while(query.next()) {
+            writer.addTitle(query.value(1).toString(),
+                           query.value(0).toInt(),
+                           query.value(2).toInt());
+        }
+    } else {
+        qDebug() << "Error 124:" << query.lastError().text();
+    }
+
+    writer.endReading();
+
+    node->setBookPath(writer.bookPath());
+    node->setSerializedBookInfo(writer.serializeBookInfo());
 }
 
 QString ConvertThread::getBookType(const QSqlDatabase &bookDB)

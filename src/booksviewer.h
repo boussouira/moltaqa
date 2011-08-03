@@ -61,7 +61,7 @@ private:
     QToolBar *toolBarGeneral;
     QToolBar *toolBarNavigation;
     QToolBar *toolBarTafesir;
-    QMenu *m_navMenu;
+    QAction *m_navMenu;
     QComboBox *comboTafasir;
 };
 

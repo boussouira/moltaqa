@@ -23,7 +23,7 @@ protected:
     void showEvent(QShowEvent* event);
 
 public slots:
-    void showBooksList();
+    void loadBooksList();
 
 private slots:
     void on_treeView_doubleClicked(QModelIndex index);

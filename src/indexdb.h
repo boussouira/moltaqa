@@ -24,6 +24,7 @@ public:
     virtual int catIdFromName(const QString &cat)=0;
     virtual BookInfo *getBookInfo(int bookID)=0;
     virtual int addBook(ImportModelNode *book)=0;
+    virtual void updateBookMeta(BookInfo *info, bool newBook)=0;
     void setConnectionInfo(LibraryInfo *info);
     LibraryInfo *connectionInfo();
 

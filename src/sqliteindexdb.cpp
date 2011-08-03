@@ -4,12 +4,14 @@
 #include "bookexception.h"
 #include "bookslistmodel.h"
 #include "importmodel.h"
+#include "common.h"
 
 #include <qdebug.h>
 #include <qsqlquery.h>
 #include <qfile.h>
 #include <qdir.h>
 #include <qsqlerror.h>
+#include <QDateTime>
 
 SqliteIndexDB::SqliteIndexDB()
 {
@@ -75,13 +77,18 @@ BookInfo *SqliteIndexDB::getBookInfo(int bookID)
     BookInfo *bookInfo = new BookInfo();
     QSqlQuery bookQuery(m_indexDB);
 
-    bookQuery.exec(QString("SELECT bookName, bookType, fileName "
-                          "From booksList where id = %1 LIMIT 1").arg(bookID));
+    bookQuery.exec(QString("SELECT booksList.bookName, booksList.bookType, booksList.fileName, bookMeta.book_info "
+                           "FROM booksList LEFT JOIN bookMeta "
+                           "ON bookMeta.id = booksList.id "
+                           "WHERE booksList.id = %1 LIMIT 1").arg(bookID));
+
     if(bookQuery.next()) {
         bookInfo->setBookName(bookQuery.value(0).toString());
         bookInfo->setBookType((BookInfo::Type)bookQuery.value(1).toInt());
         bookInfo->setBookID(bookID);
         bookInfo->setBookPath(m_libraryInfo->bookPath(bookQuery.value(2).toString()));
+
+        bookInfo->fromString(bookQuery.value(3).toString());
     }
 
     return bookInfo;
@@ -90,28 +97,38 @@ BookInfo *SqliteIndexDB::getBookInfo(int bookID)
 int SqliteIndexDB::addBook(ImportModelNode *book)
 {
     QSqlQuery indexQuery(m_indexDB);
+    QString newBookName = genBookName(m_libraryInfo->booksDir());
+    QString newPath = m_libraryInfo->booksDir() + "/" + newBookName;
 
-    QString qurey = QString("INSERT INTO booksList (id, bookID, bookType, bookFlags, bookCat,"
-                            "bookName, bookInfo, authorName, authorID, fileName, bookFolder)"
-                            "VALUES(NULL, 0, %1, %2, %3, '%4', '%5', '%6', %7, '%8', '')")
-            .arg(book->nodeType())
-            .arg(0)
-            .arg(book->catID())
-            .arg(book->bookName())
-            .arg(book->bookInfo())
-            .arg(book->authorName())
-            .arg(0)
-            .arg(book->bookPath().split("/").last());
+    indexQuery.prepare("INSERT INTO booksList (id, bookID, bookType, bookFlags, bookCat,"
+                       "bookName, bookInfo, authorName, authorID, fileName, bookFolder)"
+                       "VALUES(NULL, :book_id, :book_type, :book_flags, :cat_id, :book_name, "
+                       ":book_info, :author_name, :author_id, :file_name, :book_folder)");
 
-    QString newPath = m_libraryInfo->bookPath(book->bookPath().split("/").last());
+    indexQuery.bindValue(":book_id", 0);
+    indexQuery.bindValue(":book_type", book->nodeType());
+    indexQuery.bindValue(":book_flags", 0);
+    indexQuery.bindValue(":cat_id", book->catID());
+    indexQuery.bindValue(":book_name", book->bookName());
+    indexQuery.bindValue(":book_info", book->bookInfo());
+    indexQuery.bindValue(":author_name", book->authorName());
+    indexQuery.bindValue(":author_id", 0);
+    indexQuery.bindValue(":file_name", newBookName); // Add file name
+    indexQuery.bindValue(":book_folder", QVariant(QVariant::String));
 
     if(QFile::copy(book->bookPath(), newPath)){
         if(!QFile::remove(book->bookPath()))
             qWarning() << "Can't remove:" << book->bookPath();
-        if(indexQuery.exec(qurey)) {
-            qWarning() << indexQuery.lastError().text();
-            return indexQuery.lastInsertId().toInt();
+        if(indexQuery.exec()) {
+            int lastID = indexQuery.lastInsertId().toInt();
+            BookInfo info;
+            info.setBookID(lastID);
+            info.fromString(book->serializedBookInfo());
+
+            updateBookMeta(&info, true);
+            return lastID;
         } else {
+            qWarning() << indexQuery.lastError().text();
             return -1;
         }
     } else {
@@ -152,5 +169,28 @@ void SqliteIndexDB::booksCat(BooksListNode *parentNode, int catID)
                                                        bookQuery.value(0).toInt());
         secondChild->setInfoToolTip(bookQuery.value(3).toString());
         parentNode->appendChild(secondChild);
+    }
+}
+
+void SqliteIndexDB::updateBookMeta(BookInfo *info, bool newBook)
+{
+    QSqlQuery bookQuery(m_indexDB);
+    if(newBook) {
+        bookQuery.prepare("INSERT INTO bookMeta (id, book_info, add_time, update_time) VALUES (?, ?, ?, ?)");
+        bookQuery.bindValue(0, info->bookID());
+        bookQuery.bindValue(1, info->toString());
+        bookQuery.bindValue(2, QDateTime::currentDateTime().toTime_t());
+        bookQuery.bindValue(3, QDateTime::currentDateTime().toTime_t());
+    } else {
+        bookQuery.prepare("INSERT INTO bookMeta (id, book_info, update_time) VALUES (?, ?, ?)");
+        bookQuery.bindValue(0, info->bookID());
+        bookQuery.bindValue(1, info->toString());
+        bookQuery.bindValue(2, QDateTime::currentDateTime().toTime_t());
+    }
+
+    if(!bookQuery.exec()) {
+        qDebug() << "Error:" << bookQuery.lastError().text() << bookQuery.executedQuery();
+    } else {
+        qDebug() << "Meta for" << info->bookID() << (newBook?"Inserted":"Updated");
     }
 }

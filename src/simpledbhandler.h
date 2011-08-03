@@ -24,7 +24,7 @@ public:
 
 protected:
     void connected();
-    BookIndexNode *getNodeByDepth(BookIndexNode *pNode, int pDepth);
+    void childTitles(BookIndexNode *parentNode, int tid);
     void getBookInfo();
     int maxPartNum();
 

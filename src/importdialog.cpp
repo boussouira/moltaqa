@@ -55,13 +55,13 @@ void ImportDialog::on_pushCancel_clicked()
 
 void ImportDialog::on_pushAddFile_clicked()
 {
-    QFileDialog dialog(this);
-    dialog.setFileMode(QFileDialog::ExistingFiles);
-    dialog.setNameFilter(tr("Shamela book (*.bok);; All files (*.*)"));
-    dialog.setViewMode(QFileDialog::Detail);
-
-    if(dialog.exec())
-        ui->fileListWidget->addItems(dialog.selectedFiles());
+    QStringList files = QFileDialog::getOpenFileNames(this,
+                                                      tr("اختر الكتب التي تريد استيرادها:"),
+                                                      QString(),
+                                                      "Shamela books (*.bok)");
+    foreach(QString file, files) {
+        addFile(file);
+    }
 }
 
 void ImportDialog::on_pushDeleteFile_clicked()
@@ -205,6 +205,8 @@ void ImportDialog::doneImporting()
     ui->pushNext->setText(tr("انتهى"));
 
     ui->stackedWidget->setCurrentIndex(2);
+
+    emit bookAdded();
 }
 
 bool ImportDialog::checkNodes(QList<ImportModelNode *> nodesList)
@@ -275,8 +277,10 @@ void ImportDialog::dropEvent(QDropEvent *event)
 void ImportDialog::addFile(const QString &path)
 {
     QFileInfo info(path);
-    if(info.isFile() && info.suffix() == "bok")
-        ui->fileListWidget->addItem(path);
+    if(info.isFile() && info.suffix() == "bok") {
+        if(!fileExsistInList(path))
+            ui->fileListWidget->addItem(path);
+    }
 }
 
 void ImportDialog::addDir(const QString &path)
@@ -290,4 +294,15 @@ void ImportDialog::addDir(const QString &path)
         else if(info.isDir())
             addDir(info.absoluteFilePath());
     }
+}
+
+bool ImportDialog::fileExsistInList(const QString &path)
+{
+    for(int i=0;i<ui->fileListWidget->count();i++){
+        if(ui->fileListWidget->item(i)->text().compare(path, Qt::CaseInsensitive) == 0) {
+            return true;
+        }
+    }
+
+    return false;
 }

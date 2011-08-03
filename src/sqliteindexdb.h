@@ -14,6 +14,7 @@ public:
     BookInfo *getBookInfo(int bookID);
     int catIdFromName(const QString &cat);
     int addBook(ImportModelNode *book);
+    void updateBookMeta(BookInfo *info, bool newBook);
 
 protected:
     void booksCat(BooksListNode *parentNode, int catID);

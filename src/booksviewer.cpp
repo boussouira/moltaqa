@@ -89,25 +89,25 @@ void BooksViewer::createMenus(QMainWindow *parent)
     toolBarNavigation->addAction(actionNextAYA);
     toolBarNavigation->addAction(actionPrevAYA);
 
-    m_navMenu = new QMenu(tr("التنقل"), this);
-    m_navMenu->addAction(actionFirstPage);
-    m_navMenu->addAction(actionPrevPage);
-    m_navMenu->addAction(actionNextPage);
-    m_navMenu->addAction(actionLastPage);
-    m_navMenu->addSeparator();
-    m_navMenu->addAction(actionGotToPage); // TODO: implement this
+    QMenu *navMenu = new QMenu(tr("التنقل"), this);
+    navMenu->addAction(actionFirstPage);
+    navMenu->addAction(actionPrevPage);
+    navMenu->addAction(actionNextPage);
+    navMenu->addAction(actionLastPage);
+    navMenu->addSeparator();
+    navMenu->addAction(actionGotToPage); // TODO: implement this
 
 
     // Hide those toolbars
     toolBarGeneral->hide();
     toolBarNavigation->hide();
-    m_navMenu->setEnabled(false);
 
     parent->addToolBar(toolBarGeneral);
     parent->addToolBar(toolBarNavigation);
 
     QAction *act = parent->menuBar()->actions().at(1);
-    parent->menuBar()->insertMenu(act, m_navMenu);
+    m_navMenu = parent->menuBar()->insertMenu(act, navMenu);
+    m_navMenu->setVisible(false);
 
     // Setup connections
     // Navigation actions
@@ -126,14 +126,14 @@ void BooksViewer::removeToolBar()
 {
     toolBarGeneral->hide();
     toolBarNavigation->hide();
-    m_navMenu->setEnabled(false);
+    m_navMenu->setVisible(false);
 }
 
 void BooksViewer::showToolBar()
 {
     toolBarGeneral->show();
     toolBarNavigation->show();
-    m_navMenu->setEnabled(true);
+    m_navMenu->setVisible(true);
 }
 
 void BooksViewer::openBook(int pBookID, bool newTab)
@@ -151,6 +151,7 @@ void BooksViewer::openBook(int pBookID, bool newTab)
 
     bookdb->setConnctionInfo(m_indexDB->connectionInfo());
     bookdb->setBookInfo(bookInfo);
+    bookdb->setIndexDB(m_indexDB);
 
     try {
         bookdb->openBookDB();
@@ -177,6 +178,7 @@ void BooksViewer::openBook(int pBookID, bool newTab)
     connect(bookWidget->indexWidget(), SIGNAL(openPage(int)), SLOT(updateActions()));
 
     updateActions();
+    activateWindow();
 }
 
 void BooksViewer::nextUnit()

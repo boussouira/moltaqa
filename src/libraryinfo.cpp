@@ -133,16 +133,11 @@ void LibraryInfo::loafInfo(QString path)
     QDir dir(m_path);
     dir.cd(m_booksDir);
     m_booksDir = dir.absolutePath();
-
-    qDebug() << "Name:" << m_name; //DELETE ME!
-    qDebug() << "Path:" << m_path; //DELETE ME!
-    qDebug() << "Books path:" << m_booksDir; //DELETE ME!
 }
 
 QString LibraryInfo::booksIndexPath()
 {
     QDir dir(m_path);
-    qDebug() << "Index path:" << dir.filePath("books_index.db"); //DELETE ME!
     return dir.filePath("books_index.db");
 }
 
@@ -150,7 +145,7 @@ QString LibraryInfo::bookPath(QString bookName)
 {
     QDir dir(m_path);
     dir.cd(m_booksDir);
-    qDebug() << "Book path:" << dir.filePath(bookName); //DELETE ME!
+
     return dir.filePath(bookName);
 }
 

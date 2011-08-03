@@ -45,6 +45,10 @@ public:
     bool isNormal() { return m_bookType == NormalBook; }
     bool exists();
 
+    QString toString();
+    void fromString(QString info);
+    bool haveInfo();
+
 protected:
     BookInfo::Type m_bookType;
     QString m_bookPath;
@@ -57,6 +61,7 @@ protected:
     int m_firstID;
     int m_lastID;
     int m_bookID;
+    bool m_hasInfo;
 };
 
 #endif // BOOKINFO_H

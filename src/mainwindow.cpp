@@ -41,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
         m_indexDB->open();
 
         m_bookView = new BooksViewer(m_indexDB, this);
-        m_booksList = new BooksListBrowser(m_indexDB, this);
+        m_booksList = new BooksListBrowser(m_indexDB, 0);
 
         setupActions();
 
@@ -116,6 +116,7 @@ void MainWindow::openBook(int pBookID)
 void MainWindow::showBooksList()
 {
     m_booksList->show();
+    m_booksList->activateWindow();
 }
 
 void MainWindow::loadSettings()
@@ -127,17 +128,16 @@ void MainWindow::loadSettings()
 
 void MainWindow::on_actionImportFromShamela_triggered()
 {
-    ImportDialog *dialog = new ImportDialog(m_indexDB, this);
+    ImportDialog *dialog = new ImportDialog(m_indexDB, 0);
 
     connect(dialog, SIGNAL(openBook(int)), this, SLOT(openBook(int)));
+    connect(dialog, SIGNAL(bookAdded()), m_booksList, SLOT(loadBooksList()));
 
-    if(dialog->exec() == QDialog::Accepted)
-        m_booksList->showBooksList();
+    dialog->show();
 }
 
 void MainWindow::lastTabClosed()
 {
-    qDebug("Last tab");
     ui->stackedWidget->setCurrentIndex(0);
     m_bookView->removeToolBar();
 }

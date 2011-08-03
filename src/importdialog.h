@@ -26,11 +26,13 @@ protected:
     bool checkNodes(QList<ImportModelNode *> nodesList);
     void convertBooks();
     void importBooks();
+    bool fileExsistInList(const QString &);
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
 
 signals:
     void openBook(int id);
+    void bookAdded();
 
 protected slots:
     void doneConverting();

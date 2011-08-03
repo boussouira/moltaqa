@@ -23,7 +23,11 @@ public:
     void run();
 
 protected:
-    void getBookInfo(const QString &path, QList<ImportModelNode*> &nodes);
+    void ImportFromShamelaBook(const QString &path, QList<ImportModelNode*> &nodes);
+    /**
+      Copy book with BookID from bookDB to a temporary file and set it as the book path
+      */
+    void copyBookFromShamelaBook(ImportModelNode *node, const QSqlDatabase &bookDB, int bookID);
     QString getBookType(const QSqlDatabase &bookDB);
 
 signals:

@@ -11,13 +11,11 @@ TextFormatter::TextFormatter(QObject *parent): QObject(parent)
 
 void TextFormatter::laodSettings()
 {
-    QSettings settings;
     QDir dir(QApplication::applicationDirPath());
     dir.cd("styles");
     dir.cd("default");
     QString style = dir.filePath("default.css");
     m_styleFile = QUrl::fromLocalFile(style).toString();
-    qDebug() << "Style file:" << m_styleFile; //DELETE ME!
 }
 
 QString TextFormatter::getText()

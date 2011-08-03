@@ -10,16 +10,11 @@ RCC_DIR += .rcc
 
 unix {
         DEFINES += USE_MDBTOOLS
-        HEADERS += mdbconverter_unix.h
-        SOURCES += mdbconverter_unix.cpp
+        HEADERS += mdbconverter.h
+        SOURCES += mdbconverter.cpp
 
         QMAKE_CXXFLAGS += $$system(pkg-config libmdb --cflags)
         LIBS += $$system(pkg-config libmdb --libs)
-}
-
-win32 {
-        HEADERS += mdbconverter_win.h
-        SOURCES += mdbconverter_win.cpp
 }
 
 SOURCES += mainwindow.cpp \
@@ -58,7 +53,9 @@ SOURCES += mainwindow.cpp \
     sqlitesimplequery.cpp \
     quranquery.cpp \
     sqlitequranquery.cpp \
-    welcomewidget.cpp
+    welcomewidget.cpp \
+    newbookwriter.cpp \
+    common.cpp
 HEADERS += mainwindow.h \
     pageinfo.h \
     qurantextformat.h \
@@ -84,7 +81,6 @@ HEADERS += mainwindow.h \
     importmodel.h \
     importdelegates.h \
     catslistwidget.h \
-    mdbconverter.h \
     convertthread.h \
     importthread.h \
     bookexception.h \
@@ -96,7 +92,9 @@ HEADERS += mainwindow.h \
     sqlitesimplequery.h \
     quranquery.h \
     sqlitequranquery.h \
-    welcomewidget.h
+    welcomewidget.h \
+    newbookwriter.h \
+    common.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

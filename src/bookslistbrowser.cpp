@@ -26,13 +26,13 @@ BooksListBrowser::~BooksListBrowser()
 void BooksListBrowser::showEvent(QShowEvent* event){
     if(event->type() == QEvent::Show && !event->spontaneous()){
         if(m_updateList){
-            showBooksList();
+            loadBooksList();
             m_updateList = false;
         }
     }
 }
 
-void BooksListBrowser::showBooksList()
+void BooksListBrowser::loadBooksList()
 {
     ui->treeView->setModel(m_indexDB->booksList());
 

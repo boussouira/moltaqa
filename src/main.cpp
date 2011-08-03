@@ -1,11 +1,12 @@
+#include "mainwindow.h"
 #include <QApplication>
 #include <QTranslator>
 #include <QLocale>
 #include <QLibraryInfo>
 #include <QTextCodec>
 #include <QSettings>
-#include "mainwindow.h"
 #include <settingschecker.h>
+#include <qdatetime.h>
 
 int main(int argc, char *argv[])
 {
@@ -22,6 +23,8 @@ int main(int argc, char *argv[])
     app.setOrganizationDomain("alkotobiya.sf.net");
     app.setApplicationName("Al-Kotobiya");
     app.setApplicationVersion("0.5");
+
+    qsrand(QDateTime::currentDateTime().toTime_t());
 
 //    SettingsChecker checker(&app);
 //    checker.checkSettings();

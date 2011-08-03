@@ -116,7 +116,7 @@
   </action>
   <action name="actionImportFromShamela">
    <property name="text">
-    <string>استيراد من الشاملة...</string>
+    <string>استيراد كتب...</string>
    </property>
   </action>
  </widget>

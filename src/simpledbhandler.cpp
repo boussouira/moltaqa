@@ -11,6 +11,7 @@
 #include <qsqlquery.h>
 #include <qstringlist.h>
 #include <qdebug.h>
+#include <QTime>
 
 SimpleDBHandler::SimpleDBHandler()
 {
@@ -69,74 +70,74 @@ void SimpleDBHandler::openPage(int page, int part)
 
 QAbstractItemModel *SimpleDBHandler::indexModel()
 {
+    QTime time;
+    time.start();
     BookIndexNode *rootNode = new BookIndexNode();
 
-    m_simpleQuery->index();
-    while(m_simpleQuery->next())
-    {
-        int tid = m_simpleQuery->value(0).toInt();
-        int level = m_simpleQuery->value(2).toInt();
-        BookIndexNode *firstChild = new BookIndexNode(m_simpleQuery->value(1).toString(), tid);
-        BookIndexNode *parent = getNodeByDepth(rootNode, level);
+    childTitles(rootNode, 0);
 
-        parent->appendChild(firstChild);
-    }
-
+    qDebug() << "Load index take:" << time.elapsed() << "ms";
     m_indexModel->setRootNode(rootNode);
+
     return m_indexModel;
 }
 
-BookIndexNode *SimpleDBHandler::getNodeByDepth(BookIndexNode *pNode, int pDepth)
+void SimpleDBHandler::childTitles(BookIndexNode *parentNode, int tid)
 {
-    BookIndexNode *n = pNode;
-
-    while(--pDepth > 0) {
-        if(!n->childList()->isEmpty())
-            n = n->childList()->last();
+    QSqlQuery query(m_bookDB);
+    query.exec(QString("SELECT id, parentID, pageID, title FROM bookIndex "
+                          "WHERE parentID = %1 ORDER BY id").arg(tid));
+    while(query.next())
+    {
+        BookIndexNode *catNode = new BookIndexNode(query.value(3).toString(),
+                                                   query.value(2).toInt());
+        childTitles(catNode, query.value(0).toInt());
+        parentNode->appendChild(catNode);
     }
-    return n;
 }
 
 void SimpleDBHandler::getBookInfo()
 {
-    QStringList tables = m_bookDB.tables();
+    m_bookInfo->setBookTable("bookPages");
+    m_bookInfo->setTitleTable("bookIndex");
 
-    m_bookInfo->setTitleTable(tables.at(tables.indexOf(QRegExp("(t[0-9]+)"))));
-    m_bookInfo->setBookTable(tables.at(tables.indexOf(QRegExp("(b[0-9]+)"))));
+    if(!m_bookInfo->haveInfo()) {
+        m_simpleQuery->exec(QString("SELECT MAX(partNum), MIN(pageNum), MAX(pageNum), MIN(id), MAX(id) from %1 ")
+                            .arg(m_bookInfo->bookTable()));
+        if(m_simpleQuery->next()) {
+            bool ok;
+            int parts = m_simpleQuery->value(0).toInt(&ok);
+            if(!ok)
+                parts = maxPartNum();
 
-    m_simpleQuery->exec(QString("SELECT MAX(part), MIN(page), MAX(page), MIN(id), MAX(id) from %1 ")
-                      .arg(m_bookInfo->bookTable()));
-    if(m_simpleQuery->next()) {
-        bool ok;
-        int parts = m_simpleQuery->value(0).toInt(&ok);
-        if(!ok)
-            parts = maxPartNum();
+            m_bookInfo->setFirstID(m_simpleQuery->value(3).toInt());
+            m_bookInfo->setLastID(m_simpleQuery->value(4).toInt());
 
-        m_bookInfo->setFirstID(m_simpleQuery->value(3).toInt());
-        m_bookInfo->setLastID(m_simpleQuery->value(4).toInt());
-
-        if(parts == 1) {
-            m_bookInfo->setPartsCount(parts);
-            m_bookInfo->setFirstPage(m_simpleQuery->value(1).toInt());
-            m_bookInfo->setLastPage(m_simpleQuery->value(2).toInt());
-        } else if(parts > 1) {
-            m_bookInfo->setPartsCount(parts);
-            for(int i=1;i<=parts;i++) {
-                m_simpleQuery->exec(QString("SELECT MIN(page), MAX(page) from %1 WHERE part = %2 ")
-                                  .arg(m_bookInfo->bookTable()).arg(i));
-                if(m_simpleQuery->next()) {
-                    m_bookInfo->setFirstPage(m_simpleQuery->value(0).toInt(), i);
-                    m_bookInfo->setLastPage(m_simpleQuery->value(1).toInt(), i);
+            if(parts == 1) {
+                m_bookInfo->setPartsCount(parts);
+                m_bookInfo->setFirstPage(m_simpleQuery->value(1).toInt());
+                m_bookInfo->setLastPage(m_simpleQuery->value(2).toInt());
+            } else if(parts > 1) {
+                m_bookInfo->setPartsCount(parts);
+                for(int i=1;i<=parts;i++) {
+                    m_simpleQuery->exec(QString("SELECT MIN(pageNum), MAX(pageNum) from %1 WHERE partNum = %2 ")
+                                        .arg(m_bookInfo->bookTable()).arg(i));
+                    if(m_simpleQuery->next()) {
+                        m_bookInfo->setFirstPage(m_simpleQuery->value(0).toInt(), i);
+                        m_bookInfo->setLastPage(m_simpleQuery->value(1).toInt(), i);
+                    }
                 }
             }
         }
+
+        m_indexDB->updateBookMeta(m_bookInfo, false);
     }
 }
 
 int SimpleDBHandler::maxPartNum()
 {
     QSqlQuery query(m_bookDB);
-    query.exec(QString("SELECT part FROM %1 ORDER BY id DESC")
+    query.exec(QString("SELECT partNum FROM %1 ORDER BY id DESC")
                .arg(m_bookInfo->bookTable()));
     while(query.next()) {
         QString val = query.value(0).toString().trimmed();

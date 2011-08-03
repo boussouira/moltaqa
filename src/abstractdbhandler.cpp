@@ -9,6 +9,8 @@
 #include <qsqlquery.h>
 #include <qsqlerror.h>
 #include <qstringlistmodel.h>
+#include <QTime>
+#include <QDebug>
 
 AbstractDBHandler::AbstractDBHandler()
 {
@@ -37,7 +39,11 @@ void AbstractDBHandler::openBookDB(QString pBookDBPath)
 
     m_bookQuery =  QSqlQuery(m_bookDB);
     connected();
+    QTime time;
+    time.start();
     getBookInfo();
+
+    qDebug() << "Loading book info" << m_bookInfo->bookName() << "take:" << time.elapsed() << "ms";
 }
 
 void AbstractDBHandler::setBookInfo(BookInfo *bi)
@@ -66,4 +72,14 @@ void AbstractDBHandler::openIndexID(int pid)
 
 void AbstractDBHandler::connected()
 {
+}
+
+void AbstractDBHandler::setIndexDB(IndexDB *db)
+{
+    m_indexDB = db;
+}
+
+IndexDB * AbstractDBHandler::indexDB()
+{
+    return m_indexDB;
 }

@@ -47,9 +47,9 @@ void IndexWidget::changeEvent(QEvent *e)
 void IndexWidget::setIndex(QAbstractItemModel *pList)
 {
     ui->treeView->setModel(pList);
-    ui->treeView->expandAll();
-    ui->treeView->resizeColumnToContents(0);
     ui->treeView->setHeaderHidden(true);
+//    ui->treeView->expandAll();
+//    ui->treeView->resizeColumnToContents(0);
 }
 
 void IndexWidget::displayBookInfo()
