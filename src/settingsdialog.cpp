@@ -27,7 +27,7 @@ SettingsDialog::~SettingsDialog()
 void SettingsDialog::loadSettings()
 {
     QSettings settings;
-    QString booksPath = settings.value("General/books_folder").toString();
+    QString booksPath = settings.value("library_dir").toString();
     if(!booksPath.isEmpty())
         ui->lineBooksDir->setText(booksPath);
 }
@@ -44,27 +44,21 @@ QString SettingsDialog::getFilePath()
 
 QString SettingsDialog::getFolderPath(const QString &defaultPath, bool noRoot)
 {
-    QString dir = QFileDialog::getExistingDirectory(this, tr("اختر مجلد"),
+    QDir dir = QFileDialog::getExistingDirectory(this, tr("اختر مجلد"),
                                                     defaultPath,
                                                     QFileDialog::ShowDirsOnly
                                                     |QFileDialog::DontResolveSymlinks);
 
-    if(noRoot){
-#ifdef Q_OS_WIN32
-    if(dir.size() <= 3)
-#else
-    if(dir.size() <= 1)
-#endif
-        dir.clear();
+    if(dir.isRoot() && noRoot){
+        return QString();
+    } else {
+        return dir.absolutePath();
     }
-    if(dir.endsWith(QChar('/')) || dir.endsWith(QChar('\\')))
-        dir.remove(dir.size()-1, 1);
-    return dir;
 }
 
 void SettingsDialog::changeBooksDir()
 {
-    QString filePath = getFolderPath(ui->lineBooksDir->text(), true);
+    QString filePath = getFolderPath(ui->lineBooksDir->text());
     if(!filePath.isEmpty()) {
         ui->lineBooksDir->setText(filePath);
     }
@@ -75,7 +69,7 @@ void SettingsDialog::saveSettings()
     QSettings settings;
     QString appPath = ui->lineBooksDir->text();
 
-    settings.setValue("General/books_folder", appPath);
+    settings.setValue("library_dir", appPath);
     accept();
 }
 

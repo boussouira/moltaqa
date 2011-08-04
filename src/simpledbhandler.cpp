@@ -6,7 +6,7 @@
 #include "bookexception.h"
 #include "simpletextformat.h"
 #include "libraryinfo.h"
-#include "sqlitesimplequery.h"
+#include "simplequery.h"
 
 #include <qsqlquery.h>
 #include <qstringlist.h>
@@ -26,11 +26,7 @@ SimpleDBHandler::~SimpleDBHandler()
 
 void SimpleDBHandler::connected()
 {
-    if(m_connetionInfo->type() == LibraryInfo::SQLITE)
-        m_simpleQuery = new SqliteSimpleQuery(m_bookDB, m_bookInfo);
-    else
-        throw BookException(tr("لم يمكن تحديد نوع الكتاب"));
-
+    m_simpleQuery = new SimpleQuery(m_bookDB, m_bookInfo);
     AbstractDBHandler::connected();
 }
 

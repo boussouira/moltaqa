@@ -18,15 +18,19 @@ class IndexDB
 public:
     IndexDB();
     IndexDB(LibraryInfo *info);
-    virtual ~IndexDB();
-    virtual void open()=0;
-    virtual QAbstractItemModel *booksList(bool onlyCats=false)=0;
-    virtual int catIdFromName(const QString &cat)=0;
-    virtual BookInfo *getBookInfo(int bookID)=0;
-    virtual int addBook(ImportModelNode *book)=0;
-    virtual void updateBookMeta(BookInfo *info, bool newBook)=0;
+    ~IndexDB();
+    void open();
+    QAbstractItemModel *booksList(bool onlyCats=false);
+    BookInfo *getBookInfo(int bookID);
+    int catIdFromName(const QString &cat);
+    int addBook(ImportModelNode *book);
+    void updateBookMeta(BookInfo *info, bool newBook);
     void setConnectionInfo(LibraryInfo *info);
     LibraryInfo *connectionInfo();
+
+protected:
+    void booksCat(BooksListNode *parentNode, int catID);
+    void childCats(BooksListNode *parentNode, int pID, bool onlyCats=false);
 
 protected:
     LibraryInfo *m_libraryInfo;

@@ -13,12 +13,12 @@ public:
     SimpleQuery(QSqlDatabase db, BookInfo *bookInfo);
     void setBookInfo(BookInfo *bookInfo);
 
-    virtual void nextPage(int id)=0;
-    virtual void prevPage(int id)=0;
-    virtual void page(int page, int part=1)=0;
-    virtual void index()=0;
-    virtual void partInfo(int part)=0;
-    virtual void parts()=0;
+    void nextPage(int id);
+    void prevPage(int id);
+    void page(int page, int part=1);
+    void index();
+    void partInfo(int part);
+    void parts();
 
 protected:
     BookInfo *m_bookInfo;

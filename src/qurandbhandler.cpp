@@ -4,7 +4,7 @@
 #include "bookexception.h"
 #include "qurantextformat.h"
 #include "libraryinfo.h"
-#include "sqlitequranquery.h"
+#include "quranquery.h"
 
 #include <qsqldatabase.h>
 
@@ -21,11 +21,7 @@ QuranDBHandler::~QuranDBHandler()
 
 void QuranDBHandler::connected()
 {
-    if(m_connetionInfo->type() == LibraryInfo::SQLITE)
-        m_quranQuery = new SqliteQuranQuery(m_bookDB, m_bookInfo);
-    else
-        throw BookException(tr("لم يمكن تحديد نوع الكتاب"));
-
+    m_quranQuery = new QuranQuery(m_bookDB, m_bookInfo);
     AbstractDBHandler::connected();
 }
 

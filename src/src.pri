@@ -46,13 +46,9 @@ SOURCES += mainwindow.cpp \
     importthread.cpp \
     bookexception.cpp \
     libraryinfo.cpp \
-    sqlitelibraryinfo.cpp \
     indexdb.cpp \
-    sqliteindexdb.cpp \
     simplequery.cpp \
-    sqlitesimplequery.cpp \
     quranquery.cpp \
-    sqlitequranquery.cpp \
     welcomewidget.cpp \
     newbookwriter.cpp \
     common.cpp
@@ -85,13 +81,9 @@ HEADERS += mainwindow.h \
     importthread.h \
     bookexception.h \
     libraryinfo.h \
-    sqlitelibraryinfo.h \
     indexdb.h \
-    sqliteindexdb.h \
     simplequery.h \
-    sqlitesimplequery.h \
     quranquery.h \
-    sqlitequranquery.h \
     welcomewidget.h \
     newbookwriter.h \
     common.h

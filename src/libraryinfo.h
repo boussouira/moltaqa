@@ -15,33 +15,22 @@ public:
     */
     LibraryInfo(QString booksPath);
 
-    enum ConnectionType {
-        UNKNOW,
-        SQLITE,
-        MYSQL
-    };
-
-
-    ConnectionType type();
     QString name();
     QString path();
     QString username();
     QString password();
     QString server();
-    QString driverName();
     QString connectionName();
     /**
       Get full path to books directory
       */
     QString booksDir();
 
-    void setType(ConnectionType type);
     void setName(QString name);
     void setPath(QString path);
     void setUsername(QString user);
     void setPassword(QString pass);
     void setServer(QString server);
-    void setDriverName(QString name);
     void setConnectionName(QString name);
     void setBooksDir(QString dir);
 
@@ -60,13 +49,11 @@ protected:
     void loafInfo(QString path);
 
 protected:
-    ConnectionType m_type;  ///< Library connection type(SQLite, Access, MySQL...)
     QString m_name;         ///< Library name
     QString m_path;         ///< Library path
     QString m_username;
     QString m_password;
     QString m_server;
-    QString m_driverName;
     QString m_connectionName;
     QString m_booksDir;     ///< Books dir, it should be relative path to the library path
 };

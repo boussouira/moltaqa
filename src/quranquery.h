@@ -13,11 +13,11 @@ public:
     QuranQuery(QSqlDatabase db, BookInfo *bookInfo);
     void setBookInfo(BookInfo *bookInfo);
 
-    virtual void page(int page)=0;
-    virtual void index()=0;
-    virtual void pageNumber(int aya, int sora)=0;
-    virtual void soraAyatCount(int sora)=0;
-    virtual void firstSoraAndAya(int page)=0;
+    void page(int page);
+    void index();
+    void pageNumber(int aya, int sora);
+    void soraAyatCount(int sora);
+    void firstSoraAndAya(int page);
 
 protected:
     BookInfo *m_bookInfo;

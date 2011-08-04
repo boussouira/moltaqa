@@ -9,7 +9,7 @@
 NewBookWriter::NewBookWriter()
 {
     QSettings settings;
-    QDir dir(settings.value("General/library_dir").toString());
+    QDir dir(settings.value("library_dir").toString());
     if(!dir.exists("temp"))
         dir.mkdir("temp");
 

@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "booksviewer.h"
+#include "indexdb.h"
 #include "bookslistbrowser.h"
 #include "settingsdialog.h"
 #include "bookwidget.h"
@@ -8,8 +9,6 @@
 #include "importdialog.h"
 #include "bookexception.h"
 #include "libraryinfo.h"
-#include "sqlitelibraryinfo.h"
-#include "sqliteindexdb.h"
 #include "welcomewidget.h"
 
 #include <qmessagebox.h>
@@ -28,16 +27,12 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     try {
         /* Temporary code */
         QSettings settings;
-        QString libDir = settings.value("General/library_dir").toString();
+        QString libDir = settings.value("library_dir").toString();
 
-        LibraryInfo *connection = new SqliteLibraryInfo(libDir);
+        LibraryInfo *connection = new LibraryInfo(libDir);
         /* Temporary code */
 
-        if(connection->type() == LibraryInfo::SQLITE)
-            m_indexDB = new SqliteIndexDB(connection);
-        else
-            throw BookException(tr("لم يمكن تحديد نوع الكتاب"));
-
+        m_indexDB = new IndexDB(connection);
         m_indexDB->open();
 
         m_bookView = new BooksViewer(m_indexDB, this);

@@ -5,18 +5,12 @@
 
 LibraryInfo::LibraryInfo(QString booksPath)
 {
-    m_type = UNKNOW;
     loafInfo(booksPath);
 }
 
 QString LibraryInfo::name()
 {
     return m_name;
-}
-
-LibraryInfo::ConnectionType LibraryInfo::type()
-{
-    return m_type;
 }
 
 QString LibraryInfo::path()
@@ -39,11 +33,6 @@ QString LibraryInfo::server()
     return m_server;
 }
 
-QString LibraryInfo::driverName()
-{
-    return m_driverName;
-}
-
 QString LibraryInfo::connectionName()
 {
     return m_connectionName;
@@ -52,11 +41,6 @@ QString LibraryInfo::connectionName()
 QString LibraryInfo::booksDir()
 {
     return m_booksDir;
-}
-
-void LibraryInfo::setType(ConnectionType type)
-{
-    m_type = type;
 }
 
 void LibraryInfo::setPath(QString path)
@@ -77,11 +61,6 @@ void LibraryInfo::setPassword(QString pass)
 void LibraryInfo::setServer(QString server)
 {
     m_server = server;
-}
-
-void LibraryInfo::setDriverName(QString name)
-{
-    m_driverName = name;
 }
 
 void LibraryInfo::setConnectionName(QString name)
