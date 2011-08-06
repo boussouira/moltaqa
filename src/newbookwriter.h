@@ -10,7 +10,7 @@ class NewBookWriter
 {
 public:
     NewBookWriter();
-    void createNewBook();
+    void createNewBook(QString bookPath=QString());
     QString bookPath();
 
     /// Begins a transaction on the database

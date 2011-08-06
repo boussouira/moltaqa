@@ -17,7 +17,7 @@ public:
 protected:
     void loadSettings();
     QString getFilePath();
-    QString getFolderPath(const QString &defaultPath = QString(), bool noRoot = false);
+    QString getFolderPath(const QString &defaultPath = QString());
 
 protected slots:
     void changeBooksDir();

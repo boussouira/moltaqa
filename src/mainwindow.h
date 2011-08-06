@@ -35,7 +35,8 @@ public slots:
     void lastTabClosed();
 
 private slots:
-    void on_actionImportFromShamela_triggered();
+    void on_actionImport_triggered();
+    void on_actionShamelaImport_triggered();
 
 private:
     IndexDB *m_indexDB;

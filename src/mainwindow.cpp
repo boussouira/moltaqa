@@ -10,6 +10,7 @@
 #include "bookexception.h"
 #include "libraryinfo.h"
 #include "welcomewidget.h"
+#include "shamelaimportdialog.h"
 
 #include <qmessagebox.h>
 #include <qsettings.h>
@@ -121,7 +122,7 @@ void MainWindow::loadSettings()
 //    ui->pushOpenQuran->setEnabled(defaultQuran != -1);
 }
 
-void MainWindow::on_actionImportFromShamela_triggered()
+void MainWindow::on_actionImport_triggered()
 {
     ImportDialog *dialog = new ImportDialog(m_indexDB, 0);
 
@@ -135,4 +136,13 @@ void MainWindow::lastTabClosed()
 {
     ui->stackedWidget->setCurrentIndex(0);
     m_bookView->removeToolBar();
+}
+
+void MainWindow::on_actionShamelaImport_triggered()
+{
+    ShamelaImportDialog importDialog;
+    importDialog.m_library = m_indexDB->connectionInfo();
+
+    if(importDialog.exec() == QDialog::Accepted)
+        m_booksList->loadBooksList();
 }

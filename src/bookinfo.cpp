@@ -4,10 +4,10 @@
 
 BookInfo::BookInfo()
 {
-    m_partsCount = 0;
-    m_firstID = 0;
-    m_lastID = 0;
-    m_bookID = 0;
+    m_partsCount = -1;
+    m_firstID = -1;
+    m_lastID = -1;
+    m_bookID = -1;
     m_hasInfo = false;
 }
 

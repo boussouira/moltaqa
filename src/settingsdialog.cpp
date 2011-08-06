@@ -42,18 +42,18 @@ QString SettingsDialog::getFilePath()
     return (dialog.exec()) ? dialog.selectedFiles().first() : QString();
 }
 
-QString SettingsDialog::getFolderPath(const QString &defaultPath, bool noRoot)
+QString SettingsDialog::getFolderPath(const QString &defaultPath)
 {
-    QDir dir = QFileDialog::getExistingDirectory(this, tr("اختر مجلد"),
+    QString dirPath = QFileDialog::getExistingDirectory(this, tr("اختر مجلد"),
                                                     defaultPath,
                                                     QFileDialog::ShowDirsOnly
                                                     |QFileDialog::DontResolveSymlinks);
-
-    if(dir.isRoot() && noRoot){
-        return QString();
-    } else {
+    if(!dirPath.isEmpty()) {
+        QDir dir(dirPath);
         return dir.absolutePath();
     }
+
+    return QString();
 }
 
 void SettingsDialog::changeBooksDir()

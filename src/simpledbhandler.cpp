@@ -48,7 +48,7 @@ void SimpleDBHandler::openID(int pid)
         m_simpleQuery->prevPage(id);
 
     if(m_simpleQuery->next()) {
-        m_textFormat->insertText(m_simpleQuery->value(1).toString());
+        m_textFormat->insertText(QString::fromUtf8(qUncompress(m_simpleQuery->value(1).toByteArray())));
         m_bookInfo->setCurrentID(m_simpleQuery->value(0).toInt());
         m_bookInfo->setCurrentPage(m_simpleQuery->value(3).toInt());
         m_bookInfo->setCurrentPart(m_simpleQuery->value(2).toInt());

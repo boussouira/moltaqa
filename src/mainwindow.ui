@@ -50,7 +50,10 @@
      <string>ملف</string>
     </property>
     <addaction name="actionBooksList"/>
-    <addaction name="actionImportFromShamela"/>
+    <addaction name="separator"/>
+    <addaction name="actionImport"/>
+    <addaction name="actionShamelaImport"/>
+    <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -114,9 +117,14 @@
     <string>عرض الكتب المتوفرة</string>
    </property>
   </action>
-  <action name="actionImportFromShamela">
+  <action name="actionImport">
    <property name="text">
     <string>استيراد كتب...</string>
+   </property>
+  </action>
+  <action name="actionShamelaImport">
+   <property name="text">
+    <string>استيراد من الشاملة...</string>
    </property>
   </action>
  </widget>

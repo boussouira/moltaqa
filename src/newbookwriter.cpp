@@ -22,10 +22,13 @@ QString NewBookWriter::bookPath()
     return m_bookPath;
 }
 
-void NewBookWriter::createNewBook()
+void NewBookWriter::createNewBook(QString bookPath)
 {
     // TODO: check if this file exsists
-    m_bookPath = QString("%1/book_%2.sqlite").arg(m_tempFolder).arg(QDateTime::currentDateTime().toMSecsSinceEpoch());
+    if(bookPath.isEmpty())
+        m_bookPath = QString("%1/book_%2.sqlite").arg(m_tempFolder).arg(QDateTime::currentDateTime().toMSecsSinceEpoch());
+    else
+        m_bookPath = bookPath;
 
     m_bookDB = QSqlDatabase::addDatabase("QSQLITE", "newBookDB");
     m_bookDB.setDatabaseName(m_bookPath);
@@ -40,13 +43,15 @@ void NewBookWriter::createNewBook()
 
 void NewBookWriter::createBookTables()
 {
+    // TODO: the id columun should be AUTO INCEREMENT?
     m_bookQuery.exec("DROP TABLE IF EXISTS bookPages");
     m_bookQuery.exec("CREATE TABLE IF NOT EXISTS bookPages ("
                      "id INTEGER PRIMARY KEY,"
-                     "pageText TEXT,"
+                     "pageText BLOB,"
                      "pageNum INTEGER,"
                      "partNum INTEGER)");
 
+    // TODO: categorie order
     m_bookQuery.exec("DROP TABLE IF EXISTS bookIndex");
     m_bookQuery.exec("CREATE TABLE IF NOT EXISTS bookIndex ("
                      "id INTEGER PRIMARY KEY,"
@@ -58,7 +63,7 @@ void NewBookWriter::createBookTables()
 void NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int partNum)
 {
     m_bookQuery.prepare("INSERT INTO bookPages (id, pageText, pageNum, partNum) VALUES (NULL, ?, ?, ?)");
-    m_bookQuery.bindValue(0, text);
+    m_bookQuery.bindValue(0, qCompress(text.toUtf8()));
     m_bookQuery.bindValue(1, pageNum);
     m_bookQuery.bindValue(2, partNum);
 
@@ -111,6 +116,7 @@ void NewBookWriter::startReading()
 
 void NewBookWriter::createFileInfo()
 {
+    // TODO: we should make this faster
     BookInfo bookInfo;
     m_bookQuery.exec("SELECT MAX(partNum), MIN(pageNum), MAX(pageNum), MIN(id), MAX(id) from bookPages ");
     if(m_bookQuery.next()) {

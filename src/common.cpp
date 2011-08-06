@@ -5,7 +5,7 @@ int rand_int(int smin, int smax)
     return (smin + (qrand() % (smax-smin+1)));
 }
 
-QString genBookName(QString path)
+QString genBookName(QString path, bool fullPath)
 {
     QString fileName("book_");
     char c[] = "abcdefABCDEF1234567";
@@ -23,5 +23,58 @@ QString genBookName(QString path)
         }
     }
 
-    return fileName+".alb";
+    if(fullPath)
+        return path+"/"+fileName+".alb";
+    else
+        return fileName+".alb";
+}
+
+QString arPlural(int count, PULRAL word, bool html)
+{
+    QStringList list;
+    QString str;
+
+    if(word == SECOND)
+        list << QObject::tr("ثانية")
+             << QObject::tr("ثانيتين")
+             << QObject::tr("ثوان")
+             << QObject::tr("ثانية");
+    else if(word == MINUTE)
+        list << QObject::tr("دقيقة")
+             << QObject::tr("دقيقتين")
+             << QObject::tr("دقائق")
+             << QObject::tr("دقيقة");
+    else if(word == HOUR)
+        list << QObject::tr("ساعة")
+             << QObject::tr("ساعتين")
+             << QObject::tr("ساعات")
+             << QObject::tr("ساعة");
+    else if(word == BOOK)
+        list << QObject::tr("كتاب واحد")
+             << QObject::tr("كتابين")
+             << QObject::tr("كتب")
+             << QObject::tr("كتابا");
+    else if(word == AUTHOR)
+        list << QObject::tr("مؤلف واحد")
+             << QObject::tr("مؤلفيين")
+             << QObject::tr("مؤلفيين")
+             << QObject::tr("مؤلفا");
+    else if(word == CATEGORIE)
+        list << QObject::tr("قسم واحد")
+             << QObject::tr("قسمين")
+             << QObject::tr("أقسام")
+             << QObject::tr("قسما");
+
+    if(count <= 1)
+        str = list.at(0);
+    else if(count == 2)
+        str = list.at(1);
+    else if (count > 2 && count <= 10)
+        str = QString("%1 %2").arg(count).arg(list.at(2));
+    else if (count > 10)
+        str = QString("%1 %2").arg(count).arg(list.at(3));
+    else
+        str = QString();
+
+    return html ? QString("<strong>%1</strong>").arg(str) : str;
 }
