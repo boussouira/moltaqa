@@ -57,7 +57,8 @@ SOURCES += mainwindow.cpp \
     shamelamanager.cpp \
     shamelaimportthread.cpp \
     librarycreator.cpp \
-    shamelaimportinfo.cpp
+    shamelaimportinfo.cpp \
+    openpagedialog.cpp
 HEADERS += mainwindow.h \
     pageinfo.h \
     qurantextformat.h \
@@ -98,11 +99,13 @@ HEADERS += mainwindow.h \
     shamelamanager.h \
     shamelaimportthread.h \
     librarycreator.h \
-    shamelaimportinfo.h
+    shamelaimportinfo.h \
+    openpagedialog.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \
     importdialog.ui \
     welcomewidget.ui \
-    shamelaimportdialog.ui
+    shamelaimportdialog.ui \
+    openpagedialog.ui
 RESOURCES += data/qt_rc.qrc

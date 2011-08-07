@@ -118,6 +118,7 @@ void SimpleDBHandler::childTitles(BookIndexNode *parentNode, int tid)
 
 void SimpleDBHandler::getBookInfo()
 {
+    // TODO: some books start with part 0
     m_bookInfo->setBookTable("bookPages");
     m_bookInfo->setTitleTable("bookIndex");
 

@@ -7,6 +7,7 @@
 #include "indexdb.h"
 #include "bookwidget.h"
 #include "bookexception.h"
+#include "openpagedialog.h"
 
 #include <qmainwindow.h>
 #include <qmenubar.h>
@@ -117,6 +118,7 @@ void BooksViewer::createMenus(QMainWindow *parent)
     connect(actionPrevAYA, SIGNAL(triggered()), SLOT(previousUnit()));
     connect(actionFirstPage, SIGNAL(triggered()), SLOT(firstPage()));
     connect(actionLastPage, SIGNAL(triggered()), SLOT(lastPage()));
+    connect(actionGotToPage, SIGNAL(triggered()), SLOT(goToPage()));
 
     // Index widget
     connect(actionIndexDock, SIGNAL(triggered()), SLOT(showIndexWidget()));
@@ -217,6 +219,17 @@ void BooksViewer::lastPage()
     updateActions();
 }
 
+void BooksViewer::goToPage()
+{
+    OpenPageDialog dialog(this);
+    dialog.setPage(currentBookWidget()->dbHandler()->bookInfo()->currentPage());
+    dialog.setPart(currentBookWidget()->dbHandler()->bookInfo()->currentPart());
+
+    if(dialog.exec() == QDialog::Accepted) {
+        currentBookWidget()->dbHandler()->openPage(dialog.selectedPage(), dialog.selectedPart());
+    }
+}
+
 void BooksViewer::updateActions()
 {
     bool hasNext = currentBookWidget()->dbHandler()->hasNext();
@@ -258,5 +271,13 @@ void BooksViewer::tabChanged(int newIndex)
 {
     if(newIndex != -1) {
         updateActions();
+
+        if(currentBookWidget()->dbHandler()->bookInfo()->isQuran()) {
+            actionNextAYA->setText(tr("الآية التالية"));
+            actionPrevAYA->setText(tr("الآية السابقة"));
+        } else {
+            actionNextAYA->setText(tr("انزال الصفحة")); // TODO: fix this tooltip?
+            actionPrevAYA->setText(tr("رفع الصفحة"));
+        }
     }
 }

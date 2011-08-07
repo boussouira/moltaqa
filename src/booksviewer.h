@@ -27,6 +27,7 @@ public slots:
     void previousPage();
     void firstPage();
     void lastPage();
+    void goToPage();
     void updateActions();
     void showIndexWidget();
     void tabChangePosition(int fromIndex, int toIndex);
