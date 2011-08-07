@@ -16,6 +16,7 @@
 SimpleDBHandler::SimpleDBHandler()
 {
     m_textFormat = new SimpleTextFormat();
+    m_fastIndex = true;
 }
 
 SimpleDBHandler::~SimpleDBHandler()
@@ -76,6 +77,29 @@ QAbstractItemModel *SimpleDBHandler::indexModel()
     m_indexModel->setRootNode(rootNode);
 
     return m_indexModel;
+}
+
+QAbstractItemModel * SimpleDBHandler::topIndexModel()
+{
+    BookIndexModel *indexModel = new BookIndexModel();
+    QTime time;
+    time.start();
+    BookIndexNode *rootNode = new BookIndexNode();
+
+    QSqlQuery query(m_bookDB);
+    query.exec(QString("SELECT id, parentID, pageID, title FROM bookIndex "
+                          "WHERE parentID = %1 ORDER BY id").arg(0));
+    while(query.next())
+    {
+        BookIndexNode *catNode = new BookIndexNode(query.value(3).toString(),
+                                                   query.value(2).toInt());
+        rootNode->appendChild(catNode);
+    }
+
+    qDebug() << "Load Top index take:" << time.elapsed() << "ms";
+    indexModel->setRootNode(rootNode);
+
+    return indexModel;
 }
 
 void SimpleDBHandler::childTitles(BookIndexNode *parentNode, int tid)
@@ -168,3 +192,4 @@ bool SimpleDBHandler::hasPrev()
 {
     return (m_bookInfo->currentID() > m_bookInfo->firstID());
 }
+

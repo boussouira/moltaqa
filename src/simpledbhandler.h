@@ -21,6 +21,7 @@ public:
     bool hasPrev();
 
     QAbstractItemModel *indexModel();
+    QAbstractItemModel *topIndexModel();
 
 protected:
     void connected();

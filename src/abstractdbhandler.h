@@ -43,7 +43,9 @@ public:
     virtual bool hasNext() = 0;
     virtual bool hasPrev() = 0;
 
+    bool needFastIndexLoad();
     virtual QAbstractItemModel *indexModel() = 0;
+    virtual QAbstractItemModel *topIndexModel()=0;
     virtual void getBookInfo() = 0;
 
 protected:
@@ -59,6 +61,7 @@ protected:
     QSqlQuery m_bookQuery;
     QString m_bookDBPath;
     QString m_connectionName;
+    bool m_fastIndex;
 };
 
 #endif // ABSTRACTDBHANDLER_H

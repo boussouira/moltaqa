@@ -83,3 +83,8 @@ IndexDB * AbstractDBHandler::indexDB()
 {
     return m_indexDB;
 }
+
+bool AbstractDBHandler::needFastIndexLoad()
+{
+    return m_fastIndex;
+}

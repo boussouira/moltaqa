@@ -3,9 +3,12 @@
 #include "abstractdbhandler.h"
 #include "webview.h"
 #include "textformatter.h"
+#include "simpledbhandler.h"
 
 #include <qsplitter.h>
 #include <qboxlayout.h>
+#include <qtconcurrentrun.h>
+#include <qfuturewatcher.h>
 
 BookWidget::BookWidget(AbstractDBHandler *db, QWidget *parent): QWidget(parent), m_db(db)
 {
@@ -14,6 +17,9 @@ BookWidget::BookWidget(AbstractDBHandler *db, QWidget *parent): QWidget(parent),
     m_view = new WebView(m_splitter);
     m_indexWidget = new IndexWidget(m_splitter);
     m_indexWidget->setBookInfo(db->bookInfo());
+
+    m_watcher = new QFutureWatcher<QAbstractItemModel*>(this);
+    connect(m_watcher, SIGNAL(finished()), SLOT(indexModelReady()));
 
     m_splitter->addWidget(m_indexWidget);
     m_splitter->addWidget(m_view);
@@ -44,7 +50,15 @@ void BookWidget::setDBHandler(AbstractDBHandler *db)
 
 void BookWidget::displayInfo()
 {
-    m_indexWidget->setIndex(m_db->indexModel());
+    if(m_db->needFastIndexLoad()) {
+        m_retModel = QtConcurrent::run(m_db, &AbstractDBHandler::indexModel);
+        m_watcher->setFuture(m_retModel);
+
+        m_indexWidget->setIndex(m_db->topIndexModel());
+    } else {
+        m_indexWidget->setIndex(m_db->indexModel());
+    }
+
     m_indexWidget->hideAyaSpin(m_db->bookInfo()->isQuran());
     m_indexWidget->hidePartSpin(m_db->bookInfo()->partsCount() > 1);
 }
@@ -132,4 +146,9 @@ void BookWidget::hideIndexWidget()
     } else {
         m_splitter->setSizes(m_splitterSizes);
     }
+}
+
+void BookWidget::indexModelReady()
+{
+    m_indexWidget->setIndex(m_retModel.result());
 }

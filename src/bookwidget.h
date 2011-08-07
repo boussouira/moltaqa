@@ -2,12 +2,14 @@
 #define BOOKWIDGET_H
 
 #include <qwidget.h>
+#include <qfuture.h>
 
 class WebView;
 class IndexWidget;
 class AbstractDBHandler;
 class QSplitter;
 class QVBoxLayout;
+class QAbstractItemModel;
 
 class BookWidget: public QWidget
 {
@@ -30,6 +32,7 @@ public:
 
 public slots:
     void openID(int id);
+    void indexModelReady();
 
 protected:
     QSplitter *m_splitter;
@@ -38,6 +41,8 @@ protected:
     IndexWidget *m_indexWidget;
     AbstractDBHandler *m_db;
     QList<int> m_splitterSizes;
+    QFuture<QAbstractItemModel*> m_retModel;
+    QFutureWatcher<QAbstractItemModel*> *m_watcher;
 };
 
 #endif // BOOKWIDGET_H

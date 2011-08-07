@@ -11,6 +11,7 @@
 QuranDBHandler::QuranDBHandler()
 {
     m_textFormat = new QuranTextFormat();
+    m_fastIndex = false;
 }
 
 QuranDBHandler::~QuranDBHandler()
@@ -205,4 +206,9 @@ void QuranDBHandler::firstSoraAndAya(int page)
         m_bookInfo->setCurrentAya(m_quranQuery->value(1).toInt());
         m_bookInfo->setCurrentSoraAyatCount(getSoraAyatCount(m_quranQuery->value(0).toInt()));
     }
+}
+
+QAbstractItemModel * QuranDBHandler::topIndexModel()
+{
+    return 0;
 }
