@@ -62,10 +62,7 @@ QString BookInfo::toString()
     QString text;
 
     text.append(QString("%1-%2;").arg(m_firstID).arg(m_lastID));
-
-    for(int i=0; i<m_partsCount; i++){
-        text.append(QString("%1-%2;").arg(firstPage(i+1)).arg(lastPage(i+1)));
-    }
+    text.append(QString("%1:%2-%3").arg(m_partsCount).arg(firstPage()).arg(lastPage()));
 
     return text;
 }
@@ -75,7 +72,7 @@ void BookInfo::fromString(QString info)
     if(info.isEmpty())
         return;
 
-    m_partsCount = info.count(';')-1;
+    m_partsCount = info.count(';');
     QStringList partInfoList;
     bool idsProccessed = false;
     int part=1;
@@ -87,7 +84,9 @@ void BookInfo::fromString(QString info)
             setLastID(partInfoList.last().toInt());
             idsProccessed = true;
         } else {
-            partInfoList = partInfo.split('-', QString::SkipEmptyParts);
+            partInfoList = partInfo.split(':', QString::SkipEmptyParts);
+            m_partsCount = partInfoList.first().toInt();
+            partInfoList = partInfoList.last().split('-', QString::SkipEmptyParts);
             setFirstPage(partInfoList.first().toInt(), part);
             setLastPage(partInfoList.last().toInt(), part);
             part++;

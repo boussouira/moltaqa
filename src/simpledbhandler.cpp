@@ -123,32 +123,16 @@ void SimpleDBHandler::getBookInfo()
     m_bookInfo->setTitleTable("bookIndex");
 
     if(!m_bookInfo->haveInfo()) {
-        m_simpleQuery->exec(QString("SELECT MAX(partNum), MIN(pageNum), MAX(pageNum), MIN(id), MAX(id) from %1 ")
-                            .arg(m_bookInfo->bookTable()));
+        m_simpleQuery->exec(QString("SELECT MAX(partNum), MIN(id), MAX(id) from %1 ").arg(m_bookInfo->bookTable()));
         if(m_simpleQuery->next()) {
             bool ok;
             int parts = m_simpleQuery->value(0).toInt(&ok);
             if(!ok)
-                parts = maxPartNum();
+                qWarning("Can't get parts count");
 
-            m_bookInfo->setFirstID(m_simpleQuery->value(3).toInt());
-            m_bookInfo->setLastID(m_simpleQuery->value(4).toInt());
-
-            if(parts == 1) {
-                m_bookInfo->setPartsCount(parts);
-                m_bookInfo->setFirstPage(m_simpleQuery->value(1).toInt());
-                m_bookInfo->setLastPage(m_simpleQuery->value(2).toInt());
-            } else if(parts > 1) {
-                m_bookInfo->setPartsCount(parts);
-                for(int i=1;i<=parts;i++) {
-                    m_simpleQuery->exec(QString("SELECT MIN(pageNum), MAX(pageNum) from %1 WHERE partNum = %2 ")
-                                        .arg(m_bookInfo->bookTable()).arg(i));
-                    if(m_simpleQuery->next()) {
-                        m_bookInfo->setFirstPage(m_simpleQuery->value(0).toInt(), i);
-                        m_bookInfo->setLastPage(m_simpleQuery->value(1).toInt(), i);
-                    }
-                }
-            }
+            m_bookInfo->setPartsCount(parts);
+            m_bookInfo->setFirstID(m_simpleQuery->value(1).toInt());
+            m_bookInfo->setLastID(m_simpleQuery->value(2).toInt());
         }
 
         m_indexDB->updateBookMeta(m_bookInfo, false);

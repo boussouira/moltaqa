@@ -56,9 +56,6 @@ void IndexWidget::displayBookInfo()
 {
     sendSignals = false;
     int part = qMax(1, m_bookInfo->currentPart());
-    ui->spinPage->setMaximum(m_bookInfo->lastPage(part));
-    ui->spinPage->setMinimum(m_bookInfo->firstPage(part));
-    ui->spinPage->setSuffix(QString(" / %1").arg(m_bookInfo->lastPage(part)));
     ui->spinPage->setValue(qMax(1, m_bookInfo->currentPage()));
 
     if(m_bookInfo->partsCount() > 1) {
