@@ -20,6 +20,12 @@ class ShamelaImportDialog : public QDialog
 public:
     ShamelaImportDialog(QWidget *parent = 0);
     ~ShamelaImportDialog();
+    static ShamelaImportDialog *importDialog();
+    ShamelaManager *shamelaManager();
+    ShamelaInfo *shamelaInfo();
+    LibraryInfo *libraryInfo();
+    bool addAuthorsForEachBook();
+    void setLibraryInfo(LibraryInfo *info);
 
 protected:
     QString getFolderPath(const QString &defaultPath);
@@ -30,6 +36,7 @@ protected:
       */
     void goPage(int index=-1);
     void showImportInfo();
+    void setupImporting();
     void startImporting();
     void showBooks();
     void createFilter();
@@ -37,24 +44,25 @@ protected:
 public slots:
     void setStepTitle(const QString &title);
     void addDebugInfo(const QString &text);
+    void bookImported(const QString &text);
 
 private slots:
     void nextStep();
-    void on_buttonSelectShamela_clicked();
+    void selectShamela();
     void doneImporting();
     void cancel();
 
 signals:
     void setProgress(int value);
 
-public:
-    LibraryInfo *m_library;
-
 private:
+    int m_importThreadCount;
+    LibraryInfo *m_library;
     ShamelaInfo *m_shamela;
     ShamelaManager *m_manager;
     ShamelaImportThread *m_importThread;
     QStandardItemModel *m_booksModel;
+    QList<ShamelaImportThread*> m_importThreads;
     Ui::ShamelaImportDialog *ui;
 };
 

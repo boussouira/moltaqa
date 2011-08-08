@@ -17,25 +17,18 @@ public:
     void stop();
 
 protected:
-    void importCats();
-    void importAuthors();
     void importBooks();
 
 signals:
-    void setStepsRange(int minVal, int maxVal);
-    void setStep(int value);
-    void setRange(int minValue, int maxValue);
-    void setProgress(int value);
-    void stepTitle(QString title);
-    void debugInfo(QString text);
+    void bookImported(QString name);
     void doneImporting();
 
-public: //TODO: make this private
-    bool m_stop;
-    ShamelaInfo *m_shamela;
-    ShamelaManager *m_manager;
-    LibraryInfo *m_library;
+protected:
+    ShamelaInfo *m_shamelaInfo;
+    ShamelaManager *m_shamelaManager;
     LibraryCreator m_creator;
+    bool m_stop;
+    int m_threadID;
 };
 
 #endif // SHAMELAIMPORTTHREAD_H

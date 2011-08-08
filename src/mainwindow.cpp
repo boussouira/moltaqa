@@ -141,7 +141,7 @@ void MainWindow::lastTabClosed()
 void MainWindow::on_actionShamelaImport_triggered()
 {
     ShamelaImportDialog importDialog;
-    importDialog.m_library = m_indexDB->connectionInfo();
+    importDialog.setLibraryInfo(m_indexDB->connectionInfo());
 
     if(importDialog.exec() == QDialog::Accepted)
         m_booksList->loadBooksList();

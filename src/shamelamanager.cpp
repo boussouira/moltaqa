@@ -131,6 +131,26 @@ int ShamelaManager::getCatCount()
     return -1;
 }
 
+AuthorInfo *ShamelaManager::getAuthorInfo(int id)
+{
+    openShamelaSpecialDB();
+    QSqlQuery specialQuery(m_shamelaSpecialDB);
+
+    specialQuery.prepare("SELECT authid, auth, Lng, AD, inf FROM Auth WHERE authid = ?");
+    specialQuery.bindValue(0, id);
+    specialQuery.exec();
+
+    if(specialQuery.next()) {
+        return new AuthorInfo(specialQuery.value(0).toInt(),
+                              specialQuery.value(3).toInt(),
+                              specialQuery.value(1).toString(),
+                              specialQuery.value(2).toString(),
+                              specialQuery.value(4).toString());
+    } else {
+        return 0;
+    }
+}
+
 void ShamelaManager::selectCats()
 {
     openShamelaDB();
@@ -179,6 +199,8 @@ void ShamelaManager::selectBooks()
 
 ShamelaBookInfo *ShamelaManager::nextBook()
 {
+    QMutexLocker locker(&m_mutex);
+
     if(m_haveBookFilter) {
         return nextFiltredBook();
     } else {
@@ -227,4 +249,24 @@ void ShamelaManager::setAcceptedBooks(QList<int> accepted)
 void ShamelaManager::setRejectedBooks(QList<int> rejected)
 {
     m_rejected = rejected;
+}
+
+void ShamelaManager::addCatMap(int shamelaID, int libID)
+{
+    m_catMap.insert(shamelaID, libID);
+}
+
+void ShamelaManager::addAuthorMap(int shamelaID, int libID)
+{
+    m_authorsMap.insert(shamelaID, libID);
+}
+
+int ShamelaManager::mapShamelaToLibCat(int shamelaID)
+{
+    return m_catMap.value(shamelaID, 0);
+}
+
+int ShamelaManager::mapShamelaToLibAuthor(int shamelaID)
+{
+    return m_authorsMap.value(shamelaID, 0);
 }

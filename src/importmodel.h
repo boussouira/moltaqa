@@ -31,7 +31,6 @@ public:
     QString catName() { return m_catName; }
     int catID() { return m_catID; }
     QBrush backgroundColor() { return m_bgColor; }
-    QString serializedBookInfo();
 
     void setBookName(const QString &name) { m_bookName = name; }
     void setAuthorName(const QString &name) { m_authorName = name; }
@@ -41,7 +40,6 @@ public:
     void setCatName(const QString &name) { m_catName = name; }
     void setCatID(int id);
     void setBackgroundColor(const QBrush &color);
-    void setSerializedBookInfo(QString info);
 
 protected:
     BookInfo::Type m_type;
@@ -51,7 +49,6 @@ protected:
     QString m_bookPath;
     QString m_typeName;
     QString m_catName;
-    QString m_serializedBookInfo;
     int m_catID;
     int m_nodeID;
     QBrush m_bgColor;

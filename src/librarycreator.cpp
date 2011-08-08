@@ -5,31 +5,37 @@
 #include <qdebug.h>
 #include <qvariant.h>
 #include <qfileinfo.h>
+#include "shamelaimportdialog.h"
 
 LibraryCreator::LibraryCreator()
 {
+    ShamelaImportDialog *importDialog = ShamelaImportDialog::importDialog();
+
+    m_shamelaManager = importDialog->shamelaManager();
+    m_shamelaInfo = importDialog->shamelaInfo();
+    m_library = importDialog->libraryInfo();
+
     m_prevArchive = -1;
+    m_importAuthor = false;
+    m_threadID = 0;
 }
 
 void LibraryCreator::openDB()
 {
-    m_bookDB = QSqlDatabase::addDatabase("QSQLITE", "newBookIndexDB");
-    m_bookDB.setDatabaseName(m_library->booksIndexPath());
+    if(!m_bookDB.isOpen()) {
+        m_bookDB = QSqlDatabase::addDatabase("QSQLITE", QString("newBookIndexDB_%1").arg(m_threadID));
+        m_bookDB.setDatabaseName(m_library->booksIndexPath());
 
-    if(!m_bookDB.open()) {
-        qDebug() << QObject::tr("لم يمكن فتح قاعدة البيانات: %1").arg(m_library->booksIndexPath());
+        if(!m_bookDB.open()) {
+            qDebug() << QObject::tr("لم يمكن فتح قاعدة البيانات: %1").arg(m_library->booksIndexPath());
+        }
+
+        m_bookQuery = QSqlQuery(m_bookDB);
     }
-
-    m_bookQuery = QSqlQuery(m_bookDB);
 }
 
 void LibraryCreator::createTables()
 {
-    m_bookQuery.exec("DROP TABLE IF EXISTS booksList");
-    m_bookQuery.exec("DROP TABLE IF EXISTS catList");
-    m_bookQuery.exec("DROP TABLE IF EXISTS bookMeta");
-    m_bookQuery.exec("DROP TABLE IF EXISTS authorsList");
-
     m_bookQuery.exec("CREATE TABLE booksList ("
                      "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
                      "bookID INTEGER , "
@@ -66,9 +72,35 @@ void LibraryCreator::createTables()
                      "info BLOB)");
 }
 
+void LibraryCreator::importCats()
+{
+    m_shamelaManager->selectCats();
+
+    CategorieInfo *cat = m_shamelaManager->nextCat();
+    while(cat) {
+        addCat(cat);
+
+        delete cat;
+        cat = m_shamelaManager->nextCat();
+    }
+}
+
+void LibraryCreator::importAuthors()
+{
+    m_shamelaManager->selectAuthors();
+
+    AuthorInfo *auth = m_shamelaManager->nextAuthor();
+    while(auth) {
+        addAuthor(auth);
+
+        delete auth;
+        auth = m_shamelaManager->nextAuthor();
+    }
+}
+
 void LibraryCreator::addCat(CategorieInfo *cat)
 {
-    int lastId;
+    int lastId = 0;
 
     m_bookQuery.prepare("INSERT INTO catList (id, title, parentID, catOrder) VALUES (NULL, ?, ?, ?)");
     m_bookQuery.bindValue(0, cat->name);
@@ -77,6 +109,7 @@ void LibraryCreator::addCat(CategorieInfo *cat)
 
     if(m_bookQuery.exec()) {
         lastId = m_bookQuery.lastInsertId().toInt();
+        m_shamelaManager->addCatMap(cat->id, lastId);
         m_catMap.insert(cat->id, lastId);
         //qDebug("Cat %d -> %d", cat->id, lastId);
     } else {
@@ -91,25 +124,39 @@ void LibraryCreator::addCat(CategorieInfo *cat)
     }
 }
 
-void LibraryCreator::addAuthor(AuthorInfo *auth)
+void LibraryCreator::addAuthor(AuthorInfo *auth, bool checkExist)
 {
-    m_bookQuery.prepare("INSERT INTO authorsList (id, name, full_name, die_year, info) VALUES (NULL, ?, ?, ?, ?)");
-    m_bookQuery.bindValue(0, auth->name);
-    m_bookQuery.bindValue(1, auth->fullName);
-    m_bookQuery.bindValue(2, auth->dieYear);
-    m_bookQuery.bindValue(3, qCompress(auth->info.toLocal8Bit()));
+    QMutexLocker locker(&m_mutex);
 
-    if(!m_bookQuery.exec())
-        SQL_ERROR(m_bookQuery.lastError().text());
+     QSqlQuery bookQuery(m_bookDB);
+    if(checkExist) {
+       int lid = m_shamelaManager->mapShamelaToLibAuthor(auth->id);
+       if(lid != 0) {
+//           qDebug() <<  "Author" << auth->name << "Exist";
+           return;
+       }
+    }
+
+    bookQuery.prepare("INSERT INTO authorsList (id, name, full_name, die_year, info) VALUES (NULL, ?, ?, ?, ?)");
+    bookQuery.bindValue(0, auth->name);
+    bookQuery.bindValue(1, auth->fullName);
+    bookQuery.bindValue(2, auth->dieYear);
+    bookQuery.bindValue(3, qCompress(auth->info.toUtf8()));
+
+    if(bookQuery.exec())
+        m_shamelaManager->addAuthorMap(auth->id, bookQuery.lastInsertId().toInt());
+    else
+        SQL_ERROR(bookQuery.lastError().text());
 }
 
 void LibraryCreator::addBook(ShamelaBookInfo *book)
 {
-    QString connName(QString("mdb_%1").arg(book->archive));
+    QString connName(QString("mdb_%1_%2").arg(m_threadID).arg(book->archive));
     QString path = genBookName(m_library->booksDir(), true);
 
     {
         NewBookWriter bookWrite;
+        bookWrite.setThreadID(m_threadID);
         bookWrite.createNewBook(path);
 
         QSqlDatabase bookDB;
@@ -117,8 +164,8 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
             bookDB = QSqlDatabase::database(connName);
         } else {
             // Remove old connection
-            qDebug("Remove connection: %d", m_prevArchive);
-            QString prevConnName(QString("mdb_%1").arg(m_prevArchive));
+//            qDebug("Remove connection: %d", m_prevArchive);
+            QString prevConnName(QString("mdb_%1_%2").arg(m_threadID).arg(m_prevArchive));
             QSqlDatabase::database(prevConnName, false).close();
             QSqlDatabase::removeDatabase(prevConnName);
 
@@ -163,7 +210,7 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
         bookWrite.endReading();
     }
 
-    QSqlDatabase::removeDatabase("newBookDB");
+    QSqlDatabase::removeDatabase(QString("newBookDB_%1").arg(m_threadID));
 
     if(!book->archive)
         QSqlDatabase::removeDatabase(connName);
@@ -188,6 +235,11 @@ void LibraryCreator::importBook(ShamelaBookInfo *book, QString path)
 {
     QFileInfo fileInfo(path);
 
+    if(m_importAuthor) {
+        AuthorInfo *auth = m_shamelaManager->getAuthorInfo(book->authorID);
+        addAuthor(auth, true);
+    }
+
     m_bookQuery.prepare("INSERT INTO booksList (id, bookID, bookType, bookFlags, bookCat,"
                        "bookName, bookInfo, authorName, authorID, fileName, bookFolder)"
                        "VALUES(NULL, :book_id, :book_type, :book_flags, :cat_id, :book_name, "
@@ -196,15 +248,20 @@ void LibraryCreator::importBook(ShamelaBookInfo *book, QString path)
     m_bookQuery.bindValue(":book_id", 0);
     m_bookQuery.bindValue(":book_type", BookInfo::NormalBook);
     m_bookQuery.bindValue(":book_flags", 0);
-    m_bookQuery.bindValue(":cat_id", m_catMap.value(book->cat, 0));
+    m_bookQuery.bindValue(":cat_id", m_shamelaManager->mapShamelaToLibCat(book->cat));
     m_bookQuery.bindValue(":book_name", book->name);
     m_bookQuery.bindValue(":book_info", book->info);
     m_bookQuery.bindValue(":author_name", book->authName);
-    m_bookQuery.bindValue(":author_id", book->authorID);
+    m_bookQuery.bindValue(":author_id", m_shamelaManager->mapShamelaToLibAuthor(book->authorID));
     m_bookQuery.bindValue(":file_name", fileInfo.fileName()); // Add file name
     m_bookQuery.bindValue(":book_folder", QVariant(QVariant::String));
 
     if(!m_bookQuery.exec()) {
         SQL_ERROR(m_bookQuery.lastError().text());
     }
+}
+
+void LibraryCreator::setImportAuthors(bool import)
+{
+    m_importAuthor = true;
 }

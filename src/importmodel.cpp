@@ -218,12 +218,3 @@ void ImportModel::removeRow(int row, const QModelIndex &parent)
     endRemoveRows();
 }
 
-void ImportModelNode::setSerializedBookInfo(QString info)
-{
-    m_serializedBookInfo = info;
-}
-
-QString ImportModelNode::serializedBookInfo()
-{
-    return m_serializedBookInfo;
-}

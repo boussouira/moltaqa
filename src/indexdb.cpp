@@ -132,11 +132,6 @@ int IndexDB::addBook(ImportModelNode *book)
             qWarning() << "Can't remove:" << book->bookPath();
         if(indexQuery.exec()) {
             int lastID = indexQuery.lastInsertId().toInt();
-            BookInfo info;
-            info.setBookID(lastID);
-            info.fromString(book->serializedBookInfo());
-
-            updateBookMeta(&info, true);
             return lastID;
         } else {
             qWarning() << indexQuery.lastError().text();

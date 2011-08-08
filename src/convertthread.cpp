@@ -104,7 +104,7 @@ void ConvertThread::ImportFromShamelaBook(const QString &path, QList<ImportModel
         copyBookFromShamelaBook(node, bookDB, bookID);
         nodes.append(node);
 
-        QSqlDatabase::removeDatabase("newBookDB");
+        QSqlDatabase::removeDatabase("newBookDB_0");
     }
 
     if(bookQuery.lastError().isValid())
@@ -143,7 +143,6 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
     writer.endReading();
 
     node->setBookPath(writer.bookPath());
-    node->setSerializedBookInfo(writer.serializeBookInfo());
 }
 
 QString ConvertThread::getBookType(const QSqlDatabase &bookDB)

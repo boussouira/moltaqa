@@ -5,11 +5,13 @@
 #include <qsqlquery.h>
 #include <qsqlerror.h>
 #include <qhash.h>
+#include <QTime>
 
 class NewBookWriter
 {
 public:
     NewBookWriter();
+    void setThreadID(int id) { m_threadID = id; }
     void createNewBook(QString bookPath=QString());
     QString bookPath();
 
@@ -20,27 +22,27 @@ public:
     void endReading();
     void addPage(const QString &text, int pageID, int pageNum, int partNum);
     void addTitle(const QString &title, int tid, int level);
-    QString serializeBookInfo();
 
 protected:
     void createBookTables();
-    /**
-      Serialize this book info
-      */
-    void createFileInfo();
 
 protected:
     QString m_tempFolder;
     QString m_bookPath;
-    QString m_bookInfo; ///< Save Serialization of this book info
     QSqlDatabase m_bookDB;
     QSqlQuery m_bookQuery;
     int m_pageId;
     int m_prevID;
     int m_lastLevel;
     int m_titleID;
+    // Book information
+    QHash<int, int> m_firstPage;
+    QHash<int, int> m_lastPage;
+
     QHash<int, int> m_idsHash; ///< For mapping between shamela ids and our ids
     QHash<int, int> m_levels;
+    QTime m_time;
+    int m_threadID;
 };
 
 #endif // NEWBOOKWRITER_H

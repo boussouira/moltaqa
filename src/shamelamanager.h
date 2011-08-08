@@ -11,6 +11,7 @@
 #include <qstringlist.h>
 #include <qhash.h>
 #include <qdebug.h>
+#include <qmutex.h>
 
 class ShamelaManager
 {
@@ -30,6 +31,8 @@ public:
     int getAuthorsCount();
     int getCatCount();
 
+    AuthorInfo *getAuthorInfo(int id);
+
     void selectCats();
     void selectAuthors();
     void selectBooks();
@@ -38,6 +41,11 @@ public:
     AuthorInfo *nextAuthor();
     ShamelaBookInfo *nextBook();
     ShamelaBookInfo *nextFiltredBook();
+
+    void addCatMap(int shamelaID, int libID);
+    void addAuthorMap(int shamelaID, int libID);
+    int mapShamelaToLibCat(int shamelaID);
+    int mapShamelaToLibAuthor(int shamelaID);
 
 protected:
     LibraryInfo *m_library;
@@ -51,6 +59,9 @@ protected:
     bool m_haveBookFilter;
     QList<int> m_accepted;
     QList<int> m_rejected;
+    QHash<int, int> m_catMap;
+    QHash<int, int> m_authorsMap;
+    QMutex m_mutex;
 };
 
 #endif // SHAMELAMANAGER_H

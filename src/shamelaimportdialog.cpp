@@ -14,11 +14,15 @@
 #include <qsortfilterproxymodel.h>
 #include <qmessagebox.h>
 
+static ShamelaImportDialog* m_importDialog=0;
+
 ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ShamelaImportDialog)
 {
     ui->setupUi(this);
+
+    m_importDialog = this;
 
     m_shamela = new ShamelaInfo();
     m_manager = new ShamelaManager(m_shamela);
@@ -30,6 +34,7 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
     connect(ui->pushNext, SIGNAL(clicked()), SLOT(nextStep()));
     connect(ui->pushCancel, SIGNAL(clicked()), SLOT(cancel()));
     connect(ui->pushDone, SIGNAL(clicked()), SLOT(accept()));
+    connect(ui->buttonSelectShamela, SIGNAL(clicked()), SLOT(selectShamela()));
     connect(this, SIGNAL(setProgress(int)), ui->progressBar, SLOT(setValue(int)));
 }
 
@@ -38,6 +43,36 @@ ShamelaImportDialog::~ShamelaImportDialog()
     delete m_shamela;
     delete m_manager;
     delete ui;
+}
+
+ShamelaImportDialog *ShamelaImportDialog::importDialog()
+{
+    return m_importDialog;
+}
+
+ShamelaManager *ShamelaImportDialog::shamelaManager()
+{
+    return m_manager;
+}
+
+ShamelaInfo *ShamelaImportDialog::shamelaInfo()
+{
+    return m_shamela;
+}
+
+LibraryInfo *ShamelaImportDialog::libraryInfo()
+{
+    return m_library;
+}
+
+bool ShamelaImportDialog::addAuthorsForEachBook()
+{
+    return ui->radioImportAuthorsWhenNedded->isChecked();
+}
+
+void ShamelaImportDialog::setLibraryInfo(LibraryInfo *info)
+{
+    m_library = info;
 }
 
 QString ShamelaImportDialog::getFolderPath(const QString &defaultPath)
@@ -55,7 +90,7 @@ QString ShamelaImportDialog::getFolderPath(const QString &defaultPath)
     }
 }
 
-void ShamelaImportDialog::on_buttonSelectShamela_clicked()
+void ShamelaImportDialog::selectShamela()
 {
     QString path = getFolderPath(ui->lineShamelaDir->text());
 
@@ -97,6 +132,7 @@ void ShamelaImportDialog::nextStep()
         goPage();
     } else if(index == 2) { // Start importing
         goPage();
+        setupImporting();
         startImporting();
         ui->pushNext->setEnabled(false);
     }
@@ -153,6 +189,26 @@ void ShamelaImportDialog::createFilter()
         m_manager->setRejectedBooks(selectedIDs);
 }
 
+void ShamelaImportDialog::setupImporting()
+{
+    LibraryCreator creator;
+    creator.openDB();
+    creator.createTables();
+
+    creator.start();
+    if(ui->radioImportAllAuthors->isChecked()){
+        addDebugInfo(tr("جاري اضافة المؤلفيين..."));
+        creator.importAuthors();
+    }
+
+    if(ui->radioUseShamelaCat->isChecked()) {
+        addDebugInfo(tr("جاري استيراد الاقسام..."));
+        creator.importCats();
+    }
+
+    creator.done();
+}
+
 void ShamelaImportDialog::showImportInfo()
 {
     int booksCount = m_manager->getBooksCount();
@@ -171,24 +227,26 @@ void ShamelaImportDialog::showImportInfo()
     ui->labelImportInfo->setText(info);
 }
 
+
 void ShamelaImportDialog::startImporting()
 {
-    m_importThread = new ShamelaImportThread(this);
-    m_importThread->m_manager = m_manager;
-    m_importThread->m_shamela = m_shamela;
-    m_importThread->m_library = m_library;
+    ui->progressBar->setMaximum(m_manager->getBooksCount());
+    ui->progressBar->setValue(0);
+    ui->progressSteps->setValue(2);
 
-    connect(m_importThread, SIGNAL(setStepsRange(int,int)), ui->progressSteps, SLOT(setRange(int,int)));
-    connect(m_importThread, SIGNAL(setStep(int)), ui->progressSteps, SLOT(setValue(int)));
+    m_importThreadCount = QThread::idealThreadCount();
 
-    connect(m_importThread, SIGNAL(setRange(int,int)), ui->progressBar, SLOT(setRange(int,int)));
-    connect(m_importThread, SIGNAL(setProgress(int)), ui->progressBar, SLOT(setValue(int)));
+    m_manager->selectBooks();
 
-    connect(m_importThread, SIGNAL(stepTitle(QString)), SLOT(setStepTitle(QString)));
-    connect(m_importThread, SIGNAL(debugInfo(QString)), SLOT(addDebugInfo(QString)));
-    connect(m_importThread, SIGNAL(doneImporting()), SLOT(doneImporting()));
+    for(int i=0; i<m_importThreadCount; i++) {
+        ShamelaImportThread *thread = new ShamelaImportThread(this);
+        connect(thread, SIGNAL(bookImported(QString)), SLOT(bookImported(QString)));
+        connect(thread, SIGNAL(doneImporting()), SLOT(doneImporting()));
 
-    m_importThread->start();
+        m_importThreads.append(thread);
+
+        thread->start();
+    }
 }
 
 void ShamelaImportDialog::setStepTitle(const QString &title)
@@ -202,22 +260,36 @@ void ShamelaImportDialog::addDebugInfo(const QString &text)
     ui->listDebug->scrollToBottom();
 }
 
+void ShamelaImportDialog::bookImported(const QString &text)
+{
+    ui->progressBar->setValue(ui->progressBar->value()+1);
+    ui->listDebug->addItem(" + "+text);
+    ui->listDebug->scrollToBottom();
+}
+
 void ShamelaImportDialog::doneImporting()
 {
-    ui->pushNext->hide();
-    ui->pushCancel->hide();
-    ui->pushDone->show();
+    if(--m_importThreadCount<=0) {
+        ui->pushNext->hide();
+        ui->pushCancel->hide();
+        ui->pushDone->show();
+
+        addDebugInfo(tr("انتهى اسيراد الكتب بنجاح"));
+    }
 }
 
 void ShamelaImportDialog::cancel()
 {
-    if(m_importThread->isRunning()){
+    if(m_importThreads.count()){
         int rep = QMessageBox::question(this,
                                         tr("ايقاف الاستيراد"),
                                         tr("هل تريد ايقاف استيراد الكتب؟"),
                                         QMessageBox::Yes|QMessageBox::No);
-        if(rep == QMessageBox::Yes)
-            m_importThread->stop();
+        if(rep == QMessageBox::Yes) {
+            for(int i=0; i<m_importThreads.count(); i++) {
+                m_importThreads.at(i)->stop();
+            }
+        }
     } else {
         reject();
     }
