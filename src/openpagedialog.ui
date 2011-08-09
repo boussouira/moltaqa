@@ -43,6 +43,9 @@
        <property name="alignment">
         <set>Qt::AlignCenter</set>
        </property>
+       <property name="maximum">
+        <number>999999999</number>
+       </property>
       </widget>
      </item>
      <item row="1" column="0">
@@ -68,6 +71,9 @@
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
+       </property>
+       <property name="maximum">
+        <number>999999999</number>
        </property>
       </widget>
      </item>
