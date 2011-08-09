@@ -2,8 +2,8 @@
 #include "bookexception.h"
 #include <qsettings.h>
 #include <qdir.h>
-#include <QDateTime>
-#include <QDebug>
+#include <qdatetime.h>
+#include <qdebug.h>
 #include <bookinfo.h>
 
 NewBookWriter::NewBookWriter()
