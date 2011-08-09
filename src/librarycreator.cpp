@@ -6,6 +6,7 @@
 #include <qvariant.h>
 #include <qfileinfo.h>
 #include "shamelaimportdialog.h"
+#include "newquranwriter.h"
 
 LibraryCreator::LibraryCreator()
 {
@@ -218,6 +219,48 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
     importBook(book, path);
 }
 
+void LibraryCreator::addQuran()
+{
+    QString connName(QString("shamela_quran_%1").arg(m_threadID));
+    QString path = genBookName(m_library->booksDir(), true);
+
+    {
+        newQuranWriter quranWrite;
+        quranWrite.setThreadID(m_threadID);
+        quranWrite.createNewBook(path);
+        QSqlDatabase bookDB = QSqlDatabase::addDatabase("QODBC", connName);
+        bookDB.setDatabaseName(QString("DRIVER={Microsoft Access Driver (*.mdb)};FIL={MS Access};DBQ=%1")
+                               .arg(m_shamelaInfo->shamelaSpecialDbPath()));
+
+        if (!bookDB.open()) {
+            DB_OPEN_ERROR(m_shamelaInfo->shamelaSpecialDbPath());
+        }
+
+        QSqlQuery query(bookDB);
+        quranWrite.startReading();
+
+        query.prepare("SELECT nass, sora, aya, Page FROM Qr ORDER BY id");
+        if(query.exec()) {
+            while(query.next()) {
+                quranWrite.addPage(query.value(0).toString(),
+                                   query.value(1).toInt(),
+                                   query.value(2).toInt(),
+                                   query.value(3).toInt());
+            }
+        } else {
+            SQL_ERROR(query.lastError().text());
+        }
+
+        quranWrite.addSowarInfo();
+        quranWrite.endReading();
+    }
+
+    QSqlDatabase::removeDatabase(QString("newQuranDB_%1").arg(m_threadID));
+    QSqlDatabase::removeDatabase(connName);
+
+    importQuran(path);
+}
+
 void LibraryCreator::start()
 {
     m_bookDB.transaction();
@@ -261,7 +304,33 @@ void LibraryCreator::importBook(ShamelaBookInfo *book, QString path)
     }
 }
 
+void LibraryCreator::importQuran(QString path)
+{
+    QFileInfo fileInfo(path);
+
+    m_bookQuery.prepare("INSERT INTO booksList (id, bookID, bookType, bookFlags, bookCat,"
+                        "bookName, bookInfo, authorName, authorID, fileName, bookFolder)"
+                        "VALUES(NULL, :book_id, :book_type, :book_flags, :cat_id, :book_name, "
+                        ":book_info, :author_name, :author_id, :file_name, :book_folder)");
+
+    m_bookQuery.bindValue(":book_id", 0);
+    m_bookQuery.bindValue(":book_type", BookInfo::QuranBook);
+    m_bookQuery.bindValue(":book_flags", 0);
+    m_bookQuery.bindValue(":cat_id", 0);
+    m_bookQuery.bindValue(":book_name", tr("القرآن الكريم"));
+    m_bookQuery.bindValue(":book_info", QVariant(QVariant::String));
+    m_bookQuery.bindValue(":author_name", QVariant(QVariant::String));
+    m_bookQuery.bindValue(":author_id", 0);
+    m_bookQuery.bindValue(":file_name", fileInfo.fileName()); // Add file name
+    m_bookQuery.bindValue(":book_folder", QVariant(QVariant::String));
+
+    if(!m_bookQuery.exec()) {
+        SQL_ERROR(m_bookQuery.lastError().text());
+    }
+}
+
 void LibraryCreator::setImportAuthors(bool import)
 {
     m_importAuthor = true;
 }
+

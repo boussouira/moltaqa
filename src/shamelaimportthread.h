@@ -15,9 +15,11 @@ public:
     ShamelaImportThread(QObject *parent = 0);
     void run();
     void stop();
+    void setImportQuran(bool importQuran) { m_importQuran = importQuran; }
 
 protected:
     void importBooks();
+    void importQuran();
 
 signals:
     void bookImported(QString name);
@@ -28,6 +30,7 @@ protected:
     ShamelaManager *m_shamelaManager;
     LibraryCreator m_creator;
     bool m_stop;
+    bool m_importQuran;
     int m_threadID;
 };
 

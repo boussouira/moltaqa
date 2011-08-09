@@ -238,6 +238,7 @@ void ShamelaImportDialog::startImporting()
 
     m_manager->selectBooks();
 
+    bool addQuarn = ui->checkImportQuran->isChecked();
     for(int i=0; i<m_importThreadCount; i++) {
         ShamelaImportThread *thread = new ShamelaImportThread(this);
         connect(thread, SIGNAL(bookImported(QString)), SLOT(bookImported(QString)));
@@ -245,7 +246,10 @@ void ShamelaImportDialog::startImporting()
 
         m_importThreads.append(thread);
 
+        thread->setImportQuran(addQuarn);
         thread->start();
+
+        addQuarn = false;
     }
 }
 

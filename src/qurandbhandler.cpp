@@ -98,7 +98,7 @@ QAbstractItemModel *QuranDBHandler::indexModel()
 void QuranDBHandler::getBookInfo()
 {
     m_quranQuery->exec(QString("SELECT  MIN(pageNumber), MAX(pageNumber), MIN(id), MAX(id) "
-                              "FROM QuranText "));
+                               "FROM quranText "));
     if(m_quranQuery->next()) {
         m_bookInfo->setPartsCount(1);
         m_bookInfo->setFirstPage(m_quranQuery->value(0).toInt());

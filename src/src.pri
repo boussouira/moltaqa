@@ -58,7 +58,8 @@ SOURCES += mainwindow.cpp \
     shamelaimportthread.cpp \
     librarycreator.cpp \
     shamelaimportinfo.cpp \
-    openpagedialog.cpp
+    openpagedialog.cpp \
+    newquranwriter.cpp
 HEADERS += mainwindow.h \
     pageinfo.h \
     qurantextformat.h \
@@ -100,7 +101,8 @@ HEADERS += mainwindow.h \
     shamelaimportthread.h \
     librarycreator.h \
     shamelaimportinfo.h \
-    openpagedialog.h
+    openpagedialog.h \
+    newquranwriter.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

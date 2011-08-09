@@ -20,7 +20,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page">
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -99,6 +99,13 @@ p, li { white-space: pre-wrap; }
                </property>
                <property name="text">
                 <string>اختيار الكتب المراد استيرادها</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="checkImportQuran">
+               <property name="text">
+                <string>استيراد القران الكريم</string>
                </property>
               </widget>
              </item>

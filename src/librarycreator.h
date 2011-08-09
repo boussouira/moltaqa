@@ -29,9 +29,11 @@ public:
     void addCat(CategorieInfo *cat);
     void addAuthor(AuthorInfo *auth, bool checkExist=false);
     void addBook(ShamelaBookInfo *book);
+    void addQuran();
 
 protected:
     void importBook(ShamelaBookInfo *book, QString path);
+    void importQuran(QString path);
 
 protected:
     QSqlDatabase m_bookDB;
