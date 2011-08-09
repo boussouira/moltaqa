@@ -79,9 +79,7 @@ QVariant BooksListModel::data(const QModelIndex &index, int role) const
         if (index.column() == 0){
             return node->getTitle();
         } else if (index.column() == 1) {
-            if((node->getNodeType()==BooksListNode::Categorie) && node->childrenList().count()>0)
-                return node->childrenList().count();
-            else
+            if(node->getNodeType()==BooksListNode::Book)
                 return node->getAuthorName();
         }
 

@@ -9,6 +9,9 @@
 #include <qboxlayout.h>
 #include <qtconcurrentrun.h>
 #include <qfuturewatcher.h>
+#include <QCloseEvent>
+
+Q_DECLARE_METATYPE(QList<int>)
 
 BookWidget::BookWidget(AbstractDBHandler *db, QWidget *parent): QWidget(parent), m_db(db)
 {
@@ -30,6 +33,7 @@ BookWidget::BookWidget(AbstractDBHandler *db, QWidget *parent): QWidget(parent),
 
     m_splitterSizes << 0;
 
+    loadSettings();
     displayInfo();
     connect(m_indexWidget, SIGNAL(openPage(int)), this, SLOT(openID(int)));
     connect(m_db->textFormatter(), SIGNAL(doneReading(QString)), m_view, SLOT(setText(QString)));
@@ -39,6 +43,24 @@ BookWidget::BookWidget(AbstractDBHandler *db, QWidget *parent): QWidget(parent),
 BookWidget::~BookWidget()
 {
     delete m_db;
+}
+
+void BookWidget::loadSettings()
+{
+    QSettings settings;
+    settings.beginGroup("BookWidget");
+    QList<int> sizes = settings.value("splitter").value<QList<int> >();
+    if(!sizes.isEmpty())
+        m_splitter->setSizes(sizes);
+    settings.endGroup();
+}
+
+void BookWidget::saveSettings()
+{
+    QSettings settings;
+    settings.beginGroup("BookWidget");
+    settings.setValue("splitter", QVariant::fromValue< QList<int> >(m_splitter->sizes()));
+    settings.endGroup();
 }
 
 void BookWidget::setDBHandler(AbstractDBHandler *db)
@@ -160,4 +182,3 @@ void BookWidget::indexModelReady()
 {
     m_indexWidget->setIndex(m_retModel.result());
 }
-

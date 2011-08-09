@@ -29,6 +29,7 @@ public:
     BooksListBrowser *booksListBrowser();
 
 protected:
+    void closeEvent(QCloseEvent *event);
     void setupActions();
     void loadSettings();
 

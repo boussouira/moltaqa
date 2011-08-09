@@ -75,6 +75,8 @@ QVariant BookIndexModel::data(const QModelIndex &index, int role) const
 
     if (role == Qt::DisplayRole) // there is only one column
         return node->title();
+    else if(role == Qt::ToolTipRole)
+        return QString("<p>%1</p>").arg(node->title());
 
     return QVariant();
 }

@@ -8,6 +8,7 @@
 #include "bookwidget.h"
 #include "bookexception.h"
 #include "openpagedialog.h"
+#include "mainwindow.h"
 
 #include <qmainwindow.h>
 #include <qmenubar.h>
@@ -122,6 +123,7 @@ void BooksViewer::createMenus(QMainWindow *parent)
 
     // Index widget
     connect(actionIndexDock, SIGNAL(triggered()), SLOT(showIndexWidget()));
+    connect(actionNewTab, SIGNAL(triggered()), MainWindow::mainWindow(), SLOT(showBooksList()));
 }
 
 void BooksViewer::removeToolBar()
@@ -263,6 +265,7 @@ void BooksViewer::tabChangePosition(int fromIndex, int toIndex)
 
 void BooksViewer::tabCloseRequest(int tabIndex)
 {
+    currentBookWidget()->saveSettings();
     m_bookWidgets.removeAt(tabIndex);
     m_tab->removeTab(tabIndex);
 }

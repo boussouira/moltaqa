@@ -6,6 +6,7 @@
 #include "qabstractitemmodel.h"
 
 class IndexDB;
+class SortFilterProxyModel;
 
 namespace Ui {
     class BooksListBrowser;
@@ -21,6 +22,8 @@ public:
 
 protected:
     void showEvent(QShowEvent* event);
+    void closeEvent(QCloseEvent *event);
+    void loadSettings();
 
 public slots:
     void loadBooksList();
@@ -33,9 +36,10 @@ signals:
     void bookSelected(int bookID);
 
 private:
-    IndexDB *m_indexDB;
-    Ui::BooksListBrowser *ui;
     bool m_updateList;
+    IndexDB *m_indexDB;
+    SortFilterProxyModel *m_filterModel;
+    Ui::BooksListBrowser *ui;
 };
 
 #endif // BOOKSLISTBROWSER_H

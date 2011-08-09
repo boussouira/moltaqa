@@ -14,6 +14,7 @@
 
 #include <qmessagebox.h>
 #include <qsettings.h>
+#include <qevent.h>
 
 static MainWindow *m_mainWindow = 0;
 
@@ -126,11 +127,29 @@ void MainWindow::showBooksList()
     m_booksList->activateWindow();
 }
 
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    QSettings settings;
+    settings.beginGroup("MainWindow");
+    settings.setValue("pos", pos());
+    settings.setValue("size", size());
+    settings.setValue("maximized", isMaximized());
+    settings.endGroup();
+
+    event->accept();
+}
+
 void MainWindow::loadSettings()
 {
-//    QSettings settings;
-//    defaultQuran = settings.value("Books/default_quran", -1).toInt();
-//    ui->pushOpenQuran->setEnabled(defaultQuran != -1);
+    QSettings settings;
+    settings.beginGroup("MainWindow");
+    move(settings.value("pos", pos()).toPoint());
+    resize(settings.value("size", size()).toSize());
+
+    if(settings.value("maximized", true).toBool())
+        showMaximized();
+
+    settings.endGroup();
 }
 
 void MainWindow::on_actionImport_triggered()

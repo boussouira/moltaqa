@@ -30,6 +30,10 @@ public:
     void nextUnit();
     void prevUnit();
     void hideIndexWidget();
+    void saveSettings();
+
+protected:
+    void loadSettings();
 
 public slots:
     void openID(int id);
