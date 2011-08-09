@@ -71,6 +71,14 @@ void BookWidget::openID(int id)
         m_view->scrollToSora(id);
 }
 
+void BookWidget::openPage(int pageNum, int partNum)
+{
+    m_db->openPage(pageNum, partNum);
+    if(m_db->bookInfo()->isQuran())
+        m_view->scrollToAya(m_db->bookInfo()->currentSoraNumber(),
+                            m_db->bookInfo()->currentAya());
+}
+
 void BookWidget::firstPage()
 {
     m_db->openIndexID();
@@ -152,3 +160,4 @@ void BookWidget::indexModelReady()
 {
     m_indexWidget->setIndex(m_retModel.result());
 }
+

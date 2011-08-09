@@ -226,7 +226,7 @@ void BooksViewer::goToPage()
     dialog.setPart(currentBookWidget()->dbHandler()->bookInfo()->currentPart());
 
     if(dialog.exec() == QDialog::Accepted) {
-        currentBookWidget()->dbHandler()->openPage(dialog.selectedPage(), dialog.selectedPart());
+        currentBookWidget()->openPage(dialog.selectedPage(), dialog.selectedPart());
     }
 }
 

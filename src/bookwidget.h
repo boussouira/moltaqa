@@ -22,6 +22,7 @@ public:
     void displayInfo();
     AbstractDBHandler *dbHandler() { return m_db; }
     IndexWidget *indexWidget() { return m_indexWidget; }
+    void openPage(int pageNum, int partNum);
     void firstPage();
     void lastPage();
     void nextPage();
