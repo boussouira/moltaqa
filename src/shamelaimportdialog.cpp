@@ -13,6 +13,7 @@
 #include <qstandarditemmodel.h>
 #include <qsortfilterproxymodel.h>
 #include <qmessagebox.h>
+#include <qevent.h>
 
 static ShamelaImportDialog* m_importDialog=0;
 
@@ -26,6 +27,7 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
 
     m_shamela = new ShamelaInfo();
     m_manager = new ShamelaManager(m_shamela);
+    m_importedBooksCount = 0;
 
     ui->groupImportOptions->setEnabled(false);
     ui->stackedWidget->setCurrentIndex(0);
@@ -43,6 +45,19 @@ ShamelaImportDialog::~ShamelaImportDialog()
     delete m_shamela;
     delete m_manager;
     delete ui;
+}
+
+void ShamelaImportDialog::closeEvent(QCloseEvent *event)
+{
+    if(cancel()) {
+        for(int i=0; i<m_importThreads.count(); i++) {
+            if(m_importThreads.at(i)->isRunning())
+                m_importThreads.at(i)->wait();
+        }
+        event->accept();
+    } else {
+        event->ignore();
+    }
 }
 
 ShamelaImportDialog *ShamelaImportDialog::importDialog()
@@ -127,7 +142,6 @@ void ShamelaImportDialog::nextStep()
                                  tr("لم تقم باختيار مسار المكتبة الشاملة"));
         }
     } else if(index == 1) {
-        createFilter();
         showImportInfo();
         goPage();
     } else if(index == 2) { // Start importing
@@ -172,23 +186,26 @@ void ShamelaImportDialog::showBooks()
 
 void ShamelaImportDialog::createFilter()
 {
-    QList<int> selectedIDs;
+    if(ui->radioImportSelectionOnly->isChecked()) {
+        QList<int> selectedIDs;
 
-    for(int i=0; i<m_booksModel->rowCount(); i++) {
-        QStandardItem *item = m_booksModel->item(i);
-        if(item->checkState() == Qt::Checked){
-            selectedIDs.append(item->data().toInt());
+        for(int i=0; i<m_booksModel->rowCount(); i++) {
+            QStandardItem *item = m_booksModel->item(i);
+            if(item->checkState() == Qt::Checked){
+                selectedIDs.append(item->data().toInt());
+            }
         }
+
+        m_manager->setFilterBooks(true);
+
+        if(ui->radioImportSelected->isChecked())
+            m_manager->setAcceptedBooks(selectedIDs);
+        else
+            m_manager->setRejectedBooks(selectedIDs);
+    } else {
+        qDebug("* Import all books");
     }
-
-    m_manager->setFilterBooks(true);
-
-    if(ui->radioImportSelected->isChecked())
-        m_manager->setAcceptedBooks(selectedIDs);
-    else
-        m_manager->setRejectedBooks(selectedIDs);
 }
-
 void ShamelaImportDialog::setupImporting()
 {
     LibraryCreator creator;
@@ -211,18 +228,24 @@ void ShamelaImportDialog::setupImporting()
 
 void ShamelaImportDialog::showImportInfo()
 {
+    createFilter();
+
     int booksCount = m_manager->getBooksCount();
     int authorsCount = m_manager->getAuthorsCount();
     int catCount = m_manager->getCatCount();
 
-    QString info = tr("<ul>"
-                      "<li>%1</li>"
-                      "<li>%2</li>"
-                      "<li>%3</li>"
-                      "</ul>")
-            .arg(arPlural(booksCount, BOOK))
-            .arg(arPlural(authorsCount, AUTHOR))
-            .arg(arPlural(catCount, CATEGORIE));
+    QString info = tr("<ul>");
+
+    if(ui->checkImportQuran->isChecked())
+        info += QString("<li>%1</li>").arg(tr("القرآن الكريم"));
+
+    info += QString("<li>%1</li>").arg(arPlural(booksCount, BOOK));
+
+    if(ui->radioImportAllAuthors->isChecked())
+        info += QString("<li>%1</li>").arg(arPlural(authorsCount, AUTHOR));
+
+    if(ui->radioUseShamelaCat->isChecked())
+        info += tr("<li>سيتم اضافة %1 الى أقسام المكتبة الحالية</li>").arg(arPlural(catCount, CATEGORIE));
 
     ui->labelImportInfo->setText(info);
 }
@@ -266,9 +289,14 @@ void ShamelaImportDialog::addDebugInfo(const QString &text)
 
 void ShamelaImportDialog::bookImported(const QString &text)
 {
+    if(m_importedBooksCount == 0)
+        ui->listDebug->addItem(tr("جاري استيراد الكتب..."));
+
     ui->progressBar->setValue(ui->progressBar->value()+1);
     ui->listDebug->addItem(" + "+text);
     ui->listDebug->scrollToBottom();
+
+    m_importedBooksCount++;
 }
 
 void ShamelaImportDialog::doneImporting()
@@ -278,11 +306,13 @@ void ShamelaImportDialog::doneImporting()
         ui->pushCancel->hide();
         ui->pushDone->show();
 
-        addDebugInfo(tr("انتهى اسيراد الكتب بنجاح"));
+        ui->progressBar->setValue(ui->progressBar->maximum());
+        ui->progressSteps->setValue(ui->progressSteps->maximum());
+        addDebugInfo(tr("تم اسيراد %1 بنجاح").arg(arPlural(m_importedBooksCount, BOOK)));
     }
 }
 
-void ShamelaImportDialog::cancel()
+bool ShamelaImportDialog::cancel()
 {
     if(m_importThreads.count()){
         int rep = QMessageBox::question(this,
@@ -290,11 +320,17 @@ void ShamelaImportDialog::cancel()
                                         tr("هل تريد ايقاف استيراد الكتب؟"),
                                         QMessageBox::Yes|QMessageBox::No);
         if(rep == QMessageBox::Yes) {
+            addDebugInfo(tr("جاري ايقاف الاستيراد..."));
+            ui->pushCancel->setEnabled(false);
             for(int i=0; i<m_importThreads.count(); i++) {
                 m_importThreads.at(i)->stop();
             }
+        } else {
+            return false;
         }
     } else {
         reject();
     }
+
+    return true;
 }

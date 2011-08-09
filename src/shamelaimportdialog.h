@@ -28,6 +28,7 @@ public:
     void setLibraryInfo(LibraryInfo *info);
 
 protected:
+    void closeEvent(QCloseEvent *event);
     QString getFolderPath(const QString &defaultPath);
     void openShamelaDB();
     /**
@@ -50,13 +51,14 @@ private slots:
     void nextStep();
     void selectShamela();
     void doneImporting();
-    void cancel();
+    bool cancel();
 
 signals:
     void setProgress(int value);
 
 private:
     int m_importThreadCount;
+    int m_importedBooksCount;
     LibraryInfo *m_library;
     ShamelaInfo *m_shamela;
     ShamelaManager *m_manager;

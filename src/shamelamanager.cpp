@@ -222,7 +222,7 @@ ShamelaBookInfo *ShamelaManager::nextFiltredBook()
 {
     while(m_shamelaQuery->next()) {
         int bid = m_shamelaQuery->value(0).toInt();
-        if(m_accepted.contains(bid) && !m_rejected.contains(bid)) {
+        if(m_accepted.contains(bid) || !m_rejected.contains(bid)) {
             return new ShamelaBookInfo(m_shamelaQuery->value(0).toInt(),
                                        m_shamelaQuery->value(1).toString(),
                                        m_shamelaQuery->value(3).toString(),
