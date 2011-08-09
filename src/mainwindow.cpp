@@ -15,11 +15,15 @@
 #include <qmessagebox.h>
 #include <qsettings.h>
 
+static MainWindow *m_mainWindow = 0;
+
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     setWindowTitle(tr("برنامج الكتبية"));
     loadSettings();
+
+    m_mainWindow = this;
 
     m_welcomeWidget = new WelcomeWidget(this);
     ui->stackedWidget->addWidget(m_welcomeWidget);
@@ -30,10 +34,10 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
         QSettings settings;
         QString libDir = settings.value("library_dir").toString();
 
-        LibraryInfo *connection = new LibraryInfo(libDir);
+        m_libraryInfo = new LibraryInfo(libDir);
         /* Temporary code */
 
-        m_indexDB = new IndexDB(connection);
+        m_indexDB = new IndexDB(m_libraryInfo);
         m_indexDB->open();
 
         m_bookView = new BooksViewer(m_indexDB, this);
@@ -51,6 +55,19 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     }
 }
 
+MainWindow::~MainWindow()
+{
+    delete ui;
+    delete m_indexDB;
+    delete m_libraryInfo;
+    m_mainWindow = 0;
+}
+
+MainWindow *MainWindow::mainWindow()
+{
+    return m_mainWindow;
+}
+
 void MainWindow::setupActions()
 {
 
@@ -63,12 +80,6 @@ void MainWindow::setupActions()
     connect(m_bookView, SIGNAL(lastTabClosed()), SLOT(lastTabClosed()));
     connect(m_booksList, SIGNAL(bookSelected(int)), this, SLOT(openBook(int)));
     connect(ui->actionBooksList, SIGNAL(triggered()), this, SLOT(showBooksList()));
-}
-
-MainWindow::~MainWindow()
-{
-    delete ui;
-    delete m_indexDB;
 }
 
 void MainWindow::aboutAlKotobiya()
@@ -143,6 +154,25 @@ void MainWindow::on_actionShamelaImport_triggered()
     ShamelaImportDialog importDialog;
     importDialog.setLibraryInfo(m_indexDB->connectionInfo());
 
-    if(importDialog.exec() == QDialog::Accepted)
-        m_booksList->loadBooksList();
+    importDialog.exec();
+}
+
+LibraryInfo *MainWindow::libraryInfo()
+{
+    return m_libraryInfo;
+}
+
+IndexDB *MainWindow::indexDB()
+{
+    return m_indexDB;
+}
+
+BooksViewer *MainWindow::booksViewer()
+{
+    return m_bookView;
+}
+
+BooksListBrowser *MainWindow::booksListBrowser()
+{
+    return m_booksList;
 }

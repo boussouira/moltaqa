@@ -8,6 +8,7 @@ class SettingsDialog;
 class BooksViewer;
 class BooksListBrowser;
 class WelcomeWidget;
+class LibraryInfo;
 
 namespace Ui
 {
@@ -21,6 +22,11 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    static MainWindow *mainWindow();
+    LibraryInfo *libraryInfo();
+    IndexDB *indexDB();
+    BooksViewer *booksViewer();
+    BooksListBrowser *booksListBrowser();
 
 protected:
     void setupActions();
@@ -39,6 +45,7 @@ private slots:
     void on_actionShamelaImport_triggered();
 
 private:
+    LibraryInfo *m_libraryInfo;
     IndexDB *m_indexDB;
     BooksViewer *m_bookView;
     BooksListBrowser *m_booksList;
