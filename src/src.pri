@@ -60,7 +60,8 @@ SOURCES += mainwindow.cpp \
     shamelaimportinfo.cpp \
     openpagedialog.cpp \
     newquranwriter.cpp \
-    sortfilterproxymodel.cpp
+    sortfilterproxymodel.cpp \
+    newlibrarydialog.cpp
 HEADERS += mainwindow.h \
     pageinfo.h \
     qurantextformat.h \
@@ -104,12 +105,14 @@ HEADERS += mainwindow.h \
     shamelaimportinfo.h \
     openpagedialog.h \
     newquranwriter.h \
-    sortfilterproxymodel.h
+    sortfilterproxymodel.h \
+    newlibrarydialog.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \
     importdialog.ui \
     welcomewidget.ui \
     shamelaimportdialog.ui \
-    openpagedialog.ui
+    openpagedialog.ui \
+    newlibrarydialog.ui
 RESOURCES += data/qt_rc.qrc

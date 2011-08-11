@@ -3,6 +3,7 @@
 #include "bookslistmodel.h"
 #include "bookslistnode.h"
 #include "indexdb.h"
+#include "mainwindow.h"
 
 #include <qsqlquery.h>
 #include <qsqlerror.h>
@@ -67,7 +68,7 @@ void BooksListBrowser::loadBooksList()
 
     ui->treeView->setModel(m_filterModel);
 
-    ui->treeView->expandAll();
+//    ui->treeView->expandAll();
     ui->treeView->resizeColumnToContents(0);
     ui->treeView->resizeColumnToContents(1);
 }

@@ -11,32 +11,53 @@
 #include "libraryinfo.h"
 #include "welcomewidget.h"
 #include "shamelaimportdialog.h"
+#include "newlibrarydialog.h"
 
 #include <qmessagebox.h>
 #include <qsettings.h>
 #include <qevent.h>
+#include <qfile.h>
+#include <qtimer.h>
 
 static MainWindow *m_mainWindow = 0;
 
-MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent):
+    QMainWindow(parent),
+    ui(new Ui::MainWindow),
+    m_libraryInfo(0),
+    m_indexDB(0)
 {
     ui->setupUi(this);
-    setWindowTitle(tr("برنامج الكتبية"));
-    loadSettings();
-
     m_mainWindow = this;
+
+    loadSettings();
+}
+
+bool MainWindow::init()
+{
+    QSettings settings;
+    QString libDir = settings.value("library_dir").toString();
+
+    if(!QFile::exists(QString("%1/books_index.db").arg(libDir)) || !QFile::exists(QString("%1/info.xml").arg(libDir))) {
+        NewLibraryDialog dialog(this);
+        if(dialog.exec() == QDialog::Accepted) {
+            libDir = dialog.libraryDir();
+            settings.setValue("library_dir", libDir);
+        } else {
+            QMessageBox::critical(this,
+                                  tr("مكتبة الملتقى"),
+                                  tr("لم يتم انشاء المكتبة بشكل صحيح" "\n"
+                                     "من فضلك أعد تشغيل البرنامج وحاول انشاء المكتبة من جديد"));
+            return false;
+        }
+    }
 
     m_welcomeWidget = new WelcomeWidget(this);
     ui->stackedWidget->addWidget(m_welcomeWidget);
     ui->stackedWidget->setCurrentIndex(0);
 
     try {
-        /* Temporary code */
-        QSettings settings;
-        QString libDir = settings.value("library_dir").toString();
-
         m_libraryInfo = new LibraryInfo(libDir);
-        /* Temporary code */
 
         m_indexDB = new IndexDB(m_libraryInfo);
         m_indexDB->open();
@@ -52,15 +73,22 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
                                  tr("برنامج الكتبية"),
                                  tr("حدث خطأ أثناء تحميل البرنامج:"
                                     "<br>%1").arg(e.what()));
-        setEnabled(false);
+        return false;
     }
+
+    return true;
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete m_indexDB;
-    delete m_libraryInfo;
+
+    if(m_indexDB)
+        delete m_indexDB;
+
+    if(m_libraryInfo)
+        delete m_libraryInfo;
+
     m_mainWindow = 0;
 }
 
@@ -135,6 +163,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
     settings.setValue("size", size());
     settings.setValue("maximized", isMaximized());
     settings.endGroup();
+
+    m_booksList->close();
 
     event->accept();
 }

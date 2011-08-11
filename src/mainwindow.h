@@ -22,7 +22,10 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+    bool init();
     static MainWindow *mainWindow();
+
     LibraryInfo *libraryInfo();
     IndexDB *indexDB();
     BooksViewer *booksViewer();
@@ -46,13 +49,13 @@ private slots:
     void on_actionShamelaImport_triggered();
 
 private:
+    Ui::MainWindow *ui;
     LibraryInfo *m_libraryInfo;
     IndexDB *m_indexDB;
     BooksViewer *m_bookView;
     BooksListBrowser *m_booksList;
     WelcomeWidget *m_welcomeWidget;
     int defaultQuran;
-    Ui::MainWindow *ui;
 };
 
 #endif // MAINWINDOW_H

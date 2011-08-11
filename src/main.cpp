@@ -29,8 +29,14 @@ int main(int argc, char *argv[])
 //    SettingsChecker checker(&app);
 //    checker.checkSettings();
 
+    int ret = -1;
+
     MainWindow w;
-    w.setLayoutDirection(Qt::RightToLeft);
-    w.show();
-    return app.exec();
+    if(w.init()) {
+        w.setLayoutDirection(Qt::RightToLeft);
+        w.show();
+        ret = app.exec();
+    }
+
+    return ret;
 }
