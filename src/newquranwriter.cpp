@@ -1,5 +1,7 @@
 #include "newquranwriter.h"
 #include "common.h"
+#include "mainwindow.h"
+#include "libraryinfo.h"
 #include <qsettings.h>
 #include <qdir.h>
 #include <qdatetime.h>
@@ -8,12 +10,7 @@
 
 newQuranWriter::newQuranWriter()
 {
-    QSettings settings;
-    QDir dir(settings.value("library_dir").toString());
-    if(!dir.exists("temp"))
-        dir.mkdir("temp");
-
-    m_tempFolder = dir.filePath("temp");
+    m_tempFolder = MainWindow::mainWindow()->libraryInfo()->tempDir();
     m_threadID = 0;
 }
 

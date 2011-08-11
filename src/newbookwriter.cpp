@@ -1,5 +1,7 @@
 #include "newbookwriter.h"
 #include "bookexception.h"
+#include "mainwindow.h"
+#include "libraryinfo.h"
 #include <qsettings.h>
 #include <qdir.h>
 #include <qdatetime.h>
@@ -8,12 +10,7 @@
 
 NewBookWriter::NewBookWriter()
 {
-    QSettings settings;
-    QDir dir(settings.value("library_dir").toString());
-    if(!dir.exists("temp"))
-        dir.mkdir("temp");
-
-    m_tempFolder = dir.filePath("temp");
+    m_tempFolder = MainWindow::mainWindow()->libraryInfo()->tempDir();
     m_pageId = 0;
     m_threadID = 0;
 }

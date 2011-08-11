@@ -42,12 +42,8 @@ void IndexDB::open()
     if(!QFile::exists(booksIndexPath))
         throw BookException(tr("لم يتم العثور على قاعدة البيانات الأساسية"), m_libraryInfo->path());
 
-    if(QSqlDatabase::contains(m_libraryInfo->connectionName())) {
-        m_indexDB = QSqlDatabase::database(m_libraryInfo->connectionName());
-    } else {
-        m_indexDB = QSqlDatabase::addDatabase("QSQLITE", m_libraryInfo->connectionName());
-        m_indexDB.setDatabaseName(booksIndexPath);
-    }
+    m_indexDB = QSqlDatabase::addDatabase("QSQLITE", "BooksIndexDB");
+    m_indexDB.setDatabaseName(booksIndexPath);
 
     if (!m_indexDB.open())
         throw BookException(tr("لم يمكن فتح قاعدة البيانات الأساسية"), booksIndexPath);

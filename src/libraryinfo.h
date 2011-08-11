@@ -17,21 +17,18 @@ public:
 
     QString name();
     QString path();
-    QString username();
-    QString password();
-    QString server();
-    QString connectionName();
     /**
       Get full path to books directory
       */
     QString booksDir();
 
+    /**
+      Get temporary folder path
+      */
+    QString tempDir();
+
     void setName(QString name);
     void setPath(QString path);
-    void setUsername(QString user);
-    void setPassword(QString pass);
-    void setServer(QString server);
-    void setConnectionName(QString name);
     void setBooksDir(QString dir);
 
     /**
@@ -41,6 +38,7 @@ public:
 
     /**
       Get book path
+      @note This function doesn't check if the file exists
       @param bookName The name of book file
       */
     QString bookPath(QString bookName);
@@ -51,11 +49,8 @@ protected:
 protected:
     QString m_name;         ///< Library name
     QString m_path;         ///< Library path
-    QString m_username;
-    QString m_password;
-    QString m_server;
-    QString m_connectionName;
-    QString m_booksDir;     ///< Books dir, it should be relative path to the library path
+    QString m_booksDir;     ///< Absolute Books path
+    QString m_tempsDir;     ///< Absolute temp path
 };
 
 #endif // CONNECTIONINFO_H

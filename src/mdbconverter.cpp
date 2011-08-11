@@ -1,4 +1,6 @@
 #include "mdbconverter.h"
+#include "mainwindow.h"
+#include "libraryinfo.h"
 #include <qsqlerror.h>
 #include <qdatetime.h>
 #include <qtextcodec.h>
@@ -9,12 +11,7 @@
 
 MdbConverter::MdbConverter()
 {
-    QSettings settings;
-    QDir dir(settings.value("library_dir").toString());
-    if(!dir.exists("temp"))
-        dir.mkdir("temp");
-
-    m_tempFolder = dir.filePath("temp");
+    m_tempFolder = MainWindow::mainWindow()->libraryInfo()->tempDir();
 }
 
 MdbConverter::~MdbConverter()

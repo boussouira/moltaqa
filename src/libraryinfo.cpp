@@ -18,26 +18,6 @@ QString LibraryInfo::path()
     return m_path;
 }
 
-QString LibraryInfo::username()
-{
-    return m_username;
-}
-
-QString LibraryInfo::password()
-{
-    return m_password;
-}
-
-QString LibraryInfo::server()
-{
-    return m_server;
-}
-
-QString LibraryInfo::connectionName()
-{
-    return m_connectionName;
-}
-
 QString LibraryInfo::booksDir()
 {
     return m_booksDir;
@@ -46,26 +26,6 @@ QString LibraryInfo::booksDir()
 void LibraryInfo::setPath(QString path)
 {
     m_path = path;
-}
-
-void LibraryInfo::setUsername(QString user)
-{
-    m_username = user;
-}
-
-void LibraryInfo::setPassword(QString pass)
-{
-    m_password = pass;
-}
-
-void LibraryInfo::setServer(QString server)
-{
-    m_server = server;
-}
-
-void LibraryInfo::setConnectionName(QString name)
-{
-    m_connectionName = name;
 }
 
 void LibraryInfo::setBooksDir(QString dir)
@@ -103,15 +63,31 @@ void LibraryInfo::loafInfo(QString path)
     QDomElement nameElement = root.firstChildElement("name");
     QDomElement pathElement = root.firstChildElement("path");
     QDomElement booksDirElement = root.firstChildElement("books-dir");
+    QDomElement tempsDirElement = root.firstChildElement("temps-dir");
 
     m_name = nameElement.firstChild().nodeValue();
-    m_path = pathElement.firstChild().nodeValue();
-    m_booksDir = booksDirElement.firstChild().nodeValue();
-    m_connectionName = "BooksIndexDB";
+    if(!pathElement.isNull())
+        m_path = pathElement.firstChild().nodeValue();
+    else
+        m_path = path;
 
-    QDir dir(m_path);
-    dir.cd(m_booksDir);
-    m_booksDir = dir.absolutePath();
+    if(!booksDirElement.isNull())
+        m_booksDir = booksDirElement.firstChild().nodeValue();
+    else
+        m_booksDir = "books";
+
+    if(!tempsDirElement.isNull())
+        m_tempsDir = tempsDirElement.firstChild().nodeValue();
+    else
+        m_tempsDir = "temp";
+
+    QDir booksDir(m_path);
+    booksDir.cd(m_booksDir);
+    m_booksDir = booksDir.absolutePath();
+
+    QDir tempDir(m_path);
+    tempDir.cd(m_tempsDir);
+    m_tempsDir = tempDir.absolutePath();
 }
 
 QString LibraryInfo::booksIndexPath()
@@ -126,5 +102,10 @@ QString LibraryInfo::bookPath(QString bookName)
     dir.cd(m_booksDir);
 
     return dir.filePath(bookName);
+}
+
+QString LibraryInfo::tempDir()
+{
+    return m_tempsDir;
 }
 
