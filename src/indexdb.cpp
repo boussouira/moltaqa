@@ -24,7 +24,6 @@ IndexDB::IndexDB(LibraryInfo *info)
 
 IndexDB::~IndexDB()
 {
-    delete m_libraryInfo;
 }
 
 void IndexDB::setConnectionInfo(LibraryInfo *info)
