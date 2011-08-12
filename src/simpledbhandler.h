@@ -12,8 +12,7 @@ public:
     SimpleDBHandler();
     ~SimpleDBHandler();
 
-    void openID(int id = -1);
-    void openPage(int page, int part =1);
+
     void nextPage();
     void prevPage();
 
@@ -24,10 +23,11 @@ public:
     QAbstractItemModel *topIndexModel();
 
 protected:
-    void connected();
-    void childTitles(BookIndexNode *parentNode, int tid);
+    void openID(int id = -1);
+    void openPage(int page, int part =1);
     void getBookInfo();
-    int maxPartNum();
+    void childTitles(BookIndexNode *parentNode, int tid);
+    void connected();
 
 protected:
     SimpleQuery *m_simpleQuery;

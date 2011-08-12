@@ -139,23 +139,6 @@ void SimpleDBHandler::getBookInfo()
     }
 }
 
-int SimpleDBHandler::maxPartNum()
-{
-    QSqlQuery query(m_bookDB);
-    query.exec(QString("SELECT partNum FROM %1 ORDER BY id DESC")
-               .arg(m_bookInfo->bookTable()));
-    while(query.next()) {
-        QString val = query.value(0).toString().trimmed();
-        bool ok;
-        int parts = val.toInt(&ok);
-        if(ok){
-            return parts;
-        }
-    }
-
-    throw BookException(tr("لم يمكن تحديد عدد أجزاء الكتاب"), m_bookInfo->bookPath());
-}
-
 void SimpleDBHandler::nextPage()
 {
     if(hasNext())

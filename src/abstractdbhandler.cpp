@@ -88,3 +88,8 @@ bool AbstractDBHandler::needFastIndexLoad()
 {
     return m_fastIndex;
 }
+
+void AbstractDBHandler::goToPage(int page, int part)
+{
+    openPage(page, part);
+}

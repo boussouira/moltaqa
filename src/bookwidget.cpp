@@ -95,7 +95,7 @@ void BookWidget::openID(int id)
 
 void BookWidget::openPage(int pageNum, int partNum)
 {
-    m_db->openPage(pageNum, partNum);
+    m_db->goToPage(pageNum, partNum);
     if(m_db->bookInfo()->isQuran())
         m_view->scrollToAya(m_db->bookInfo()->currentSoraNumber(),
                             m_db->bookInfo()->currentAya());

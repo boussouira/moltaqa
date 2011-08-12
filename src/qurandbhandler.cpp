@@ -45,7 +45,6 @@ void QuranDBHandler::openPage(int page, int part)
     m_bookInfo->setCurrentPage(page);
     m_bookInfo->setCurrentPart(part);
 
-    firstSoraAndAya(page);
 
     m_quranQuery->page(page);
 
@@ -126,6 +125,7 @@ void QuranDBHandler::nextPage()
 {
     if(hasNext()) {
         int page = m_bookInfo->currentPage()+1;
+        firstSoraAndAya(page);
 
         openPage(page);
     }
@@ -135,6 +135,7 @@ void QuranDBHandler::prevPage()
 {
     if(hasPrev()) {
         int page = m_bookInfo->currentPage()-1;
+        firstSoraAndAya(page);
 
         openPage(page);
     }
@@ -211,4 +212,10 @@ void QuranDBHandler::firstSoraAndAya(int page)
 QAbstractItemModel * QuranDBHandler::topIndexModel()
 {
     return 0;
+}
+
+void QuranDBHandler::goToPage(int page, int part)
+{
+    firstSoraAndAya(page);
+    openPage(page, part);
 }
