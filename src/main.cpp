@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     QSettings::setDefaultFormat(QSettings::IniFormat);
 
     QTranslator translator;
-    translator.load(QString("qt_ar"), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    translator.load(QString("qt_ar"), ":/locale");
     app.installTranslator(&translator);
 
     app.setOrganizationName("alkotobiya");

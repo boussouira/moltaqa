@@ -16,6 +16,7 @@ public:
     int currentPageNumber;
     int currentID;
     int currentPart;
+    int currentHadditNumber;
 };
 
 #endif // PAGEINFO_H

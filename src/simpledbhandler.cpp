@@ -55,6 +55,8 @@ void SimpleDBHandler::openID(int pid)
         m_bookInfo->currentPart = m_simpleQuery->value(2).toInt();
     }
 
+//    m_bookInfo->currentHadditNumber = m_simpleQuery->getHaddithNumber(pid);
+
     m_textFormat->done();
 }
 
