@@ -44,8 +44,10 @@ public:
 
     void addCatMap(int shamelaID, int libID);
     void addAuthorMap(int shamelaID, int libID);
+    void addBookMap(int shamelaID, int libID);
     int mapShamelaToLibCat(int shamelaID);
     int mapShamelaToLibAuthor(int shamelaID);
+    int mapShamelaToLibBook(int shamelaID);
 
 protected:
     LibraryInfo *m_library;
@@ -59,7 +61,8 @@ protected:
     bool m_haveBookFilter;
     QList<int> m_accepted;
     QList<int> m_rejected;
-    QHash<int, int> m_catMap;
+    QHash<int, int> m_booksMap; ///< Map between shamela and our book's ids
+    QHash<int, int> m_catMap;  ///< Map between shamela and our categorie's ids
     QHash<int, int> m_authorsMap;
     QMutex m_mutex;
 };

@@ -39,7 +39,7 @@ public:
 class ShamelaBookInfo
 {
 public:
-    ShamelaBookInfo(int bid, QString bname, QString binfo, int barchive, int bcat, int bauth, QString bauthName);
+    ShamelaBookInfo(int bid, QString bname, QString binfo, int barchive, int bcat, int bauth, QString bauthName, QString btafessirName);
     ~ShamelaBookInfo();
 
     void genInfo();
@@ -56,5 +56,15 @@ public:
     int cat;
     int authorID;
     QString authName;
+    QString tafessirName;
 };
+
+class ShamelaTafessirInfo
+{
+public:
+    ShamelaTafessirInfo(int tid, QString name) : id(tid), tafesirName(name) {}
+    int id;
+    QString tafesirName;
+};
+
 #endif // SHAMELAIMPORTINFO_H

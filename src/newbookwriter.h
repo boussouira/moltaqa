@@ -20,7 +20,9 @@ public:
 
     /// Commits a transaction to the database
     void endReading();
-    void addPage(const QString &text, int pageID, int pageNum, int partNum);
+    int addPage(const QString &text, int pageID, int pageNum, int partNum);
+    int addPage(const QString &text, int pageID, int pageNum, int partNum, int ayaNum, int soraNum);
+    void addHaddithNumber(int page_id, int hno);
     void addTitle(const QString &title, int tid, int level);
 
 protected:
@@ -43,6 +45,7 @@ protected:
     QHash<int, int> m_levels;
     QTime m_time;
     int m_threadID;
+    bool m_isTafessir;
 };
 
 #endif // NEWBOOKWRITER_H

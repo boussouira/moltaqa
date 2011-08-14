@@ -12,7 +12,6 @@ public:
     enum Type {
         QuranBook = 1,
         TafessirBook,
-        HadditBook,
         NormalBook };
 
     int pagesCount(int part);

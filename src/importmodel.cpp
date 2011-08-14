@@ -43,7 +43,6 @@ void ImportModelNode::setTypeName(const QString &name)
     QStringList types;
     types << tr("مصحف")
             << tr("تفسير")
-            << tr("متن حديث")
             << tr("عادي");
 
     int index = types.indexOf(name)+1;
@@ -55,9 +54,6 @@ void ImportModelNode::setTypeName(const QString &name)
         m_type = BookInfo::TafessirBook;
         break;
     case 3:
-        m_type = BookInfo::HadditBook;
-        break;
-    case 4:
         m_type = BookInfo::NormalBook;
         break;
     }

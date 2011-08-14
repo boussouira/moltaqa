@@ -5,6 +5,7 @@
 #include <qdebug.h>
 #include <qvariant.h>
 #include <qfileinfo.h>
+#include <qsqlrecord.h>
 #include "shamelaimportdialog.h"
 #include "newquranwriter.h"
 
@@ -71,6 +72,11 @@ void LibraryCreator::createTables()
                      "full_name TEXT, "
                      "die_year INTEGER, "
                      "info BLOB)");
+
+    m_bookQuery.exec("CREATE TABLE tafassirList("
+                     "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
+                     "book_id INTEGER, "
+                     "tafessir_name TEXT)");
 }
 
 void LibraryCreator::importCats()
@@ -96,6 +102,19 @@ void LibraryCreator::importAuthors()
 
         delete auth;
         auth = m_shamelaManager->nextAuthor();
+    }
+}
+
+void LibraryCreator::addTafessir(ShamelaBookInfo *tafessir)
+{
+    m_bookQuery.prepare("INSERT INTO tafassirList (id, book_id, tafessir_name) VALUES (NULL, ?, ?)");
+    m_bookQuery.bindValue(0,  m_shamelaManager->mapShamelaToLibBook(tafessir->id));
+    m_bookQuery.bindValue(1, tafessir->tafessirName);
+
+    if(m_bookQuery.exec()) {
+        qDebug() << "Add tafessir:" << tafessir->tafessirName;
+    } else {
+        SQL_ERROR(m_bookQuery.lastError().text());
     }
 }
 
@@ -183,18 +202,19 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
         }
 
         QSqlQuery query(bookDB);
+        if(!query.exec(QString("SELECT TOP 1 * FROM %1").arg(book->mainTable)))
+            SQL_ERROR(query.lastError().text());
+
+        int hnoCol = query.record().indexOf("hno");
+        int ayaCol = query.record().indexOf("aya");
+        int soraCol = query.record().indexOf("sora");
+
         bookWrite.startReading();
 
-        query.prepare(QString("SELECT id, nass, page, part FROM %1 ORDER BY id").arg(book->mainTable));
-        if(query.exec()) {
-            while(query.next()) {
-                bookWrite.addPage(query.value(1).toString(),
-                                  query.value(0).toInt(),
-                                  query.value(2).toInt(),
-                                  query.value(3).toInt());
-            }
+        if(ayaCol != -1 && soraCol != -1) {
+            readTafessirBook(book, query, bookWrite, hnoCol!=-1);
         } else {
-            SQL_ERROR(query.lastError().text());
+            readSimpleBook(book, query, bookWrite, hnoCol!=-1);
         }
 
         query.prepare(QString("SELECT id, tit, lvl, sub FROM %1 ORDER BY id").arg(book->tocTable));
@@ -217,6 +237,9 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
         QSqlDatabase::removeDatabase(connName);
 
     importBook(book, path);
+
+    if(!book->tafessirName.isEmpty())
+        addTafessir(book);
 }
 
 void LibraryCreator::addQuran()
@@ -280,7 +303,9 @@ void LibraryCreator::importBook(ShamelaBookInfo *book, QString path)
 
     if(m_importAuthor) {
         AuthorInfo *auth = m_shamelaManager->getAuthorInfo(book->authorID);
-        addAuthor(auth, true);
+
+        if(auth)
+            addAuthor(auth, true);
     }
 
     m_bookQuery.prepare("INSERT INTO booksList (id, bookID, bookType, bookFlags, bookCat,"
@@ -289,7 +314,7 @@ void LibraryCreator::importBook(ShamelaBookInfo *book, QString path)
                        ":book_info, :author_name, :author_id, :file_name, :book_folder)");
 
     m_bookQuery.bindValue(":book_id", 0);
-    m_bookQuery.bindValue(":book_type", BookInfo::NormalBook);
+    m_bookQuery.bindValue(":book_type", book->tafessirName.isEmpty() ? BookInfo::NormalBook : BookInfo::TafessirBook);
     m_bookQuery.bindValue(":book_flags", 0);
     m_bookQuery.bindValue(":cat_id", m_shamelaManager->mapShamelaToLibCat(book->cat));
     m_bookQuery.bindValue(":book_name", book->name);
@@ -299,7 +324,9 @@ void LibraryCreator::importBook(ShamelaBookInfo *book, QString path)
     m_bookQuery.bindValue(":file_name", fileInfo.fileName()); // Add file name
     m_bookQuery.bindValue(":book_folder", QVariant(QVariant::String));
 
-    if(!m_bookQuery.exec()) {
+    if(m_bookQuery.exec()) {
+        m_shamelaManager->addBookMap(book->id, m_bookQuery.lastInsertId().toInt());
+    } else {
         SQL_ERROR(m_bookQuery.lastError().text());
     }
 }
@@ -332,5 +359,73 @@ void LibraryCreator::importQuran(QString path)
 void LibraryCreator::setImportAuthors(bool import)
 {
     m_importAuthor = true;
+}
+
+void LibraryCreator::readSimpleBook(ShamelaBookInfo *book, QSqlQuery &query, NewBookWriter &writer, bool hno)
+{
+    int lastID=0;
+    if(hno) {
+        query.prepare(QString("SELECT id, nass, page, part, hno FROM %1 ORDER BY id").arg(book->mainTable));
+        if(query.exec()) {
+            while(query.next()) {
+                lastID = writer.addPage(query.value(1).toString(),
+                                        query.value(0).toInt(),
+                                        query.value(2).toInt(),
+                                        query.value(3).toInt());
+                writer.addHaddithNumber(lastID, query.value(4).toInt());
+            }
+        } else {
+            SQL_ERROR(query.lastError().text());
+        }
+    } else {
+        query.prepare(QString("SELECT id, nass, page, part FROM %1 ORDER BY id").arg(book->mainTable));
+        if(query.exec()) {
+            while(query.next()) {
+                writer.addPage(query.value(1).toString(),
+                               query.value(0).toInt(),
+                               query.value(2).toInt(),
+                               query.value(3).toInt());
+            }
+        } else {
+            SQL_ERROR(query.lastError().text());
+        }
+
+    }
+}
+
+void LibraryCreator::readTafessirBook(ShamelaBookInfo *book, QSqlQuery &query, NewBookWriter &writer, bool hno)
+{
+    int lastID=0;
+    if(hno) {
+        query.prepare(QString("SELECT id, nass, page, part, aya, sora, hno FROM %1 ORDER BY id").arg(book->mainTable));
+        if(query.exec()) {
+            while(query.next()) {
+                lastID = writer.addPage(query.value(1).toString(),
+                                        query.value(0).toInt(),
+                                        query.value(2).toInt(),
+                                        query.value(3).toInt(),
+                                        query.value(4).toInt(),
+                                        query.value(5).toInt());
+                writer.addHaddithNumber(lastID, query.value(6).toInt());
+            }
+        } else {
+            SQL_ERROR(query.lastError().text());
+        }
+    } else {
+        query.prepare(QString("SELECT id, nass, page, part, aya, sora FROM %1 ORDER BY id").arg(book->mainTable));
+        if(query.exec()) {
+            while(query.next()) {
+                writer.addPage(query.value(1).toString(),
+                               query.value(0).toInt(),
+                               query.value(2).toInt(),
+                               query.value(3).toInt(),
+                               query.value(4).toInt(),
+                               query.value(5).toInt());
+            }
+        } else {
+            SQL_ERROR(query.lastError().text());
+        }
+
+    }
 }
 

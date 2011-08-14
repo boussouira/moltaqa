@@ -2,6 +2,7 @@
 #include "bookexception.h"
 #include "mainwindow.h"
 #include "libraryinfo.h"
+#include "common.h"
 #include <qsettings.h>
 #include <qdir.h>
 #include <qdatetime.h>
@@ -13,6 +14,7 @@ NewBookWriter::NewBookWriter()
     m_tempFolder = MainWindow::mainWindow()->libraryInfo()->tempDir();
     m_pageId = 0;
     m_threadID = 0;
+    m_isTafessir = false;
 }
 
 QString NewBookWriter::bookPath()
@@ -41,24 +43,39 @@ void NewBookWriter::createNewBook(QString bookPath)
 
 void NewBookWriter::createBookTables()
 {
-    // TODO: the id columun should be AUTO INCEREMENT?
     m_bookQuery.exec("DROP TABLE IF EXISTS bookPages");
+    m_bookQuery.exec("DROP TABLE IF EXISTS bookIndex");
+    m_bookQuery.exec("DROP TABLE IF EXISTS bookMeta");
+    m_bookQuery.exec("DROP TABLE IF EXISTS tafessirMeta");
+
+
     m_bookQuery.exec("CREATE TABLE IF NOT EXISTS bookPages ("
-                     "id INTEGER PRIMARY KEY,"
-                     "pageText BLOB,"
-                     "pageNum INTEGER,"
-                     "partNum INTEGER)");
+                     "id INTEGER PRIMARY KEY, "
+                     "pageNum INTEGER, "
+                     "partNum INTEGER, "
+                     "pageText BLOB)");
 
     // TODO: categorie order
-    m_bookQuery.exec("DROP TABLE IF EXISTS bookIndex");
     m_bookQuery.exec("CREATE TABLE IF NOT EXISTS bookIndex ("
                      "id INTEGER PRIMARY KEY,"
                      "pageID INTEGER,"
                      "parentID INTEGER,"
                      "title TEXT)");
+
+    // This table will store book's comments and haddith number
+    m_bookQuery.exec("CREATE TABLE IF NOT EXISTS bookMeta ("
+                     "id INTEGER PRIMARY KEY,"
+                     "page_id INTEGER,"
+                     "haddit_number INTEGER,"
+                     "comment TEXT)");
+
+    m_bookQuery.exec("CREATE TABLE IF NOT EXISTS tafessirMeta ("
+                     "page_id INTEGER UNIQUE,"
+                     "aya_number INTEGER,"
+                     "sora_number INTEGER)");
 }
 
-void NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int partNum)
+int NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int partNum)
 {
     if(partNum<1)
         partNum = 1;
@@ -75,18 +92,44 @@ void NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int pa
         m_pageId++; // Last inserted id
         m_idsHash.insert(pageID, m_pageId);
     } else {
-        // TODO: throw an exception
-        qDebug() << "Error 123:" <<m_bookQuery.lastError().text();
+        SQL_ERROR(m_bookQuery.lastError().text());
     }
 
-    /*
-    if(m_firstPage.value(partNum, -1) == -1)
-        m_firstPage.insert(partNum, pageNum);
+    return m_pageId;
+}
 
-    int lastPage = m_lastPage.value(partNum, -1);
-    if(lastPage < pageNum || lastPage == -1)
-        m_lastPage.insert(partNum, pageNum);
-    */
+int NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int partNum, int ayaNum, int soraNum)
+{
+    int ret;
+    ret = addPage(text, pageID, pageNum, partNum);
+
+    m_bookQuery.prepare("INSERT INTO tafessirMeta (page_id, aya_number, sora_number) VALUES (?, ?, ?)");
+    m_bookQuery.bindValue(0, ret);
+    m_bookQuery.bindValue(1, ayaNum);
+    m_bookQuery.bindValue(2, soraNum);
+
+    if(!m_bookQuery.exec()){
+        SQL_ERROR(m_bookQuery.lastError().text());
+    }
+
+    if(!m_isTafessir)
+        m_isTafessir = true;
+
+    return ret;
+}
+
+void NewBookWriter::addHaddithNumber(int page_id, int hno)
+{
+    if(hno == 0)
+        return;
+
+    m_bookQuery.prepare("INSERT INTO bookMeta (id, page_id, haddit_number) VALUES (NULL, ?, ?)");
+    m_bookQuery.bindValue(0, page_id);
+    m_bookQuery.bindValue(1, hno);
+
+    if(!m_bookQuery.exec()){
+        SQL_ERROR(m_bookQuery.lastError().text());
+    }
 }
 
 void NewBookWriter::addTitle(const QString &title, int tid, int level)
@@ -105,8 +148,7 @@ void NewBookWriter::addTitle(const QString &title, int tid, int level)
     if(m_bookQuery.exec()){
         m_titleID++;
     } else {
-        // TODO: throw an exception
-        qDebug() << "Error 123:" <<m_bookQuery.lastError().text();
+        SQL_ERROR(m_bookQuery.lastError().text());
     }
 
     int levelParent = m_levels.value(level, -1);
@@ -131,6 +173,9 @@ void NewBookWriter::startReading()
 
 void NewBookWriter::endReading()
 {
+    if(!m_isTafessir)
+        m_bookQuery.exec("DROP TABLE IF EXISTS tafessirMeta");
+
     // TODO: check if the commit success
     m_bookDB.commit();
     //qDebug("[*] Writting take %d ms", m_time.elapsed());

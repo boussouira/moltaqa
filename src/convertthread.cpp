@@ -2,6 +2,7 @@
 #include "importmodel.h"
 #include "indexdb.h"
 #include "newbookwriter.h"
+#include "common.h"
 
 #ifdef USE_MDBTOOLS
     #include "mdbconverter.h"
@@ -114,6 +115,7 @@ void ConvertThread::ImportFromShamelaBook(const QString &path, QList<ImportModel
 
 void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDatabase &bookDB, int bookID)
 {
+    // TODO: update this code to handle tafassir an haddith number
     QSqlQuery query(bookDB);
     NewBookWriter writer;
     writer.createNewBook();
@@ -127,7 +129,7 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
                            query.value(3).toInt());
         }
     } else {
-        qDebug() << "Error 124:" << query.lastError().text();
+        SQL_ERROR(query.lastError().text());
     }
 
     if(query.exec(QString("SELECT id, tit, lvl, sub FROM t%1 ORDER BY id").arg(bookID))) {
@@ -137,7 +139,7 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
                            query.value(2).toInt());
         }
     } else {
-        qDebug() << "Error 124:" << query.lastError().text();
+       SQL_ERROR(query.lastError().text());
     }
 
     writer.endReading();
@@ -148,7 +150,6 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
 QString ConvertThread::getBookType(const QSqlDatabase &bookDB)
 {
     QSqlQuery query(bookDB);
-    QSqlQuery hnoQuery(bookDB);
     QString bookTable;
 
     foreach(QString ta, bookDB.tables()) {
@@ -161,20 +162,14 @@ QString ConvertThread::getBookType(const QSqlDatabase &bookDB)
 
     query.exec(QString("SELECT * FROM %1").arg(bookTable));
     if(query.next()) {
-        int hno = query.record().indexOf("hno");
+        //int hno = query.record().indexOf("hno");
         int aya = query.record().indexOf("aya");
         int sora = query.record().indexOf("sora");
 
-        if (hno != -1 && aya == -1  && sora == -1){
-            hnoQuery.exec(QString("SELECT MAX(hno) FROM %1").arg(bookTable));
-            if(hnoQuery.next()){
-                if(!hnoQuery.value(0).toString().isEmpty())
-                    return tr("متن حديث");
-                else
-                    return tr("عادي");
-            }
-        } else if(aya != -1 && sora != -1)
+        if(aya != -1 && sora != -1)
             return tr("تفسير");
+        else
+            return tr("عادي");
     }
 
     return tr("عادي");

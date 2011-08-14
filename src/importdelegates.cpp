@@ -15,7 +15,6 @@ QWidget *BookTypeDelegate::createEditor(QWidget *parent,
     QComboBox *box = new QComboBox(parent);
     box->addItem(tr("مصحف"));
     box->addItem(tr("تفسير"));
-    box->addItem(tr("متن حديث"));
     box->addItem(tr("عادي"));
     return box;
 

@@ -194,7 +194,7 @@ void ShamelaManager::selectBooks()
 {
     openShamelaDB();
 
-    m_shamelaQuery->exec("SELECT bkid, bk, cat, betaka, authno, auth, Archive FROM 0bok ORDER BY Archive");
+    m_shamelaQuery->exec("SELECT bkid, bk, cat, betaka, authno, auth, Archive, TafseerNam FROM 0bok ORDER BY Archive");
 }
 
 ShamelaBookInfo *ShamelaManager::nextBook()
@@ -211,7 +211,8 @@ ShamelaBookInfo *ShamelaManager::nextBook()
                                        m_shamelaQuery->value(6).toInt(),
                                        m_shamelaQuery->value(2).toInt(),
                                        m_shamelaQuery->value(4).toInt(),
-                                       m_shamelaQuery->value(5).toString());
+                                       m_shamelaQuery->value(5).toString(),
+                                       m_shamelaQuery->value(7).toString());
         } else {
             return 0;
         }
@@ -229,7 +230,8 @@ ShamelaBookInfo *ShamelaManager::nextFiltredBook()
                                        m_shamelaQuery->value(6).toInt(),
                                        m_shamelaQuery->value(2).toInt(),
                                        m_shamelaQuery->value(4).toInt(),
-                                       m_shamelaQuery->value(5).toString());
+                                       m_shamelaQuery->value(5).toString(),
+                                       m_shamelaQuery->value(6).toString());
         }
     }
 
@@ -261,6 +263,13 @@ void ShamelaManager::addAuthorMap(int shamelaID, int libID)
     m_authorsMap.insert(shamelaID, libID);
 }
 
+void ShamelaManager::addBookMap(int shamelaID, int libID)
+{
+    QMutexLocker locker(&m_mutex);
+
+    m_booksMap.insert(shamelaID, libID);
+}
+
 int ShamelaManager::mapShamelaToLibCat(int shamelaID)
 {
     return m_catMap.value(shamelaID, 0);
@@ -269,4 +278,9 @@ int ShamelaManager::mapShamelaToLibCat(int shamelaID)
 int ShamelaManager::mapShamelaToLibAuthor(int shamelaID)
 {
     return m_authorsMap.value(shamelaID, 0);
+}
+
+int ShamelaManager::mapShamelaToLibBook(int shamelaID)
+{
+    return m_booksMap.value(shamelaID, 0);
 }

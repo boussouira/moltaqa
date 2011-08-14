@@ -5,9 +5,11 @@
 #include <qsqlquery.h>
 #include <qsqlerror.h>
 #include <qcoreapplication.h>
+#include <qmutex.h>
+
 #include "libraryinfo.h"
 #include "shamelamanager.h"
-#include <qmutex.h>
+#include "newbookwriter.h"
 
 class LibraryCreator
 {
@@ -28,12 +30,16 @@ public:
 
     void addCat(CategorieInfo *cat);
     void addAuthor(AuthorInfo *auth, bool checkExist=false);
+    void addTafessir(ShamelaBookInfo *tafessir);
     void addBook(ShamelaBookInfo *book);
     void addQuran();
 
 protected:
     void importBook(ShamelaBookInfo *book, QString path);
     void importQuran(QString path);
+
+    void readSimpleBook(ShamelaBookInfo *book, QSqlQuery &query, NewBookWriter &writer, bool hno);
+    void readTafessirBook(ShamelaBookInfo *book, QSqlQuery &query, NewBookWriter &writer, bool hno);
 
 protected:
     QSqlDatabase m_bookDB;

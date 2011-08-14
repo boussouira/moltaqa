@@ -310,11 +310,15 @@ void ShamelaImportDialog::doneImporting()
 
         ui->progressBar->setValue(ui->progressBar->maximum());
         ui->progressSteps->setValue(ui->progressSteps->maximum());
+
         addDebugInfo(tr("تم اسيراد %1 بنجاح").arg(arPlural(m_importedBooksCount, BOOK)));
 
         if(m_importedBooksCount > 0) {
             MainWindow::mainWindow()->booksListBrowser()->loadBooksList();
         }
+
+        qDeleteAll(m_importThreads);
+        m_importThreads.clear();
     }
 }
 
