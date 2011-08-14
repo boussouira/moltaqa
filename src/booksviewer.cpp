@@ -145,7 +145,7 @@ void BooksViewer::openBook(int pBookID, bool newTab)
     BookInfo *bookInfo = m_indexDB->getBookInfo(pBookID);
 
     if(!bookInfo->exists())
-        throw BookException(tr("لم يتم العثور على ملف"), bookInfo->bookPath());
+        throw BookException(tr("لم يتم العثور على ملف"), bookInfo->bookPath);
 
     AbstractDBHandler *bookdb;
     if(bookInfo->isQuran())
@@ -168,11 +168,11 @@ void BooksViewer::openBook(int pBookID, bool newTab)
     int tabIndex;
     if(newTab) {
         m_bookWidgets.append(bookWidget);
-        tabIndex = m_tab->addTab(bookWidget, bookdb->bookInfo()->bookName());
+        tabIndex = m_tab->addTab(bookWidget, bookdb->bookInfo()->bookName);
     } else {
         tabIndex = m_tab->currentIndex();
         m_tab->removeTab(tabIndex);
-        m_tab->insertTab(tabIndex, bookWidget, bookdb->bookInfo()->bookName());
+        m_tab->insertTab(tabIndex, bookWidget, bookdb->bookInfo()->bookName);
         m_bookWidgets.replace(tabIndex, bookWidget);
     }
 
@@ -224,8 +224,8 @@ void BooksViewer::lastPage()
 void BooksViewer::goToPage()
 {
     OpenPageDialog dialog(this);
-    dialog.setPage(currentBookWidget()->dbHandler()->bookInfo()->currentPage());
-    dialog.setPart(currentBookWidget()->dbHandler()->bookInfo()->currentPart());
+    dialog.setPage(currentBookWidget()->dbHandler()->bookInfo()->currentPageNumber);
+    dialog.setPart(currentBookWidget()->dbHandler()->bookInfo()->currentPart);
 
     if(dialog.exec() == QDialog::Accepted) {
         currentBookWidget()->openPage(dialog.selectedPage(), dialog.selectedPart());

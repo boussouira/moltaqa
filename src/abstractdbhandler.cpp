@@ -26,7 +26,7 @@ AbstractDBHandler::~AbstractDBHandler()
 
 void AbstractDBHandler::openBookDB(QString pBookDBPath)
 {
-    QString bookPath = pBookDBPath.isEmpty() ? m_bookInfo->bookPath() : pBookDBPath;
+    QString bookPath = pBookDBPath.isEmpty() ? m_bookInfo->bookPath : pBookDBPath;
     if(QSqlDatabase::contains(m_connectionName)) {
         m_bookDB = QSqlDatabase::database(m_connectionName);
     } else {
@@ -43,13 +43,13 @@ void AbstractDBHandler::openBookDB(QString pBookDBPath)
     time.start();
     getBookInfo();
 
-    qDebug() << "Loading book info" << m_bookInfo->bookName() << "take:" << time.elapsed() << "ms";
+    qDebug() << "Loading book info" << m_bookInfo->bookName << "take:" << time.elapsed() << "ms";
 }
 
 void AbstractDBHandler::setBookInfo(BookInfo *bi)
 {
     m_bookInfo = bi;
-    m_connectionName = QString("book_i%1").arg(m_bookInfo->bookID());
+    m_connectionName = QString("book_i%1").arg(m_bookInfo->bookID);
 }
 
 void AbstractDBHandler::setConnctionInfo(LibraryInfo *info)

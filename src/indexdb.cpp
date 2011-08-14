@@ -90,10 +90,10 @@ BookInfo *IndexDB::getBookInfo(int bookID)
                            "WHERE booksList.id = %1 LIMIT 1").arg(bookID));
 
     if(bookQuery.next()) {
-        bookInfo->setBookName(bookQuery.value(0).toString());
-        bookInfo->setBookType((BookInfo::Type)bookQuery.value(1).toInt());
-        bookInfo->setBookID(bookID);
-        bookInfo->setBookPath(m_libraryInfo->bookPath(bookQuery.value(2).toString()));
+        bookInfo->bookName = bookQuery.value(0).toString();
+        bookInfo->bookType = (BookInfo::Type)bookQuery.value(1).toInt();
+        bookInfo->bookID = bookID;
+        bookInfo->bookPath = m_libraryInfo->bookPath(bookQuery.value(2).toString());
 
         bookInfo->fromString(bookQuery.value(3).toString());
     }
@@ -179,13 +179,13 @@ void IndexDB::updateBookMeta(BookInfo *info, bool newBook)
     QSqlQuery bookQuery(m_indexDB);
     if(newBook) {
         bookQuery.prepare("INSERT INTO bookMeta (id, book_info, add_time, update_time) VALUES (?, ?, ?, ?)");
-        bookQuery.bindValue(0, info->bookID());
+        bookQuery.bindValue(0, info->bookID);
         bookQuery.bindValue(1, info->toString());
         bookQuery.bindValue(2, QDateTime::currentDateTime().toTime_t());
         bookQuery.bindValue(3, QDateTime::currentDateTime().toTime_t());
     } else {
         bookQuery.prepare("INSERT INTO bookMeta (id, book_info, update_time) VALUES (?, ?, ?)");
-        bookQuery.bindValue(0, info->bookID());
+        bookQuery.bindValue(0, info->bookID);
         bookQuery.bindValue(1, info->toString());
         bookQuery.bindValue(2, QDateTime::currentDateTime().toTime_t());
     }
@@ -193,6 +193,6 @@ void IndexDB::updateBookMeta(BookInfo *info, bool newBook)
     if(!bookQuery.exec()) {
         qDebug() << "Error:" << bookQuery.lastError().text() << bookQuery.executedQuery();
     } else {
-        qDebug() << "Meta for" << info->bookID() << (newBook?"Inserted":"Updated");
+        qDebug() << "Meta for" << info->bookID << (newBook?"Inserted":"Updated");
     }
 }

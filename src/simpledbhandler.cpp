@@ -37,22 +37,22 @@ void SimpleDBHandler::openID(int pid)
 
     int id;
     if(pid == -1) // First page
-        id = m_bookInfo->firstID();
+        id = m_bookInfo->firstID;
     else if(pid == -2) //Last page
-        id = m_bookInfo->lastID();
+        id = m_bookInfo->lastID;
     else // The given page id
         id = pid;
 
-    if(id >= m_bookInfo->currentID())
+    if(id >= m_bookInfo->currentID)
         m_simpleQuery->nextPage(id);
     else
         m_simpleQuery->prevPage(id);
 
     if(m_simpleQuery->next()) {
         m_textFormat->insertText(QString::fromUtf8(qUncompress(m_simpleQuery->value(1).toByteArray())));
-        m_bookInfo->setCurrentID(m_simpleQuery->value(0).toInt());
-        m_bookInfo->setCurrentPage(m_simpleQuery->value(3).toInt());
-        m_bookInfo->setCurrentPart(m_simpleQuery->value(2).toInt());
+        m_bookInfo->currentID = m_simpleQuery->value(0).toInt();
+        m_bookInfo->currentPageNumber = m_simpleQuery->value(3).toInt();
+        m_bookInfo->currentPart = m_simpleQuery->value(2).toInt();
     }
 
     m_textFormat->done();
@@ -119,20 +119,20 @@ void SimpleDBHandler::childTitles(BookIndexNode *parentNode, int tid)
 void SimpleDBHandler::getBookInfo()
 {
     // TODO: some books start with part 0
-    m_bookInfo->setBookTable("bookPages");
-    m_bookInfo->setTitleTable("bookIndex");
+    m_bookInfo->textTable = "bookPages";
+    m_bookInfo->indexTable = "bookIndex";
 
     if(!m_bookInfo->haveInfo()) {
-        m_simpleQuery->exec(QString("SELECT MAX(partNum), MIN(id), MAX(id) from %1 ").arg(m_bookInfo->bookTable()));
+        m_simpleQuery->exec(QString("SELECT MAX(partNum), MIN(id), MAX(id) from %1 ").arg(m_bookInfo->textTable));
         if(m_simpleQuery->next()) {
             bool ok;
             int parts = m_simpleQuery->value(0).toInt(&ok);
             if(!ok)
                 qWarning("Can't get parts count");
 
-            m_bookInfo->setPartsCount(parts);
-            m_bookInfo->setFirstID(m_simpleQuery->value(1).toInt());
-            m_bookInfo->setLastID(m_simpleQuery->value(2).toInt());
+            m_bookInfo->partsCount = parts;
+            m_bookInfo->firstID = m_simpleQuery->value(1).toInt();
+            m_bookInfo->lastID = m_simpleQuery->value(2).toInt();
         }
 
         m_indexDB->updateBookMeta(m_bookInfo, false);
@@ -142,22 +142,22 @@ void SimpleDBHandler::getBookInfo()
 void SimpleDBHandler::nextPage()
 {
     if(hasNext())
-        openID(m_bookInfo->currentID()+1);
+        openID(m_bookInfo->currentID+1);
 }
 
 void SimpleDBHandler::prevPage()
 {
     if(hasPrev())
-        openID(m_bookInfo->currentID()-1);
+        openID(m_bookInfo->currentID-1);
 }
 
 bool SimpleDBHandler::hasNext()
 {
-    return (m_bookInfo->currentID() < m_bookInfo->lastID());
+    return (m_bookInfo->currentID < m_bookInfo->lastID);
 }
 
 bool SimpleDBHandler::hasPrev()
 {
-    return (m_bookInfo->currentID() > m_bookInfo->firstID());
+    return (m_bookInfo->currentID > m_bookInfo->firstID);
 }
 

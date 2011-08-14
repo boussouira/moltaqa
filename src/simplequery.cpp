@@ -1,5 +1,8 @@
 #include "simplequery.h"
 #include "bookinfo.h"
+#include "common.h"
+#include <qvariant.h>
+#include <qsqlerror.h>
 
 SimpleQuery::SimpleQuery()
 {
@@ -16,41 +19,47 @@ SimpleQuery::SimpleQuery(QSqlDatabase db, BookInfo *bookInfo) : QSqlQuery(db), m
 void SimpleQuery::nextPage(int id)
 {
     exec(QString("SELECT id, pageText, partNum, pageNum from %1 "
-                         "WHERE id >= %2 ORDER BY id ASC LIMIT 1")
-                 .arg(m_bookInfo->bookTable())
-                 .arg(id));
+                 "WHERE id >= %2 ORDER BY id ASC LIMIT 1")
+         .arg(m_bookInfo->textTable)
+         .arg(id));
 }
 
 void SimpleQuery::prevPage(int id)
 {
     exec(QString("SELECT id, pageText, partNum, pageNum from %1 "
-                         "WHERE id <= %2 ORDER BY id DESC LIMIT 1")
-                 .arg(m_bookInfo->bookTable())
-                 .arg(id));
+                 "WHERE id <= %2 ORDER BY id DESC LIMIT 1")
+         .arg(m_bookInfo->textTable)
+         .arg(id));
 }
 
 void SimpleQuery::page(int page, int part)
 {
     exec(QString("SELECT id FROM %1 "
-                         "WHERE pageNum >= %2 AND partNum = %3 "
-                         "ORDER BY id ASC LIMIT 1")
-                 .arg(m_bookInfo->bookTable())
-                 .arg(page)
-                 .arg(part));
+                 "WHERE pageNum >= %2 AND partNum = %3 "
+                 "ORDER BY id ASC LIMIT 1")
+         .arg(m_bookInfo->textTable)
+         .arg(page)
+         .arg(part));
 }
 
 void SimpleQuery::index()
 {
     exec(QString("SELECT id, title, parentID FROM %1 ORDER BY id")
-                 .arg(m_bookInfo->titleTable()));
+         .arg(m_bookInfo->indexTable));
 }
 
-void SimpleQuery::partInfo(int part)
+int SimpleQuery::getHaddithNumber(int pageID)
 {
-    Q_UNUSED(part)
-}
+    prepare(QString("SELECT haddit_number FROM bookMeta WHERE page_id = ?"));
+    bindValue(0, pageID);
 
-void SimpleQuery::parts()
-{
+    if(exec()) {
+        if(next()) {
+            return value(0).toInt();
+        }
+    } else {
+        SQL_ERROR(lastError().text());
+    }
 
+    return 0;
 }

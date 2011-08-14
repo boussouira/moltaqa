@@ -82,7 +82,7 @@ void BookWidget::displayInfo()
     }
 
     m_indexWidget->hideAyaSpin(m_db->bookInfo()->isQuran());
-    m_indexWidget->hidePartSpin(m_db->bookInfo()->partsCount() > 1);
+    m_indexWidget->hidePartSpin(m_db->bookInfo()->partsCount > 1);
 }
 
 void BookWidget::openID(int id)
@@ -97,8 +97,8 @@ void BookWidget::openPage(int pageNum, int partNum)
 {
     m_db->goToPage(pageNum, partNum);
     if(m_db->bookInfo()->isQuran())
-        m_view->scrollToAya(m_db->bookInfo()->currentSoraNumber(),
-                            m_db->bookInfo()->currentAya());
+        m_view->scrollToAya(m_db->bookInfo()->currentSoraNumber,
+                            m_db->bookInfo()->currentAyaNumber);
 }
 
 void BookWidget::firstPage()
@@ -121,8 +121,8 @@ void BookWidget::nextPage()
     if(dbHandler()->hasNext()) {
        m_db->nextPage();
         if(m_db->bookInfo()->isQuran())
-            m_view->scrollToAya(m_db->bookInfo()->currentSoraNumber(),
-                                m_db->bookInfo()->currentAya());
+            m_view->scrollToAya(m_db->bookInfo()->currentSoraNumber,
+                                m_db->bookInfo()->currentAyaNumber);
     }
 }
 
@@ -131,8 +131,8 @@ void BookWidget::prevPage()
     if(dbHandler()->hasPrev()) {
         m_db->prevPage();
         if(m_db->bookInfo()->isQuran())
-            m_view->scrollToAya(m_db->bookInfo()->currentSoraNumber(),
-                                m_db->bookInfo()->currentAya());
+            m_view->scrollToAya(m_db->bookInfo()->currentSoraNumber,
+                                m_db->bookInfo()->currentAyaNumber);
     }
 }
 
@@ -140,8 +140,8 @@ void BookWidget::nextUnit()
 {
     if(m_db->bookInfo()->isQuran()) {
         m_db->nextUnit();
-        m_view->scrollToAya(m_db->bookInfo()->currentSoraNumber(),
-                            m_db->bookInfo()->currentAya());
+        m_view->scrollToAya(m_db->bookInfo()->currentSoraNumber,
+                            m_db->bookInfo()->currentAyaNumber);
     } else {
         if(!m_view->maxDown())
             m_view->pageDown();
@@ -154,8 +154,8 @@ void BookWidget::prevUnit()
 {
     if(m_db->bookInfo()->isQuran()) {
         m_db->prevUnit();
-        m_view->scrollToAya(m_db->bookInfo()->currentSoraNumber(),
-                            m_db->bookInfo()->currentAya());
+        m_view->scrollToAya(m_db->bookInfo()->currentSoraNumber,
+                            m_db->bookInfo()->currentAyaNumber);
     } else {
         if(!m_view->maxUp())
             m_view->pageUp();

@@ -17,8 +17,8 @@ public:
     void prevPage(int id);
     void page(int page, int part=1);
     void index();
+    int getHaddithNumber(int pageID);
     void partInfo(int part);
-    void parts();
 
 protected:
     BookInfo *m_bookInfo;

@@ -55,21 +55,21 @@ void IndexWidget::setIndex(QAbstractItemModel *pList)
 void IndexWidget::displayBookInfo()
 {
     sendSignals = false;
-    int part = qMax(1, m_bookInfo->currentPart());
-    ui->spinPage->setValue(qMax(1, m_bookInfo->currentPage()));
+    int part = qMax(1, m_bookInfo->currentPart);
+    ui->spinPage->setValue(qMax(1, m_bookInfo->currentPageNumber));
 
-    if(m_bookInfo->partsCount() > 1) {
-        ui->spinPart->setMaximum(m_bookInfo->partsCount());
+    if(m_bookInfo->partsCount > 1) {
+        ui->spinPart->setMaximum(m_bookInfo->partsCount);
         ui->spinPart->setMinimum(1);
-        ui->spinPart->setSuffix(QString(" / %1").arg(m_bookInfo->partsCount()));
+        ui->spinPart->setSuffix(QString(" / %1").arg(m_bookInfo->partsCount));
         ui->spinPart->setValue(part);
     }
 
     if(m_bookInfo->isQuran()) {
-        ui->spinAya->setMaximum(m_bookInfo->currentSoraAyatCount());
-        ui->spinAya->setSuffix(QString(" / %1").arg(m_bookInfo->currentSoraAyatCount()));
-        ui->spinAya->setValue(m_bookInfo->currentAya());
-        setSelectedSora(m_bookInfo->currentSoraNumber());
+        ui->spinAya->setMaximum(m_bookInfo->currentSoraAyatCount);
+        ui->spinAya->setSuffix(QString(" / %1").arg(m_bookInfo->currentSoraAyatCount));
+        ui->spinAya->setValue(m_bookInfo->currentAyaNumber);
+        setSelectedSora(m_bookInfo->currentSoraNumber);
     }
 
     sendSignals = true;

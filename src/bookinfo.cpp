@@ -4,53 +4,53 @@
 
 BookInfo::BookInfo()
 {
-    m_partsCount = -1;
-    m_firstID = -1;
-    m_lastID = -1;
-    m_bookID = -1;
+    partsCount = -1;
+    firstID = -1;
+    lastID = -1;
+    bookID = -1;
     m_hasInfo = false;
 }
 
 void BookInfo::setFirstPage(int count, int part)
 {
-    if(part <= m_partsCount)
+    if(part <= partsCount)
         m_firstPages.insert(part, count);
     else
-        qWarning("The given part(%d) is out of range(%d)", part, m_partsCount);
+        qWarning("The given part(%d) is out of range(%d)", part, partsCount);
 }
 
 int BookInfo::firstPage(int part)
 {
-    if(part <= m_partsCount)
+    if(part <= partsCount)
         return m_firstPages.value(part);
     else {
-        qWarning("The given part(%d) is out of range(%d)", part, m_partsCount);
+        qWarning("The given part(%d) is out of range(%d)", part, partsCount);
         return 0;
     }
 }
 
 void BookInfo::setLastPage(int count, int part)
 {
-    if(part <= m_partsCount)
+    if(part <= partsCount)
         m_lastPages.insert(part, count);
     else
-        qWarning("The given part(%d) is out of range(%d)", part, m_partsCount);
+        qWarning("The given part(%d) is out of range(%d)", part, partsCount);
 }
 
 int BookInfo::lastPage(int part)
 {
-    if(part <= m_partsCount)
+    if(part <= partsCount)
         return m_lastPages.value(part);
     else {
-        qWarning("The given part(%d) is out of range(%d)", part, m_partsCount);
+        qWarning("The given part(%d) is out of range(%d)", part, partsCount);
         return 0;
     }
 }
 
 bool BookInfo::exists()
 {
-    if(!bookPath().isEmpty()){
-        return QFile::exists(bookPath());
+    if(!bookPath.isEmpty()){
+        return QFile::exists(bookPath);
     } else {
         qWarning("Call to BookInfo::exists() before BookInfo::setBookPath()");
         return false;
@@ -61,8 +61,8 @@ QString BookInfo::toString()
 {
     QString text;
 
-    text.append(QString("%1-%2;").arg(m_firstID).arg(m_lastID));
-    text.append(QString("%1:%2-%3").arg(m_partsCount).arg(firstPage()).arg(lastPage()));
+    text.append(QString("%1-%2;").arg(firstID).arg(lastID));
+    text.append(QString("%1:%2-%3").arg(partsCount).arg(firstPage()).arg(lastPage()));
 
     return text;
 }
@@ -72,7 +72,7 @@ void BookInfo::fromString(QString info)
     if(info.isEmpty())
         return;
 
-    m_partsCount = info.count(';');
+    partsCount = info.count(';');
     QStringList partInfoList;
     bool idsProccessed = false;
     int part=1;
@@ -80,12 +80,12 @@ void BookInfo::fromString(QString info)
     foreach (QString partInfo, info.split(';', QString::SkipEmptyParts)) {
         if(!idsProccessed) {
             partInfoList = partInfo.split('-', QString::SkipEmptyParts);
-            setFirstID(partInfoList.first().toInt());
-            setLastID(partInfoList.last().toInt());
+            firstID = partInfoList.first().toInt();
+            lastID = partInfoList.last().toInt();
             idsProccessed = true;
         } else {
             partInfoList = partInfo.split(':', QString::SkipEmptyParts);
-            m_partsCount = partInfoList.first().toInt();
+            partsCount = partInfoList.first().toInt();
             partInfoList = partInfoList.last().split('-', QString::SkipEmptyParts);
             setFirstPage(partInfoList.first().toInt(), part);
             setLastPage(partInfoList.last().toInt(), part);
