@@ -11,7 +11,7 @@ TextFormatter::TextFormatter(QObject *parent): QObject(parent)
 
 void TextFormatter::laodSettings()
 {
-    QDir dir(QApplication::applicationDirPath());
+    QDir dir(QDir::currentPath()); // TODO: use QApplication::applicationDirPath() instead
     dir.cd("styles");
     dir.cd("default");
     QString style = dir.filePath("default.css");
@@ -79,5 +79,30 @@ void TextFormatter::done()
                      "</body></html>").arg(m_styleFile).arg(m_cssID).arg(m_text);
 
     emit doneReading(m_html);
+}
+
+void TextFormatter::openHtmlTag(QString tag, QString className, QString idName)
+{
+    m_text.append(QString("<%1").arg(tag));
+
+    if(!className.isEmpty())
+        m_text.append(QString(" class=\"%1\"").arg(className));
+
+    if(!idName.isEmpty())
+        m_text.append(QString(" id=\"%1\"").arg(idName));
+
+    m_text.append(">");
+
+    m_openTags.push(tag);
+}
+
+void TextFormatter::closeHtmlTag(QString tag)
+{
+    if(tag.isEmpty()) {
+        if(!m_openTags.isEmpty())
+            m_text.append(QString("</%1>").arg(m_openTags.pop()));
+    } else {
+        m_text.append(QString("</%1>").arg(tag));
+    }
 }
 

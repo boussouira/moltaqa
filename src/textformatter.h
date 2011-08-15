@@ -5,6 +5,7 @@
 #include <qstring.h>
 #include <qregexp.h>
 #include <qsettings.h>
+#include <qstack.h>
 
 class TextFormatter : public QObject
 {
@@ -18,6 +19,8 @@ public:
     void insertHtmlTag(QString tag, QString text, QString className="", QString idName="");
     void insertDivTag(QString text, QString className="", QString idName="");
     void insertSpanTag(QString text, QString className="", QString idName="");
+    void openHtmlTag(QString tag, QString className="", QString idName="");
+    void closeHtmlTag(QString tag=QString());
 
 protected:
     void clearText();
@@ -35,6 +38,7 @@ protected:
     QString m_cssID;
     QString m_text;
     QString m_html;
+    QStack<QString> m_openTags;
 };
 
 #endif // TEXTFORMATTER_H

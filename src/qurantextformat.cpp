@@ -19,6 +19,8 @@ void QuranTextFormat::insertBassemala()
 
 void QuranTextFormat::insertAyaText(const QString &pAyaText, int pAyaNumber, int pSoraNumber)
 {
+    openHtmlTag("div", "ayaDiv");
     insertSpanTag(pAyaText, "ayatxt", QString("s%1a%2").arg(pSoraNumber).arg(pAyaNumber));
     insertSpanTag(QString("(%1)").arg(pAyaNumber), "ayanumber");
+    closeHtmlTag();
 }

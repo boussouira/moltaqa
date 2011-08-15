@@ -18,16 +18,18 @@ void TafessirTextFormat::insertBassemala()
 
 void TafessirTextFormat::insertAyaText(const QString &pAyaText, int pAyaNumber, int pSoraNumber)
 {
+    openHtmlTag("div", "ayaDiv");
     insertSpanTag(pAyaText, "ayatxt", QString("s%1a%2").arg(pSoraNumber).arg(pAyaNumber));
     insertSpanTag(QString("(%1)").arg(pAyaNumber), "ayanumber");
+    closeHtmlTag();
 }
 
 void TafessirTextFormat::beginQuran()
 {
-    m_text.append("<div class=\"tafessir_quran\">");
+    openHtmlTag("div", "tafessir_quran");
 }
 
 void TafessirTextFormat::endQuran()
 {
-    m_text.append("</div>");
+    closeHtmlTag();
 }

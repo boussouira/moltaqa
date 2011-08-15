@@ -185,16 +185,16 @@ void BookWidget::openHaddit(int hadditNum)
 
 void BookWidget::hideIndexWidget()
 {
-    /*
+
     // For debugging stuff
-    QFile file("out.html");
+    QFile file("xout.html");
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         return;
 
     QTextStream out(&file);
     out.setCodec("utf-8");
     out << m_view->page()->mainFrame()->toHtml();
-    */
+
 
     QList<int> hide;
     hide << 0;

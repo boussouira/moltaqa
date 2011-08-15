@@ -72,3 +72,6 @@ footnote a{
     margin-bottom: 15px;
     padding: 10px;
 }
+.ayaDiv {
+    display: inline;
+}
