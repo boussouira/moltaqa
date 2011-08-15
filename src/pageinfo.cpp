@@ -8,4 +8,5 @@ PageInfo::PageInfo()
     currentPageNumber = 0;
     currentID = 0;
     currentPartNumber = 0;
+    currentHadditNumber = 0;
 }

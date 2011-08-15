@@ -22,7 +22,6 @@ public:
     void displayInfo();
     AbstractDBHandler *dbHandler() { return m_db; }
     IndexWidget *indexWidget() { return m_indexWidget; }
-    void openPage(int pageNum, int partNum);
     void firstPage();
     void lastPage();
     void nextPage();
@@ -31,6 +30,10 @@ public:
     void prevUnit();
     void hideIndexWidget();
     void saveSettings();
+
+    void openPage(int pageNum, int partNum);
+    void openSora(int sora, int aya);
+    void openHaddit(int hadditNum);
 
 protected:
     void loadSettings();

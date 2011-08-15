@@ -12,7 +12,7 @@
 #include <QCloseEvent>
 #include <QFile>
 
-Q_DECLARE_METATYPE(QList<int>)
+Q_DECLARE_METATYPE(QList<int>);
 
 BookWidget::BookWidget(AbstractDBHandler *db, QWidget *parent): QWidget(parent), m_db(db)
 {
@@ -94,14 +94,6 @@ void BookWidget::openID(int id)
         m_view->scrollToSora(id);
 }
 
-void BookWidget::openPage(int pageNum, int partNum)
-{
-    m_db->goToPage(pageNum, partNum);
-    if(m_db->bookInfo()->isQuran())
-        m_view->scrollToAya(m_db->bookInfo()->currentSoraNumber,
-                            m_db->bookInfo()->currentAyaNumber);
-}
-
 void BookWidget::firstPage()
 {
     m_db->openIndexID();
@@ -163,6 +155,32 @@ void BookWidget::prevUnit()
         else
             prevPage();
     }
+}
+
+void BookWidget::openPage(int pageNum, int partNum)
+{
+    m_db->goToPage(pageNum, partNum);
+    if(m_db->bookInfo()->isQuran())
+        m_view->scrollToAya(m_db->bookInfo()->currentSoraNumber,
+                            m_db->bookInfo()->currentAyaNumber);
+}
+
+void BookWidget::openSora(int sora, int aya)
+{
+    if(m_db->bookInfo()->isQuran() || m_db->bookInfo()->isTafessir())
+   {     m_db->goToSora(sora, aya);
+
+    if(m_db->bookInfo()->isQuran())
+        m_view->scrollToAya(m_db->bookInfo()->currentSoraNumber,
+                            m_db->bookInfo()->currentAyaNumber);
+    else if(m_db->bookInfo()->isTafessir())
+        m_view->scrollToAya(sora, aya);
+}}
+
+void BookWidget::openHaddit(int hadditNum)
+{
+    if(!m_db->bookInfo()->isQuran())
+        m_db->goToHaddit(hadditNum);
 }
 
 void BookWidget::hideIndexWidget()

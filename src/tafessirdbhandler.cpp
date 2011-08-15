@@ -223,9 +223,17 @@ void TafessirDBHandler::readQuranText(int sora, int aya, int count)
     }
 }
 
-void TafessirDBHandler::openSora(int sora, int aya)
+void TafessirDBHandler::goToSora(int sora, int aya)
 {
     int pageID = m_tafessirQuery->getPageID(sora, aya);
+
+    if(pageID > 0)
+        openID(pageID);
+}
+
+void TafessirDBHandler::goToHaddit(int hadditNum)
+{
+    int pageID = m_tafessirQuery->getHaddithPage(hadditNum);
 
     if(pageID > 0)
         openID(pageID);

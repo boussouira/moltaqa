@@ -12,6 +12,9 @@ public:
     SimpleDBHandler();
     ~SimpleDBHandler();
 
+    void goToSora(int sora, int aya);
+    void goToHaddit(int hadditNum);
+
     void nextPage();
     void prevPage();
 

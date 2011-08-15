@@ -13,6 +13,9 @@ public:
     TafessirDBHandler();
     ~TafessirDBHandler();
 
+    void goToSora(int sora, int aya);
+    void goToHaddit(int hadditNum);
+
     void nextPage();
     void prevPage();
 
@@ -21,8 +24,6 @@ public:
 
     QAbstractItemModel *indexModel();
     QAbstractItemModel *topIndexModel();
-
-    void openSora(int sora, int aya);
 
 protected:
     void openID(int pid = -1);

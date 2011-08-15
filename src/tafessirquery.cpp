@@ -80,3 +80,19 @@ int TafessirQuery::getPageID(int sora, int aya)
 
     return 0;
 }
+
+int TafessirQuery::getHaddithPage(int hadditNum)
+{
+    prepare(QString("SELECT page_id FROM bookMeta WHERE haddit_number = ?"));
+    bindValue(0, hadditNum);
+
+    if(exec()) {
+        if(next()) {
+            return value(0).toInt();
+        }
+    } else {
+        SQL_ERROR(lastError().text());
+    }
+
+    return 0;
+}

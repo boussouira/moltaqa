@@ -165,3 +165,18 @@ bool SimpleDBHandler::hasPrev()
     return (m_bookInfo->currentID > m_bookInfo->firstID);
 }
 
+void SimpleDBHandler::goToSora(int sora, int aya)
+{
+    //Doesn't do any thing
+    Q_UNUSED(sora);
+    Q_UNUSED(aya);
+}
+
+void SimpleDBHandler::goToHaddit(int hadditNum)
+{
+    int page = m_simpleQuery->getHaddithPage(hadditNum);
+
+    if(page)
+        openID(page);
+}
+

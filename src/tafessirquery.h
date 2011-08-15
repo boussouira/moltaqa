@@ -17,6 +17,8 @@ public:
     int getAyatCount(int sora, int aya);
     int getPageID(int sora, int aya);
 
+    int getHaddithPage(int hadditNum);
+
 protected:
     BookInfo *m_bookInfo;
 };

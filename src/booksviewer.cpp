@@ -80,7 +80,7 @@ void BooksViewer::createMenus(QMainWindow *parent)
     actionLastPage = new QAction(QIcon(":/menu/images/go-first.png"),
                                  tr("الصفحة الاخيرة"),
                                  this);
-    actionGotToPage = new QAction(tr("انتقل الى الصفحة..."),
+    actionGotToPage = new QAction(tr("انتقل الى..."),
                                   this);
 
     // Tafressir actions
@@ -244,7 +244,7 @@ void BooksViewer::openTafessir()
     int tabIndex = m_tab->addTab(bookWidget, bookdb->bookInfo()->bookName);
     m_tab->setCurrentIndex(tabIndex);
 
-    bookdb->openSora(sora, aya);
+    bookWidget->openSora(sora, aya);
 
     updateActions();
 }
@@ -288,11 +288,17 @@ void BooksViewer::lastPage()
 void BooksViewer::goToPage()
 {
     OpenPageDialog dialog(this);
-    dialog.setPage(currentBookWidget()->dbHandler()->bookInfo()->currentPageNumber);
-    dialog.setPart(currentBookWidget()->dbHandler()->bookInfo()->currentPartNumber);
+    dialog.setBookInfo(currentBookWidget()->dbHandler()->bookInfo());
 
     if(dialog.exec() == QDialog::Accepted) {
-        currentBookWidget()->openPage(dialog.selectedPage(), dialog.selectedPart());
+        if(dialog.currentPage() == 0) // Open selected page/part
+            currentBookWidget()->openPage(dialog.selectedPage(), dialog.selectedPart());
+        else if(dialog.currentPage() == 1) // Open selected sora/page
+            currentBookWidget()->openSora(dialog.selectedSora(), dialog.selectedAya());
+        else if(dialog.currentPage() == 2) // Open selected haddit
+            currentBookWidget()->openHaddit(dialog.selectedHaddit());
+        else
+            qDebug("What to do?");
     }
 }
 

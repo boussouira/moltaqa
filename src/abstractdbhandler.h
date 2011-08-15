@@ -45,6 +45,16 @@ public:
     virtual void goToPage(int page, int part);
 
     /**
+      Open first page with given sora and aya number
+      */
+    virtual void goToSora(int sora, int aya)=0;
+
+    /**
+      Open page with the given haddit number
+      */
+    virtual void goToHaddit(int hadditNum)=0;
+
+    /**
       Open next page
       */
     virtual void nextPage() = 0;

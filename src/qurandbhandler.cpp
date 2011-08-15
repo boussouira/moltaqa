@@ -223,3 +223,19 @@ void QuranDBHandler::goToPage(int page, int part)
     firstSoraAndAya(page);
     openPage(page, part);
 }
+
+void QuranDBHandler::goToSora(int sora, int aya)
+{
+    int page = getPageNumber(sora, aya);
+    m_bookInfo->currentSoraNumber = sora;
+    m_bookInfo->currentAyaNumber = aya;
+    m_bookInfo->currentSoraAyatCount = getSoraAyatCount(sora);
+
+    if(page != m_bookInfo->currentPageNumber)
+        openPage(page);
+}
+
+void QuranDBHandler::goToHaddit(int hadditNum)
+{
+
+}

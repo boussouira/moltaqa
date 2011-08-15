@@ -15,6 +15,7 @@ public:
     void page(int page, int part=1);
     void index();
     int getHaddithNumber(int pageID);
+    int getHaddithPage(int hadditNum);
     void partInfo(int part);
 
 protected:

@@ -2,6 +2,7 @@
 #define OPENPAGEDIALOG_H
 
 #include <QDialog>
+#include "bookinfo.h"
 
 namespace Ui {
     class OpenPageDialog;
@@ -15,14 +16,26 @@ public:
     OpenPageDialog(QWidget *parent = 0);
     ~OpenPageDialog();
 
-    void setPage(int page);
-    void setPart(int part);
+    void setBookInfo(BookInfo *info);
+
+    int currentPage();
+
     int selectedPage();
     int selectedPart();
+
+    int selectedSora();
+    int selectedAya();
+
+    int selectedHaddit();
+
+protected:
+    void loadSowarNames();
 
 private slots:
     void on_pushCancel_clicked();
     void on_pushGo_clicked();
+
+    void on_comboSora_currentIndexChanged(int index);
 
 private:
     int m_pageNum; ///< Selected page number

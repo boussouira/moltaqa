@@ -55,3 +55,19 @@ int SimpleQuery::getHaddithNumber(int pageID)
 
     return 0;
 }
+
+int SimpleQuery::getHaddithPage(int hadditNum)
+{
+    prepare(QString("SELECT page_id FROM bookMeta WHERE haddit_number = ?"));
+    bindValue(0, hadditNum);
+
+    if(exec()) {
+        if(next()) {
+            return value(0).toInt();
+        }
+    } else {
+        SQL_ERROR(lastError().text());
+    }
+
+    return 0;
+}
