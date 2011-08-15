@@ -121,4 +121,6 @@ FORMS += mainwindow.ui settingsdialog.ui \
     shamelaimportdialog.ui \
     openpagedialog.ui \
     newlibrarydialog.ui
-RESOURCES += data/qt_rc.qrc
+
+RESOURCES += ../data/qt_rc.qrc
+win32:RC_FILE = ../data/win_rc.rc
