@@ -23,6 +23,7 @@ public:
 
     bool isQuran() { return bookType == QuranBook; }
     bool isNormal() { return bookType == NormalBook; }
+    bool isTafessir() { return bookType == TafessirBook; }
     bool exists();
 
     QString toString();

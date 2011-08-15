@@ -11,18 +11,21 @@
 #include <qsqlquery.h>
 #include <qstringlist.h>
 #include <qdebug.h>
-#include <QTime>
+#include <qdatetime.h>
 
 SimpleDBHandler::SimpleDBHandler()
 {
     m_textFormat = new SimpleTextFormat();
     m_fastIndex = true;
+    m_simpleQuery = 0;
 }
 
 SimpleDBHandler::~SimpleDBHandler()
 {
     delete m_textFormat;
-    delete m_simpleQuery;
+
+    if(m_simpleQuery)
+        delete m_simpleQuery;
 }
 
 void SimpleDBHandler::connected()
@@ -51,8 +54,8 @@ void SimpleDBHandler::openID(int pid)
     if(m_simpleQuery->next()) {
         m_textFormat->insertText(QString::fromUtf8(qUncompress(m_simpleQuery->value(1).toByteArray())));
         m_bookInfo->currentID = m_simpleQuery->value(0).toInt();
+        m_bookInfo->currentPartNumber = m_simpleQuery->value(2).toInt();
         m_bookInfo->currentPageNumber = m_simpleQuery->value(3).toInt();
-        m_bookInfo->currentPart = m_simpleQuery->value(2).toInt();
     }
 
 //    m_bookInfo->currentHadditNumber = m_simpleQuery->getHaddithNumber(pid);
@@ -120,7 +123,6 @@ void SimpleDBHandler::childTitles(BookIndexNode *parentNode, int tid)
 
 void SimpleDBHandler::getBookInfo()
 {
-    // TODO: some books start with part 0
     m_bookInfo->textTable = "bookPages";
     m_bookInfo->indexTable = "bookIndex";
 

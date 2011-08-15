@@ -10,6 +10,7 @@
 #include <qtconcurrentrun.h>
 #include <qfuturewatcher.h>
 #include <QCloseEvent>
+#include <QFile>
 
 Q_DECLARE_METATYPE(QList<int>)
 
@@ -36,7 +37,7 @@ BookWidget::BookWidget(AbstractDBHandler *db, QWidget *parent): QWidget(parent),
     loadSettings();
     displayInfo();
     connect(m_indexWidget, SIGNAL(openPage(int)), this, SLOT(openID(int)));
-    connect(m_db->textFormatter(), SIGNAL(doneReading(QString)), m_view, SLOT(setText(QString)));
+    connect(m_db->textFormatter(), SIGNAL(doneReading(QString)), m_view, SLOT(setText(QString))); // TODO: don't call setText directly
     connect(m_view, SIGNAL(textChanged()), m_indexWidget, SLOT(displayBookInfo()));
 }
 
@@ -67,7 +68,7 @@ void BookWidget::setDBHandler(AbstractDBHandler *db)
 {
     m_db = db;
     m_indexWidget->setBookInfo(db->bookInfo());
-    connect(db->textFormatter(), SIGNAL(doneReading(QString)), m_view, SLOT(setText(QString)));
+    connect(db->textFormatter(), SIGNAL(doneReading(QString)), m_view, SLOT(setText(QString))); // TODO: don't call setText directly
 }
 
 void BookWidget::displayInfo()
@@ -81,7 +82,7 @@ void BookWidget::displayInfo()
         m_indexWidget->setIndex(m_db->indexModel());
     }
 
-    m_indexWidget->hideAyaSpin(m_db->bookInfo()->isQuran());
+    m_indexWidget->hideAyaSpin(m_db->bookInfo()->isQuran() || m_db->bookInfo()->isTafessir());
     m_indexWidget->hidePartSpin(m_db->bookInfo()->partsCount > 1);
 }
 
@@ -166,6 +167,17 @@ void BookWidget::prevUnit()
 
 void BookWidget::hideIndexWidget()
 {
+    /*
+    // For debugging stuff
+    QFile file("out.html");
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        return;
+
+    QTextStream out(&file);
+    out.setCodec("utf-8");
+    out << m_view->page()->mainFrame()->toHtml();
+    */
+
     QList<int> hide;
     hide << 0;
 
@@ -180,5 +192,6 @@ void BookWidget::hideIndexWidget()
 
 void BookWidget::indexModelReady()
 {
+    // TODO: stop this watcher when closing this widget if it is running
     m_indexWidget->setIndex(m_retModel.result());
 }

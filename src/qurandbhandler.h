@@ -4,6 +4,7 @@
 #include "abstractdbhandler.h"
 
 class QuranQuery;
+class QuranTextFormat;
 
 class QuranDBHandler : public AbstractDBHandler
 {
@@ -40,6 +41,7 @@ protected:
 
 protected:
     QuranQuery *m_quranQuery;
+    QuranTextFormat *m_formatter;
 };
 
 #endif // QURANDBHANDLER_H

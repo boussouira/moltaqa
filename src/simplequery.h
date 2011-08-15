@@ -8,10 +8,7 @@ class BookInfo;
 class SimpleQuery : public QSqlQuery
 {
 public:
-    SimpleQuery();
-    SimpleQuery(QSqlDatabase db);
     SimpleQuery(QSqlDatabase db, BookInfo *bookInfo);
-    void setBookInfo(BookInfo *bookInfo);
 
     void nextPage(int id);
     void prevPage(int id);

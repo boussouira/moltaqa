@@ -101,6 +101,41 @@ BookInfo *IndexDB::getBookInfo(int bookID)
     return bookInfo;
 }
 
+BookInfo *IndexDB::getQuranBook()
+{
+    BookInfo *bookInfo = new BookInfo();
+    QSqlQuery bookQuery(m_indexDB);
+
+    bookQuery.exec(QString("SELECT booksList.bookName, booksList.bookType, booksList.fileName, bookMeta.book_info, booksList.id "
+                           "FROM booksList LEFT JOIN bookMeta "
+                           "ON bookMeta.id = booksList.id "
+                           "WHERE booksList.bookType = %1 LIMIT 1").arg(BookInfo::QuranBook));
+
+    if(bookQuery.next()) {
+        bookInfo->bookName = bookQuery.value(0).toString();
+        bookInfo->bookType = BookInfo::QuranBook;
+        bookInfo->bookID = bookQuery.value(4).toInt();
+        bookInfo->bookPath = m_libraryInfo->bookPath(bookQuery.value(2).toString());
+
+        bookInfo->fromString(bookQuery.value(3).toString());
+    }
+
+    return bookInfo;
+}
+
+QList<QPair<int, QString> > IndexDB::getTafassirList()
+{
+    QList<QPair<int, QString> > list;
+    QSqlQuery bookQuery(m_indexDB);
+
+    bookQuery.exec("SELECT book_id, tafessir_name FROM tafassirList");
+    while(bookQuery.next()) {
+        list.append(qMakePair(bookQuery.value(0).toInt(), bookQuery.value(1).toString()));
+    }
+
+    return list;
+}
+
 int IndexDB::addBook(ImportModelNode *book)
 {
     QSqlQuery indexQuery(m_indexDB);

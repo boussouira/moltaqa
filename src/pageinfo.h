@@ -15,7 +15,7 @@ public:
     int currentSoraAyatCount ;
     int currentPageNumber;
     int currentID;
-    int currentPart;
+    int currentPartNumber;
     int currentHadditNumber;
 };
 

@@ -11,13 +11,11 @@ SettingsChecker::SettingsChecker(QObject *parent): QObject(parent)
 
 void SettingsChecker::checkSettings()
 {
-    m_settings.beginGroup("General");
     QDir appDir(m_settings.value("app_dir", QApplication::applicationDirPath()).toString());
     QString appDirPath = appDir.absolutePath();
     QString booksFolder = m_settings.value("books_folder", "books").toString();
     QString indexDBName = m_settings.value("index_db", "books_index.db").toString();
     QString booksTemp = m_settings.value("books_temp", "temp").toString();
-    m_settings.endGroup();
 
     if(booksFolder == "books") {
         if(!appDir.exists(booksFolder))
@@ -37,7 +35,6 @@ void SettingsChecker::checkSettings()
     if(!appDir.exists(booksTemp))
         appDir.mkdir(booksTemp);
 
-    m_settings.beginGroup("General");
     m_settings.setValue("app_dir", appDirPath);
     m_settings.setValue("books_folder", appDir.absolutePath());
     m_settings.setValue("index_db", indexDBName);
@@ -45,7 +42,6 @@ void SettingsChecker::checkSettings()
     m_settings.setValue("index_db_full_path", QString("%1/%2")
                       .arg(appDir.absolutePath())
                       .arg(indexDBName));
-    m_settings.endGroup();
 
     checkDefautQuran();
     checkDefautStyle();
@@ -56,7 +52,7 @@ void SettingsChecker::checkDefautQuran()
     QList<int> quranIDs;
     int quranID = m_settings.value("Books/default_quran", -1).toInt();
     {
-        QString indexPath = m_settings.value("General/index_db_full_path").toString();
+        QString indexPath = m_settings.value("index_db_full_path").toString();
         QSqlDatabase indexDB = QSqlDatabase::addDatabase("QSQLITE", "INDEX_DB");
 
         indexDB.setDatabaseName(indexPath);
@@ -81,9 +77,9 @@ void SettingsChecker::checkDefautQuran()
 
 void SettingsChecker::checkDefautStyle()
 {
-    QString appDir =  m_settings.value("General/app_dir").toString();
-    QString styleFolder = m_settings.value("General/styles_dir", "data/css").toString();
-    QString currentStyle =  m_settings.value("General/style", "Default").toString();
+    QString appDir =  m_settings.value("app_dir").toString();
+    QString styleFolder = m_settings.value("styles_dir", "data/css").toString();
+    QString currentStyle =  m_settings.value("style", "Default").toString();
     QString currentStyleFile = m_settings.value(QString("%1_style/style_file").arg(currentStyle),
                                                 "defaut.css").toString();
     QString currentStyleName = m_settings.value(QString("%1_style/style_name").arg(currentStyle),
@@ -97,8 +93,8 @@ void SettingsChecker::checkDefautStyle()
         }
     }
 
-    m_settings.setValue("General/styles_dir", styleFolder);
-    m_settings.setValue("General/style", currentStyle);
+    m_settings.setValue("styles_dir", styleFolder);
+    m_settings.setValue("style", currentStyle);
 
     m_settings.setValue(QString("%1_style/style_name").arg(currentStyle), currentStyleName);
     m_settings.setValue(QString("%1_style/style_file").arg(currentStyle), currentStyleFile);

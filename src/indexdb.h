@@ -3,6 +3,7 @@
 
 #include <qsqldatabase.h>
 #include <qcoreapplication.h>
+#include <qhash.h>
 
 class LibraryInfo;
 class BookInfo;
@@ -22,6 +23,8 @@ public:
     void open();
     QAbstractItemModel *booksList(bool onlyCats=false);
     BookInfo *getBookInfo(int bookID);
+    BookInfo *getQuranBook();
+    QList<QPair<int, QString> > getTafassirList();
     int catIdFromName(const QString &cat);
     int addBook(ImportModelNode *book);
     void updateBookMeta(BookInfo *info, bool newBook);

@@ -4,16 +4,22 @@ body {
 a {
     text-decoration:none;
 }
+
+@font-face {
+  font-family: "UthmanTN1";
+  src: url("file:///D:/Programming/alkotobiya-build/src/release/styles/default/uthman_tn1_08.otf") format("opentype");
+}
+
 #quran {
     border:1px solid #CCCCCC;
-    font-family:Traditional arabic;
+    font-family:'Lotus Linotype';
     font-size:30px;
     padding:15px;
     text-align:center;
 }
 #simpleBook {
     border:1px solid #CCCCCC;
-    font-family:Traditional arabic;
+    font-family:'Lotus Linotype';
     font-size:30px;
     padding:15px;
     text-align:right;
@@ -56,4 +62,13 @@ footnote a{
     color:green;
     font-size:20px;
     padding-bottom:4px;
+}
+
+.tafessir_quran {
+    -webkit-border-radius:10px;
+    background-color: #FFF2F2;
+    border: 1px solid #FFD2D2;
+    font-size: 0.9em;
+    margin-bottom: 15px;
+    padding: 10px;
 }

@@ -10,14 +10,18 @@
 
 QuranDBHandler::QuranDBHandler()
 {
-    m_textFormat = new QuranTextFormat();
+    m_formatter = new QuranTextFormat();
+    m_textFormat = m_formatter;
     m_fastIndex = false;
+    m_quranQuery = 0;
 }
 
 QuranDBHandler::~QuranDBHandler()
 {
-    delete m_textFormat;
-    delete m_quranQuery;
+    delete m_formatter;
+
+    if(m_quranQuery)
+        delete m_quranQuery;
 }
 
 void QuranDBHandler::connected()
@@ -41,9 +45,9 @@ void QuranDBHandler::openID(int pid)
 }
 void QuranDBHandler::openPage(int page, int part)
 {
-    m_textFormat->start();
+    m_formatter->start();
     m_bookInfo->currentPageNumber = page;
-    m_bookInfo->currentPart = part;
+    m_bookInfo->currentPartNumber = part;
 
 
     m_quranQuery->page(page);
@@ -51,17 +55,17 @@ void QuranDBHandler::openPage(int page, int part)
     while(m_quranQuery->next()) {
         // at the first vers we insert the sora name and bassemala
         if(m_quranQuery->value(2).toInt() == 1) {
-            m_textFormat->insertSoraName(m_quranQuery->value(5).toString());
+            m_formatter->insertSoraName(m_quranQuery->value(5).toString());
 
             // we escape putting bassemala before Fateha and Tawba
             if(m_quranQuery->value(4).toInt() != 1 && m_quranQuery->value(4).toInt() != 9)
-                m_textFormat->insertBassemala();
+                m_formatter->insertBassemala();
         }
-        m_textFormat->insertAyaText(m_quranQuery->value(1).toString(),
+        m_formatter->insertAyaText(m_quranQuery->value(1).toString(),
                                      m_quranQuery->value(2).toInt(),
                                      m_quranQuery->value(4).toInt());
     }
-    m_textFormat->done();
+    m_formatter->done();
 }
 
 void QuranDBHandler::openSora(int num)

@@ -12,7 +12,6 @@ public:
     SimpleDBHandler();
     ~SimpleDBHandler();
 
-
     void nextPage();
     void prevPage();
 

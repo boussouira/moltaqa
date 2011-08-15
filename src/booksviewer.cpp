@@ -4,6 +4,7 @@
 #include "bookslistbrowser.h"
 #include "simpledbhandler.h"
 #include "qurandbhandler.h"
+#include "tafessirdbhandler.h"
 #include "indexdb.h"
 #include "bookwidget.h"
 #include "bookexception.h"
@@ -19,6 +20,9 @@
 #include <qstackedwidget.h>
 #include <qboxlayout.h>
 #include <qdebug.h>
+#include <qmessagebox.h>
+
+typedef QPair<int, QString> Pair;
 
 BooksViewer::BooksViewer(IndexDB *indexDB, QMainWindow *parent): QWidget(parent)
 {
@@ -79,6 +83,16 @@ void BooksViewer::createMenus(QMainWindow *parent)
     actionGotToPage = new QAction(tr("انتقل الى الصفحة..."),
                                   this);
 
+    // Tafressir actions
+    openSelectedTafsir =  new QAction(QIcon(":/menu/images/arrow-left.png"),
+                                               trUtf8("فتح السورة"),
+                                               this);
+    comboTafasir = new QComboBox(this);
+    foreach(Pair pair, m_indexDB->getTafassirList()) {
+        comboTafasir->addItem(pair.second, pair.first);
+    }
+
+    // Add action to their toolbars
     toolBarGeneral = new QToolBar(tr("عام"), this);
     toolBarGeneral->addAction(actionNewTab);
     toolBarGeneral->addSeparator();
@@ -90,6 +104,10 @@ void BooksViewer::createMenus(QMainWindow *parent)
     toolBarNavigation->addAction(actionNextPage);
     toolBarNavigation->addAction(actionNextAYA);
     toolBarNavigation->addAction(actionPrevAYA);
+
+    toolBarTafesir = new QToolBar(trUtf8("التفسير"), this);
+    toolBarTafesir->addWidget(comboTafasir);
+    toolBarTafesir->addAction(openSelectedTafsir);
 
     QMenu *navMenu = new QMenu(tr("التنقل"), this);
     navMenu->addAction(actionFirstPage);
@@ -103,9 +121,11 @@ void BooksViewer::createMenus(QMainWindow *parent)
     // Hide those toolbars
     toolBarGeneral->hide();
     toolBarNavigation->hide();
+    toolBarTafesir->hide();
 
     parent->addToolBar(toolBarGeneral);
     parent->addToolBar(toolBarNavigation);
+    parent->addToolBar(toolBarTafesir);
 
     QAction *act = parent->menuBar()->actions().at(1);
     m_navMenu = parent->menuBar()->insertMenu(act, navMenu);
@@ -124,12 +144,16 @@ void BooksViewer::createMenus(QMainWindow *parent)
     // Index widget
     connect(actionIndexDock, SIGNAL(triggered()), SLOT(showIndexWidget()));
     connect(actionNewTab, SIGNAL(triggered()), MainWindow::mainWindow(), SLOT(showBooksList()));
+
+    // Tafessir actions
+    connect(openSelectedTafsir, SIGNAL(triggered()), SLOT(openTafessir()));
 }
 
 void BooksViewer::removeToolBar()
 {
     toolBarGeneral->hide();
     toolBarNavigation->hide();
+    toolBarTafesir->hide();
     m_navMenu->setVisible(false);
 }
 
@@ -150,8 +174,12 @@ void BooksViewer::openBook(int pBookID, bool newTab)
     AbstractDBHandler *bookdb;
     if(bookInfo->isQuran())
         bookdb = new QuranDBHandler();
-    else
+    else if(bookInfo->isNormal())
         bookdb = new SimpleDBHandler();
+    else if(bookInfo->isTafessir())
+        bookdb = new TafessirDBHandler();
+    else
+        throw BookException(tr("لم يتم التعرف على نوع الكتاب"), QString("Book Type: %1").arg(bookInfo->bookPath));
 
     bookdb->setConnctionInfo(m_indexDB->connectionInfo());
     bookdb->setBookInfo(bookInfo);
@@ -183,6 +211,42 @@ void BooksViewer::openBook(int pBookID, bool newTab)
 
     updateActions();
     activateWindow();
+}
+
+void BooksViewer::openTafessir()
+{
+    int tafessirID = comboTafasir->itemData(comboTafasir->currentIndex()).toInt();
+    qDebug("Open tafessir: %d", tafessirID);
+    BookInfo *bookInfo = m_indexDB->getBookInfo(tafessirID);
+    if(!bookInfo->isTafessir() || !currentBookWidget()->dbHandler()->bookInfo()->isQuran())
+        return;
+
+    TafessirDBHandler *bookdb = new TafessirDBHandler();
+    bookdb->setConnctionInfo(m_indexDB->connectionInfo());
+    bookdb->setBookInfo(bookInfo);
+    bookdb->setIndexDB(m_indexDB);
+
+    try {
+        bookdb->openBookDB();
+    } catch (BookException &e) {
+        delete bookdb;
+        QMessageBox::warning(this,
+                             tr("فتح التفسير"),
+                             e.what());
+    }
+
+    int sora = currentBookWidget()->dbHandler()->bookInfo()->currentSoraNumber;
+    int aya = currentBookWidget()->dbHandler()->bookInfo()->currentAyaNumber;
+
+    BookWidget *bookWidget = new BookWidget(bookdb, this);
+
+    m_bookWidgets.append(bookWidget);
+    int tabIndex = m_tab->addTab(bookWidget, bookdb->bookInfo()->bookName);
+    m_tab->setCurrentIndex(tabIndex);
+
+    bookdb->openSora(sora, aya);
+
+    updateActions();
 }
 
 void BooksViewer::nextUnit()
@@ -225,7 +289,7 @@ void BooksViewer::goToPage()
 {
     OpenPageDialog dialog(this);
     dialog.setPage(currentBookWidget()->dbHandler()->bookInfo()->currentPageNumber);
-    dialog.setPart(currentBookWidget()->dbHandler()->bookInfo()->currentPart);
+    dialog.setPart(currentBookWidget()->dbHandler()->bookInfo()->currentPartNumber);
 
     if(dialog.exec() == QDialog::Accepted) {
         currentBookWidget()->openPage(dialog.selectedPage(), dialog.selectedPart());
@@ -274,6 +338,10 @@ void BooksViewer::tabChanged(int newIndex)
 {
     if(newIndex != -1) {
         updateActions();
+
+        bool showTafsssir = currentBookWidget()->dbHandler()->bookInfo()->isQuran();
+        toolBarTafesir->setVisible(showTafsssir);
+        toolBarTafesir->setEnabled(showTafsssir);
 
         if(currentBookWidget()->dbHandler()->bookInfo()->isQuran()) {
             actionNextAYA->setText(tr("الآية التالية"));

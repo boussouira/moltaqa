@@ -34,6 +34,7 @@ public slots:
     void tabCloseRequest(int tabIndex);
     void showToolBar();
     void removeToolBar();
+    void openTafessir(); // TODO: should be private?
     BookWidget *currentBookWidget();
     BookWidget *currentBookWidget(int index);
     void tabChanged(int newIndex);

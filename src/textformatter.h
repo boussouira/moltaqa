@@ -19,10 +19,6 @@ public:
     void insertDivTag(QString text, QString className="", QString idName="");
     void insertSpanTag(QString text, QString className="", QString idName="");
 
-    void insertSoraName(const QString &pSoraName);
-    void insertBassemala();
-    void insertAyaText(const QString &pAyaText, int pAyaNumber, int pSoraNumber);
-
 protected:
     void clearText();
 
