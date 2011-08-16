@@ -223,7 +223,7 @@ ShamelaBookInfo *ShamelaManager::nextFiltredBook()
 {
     while(m_shamelaQuery->next()) {
         int bid = m_shamelaQuery->value(0).toInt();
-        if(m_accepted.contains(bid) || !m_rejected.contains(bid)) {
+        if(m_accepted.contains(bid) || (!m_rejected.contains(bid) && !m_rejected.isEmpty())) {
             return new ShamelaBookInfo(m_shamelaQuery->value(0).toInt(),
                                        m_shamelaQuery->value(1).toString(),
                                        m_shamelaQuery->value(3).toString(),
@@ -231,7 +231,7 @@ ShamelaBookInfo *ShamelaManager::nextFiltredBook()
                                        m_shamelaQuery->value(2).toInt(),
                                        m_shamelaQuery->value(4).toInt(),
                                        m_shamelaQuery->value(5).toString(),
-                                       m_shamelaQuery->value(6).toString());
+                                       m_shamelaQuery->value(7).toString());
         }
     }
 
@@ -283,4 +283,65 @@ int ShamelaManager::mapShamelaToLibAuthor(int shamelaID)
 int ShamelaManager::mapShamelaToLibBook(int shamelaID)
 {
     return m_booksMap.value(shamelaID, 0);
+}
+
+int ShamelaManager::getBookShareeh(int shamelaID)
+{
+    openShamelaSpecialDB();
+    QSqlQuery specialQuery(m_shamelaSpecialDB);
+
+    specialQuery.prepare("SELECT Sharh FROM oShrooh WHERE Matn = ?");
+    specialQuery.bindValue(0, shamelaID);
+    specialQuery.exec();
+
+    if(specialQuery.next()) {
+        return specialQuery.value(0).toInt();
+    }
+
+    return 0;
+}
+
+int ShamelaManager::getBookMateen(int shamelaID)
+{
+    openShamelaSpecialDB();
+    QSqlQuery specialQuery(m_shamelaSpecialDB);
+
+    specialQuery.prepare("SELECT Matn FROM oShrooh WHERE Sharh = ?");
+    specialQuery.bindValue(0, shamelaID);
+    specialQuery.exec();
+
+    if(specialQuery.next()) {
+        return specialQuery.value(0).toInt();
+    }
+
+    return 0;
+}
+
+QList<ShamelaShareehInfo *> ShamelaManager::getShareehInfo(int mateen, int shareeh)
+{
+    openShamelaSpecialDB();
+    QSqlQuery specialQuery(m_shamelaSpecialDB);
+    QList<ShamelaShareehInfo *> list;
+
+    if(!m_addedShorooh.contains(shareeh)) {
+        specialQuery.prepare("SELECT MatnId, SharhId FROM oShr WHERE Matn = ? AND Sharh = ?");
+        specialQuery.bindValue(0, mateen);
+        specialQuery.bindValue(1, shareeh);
+        if(!specialQuery.exec())
+            SQL_ERROR(specialQuery.lastError().text());
+
+        while(specialQuery.next()) {
+            list.append(new ShamelaShareehInfo(mateen,
+                                               specialQuery.value(0).toInt(),
+                                               shareeh,
+                                               specialQuery.value(1).toInt()));
+        }
+
+        m_addedShorooh.append(shareeh);
+        qDebug("New shareeh %d", shareeh);
+    } else {
+        qDebug("shareeh %d exist", shareeh);
+    }
+
+    return list;
 }

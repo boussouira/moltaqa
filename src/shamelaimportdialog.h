@@ -52,6 +52,7 @@ private slots:
     void selectShamela();
     void doneImporting();
     bool cancel();
+    void importShorooh();
 
 signals:
     void setProgress(int value);

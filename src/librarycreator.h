@@ -32,7 +32,12 @@ public:
     void addAuthor(AuthorInfo *auth, bool checkExist=false);
     void addTafessir(ShamelaBookInfo *tafessir);
     void addBook(ShamelaBookInfo *book);
+    bool getShorooh(ShamelaBookInfo *mateen);
+    bool getMateen(ShamelaBookInfo *shreeh);
     void addQuran();
+
+    QList<ShamelaShareehInfo *> getShorooh();
+    void addShareh(int mateenID, int mateenPage, int shareehID, int shareehPage);
 
 protected:
     void importBook(ShamelaBookInfo *book, QString path);
@@ -40,6 +45,8 @@ protected:
 
     void readSimpleBook(ShamelaBookInfo *book, QSqlQuery &query, NewBookWriter &writer, bool hno);
     void readTafessirBook(ShamelaBookInfo *book, QSqlQuery &query, NewBookWriter &writer, bool hno);
+
+    void getShorooh(int mateenID, int shareehID);
 
 protected:
     QSqlDatabase m_bookDB;
@@ -53,6 +60,7 @@ protected:
     QHash<int, int> m_levels;
     bool m_importAuthor; ///< If true, import author's information when adding a book of him
     QMutex m_mutex;
+    QList<ShamelaShareehInfo *> m_shorooh;
 };
 
 #endif // LIBRARYCREATOR_H

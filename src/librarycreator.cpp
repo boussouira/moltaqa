@@ -74,9 +74,15 @@ void LibraryCreator::createTables()
                      "info BLOB)");
 
     m_bookQuery.exec("CREATE TABLE tafassirList("
-                     "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
+                     "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " // TODO: should be AUTOINCREMENT?
                      "book_id INTEGER, "
                      "tafessir_name TEXT)");
+
+    m_bookQuery.exec("CREATE TABLE ShareehMeta("
+                     "mateen_book INTEGER, "
+                     "mateen_id INTEGER, "
+                     "shareeh_book INTEGER, "
+                     "shareeh_id INTEGER)");
 }
 
 void LibraryCreator::importCats()
@@ -238,8 +244,13 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
 
     importBook(book, path);
 
-    if(!book->tafessirName.isEmpty())
+    if(!getShorooh(book)) {
+        getMateen(book);
+    }
+
+    if(!book->tafessirName.isEmpty()) {
         addTafessir(book);
+    }
 }
 
 void LibraryCreator::addQuran()
@@ -286,13 +297,14 @@ void LibraryCreator::addQuran()
 
 void LibraryCreator::start()
 {
+    qDebug("LibraryCreator: Start transaction...");
     m_bookDB.transaction();
 }
 
 void LibraryCreator::done()
 {
     if(m_bookDB.commit())
-        qDebug("Commit...");
+        qDebug("LibraryCreator: Commit...");
     else
         qDebug("Error when committing");
 }
@@ -426,6 +438,59 @@ void LibraryCreator::readTafessirBook(ShamelaBookInfo *book, QSqlQuery &query, N
             SQL_ERROR(query.lastError().text());
         }
 
+    }
+}
+
+bool LibraryCreator::getShorooh(ShamelaBookInfo *mateen)
+{
+    int s_mateenID = mateen->id;
+    int s_shareehID = m_shamelaManager->getBookShareeh(mateen->id);
+
+    if(s_shareehID && s_mateenID) {
+        getShorooh(s_mateenID, s_shareehID);
+        return true;
+    }
+
+    return false;
+}
+
+bool LibraryCreator::getMateen(ShamelaBookInfo *shreeh)
+{
+    int s_shareehID = shreeh->id;
+    int s_mateenID = m_shamelaManager->getBookMateen(shreeh->id);
+
+    if(s_mateenID && s_shareehID) {
+        getShorooh(s_mateenID, s_shareehID);
+        return true;
+    }
+
+    return false;
+}
+
+void LibraryCreator::getShorooh(int mateenID, int shareehID)
+{
+    QList<ShamelaShareehInfo *> idsList = m_shamelaManager->getShareehInfo(mateenID, shareehID);
+    m_shorooh.append(idsList);
+
+    qDebug("Add Shareeh: S:%d -> M:%d", shareehID, mateenID);
+}
+
+QList<ShamelaShareehInfo *> LibraryCreator::getShorooh()
+{
+    return m_shorooh;
+}
+
+void LibraryCreator::addShareh(int mateenID, int mateenPage, int shareehID, int shareehPage)
+{
+    m_bookQuery.prepare("INSERT INTO ShareehMeta (mateen_book, mateen_id, shareeh_book, shareeh_id) "
+                      "VALUES (?, ?, ?, ?)");
+    m_bookQuery.bindValue(0, mateenID);
+    m_bookQuery.bindValue(1, mateenPage);
+    m_bookQuery.bindValue(2, shareehID);
+    m_bookQuery.bindValue(3, shareehPage);
+
+    if(!m_bookQuery.exec()) {
+        SQL_ERROR(m_bookQuery.lastError().text());
     }
 }
 

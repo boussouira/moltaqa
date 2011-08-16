@@ -16,6 +16,7 @@ public:
     void run();
     void stop();
     void setImportQuran(bool importQuran) { m_importQuran = importQuran; }
+    QList<ShamelaShareehInfo *> getShorooh();
 
 protected:
     void importBooks();

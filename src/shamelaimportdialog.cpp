@@ -311,6 +311,8 @@ void ShamelaImportDialog::doneImporting()
         ui->progressBar->setValue(ui->progressBar->maximum());
         ui->progressSteps->setValue(ui->progressSteps->maximum());
 
+        importShorooh();
+
         addDebugInfo(tr("تم اسيراد %1 بنجاح").arg(arPlural(m_importedBooksCount, BOOK)));
 
         if(m_importedBooksCount > 0) {
@@ -343,4 +345,26 @@ bool ShamelaImportDialog::cancel()
     }
 
     return true;
+}
+
+void ShamelaImportDialog::importShorooh()
+{
+    qDebug("Add Shorooh");
+    addDebugInfo(tr("استيراد الشروح..."));
+    LibraryCreator creator;
+    creator.openDB();
+    creator.start();
+
+    foreach (ShamelaImportThread *thread, m_importThreads) {
+        foreach (ShamelaShareehInfo *info, thread->getShorooh()) {
+            int libMateen = m_manager->mapShamelaToLibBook(info->mateen_id);
+            int libShareeh = m_manager->mapShamelaToLibBook(info->shareeh_id);
+
+            creator.addShareh(libMateen, info->mateen_page, libShareeh, info->shareeh_page);
+        }
+
+        qDeleteAll(thread->getShorooh());
+    }
+
+    creator.done();
 }

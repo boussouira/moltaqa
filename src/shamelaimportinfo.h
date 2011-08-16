@@ -59,12 +59,15 @@ public:
     QString tafessirName;
 };
 
-class ShamelaTafessirInfo
+class ShamelaShareehInfo
 {
 public:
-    ShamelaTafessirInfo(int tid, QString name) : id(tid), tafesirName(name) {}
-    int id;
-    QString tafesirName;
+    ShamelaShareehInfo(int mateenID, int mateenPage, int shareehID, int shareehPage)
+        : mateen_id(mateenID), mateen_page(mateenPage), shareeh_id(shareehID), shareeh_page(shareehPage) {}
+    int mateen_id;
+    int mateen_page;
+    int shareeh_id;
+    int shareeh_page;
 };
 
 #endif // SHAMELAIMPORTINFO_H

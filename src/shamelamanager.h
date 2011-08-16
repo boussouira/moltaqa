@@ -49,6 +49,10 @@ public:
     int mapShamelaToLibAuthor(int shamelaID);
     int mapShamelaToLibBook(int shamelaID);
 
+    int getBookShareeh(int shamelaID);
+    int getBookMateen(int shamelaID);
+    QList<ShamelaShareehInfo*> getShareehInfo(int mateen, int shareeh);
+
 protected:
     LibraryInfo *m_library;
     ShamelaInfo *m_info;
@@ -64,6 +68,7 @@ protected:
     QHash<int, int> m_booksMap; ///< Map between shamela and our book's ids
     QHash<int, int> m_catMap;  ///< Map between shamela and our categorie's ids
     QHash<int, int> m_authorsMap;
+    QList<int> m_addedShorooh;
     QMutex m_mutex;
 };
 
