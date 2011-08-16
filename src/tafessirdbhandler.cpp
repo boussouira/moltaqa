@@ -59,14 +59,14 @@ void TafessirDBHandler::openID(int pid)
     else // The given page id
         id = pid;
 
-    if(id >= m_bookInfo->currentID)
+    if(id >= m_bookInfo->currentPageID)
         m_tafessirQuery->nextPage(id);
     else
         m_tafessirQuery->prevPage(id);
 
     QString text;
     if(m_tafessirQuery->next()) {
-        m_bookInfo->currentID = m_tafessirQuery->value(0).toInt();
+        m_bookInfo->currentPageID = m_tafessirQuery->value(0).toInt();
         m_bookInfo->currentPartNumber = m_tafessirQuery->value(2).toInt();
         m_bookInfo->currentPageNumber = m_tafessirQuery->value(3).toInt();
         m_bookInfo->currentAyaNumber =  m_tafessirQuery->value(4).toInt();
@@ -132,23 +132,23 @@ QAbstractItemModel * TafessirDBHandler::topIndexModel()
 void TafessirDBHandler::nextPage()
 {
     if(hasNext())
-        openID(m_bookInfo->currentID+1);
+        openID(m_bookInfo->currentPageID+1);
 }
 
 void TafessirDBHandler::prevPage()
 {
     if(hasPrev())
-        openID(m_bookInfo->currentID-1);
+        openID(m_bookInfo->currentPageID-1);
 }
 
 bool TafessirDBHandler::hasNext()
 {
-    return (m_bookInfo->currentID < m_bookInfo->lastID);
+    return (m_bookInfo->currentPageID < m_bookInfo->lastID);
 }
 
 bool TafessirDBHandler::hasPrev()
 {
-    return (m_bookInfo->currentID > m_bookInfo->firstID);
+    return (m_bookInfo->currentPageID > m_bookInfo->firstID);
 }
 
 void TafessirDBHandler::getBookInfo()

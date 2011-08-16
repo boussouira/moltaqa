@@ -49,22 +49,22 @@ private:
     TabWidget *m_tab;
     IndexDB *m_indexDB;
     QList<BookWidget *> m_bookWidgets;
-    QAction *actionNewTab;
-    QAction *actionIndexDock;
-    QAction *actionSearchDock;
-    QAction *actionNextAYA;
-    QAction *actionNextPage;
-    QAction *actionPrevAYA;
-    QAction *actionPrevPage;
-    QAction *actionFirstPage;
-    QAction *actionLastPage;
-    QAction *actionGotToPage;
-    QAction *openSelectedTafsir;
-    QToolBar *toolBarGeneral;
-    QToolBar *toolBarNavigation;
-    QToolBar *toolBarTafesir;
+    QAction *m_actionNewTab;
+    QAction *m_actionIndexDock;
+    QAction *m_actionSearchDock;
+    QAction *m_actionNextAYA;
+    QAction *m_actionNextPage;
+    QAction *m_actionPrevAYA;
+    QAction *m_actionPrevPage;
+    QAction *m_actionFirstPage;
+    QAction *m_actionLastPage;
+    QAction *m_actionGotToPage;
+    QAction *m_openSelectedTafsir;
+    QToolBar *m_toolBarGeneral;
+    QToolBar *m_toolBarNavigation;
+    QToolBar *m_toolBarTafesir;
     QAction *m_navMenu;
-    QComboBox *comboTafasir;
+    QComboBox *m_comboTafasir;
 };
 
 #endif // BOOKSVIEWER_H

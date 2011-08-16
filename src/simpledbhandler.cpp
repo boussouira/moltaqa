@@ -46,14 +46,14 @@ void SimpleDBHandler::openID(int pid)
     else // The given page id
         id = pid;
 
-    if(id >= m_bookInfo->currentID)
+    if(id >= m_bookInfo->currentPageID)
         m_simpleQuery->nextPage(id);
     else
         m_simpleQuery->prevPage(id);
 
     if(m_simpleQuery->next()) {
         m_textFormat->insertText(QString::fromUtf8(qUncompress(m_simpleQuery->value(1).toByteArray())));
-        m_bookInfo->currentID = m_simpleQuery->value(0).toInt();
+        m_bookInfo->currentPageID = m_simpleQuery->value(0).toInt();
         m_bookInfo->currentPartNumber = m_simpleQuery->value(2).toInt();
         m_bookInfo->currentPageNumber = m_simpleQuery->value(3).toInt();
     }
@@ -146,23 +146,23 @@ void SimpleDBHandler::getBookInfo()
 void SimpleDBHandler::nextPage()
 {
     if(hasNext())
-        openID(m_bookInfo->currentID+1);
+        openID(m_bookInfo->currentPageID+1);
 }
 
 void SimpleDBHandler::prevPage()
 {
     if(hasPrev())
-        openID(m_bookInfo->currentID-1);
+        openID(m_bookInfo->currentPageID-1);
 }
 
 bool SimpleDBHandler::hasNext()
 {
-    return (m_bookInfo->currentID < m_bookInfo->lastID);
+    return (m_bookInfo->currentPageID < m_bookInfo->lastID);
 }
 
 bool SimpleDBHandler::hasPrev()
 {
-    return (m_bookInfo->currentID > m_bookInfo->firstID);
+    return (m_bookInfo->currentPageID > m_bookInfo->firstID);
 }
 
 void SimpleDBHandler::goToSora(int sora, int aya)

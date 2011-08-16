@@ -48,84 +48,84 @@ void BooksViewer::createMenus(QMainWindow *parent)
 {
 
     // General Actions
-    actionNewTab = new QAction(QIcon(":/menu/images/bookmark-new.png"),
+    m_actionNewTab = new QAction(QIcon(":/menu/images/bookmark-new.png"),
                                         tr("تبويب جديد"),
                                         this);
 
-    actionIndexDock = new QAction(QIcon(":/menu/images/edit_fahrass.png"),
+    m_actionIndexDock = new QAction(QIcon(":/menu/images/edit_fahrass.png"),
                                            tr("نافذة الفهرس"),
                                            this);
 
-    actionSearchDock = new QAction(QIcon(":/menu/images/find.png"),
+    m_actionSearchDock = new QAction(QIcon(":/menu/images/find.png"),
                                             tr("نافذة البحث"),
                                             this);
-    actionSearchDock->setEnabled(false);
+    m_actionSearchDock->setEnabled(false);
 
     // Navigation actions
-    actionNextAYA = new QAction(QIcon(":/menu/images/go-down.png"),
+    m_actionNextAYA = new QAction(QIcon(":/menu/images/go-down.png"),
                                 tr("الآية التالية"),
                                 this);
-    actionNextPage = new QAction(QIcon(":/menu/images/go-previous.png"),
+    m_actionNextPage = new QAction(QIcon(":/menu/images/go-previous.png"),
                                  tr("الصفحة التالية"),
                                  this);
-    actionPrevAYA = new QAction(QIcon(":/menu/images/go-up.png"),
+    m_actionPrevAYA = new QAction(QIcon(":/menu/images/go-up.png"),
                                 tr("الآية السابقة"),
                                 this);
-    actionPrevPage = new QAction(QIcon(":/menu/images/go-next.png"),
+    m_actionPrevPage = new QAction(QIcon(":/menu/images/go-next.png"),
                                  tr("الصفحة السابقة"),
                                  this);
-    actionFirstPage = new QAction(QIcon(":/menu/images/go-last.png"),
+    m_actionFirstPage = new QAction(QIcon(":/menu/images/go-last.png"),
                                 tr("الصفحة الاولى"),
                                 this);
-    actionLastPage = new QAction(QIcon(":/menu/images/go-first.png"),
+    m_actionLastPage = new QAction(QIcon(":/menu/images/go-first.png"),
                                  tr("الصفحة الاخيرة"),
                                  this);
-    actionGotToPage = new QAction(tr("انتقل الى..."),
+    m_actionGotToPage = new QAction(tr("انتقل الى..."),
                                   this);
 
     // Tafressir actions
-    openSelectedTafsir =  new QAction(QIcon(":/menu/images/arrow-left.png"),
+    m_openSelectedTafsir =  new QAction(QIcon(":/menu/images/arrow-left.png"),
                                                trUtf8("فتح السورة"),
                                                this);
-    comboTafasir = new QComboBox(this);
+    m_comboTafasir = new QComboBox(this);
     foreach(Pair pair, m_indexDB->getTafassirList()) {
-        comboTafasir->addItem(pair.second, pair.first);
+        m_comboTafasir->addItem(pair.second, pair.first);
     }
 
     // Add action to their toolbars
-    toolBarGeneral = new QToolBar(tr("عام"), this);
-    toolBarGeneral->addAction(actionNewTab);
-    toolBarGeneral->addSeparator();
-    toolBarGeneral->addAction(actionIndexDock);
-    toolBarGeneral->addAction(actionSearchDock);
+    m_toolBarGeneral = new QToolBar(tr("عام"), this);
+    m_toolBarGeneral->addAction(m_actionNewTab);
+    m_toolBarGeneral->addSeparator();
+    m_toolBarGeneral->addAction(m_actionIndexDock);
+    m_toolBarGeneral->addAction(m_actionSearchDock);
 
-    toolBarNavigation = new QToolBar(tr("التصفح"), this);
-    toolBarNavigation->addAction(actionPrevPage);
-    toolBarNavigation->addAction(actionNextPage);
-    toolBarNavigation->addAction(actionNextAYA);
-    toolBarNavigation->addAction(actionPrevAYA);
+    m_toolBarNavigation = new QToolBar(tr("التصفح"), this);
+    m_toolBarNavigation->addAction(m_actionPrevPage);
+    m_toolBarNavigation->addAction(m_actionNextPage);
+    m_toolBarNavigation->addAction(m_actionNextAYA);
+    m_toolBarNavigation->addAction(m_actionPrevAYA);
 
-    toolBarTafesir = new QToolBar(trUtf8("التفسير"), this);
-    toolBarTafesir->addWidget(comboTafasir);
-    toolBarTafesir->addAction(openSelectedTafsir);
+    m_toolBarTafesir = new QToolBar(trUtf8("التفسير"), this);
+    m_toolBarTafesir->addWidget(m_comboTafasir);
+    m_toolBarTafesir->addAction(m_openSelectedTafsir);
 
     QMenu *navMenu = new QMenu(tr("التنقل"), this);
-    navMenu->addAction(actionFirstPage);
-    navMenu->addAction(actionPrevPage);
-    navMenu->addAction(actionNextPage);
-    navMenu->addAction(actionLastPage);
+    navMenu->addAction(m_actionFirstPage);
+    navMenu->addAction(m_actionPrevPage);
+    navMenu->addAction(m_actionNextPage);
+    navMenu->addAction(m_actionLastPage);
     navMenu->addSeparator();
-    navMenu->addAction(actionGotToPage); // TODO: implement this
+    navMenu->addAction(m_actionGotToPage); // TODO: implement this
 
 
     // Hide those toolbars
-    toolBarGeneral->hide();
-    toolBarNavigation->hide();
-    toolBarTafesir->hide();
+    m_toolBarGeneral->hide();
+    m_toolBarNavigation->hide();
+    m_toolBarTafesir->hide();
 
-    parent->addToolBar(toolBarGeneral);
-    parent->addToolBar(toolBarNavigation);
-    parent->addToolBar(toolBarTafesir);
+    parent->addToolBar(m_toolBarGeneral);
+    parent->addToolBar(m_toolBarNavigation);
+    parent->addToolBar(m_toolBarTafesir);
 
     QAction *act = parent->menuBar()->actions().at(1);
     m_navMenu = parent->menuBar()->insertMenu(act, navMenu);
@@ -133,34 +133,34 @@ void BooksViewer::createMenus(QMainWindow *parent)
 
     // Setup connections
     // Navigation actions
-    connect(actionNextPage, SIGNAL(triggered()), SLOT(nextPage()));
-    connect(actionPrevPage, SIGNAL(triggered()), SLOT(previousPage()));
-    connect(actionNextAYA, SIGNAL(triggered()), SLOT(nextUnit()));
-    connect(actionPrevAYA, SIGNAL(triggered()), SLOT(previousUnit()));
-    connect(actionFirstPage, SIGNAL(triggered()), SLOT(firstPage()));
-    connect(actionLastPage, SIGNAL(triggered()), SLOT(lastPage()));
-    connect(actionGotToPage, SIGNAL(triggered()), SLOT(goToPage()));
+    connect(m_actionNextPage, SIGNAL(triggered()), SLOT(nextPage()));
+    connect(m_actionPrevPage, SIGNAL(triggered()), SLOT(previousPage()));
+    connect(m_actionNextAYA, SIGNAL(triggered()), SLOT(nextUnit()));
+    connect(m_actionPrevAYA, SIGNAL(triggered()), SLOT(previousUnit()));
+    connect(m_actionFirstPage, SIGNAL(triggered()), SLOT(firstPage()));
+    connect(m_actionLastPage, SIGNAL(triggered()), SLOT(lastPage()));
+    connect(m_actionGotToPage, SIGNAL(triggered()), SLOT(goToPage()));
 
     // Index widget
-    connect(actionIndexDock, SIGNAL(triggered()), SLOT(showIndexWidget()));
-    connect(actionNewTab, SIGNAL(triggered()), MainWindow::mainWindow(), SLOT(showBooksList()));
+    connect(m_actionIndexDock, SIGNAL(triggered()), SLOT(showIndexWidget()));
+    connect(m_actionNewTab, SIGNAL(triggered()), MainWindow::mainWindow(), SLOT(showBooksList()));
 
     // Tafessir actions
-    connect(openSelectedTafsir, SIGNAL(triggered()), SLOT(openTafessir()));
+    connect(m_openSelectedTafsir, SIGNAL(triggered()), SLOT(openTafessir()));
 }
 
 void BooksViewer::removeToolBar()
 {
-    toolBarGeneral->hide();
-    toolBarNavigation->hide();
-    toolBarTafesir->hide();
+    m_toolBarGeneral->hide();
+    m_toolBarNavigation->hide();
+    m_toolBarTafesir->hide();
     m_navMenu->setVisible(false);
 }
 
 void BooksViewer::showToolBar()
 {
-    toolBarGeneral->show();
-    toolBarNavigation->show();
+    m_toolBarGeneral->show();
+    m_toolBarNavigation->show();
     m_navMenu->setVisible(true);
 }
 
@@ -215,7 +215,7 @@ void BooksViewer::openBook(int pBookID, bool newTab)
 
 void BooksViewer::openTafessir()
 {
-    int tafessirID = comboTafasir->itemData(comboTafasir->currentIndex()).toInt();
+    int tafessirID = m_comboTafasir->itemData(m_comboTafasir->currentIndex()).toInt();
     qDebug("Open tafessir: %d", tafessirID);
     BookInfo *bookInfo = m_indexDB->getBookInfo(tafessirID);
     if(!bookInfo->isTafessir() || !currentBookWidget()->dbHandler()->bookInfo()->isQuran())
@@ -307,10 +307,10 @@ void BooksViewer::updateActions()
     bool hasNext = currentBookWidget()->dbHandler()->hasNext();
     bool hasPrev = currentBookWidget()->dbHandler()->hasPrev();
 
-    actionNextPage->setEnabled(hasNext);
-    actionLastPage->setEnabled(hasNext);
-    actionPrevPage->setEnabled(hasPrev);
-    actionFirstPage->setEnabled(hasPrev);
+    m_actionNextPage->setEnabled(hasNext);
+    m_actionLastPage->setEnabled(hasNext);
+    m_actionPrevPage->setEnabled(hasPrev);
+    m_actionFirstPage->setEnabled(hasPrev);
 }
 
 void BooksViewer::showIndexWidget()
@@ -346,15 +346,15 @@ void BooksViewer::tabChanged(int newIndex)
         updateActions();
 
         bool showTafsssir = currentBookWidget()->dbHandler()->bookInfo()->isQuran();
-        toolBarTafesir->setVisible(showTafsssir);
-        toolBarTafesir->setEnabled(showTafsssir);
+        m_toolBarTafesir->setVisible(showTafsssir);
+        m_toolBarTafesir->setEnabled(showTafsssir);
 
         if(currentBookWidget()->dbHandler()->bookInfo()->isQuran()) {
-            actionNextAYA->setText(tr("الآية التالية"));
-            actionPrevAYA->setText(tr("الآية السابقة"));
+            m_actionNextAYA->setText(tr("الآية التالية"));
+            m_actionPrevAYA->setText(tr("الآية السابقة"));
         } else {
-            actionNextAYA->setText(tr("انزال الصفحة")); // TODO: fix this tooltip?
-            actionPrevAYA->setText(tr("رفع الصفحة"));
+            m_actionNextAYA->setText(tr("انزال الصفحة")); // TODO: fix this tooltip?
+            m_actionPrevAYA->setText(tr("رفع الصفحة"));
         }
     }
 }

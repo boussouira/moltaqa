@@ -6,7 +6,7 @@ PageInfo::PageInfo()
     currentAyaNumber = 0;
     currentSoraAyatCount  = 0;
     currentPageNumber = 0;
-    currentID = 0;
+    currentPageID = 0;
     currentPartNumber = 0;
     currentHadditNumber = 0;
 }
