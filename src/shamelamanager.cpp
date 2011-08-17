@@ -15,6 +15,7 @@ ShamelaManager::ShamelaManager(ShamelaInfo *info)
 ShamelaManager::~ShamelaManager()
 {
     close();
+    delete m_mapper;
 }
 
 ShamelaMapper *ShamelaManager::mapper()
