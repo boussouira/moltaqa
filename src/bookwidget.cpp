@@ -104,9 +104,12 @@ void BookWidget::firstPage()
 
 void BookWidget::lastPage()
 {
-    m_db->openIndexID(-2);
-    if(m_db->bookInfo()->isQuran())
-        m_view->scrollToAya(114, 1);
+    if(m_db->bookInfo()->isQuran()) {
+        m_db->goToPage(m_db->bookInfo()->lastPage(), 1);
+        m_view->scrollToAya(112, 1);
+    } else {
+        m_db->openIndexID(-2);
+    }
 }
 
 void BookWidget::nextPage()
