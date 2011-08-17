@@ -85,13 +85,17 @@ void BooksViewer::createMenus(QMainWindow *parent)
 
     // Tafressir actions
     m_openSelectedTafsir =  new QAction(QIcon(":/menu/images/arrow-left.png"),
-                                               trUtf8("فتح السورة"),
+                                               tr("فتح تفسير الاية"),
                                                this);
     m_comboTafasir = new QComboBox(this);
     foreach(Pair pair, m_indexDB->getTafassirList()) {
         m_comboTafasir->addItem(pair.second, pair.first);
     }
 
+    // Shorooh action
+    m_actionOpenShareeh = new QAction(QIcon(":/menu/images/arrow-left.png"),
+                                     tr("فتح الشرح"),
+                                     this);
     // Add action to their toolbars
     m_toolBarGeneral = new QToolBar(tr("عام"), this);
     m_toolBarGeneral->addAction(m_actionNewTab);
@@ -105,9 +109,12 @@ void BooksViewer::createMenus(QMainWindow *parent)
     m_toolBarNavigation->addAction(m_actionNextAYA);
     m_toolBarNavigation->addAction(m_actionPrevAYA);
 
-    m_toolBarTafesir = new QToolBar(trUtf8("التفسير"), this);
+    m_toolBarTafesir = new QToolBar(tr("التفاسير"), this);
     m_toolBarTafesir->addWidget(m_comboTafasir);
     m_toolBarTafesir->addAction(m_openSelectedTafsir);
+
+    m_toolBarShorooh = new QToolBar(tr("الشروح"), this);
+    m_toolBarShorooh->addAction(m_actionOpenShareeh);
 
     QMenu *navMenu = new QMenu(tr("التنقل"), this);
     navMenu->addAction(m_actionFirstPage);
@@ -122,10 +129,12 @@ void BooksViewer::createMenus(QMainWindow *parent)
     m_toolBarGeneral->hide();
     m_toolBarNavigation->hide();
     m_toolBarTafesir->hide();
+    m_toolBarShorooh->hide();
 
     parent->addToolBar(m_toolBarGeneral);
     parent->addToolBar(m_toolBarNavigation);
     parent->addToolBar(m_toolBarTafesir);
+    parent->addToolBar(m_toolBarShorooh);
 
     QAction *act = parent->menuBar()->actions().at(1);
     m_navMenu = parent->menuBar()->insertMenu(act, navMenu);
@@ -147,6 +156,9 @@ void BooksViewer::createMenus(QMainWindow *parent)
 
     // Tafessir actions
     connect(m_openSelectedTafsir, SIGNAL(triggered()), SLOT(openTafessir()));
+
+    // Shareeh action
+    connect(m_actionOpenShareeh, SIGNAL(triggered()), SLOT(openShareeh()));
 }
 
 void BooksViewer::removeToolBar()
@@ -154,6 +166,7 @@ void BooksViewer::removeToolBar()
     m_toolBarGeneral->hide();
     m_toolBarNavigation->hide();
     m_toolBarTafesir->hide();
+    m_toolBarShorooh->hide();
     m_navMenu->setVisible(false);
 }
 
@@ -164,9 +177,9 @@ void BooksViewer::showToolBar()
     m_navMenu->setVisible(true);
 }
 
-void BooksViewer::openBook(int pBookID, bool newTab)
+void BooksViewer::openBook(int bookID, int pageID, bool newTab)
 {
-    BookInfo *bookInfo = m_indexDB->getBookInfo(pBookID);
+    BookInfo *bookInfo = m_indexDB->getBookInfo(bookID);
 
     if(!bookInfo->exists())
         throw BookException(tr("لم يتم العثور على ملف"), bookInfo->bookPath);
@@ -205,7 +218,10 @@ void BooksViewer::openBook(int pBookID, bool newTab)
     }
 
     m_tab->setCurrentIndex(tabIndex);
-    bookWidget->firstPage();
+    if(pageID == -1)
+        bookWidget->firstPage();
+    else
+        bookWidget->openID(pageID);
 
     connect(bookWidget->indexWidget(), SIGNAL(openPage(int)), SLOT(updateActions()));
 
@@ -247,6 +263,33 @@ void BooksViewer::openTafessir()
     bookWidget->openSora(sora, aya);
 
     updateActions();
+}
+
+void BooksViewer::openShareeh()
+{
+    BookInfo *info = currentBookWidget()->dbHandler()->bookInfo();
+
+    if(info->shorooh.isEmpty())
+        return;
+
+    QMenu menu(this);
+
+    foreach(BookShorooh *shareeh, info->shorooh) {
+        QAction *act = new QAction(shareeh->bookName, &menu);
+        act->setData(QString("%1;%2").arg(shareeh->bookID).arg(shareeh->pageID));
+
+        menu.addAction(act);
+    }
+
+    QAction *ret = menu.exec(QCursor::pos());
+
+    if(ret) {
+        QStringList retList = ret->data().toString().split(";", QString::SkipEmptyParts);
+        int bookID = retList.first().toInt();
+        int pageID = retList.last().toInt();
+
+        openBook(bookID, pageID);
+    }
 }
 
 void BooksViewer::nextUnit()
@@ -311,6 +354,8 @@ void BooksViewer::updateActions()
     m_actionLastPage->setEnabled(hasNext);
     m_actionPrevPage->setEnabled(hasPrev);
     m_actionFirstPage->setEnabled(hasPrev);
+    m_toolBarShorooh->setEnabled(currentBookWidget()->dbHandler()->bookInfo()->isNormal() &&
+                                 !currentBookWidget()->dbHandler()->bookInfo()->shorooh.isEmpty());
 }
 
 void BooksViewer::showIndexWidget()
@@ -346,8 +391,13 @@ void BooksViewer::tabChanged(int newIndex)
         updateActions();
 
         bool showTafsssir = currentBookWidget()->dbHandler()->bookInfo()->isQuran();
+        bool showShorooh = currentBookWidget()->dbHandler()->bookInfo()->isNormal();
+
         m_toolBarTafesir->setVisible(showTafsssir);
         m_toolBarTafesir->setEnabled(showTafsssir);
+
+        m_toolBarShorooh->setVisible(showShorooh);
+        m_toolBarShorooh->setEnabled(showShorooh && !currentBookWidget()->dbHandler()->bookInfo()->shorooh.isEmpty());
 
         if(currentBookWidget()->dbHandler()->bookInfo()->isQuran()) {
             m_actionNextAYA->setText(tr("الآية التالية"));

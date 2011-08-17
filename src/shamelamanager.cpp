@@ -7,6 +7,7 @@
 
 ShamelaManager::ShamelaManager(ShamelaInfo *info)
 {
+    m_mapper = new ShamelaMapper();
     m_info = info;
     m_haveBookFilter = false;
 }
@@ -14,6 +15,11 @@ ShamelaManager::ShamelaManager(ShamelaInfo *info)
 ShamelaManager::~ShamelaManager()
 {
     close();
+}
+
+ShamelaMapper *ShamelaManager::mapper()
+{
+    return m_mapper;
 }
 
 void ShamelaManager::openIndexDB()
@@ -251,38 +257,6 @@ void ShamelaManager::setAcceptedBooks(QList<int> accepted)
 void ShamelaManager::setRejectedBooks(QList<int> rejected)
 {
     m_rejected = rejected;
-}
-
-void ShamelaManager::addCatMap(int shamelaID, int libID)
-{
-    m_catMap.insert(shamelaID, libID);
-}
-
-void ShamelaManager::addAuthorMap(int shamelaID, int libID)
-{
-    m_authorsMap.insert(shamelaID, libID);
-}
-
-void ShamelaManager::addBookMap(int shamelaID, int libID)
-{
-    QMutexLocker locker(&m_mutex);
-
-    m_booksMap.insert(shamelaID, libID);
-}
-
-int ShamelaManager::mapShamelaToLibCat(int shamelaID)
-{
-    return m_catMap.value(shamelaID, 0);
-}
-
-int ShamelaManager::mapShamelaToLibAuthor(int shamelaID)
-{
-    return m_authorsMap.value(shamelaID, 0);
-}
-
-int ShamelaManager::mapShamelaToLibBook(int shamelaID)
-{
-    return m_booksMap.value(shamelaID, 0);
 }
 
 int ShamelaManager::getBookShareeh(int shamelaID)

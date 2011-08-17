@@ -196,13 +196,18 @@ void IndexDB::childCats(BooksListNode *parentNode, int pID, bool onlyCats)
 void IndexDB::booksCat(BooksListNode *parentNode, int catID)
 {
     QSqlQuery bookQuery(m_indexDB);
-    bookQuery.exec(QString("SELECT id, bookName, authorName, bookInfo FROM booksList "
-                            "WHERE bookCat = %1 ").arg(catID));
+    bookQuery.prepare("SELECT booksList.id, booksList.bookName, booksList.authorName, booksList.bookInfo, authorsList.name "
+                           "FROM booksList LEFT JOIN authorsList "
+                           "ON authorsList.id = booksList.authorID "
+                           "WHERE booksList.bookCat = ?");
+    bookQuery.bindValue(0, catID);
+    bookQuery.exec();
+
     while(bookQuery.next())
     {
         BooksListNode *secondChild = new BooksListNode(BooksListNode::Book,
                                                        bookQuery.value(1).toString(),
-                                                       bookQuery.value(2).toString(),
+                                                       bookQuery.value(4).toString(),
                                                        bookQuery.value(0).toInt());
         secondChild->setInfoToolTip(bookQuery.value(3).toString());
         parentNode->appendChild(secondChild);
@@ -229,5 +234,28 @@ void IndexDB::updateBookMeta(BookInfo *info, bool newBook)
         qDebug() << "Error:" << bookQuery.lastError().text() << bookQuery.executedQuery();
     } else {
         qDebug() << "Meta for" << info->bookID << (newBook?"Inserted":"Updated");
+    }
+}
+
+void IndexDB::getShoroohPages(BookInfo *info)
+{
+    qDeleteAll(info->shorooh);
+    info->shorooh.clear();
+
+    QSqlQuery bookQuery(m_indexDB);
+
+    bookQuery.prepare("SELECT ShareehMeta.shareeh_book, ShareehMeta.shareeh_id, booksList.bookName "
+                      "FROM ShareehMeta "
+                      "LEFT JOIN booksList "
+                      "ON booksList.id =  ShareehMeta.shareeh_book "
+                      "WHERE ShareehMeta.mateen_book = ? AND ShareehMeta.mateen_id = ?");
+    bookQuery.bindValue(0, info->bookID);
+    bookQuery.bindValue(1, info->currentPageID);
+    bookQuery.exec();
+
+    while(bookQuery.next()) {
+        info->shorooh.append(new BookShorooh(bookQuery.value(0).toInt(),
+                                             bookQuery.value(1).toInt(),
+                                             bookQuery.value(2).toString()));
     }
 }

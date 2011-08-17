@@ -24,12 +24,13 @@ public:
     QAbstractItemModel *booksList(bool onlyCats=false);
     BookInfo *getBookInfo(int bookID);
     BookInfo *getQuranBook();
+    LibraryInfo *connectionInfo();
     QList<QPair<int, QString> > getTafassirList();
     int catIdFromName(const QString &cat);
     int addBook(ImportModelNode *book);
     void updateBookMeta(BookInfo *info, bool newBook);
     void setConnectionInfo(LibraryInfo *info);
-    LibraryInfo *connectionInfo();
+    void getShoroohPages(BookInfo *info);
 
 protected:
     void booksCat(BooksListNode *parentNode, int catID);

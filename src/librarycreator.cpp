@@ -16,6 +16,7 @@ LibraryCreator::LibraryCreator()
     m_shamelaManager = importDialog->shamelaManager();
     m_shamelaInfo = importDialog->shamelaInfo();
     m_library = importDialog->libraryInfo();
+    m_mapper = m_shamelaManager->mapper();
 
     m_prevArchive = -1;
     m_importAuthor = false;
@@ -114,7 +115,7 @@ void LibraryCreator::importAuthors()
 void LibraryCreator::addTafessir(ShamelaBookInfo *tafessir)
 {
     m_bookQuery.prepare("INSERT INTO tafassirList (id, book_id, tafessir_name) VALUES (NULL, ?, ?)");
-    m_bookQuery.bindValue(0,  m_shamelaManager->mapShamelaToLibBook(tafessir->id));
+    m_bookQuery.bindValue(0,  m_mapper->mapFromShamelaBook(tafessir->id));
     m_bookQuery.bindValue(1, tafessir->tafessirName);
 
     if(m_bookQuery.exec()) {
@@ -135,7 +136,7 @@ void LibraryCreator::addCat(CategorieInfo *cat)
 
     if(m_bookQuery.exec()) {
         lastId = m_bookQuery.lastInsertId().toInt();
-        m_shamelaManager->addCatMap(cat->id, lastId);
+        m_mapper->addCatMap(cat->id, lastId);
         m_catMap.insert(cat->id, lastId);
         //qDebug("Cat %d -> %d", cat->id, lastId);
     } else {
@@ -156,7 +157,7 @@ void LibraryCreator::addAuthor(AuthorInfo *auth, bool checkExist)
 
      QSqlQuery bookQuery(m_bookDB);
     if(checkExist) {
-       int lid = m_shamelaManager->mapShamelaToLibAuthor(auth->id);
+       int lid = m_mapper->mapFromShamelaAuthor(auth->id);
        if(lid != 0) {
 //           qDebug() <<  "Author" << auth->name << "Exist";
            return;
@@ -170,7 +171,7 @@ void LibraryCreator::addAuthor(AuthorInfo *auth, bool checkExist)
     bookQuery.bindValue(3, qCompress(auth->info.toUtf8()));
 
     if(bookQuery.exec())
-        m_shamelaManager->addAuthorMap(auth->id, bookQuery.lastInsertId().toInt());
+        m_mapper->addAuthorMap(auth->id, bookQuery.lastInsertId().toInt());
     else
         SQL_ERROR(bookQuery.lastError().text());
 }
@@ -328,16 +329,16 @@ void LibraryCreator::importBook(ShamelaBookInfo *book, QString path)
     m_bookQuery.bindValue(":book_id", 0);
     m_bookQuery.bindValue(":book_type", book->tafessirName.isEmpty() ? BookInfo::NormalBook : BookInfo::TafessirBook);
     m_bookQuery.bindValue(":book_flags", 0);
-    m_bookQuery.bindValue(":cat_id", m_shamelaManager->mapShamelaToLibCat(book->cat));
+    m_bookQuery.bindValue(":cat_id", m_mapper->mapFromShamelaCat(book->cat));
     m_bookQuery.bindValue(":book_name", book->name);
     m_bookQuery.bindValue(":book_info", book->info);
     m_bookQuery.bindValue(":author_name", book->authName);
-    m_bookQuery.bindValue(":author_id", m_shamelaManager->mapShamelaToLibAuthor(book->authorID));
+    m_bookQuery.bindValue(":author_id", m_mapper->mapFromShamelaAuthor(book->authorID));
     m_bookQuery.bindValue(":file_name", fileInfo.fileName()); // Add file name
     m_bookQuery.bindValue(":book_folder", QVariant(QVariant::String));
 
     if(m_bookQuery.exec()) {
-        m_shamelaManager->addBookMap(book->id, m_bookQuery.lastInsertId().toInt());
+        m_mapper->addBookMap(book->id, m_bookQuery.lastInsertId().toInt());
     } else {
         SQL_ERROR(m_bookQuery.lastError().text());
     }
@@ -376,6 +377,8 @@ void LibraryCreator::setImportAuthors(bool import)
 void LibraryCreator::readSimpleBook(ShamelaBookInfo *book, QSqlQuery &query, NewBookWriter &writer, bool hno)
 {
     int lastID=0;
+    bool mapPages = m_shamelaManager->getBookMateen(book->id) || m_shamelaManager->getBookShareeh(book->id);
+
     if(hno) {
         query.prepare(QString("SELECT id, nass, page, part, hno FROM %1 ORDER BY id").arg(book->mainTable));
         if(query.exec()) {
@@ -385,6 +388,8 @@ void LibraryCreator::readSimpleBook(ShamelaBookInfo *book, QSqlQuery &query, New
                                         query.value(2).toInt(),
                                         query.value(3).toInt());
                 writer.addHaddithNumber(lastID, query.value(4).toInt());
+                if(mapPages)
+                    m_mapper->addPageMap(book->id, query.value(0).toInt(), lastID);
             }
         } else {
             SQL_ERROR(query.lastError().text());
@@ -393,10 +398,12 @@ void LibraryCreator::readSimpleBook(ShamelaBookInfo *book, QSqlQuery &query, New
         query.prepare(QString("SELECT id, nass, page, part FROM %1 ORDER BY id").arg(book->mainTable));
         if(query.exec()) {
             while(query.next()) {
-                writer.addPage(query.value(1).toString(),
-                               query.value(0).toInt(),
-                               query.value(2).toInt(),
-                               query.value(3).toInt());
+                lastID = writer.addPage(query.value(1).toString(),
+                                        query.value(0).toInt(),
+                                        query.value(2).toInt(),
+                                        query.value(3).toInt());
+                if(mapPages)
+                    m_mapper->addPageMap(book->id, query.value(0).toInt(), lastID);
             }
         } else {
             SQL_ERROR(query.lastError().text());
@@ -472,7 +479,7 @@ void LibraryCreator::getShorooh(int mateenID, int shareehID)
     QList<ShamelaShareehInfo *> idsList = m_shamelaManager->getShareehInfo(mateenID, shareehID);
     m_shorooh.append(idsList);
 
-    qDebug("Add Shareeh: S:%d -> M:%d", shareehID, mateenID);
+//    qDebug("Add Shareeh: S:%d -> M:%d", shareehID, mateenID);
 }
 
 QList<ShamelaShareehInfo *> LibraryCreator::getShorooh()
@@ -483,11 +490,11 @@ QList<ShamelaShareehInfo *> LibraryCreator::getShorooh()
 void LibraryCreator::addShareh(int mateenID, int mateenPage, int shareehID, int shareehPage)
 {
     m_bookQuery.prepare("INSERT INTO ShareehMeta (mateen_book, mateen_id, shareeh_book, shareeh_id) "
-                      "VALUES (?, ?, ?, ?)");
-    m_bookQuery.bindValue(0, mateenID);
-    m_bookQuery.bindValue(1, mateenPage);
-    m_bookQuery.bindValue(2, shareehID);
-    m_bookQuery.bindValue(3, shareehPage);
+                        "VALUES (?, ?, ?, ?)");
+    m_bookQuery.bindValue(0, m_mapper->mapFromShamelaBook(mateenID));
+    m_bookQuery.bindValue(1, m_mapper->mapFromShamelaPage(mateenID, mateenPage));
+    m_bookQuery.bindValue(2, m_mapper->mapFromShamelaBook(shareehID));
+    m_bookQuery.bindValue(3, m_mapper->mapFromShamelaPage(shareehID, shareehPage));
 
     if(!m_bookQuery.exec()) {
         SQL_ERROR(m_bookQuery.lastError().text());

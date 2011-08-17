@@ -59,7 +59,13 @@ void SimpleDBHandler::openID(int pid)
     }
 
 //    m_bookInfo->currentHadditNumber = m_simpleQuery->getHaddithNumber(pid);
-
+//    QTime time;
+//    time.start();
+    m_indexDB->getShoroohPages(m_bookInfo);
+//    qDebug("Shorooh count: %d, toke %d ms", m_bookInfo->shorooh.count(), time.elapsed());
+//    foreach (BookShorooh *sh, m_bookInfo->shorooh) {
+//        qDebug("Book %d page %d", sh->bookID, sh->pageID);
+//    }
     m_textFormat->done();
 }
 

@@ -1,11 +1,8 @@
 #include "bookslistnode.h"
 
-BooksListNode::BooksListNode(Type pType, QString pTitle, QString pAuth, int pId)
+BooksListNode::BooksListNode(Type pType, QString pTitle, QString pAuth, int pId) :
+    m_type(pType), m_title(pTitle), m_authorName(pAuth), m_nodeID(pId)
 {
-    this->m_type = pType;
-    this->m_title = pTitle;
-    this->m_authorName = pAuth;
-    this->m_nodeID = pId;
     this->m_parentNode = 0;
 }
 

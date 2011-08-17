@@ -64,7 +64,8 @@ SOURCES += mainwindow.cpp \
     newlibrarydialog.cpp \
     tafessirdbhandler.cpp \
     tafessirtextformat.cpp \
-    tafessirquery.cpp
+    tafessirquery.cpp \
+    shamelamapper.cpp
 HEADERS += mainwindow.h \
     pageinfo.h \
     qurantextformat.h \
@@ -112,7 +113,8 @@ HEADERS += mainwindow.h \
     newlibrarydialog.h \
     tafessirdbhandler.h \
     tafessirtextformat.h \
-    tafessirquery.h
+    tafessirquery.h \
+    shamelamapper.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

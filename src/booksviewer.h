@@ -20,7 +20,7 @@ public:
     void setIndexDB(IndexDB *indexDB) { m_indexDB = indexDB;}
 
 public slots:
-    void openBook(int pBookID, bool newTab = true);
+    void openBook(int bookID, int pageID = -1, bool newTab = true);
     void nextUnit();
     void previousUnit();
     void nextPage();
@@ -35,6 +35,7 @@ public slots:
     void showToolBar();
     void removeToolBar();
     void openTafessir(); // TODO: should be private?
+    void openShareeh();
     BookWidget *currentBookWidget();
     BookWidget *currentBookWidget(int index);
     void tabChanged(int newIndex);
@@ -59,11 +60,13 @@ private:
     QAction *m_actionFirstPage;
     QAction *m_actionLastPage;
     QAction *m_actionGotToPage;
+    QAction *m_actionOpenShareeh;
     QAction *m_openSelectedTafsir;
+    QAction *m_navMenu;
     QToolBar *m_toolBarGeneral;
     QToolBar *m_toolBarNavigation;
     QToolBar *m_toolBarTafesir;
-    QAction *m_navMenu;
+    QToolBar *m_toolBarShorooh;
     QComboBox *m_comboTafasir;
 };
 

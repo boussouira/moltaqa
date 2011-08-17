@@ -4,6 +4,15 @@
 #include "pageinfo.h"
 #include <qhash.h>
 
+class BookShorooh
+{
+public:
+    BookShorooh(int bid, int pid, QString bname) : bookID(bid), pageID(pid), bookName(bname){}
+    int bookID;
+    int pageID;
+    QString bookName;
+};
+
 class BookInfo : public PageInfo
 {
 public:
@@ -29,6 +38,7 @@ public:
     QString toString();
     void fromString(QString info);
     bool haveInfo();
+    QList<BookShorooh*> shorooh;
 
 public:
     BookInfo::Type bookType;

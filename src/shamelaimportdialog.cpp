@@ -349,6 +349,7 @@ bool ShamelaImportDialog::cancel()
 
 void ShamelaImportDialog::importShorooh()
 {
+    QList<uint> ad;
     qDebug("Add Shorooh");
     addDebugInfo(tr("استيراد الشروح..."));
     LibraryCreator creator;
@@ -357,10 +358,11 @@ void ShamelaImportDialog::importShorooh()
 
     foreach (ShamelaImportThread *thread, m_importThreads) {
         foreach (ShamelaShareehInfo *info, thread->getShorooh()) {
-            int libMateen = m_manager->mapShamelaToLibBook(info->mateen_id);
-            int libShareeh = m_manager->mapShamelaToLibBook(info->shareeh_id);
-
-            creator.addShareh(libMateen, info->mateen_page, libShareeh, info->shareeh_page);
+            // TODO: use a better way to check for added shorooh pages
+            if(!ad.contains((info->shareeh_id << 15) | info->shareeh_page)) {
+                creator.addShareh(info->mateen_id, info->mateen_page, info->shareeh_id, info->shareeh_page);
+                ad.append((info->shareeh_id << 15) | info->shareeh_page);
+            }
         }
 
         qDeleteAll(thread->getShorooh());
