@@ -39,9 +39,8 @@ ImportDialog::ImportDialog(IndexDB *indexDB, QWidget *parent) :
     m_model->setRootNode(node);
 
     ui->treeView->setItemDelegateForColumn(2, new BookTypeDelegate(ui->treeView));
-    ui->treeView->setItemDelegateForColumn(3,
-                                           new CategorieDelegate(ui->treeView,
-                                                                 m_indexDB->booksList(true)));
+    ui->treeView->setItemDelegateForColumn(3, new CategorieDelegate(ui->treeView,
+                                                                    m_indexDB->catsListModel()));
     ui->treeView->setModel(m_model);
     ui->progressBar->hide();
 }

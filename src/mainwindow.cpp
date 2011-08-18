@@ -61,6 +61,7 @@ bool MainWindow::init()
 
         m_indexDB = new IndexDB(m_libraryInfo);
         m_indexDB->open();
+        m_indexDB->loadBooksListModel();
 
         m_bookView = new BooksViewer(m_indexDB, this);
         m_booksList = new BooksListBrowser(m_indexDB, 0);

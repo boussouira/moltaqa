@@ -9,6 +9,7 @@ BooksListNode::BooksListNode(Type pType, QString pTitle, QString pAuth, int pId)
 BooksListNode::~BooksListNode()
 {
     qDeleteAll(m_childrenNode);
+    m_childrenNode.clear();
 }
 
 void BooksListNode::appendChild(BooksListNode *pNode)

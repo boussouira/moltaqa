@@ -13,13 +13,10 @@
 #include <qsqlerror.h>
 #include <qdatetime.h>
 
-IndexDB::IndexDB()
-{
-}
-
 IndexDB::IndexDB(LibraryInfo *info)
 {
     m_libraryInfo = info;
+    m_model = new BooksListModel();
 }
 
 IndexDB::~IndexDB()
@@ -50,13 +47,35 @@ void IndexDB::open()
         throw BookException(tr("لم يمكن فتح قاعدة البيانات الأساسية"), m_indexDB.lastError().text());
 }
 
-QAbstractItemModel *IndexDB::booksList(bool onlyCats)
+void IndexDB::loadBooksListModel()
+{
+    m_future = QtConcurrent::run(this, &IndexDB::loadModel);
+}
+
+void IndexDB::loadModel()
+{
+    BooksListNode *firstNode = new BooksListNode(BooksListNode::Root);
+    childCats(firstNode, 0, false);
+
+    m_model->setRootNode(firstNode);
+}
+
+QAbstractItemModel *IndexDB::booksListModel()
+{
+    if(m_future.isRunning())
+        m_future.waitForFinished();
+
+    return m_model;
+}
+
+QAbstractItemModel *IndexDB::catsListModel()
 {
     BooksListModel *model = new BooksListModel();
     BooksListNode *firstNode = new BooksListNode(BooksListNode::Root);
-    childCats(firstNode, 0, onlyCats);
+    childCats(firstNode, 0, true);
 
     model->setRootNode(firstNode);
+
     return model;
 }
 

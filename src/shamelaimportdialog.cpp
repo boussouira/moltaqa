@@ -5,7 +5,7 @@
 #include "common.h"
 #include "shamelaimportthread.h"
 #include "mainwindow.h"
-#include "bookslistbrowser.h"
+#include "indexdb.h"
 
 #include <qdir.h>
 #include <qfiledialog.h>
@@ -316,7 +316,7 @@ void ShamelaImportDialog::doneImporting()
         addDebugInfo(tr("تم اسيراد %1 بنجاح").arg(arPlural(m_importedBooksCount, BOOK)));
 
         if(m_importedBooksCount > 0) {
-            MainWindow::mainWindow()->booksListBrowser()->loadBooksList();
+            MainWindow::mainWindow()->indexDB()->loadBooksListModel();
         }
 
         qDeleteAll(m_importThreads);

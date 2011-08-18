@@ -63,7 +63,7 @@ void BooksListBrowser::loadSettings()
 
 void BooksListBrowser::loadBooksList()
 {
-    m_filterModel->setSourceModel(m_indexDB->booksList());
+    m_filterModel->setSourceModel(m_indexDB->booksListModel());
     m_filterModel->setFilterKeyColumn(0);
 
     ui->treeView->setModel(m_filterModel);
