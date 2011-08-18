@@ -14,7 +14,7 @@
    <string>مكتبة الملتقى</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="data/qt_rc.qrc">
+   <iconset resource="../data/qt_rc.qrc">
     <normaloff>:/images/main.ico</normaloff>:/images/main.ico</iconset>
   </property>
   <property name="layoutDirection">
@@ -130,7 +130,7 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="data/qt_rc.qrc"/>
+  <include location="../data/qt_rc.qrc"/>
  </resources>
  <connections/>
 </ui>
