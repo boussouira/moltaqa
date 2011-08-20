@@ -13,7 +13,6 @@ class BookInfo;
 class BooksListModel;
 class BooksListNode;
 class ImportModelNode;
-class QAbstractItemModel;
 
 class IndexDB
 {
@@ -23,8 +22,8 @@ public:
     IndexDB(LibraryInfo *info);
     ~IndexDB();
     void open();
-    QAbstractItemModel *booksListModel();
-    QAbstractItemModel *catsListModel();
+    BooksListModel *booksListModel();
+    BooksListModel *catsListModel();
     void loadBooksListModel();
     BookInfo *getBookInfo(int bookID);
     BookInfo *getQuranBook();
@@ -35,6 +34,12 @@ public:
     void updateBookMeta(BookInfo *info, bool newBook);
     void setConnectionInfo(LibraryInfo *info);
     void getShoroohPages(BookInfo *info);
+
+    void updateCatTitle(int catID, QString title);
+    void updateCatParent(int catID, int parentID);
+    void updateCatOrder(int catID, int catOrder);
+//    void moveCatUp(int catID);
+//    void moveCatDown(int catID);
 
 protected:
     void booksCat(BooksListNode *parentNode, int catID);

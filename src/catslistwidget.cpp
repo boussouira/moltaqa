@@ -38,8 +38,8 @@ void CatsListWidget::itemDoubleClick(const QModelIndex &index)
     BooksListModel *model =  static_cast<BooksListModel*>(m_treeView->model());
     BooksListNode *node = model->nodeFromIndex(index);
 
-    m_lastSelected = node->getTitle();
-    m_lastSelectedID = node->getID();
+    m_lastSelected = node->title;
+    m_lastSelectedID = node->id;
 
     emit itemSelected();
 }

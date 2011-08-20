@@ -1,24 +1,24 @@
 #include "bookslistnode.h"
 
 BooksListNode::BooksListNode(Type pType, QString pTitle, QString pAuth, int pId) :
-    m_type(pType), m_title(pTitle), m_authorName(pAuth), m_nodeID(pId)
+    type(pType), title(pTitle), authorName(pAuth), id(pId), parentNode(0)
 {
-    this->m_parentNode = 0;
 }
 
 BooksListNode::~BooksListNode()
 {
-    qDeleteAll(m_childrenNode);
-    m_childrenNode.clear();
+    qDeleteAll(childrenNode);
+    childrenNode.clear();
 }
 
-void BooksListNode::appendChild(BooksListNode *pNode)
+void BooksListNode::appendChild(BooksListNode *node)
 {
-    pNode->m_parentNode = this;
-    this->m_childrenNode.append(pNode);
+    node->parentNode = this;
+    childrenNode.append(node);
 }
 
-void BooksListNode::setID(int pId)
+void BooksListNode::appendChild(int index, BooksListNode *node)
 {
-    this->m_nodeID = pId;
+    node->parentNode = this;
+    childrenNode.insert(index, node);
 }

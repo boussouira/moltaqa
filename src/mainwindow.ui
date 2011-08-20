@@ -54,6 +54,8 @@
     <addaction name="actionImport"/>
     <addaction name="actionShamelaImport"/>
     <addaction name="separator"/>
+    <addaction name="actionControlCenter"/>
+    <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -125,6 +127,11 @@
   <action name="actionShamelaImport">
    <property name="text">
     <string>استيراد من الشاملة...</string>
+   </property>
+  </action>
+  <action name="actionControlCenter">
+   <property name="text">
+    <string>غرفة التحكم</string>
    </property>
   </action>
  </widget>

@@ -10,7 +10,7 @@ class BooksListModel : public QAbstractItemModel
 {
 public:
     BooksListModel(QObject *parent = 0);
-    ~BooksListModel();
+    virtual ~BooksListModel();
     void setRootNode(BooksListNode *BooksListNode);
     QModelIndex index(int row, int column,
                       const QModelIndex &parent) const;
@@ -22,7 +22,7 @@ public:
                         int role) const;
     BooksListNode *nodeFromIndex(const QModelIndex &index) const;
 
-private:
+public:
     BooksListNode *rootNode;
 };
 

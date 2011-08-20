@@ -12,6 +12,7 @@
 #include "welcomewidget.h"
 #include "shamelaimportdialog.h"
 #include "newlibrarydialog.h"
+#include "controlcenterdialog.h"
 
 #include <qmessagebox.h>
 #include <qsettings.h>
@@ -101,15 +102,16 @@ MainWindow *MainWindow::mainWindow()
 void MainWindow::setupActions()
 {
 
-    connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
-    connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(aboutAlKotobiya()));
-    connect(ui->actionSettings, SIGNAL(triggered()), this, SLOT(settingDialog()));
+    connect(ui->actionExit, SIGNAL(triggered()), SLOT(close()));
+    connect(ui->actionAbout, SIGNAL(triggered()), SLOT(aboutAlKotobiya()));
+    connect(ui->actionSettings, SIGNAL(triggered()), SLOT(settingDialog()));
+    connect(ui->actionControlCenter, SIGNAL(triggered()), SLOT(controlCenter()));
 
     //TODO: open Quran quickly
     connect(m_welcomeWidget, SIGNAL(showBooksList()), SLOT(showBooksList()));
     connect(m_bookView, SIGNAL(lastTabClosed()), SLOT(lastTabClosed()));
-    connect(m_booksList, SIGNAL(bookSelected(int)), this, SLOT(openBook(int)));
-    connect(ui->actionBooksList, SIGNAL(triggered()), this, SLOT(showBooksList()));
+    connect(m_booksList, SIGNAL(bookSelected(int)), SLOT(openBook(int)));
+    connect(ui->actionBooksList, SIGNAL(triggered()), SLOT(showBooksList()));
 }
 
 void MainWindow::aboutAlKotobiya()
@@ -225,4 +227,10 @@ BooksViewer *MainWindow::booksViewer()
 BooksListBrowser *MainWindow::booksListBrowser()
 {
     return m_booksList;
+}
+
+void MainWindow::controlCenter()
+{
+    ControlCenterDialog dialog(this);
+    dialog.exec();
 }

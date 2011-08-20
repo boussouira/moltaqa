@@ -235,7 +235,7 @@ void QuranDBHandler::goToSora(int sora, int aya)
         openPage(page);
 }
 
-void QuranDBHandler::goToHaddit(int hadditNum)
+void QuranDBHandler::goToHaddit(int /*hadditNum*/)
 {
 
 }

@@ -5,6 +5,7 @@
 #include "indexdb.h"
 #include "convertthread.h"
 #include "importthread.h"
+#include "bookslistmodel.h"
 
 #ifdef USE_MDBTOOLS
     #include "mdbconverter.h"

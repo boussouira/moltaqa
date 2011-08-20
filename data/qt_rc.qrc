@@ -16,6 +16,8 @@
         <file>images/book.png</file>
         <file>images/go-down.png</file>
         <file>images/go-up.png</file>
+        <file>images/go-down2.png</file>
+        <file>images/go-up2.png</file>
     </qresource>
     <qresource prefix="/import">
         <file>images/add.png</file>

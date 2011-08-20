@@ -21,6 +21,8 @@ IndexDB::IndexDB(LibraryInfo *info)
 
 IndexDB::~IndexDB()
 {
+    if(m_future.isRunning())
+        m_future.waitForFinished();
 }
 
 void IndexDB::setConnectionInfo(LibraryInfo *info)
@@ -60,7 +62,7 @@ void IndexDB::loadModel()
     m_model->setRootNode(firstNode);
 }
 
-QAbstractItemModel *IndexDB::booksListModel()
+BooksListModel *IndexDB::booksListModel()
 {
     if(m_future.isRunning())
         m_future.waitForFinished();
@@ -68,7 +70,7 @@ QAbstractItemModel *IndexDB::booksListModel()
     return m_model;
 }
 
-QAbstractItemModel *IndexDB::catsListModel()
+BooksListModel *IndexDB::catsListModel()
 {
     BooksListModel *model = new BooksListModel();
     BooksListNode *firstNode = new BooksListNode(BooksListNode::Root);
@@ -228,7 +230,7 @@ void IndexDB::booksCat(BooksListNode *parentNode, int catID)
                                                        bookQuery.value(1).toString(),
                                                        bookQuery.value(4).toString(),
                                                        bookQuery.value(0).toInt());
-        secondChild->setInfoToolTip(bookQuery.value(3).toString());
+        secondChild->infoToolTip = bookQuery.value(3).toString();
         parentNode->appendChild(secondChild);
     }
 }
@@ -278,3 +280,106 @@ void IndexDB::getShoroohPages(BookInfo *info)
                                              bookQuery.value(2).toString()));
     }
 }
+
+void IndexDB::updateCatTitle(int catID, QString title)
+{
+    QSqlQuery bookQuery(m_indexDB);
+
+    bookQuery.prepare("UPDATE catList SET title = ? WHERE id = ?");
+    bookQuery.bindValue(0, title);
+    bookQuery.bindValue(1, catID);
+    if(!bookQuery.exec()) {
+        SQL_ERROR(bookQuery.lastError().text());
+    }
+}
+
+void IndexDB::updateCatParent(int catID, int parentID)
+{
+    QSqlQuery bookQuery(m_indexDB);
+
+    bookQuery.prepare("UPDATE catList SET parentID = ? WHERE id = ?");
+    bookQuery.bindValue(0, parentID);
+    bookQuery.bindValue(1, catID);
+    if(!bookQuery.exec()) {
+        SQL_ERROR(bookQuery.lastError().text());
+    }
+}
+
+void IndexDB::updateCatOrder(int catID, int catOrder)
+{
+    QSqlQuery bookQuery(m_indexDB);
+    qDebug("SET CAT ORDER = %d FOR CAT = %d\n", catOrder, catID);
+
+    bookQuery.prepare("UPDATE catList SET catOrder = ? WHERE id = ?");
+    bookQuery.bindValue(0, catOrder);
+    bookQuery.bindValue(1, catID);
+    if(!bookQuery.exec()) {
+        SQL_ERROR(bookQuery.lastError().text());
+    }
+}
+
+/*
+void IndexDB::moveCatUp(int catID)
+{
+    QSqlQuery bookQuery(m_indexDB);
+
+    bookQuery.prepare("SELECT catOrder, parentID FROM catList WHERE id = ?");
+    bookQuery.bindValue(0, catID);
+    if(bookQuery.exec()) {
+        if(bookQuery.next()) {
+            int catOrder = bookQuery.value(0).toInt();
+            int parentID = bookQuery.value(1).toInt();
+
+            qDebug("* Id %d Order %d Parent %d", catID, catOrder, parentID);
+
+            bookQuery.prepare("SELECT id, catOrder FROM catList "
+                              "WHERE parentID = ? AND catOrder < ? "
+                              "ORDER BY id DESC LIMIT 1");
+            bookQuery.bindValue(0, parentID);
+            bookQuery.bindValue(1, catOrder);
+            if(bookQuery.exec()) {
+                if(bookQuery.next()) {
+
+                    qDebug("** Id %d Order %d Parent ", bookQuery.value(0).toInt(),bookQuery.value(1).toInt(), parentID);
+
+                    updateCatOrder(catID, bookQuery.value(1).toInt());
+                    updateCatOrder(bookQuery.value(0).toInt(), catOrder);
+                }
+            } else {
+                SQL_ERROR(bookQuery.lastError().text());
+            }
+        }
+    } else {
+        SQL_ERROR(bookQuery.lastError().text());
+    }
+}
+
+void IndexDB::moveCatDown(int catID)
+{
+    QSqlQuery bookQuery(m_indexDB);
+
+    bookQuery.prepare("SELECT catOrder, parentID FROM catList WHERE id = ?");
+    bookQuery.bindValue(0, catID);
+    if(bookQuery.exec()) {
+        if(bookQuery.next()) {
+            int catOrder = bookQuery.value(0).toInt();
+            int parentID = bookQuery.value(1).toInt();
+            bookQuery.prepare("SELECT id, catOrder FROM catList "
+                              "WHERE parentID = ? AND catOrder > ? "
+                              "ORDER BY id ASC LIMIT 1");
+            bookQuery.bindValue(0, parentID);
+            bookQuery.bindValue(1, catOrder);
+            if(bookQuery.exec()) {
+                if(bookQuery.next()) {
+                    updateCatOrder(catID, bookQuery.value(1).toInt());
+                    updateCatOrder(bookQuery.value(0).toInt(), catOrder);
+                }
+            } else {
+                SQL_ERROR(bookQuery.lastError().text());
+            }
+        }
+    } else {
+        SQL_ERROR(bookQuery.lastError().text());
+    }
+}
+*/

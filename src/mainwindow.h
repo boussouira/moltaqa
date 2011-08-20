@@ -43,6 +43,7 @@ public slots:
     void showBooksList();
     void openBook(int pBookID);
     void lastTabClosed();
+    void controlCenter();
 
 private slots:
     void on_actionImport_triggered();

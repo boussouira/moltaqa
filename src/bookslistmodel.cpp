@@ -13,7 +13,9 @@ BooksListModel::~BooksListModel()
 
 void BooksListModel::setRootNode(BooksListNode *BooksListNode)
 {
-    delete rootNode;
+    if(rootNode)
+        delete rootNode;
+
     rootNode = BooksListNode;
     reset();
 }
@@ -24,7 +26,7 @@ QModelIndex BooksListModel::index(int row, int column,
     if (!rootNode || row < 0 || column < 0)
         return QModelIndex();
     BooksListNode *parentNode = nodeFromIndex(parent);
-    BooksListNode *childNode = parentNode->childrenList().value(row);
+    BooksListNode *childNode = parentNode->childrenNode.value(row);
     if (!childNode)
         return QModelIndex();
     return createIndex(row, column, childNode);
@@ -46,7 +48,7 @@ int BooksListModel::rowCount(const QModelIndex &parent) const
     BooksListNode *parentNode = nodeFromIndex(parent);
     if (!parentNode)
         return 0;
-    return parentNode->childrenList().count();
+    return parentNode->childrenNode.count();
 }
 
 int BooksListModel::columnCount(const QModelIndex & /* parent */) const
@@ -59,13 +61,13 @@ QModelIndex BooksListModel::parent(const QModelIndex &child) const
     BooksListNode *node = nodeFromIndex(child);
     if (!node)
         return QModelIndex();
-    BooksListNode *parentNode = node->parentNode();
+    BooksListNode *parentNode = node->parentNode;
     if (!parentNode)
         return QModelIndex();
-    BooksListNode *grandparentNode = parentNode->parentNode();
+    BooksListNode *grandparentNode = parentNode->parentNode;
     if (!grandparentNode)
         return QModelIndex();
-    int row = grandparentNode->childrenList().indexOf(parentNode);
+    int row = grandparentNode->childrenNode.indexOf(parentNode);
     return createIndex(row, 0, parentNode);
 }
 
@@ -75,22 +77,22 @@ QVariant BooksListModel::data(const QModelIndex &index, int role) const
     if (!node)
         return QVariant();
 
-    if (role == Qt::DisplayRole) {
+    if (role == Qt::DisplayRole || role == Qt::EditRole) {
         if (index.column() == 0){
-            return node->getTitle();
+            return node->title;
         } else if (index.column() == 1) {
-            if(node->getNodeType()==BooksListNode::Book)
-                return node->getAuthorName();
+            if(node->type == BooksListNode::Book)
+                return node->authorName;
         }
 
-    } else if (role == Qt::ToolTipRole && node->getNodeType() == BooksListNode::Book) {
+    } else if (role == Qt::ToolTipRole && node->type == BooksListNode::Book) {
         if (index.column() == 0)
-            return node->getInfoToolTip();
+            return node->infoToolTip;
 
     } else if (role == Qt::DecorationRole && index.column() == 0) {
-        if(node->getNodeType() == BooksListNode::Categorie)
+        if(node->type == BooksListNode::Categorie)
             return QIcon(":/menu/images/book-cat.png");
-        else if (node->getNodeType() == BooksListNode::Book)
+        else if (node->type == BooksListNode::Book)
             return QIcon(":/menu/images/book.png");
     }
     return QVariant();
