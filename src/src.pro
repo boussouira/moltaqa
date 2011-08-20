@@ -7,4 +7,4 @@ CODECFORTR  = UTF-8
 include(src.pri)
 
 SOURCES += main.cpp
-DESTDIR = .
+DESTDIR = ../build
