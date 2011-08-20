@@ -18,6 +18,8 @@ ShamelaImportThread::ShamelaImportThread(QObject *parent) :
 
 void ShamelaImportThread::run()
 {
+    qsrand(QDateTime::currentDateTime().toTime_t());
+
     m_threadID = (int)currentThreadId();
     m_creator.setThreadID(m_threadID);
     m_creator.openDB();
