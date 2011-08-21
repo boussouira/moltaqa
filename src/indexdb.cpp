@@ -308,7 +308,7 @@ void IndexDB::updateCatParent(int catID, int parentID)
 void IndexDB::updateCatOrder(int catID, int catOrder)
 {
     QSqlQuery bookQuery(m_indexDB);
-    qDebug("SET CAT ORDER = %d FOR CAT = %d\n", catOrder, catID);
+    qDebug("SET CAT ORDER = %d FOR CAT = %d", catOrder, catID);
 
     bookQuery.prepare("UPDATE catList SET catOrder = ? WHERE id = ?");
     bookQuery.bindValue(0, catOrder);
@@ -316,6 +316,35 @@ void IndexDB::updateCatOrder(int catID, int catOrder)
     if(!bookQuery.exec()) {
         SQL_ERROR(bookQuery.lastError().text());
     }
+}
+
+void IndexDB::makeCatPlace(int parentID, int catOrder)
+{
+    QSqlQuery bookQuery(m_indexDB);
+    qDebug("Make place for order %d", catOrder);
+
+    bookQuery.prepare("UPDATE catList SET catOrder = catOrder + 1 WHERE catOrder >= ? AND parentID = ?");
+    bookQuery.bindValue(0, catOrder);
+    bookQuery.bindValue(1, parentID);
+    if(!bookQuery.exec()) {
+        SQL_ERROR(bookQuery.lastError().text());
+    }
+}
+
+int IndexDB::addNewCat(const QString &title)
+{
+    QSqlQuery bookQuery(m_indexDB);
+
+    bookQuery.prepare("INSERT INTO catList (id, title) VALUES (NULL, ?)");
+    bookQuery.bindValue(0, title);
+
+    if(bookQuery.exec()) {
+        return bookQuery.lastInsertId().toInt();
+    } else {
+        SQL_ERROR(bookQuery.lastError().text());
+    }
+
+    return 0;
 }
 
 /*

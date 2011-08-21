@@ -38,6 +38,8 @@ public:
     void updateCatTitle(int catID, QString title);
     void updateCatParent(int catID, int parentID);
     void updateCatOrder(int catID, int catOrder);
+    int addNewCat(const QString &title);
+    void makeCatPlace(int parentID, int catOrder);
 //    void moveCatUp(int catID);
 //    void moveCatDown(int catID);
 

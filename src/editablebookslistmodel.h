@@ -21,6 +21,7 @@ public:
     void swap(const QModelIndex &parent, int sourceRow, int destRow);
     void moveUp(const QModelIndex &index);
     void moveDown(const QModelIndex &index);
+    void addCat(const QModelIndex &parent, const QString &title);
 
     void setIndexDB(IndexDB *db);
     void setModelEditibale(bool editable);
@@ -28,7 +29,7 @@ public:
 protected:
     void setCatTitle(BooksListNode *node);
     void setCatParent(BooksListNode *node);
-    void setCatOrder(BooksListNode *node, int order);
+    void setCatOrder(BooksListNode *node, int order, bool makeplace=false);
 
 protected:
     IndexDB *m_indexDB;

@@ -23,9 +23,11 @@ protected slots:
     void pastSublingNode();
     void moveUp();
     void moveDown();
+    void addCat();
 
 protected slots:
     void menuRequested(QPoint);
+    void updateActions();
 
 private:
     IndexDB *m_indexDB;

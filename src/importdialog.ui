@@ -64,7 +64,7 @@
              </property>
              <property name="icon">
               <iconset resource="../data/qt_rc.qrc">
-               <normaloff>:/import/images/add.png</normaloff>:/import/images/add.png</iconset>
+               <normaloff>:/menu/images/add.png</normaloff>:/menu/images/add.png</iconset>
              </property>
             </widget>
            </item>
@@ -81,7 +81,7 @@
              </property>
              <property name="icon">
               <iconset resource="../data/qt_rc.qrc">
-               <normaloff>:/import/images/remove.png</normaloff>:/import/images/remove.png</iconset>
+               <normaloff>:/menu/images/remove.png</normaloff>:/menu/images/remove.png</iconset>
              </property>
              <property name="shortcut">
               <string>Del</string>

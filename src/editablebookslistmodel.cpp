@@ -67,6 +67,7 @@ bool EditableBooksListModel::appendNode(BooksListNode *node, const QModelIndex &
         endInsertRows();
 
         setCatParent(node);
+        setCatOrder(node, node->parentNode->childrenNode.count()-1);
 
         return true;
     }
@@ -83,6 +84,7 @@ bool EditableBooksListModel::appendNode(BooksListNode *node, int row, const QMod
         endInsertRows();
 
         setCatParent(node);
+        setCatOrder(node, row, true);
 
         return true;
     }
@@ -95,7 +97,7 @@ void EditableBooksListModel::swap(const QModelIndex &parent, int sourceRow, int 
     BooksListNode *parentNode = nodeFromIndex(parent);
     parentNode->childrenNode.swap(sourceRow, destRow);
 
-    emit layoutChanged ();
+    emit layoutChanged();
 }
 
 void EditableBooksListModel::moveUp(const QModelIndex &index)
@@ -140,7 +142,25 @@ void EditableBooksListModel::setCatParent(BooksListNode *node)
     m_indexDB->updateCatParent(node->id, node->parentNode->id);
 }
 
-void EditableBooksListModel::setCatOrder(BooksListNode *node, int order)
+void EditableBooksListModel::setCatOrder(BooksListNode *node, int order, bool makeplace)
 {
+    if(makeplace) {
+        m_indexDB->makeCatPlace(node->parentNode->id, order);
+    }
+
     m_indexDB->updateCatOrder(node->id, order);
+}
+
+void EditableBooksListModel::addCat(const QModelIndex &parent, const QString &title)
+{
+    BooksListNode *node = new BooksListNode(BooksListNode::Categorie, title);
+    BooksListNode *parentNode = nodeFromIndex(parent);
+    parentNode->appendChild(node);
+
+    node->id = m_indexDB->addNewCat(title);
+
+    setCatParent(node);
+    setCatOrder(node, parentNode->childrenNode.count()-1);
+
+    emit layoutChanged();
 }
