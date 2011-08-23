@@ -2,8 +2,6 @@
 #define CONTROLCENTERDIALOG_H
 
 #include <qdialog.h>
-#include "indexdb.h"
-#include "editablebookslistmodel.h"
 
 namespace Ui {
     class ControlCenterDialog;
@@ -17,22 +15,12 @@ public:
     ControlCenterDialog(QWidget *parent = 0);
     ~ControlCenterDialog();
 
-protected slots:
-    void cutNode();
-    void pastNode();
-    void pastSublingNode();
-    void moveUp();
-    void moveDown();
-    void addCat();
+    void addEditWidget(int index, QWidget *w);
 
-protected slots:
-    void menuRequested(QPoint);
-    void updateActions();
+private slots:
+    void rowChanged(int row);
 
 private:
-    IndexDB *m_indexDB;
-    EditableBooksListModel *m_catsModel;
-    BooksListNode *m_copiedNode;
     Ui::ControlCenterDialog *ui;
 };
 

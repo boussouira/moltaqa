@@ -164,3 +164,21 @@ void EditableBooksListModel::addCat(const QModelIndex &parent, const QString &ti
 
     emit layoutChanged();
 }
+
+void EditableBooksListModel::removeCat(const QModelIndex &index)
+{
+    BooksListNode *node = nodeFromIndex(index);
+    BooksListNode *parentNode = nodeFromIndex(index.parent());
+
+    parentNode->childrenNode.removeAt(index.row());
+    m_indexDB->removeCat(node->id);
+
+//    delete node;
+
+    emit layoutChanged();
+}
+
+bool EditableBooksListModel::hasBooks(int catID)
+{
+    return m_indexDB->booksCount(catID);
+}

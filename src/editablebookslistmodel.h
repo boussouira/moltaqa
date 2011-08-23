@@ -22,9 +22,11 @@ public:
     void moveUp(const QModelIndex &index);
     void moveDown(const QModelIndex &index);
     void addCat(const QModelIndex &parent, const QString &title);
+    void removeCat(const QModelIndex &index);
 
     void setIndexDB(IndexDB *db);
     void setModelEditibale(bool editable);
+    bool hasBooks(int catID);
 
 protected:
     void setCatTitle(BooksListNode *node);

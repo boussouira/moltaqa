@@ -67,7 +67,9 @@ SOURCES += mainwindow.cpp \
     tafessirquery.cpp \
     shamelamapper.cpp \
     controlcenterdialog.cpp \
-    editablebookslistmodel.cpp
+    editablebookslistmodel.cpp \
+    editcatwidget.cpp \
+    selectcatdialog.cpp
 HEADERS += mainwindow.h \
     pageinfo.h \
     qurantextformat.h \
@@ -118,7 +120,9 @@ HEADERS += mainwindow.h \
     tafessirquery.h \
     shamelamapper.h \
     controlcenterdialog.h \
-    editablebookslistmodel.h
+    editablebookslistmodel.h \
+    editcatwidget.h \
+    selectcatdialog.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \
@@ -127,7 +131,15 @@ FORMS += mainwindow.ui settingsdialog.ui \
     shamelaimportdialog.ui \
     openpagedialog.ui \
     newlibrarydialog.ui \
-    controlcenterdialog.ui
+    controlcenterdialog.ui \
+    editcatwidget.ui \
+    selectcatdialog.ui
 
 RESOURCES += ../data/qt_rc.qrc
 win32:RC_FILE = ../data/win_rc.rc
+
+
+
+
+
+

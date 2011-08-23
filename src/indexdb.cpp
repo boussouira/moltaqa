@@ -331,6 +331,23 @@ void IndexDB::makeCatPlace(int parentID, int catOrder)
     }
 }
 
+int IndexDB::booksCount(int catID)
+{
+    QSqlQuery bookQuery(m_indexDB);
+
+    bookQuery.prepare("SELECT COUNT(*) FROM booksList WHERE bookCat = ?");
+    bookQuery.bindValue(0, catID);
+    if(bookQuery.exec()) {
+        if(bookQuery.next()) {
+            return bookQuery.value(0).toInt();
+        }
+    } else {
+        SQL_ERROR(bookQuery.lastError().text());
+    }
+
+    return 0;
+}
+
 int IndexDB::addNewCat(const QString &title)
 {
     QSqlQuery bookQuery(m_indexDB);
@@ -347,68 +364,28 @@ int IndexDB::addNewCat(const QString &title)
     return 0;
 }
 
-/*
-void IndexDB::moveCatUp(int catID)
+void IndexDB::removeCat(int catID)
 {
     QSqlQuery bookQuery(m_indexDB);
 
-    bookQuery.prepare("SELECT catOrder, parentID FROM catList WHERE id = ?");
+    bookQuery.prepare("DELETE FROM catList WHERE id = ?");
     bookQuery.bindValue(0, catID);
-    if(bookQuery.exec()) {
-        if(bookQuery.next()) {
-            int catOrder = bookQuery.value(0).toInt();
-            int parentID = bookQuery.value(1).toInt();
-
-            qDebug("* Id %d Order %d Parent %d", catID, catOrder, parentID);
-
-            bookQuery.prepare("SELECT id, catOrder FROM catList "
-                              "WHERE parentID = ? AND catOrder < ? "
-                              "ORDER BY id DESC LIMIT 1");
-            bookQuery.bindValue(0, parentID);
-            bookQuery.bindValue(1, catOrder);
-            if(bookQuery.exec()) {
-                if(bookQuery.next()) {
-
-                    qDebug("** Id %d Order %d Parent ", bookQuery.value(0).toInt(),bookQuery.value(1).toInt(), parentID);
-
-                    updateCatOrder(catID, bookQuery.value(1).toInt());
-                    updateCatOrder(bookQuery.value(0).toInt(), catOrder);
-                }
-            } else {
-                SQL_ERROR(bookQuery.lastError().text());
-            }
-        }
-    } else {
+    if(!bookQuery.exec()) {
         SQL_ERROR(bookQuery.lastError().text());
     }
 }
 
-void IndexDB::moveCatDown(int catID)
+bool IndexDB::moveCatBooks(int fromCat, int toCat)
 {
     QSqlQuery bookQuery(m_indexDB);
 
-    bookQuery.prepare("SELECT catOrder, parentID FROM catList WHERE id = ?");
-    bookQuery.bindValue(0, catID);
+    bookQuery.prepare("UPDATE booksList SET bookCat = ? WHERE bookCat = ?");
+    bookQuery.bindValue(0, toCat);
+    bookQuery.bindValue(1, fromCat);
     if(bookQuery.exec()) {
-        if(bookQuery.next()) {
-            int catOrder = bookQuery.value(0).toInt();
-            int parentID = bookQuery.value(1).toInt();
-            bookQuery.prepare("SELECT id, catOrder FROM catList "
-                              "WHERE parentID = ? AND catOrder > ? "
-                              "ORDER BY id ASC LIMIT 1");
-            bookQuery.bindValue(0, parentID);
-            bookQuery.bindValue(1, catOrder);
-            if(bookQuery.exec()) {
-                if(bookQuery.next()) {
-                    updateCatOrder(catID, bookQuery.value(1).toInt());
-                    updateCatOrder(bookQuery.value(0).toInt(), catOrder);
-                }
-            } else {
-                SQL_ERROR(bookQuery.lastError().text());
-            }
-        }
+        return true;
     } else {
         SQL_ERROR(bookQuery.lastError().text());
+        return false;
     }
 }
-*/

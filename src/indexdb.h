@@ -39,9 +39,10 @@ public:
     void updateCatParent(int catID, int parentID);
     void updateCatOrder(int catID, int catOrder);
     int addNewCat(const QString &title);
+    void removeCat(int catID);
     void makeCatPlace(int parentID, int catOrder);
-//    void moveCatUp(int catID);
-//    void moveCatDown(int catID);
+    int booksCount(int catID);
+    bool moveCatBooks(int fromCat, int toCat);
 
 protected:
     void booksCat(BooksListNode *parentNode, int catID);
