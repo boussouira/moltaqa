@@ -94,6 +94,8 @@ QVariant BooksListModel::data(const QModelIndex &index, int role) const
             return QIcon(":/menu/images/book-cat.png");
         else if (node->type == BooksListNode::Book)
             return QIcon(":/menu/images/book.png");
+    } else if (role == Qt::UserRole) {
+        return node->id;
     }
     return QVariant();
 }

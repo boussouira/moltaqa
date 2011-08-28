@@ -181,7 +181,7 @@ void BooksViewer::openBook(int bookID, int pageID, bool newTab)
 {
     BookInfo *bookInfo = m_indexDB->getBookInfo(bookID);
 
-    if(!bookInfo->exists())
+    if(!bookInfo || !bookInfo->exists())
         throw BookException(tr("لم يتم العثور على ملف"), bookInfo->bookPath);
 
     AbstractDBHandler *bookdb;
@@ -209,11 +209,11 @@ void BooksViewer::openBook(int bookID, int pageID, bool newTab)
     int tabIndex;
     if(newTab) {
         m_bookWidgets.append(bookWidget);
-        tabIndex = m_tab->addTab(bookWidget, bookdb->bookInfo()->bookName);
+        tabIndex = m_tab->addTab(bookWidget, bookdb->bookInfo()->bookDisplayName);
     } else {
         tabIndex = m_tab->currentIndex();
         m_tab->removeTab(tabIndex);
-        m_tab->insertTab(tabIndex, bookWidget, bookdb->bookInfo()->bookName);
+        m_tab->insertTab(tabIndex, bookWidget, bookdb->bookInfo()->bookDisplayName);
         m_bookWidgets.replace(tabIndex, bookWidget);
     }
 
@@ -234,7 +234,7 @@ void BooksViewer::openTafessir()
     int tafessirID = m_comboTafasir->itemData(m_comboTafasir->currentIndex()).toInt();
     qDebug("Open tafessir: %d", tafessirID);
     BookInfo *bookInfo = m_indexDB->getBookInfo(tafessirID);
-    if(!bookInfo->isTafessir() || !currentBookWidget()->dbHandler()->bookInfo()->isQuran())
+    if(!bookInfo || !bookInfo->isTafessir() || !currentBookWidget()->dbHandler()->bookInfo()->isQuran())
         return;
 
     TafessirDBHandler *bookdb = new TafessirDBHandler();
@@ -257,7 +257,7 @@ void BooksViewer::openTafessir()
     BookWidget *bookWidget = new BookWidget(bookdb, this);
 
     m_bookWidgets.append(bookWidget);
-    int tabIndex = m_tab->addTab(bookWidget, bookdb->bookInfo()->bookName);
+    int tabIndex = m_tab->addTab(bookWidget, bookdb->bookInfo()->bookDisplayName);
     m_tab->setCurrentIndex(tabIndex);
 
     bookWidget->openSora(sora, aya);

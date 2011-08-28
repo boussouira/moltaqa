@@ -42,8 +42,6 @@ void AbstractDBHandler::openBookDB(QString pBookDBPath)
     QTime time;
     time.start();
     getBookInfo();
-
-    qDebug() << "Loading book info" << m_bookInfo->bookName << "take:" << time.elapsed() << "ms";
 }
 
 void AbstractDBHandler::setBookInfo(BookInfo *bi)

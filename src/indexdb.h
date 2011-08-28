@@ -7,6 +7,7 @@
 #include <qhash.h>
 #include <QtConcurrentRun>
 #include <qfuture.h>
+#include <qstandarditemmodel.h>
 
 class LibraryInfo;
 class BookInfo;
@@ -28,6 +29,8 @@ public:
       */
     void open();
 
+    void transaction();
+    bool commit();
     /**
       Get the books list model that contians categories and books
       */
@@ -48,7 +51,7 @@ public:
       @param bookID the book id
       @return BookInfo that contains information about the specified Book
       */
-    BookInfo *getBookInfo(int bookID);
+    BookInfo *getBookInfo(int bookID, bool allInfo = false);
     BookInfo *getQuranBook();
     LibraryInfo *connectionInfo();
     QList<QPair<int, QString> > getTafassirList();
@@ -109,6 +112,9 @@ public:
       */
     bool moveCatBooks(int fromCat, int toCat);
 
+    QStandardItemModel *getAuthorsListModel();
+    void updateBookInfo(BookInfo *info);
+
 protected:
     void booksCat(BooksListNode *parentNode, int catID);
     void childCats(BooksListNode *parentNode, int pID, bool onlyCats=false);
@@ -119,6 +125,7 @@ protected:
     LibraryInfo *m_libraryInfo;
     QSqlDatabase m_indexDB;
     QFuture<void> m_future;
+    QString m_connName;
 };
 
 #endif // INDEXDB_H

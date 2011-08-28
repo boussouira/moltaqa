@@ -36,7 +36,6 @@ SOURCES += mainwindow.cpp \
     simpletextformat.cpp \
     bookwidget.cpp \
     webview.cpp \
-    settingschecker.cpp \
     textformatter.cpp \
     importdialog.cpp \
     importmodel.cpp \
@@ -69,7 +68,12 @@ SOURCES += mainwindow.cpp \
     controlcenterdialog.cpp \
     editablebookslistmodel.cpp \
     editcatwidget.cpp \
-    selectcatdialog.cpp
+    selectcatdialog.cpp \
+    editbookslistwidget.cpp \
+    editablecatslistmodel.cpp \
+    editindexdb.cpp \
+    selectauthordialog.cpp \
+    abstracteditwidget.cpp
 HEADERS += mainwindow.h \
     pageinfo.h \
     qurantextformat.h \
@@ -89,7 +93,6 @@ HEADERS += mainwindow.h \
     simpletextformat.h \
     bookwidget.h \
     webview.h \
-    settingschecker.h \
     textformatter.h \
     importdialog.h \
     importmodel.h \
@@ -122,7 +125,12 @@ HEADERS += mainwindow.h \
     controlcenterdialog.h \
     editablebookslistmodel.h \
     editcatwidget.h \
-    selectcatdialog.h
+    selectcatdialog.h \
+    editbookslistwidget.h \
+    editablecatslistmodel.h \
+    editindexdb.h \
+    selectauthordialog.h \
+    abstracteditwidget.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \
@@ -133,13 +141,9 @@ FORMS += mainwindow.ui settingsdialog.ui \
     newlibrarydialog.ui \
     controlcenterdialog.ui \
     editcatwidget.ui \
-    selectcatdialog.ui
+    selectcatdialog.ui \
+    editbookslistwidget.ui \
+    selectauthordialog.ui
 
 RESOURCES += ../data/qt_rc.qrc
 win32:RC_FILE = ../data/win_rc.rc
-
-
-
-
-
-

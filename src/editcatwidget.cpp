@@ -11,16 +11,15 @@
 #include "selectcatdialog.h"
 
 EditCatWidget::EditCatWidget(QWidget *parent) :
-    QWidget(parent),
+    AbstractEditWidget(parent),
     ui(new Ui::EditCatWidget)
 {
     ui->setupUi(this);
 
     m_indexDB = MainWindow::mainWindow()->indexDB();
-    m_catsModel = new EditableBooksListModel(this);
+    m_catsModel = new EditableCatsListModel(this);
     m_catsModel->setRootNode(m_indexDB->catsListModel()->rootNode);
     m_catsModel->setIndexDB(m_indexDB);
-    m_catsModel->setModelEditibale(true);
 
     m_copiedNode = 0;
 
@@ -39,11 +38,16 @@ EditCatWidget::EditCatWidget(QWidget *parent) :
             SLOT(menuRequested(QPoint)));
     connect(ui->treeView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), SLOT(updateActions()));
     connect(m_catsModel, SIGNAL(layoutChanged()), SLOT(updateActions()));
+    connect(m_catsModel, SIGNAL(layoutChanged()), SLOT(modelEdited()));
 }
 
 EditCatWidget::~EditCatWidget()
 {
     delete ui;
+}
+
+void EditCatWidget::save()
+{
 }
 
 void EditCatWidget::cutNode()
@@ -100,7 +104,7 @@ void EditCatWidget::moveCatBooks()
 
         int rep = QMessageBox::question(this,
                                         tr("حذف قسم"),
-                                        tr("هل انت متأكد من أنك تريد نقل الكتب الموجودة في قسم %1 الى قسم %2")
+                                        tr("هل انت متأكد من أنك تريد نقل الكتب الموجودة في قسم '%1' الى قسم '%2'")
                                         .arg(fromNode->title)
                                         .arg(toNode->title),
                                         QMessageBox::Yes|QMessageBox::No, QMessageBox::No);
@@ -108,13 +112,13 @@ void EditCatWidget::moveCatBooks()
             if(m_indexDB->moveCatBooks(fromNode->id, toNode->id)) {
                 QMessageBox::information(this,
                                          tr("نقل كتب القسم"),
-                                         tr("تم نقل الكتب الموجودة في قسم %1 الى قسم %2")
+                                         tr("تم نقل الكتب الموجودة في قسم '%1' الى قسم '%2'")
                                          .arg(fromNode->title)
                                          .arg(toNode->title));
             } else {
                 QMessageBox::warning(this,
                                      tr("نقل كتب القسم"),
-                                     tr("حدث خطأ أثناء نقل كتب القسم %1 الى قسم %2")
+                                     tr("حدث خطأ أثناء نقل كتب القسم '%1' الى قسم '%2'")
                                      .arg(fromNode->title)
                                      .arg(toNode->title));
             }
@@ -184,7 +188,7 @@ void EditCatWidget::removeCat()
     if(node->childrenNode.count() > 0) {
         QMessageBox::warning(this,
                              tr("حذف القسم"),
-                             tr("يجب ان تحذف كل الاقسام الفرعية لقسم %1 قبل حذفه").arg(node->title));
+                             tr("يجب ان تحذف كل الاقسام الفرعية لقسم '%1' قبل حذفه").arg(node->title));
         return;
     }
 
@@ -198,7 +202,7 @@ void EditCatWidget::removeCat()
     int rep;
     rep = QMessageBox::question(this,
                                 tr("حذف قسم"),
-                                tr("هل انت متأكد من أنك تريد حذف قسم %1").arg(node->title),
+                                tr("هل انت متأكد من أنك تريد حذف قسم '%1'").arg(node->title),
                                 QMessageBox::Yes|QMessageBox::No, QMessageBox::No);
 
     if(rep == QMessageBox::Yes) {
@@ -252,4 +256,9 @@ void EditCatWidget::updateActions()
         ui->toolMoveDown->setEnabled(prevIndex.isValid());
         ui->toolRemoveCat->setEnabled(index.isValid());
     }
+}
+
+void EditCatWidget::modelEdited()
+{
+    emit edited(true);
 }

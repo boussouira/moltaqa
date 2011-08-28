@@ -1,21 +1,24 @@
 #ifndef EDITCATWIDGET_H
 #define EDITCATWIDGET_H
 
-#include <QWidget>
+#include "abstracteditwidget.h"
 #include "indexdb.h"
-#include "editablebookslistmodel.h"
+#include "editablecatslistmodel.h"
 
 namespace Ui {
     class EditCatWidget;
 }
 
-class EditCatWidget : public QWidget
+class EditCatWidget : public AbstractEditWidget
 {
     Q_OBJECT
 
 public:
     EditCatWidget(QWidget *parent = 0);
     ~EditCatWidget();
+
+public slots:
+    void save();
 
 protected slots:
     void cutNode();
@@ -26,6 +29,7 @@ protected slots:
     void addCat();
     void removeCat();
     void moveCatBooks();
+    void modelEdited();
 
 protected slots:
     void menuRequested(QPoint);
@@ -33,7 +37,7 @@ protected slots:
 
 private:
     IndexDB *m_indexDB;
-    EditableBooksListModel *m_catsModel;
+    EditableCatsListModel *m_catsModel;
     BooksListNode *m_copiedNode;
     Ui::EditCatWidget *ui;
 };

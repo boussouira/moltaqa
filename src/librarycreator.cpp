@@ -45,9 +45,13 @@ void LibraryCreator::createTables()
                      "bookType INTEGER , "
                      "bookFlags INTEGER , "
                      "bookCat INTEGER , "
-                     "bookName TEXT , "
+                     "bookDisplayName TEXT , "
+                     "bookFullName TEXT , "
+                     "bookOtherNames TEXT , "
                      "bookInfo TEXT , "
                      "bookEdition TEXT , "
+                     "bookPublisher TEXT , "
+                     "bookMohaqeq TEXT , "
                      "authorName TEXT , "
                      "authorID INTEGER , "
                      "fileName TEXT , "
@@ -321,8 +325,8 @@ void LibraryCreator::importBook(ShamelaBookInfo *book, QString path)
             addAuthor(auth, true);
     }
 
-    m_bookQuery.prepare("INSERT INTO booksList (id, bookID, bookType, bookFlags, bookCat,"
-                       "bookName, bookInfo, authorName, authorID, fileName, bookFolder)"
+    m_bookQuery.prepare("INSERT INTO booksList (id, bookID, bookType, bookFlags, bookCat, "
+                       "bookDisplayName, bookInfo, authorName, authorID, fileName, bookFolder) "
                        "VALUES(NULL, :book_id, :book_type, :book_flags, :cat_id, :book_name, "
                        ":book_info, :author_name, :author_id, :file_name, :book_folder)");
 
@@ -348,8 +352,8 @@ void LibraryCreator::importQuran(QString path)
 {
     QFileInfo fileInfo(path);
 
-    m_bookQuery.prepare("INSERT INTO booksList (id, bookID, bookType, bookFlags, bookCat,"
-                        "bookName, bookInfo, authorName, authorID, fileName, bookFolder)"
+    m_bookQuery.prepare("INSERT INTO booksList (id, bookID, bookType, bookFlags, bookCat, "
+                        "bookDisplayName, bookInfo, authorName, authorID, fileName, bookFolder) "
                         "VALUES(NULL, :book_id, :book_type, :book_flags, :cat_id, :book_name, "
                         ":book_info, :author_name, :author_id, :file_name, :book_folder)");
 

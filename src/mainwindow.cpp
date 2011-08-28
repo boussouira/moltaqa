@@ -5,7 +5,6 @@
 #include "bookslistbrowser.h"
 #include "settingsdialog.h"
 #include "bookwidget.h"
-#include "settingschecker.h"
 #include "importdialog.h"
 #include "bookexception.h"
 #include "libraryinfo.h"

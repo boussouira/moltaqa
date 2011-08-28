@@ -17,6 +17,7 @@ IndexDB::IndexDB(LibraryInfo *info)
 {
     m_libraryInfo = info;
     m_model = new BooksListModel();
+    m_connName = "BooksIndexDB";
 }
 
 IndexDB::~IndexDB()
@@ -42,7 +43,7 @@ void IndexDB::open()
     if(!QFile::exists(booksIndexPath))
        qWarning("Can't find index database: %s", qPrintable(booksIndexPath));
 
-    m_indexDB = QSqlDatabase::addDatabase("QSQLITE", "BooksIndexDB");
+    m_indexDB = QSqlDatabase::addDatabase("QSQLITE", m_connName);
     m_indexDB.setDatabaseName(booksIndexPath);
 
     if (!m_indexDB.open())
@@ -52,6 +53,16 @@ void IndexDB::open()
 void IndexDB::loadBooksListModel()
 {
     m_future = QtConcurrent::run(this, &IndexDB::loadModel);
+}
+
+void IndexDB::transaction()
+{
+    m_indexDB.transaction();
+}
+
+bool IndexDB::commit()
+{
+    return m_indexDB.commit();
 }
 
 void IndexDB::loadModel()
@@ -100,26 +111,49 @@ int IndexDB::catIdFromName(const QString &cat)
     return (count == 1) ? catID : -1;
 }
 
-BookInfo *IndexDB::getBookInfo(int bookID)
+BookInfo *IndexDB::getBookInfo(int bookID, bool allInfo)
 {
-    BookInfo *bookInfo = new BookInfo();
     QSqlQuery bookQuery(m_indexDB);
 
-    bookQuery.exec(QString("SELECT booksList.bookName, booksList.bookType, booksList.fileName, bookMeta.book_info "
-                           "FROM booksList LEFT JOIN bookMeta "
-                           "ON bookMeta.id = booksList.id "
-                           "WHERE booksList.id = %1 LIMIT 1").arg(bookID));
+    bookQuery.prepare("SELECT booksList.bookDisplayName, booksList.bookType, booksList.fileName, "
+                      "booksList.bookFullName, booksList.bookOtherNames, booksList.bookInfo, "
+                      "booksList.bookEdition, booksList.bookPublisher, booksList.bookMohaqeq, "
+                      "booksList.authorID, bookMeta.book_info, authorsList.name "
+                      "FROM booksList "
+                      "LEFT JOIN bookMeta ON bookMeta.id = booksList.id "
+                      "LEFT JOIN authorsList ON authorsList.id = booksList.authorID "
+                      "WHERE booksList.id = ? LIMIT 1");
+    bookQuery.bindValue(0, bookID);
 
-    if(bookQuery.next()) {
-        bookInfo->bookName = bookQuery.value(0).toString();
-        bookInfo->bookType = (BookInfo::Type)bookQuery.value(1).toInt();
-        bookInfo->bookID = bookID;
-        bookInfo->bookPath = m_libraryInfo->bookPath(bookQuery.value(2).toString());
+    if(bookQuery.exec()) {
+        if(bookQuery.next()) {
+            BookInfo *bookInfo = new BookInfo();
 
-        bookInfo->fromString(bookQuery.value(3).toString());
+            bookInfo->bookDisplayName = bookQuery.value(0).toString();
+            bookInfo->bookType = (BookInfo::Type)bookQuery.value(1).toInt();
+            bookInfo->bookID = bookID;
+            bookInfo->bookPath = m_libraryInfo->bookPath(bookQuery.value(2).toString());
+
+            bookInfo->fromString(bookQuery.value(10).toString());
+
+            if(allInfo) {
+                bookInfo->bookFullName = bookQuery.value(3).toString();
+                bookInfo->bookOtherNames = bookQuery.value(4).toString();
+                bookInfo->bookInfo = bookQuery.value(5).toString();
+                bookInfo->bookEdition = bookQuery.value(6).toString();
+                bookInfo->bookPublisher = bookQuery.value(7).toString();
+                bookInfo->bookMohaqeq = bookQuery.value(8).toString();
+                bookInfo->authorID = bookQuery.value(9).toInt();
+                bookInfo->authorName = bookQuery.value(11).toString();
+            }
+
+            return bookInfo;
+        }
+    } else {
+        SQL_ERROR(bookQuery.lastError().text());;
     }
 
-    return bookInfo;
+    return 0;
 }
 
 BookInfo *IndexDB::getQuranBook()
@@ -127,13 +161,13 @@ BookInfo *IndexDB::getQuranBook()
     BookInfo *bookInfo = new BookInfo();
     QSqlQuery bookQuery(m_indexDB);
 
-    bookQuery.exec(QString("SELECT booksList.bookName, booksList.bookType, booksList.fileName, bookMeta.book_info, booksList.id "
+    bookQuery.exec(QString("SELECT booksList.bookDisplayName, booksList.bookType, booksList.fileName, bookMeta.book_info, booksList.id "
                            "FROM booksList LEFT JOIN bookMeta "
                            "ON bookMeta.id = booksList.id "
                            "WHERE booksList.bookType = %1 LIMIT 1").arg(BookInfo::QuranBook));
 
     if(bookQuery.next()) {
-        bookInfo->bookName = bookQuery.value(0).toString();
+        bookInfo->bookDisplayName = bookQuery.value(0).toString();
         bookInfo->bookType = BookInfo::QuranBook;
         bookInfo->bookID = bookQuery.value(4).toInt();
         bookInfo->bookPath = m_libraryInfo->bookPath(bookQuery.value(2).toString());
@@ -164,7 +198,7 @@ int IndexDB::addBook(ImportModelNode *book)
     QString newPath = m_libraryInfo->booksDir() + "/" + newBookName;
 
     indexQuery.prepare("INSERT INTO booksList (id, bookID, bookType, bookFlags, bookCat,"
-                       "bookName, bookInfo, authorName, authorID, fileName, bookFolder)"
+                       "bookDisplayName, bookInfo, authorName, authorID, fileName, bookFolder)"
                        "VALUES(NULL, :book_id, :book_type, :book_flags, :cat_id, :book_name, "
                        ":book_info, :author_name, :author_id, :file_name, :book_folder)");
 
@@ -217,7 +251,7 @@ void IndexDB::childCats(BooksListNode *parentNode, int pID, bool onlyCats)
 void IndexDB::booksCat(BooksListNode *parentNode, int catID)
 {
     QSqlQuery bookQuery(m_indexDB);
-    bookQuery.prepare("SELECT booksList.id, booksList.bookName, booksList.authorName, booksList.bookInfo, authorsList.name "
+    bookQuery.prepare("SELECT booksList.id, booksList.bookDisplayName, booksList.authorName, booksList.bookInfo, authorsList.name "
                            "FROM booksList LEFT JOIN authorsList "
                            "ON authorsList.id = booksList.authorID "
                            "WHERE booksList.bookCat = ?");
@@ -265,7 +299,7 @@ void IndexDB::getShoroohPages(BookInfo *info)
 
     QSqlQuery bookQuery(m_indexDB);
 
-    bookQuery.prepare("SELECT ShareehMeta.shareeh_book, ShareehMeta.shareeh_id, booksList.bookName "
+    bookQuery.prepare("SELECT ShareehMeta.shareeh_book, ShareehMeta.shareeh_id, booksList.bookDisplayName "
                       "FROM ShareehMeta "
                       "LEFT JOIN booksList "
                       "ON booksList.id =  ShareehMeta.shareeh_book "
@@ -387,5 +421,54 @@ bool IndexDB::moveCatBooks(int fromCat, int toCat)
     } else {
         SQL_ERROR(bookQuery.lastError().text());
         return false;
+    }
+}
+
+QStandardItemModel *IndexDB::getAuthorsListModel()
+{
+    QStandardItemModel *model = new QStandardItemModel();
+    QStandardItem *item;
+    QSqlQuery bookQuery(m_indexDB);
+    bookQuery.prepare("SELECT id, name, full_name FROM authorsList");
+    if(bookQuery.exec()) {
+        while(bookQuery.next()) {
+            item = new QStandardItem(bookQuery.value(1).toString());
+            item->setData(bookQuery.value(0).toInt());
+            item->setData(bookQuery.value(2).toString(), Qt::ToolTipRole);
+
+            model->appendRow(item);
+        }
+    } else {
+        SQL_ERROR(bookQuery.lastError().text());
+    }
+
+    return model;
+}
+
+void IndexDB::updateBookInfo(BookInfo *info)
+{
+    QSqlQuery bookQuery(m_indexDB);
+    bookQuery.prepare("UPDATE booksList SET "
+                          "bookDisplayName = ?, "
+                          "bookFullName = ?, "
+                          "bookOtherNames = ?, "
+                          "bookInfo = ?, "
+                          "bookEdition = ?, "
+                          "bookPublisher = ?, "
+                          "bookMohaqeq = ?, "
+                          "authorID = ? "
+                      "WHERE id = ?");
+    bookQuery.bindValue(0, info->bookDisplayName);
+    bookQuery.bindValue(1, info->bookFullName);
+    bookQuery.bindValue(2, info->bookOtherNames);
+    bookQuery.bindValue(3, info->bookInfo);
+    bookQuery.bindValue(4, info->bookEdition);
+    bookQuery.bindValue(5, info->bookPublisher);
+    bookQuery.bindValue(6, info->bookMohaqeq);
+    bookQuery.bindValue(7, info->authorID);
+    bookQuery.bindValue(8, info->bookID);
+
+    if(!bookQuery.exec()) {
+        SQL_ERROR(bookQuery.lastError().text());
     }
 }

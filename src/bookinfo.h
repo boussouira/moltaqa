@@ -43,15 +43,23 @@ public:
 public:
     BookInfo::Type bookType;
     QString bookPath;
-    QString bookName;
+    QString bookDisplayName;
+    QString bookFullName;
+    QString bookOtherNames;
     QString textTable;
     QString indexTable;
     QString metaTable;
     QString tafessirTable;
+    QString authorName;
+    QString bookEdition;
+    QString bookPublisher;
+    QString bookMohaqeq;
+    QString bookInfo;
     int partsCount;
     int firstID;
     int lastID;
     int bookID;
+    int authorID;
 
 protected:
     QHash<int, int> m_firstPages;

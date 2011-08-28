@@ -16,22 +16,8 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role);
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
-    bool appendNode(BooksListNode *node, const QModelIndex &parent);
-    bool appendNode(BooksListNode *node, int row, const QModelIndex &parent);
-    void swap(const QModelIndex &parent, int sourceRow, int destRow);
-    void moveUp(const QModelIndex &index);
-    void moveDown(const QModelIndex &index);
-    void addCat(const QModelIndex &parent, const QString &title);
-    void removeCat(const QModelIndex &index);
-
     void setIndexDB(IndexDB *db);
     void setModelEditibale(bool editable);
-    bool hasBooks(int catID);
-
-protected:
-    void setCatTitle(BooksListNode *node);
-    void setCatParent(BooksListNode *node);
-    void setCatOrder(BooksListNode *node, int order, bool makeplace=false);
 
 protected:
     IndexDB *m_indexDB;
