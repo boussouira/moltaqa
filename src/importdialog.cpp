@@ -4,7 +4,6 @@
 #include "importdelegates.h"
 #include "indexdb.h"
 #include "convertthread.h"
-#include "importthread.h"
 #include "bookslistmodel.h"
 #include "common.h"
 
