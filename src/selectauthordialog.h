@@ -20,23 +20,24 @@ public:
     selectAuthorDialog(QWidget *parent = 0);
     ~selectAuthorDialog();
 
-    QString selectAuthorName();
-    int selectAuthorID();
+    QString selectedAuthorName();
+    int selectedAuthorID();
 
 protected slots:
     void selectAuthor();
     void cancel();
     void on_treeView_doubleClicked(const QModelIndex &index);
 
+signals:
+    void authorSelected();
+
 protected:
+    Ui::selectAuthorDialog *ui;
     IndexDB *m_indexDB;
     QStandardItemModel *m_model;
     SortFilterProxyModel *m_filter;
     QString m_authorName;
     int m_authorID;
-
-private:
-    Ui::selectAuthorDialog *ui;
 };
 
 #endif // SELECTAUTHORDIALOG_H

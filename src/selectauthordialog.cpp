@@ -43,6 +43,7 @@ void selectAuthorDialog::selectAuthor()
     m_authorName = index.data().toString();
     m_authorID = index.data(Qt::UserRole).toInt();
 
+    emit authorSelected();
     accept();
 }
 
@@ -51,12 +52,12 @@ void selectAuthorDialog::cancel()
     reject();
 }
 
-QString selectAuthorDialog::selectAuthorName()
+QString selectAuthorDialog::selectedAuthorName()
 {
     return m_authorName;
 }
 
-int selectAuthorDialog::selectAuthorID()
+int selectAuthorDialog::selectedAuthorID()
 {
     return m_authorID;
 }

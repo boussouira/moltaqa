@@ -29,6 +29,7 @@ selectCatDialog::selectCatDialog(QWidget *parent) :
     connect(ui->lineSearch, SIGNAL(textChanged(QString)), ui->treeView, SLOT(expandAll()));
     connect(ui->pushSelect, SIGNAL(clicked()), SLOT(selectCat()));
     connect(ui->pushCancel, SIGNAL(clicked()), SLOT(cancel()));
+    connect(ui->treeView, SIGNAL(doubleClicked(QModelIndex)), SLOT(selectCat()));
 }
 
 selectCatDialog::~selectCatDialog()
@@ -48,6 +49,7 @@ void selectCatDialog::selectCat()
 
     m_selectedNode = m_model->nodeFromIndex(m_filter->mapToSource(ui->treeView->selectionModel()->selectedIndexes().first()));
 
+    emit catSelected();
     accept();
 }
 
@@ -59,4 +61,14 @@ void selectCatDialog::cancel()
 BooksListNode *selectCatDialog::selectedNode()
 {
     return m_selectedNode;
+}
+
+QString selectCatDialog::selectedCatName()
+{
+    return m_selectedNode->title;
+}
+
+int selectCatDialog::selectedCatID()
+{
+    return m_selectedNode->id;
 }

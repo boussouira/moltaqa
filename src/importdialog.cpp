@@ -41,9 +41,9 @@ ImportDialog::ImportDialog(IndexDB *indexDB, QWidget *parent) :
     ImportModelNode *node = new ImportModelNode(BookInfo::NormalBook);
     m_model->setRootNode(node);
 
-    ui->treeView->setItemDelegateForColumn(2, new BookTypeDelegate(ui->treeView));
-    ui->treeView->setItemDelegateForColumn(3, new CategorieDelegate(ui->treeView,
-                                                                    m_indexDB->catsListModel()));
+    ui->treeView->setItemDelegateForColumn(1, new AuthorDelegate(this));
+    ui->treeView->setItemDelegateForColumn(2, new BookTypeDelegate(this));
+    ui->treeView->setItemDelegateForColumn(3, new CategorieDelegate(this));
     ui->treeView->setModel(m_model);
     ui->progressBar->hide();
 }
@@ -232,7 +232,7 @@ void ImportDialog::doneImporting()
 
     ui->stackedWidget->setCurrentIndex(2);
 
-    emit bookAdded();
+    m_indexDB->loadBooksListModel();
 }
 
 bool ImportDialog::checkNodes(QList<ImportModelNode *> nodesList)

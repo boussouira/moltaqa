@@ -434,7 +434,7 @@ QStandardItemModel *IndexDB::getAuthorsListModel()
     if(bookQuery.exec()) {
         while(bookQuery.next()) {
             item = new QStandardItem(bookQuery.value(1).toString());
-            item->setData(bookQuery.value(0).toInt());
+            item->setData(bookQuery.value(0).toInt(), Qt::UserRole);
             item->setData(bookQuery.value(2).toString(), Qt::ToolTipRole);
 
             model->appendRow(item);

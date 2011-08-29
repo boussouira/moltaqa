@@ -111,10 +111,10 @@ void EditBooksListWidget::on_toolChangeAuthor_clicked()
     selectAuthorDialog dialog(this);
 
     if(dialog.exec() == QDialog::Accepted) {
-        ui->lineAuthorName->setText(dialog.selectAuthorName());
+        ui->lineAuthorName->setText(dialog.selectedAuthorName());
         if(m_bookInfo) {
-            m_bookInfo->authorID = dialog.selectAuthorID();
-            m_bookInfo->authorName = dialog.selectAuthorName();
+            m_bookInfo->authorID = dialog.selectedAuthorID();
+            m_bookInfo->authorName = dialog.selectedAuthorName();
         }
     }
 }

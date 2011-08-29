@@ -1,8 +1,10 @@
 #include "importdelegates.h"
 #include "importmodel.h"
-#include "catslistwidget.h"
+#include "selectcatdialog.h"
+#include "selectauthordialog.h"
 #include <qcombobox.h>
 
+/* Book type delegate */
 BookTypeDelegate::BookTypeDelegate(QObject* parent): QItemDelegate(parent)
 {
 }
@@ -48,9 +50,8 @@ void BookTypeDelegate::updateEditorGeometry(QWidget *editor,
     editor->setGeometry(option.rect);
 }
 
-// Cat delegate
-CategorieDelegate::CategorieDelegate(QObject* parent, QAbstractItemModel *model):
-        QItemDelegate(parent), m_model(model)
+/* Categorie delegate */
+CategorieDelegate::CategorieDelegate(QObject* parent): QItemDelegate(parent)
 {
 }
 
@@ -59,24 +60,14 @@ QWidget *CategorieDelegate::createEditor(QWidget *parent,
                                        const QStyleOptionViewItem &/*option*/,
                                        const QModelIndex &/*index*/) const
 {
-    CatsListWidget *browser = new CatsListWidget(parent);
-
-    browser->setViewModel(m_model);
-    connect(browser, SIGNAL(itemSelected()), this, SLOT(commitAndCloseEditor()));
+    selectCatDialog *browser = new selectCatDialog(parent);
+    connect(browser, SIGNAL(catSelected()), SLOT(commitAndCloseEditor()));
 
     return browser;
 }
 
-void CategorieDelegate::setEditorData(QWidget *editor,
-                                      const QModelIndex &index) const
+void CategorieDelegate::setEditorData(QWidget *, const QModelIndex &) const
 {
-    Q_UNUSED(editor)
-    Q_UNUSED(index)
-
-    /*
-    CatsListWidget *browser = qobject_cast<CatsListWidget*>(editor);
-    browser->selectIndex(index);
-    */
 }
 
 void CategorieDelegate::setModelData(QWidget *editor,
@@ -84,30 +75,79 @@ void CategorieDelegate::setModelData(QWidget *editor,
                                      const QModelIndex &index) const
 {
 
-    CatsListWidget *browser = qobject_cast<CatsListWidget*>(editor);
+    selectCatDialog *browser = qobject_cast<selectCatDialog*>(editor);
 
-    QString catName = browser->lastSelectedName();
-    int catID = browser->lastSelectedID();
-    if(!catName.isEmpty()) {
+    if(browser->selectedNode()) {
+        QString catName = browser->selectedCatName();
+        int catID = browser->selectedCatID();
+
         ImportModel *mod = static_cast<ImportModel*>(model);
         mod->nodeFromIndex(index)->catID = catID;
-        if(catID == 0)
-            mod->nodeFromIndex(index)->catName = tr("-- غير محدد --");
 
         model->setData(index, catName, Qt::EditRole);
     }
 }
 
-void CategorieDelegate::updateEditorGeometry(QWidget *editor,
-                                             const QStyleOptionViewItem &option,
-                                             const QModelIndex &/* index */) const
+void CategorieDelegate::updateEditorGeometry(QWidget *,
+                                             const QStyleOptionViewItem &,
+                                             const QModelIndex &) const
 {
-    editor->resize(option.rect.width(), editor->parentWidget()->height());
 }
 
 void CategorieDelegate::commitAndCloseEditor()
 {
-    CatsListWidget *editor = qobject_cast<CatsListWidget *>(sender());
+    selectCatDialog *editor = qobject_cast<selectCatDialog *>(sender());
+    emit commitData(editor);
+    emit closeEditor(editor);
+}
+
+/* Choose Author delegate */
+AuthorDelegate::AuthorDelegate(QObject* parent): QItemDelegate(parent)
+{
+}
+
+
+QWidget *AuthorDelegate::createEditor(QWidget *parent,
+                                         const QStyleOptionViewItem &/*option*/,
+                                         const QModelIndex &/*index*/) const
+{
+    selectAuthorDialog *browser = new selectAuthorDialog(parent);
+    connect(browser, SIGNAL(authorSelected()), SLOT(commitAndCloseEditor()));
+
+    return browser;
+}
+
+void AuthorDelegate::setEditorData(QWidget *, const QModelIndex &) const
+{
+}
+
+void AuthorDelegate::setModelData(QWidget *editor,
+                                     QAbstractItemModel *model,
+                                     const QModelIndex &index) const
+{
+
+    selectAuthorDialog *browser = qobject_cast<selectAuthorDialog*>(editor);
+
+    if(browser->selectedAuthorID()) {
+        QString authName = browser->selectedAuthorName();
+//        int catID = browser->selectedAuthorID();
+
+//        ImportModel *mod = static_cast<ImportModel*>(model);
+//        mod->nodeFromIndex(index)->authorName = catID;
+
+        model->setData(index, authName, Qt::EditRole);
+    }
+}
+
+void AuthorDelegate::updateEditorGeometry(QWidget *,
+                                             const QStyleOptionViewItem &,
+                                             const QModelIndex &) const
+{
+}
+
+void AuthorDelegate::commitAndCloseEditor()
+{
+    selectAuthorDialog *editor = qobject_cast<selectAuthorDialog *>(sender());
     emit commitData(editor);
     emit closeEditor(editor);
 }

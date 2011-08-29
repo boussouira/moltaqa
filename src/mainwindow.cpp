@@ -187,9 +187,7 @@ void MainWindow::loadSettings()
 void MainWindow::on_actionImport_triggered()
 {
     ImportDialog *dialog = new ImportDialog(m_indexDB, 0);
-
     connect(dialog, SIGNAL(openBook(int)), this, SLOT(openBook(int)));
-    connect(dialog, SIGNAL(bookAdded()), m_booksList, SLOT(loadBooksList()));
 
     dialog->show();
 }

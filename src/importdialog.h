@@ -33,7 +33,6 @@ protected:
 
 signals:
     void openBook(int id);
-    void bookAdded();
 
 protected slots:
     void doneConverting();

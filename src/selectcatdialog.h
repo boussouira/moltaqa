@@ -19,7 +19,10 @@ class selectCatDialog : public QDialog
 public:
     selectCatDialog(QWidget *parent = 0);
     ~selectCatDialog();
+
     BooksListNode *selectedNode();
+    QString selectedCatName();
+    int selectedCatID();
 
 protected slots:
     void selectCat();
@@ -30,6 +33,9 @@ protected:
     BooksListModel *m_model;
     SortFilterProxyModel *m_filter;
     BooksListNode *m_selectedNode;
+
+signals:
+    void catSelected();
 
 private:
     Ui::selectCatDialog *ui;

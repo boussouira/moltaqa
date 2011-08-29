@@ -40,7 +40,6 @@ SOURCES += mainwindow.cpp \
     importdialog.cpp \
     importmodel.cpp \
     importdelegates.cpp \
-    catslistwidget.cpp \
     convertthread.cpp \
     bookexception.cpp \
     libraryinfo.cpp \
@@ -96,7 +95,6 @@ HEADERS += mainwindow.h \
     importdialog.h \
     importmodel.h \
     importdelegates.h \
-    catslistwidget.h \
     convertthread.h \
     bookexception.h \
     libraryinfo.h \
