@@ -13,8 +13,9 @@ BooksListModel::~BooksListModel()
 
 void BooksListModel::setRootNode(BooksListNode *BooksListNode)
 {
-    if(rootNode)
-        delete rootNode;
+    // TODO: delete current root node
+//    if(rootNode)
+//        delete rootNode;
 
     rootNode = BooksListNode;
     reset();

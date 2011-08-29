@@ -200,7 +200,7 @@ void BooksViewer::openBook(int bookID, int pageID, bool newTab)
 
     try {
         bookdb->openBookDB();
-    } catch (BookException &e) {
+    } catch (BookException &) {
         delete bookdb;
         throw;
     }

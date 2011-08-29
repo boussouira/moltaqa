@@ -64,6 +64,11 @@ QString arPlural(int count, PULRAL word, bool html)
              << QObject::tr("قسمين")
              << QObject::tr("أقسام")
              << QObject::tr("قسما");
+    else if(word == FILES)
+        list << QObject::tr("ملف واحد")
+             << QObject::tr("ملفين")
+             << QObject::tr("ملفات")
+             << QObject::tr("ملفا");
 
     if(count <= 1)
         str = list.at(0);
@@ -77,4 +82,27 @@ QString arPlural(int count, PULRAL word, bool html)
         str = QString();
 
     return html ? QString("<strong>%1</strong>").arg(str) : str;
+}
+
+QString secondsToString(int milsec, bool html)
+{
+    QString time;
+
+    int seconde = (int) ((milsec / 1000) % 60);
+    int minutes = (int) (((milsec / 1000) / 60) % 60);
+    int hours   = (int) (((milsec / 1000) / 60) / 60);
+
+    if(hours > 0){
+        time.append(arPlural(hours, HOUR, html));
+        time.append(QObject::tr(" و "));
+    }
+
+    if(minutes > 0 || hours > 0) {
+        time.append(arPlural(minutes, MINUTE, html));
+        time.append(QObject::tr(" و "));
+    }
+
+    time.append(arPlural(seconde, SECOND, html));
+
+    return time;
 }

@@ -67,9 +67,12 @@ QWidget *CategorieDelegate::createEditor(QWidget *parent,
     return browser;
 }
 
-void CategorieDelegate::setEditorData(QWidget */*editor*/,
-                                      const QModelIndex &/*index*/) const
+void CategorieDelegate::setEditorData(QWidget *editor,
+                                      const QModelIndex &index) const
 {
+    Q_UNUSED(editor)
+    Q_UNUSED(index)
+
     /*
     CatsListWidget *browser = qobject_cast<CatsListWidget*>(editor);
     browser->selectIndex(index);
@@ -87,7 +90,9 @@ void CategorieDelegate::setModelData(QWidget *editor,
     int catID = browser->lastSelectedID();
     if(!catName.isEmpty()) {
         ImportModel *mod = static_cast<ImportModel*>(model);
-        mod->nodeFromIndex(index)->setCatID(catID);
+        mod->nodeFromIndex(index)->catID = catID;
+        if(catID == 0)
+            mod->nodeFromIndex(index)->catName = tr("-- غير محدد --");
 
         model->setData(index, catName, Qt::EditRole);
     }

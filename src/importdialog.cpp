@@ -6,6 +6,7 @@
 #include "convertthread.h"
 #include "importthread.h"
 #include "bookslistmodel.h"
+#include "common.h"
 
 #ifdef USE_MDBTOOLS
     #include "mdbconverter.h"
@@ -22,6 +23,8 @@
 #include <qtoolbutton.h>
 #include <qevent.h>
 #include <qurl.h>
+#include <QTime>
+#include <qtconcurrentrun.h>
 
 ImportDialog::ImportDialog(IndexDB *indexDB, QWidget *parent) :
     QDialog(parent),
@@ -127,12 +130,13 @@ void ImportDialog::doneConverting()
     setEnabled(true);
     ui->progressBar->hide();
 
-    QString convertedFiles = arPlural(thread->convertedFiles(), 2);
-    QString convertTime = arPlural(thread->convertTime()/1000, 1);
-    QString importBooks = arPlural(m_model->nodeFromIndex(QModelIndex())->childs().count(),
-                                   0);
+    QString convertedFiles = arPlural(thread->convertedFiles(), FILES);
+    QString convertTime = secondsToString(thread->convertTime(), true);
+    QString importBooks = arPlural(m_model->nodeFromIndex()->childrenNode.count(),
+                                   BOOK);
 
-    ui->label_2->setText(QString(ui->label_2->text())
+    ui->labelConvertInfo->setText(tr("تم تحويل %1 خلال %2،" "<br>"
+                                     "سيتم استيراد %3:")
                          .arg(convertedFiles)
                          .arg(convertTime)
                          .arg(importBooks));
@@ -142,37 +146,57 @@ void ImportDialog::doneConverting()
 
 void ImportDialog::importBooks()
 {
-   if(checkNodes(m_model->nodeFromIndex(QModelIndex())->childs())){
-
-        ImportThread *thread = new ImportThread(this);
-
-        thread->setModel(m_model);
-        thread->setIndexDB(m_indexDB);
-        thread->setSignalMapper(m_signalMapper);
-
-        connect(thread, SIGNAL(finished()), this, SLOT(doneImporting()));
-        connect(thread, SIGNAL(setProgress(int)), ui->progressBar, SLOT(setValue(int)));
-
-        setEnabled(false);
-
-        ui->progressBar->setMaximum(m_model->nodeFromIndex(QModelIndex())->childs().count());
-        ui->progressBar->setValue(0);
-        ui->progressBar->show();
-
-        thread->start();
-
-    } else {
-        QMessageBox::warning(this,
-                             tr("خطأ عند الاستيراد"),
-                             tr("لم تقم باختيار أقسام بعض الكتب"));
+    if(!checkNodes(m_model->nodeFromIndex()->childrenNode)) {
+        int rep = QMessageBox::question(this,
+                                        tr("خطأ عند الاستيراد"),
+                                        tr("لم تقم باختيار أقسام بعض الكتب" "\n"
+                                           "هل تريد المتابعة؟"),
+                                        QMessageBox::Yes|QMessageBox::No, QMessageBox::No);
+        if(rep == QMessageBox::No) {
+            return;
+        }
     }
+
+    setEnabled(false);
+
+    ui->progressBar->setMaximum(m_model->nodeFromIndex()->childrenNode.count());
+    ui->progressBar->setValue(0);
+    ui->progressBar->show();
+
+    connect(&m_importWatcher, SIGNAL(finished()), SLOT(doneImporting()));
+
+    QFuture<void> future = QtConcurrent::run(this, &ImportDialog::startImporting);
+    m_importWatcher.setFuture(future);
+}
+
+void ImportDialog::startImporting()
+{
+    QTime time;
+    time.start();
+
+    QList<ImportModelNode *> nodesList = m_model->nodeFromIndex()->childrenNode;
+    int imported = 0;
+
+    for(int i=0;i<nodesList.count();i++) {
+        ImportModelNode *node = nodesList.at(i);
+        int lastInsert = m_indexDB->addBook(node);
+
+        if(lastInsert != -1) {
+            imported++;
+            m_booksList.insert(lastInsert, node->bookName);
+        } else {
+            qWarning() << "Error:" << node->bookName;
+        }
+
+        metaObject()->invokeMethod(ui->progressBar, "setValue",
+                                   Q_ARG(int, i+1));
+    }
+
+    qDebug() << "Importing" << imported << "books take" << time.elapsed() << "ms";
 }
 
 void ImportDialog::doneImporting()
 {
-    ImportThread *thread = static_cast<ImportThread *>(sender());
-    QHash<int, QString>  booksList = thread->booksList();
-
     ui->progressBar->setMaximum(0);
 
     QWidget *widget = new QWidget(this);
@@ -181,7 +205,7 @@ void ImportDialog::doneImporting()
     widget->setLayout(gridLayout);
     ui->scrollArea->setWidget(widget);
 
-    QHashIterator<int, QString> i(booksList);
+    QHashIterator<int, QString> i(m_booksList);
     while(i.hasNext()){
         i.next();
         QToolButton *button = new QToolButton;
@@ -216,38 +240,15 @@ bool ImportDialog::checkNodes(QList<ImportModelNode *> nodesList)
 {
     int wrongNodes = 0;
     foreach(ImportModelNode *node, nodesList) {
-        if(node->catID() == -1){
-            node->setBackgroundColor(QColor(200,200,200));
+        if(node->catID == 0){
+            node->bgColor = QColor(200,200,200);
             wrongNodes++;
         } else {
-            node->setBackgroundColor(Qt::white);
+            node->bgColor = Qt::white;
         }
     }
 
     return (!wrongNodes);
-}
-
-QString ImportDialog::arPlural(int count, int word)
-{
-    QStringList list;
-    if(word==0)
-        list <<  tr("كتاب واحد") << tr("كتابين") << tr("كتب") << tr("كتابا");
-    else if(word==1)
-        list <<  tr("ثانية") << tr("ثانيتين") << tr("ثوان") << tr("ثانية");
-    else if(word==2)
-        list <<  tr("ملف واحد") << tr("ملفين") << tr("ملفات") << tr("ملفا");
-
-    if(count == 1){
-        return list.at(0);
-    } else if(count == 2) {
-        return list.at(1);
-    } else if (count > 2 && count <= 10) {
-        return QString("%1 %2").arg(count).arg(list.at(2));
-    } else if (count > 10) {
-        return QString("%1 %2").arg(count).arg(list.at(3));
-    } else {
-        return QString();
-    }
 }
 
 void ImportDialog::dragEnterEvent(QDragEnterEvent *event)
@@ -280,7 +281,7 @@ void ImportDialog::dropEvent(QDropEvent *event)
 void ImportDialog::addFile(const QString &path)
 {
     QFileInfo info(path);
-    if(info.isFile() && info.suffix() == "bok") {
+    if(info.isFile() && info.suffix().compare("bok", Qt::CaseInsensitive)==0) {
         if(!fileExsistInList(path))
             ui->fileListWidget->addItem(path);
     }
@@ -289,7 +290,7 @@ void ImportDialog::addFile(const QString &path)
 void ImportDialog::addDir(const QString &path)
 {
     QDir dir(path);
-    qDebug("[*] %s", qPrintable(path));
+    qDebug() << "Feteching directory" << path;
     foreach(QString file, dir.entryList(QDir::Files|QDir::Dirs|QDir::NoDotAndDotDot)) {
         QFileInfo info(dir.absoluteFilePath(file));
         if(info.isFile())

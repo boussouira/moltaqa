@@ -1,45 +1,35 @@
 #include "importmodel.h"
 
-ImportModelNode::ImportModelNode(BookInfo::Type pType, QString pName, QString pAuth, int pId)
+ImportModelNode::ImportModelNode(BookInfo::Type pType)
 {
-    m_type = pType;
-    m_bookName = pName;
-    m_authorName = pAuth;
-    m_nodeID = pId;
-    m_parentNode = 0;
-    m_bgColor = Qt::white;
+    type = pType;
+    parentNode = 0;
+    catID = 0;
+    authorName = "XXX";
+    catName = tr("-- غير محدد --");
+    bgColor = Qt::white;
 }
 
 ImportModelNode::~ImportModelNode()
 {
-    qDeleteAll(m_childrenNode);
+    qDeleteAll(childrenNode);
+    childrenNode.clear();
 }
 
 void ImportModelNode::appendChild(ImportModelNode *pNode)
 {
-    pNode->m_parentNode = this;
-    m_childrenNode.append(pNode);
+    pNode->parentNode = this;
+    childrenNode.append(pNode);
 }
 
 void ImportModelNode::deleteChild(int index)
 {
-    delete m_childrenNode.takeAt(index);
+    delete childrenNode.takeAt(index);
 }
 
-void ImportModelNode::setID(int pId)
-{
-    m_nodeID = pId;
-}
-
-void ImportModelNode::setCatID(int id)
-{
-     m_catID = id;
-     if(id == -1)
-         setCatName(tr("-- غير محدد --"));
-}
 void ImportModelNode::setTypeName(const QString &name)
 {
-    m_typeName = name;
+    typeName = name;
     QStringList types;
     types << tr("مصحف")
             << tr("تفسير")
@@ -48,20 +38,15 @@ void ImportModelNode::setTypeName(const QString &name)
     int index = types.indexOf(name)+1;
     switch(index){
     case 1:
-        m_type = BookInfo::QuranBook;
+        type = BookInfo::QuranBook;
         break;
     case 2:
-        m_type = BookInfo::TafessirBook;
+        type = BookInfo::TafessirBook;
         break;
     case 3:
-        m_type = BookInfo::NormalBook;
+        type = BookInfo::NormalBook;
         break;
     }
-}
-
-void ImportModelNode::setBackgroundColor(const QBrush &color)
-{
-    m_bgColor = color;
 }
 
 // The model
@@ -89,7 +74,7 @@ QModelIndex ImportModel::index(int row, int column,
     if (!m_rootNode || row < 0 || column < 0)
         return QModelIndex();
     ImportModelNode *parentNode = nodeFromIndex(parent);
-    ImportModelNode *childNode = parentNode->childs().value(row);
+    ImportModelNode *childNode = parentNode->childrenNode.value(row);
     if (!childNode)
         return QModelIndex();
     return createIndex(row, column, childNode);
@@ -111,7 +96,7 @@ int ImportModel::rowCount(const QModelIndex &parent) const
     ImportModelNode *parentNode = nodeFromIndex(parent);
     if (!parentNode)
         return 0;
-    return parentNode->childs().count();
+    return parentNode->childrenNode.count();
 }
 
 int ImportModel::columnCount(const QModelIndex & /* parent */) const
@@ -124,13 +109,13 @@ QModelIndex ImportModel::parent(const QModelIndex &child) const
     ImportModelNode *node = nodeFromIndex(child);
     if (!node)
         return QModelIndex();
-    ImportModelNode *parentNode = node->parentNode();
+    ImportModelNode *parentNode = node->parentNode;
     if (!parentNode)
         return QModelIndex();
-    ImportModelNode *grandparentNode = parentNode->parentNode();
+    ImportModelNode *grandparentNode = parentNode->parentNode;
     if (!grandparentNode)
         return QModelIndex();
-    int row = grandparentNode->childs().indexOf(parentNode);
+    int row = grandparentNode->childrenNode.indexOf(parentNode);
     return createIndex(row, 0, parentNode);
 }
 
@@ -142,19 +127,19 @@ QVariant ImportModel::data(const QModelIndex &index, int role) const
 
     if (role == Qt::DisplayRole || role == Qt::EditRole) {
         if (index.column() == 0)
-            return node->bookName();
+            return node->bookName;
         else if (index.column() == 1)
-            return node->authorName();
+            return node->authorName;
         else if (index.column() == 2)
-            return node->typeName();
+            return node->typeName;
         else if (index.column() == 3)
-            return node->catName();
+            return node->catName;
 
     } else if (role == Qt::ToolTipRole) {
         if (index.column() == 0)
-            return node->bookInfo();
+            return node->bookInfo;
     } else if(role == Qt::BackgroundRole) {
-        return node->backgroundColor();
+        return node->bgColor;
     }
     return QVariant();
 }
@@ -166,13 +151,13 @@ bool ImportModel::setData(const QModelIndex &index, const QVariant &value, int r
         return false;
     if(role == Qt::EditRole || role == Qt::DisplayRole) {
         if(index.column() == 0)
-            node->setBookName(value.toString());
+            node->bookName = value.toString();
         else if(index.column() == 1)
-            node->setAuthorName(value.toString());
+            node->authorName = value.toString();
         else if(index.column() == 2)
-            node->setTypeName(value.toString());
+            node->typeName = value.toString();
         else if(index.column() == 3)
-            node->setCatName(value.toString());
+            node->catName = value.toString();
         layoutChanged();
         return true;
     }

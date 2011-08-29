@@ -3,6 +3,7 @@
 
 #include "pageinfo.h"
 #include <qhash.h>
+#include <qdebug.h>
 
 class BookShorooh
 {
@@ -66,5 +67,7 @@ protected:
     QHash<int, int> m_lastPages;
     bool m_hasInfo;
 };
+
+QDebug operator<<(QDebug, BookInfo *);
 
 #endif // BOOKINFO_H

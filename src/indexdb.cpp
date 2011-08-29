@@ -95,7 +95,7 @@ BooksListModel *IndexDB::catsListModel()
 int IndexDB::catIdFromName(const QString &cat)
 {
     int count = 0;
-    int catID = -1;
+    int catID = 0;
 
     if(cat.isEmpty())
         return catID;
@@ -108,7 +108,7 @@ int IndexDB::catIdFromName(const QString &cat)
 
     }
 
-    return (count == 1) ? catID : -1;
+    return (count == 1) ? catID : 0;
 }
 
 BookInfo *IndexDB::getBookInfo(int bookID, bool allInfo)
@@ -197,34 +197,35 @@ int IndexDB::addBook(ImportModelNode *book)
     QString newBookName = genBookName(m_libraryInfo->booksDir());
     QString newPath = m_libraryInfo->booksDir() + "/" + newBookName;
 
-    indexQuery.prepare("INSERT INTO booksList (id, bookID, bookType, bookFlags, bookCat,"
-                       "bookDisplayName, bookInfo, authorName, authorID, fileName, bookFolder)"
-                       "VALUES(NULL, :book_id, :book_type, :book_flags, :cat_id, :book_name, "
-                       ":book_info, :author_name, :author_id, :file_name, :book_folder)");
+    indexQuery.prepare("INSERT INTO booksList (id, bookID, bookType, bookFlags, bookCat, "
+                       "bookDisplayName, bookInfo, authorName, authorID, fileName, bookFolder) "
+                       "VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-    indexQuery.bindValue(":book_id", 0);
-    indexQuery.bindValue(":book_type", book->nodeType());
-    indexQuery.bindValue(":book_flags", 0);
-    indexQuery.bindValue(":cat_id", book->catID());
-    indexQuery.bindValue(":book_name", book->bookName());
-    indexQuery.bindValue(":book_info", book->bookInfo());
-    indexQuery.bindValue(":author_name", book->authorName());
-    indexQuery.bindValue(":author_id", 0);
-    indexQuery.bindValue(":file_name", newBookName); // Add file name
-    indexQuery.bindValue(":book_folder", QVariant(QVariant::String));
+    indexQuery.bindValue(0, 0);
+    indexQuery.bindValue(1, book->type);
+    indexQuery.bindValue(2, 0);
+    indexQuery.bindValue(3, book->catID);
+    indexQuery.bindValue(4, book->bookName);
+    indexQuery.bindValue(5, book->bookInfo);
+    indexQuery.bindValue(6, book->authorName);
+    indexQuery.bindValue(7, 0);
+    indexQuery.bindValue(8, newBookName); // Add file name
+    indexQuery.bindValue(9, QVariant(QVariant::String));
 
-    if(QFile::copy(book->bookPath(), newPath)){
-        if(!QFile::remove(book->bookPath()))
-            qWarning() << "Can't remove:" << book->bookPath();
+    if(QFile::copy(book->bookPath, newPath)){
+        if(!QFile::remove(book->bookPath))
+            qWarning() << "Can't remove:" << book->bookPath;
         if(indexQuery.exec()) {
             int lastID = indexQuery.lastInsertId().toInt();
             return lastID;
         } else {
-            qWarning() << indexQuery.lastError().text();
+            SQL_ERROR(indexQuery.lastError().text());
+            QFile::remove(newPath);
+            qDebug() << indexQuery.lastError();
             return -1;
         }
     } else {
-        qWarning() << "Can't copy" << book->bookPath() << "to" << newPath;
+        qWarning() << "Can't copy" << book->bookPath << "to" << newPath;
         return -1;
     }
 }
@@ -286,7 +287,7 @@ void IndexDB::updateBookMeta(BookInfo *info, bool newBook)
     }
 
     if(!bookQuery.exec()) {
-        qDebug() << "Error:" << bookQuery.lastError().text() << bookQuery.executedQuery();
+        SQL_ERROR(bookQuery.lastError().text());
     } else {
         qDebug() << "Meta for" << info->bookID << (newBook?"Inserted":"Updated");
     }

@@ -15,6 +15,7 @@
 #include <qsqlerror.h>
 #include <qdatetime.h>
 #include <qdebug.h>
+#include <qfileinfo.h>
 
 ConvertThread::ConvertThread(QObject *parent) : QThread(parent)
 {
@@ -26,24 +27,26 @@ void ConvertThread::run()
     QTime time;
     time.start();
 
-    for(int i=0; i<m_files.count(); i++){
+    m_convertedFiles = 0;
+
+    qsrand(QDateTime::currentDateTime().toTime_t());
+
+    foreach(QString file, m_files){
         try {
-            QList<ImportModelNode*> nodesList;
-            ImportFromShamelaBook(m_files.at(i), nodesList);
+            QFileInfo info(file);
 
-            foreach(ImportModelNode *node, nodesList)
-                m_model->appendNode(node, QModelIndex());
+            if(info.suffix().compare("bok", Qt::CaseInsensitive) == 0)
+                ConvertShamelaBook(file);
+            else
+                qWarning() << "File" << info.fileName() << "not handeled";
 
-            emit setProgress(i+1);
-            m_convertedFiles++;
+            emit setProgress(++m_convertedFiles);
 
 #ifdef USE_MDBTOOLS
             QSqlDatabase::removeDatabase("mdb");
             QSqlDatabase::removeDatabase("bok2sql");
 #else
             QSqlDatabase::removeDatabase("mdb");
-            QSqlDatabase::removeDatabase("ImportDB");
-            QSqlDatabase::removeDatabase("exportDB");
 #endif
 
         } catch(QString &what) {
@@ -56,9 +59,9 @@ void ConvertThread::run()
     m_convertTime = time.elapsed();
 }
 
-void ConvertThread::ImportFromShamelaBook(const QString &path, QList<ImportModelNode *> &nodes)
+void ConvertThread::ConvertShamelaBook(const QString &path)
 {
-#ifdef  USE_MDBTOOLS
+#ifdef USE_MDBTOOLS
     MdbConverter mdb;
     QString dbPath = mdb.exportFromMdb(path);
 
@@ -85,27 +88,30 @@ void ConvertThread::ImportFromShamelaBook(const QString &path, QList<ImportModel
         int bookID = bookQuery.value(bkIdCol).toInt();
 
         ImportModelNode *node = new ImportModelNode(BookInfo::NormalBook);
-        node->setTypeName(getBookType(bookDB));
-        node->setBookName(bookQuery.value(bkCol).toString());
-        node->setAuthorName(bookQuery.value(authCol).toString());
+        node->typeName = getBookType(bookDB);
+        node->bookName = bookQuery.value(bkCol).toString();
+        node->authorName = bookQuery.value(authCol).toString();
 
         if(catCol != -1) { // Some old books doesn't have this column
-            node->setCatName(bookQuery.value(catCol).toString()); // Must be set before CatID
-            node->setCatID(m_indexDB->catIdFromName(bookQuery.value(catCol).toString()));
+            node->catID = m_indexDB->catIdFromName(bookQuery.value(catCol).toString());
+
+            if(node->catID)
+                node->catName = bookQuery.value(catCol).toString();
         } else {
-            node->setCatID(-1);
+            node->catName = tr("-- غير محدد --");
+            node->catID = 0;
         }
 
         if(betakaCol != -1) {
-             node->setBookInfo(bookQuery.value(betakaCol).toString());
+             node->bookInfo = bookQuery.value(betakaCol).toString();
         }
 
-        qDebug() << "Importing:" << node->bookName();
+        qDebug() << "Importing:" << node->bookName;
 
         copyBookFromShamelaBook(node, bookDB, bookID);
-        nodes.append(node);
+        m_model->appendNode(node);
 
-        QSqlDatabase::removeDatabase("newBookDB_0");
+        QSqlDatabase::removeDatabase(QString("newBookDB_%1").arg((int)currentThreadId()));
     }
 
     if(bookQuery.lastError().isValid())
@@ -117,34 +123,101 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
 {
     // TODO: update this code to handle tafassir an haddith number
     QSqlQuery query(bookDB);
+
+#ifdef USE_MDBTOOLS
+    if(!query.exec(QString("SELECT * FROM b%1 LIMIT 1").arg(bookID)))
+        SQL_ERROR(query.lastError().text());
+#else
+    if(!query.exec(QString("SELECT TOP 1 * FROM b%1").arg(bookID)))
+        SQL_ERROR(query.lastError().text());
+#endif
+
+    int hnoCol = query.record().indexOf("hno");
+    int ayaCol = query.record().indexOf("aya");
+    int soraCol = query.record().indexOf("sora");
+
     NewBookWriter writer;
+    writer.setThreadID((int)currentThreadId());
     writer.createNewBook();
     writer.startReading();
 
-    if(query.exec(QString("SELECT id, nass, page, part FROM b%1 ORDER BY id").arg(bookID))) {
-        while(query.next()) {
-            writer.addPage(query.value(1).toString(),
-                           query.value(0).toInt(),
-                           query.value(2).toInt(),
-                           query.value(3).toInt());
+    int lastID=0;
+
+    if(ayaCol != -1 && soraCol != -1) {
+        // This is a tafessir book
+        if(hnoCol!=-1) {
+            // We have hno column
+            if(query.exec(QString("SELECT id, nass, page, part, aya, sora, hno FROM b%1 ORDER BY id").arg(bookID))) {
+                while(query.next()) {
+                    lastID = writer.addPage(query.value(1).toString(),
+                                            query.value(0).toInt(),
+                                            query.value(2).toInt(),
+                                            query.value(3).toInt(),
+                                            query.value(4).toInt(),
+                                            query.value(5).toInt());
+                    writer.addHaddithNumber(lastID, query.value(6).toInt());
+                }
+            } else {
+                SQL_ERROR(query.lastError().text());
+            }
+        } else {
+            // We don't have hno column
+            if(query.exec(QString("SELECT id, nass, page, part, aya, sora FROM b%1 ORDER BY id").arg(bookID))) {
+                while(query.next()) {
+                    writer.addPage(query.value(1).toString(),
+                                   query.value(0).toInt(),
+                                   query.value(2).toInt(),
+                                   query.value(3).toInt(),
+                                   query.value(4).toInt(),
+                                   query.value(5).toInt());
+                }
+            } else {
+                SQL_ERROR(query.lastError().text());
+            }
         }
     } else {
-        SQL_ERROR(query.lastError().text());
+        // This is a simple book
+        if(hnoCol!=-1) {
+            // We have hno column
+            if(query.exec(QString("SELECT id, nass, page, part, hno FROM b%1 ORDER BY id").arg(bookID))) {
+                while(query.next()) {
+                    lastID = writer.addPage(query.value(1).toString(),
+                                            query.value(0).toInt(),
+                                            query.value(2).toInt(),
+                                            query.value(3).toInt());
+                    writer.addHaddithNumber(lastID, query.value(4).toInt());
+                }
+            } else {
+                SQL_ERROR(query.lastError().text());
+            }
+        } else {
+            // We don't have hno column
+            if(query.exec(QString("SELECT id, nass, page, part FROM b%1 ORDER BY id").arg(bookID))) {
+                while(query.next()) {
+                    lastID = writer.addPage(query.value(1).toString(),
+                                            query.value(0).toInt(),
+                                            query.value(2).toInt(),
+                                            query.value(3).toInt());
+                }
+            } else {
+                SQL_ERROR(query.lastError().text());
+            }
+        }
     }
 
     if(query.exec(QString("SELECT id, tit, lvl, sub FROM t%1 ORDER BY id").arg(bookID))) {
         while(query.next()) {
             writer.addTitle(query.value(1).toString(),
-                           query.value(0).toInt(),
-                           query.value(2).toInt());
+                            query.value(0).toInt(),
+                            query.value(2).toInt());
         }
     } else {
-       SQL_ERROR(query.lastError().text());
+        SQL_ERROR(query.lastError().text());
     }
 
     writer.endReading();
 
-    node->setBookPath(writer.bookPath());
+    node->bookPath = writer.bookPath();
 }
 
 QString ConvertThread::getBookType(const QSqlDatabase &bookDB)

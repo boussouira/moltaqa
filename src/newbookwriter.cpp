@@ -3,11 +3,12 @@
 #include "mainwindow.h"
 #include "libraryinfo.h"
 #include "common.h"
+#include "bookinfo.h"
+
 #include <qsettings.h>
 #include <qdir.h>
 #include <qdatetime.h>
 #include <qdebug.h>
-#include <bookinfo.h>
 
 NewBookWriter::NewBookWriter()
 {
@@ -26,7 +27,7 @@ void NewBookWriter::createNewBook(QString bookPath)
 {
     // TODO: check if this file exsists
     if(bookPath.isEmpty())
-        m_bookPath = QString("%1/book_%2.sqlite").arg(m_tempFolder).arg(QDateTime::currentDateTime().toMSecsSinceEpoch());
+        m_bookPath = genBookName(m_tempFolder, true);
     else
         m_bookPath = bookPath;
 

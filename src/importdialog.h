@@ -2,6 +2,8 @@
 #define IMPORTDIALOG_H
 
 #include <qdialog.h>
+#include <qhash.h>
+#include <qfuturewatcher.h>
 
 namespace Ui {
     class ImportDialog;
@@ -18,7 +20,6 @@ public:
     ImportDialog(IndexDB *indexDB, QWidget *parent = 0);
     ~ImportDialog();
     void setIndexDB(IndexDB *indexDB) { m_indexDB = indexDB;}
-    static QString arPlural(int count, int word);
     void addFile(const QString &path);
     void addDir(const QString &path);
 
@@ -36,6 +37,7 @@ signals:
 
 protected slots:
     void doneConverting();
+    void startImporting();
     void doneImporting();
 
 private slots:
@@ -48,6 +50,8 @@ private:
     Ui::ImportDialog *ui;
     ImportModel *m_model;
     IndexDB *m_indexDB;
+    QHash<int, QString> m_booksList;
+    QFutureWatcher<void> m_importWatcher;
     QSignalMapper *m_signalMapper;
 };
 

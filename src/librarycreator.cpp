@@ -375,7 +375,7 @@ void LibraryCreator::importQuran(QString path)
 
 void LibraryCreator::setImportAuthors(bool import)
 {
-    m_importAuthor = true;
+    m_importAuthor = import;
 }
 
 void LibraryCreator::readSimpleBook(ShamelaBookInfo *book, QSqlQuery &query, NewBookWriter &writer, bool hno)

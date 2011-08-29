@@ -1,6 +1,8 @@
 #include "mdbconverter.h"
 #include "mainwindow.h"
 #include "libraryinfo.h"
+#include "common.h"
+
 #include <qsqlerror.h>
 #include <qdatetime.h>
 #include <qtextcodec.h>
@@ -180,8 +182,7 @@ void MdbConverter::getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry, bool 
        sqlCmd.append(");");
 
        if(!m_bookQuery.exec(sqlCmd)) {
-           qDebug() << "[2] SQL error: (" << m_bookQuery.lastError().text() << ")";
-           qDebug() << sqlCmd;
+           SQL_ERROR(m_bookQuery.lastError().text());
        }
     }
 
@@ -241,8 +242,7 @@ void MdbConverter::generateTableSchema(MdbCatalogEntry *entry)
 
     sqlCmd.append( ");");
     if(!m_bookQuery.exec(sqlCmd)){
-        qDebug() << "[1] SQL error: (" << m_bookQuery.lastError().text() << ")";
-        qDebug() << sqlCmd;
+        SQL_ERROR(m_bookQuery.lastError().text());
     }
 
     mdb_free_tabledef (table);

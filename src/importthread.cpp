@@ -19,7 +19,7 @@ void ImportThread::run()
     QTime time;
     time.start();
 
-    QList<ImportModelNode *> nodesList = m_model->nodeFromIndex(QModelIndex())->childs();
+    QList<ImportModelNode *> nodesList = m_model->nodeFromIndex()->childrenNode;
 
     for(int i=0;i<nodesList.count();i++) {
         ImportModelNode *node = nodesList.at(i);
@@ -27,9 +27,9 @@ void ImportThread::run()
 
         if(lastInsert != -1) {
             m_importedBooks++;
-            m_booksList.insert(lastInsert, node->bookName());
+            m_booksList.insert(lastInsert, node->bookName);
         } else {
-            qWarning() << "Error:" << node->bookName();
+            qWarning() << "Error:" << node->bookName;
         }
 
         emit setProgress(i+1);

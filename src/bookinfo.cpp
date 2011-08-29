@@ -100,3 +100,19 @@ bool BookInfo::haveInfo()
 {
     return m_hasInfo;
 }
+
+QDebug operator<<(QDebug dbg, BookInfo *info)
+{
+    dbg.nospace() << "BookInfo(\n\t"
+                  << "Type: " << info->bookType << "\n\t"
+                  << "Display name: " << info->bookDisplayName << "\n\t"
+                  << "Full name: " << info->bookFullName << "\n\t"
+                  << "Path: " << info->bookPath << "\n\t"
+                  << "Author: " << info->authorName << "\n\t"
+                  << "Edition: " << info->bookEdition << "\n\t"
+                  << "Publisher: " << info->bookPublisher << "\n\t"
+                  << "Mohaqeq: " << info->bookMohaqeq<< "\n"
+                  << ")";
+
+    return dbg.space();
+}

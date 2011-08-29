@@ -23,7 +23,7 @@ public:
     void run();
 
 protected:
-    void ImportFromShamelaBook(const QString &path, QList<ImportModelNode*> &nodes);
+    void ConvertShamelaBook(const QString &path);
     /**
       Copy book with BookID from bookDB to a temporary file and set it as the book path
       */

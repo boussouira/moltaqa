@@ -19,11 +19,12 @@ enum PULRAL{
     HOUR,
     BOOK,
     AUTHOR,
-    CATEGORIE
+    CATEGORIE,
+    FILES
 };
 
 QString arPlural(int count, PULRAL word, bool html=false);
-
+QString secondsToString(int milsec, bool html=false);
 
 #define DB_OPEN_ERROR(path) qCritical("[%s:%d] Cannot open database at \"%s\".", \
                                 __FILE__, \

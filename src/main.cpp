@@ -5,7 +5,6 @@
 #include <QLibraryInfo>
 #include <QTextCodec>
 #include <QSettings>
-#include <settingschecker.h>
 #include <qdatetime.h>
 
 int main(int argc, char *argv[])

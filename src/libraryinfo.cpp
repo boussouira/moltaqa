@@ -82,10 +82,16 @@ void LibraryInfo::loafInfo(QString path)
         m_tempsDir = "temp";
 
     QDir booksDir(m_path);
+    if(!booksDir.exists(m_booksDir))
+        booksDir.mkdir(m_booksDir);
+
     booksDir.cd(m_booksDir);
     m_booksDir = booksDir.absolutePath();
 
     QDir tempDir(m_path);
+    if(!tempDir.exists(m_tempsDir))
+        tempDir.mkdir(m_tempsDir);
+
     tempDir.cd(m_tempsDir);
     m_tempsDir = tempDir.absolutePath();
 }

@@ -110,7 +110,7 @@
      <widget class="QWidget" name="page_2">
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
-        <widget class="QLabel" name="label_2">
+        <widget class="QLabel" name="labelConvertInfo">
          <property name="text">
           <string>تم تحويل %1 خلال %2،
 سيتم استيراد %3 :</string>
@@ -145,8 +145,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>98</width>
-            <height>28</height>
+            <width>535</width>
+            <height>245</height>
            </rect>
           </property>
          </widget>
