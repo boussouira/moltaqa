@@ -49,8 +49,6 @@ int SimpleQuery::getHaddithNumber(int pageID)
         if(next()) {
             return value(0).toInt();
         }
-    } else {
-        SQL_ERROR(lastError().text());
     }
 
     return 0;
@@ -65,8 +63,6 @@ int SimpleQuery::getHaddithPage(int hadditNum)
         if(next()) {
             return value(0).toInt();
         }
-    } else {
-        SQL_ERROR(lastError().text());
     }
 
     return 0;

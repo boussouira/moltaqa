@@ -3,6 +3,7 @@
 #include "indexdb.h"
 #include "newbookwriter.h"
 #include "common.h"
+#include "bookexception.h"
 
 #ifdef USE_MDBTOOLS
     #include "mdbconverter.h"
@@ -49,10 +50,10 @@ void ConvertThread::run()
             QSqlDatabase::removeDatabase("mdb");
 #endif
 
-        } catch(QString &what) {
+        } catch(BookException &e) {
             QMessageBox::critical(0,
                                   tr("خطأ عند الاستيراد"),
-                                  what);
+                                  e.what());
         }
     }
 
@@ -72,12 +73,19 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
     bookDB.setDatabaseName(QString("DRIVER={Microsoft Access Driver (*.mdb)};FIL={MS Access};DBQ=%1").arg(path));
 #endif
 
-    if (!bookDB.open())
-        throw tr("لا يمكن فتح قاعدة البيانات");
+    if (!bookDB.open()) {
+        LOG_DB_ERROR(bookDB);
+        throw BookException(tr("لا يمكن فتح قاعدة البيانات"), path);
+    }
 
     QSqlQuery bookQuery(bookDB);
 
-    bookQuery.exec("SELECT * FROM Main");
+    if(!bookQuery.exec("SELECT * FROM Main")) {
+        LOG_SQL_ERROR(bookQuery);
+        throw BookException(tr("حدث خطأ أثناء سحب المعلومات من قاعدة البيانات"
+                     "<br><b style=\"direction:rtl\">%1</b>").arg(bookQuery.lastError().text()), path);
+    }
+
     while(bookQuery.next()) {
         int bkIdCol = bookQuery.record().indexOf("BkId");
         int bkCol = bookQuery.record().indexOf("bk");
@@ -113,10 +121,6 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
 
         QSqlDatabase::removeDatabase(QString("newBookDB_%1").arg((int)currentThreadId()));
     }
-
-    if(bookQuery.lastError().isValid())
-        throw tr("حدث خطأ أثناء سحب المعلومات من قاعدة البيانات"
-                     "<br><b style=\"direction:rtl\">%1</b>").arg(bookQuery.lastError().text());
 }
 
 void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDatabase &bookDB, int bookID)
@@ -126,10 +130,10 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
 
 #ifdef USE_MDBTOOLS
     if(!query.exec(QString("SELECT * FROM b%1 LIMIT 1").arg(bookID)))
-        SQL_ERROR(query.lastError().text());
+        LOG_SQL_ERROR(query);
 #else
     if(!query.exec(QString("SELECT TOP 1 * FROM b%1").arg(bookID)))
-        SQL_ERROR(query.lastError().text());
+        LOG_SQL_ERROR(query);
 #endif
 
     int hnoCol = query.record().indexOf("hno");
@@ -158,7 +162,7 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
                     writer.addHaddithNumber(lastID, query.value(6).toInt());
                 }
             } else {
-                SQL_ERROR(query.lastError().text());
+                LOG_SQL_ERROR(query);
             }
         } else {
             // We don't have hno column
@@ -172,7 +176,7 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
                                    query.value(5).toInt());
                 }
             } else {
-                SQL_ERROR(query.lastError().text());
+                LOG_SQL_ERROR(query);
             }
         }
     } else {
@@ -188,7 +192,7 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
                     writer.addHaddithNumber(lastID, query.value(4).toInt());
                 }
             } else {
-                SQL_ERROR(query.lastError().text());
+                LOG_SQL_ERROR(query);
             }
         } else {
             // We don't have hno column
@@ -200,7 +204,7 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
                                             query.value(3).toInt());
                 }
             } else {
-                SQL_ERROR(query.lastError().text());
+                LOG_SQL_ERROR(query);
             }
         }
     }
@@ -212,7 +216,7 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
                             query.value(2).toInt());
         }
     } else {
-        SQL_ERROR(query.lastError().text());
+        LOG_SQL_ERROR(query);
     }
 
     writer.endReading();
@@ -229,11 +233,15 @@ QString ConvertThread::getBookType(const QSqlDatabase &bookDB)
         if( ta.contains(QRegExp("(b[0-9]+|book)")) )
             bookTable = ta;
     }
-    if(bookTable.isEmpty())
-        throw tr("قاعدة البيانات المختار غير صحيحة")+"<br><b>"+
-                tr("لم يتم العثور على جدول البيانات")+"</b>";
 
-    query.exec(QString("SELECT * FROM %1").arg(bookTable));
+    if(bookTable.isEmpty())
+        throw BookException(tr("قاعدة البيانات المختار غير صحيحة، "
+                               "لم يتم العثور على جدول البيانات"));
+
+    if(!query.exec(QString("SELECT * FROM %1").arg(bookTable))) {
+        LOG_SQL_ERROR(query);
+    }
+
     if(query.next()) {
         //int hno = query.record().indexOf("hno");
         int aya = query.record().indexOf("aya");

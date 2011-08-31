@@ -241,13 +241,13 @@ void ShamelaImportDialog::showImportInfo()
     if(ui->checkImportQuran->isChecked())
         info += QString("<li>%1</li>").arg(tr("القرآن الكريم"));
 
-    info += QString("<li>%1</li>").arg(arPlural(booksCount, BOOK));
+    info += QString("<li>%1</li>").arg(Utils::arPlural(booksCount, Plural::BOOK));
 
     if(ui->radioImportAllAuthors->isChecked())
-        info += QString("<li>%1</li>").arg(arPlural(authorsCount, AUTHOR));
+        info += QString("<li>%1</li>").arg(Utils::arPlural(authorsCount, Plural::AUTHOR));
 
     if(ui->radioUseShamelaCat->isChecked())
-        info += tr("<li>سيتم اضافة %1 الى أقسام المكتبة الحالية</li>").arg(arPlural(catCount, CATEGORIE));
+        info += tr("<li>سيتم اضافة %1 الى أقسام المكتبة الحالية</li>").arg(Utils::arPlural(catCount, Plural::CATEGORIE));
 
     ui->labelImportInfo->setText(info);
 }
@@ -313,7 +313,7 @@ void ShamelaImportDialog::doneImporting()
 
         importShorooh();
 
-        addDebugInfo(tr("تم اسيراد %1 بنجاح").arg(arPlural(m_importedBooksCount, BOOK)));
+        addDebugInfo(tr("تم اسيراد %1 بنجاح").arg(Utils::arPlural(m_importedBooksCount, Plural::BOOK)));
 
         if(m_importedBooksCount > 0) {
             MainWindow::mainWindow()->indexDB()->loadBooksListModel();

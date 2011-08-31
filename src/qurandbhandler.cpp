@@ -5,6 +5,7 @@
 #include "qurantextformat.h"
 #include "libraryinfo.h"
 #include "quranquery.h"
+#include "common.h"
 
 #include <qsqldatabase.h>
 
@@ -100,8 +101,12 @@ QAbstractItemModel *QuranDBHandler::indexModel()
 
 void QuranDBHandler::getBookInfo()
 {
-    m_quranQuery->exec(QString("SELECT  MIN(pageNumber), MAX(pageNumber), MIN(id), MAX(id) "
-                               "FROM quranText "));
+    m_quranQuery->prepare("SELECT  MIN(pageNumber), MAX(pageNumber), MIN(id), MAX(id) "
+                          "FROM quranText");
+    if(!m_quranQuery->exec()) {
+        LOG_SQL_P_ERROR(m_quranQuery);
+    }
+
     if(m_quranQuery->next()) {
         m_bookInfo->partsCount = 1;
         m_bookInfo->setFirstPage(m_quranQuery->value(0).toInt());

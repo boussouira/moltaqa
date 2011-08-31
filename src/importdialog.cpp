@@ -129,10 +129,10 @@ void ImportDialog::doneConverting()
     setEnabled(true);
     ui->progressBar->hide();
 
-    QString convertedFiles = arPlural(thread->convertedFiles(), FILES);
-    QString convertTime = secondsToString(thread->convertTime(), true);
-    QString importBooks = arPlural(m_model->nodeFromIndex()->childrenNode.count(),
-                                   BOOK);
+    QString convertedFiles = Utils::arPlural(thread->convertedFiles(), Plural::FILES);
+    QString convertTime = Utils::secondsToString(thread->convertTime(), true);
+    QString importBooks = Utils::arPlural(m_model->nodeFromIndex()->childrenNode.count(),
+                                   Plural::BOOK);
 
     ui->labelConvertInfo->setText(tr("تم تحويل %1 خلال %2،" "<br>"
                                      "سيتم استيراد %3:")

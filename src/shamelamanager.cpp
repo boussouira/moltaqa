@@ -32,7 +32,7 @@ void ShamelaManager::openIndexDB()
         m_indexDB.setDatabaseName(book);
 
         if (!m_indexDB.open()) {
-            DB_OPEN_ERROR(book);
+            LOG_DB_ERROR(m_indexDB);
         }
 
         m_indexQuery = new QSqlQuery(m_indexDB);
@@ -49,7 +49,7 @@ void ShamelaManager::openShamelaDB()
         m_shamelaDB.setDatabaseName(mdbpath);
 
         if (!m_shamelaDB.open()) {
-            DB_OPEN_ERROR(book);
+            LOG_DB_ERROR(m_shamelaDB);
         }
 
         m_shamelaQuery = new QSqlQuery(m_shamelaDB);
@@ -66,7 +66,7 @@ void ShamelaManager::openShamelaSpecialDB()
         m_shamelaSpecialDB.setDatabaseName(mdbpath);
 
         if (!m_shamelaSpecialDB.open()) {
-            DB_OPEN_ERROR(book);
+            LOG_DB_ERROR(m_shamelaSpecialDB);
         }
 
         m_shamelaSpecialQuery = new QSqlQuery(m_shamelaSpecialDB);
@@ -96,7 +96,8 @@ int ShamelaManager::getBooksCount()
     openShamelaDB();
 
     int count=-1;
-    m_shamelaQuery->exec("SELECT COUNT(*) FROM 0bok");
+    if(!m_shamelaQuery->exec("SELECT COUNT(*) FROM 0bok"))
+        LOG_SQL_P_ERROR(m_shamelaQuery);
 
     if(m_shamelaQuery->next()) {
         count = m_shamelaQuery->value(0).toInt();
@@ -116,7 +117,8 @@ int ShamelaManager::getAuthorsCount()
 {
     openShamelaSpecialDB();
 
-    m_shamelaSpecialQuery->exec("SELECT COUNT(*) FROM Auth");
+    if(!m_shamelaSpecialQuery->exec("SELECT COUNT(*) FROM Auth"))
+        LOG_SQL_P_ERROR(m_shamelaSpecialQuery);
 
     if(m_shamelaSpecialQuery->next()) {
         return m_shamelaSpecialQuery->value(0).toInt();
@@ -129,7 +131,8 @@ int ShamelaManager::getCatCount()
 {
     openShamelaDB();
 
-    m_shamelaQuery->exec("SELECT COUNT(*) FROM 0cat");
+    if(m_shamelaQuery->exec("SELECT COUNT(*) FROM 0cat"))
+        LOG_SQL_P_ERROR(m_shamelaQuery);
 
     if(m_shamelaQuery->next()) {
         return m_shamelaQuery->value(0).toInt();
@@ -145,7 +148,8 @@ AuthorInfo *ShamelaManager::getAuthorInfo(int id)
 
     specialQuery.prepare("SELECT authid, auth, Lng, AD, inf FROM Auth WHERE authid = ?");
     specialQuery.bindValue(0, id);
-    specialQuery.exec();
+    if(!specialQuery.exec())
+        LOG_SQL_ERROR(specialQuery);
 
     if(specialQuery.next()) {
         return new AuthorInfo(specialQuery.value(0).toInt(),
@@ -162,7 +166,8 @@ void ShamelaManager::selectCats()
 {
     openShamelaDB();
 
-    m_shamelaQuery->exec("SELECT id, name, catord, Lvl FROM 0cat ORDER BY catord");
+    if(!m_shamelaQuery->exec("SELECT id, name, catord, Lvl FROM 0cat ORDER BY catord"))
+        LOG_SQL_P_ERROR(m_shamelaQuery);
 }
 
 CategorieInfo *ShamelaManager::nextCat()
@@ -181,7 +186,8 @@ void ShamelaManager::selectAuthors()
 {
     openShamelaSpecialDB();
 
-    m_shamelaSpecialQuery->exec("SELECT authid, auth, Lng, AD, inf FROM Auth");
+    if(!m_shamelaSpecialQuery->exec("SELECT authid, auth, Lng, AD, inf FROM Auth"))
+        LOG_SQL_P_ERROR(m_shamelaSpecialQuery);
 }
 
 AuthorInfo *ShamelaManager::nextAuthor()
@@ -201,7 +207,8 @@ void ShamelaManager::selectBooks()
 {
     openShamelaDB();
 
-    m_shamelaQuery->exec("SELECT bkid, bk, cat, betaka, authno, auth, Archive, TafseerNam FROM 0bok ORDER BY Archive");
+    if(!m_shamelaQuery->exec("SELECT bkid, bk, cat, betaka, authno, auth, Archive, TafseerNam FROM 0bok ORDER BY Archive"))
+        LOG_SQL_P_ERROR(m_shamelaQuery);
 }
 
 ShamelaBookInfo *ShamelaManager::nextBook()
@@ -267,7 +274,8 @@ int ShamelaManager::getBookShareeh(int shamelaID)
 
     specialQuery.prepare("SELECT Sharh FROM oShrooh WHERE Matn = ?");
     specialQuery.bindValue(0, shamelaID);
-    specialQuery.exec();
+    if(!specialQuery.exec())
+        LOG_SQL_ERROR(specialQuery);
 
     if(specialQuery.next()) {
         return specialQuery.value(0).toInt();
@@ -283,7 +291,8 @@ int ShamelaManager::getBookMateen(int shamelaID)
 
     specialQuery.prepare("SELECT Matn FROM oShrooh WHERE Sharh = ?");
     specialQuery.bindValue(0, shamelaID);
-    specialQuery.exec();
+    if(!specialQuery.exec())
+        LOG_SQL_ERROR(specialQuery);
 
     if(specialQuery.next()) {
         return specialQuery.value(0).toInt();
@@ -303,7 +312,7 @@ QList<ShamelaShareehInfo *> ShamelaManager::getShareehInfo(int mateen, int share
         specialQuery.bindValue(0, mateen);
         specialQuery.bindValue(1, shareeh);
         if(!specialQuery.exec())
-            SQL_ERROR(specialQuery.lastError().text());
+            LOG_SQL_ERROR(specialQuery);
 
         while(specialQuery.next()) {
             list.append(new ShamelaShareehInfo(mateen,

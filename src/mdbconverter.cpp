@@ -33,10 +33,7 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
     if(!sql_path.isEmpty()){
         convert_path = sql_path;
     } else {
-        convert_path = m_tempFolder;
-        convert_path.append("/");
-        convert_path.append(mdb_path.split("/").last());
-        convert_path.append(".sqlite");
+        convert_path = Utils::genBookName(m_tempFolder, true, "sqlite");
     }
 
     // initialize the library
@@ -182,7 +179,7 @@ void MdbConverter::getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry, bool 
        sqlCmd.append(");");
 
        if(!m_bookQuery.exec(sqlCmd)) {
-           SQL_ERROR(m_bookQuery.lastError().text());
+           LOG_SQL_ERROR(m_bookQuery);
        }
     }
 
@@ -242,7 +239,7 @@ void MdbConverter::generateTableSchema(MdbCatalogEntry *entry)
 
     sqlCmd.append( ");");
     if(!m_bookQuery.exec(sqlCmd)){
-        SQL_ERROR(m_bookQuery.lastError().text());
+        LOG_SQL_ERROR(m_bookQuery);
     }
 
     mdb_free_tabledef (table);

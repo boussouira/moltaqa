@@ -1,70 +1,84 @@
 #include "common.h"
 
-int rand_int(int smin, int smax)
+#include <qsqlquery.h>
+#include <qsqldatabase.h>
+#include <qsqlerror.h>
+#include <qfileinfo.h>
+
+namespace Utils {
+
+int randInt(int smin, int smax)
 {
     return (smin + (qrand() % (smax-smin+1)));
 }
 
-QString genBookName(QString path, bool fullPath)
+QString genBookName(QString path, bool fullPath, QString ext)
 {
     QString fileName("book_");
-    char c[] = "abcdefABCDEF1234567";
-    int len = strlen(c);
+    QString chars("abcdefghijklmnpqrstuvwxyz0123456789");
+    int smax = chars.size()-1;
+
+    if(!ext.startsWith('.'))
+        ext.prepend('.');
+
+    if(!path.endsWith('/') || !path.endsWith('\\'))
+        path.append('/');
+
 
     for(int i=0; i<6; i++) {
-        fileName.append(c[rand_int(0, len-1)]);
+        fileName.append(chars.at(randInt(0, smax)));
     }
 
     while(true) {
-        if(QFile::exists(path+"/"+fileName+".alb")){
-            fileName.append(c[rand_int(0, len-1)]);
+        if(QFile::exists(path+fileName+ext)){
+            fileName.append(chars.at(randInt(0, smax)));
         } else {
             break;
         }
     }
 
     if(fullPath)
-        return path+"/"+fileName+".alb";
+        return path+fileName+ext;
     else
-        return fileName+".alb";
+        return fileName+ext;
 }
 
-QString arPlural(int count, PULRAL word, bool html)
+QString arPlural(int count, int word, bool html)
 {
     QStringList list;
     QString str;
 
-    if(word == SECOND)
+    if(word == Plural::SECOND)
         list << QObject::tr("ثانية")
              << QObject::tr("ثانيتين")
              << QObject::tr("ثوان")
              << QObject::tr("ثانية");
-    else if(word == MINUTE)
+    else if(word == Plural::MINUTE)
         list << QObject::tr("دقيقة")
              << QObject::tr("دقيقتين")
              << QObject::tr("دقائق")
              << QObject::tr("دقيقة");
-    else if(word == HOUR)
+    else if(word == Plural::HOUR)
         list << QObject::tr("ساعة")
              << QObject::tr("ساعتين")
              << QObject::tr("ساعات")
              << QObject::tr("ساعة");
-    else if(word == BOOK)
+    else if(word == Plural::BOOK)
         list << QObject::tr("كتاب واحد")
              << QObject::tr("كتابين")
              << QObject::tr("كتب")
              << QObject::tr("كتابا");
-    else if(word == AUTHOR)
+    else if(word == Plural::AUTHOR)
         list << QObject::tr("مؤلف واحد")
              << QObject::tr("مؤلفيين")
              << QObject::tr("مؤلفيين")
              << QObject::tr("مؤلفا");
-    else if(word == CATEGORIE)
+    else if(word == Plural::CATEGORIE)
         list << QObject::tr("قسم واحد")
              << QObject::tr("قسمين")
              << QObject::tr("أقسام")
              << QObject::tr("قسما");
-    else if(word == FILES)
+    else if(word == Plural::FILES)
         list << QObject::tr("ملف واحد")
              << QObject::tr("ملفين")
              << QObject::tr("ملفات")
@@ -93,16 +107,32 @@ QString secondsToString(int milsec, bool html)
     int hours   = (int) (((milsec / 1000) / 60) / 60);
 
     if(hours > 0){
-        time.append(arPlural(hours, HOUR, html));
+        time.append(arPlural(hours, Plural::HOUR, html));
         time.append(QObject::tr(" و "));
     }
 
     if(minutes > 0 || hours > 0) {
-        time.append(arPlural(minutes, MINUTE, html));
+        time.append(arPlural(minutes, Plural::MINUTE, html));
         time.append(QObject::tr(" و "));
     }
 
-    time.append(arPlural(seconde, SECOND, html));
+    time.append(arPlural(seconde, Plural::SECOND, html));
 
     return time;
+}
+}
+
+namespace Log {
+
+void QueryError(QSqlQuery &query, const char *file, int line)
+{
+    qCritical("[%s:%d] SQL error: %s",
+              qPrintable(QFileInfo(file).fileName()), line, qPrintable(query.lastError().text()));
+}
+
+void DatabaseError(QSqlDatabase &db, const char *file, int line)
+{
+    qCritical("[%s:%d] Database error: %s",
+              qPrintable(QFileInfo(file).fileName()), line, qPrintable(db.lastError().text()));
+}
 }

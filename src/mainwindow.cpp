@@ -45,7 +45,7 @@ bool MainWindow::init()
             settings.setValue("library_dir", libDir);
         } else {
             QMessageBox::critical(this,
-                                  tr("مكتبة الملتقى"),
+                                  tr("الكتبية"),
                                   tr("لم يتم انشاء المكتبة بشكل صحيح" "\n"
                                      "من فضلك أعد تشغيل البرنامج وحاول انشاء المكتبة من جديد"));
             return false;

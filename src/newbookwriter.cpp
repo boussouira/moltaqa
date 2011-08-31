@@ -27,7 +27,7 @@ void NewBookWriter::createNewBook(QString bookPath)
 {
     // TODO: check if this file exsists
     if(bookPath.isEmpty())
-        m_bookPath = genBookName(m_tempFolder, true);
+        m_bookPath = Utils::genBookName(m_tempFolder, true);
     else
         m_bookPath = bookPath;
 
@@ -93,7 +93,7 @@ int NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int par
         m_pageId++; // Last inserted id
         m_idsHash.insert(pageID, m_pageId);
     } else {
-        SQL_ERROR(m_bookQuery.lastError().text());
+        LOG_SQL_ERROR(m_bookQuery);
     }
 
     return m_pageId;
@@ -110,7 +110,7 @@ int NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int par
     m_bookQuery.bindValue(2, soraNum);
 
     if(!m_bookQuery.exec()){
-        SQL_ERROR(m_bookQuery.lastError().text());
+        LOG_SQL_ERROR(m_bookQuery);
     }
 
     if(!m_isTafessir)
@@ -129,7 +129,7 @@ void NewBookWriter::addHaddithNumber(int page_id, int hno)
     m_bookQuery.bindValue(1, hno);
 
     if(!m_bookQuery.exec()){
-        SQL_ERROR(m_bookQuery.lastError().text());
+        LOG_SQL_ERROR(m_bookQuery);
     }
 }
 
@@ -149,7 +149,7 @@ void NewBookWriter::addTitle(const QString &title, int tid, int level)
     if(m_bookQuery.exec()){
         m_titleID++;
     } else {
-        SQL_ERROR(m_bookQuery.lastError().text());
+        LOG_SQL_ERROR(m_bookQuery);
     }
 
     int levelParent = m_levels.value(level, -1);

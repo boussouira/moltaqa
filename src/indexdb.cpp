@@ -150,7 +150,7 @@ BookInfo *IndexDB::getBookInfo(int bookID, bool allInfo)
             return bookInfo;
         }
     } else {
-        SQL_ERROR(bookQuery.lastError().text());;
+        LOG_SQL_ERROR(bookQuery);;
     }
 
     return 0;
@@ -194,7 +194,7 @@ QList<QPair<int, QString> > IndexDB::getTafassirList()
 int IndexDB::addBook(ImportModelNode *book)
 {
     QSqlQuery indexQuery(m_indexDB);
-    QString newBookName = genBookName(m_libraryInfo->booksDir());
+    QString newBookName = Utils::genBookName(m_libraryInfo->booksDir());
     QString newPath = m_libraryInfo->booksDir() + "/" + newBookName;
 
     indexQuery.prepare("INSERT INTO booksList (id, bookID, bookType, bookFlags, bookCat, "
@@ -219,7 +219,7 @@ int IndexDB::addBook(ImportModelNode *book)
             int lastID = indexQuery.lastInsertId().toInt();
             return lastID;
         } else {
-            SQL_ERROR(indexQuery.lastError().text());
+            LOG_SQL_ERROR(indexQuery);
             QFile::remove(newPath);
             qDebug() << indexQuery.lastError();
             return -1;
@@ -236,8 +236,11 @@ void IndexDB::childCats(BooksListNode *parentNode, int pID, bool onlyCats)
         booksCat(parentNode, pID); // Start with books
 
     QSqlQuery catQuery(m_indexDB);
-    catQuery.exec(QString("SELECT id, title, catOrder, parentID FROM catList "
-                           "WHERE parentID = %1 ORDER BY catOrder").arg(pID));
+    if(!catQuery.exec(QString("SELECT id, title, catOrder, parentID FROM catList "
+                           "WHERE parentID = %1 ORDER BY catOrder").arg(pID))) {
+        LOG_SQL_ERROR(catQuery);
+    }
+
     while(catQuery.next())
     {
         BooksListNode *catNode = new BooksListNode(BooksListNode::Categorie,
@@ -257,7 +260,9 @@ void IndexDB::booksCat(BooksListNode *parentNode, int catID)
                            "ON authorsList.id = booksList.authorID "
                            "WHERE booksList.bookCat = ?");
     bookQuery.bindValue(0, catID);
-    bookQuery.exec();
+    if(!bookQuery.exec()) {
+        LOG_SQL_ERROR(bookQuery);
+    }
 
     while(bookQuery.next())
     {
@@ -287,7 +292,7 @@ void IndexDB::updateBookMeta(BookInfo *info, bool newBook)
     }
 
     if(!bookQuery.exec()) {
-        SQL_ERROR(bookQuery.lastError().text());
+        LOG_SQL_ERROR(bookQuery);
     } else {
         qDebug() << "Meta for" << info->bookID << (newBook?"Inserted":"Updated");
     }
@@ -307,7 +312,9 @@ void IndexDB::getShoroohPages(BookInfo *info)
                       "WHERE ShareehMeta.mateen_book = ? AND ShareehMeta.mateen_id = ?");
     bookQuery.bindValue(0, info->bookID);
     bookQuery.bindValue(1, info->currentPageID);
-    bookQuery.exec();
+    if(!bookQuery.exec()) {
+        LOG_SQL_ERROR(bookQuery);
+    }
 
     while(bookQuery.next()) {
         info->shorooh.append(new BookShorooh(bookQuery.value(0).toInt(),
@@ -324,7 +331,7 @@ void IndexDB::updateCatTitle(int catID, QString title)
     bookQuery.bindValue(0, title);
     bookQuery.bindValue(1, catID);
     if(!bookQuery.exec()) {
-        SQL_ERROR(bookQuery.lastError().text());
+        LOG_SQL_ERROR(bookQuery);
     }
 }
 
@@ -336,7 +343,7 @@ void IndexDB::updateCatParent(int catID, int parentID)
     bookQuery.bindValue(0, parentID);
     bookQuery.bindValue(1, catID);
     if(!bookQuery.exec()) {
-        SQL_ERROR(bookQuery.lastError().text());
+        LOG_SQL_ERROR(bookQuery);
     }
 }
 
@@ -349,7 +356,7 @@ void IndexDB::updateCatOrder(int catID, int catOrder)
     bookQuery.bindValue(0, catOrder);
     bookQuery.bindValue(1, catID);
     if(!bookQuery.exec()) {
-        SQL_ERROR(bookQuery.lastError().text());
+        LOG_SQL_ERROR(bookQuery);
     }
 }
 
@@ -362,7 +369,7 @@ void IndexDB::makeCatPlace(int parentID, int catOrder)
     bookQuery.bindValue(0, catOrder);
     bookQuery.bindValue(1, parentID);
     if(!bookQuery.exec()) {
-        SQL_ERROR(bookQuery.lastError().text());
+        LOG_SQL_ERROR(bookQuery);
     }
 }
 
@@ -377,7 +384,7 @@ int IndexDB::booksCount(int catID)
             return bookQuery.value(0).toInt();
         }
     } else {
-        SQL_ERROR(bookQuery.lastError().text());
+        LOG_SQL_ERROR(bookQuery);
     }
 
     return 0;
@@ -393,7 +400,7 @@ int IndexDB::addNewCat(const QString &title)
     if(bookQuery.exec()) {
         return bookQuery.lastInsertId().toInt();
     } else {
-        SQL_ERROR(bookQuery.lastError().text());
+        LOG_SQL_ERROR(bookQuery);
     }
 
     return 0;
@@ -406,7 +413,7 @@ void IndexDB::removeCat(int catID)
     bookQuery.prepare("DELETE FROM catList WHERE id = ?");
     bookQuery.bindValue(0, catID);
     if(!bookQuery.exec()) {
-        SQL_ERROR(bookQuery.lastError().text());
+        LOG_SQL_ERROR(bookQuery);
     }
 }
 
@@ -420,7 +427,7 @@ bool IndexDB::moveCatBooks(int fromCat, int toCat)
     if(bookQuery.exec()) {
         return true;
     } else {
-        SQL_ERROR(bookQuery.lastError().text());
+        LOG_SQL_ERROR(bookQuery);
         return false;
     }
 }
@@ -440,7 +447,7 @@ QStandardItemModel *IndexDB::getAuthorsListModel()
             model->appendRow(item);
         }
     } else {
-        SQL_ERROR(bookQuery.lastError().text());
+        LOG_SQL_ERROR(bookQuery);
     }
 
     return model;
@@ -470,6 +477,6 @@ void IndexDB::updateBookInfo(BookInfo *info)
     bookQuery.bindValue(8, info->bookID);
 
     if(!bookQuery.exec()) {
-        SQL_ERROR(bookQuery.lastError().text());
+        LOG_SQL_ERROR(bookQuery);
     }
 }

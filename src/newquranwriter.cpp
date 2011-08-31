@@ -25,7 +25,7 @@ void newQuranWriter::createNewBook(QString bookPath)
     m_bookDB = QSqlDatabase::addDatabase("QSQLITE", QString("newQuranDB_%1").arg(m_threadID));
     m_bookDB.setDatabaseName(m_bookPath);
     if(!m_bookDB.open()) {
-        DB_OPEN_ERROR(m_bookPath);
+        LOG_DB_ERROR(m_bookDB);
         return;
     }
 
@@ -79,7 +79,7 @@ void newQuranWriter::addPage(const QString &text, int soraNum, int ayaNum, int p
     m_bookQuery.bindValue(3, pageNum);
 
     if(!m_bookQuery.exec())
-        SQL_ERROR(m_bookQuery.lastError().text());
+        LOG_SQL_ERROR(m_bookQuery);
 }
 
 void newQuranWriter::addSoraInfo(const QString &name, const QString &SoraDescent, int ayatCount)
@@ -91,7 +91,7 @@ void newQuranWriter::addSoraInfo(const QString &name, const QString &SoraDescent
     m_bookQuery.bindValue(2, SoraDescent);
 
     if(!m_bookQuery.exec())
-        SQL_ERROR(m_bookQuery.lastError().text());
+        LOG_SQL_ERROR(m_bookQuery);
 }
 
 void newQuranWriter::addSowarInfo()

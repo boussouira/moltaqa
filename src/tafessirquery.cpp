@@ -19,10 +19,7 @@ void TafessirQuery::nextPage(int id)
             "ORDER BY bookPages.id ASC LIMIT 1 ");
 
     bindValue(0, id);
-    if(!exec()) {
-        SQL_ERROR(lastError().text());
-        qDebug() << "\tQuery:" << executedQuery();
-    }
+    exec();
 }
 
 void TafessirQuery::prevPage(int id)
@@ -35,10 +32,7 @@ void TafessirQuery::prevPage(int id)
             "ORDER BY bookPages.id DESC LIMIT 1 ");
 
     bindValue(0, id);
-    if(!exec()) {
-        SQL_ERROR(lastError().text());
-        qDebug() << "\tQuery:" << executedQuery();
-    }
+    exec();
 }
 
 
@@ -90,8 +84,6 @@ int TafessirQuery::getHaddithPage(int hadditNum)
         if(next()) {
             return value(0).toInt();
         }
-    } else {
-        SQL_ERROR(lastError().text());
     }
 
     return 0;
