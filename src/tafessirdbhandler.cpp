@@ -8,7 +8,7 @@
 #include "bookindexmodel.h"
 #include "bookindexnode.h"
 #include "bookexception.h"
-#include "common.h"
+#include "utils.h"
 
 #include <qsqlquery.h>
 #include <qstringlist.h>

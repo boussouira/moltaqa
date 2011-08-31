@@ -5,7 +5,7 @@
 #include "qurantextformat.h"
 #include "libraryinfo.h"
 #include "quranquery.h"
-#include "common.h"
+#include "utils.h"
 
 #include <qsqldatabase.h>
 

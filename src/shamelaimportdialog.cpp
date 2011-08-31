@@ -2,7 +2,7 @@
 #include "ui_shamelaimportdialog.h"
 #include "shamelainfo.h"
 #include "shamelamanager.h"
-#include "common.h"
+#include "utils.h"
 #include "shamelaimportthread.h"
 #include "mainwindow.h"
 #include "indexdb.h"

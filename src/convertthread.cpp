@@ -2,7 +2,7 @@
 #include "importmodel.h"
 #include "indexdb.h"
 #include "newbookwriter.h"
-#include "common.h"
+#include "utils.h"
 #include "bookexception.h"
 
 #ifdef USE_MDBTOOLS

@@ -1,5 +1,5 @@
 #include "newquranwriter.h"
-#include "common.h"
+#include "utils.h"
 #include "mainwindow.h"
 #include "libraryinfo.h"
 #include <qsettings.h>

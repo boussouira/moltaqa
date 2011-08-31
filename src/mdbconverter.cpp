@@ -1,7 +1,7 @@
 #include "mdbconverter.h"
 #include "mainwindow.h"
 #include "libraryinfo.h"
-#include "common.h"
+#include "utils.h"
 
 #include <qsqlerror.h>
 #include <qdatetime.h>

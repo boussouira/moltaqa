@@ -1,6 +1,6 @@
 #include "tafessirquery.h"
 #include "bookinfo.h"
-#include "common.h"
+#include "utils.h"
 #include <qsqlerror.h>
 #include <qvariant.h>
 #include <qdebug.h>

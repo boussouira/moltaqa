@@ -48,7 +48,7 @@ SOURCES += mainwindow.cpp \
     quranquery.cpp \
     welcomewidget.cpp \
     newbookwriter.cpp \
-    common.cpp \
+    utils.cpp \
     shamelaimportdialog.cpp \
     shamelainfo.cpp \
     shamelamanager.cpp \
@@ -103,7 +103,7 @@ HEADERS += mainwindow.h \
     quranquery.h \
     welcomewidget.h \
     newbookwriter.h \
-    common.h \
+    utils.h \
     shamelaimportdialog.h \
     shamelainfo.h \
     shamelamanager.h \

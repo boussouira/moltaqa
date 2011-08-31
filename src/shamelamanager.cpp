@@ -1,5 +1,5 @@
 #include "shamelamanager.h"
-#include "common.h"
+#include "utils.h"
 #include <qvariant.h>
 #include <qsqlquery.h>
 #include <qsqlerror.h>
