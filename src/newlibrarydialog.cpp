@@ -1,6 +1,7 @@
 #include "newlibrarydialog.h"
 #include "ui_newlibrarydialog.h"
 #include "utils.h"
+#include "librarycreator.h"
 #include <qfiledialog.h>
 #include <qmessagebox.h>
 #include <qtextstream.h>
@@ -96,6 +97,8 @@ void NewLibraryDialog::createLibrary(QString name, QString path, QString descrip
     out << "    <temps-dir>" << "temp" << "</temps-dir>" << "\n";
     out << "    <description>" << description << "</description>" << "\n";
     out << "</library-info>" << "\n";
+
+    Utils::createIndexDB(libPath.absolutePath());
 
     QMessageBox::information(this,
                              tr("انشاء مكتبة جديدة"),

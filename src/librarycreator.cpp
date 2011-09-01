@@ -39,55 +39,7 @@ void LibraryCreator::openDB()
 
 void LibraryCreator::createTables()
 {
-    m_bookQuery.exec("CREATE TABLE booksList ("
-                     "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
-                     "bookID INTEGER , "
-                     "bookType INTEGER , "
-                     "bookFlags INTEGER , "
-                     "bookCat INTEGER , "
-                     "bookDisplayName TEXT , "
-                     "bookFullName TEXT , "
-                     "bookOtherNames TEXT , "
-                     "bookInfo TEXT , "
-                     "bookEdition TEXT , "
-                     "bookPublisher TEXT , "
-                     "bookMohaqeq TEXT , "
-                     "authorName TEXT , "
-                     "authorID INTEGER , "
-                     "fileName TEXT , "
-                     "bookFolder TEXT, "
-                     "pdfID INTEGER)");
-
-    m_bookQuery.exec("CREATE TABLE catList ("
-                     "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
-                     "title TEXT , "
-                     "description TEXT , "
-                     "catOrder INTEGER , "
-                     "parentID INTEGER)");
-
-    m_bookQuery.exec("CREATE TABLE bookMeta("
-                     "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
-                     "book_info TEXT, "
-                     "add_time INTEGER, "
-                     "update_time INTEGER)");
-
-    m_bookQuery.exec("CREATE TABLE authorsList("
-                     "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
-                     "name TEXT, "
-                     "full_name TEXT, "
-                     "die_year INTEGER, "
-                     "info BLOB)");
-
-    m_bookQuery.exec("CREATE TABLE tafassirList("
-                     "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " // TODO: should be AUTOINCREMENT?
-                     "book_id INTEGER, "
-                     "tafessir_name TEXT)");
-
-    m_bookQuery.exec("CREATE TABLE ShareehMeta("
-                     "mateen_book INTEGER, "
-                     "mateen_id INTEGER, "
-                     "shareeh_book INTEGER, "
-                     "shareeh_id INTEGER)");
+    Utils::createIndexDB(m_bookQuery);
 }
 
 void LibraryCreator::importCats()

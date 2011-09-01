@@ -37,6 +37,7 @@ protected:
     ImportModel *m_model;
     IndexDB *m_indexDB;
     QStringList m_files;
+    QString m_tempDB;
     int m_convertTime;
     int m_convertedFiles;
 };

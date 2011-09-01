@@ -221,7 +221,6 @@ int IndexDB::addBook(ImportModelNode *book)
         } else {
             LOG_SQL_ERROR(indexQuery);
             QFile::remove(newPath);
-            qDebug() << indexQuery.lastError();
             return -1;
         }
     } else {

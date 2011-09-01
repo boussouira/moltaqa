@@ -126,6 +126,80 @@ bool isLibraryPath(QString path)
 
     return (dir.exists() && dir.exists("books_index.db") && dir.exists("info.xml"));
 }
+
+void createIndexDB(QSqlQuery &query)
+{
+    query.exec("CREATE TABLE booksList ("
+                     "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
+                     "bookID INTEGER , "
+                     "bookType INTEGER , "
+                     "bookFlags INTEGER , "
+                     "bookCat INTEGER , "
+                     "bookDisplayName TEXT , "
+                     "bookFullName TEXT , "
+                     "bookOtherNames TEXT , "
+                     "bookInfo TEXT , "
+                     "bookEdition TEXT , "
+                     "bookPublisher TEXT , "
+                     "bookMohaqeq TEXT , "
+                     "authorName TEXT , "
+                     "authorID INTEGER , "
+                     "fileName TEXT , "
+                     "bookFolder TEXT, "
+                     "pdfID INTEGER)");
+
+    query.exec("CREATE TABLE catList ("
+                     "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
+                     "title TEXT , "
+                     "description TEXT , "
+                     "catOrder INTEGER , "
+                     "parentID INTEGER)");
+
+    query.exec("CREATE TABLE bookMeta("
+                     "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
+                     "book_info TEXT, "
+                     "add_time INTEGER, "
+                     "update_time INTEGER)");
+
+    query.exec("CREATE TABLE authorsList("
+                     "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
+                     "name TEXT, "
+                     "full_name TEXT, "
+                     "die_year INTEGER, "
+                     "info BLOB)");
+
+    query.exec("CREATE TABLE tafassirList("
+                     "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " // TODO: should be AUTOINCREMENT?
+                     "book_id INTEGER, "
+                     "tafessir_name TEXT)");
+
+    query.exec("CREATE TABLE ShareehMeta("
+                     "mateen_book INTEGER, "
+                     "mateen_id INTEGER, "
+                     "shareeh_book INTEGER, "
+                     "shareeh_id INTEGER)");
+}
+
+void createIndexDB(QString path)
+{
+    QDir dir(path);
+    QString indexPath = dir.filePath("books_index.db");
+
+    {
+        QSqlDatabase indexDB = QSqlDatabase::addDatabase("QSQLITE", "createIndexDB");
+        indexDB.setDatabaseName(indexPath);
+
+        if (!indexDB.open()) {
+            LOG_DB_ERROR(indexDB);
+        }
+
+        QSqlQuery query(indexDB);
+
+        createIndexDB(query);
+    }
+
+    QSqlDatabase::removeDatabase("createIndexDB");
+}
 }
 
 namespace App {

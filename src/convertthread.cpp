@@ -46,6 +46,11 @@ void ConvertThread::run()
 #ifdef USE_MDBTOOLS
             QSqlDatabase::removeDatabase("mdb");
             QSqlDatabase::removeDatabase("bok2sql");
+
+            if(!m_tempDB.isEmpty()) {
+                QFile::remove(m_tempDB);
+                m_tempDB.clear();
+            }
 #else
             QSqlDatabase::removeDatabase("mdb");
 #endif
@@ -64,10 +69,10 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
 {
 #ifdef USE_MDBTOOLS
     MdbConverter mdb;
-    QString dbPath = mdb.exportFromMdb(path);
+    m_tempDB = mdb.exportFromMdb(path);
 
     QSqlDatabase bookDB = QSqlDatabase::addDatabase("QSQLITE", "mdb");
-    bookDB.setDatabaseName(dbPath);
+    bookDB.setDatabaseName(m_tempDB);
 #else
     QSqlDatabase bookDB = QSqlDatabase::addDatabase("QODBC", "mdb");
     bookDB.setDatabaseName(QString("DRIVER={Microsoft Access Driver (*.mdb)};FIL={MS Access};DBQ=%1").arg(path));
