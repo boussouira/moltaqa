@@ -4,6 +4,7 @@
 #include <qsqldatabase.h>
 #include <qsqlerror.h>
 #include <qfileinfo.h>
+#include <qdir.h>
 
 namespace Utils {
 
@@ -12,17 +13,15 @@ int randInt(int smin, int smax)
     return (smin + (qrand() % (smax-smin+1)));
 }
 
-QString genBookName(QString path, bool fullPath, QString ext)
+QString genBookName(QString path, bool fullPath, QString ext, QString namePrefix)
 {
-    QString fileName("book_");
+    QDir dir(path);
+    QString fileName(namePrefix);
     QString chars("abcdefghijklmnpqrstuvwxyz0123456789");
     int smax = chars.size()-1;
 
     if(!ext.startsWith('.'))
         ext.prepend('.');
-
-    if(!path.endsWith('/') || !path.endsWith('\\'))
-        path.append('/');
 
 
     for(int i=0; i<6; i++) {
@@ -30,7 +29,7 @@ QString genBookName(QString path, bool fullPath, QString ext)
     }
 
     while(true) {
-        if(QFile::exists(path+fileName+ext)){
+        if(dir.exists(fileName+ext)){
             fileName.append(chars.at(randInt(0, smax)));
         } else {
             break;
@@ -38,7 +37,7 @@ QString genBookName(QString path, bool fullPath, QString ext)
     }
 
     if(fullPath)
-        return path+fileName+ext;
+        return dir.filePath(fileName+ext);
     else
         return fileName+ext;
 }
@@ -119,6 +118,30 @@ QString secondsToString(int milsec, bool html)
     time.append(arPlural(seconde, Plural::SECOND, html));
 
     return time;
+}
+
+bool isLibraryPath(QString path)
+{
+    QDir dir(path);
+
+    return (dir.exists() && dir.exists("books_index.db") && dir.exists("info.xml"));
+}
+}
+
+namespace App {
+QString name()
+{
+    return QObject::tr("برنامج الكتبية");
+}
+
+const char *version()
+{
+    return APP_VERSION_STR;
+}
+
+int versionNumber()
+{
+    return APP_VERSION;
 }
 }
 

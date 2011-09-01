@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>برنامج الكتبية</string>
+   <string>Main Window</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../data/qt_rc.qrc">

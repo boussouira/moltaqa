@@ -120,7 +120,7 @@ void ShamelaImportDialog::selectShamela()
         } else {
             QMessageBox::warning(this,
                                  tr("الاستيراد من الشاملة"),
-                                 tr("لم تقم باختيار مسار المكتبة الشاملة بشكل صحيح"));
+                                 tr("لم تقم باختيار مجلد المكتبة الشاملة بشكل صحيح"));
         }
     }
 }
@@ -141,7 +141,7 @@ void ShamelaImportDialog::nextStep()
         } else {
             QMessageBox::warning(this,
                                  tr("الاستيراد من الشاملة"),
-                                 tr("لم تقم باختيار مسار المكتبة الشاملة"));
+                                 tr("لم تقم باختيار مجلد المكتبة الشاملة"));
         }
     } else if(index == 1) {
         showImportInfo();

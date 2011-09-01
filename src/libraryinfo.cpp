@@ -41,7 +41,9 @@ void LibraryInfo::setName(QString name)
 void LibraryInfo::loafInfo(QString path)
 {
     QDomDocument doc;
-    QString infoFile = path + "/info.xml";
+    QDir dir(path);
+    QString infoFile = dir.filePath("info.xml");
+
     QString errorStr;
     int errorLine;
     int errorColumn;
@@ -69,7 +71,7 @@ void LibraryInfo::loafInfo(QString path)
     if(!pathElement.isNull())
         m_path = pathElement.firstChild().nodeValue();
     else
-        m_path = path;
+        m_path = dir.absolutePath();
 
     if(!booksDirElement.isNull())
         m_booksDir = booksDirElement.firstChild().nodeValue();

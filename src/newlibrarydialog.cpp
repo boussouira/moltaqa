@@ -1,5 +1,6 @@
 #include "newlibrarydialog.h"
 #include "ui_newlibrarydialog.h"
+#include "utils.h"
 #include <qfiledialog.h>
 #include <qmessagebox.h>
 #include <qtextstream.h>
@@ -45,8 +46,25 @@ void NewLibraryDialog::on_toolSelectLibDir_clicked()
                                                     QFileDialog::ShowDirsOnly
                                                     |QFileDialog::DontResolveSymlinks);
     if(!dirPath.isEmpty()) {
-        m_path = dirPath;
-        ui->lineLibDir->setText(QDir::toNativeSeparators(dirPath));
+        if(Utils::isLibraryPath(dirPath)) {
+            int ret = QMessageBox::question(this,
+                                            App::name(),
+                                            tr("لقد تم العثور على مكتبة في المجلد الذي اخترته" "<br>"
+                                               "هل تريد استخدام هذه المكتبة؟"),
+                                            QMessageBox::Yes|QMessageBox::No, QMessageBox::No);
+            if(ret == QMessageBox::No) {
+                QMessageBox::warning(this,
+                                     App::name(),
+                                     tr("من فضلك قم باختيار مجلد اخر"));
+            } else {
+                m_path = dirPath;
+                ui->lineLibDir->setText(QDir::toNativeSeparators(dirPath));
+                accept();
+            }
+        } else {
+            m_path = dirPath;
+            ui->lineLibDir->setText(QDir::toNativeSeparators(dirPath));
+        }
     }
 }
 
@@ -88,5 +106,5 @@ void NewLibraryDialog::createLibrary(QString name, QString path, QString descrip
 
 QString NewLibraryDialog::libraryDir()
 {
-    return ui->lineLibDir->text();
+    return m_path;
 }

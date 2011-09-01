@@ -4,6 +4,11 @@
 #include <qdir.h>
 #include <qfile.h>
 
+#define APP_VERSION_STR "0.9.0"
+#define APP_VERSION 0x000900
+#define APP_VERSION_CHECK(major, minor, patch) ((major<<16)|(minor<<8)|(patch))
+
+
 class QSqlQuery;
 class QSqlDatabase;
 
@@ -26,12 +31,18 @@ namespace Utils {
   @param fullPath if false return file name only, if true return the full path
 */
 
-QString genBookName(QString path, bool fullPath=false, QString ext="alb");
+QString genBookName(QString path, bool fullPath=false, QString ext="alb", QString namePrefix="book_");
 int randInt(int smin, int smax);
 
 QString arPlural(int count, int word, bool html=false);
 QString secondsToString(int milsec, bool html=false);
+bool isLibraryPath(QString path);
+}
 
+namespace App {
+QString name();
+const char *version();
+int versionNumber();
 }
 
 namespace Log {

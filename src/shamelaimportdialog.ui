@@ -38,7 +38,7 @@
          <item>
           <widget class="QLabel" name="label">
            <property name="text">
-            <string>مسار المكتبة الشاملة:</string>
+            <string>مجلد المكتبة الشاملة:</string>
            </property>
           </widget>
          </item>
