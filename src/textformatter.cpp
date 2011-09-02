@@ -1,4 +1,5 @@
 #include "textformatter.h"
+#include "utils.h"
 #include <qurl.h>
 #include <qapplication.h>
 #include <qdir.h>
@@ -11,9 +12,9 @@ TextFormatter::TextFormatter(QObject *parent): QObject(parent)
 
 void TextFormatter::laodSettings()
 {
-    QDir dir(QDir::currentPath()); // TODO: use QApplication::applicationDirPath() instead
-    dir.cd("styles");
+    QDir dir(App::stylesDir());
     dir.cd("default");
+
     QString style = dir.filePath("default.css");
     m_styleFile = QUrl::fromLocalFile(style).toString();
 }

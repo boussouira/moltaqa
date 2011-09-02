@@ -14,7 +14,7 @@
    <string>Main Window</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../data/qt_rc.qrc">
+   <iconset resource="../share/alkotobiya/qt_rc.qrc">
     <normaloff>:/images/main.ico</normaloff>:/images/main.ico</iconset>
   </property>
   <property name="layoutDirection">
@@ -137,7 +137,7 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="../data/qt_rc.qrc"/>
+  <include location="../share/alkotobiya/qt_rc.qrc"/>
  </resources>
  <connections/>
 </ui>
