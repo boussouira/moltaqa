@@ -3,6 +3,7 @@ TARGET = alkotobiya_test
 QT += testlib sql
 
 CONFIG += qtestlib
+DESTDIR = ../bin
 
 INCLUDEPATH += ../src
 

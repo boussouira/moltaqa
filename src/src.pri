@@ -141,5 +141,5 @@ FORMS += mainwindow.ui settingsdialog.ui \
     editbookslistwidget.ui \
     selectauthordialog.ui
 
-RESOURCES += ../data/qt_rc.qrc
-win32:RC_FILE = ../data/win_rc.rc
+RESOURCES += ../share/alkotobiya/qt_rc.qrc
+win32:RC_FILE = ../share/alkotobiya/win_rc.rc

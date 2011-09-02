@@ -5,6 +5,7 @@
 #include <qsqlerror.h>
 #include <qfileinfo.h>
 #include <qdir.h>
+#include <qapplication.h>
 
 namespace Utils {
 
@@ -216,6 +217,44 @@ const char *version()
 int versionNumber()
 {
     return APP_VERSION;
+}
+
+QString appDir()
+{
+    QDir dir(QApplication::applicationDirPath());
+    dir.cdUp();
+
+    return dir.absolutePath();
+}
+
+QString binDir()
+{
+    return QApplication::applicationDirPath();
+}
+
+QString shareDir()
+{
+    QDir dir(appDir());
+    dir.cd("share");
+    dir.cd("alkotobiya");
+
+    return dir.absolutePath();
+}
+
+QString stylesDir()
+{
+    QDir dir(shareDir());
+    dir.cd("styles");
+
+    return dir.absolutePath();
+}
+
+QString localeDir()
+{
+    QDir dir(shareDir());
+    dir.cd("locale");
+
+    return dir.absolutePath();
 }
 }
 

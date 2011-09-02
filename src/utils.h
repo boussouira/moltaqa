@@ -45,6 +45,12 @@ namespace App {
 QString name();
 const char *version();
 int versionNumber();
+
+QString appDir();
+QString binDir();
+QString shareDir();
+QString stylesDir();
+QString localeDir();
 }
 
 namespace Log {
