@@ -10,6 +10,7 @@
 #include <qstringlist.h>
 #include <qdebug.h>
 #include <qdir.h>
+#include <qfileinfo.h>
 
 MdbConverter::MdbConverter()
 {
@@ -41,14 +42,14 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
 
     // open the database
     if (!(mdb = mdb_open (qPrintable(mdb_path), MDB_NOFLAGS))) {
-        qDebug() << "Couldn't open database.";
+        qFatal("Couldn't open mdb database.");
         return QString();
     }
 
 
     // read the catalog
     if (!mdb_read_catalog (mdb, MDB_TABLE)) {
-        qDebug() << "File does not appear to be an Access database.";
+        qFatal("File does not appear to be an Access database.");
         return QString();
     }
 
@@ -56,9 +57,10 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
     m_bookDB.setDatabaseName(convert_path);
 
     if (!m_bookDB.open()) {
-        qDebug() << "Cannot open database.";
+        LOG_DB_ERROR(m_bookDB);
         return QString();
     }
+
     m_bookQuery = QSqlQuery(m_bookDB);
 
     // loop over each entry in the catalog
@@ -70,15 +72,15 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
 
         if (entry->object_type != MDB_TABLE || mdb_is_system_table(entry))
             continue;
-        //qDebug() << "[*] Importing" << entry->object_name << "...";
+
         generateTableSchema(entry);
         m_bookDB.transaction();
         getTableContent(mdb, entry, false);
         m_bookDB.commit();
     }
 
-    QString fileName = mdb_path.split("/").last().split(".").first();
-    qDebug() << fileName << " -> " << timer.elapsed() << "ms";
+    QString fileName = QFileInfo(mdb_path).fileName();
+    qDebug() << "Converting" << fileName << " take " << timer.elapsed() << "ms";
 
     mdb_close(mdb);
     mdb_exit();
@@ -131,7 +133,7 @@ void MdbConverter::getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry, bool 
 
     table = mdb_read_table(entry);
     if (!table) {
-        qDebug() << "Error: Table" << entry->object_name << "does not exist in this database.";
+        qFatal("Error: Table %s does not exist in this database.", entry->object_name);
         return;
     }
 

@@ -58,14 +58,8 @@ void SimpleDBHandler::openID(int pid)
         m_bookInfo->currentPageNumber = m_simpleQuery->value(3).toInt();
     }
 
-//    m_bookInfo->currentHadditNumber = m_simpleQuery->getHaddithNumber(pid);
-//    QTime time;
-//    time.start();
     m_indexDB->getShoroohPages(m_bookInfo);
-//    qDebug("Shorooh count: %d, toke %d ms", m_bookInfo->shorooh.count(), time.elapsed());
-//    foreach (BookShorooh *sh, m_bookInfo->shorooh) {
-//        qDebug("Book %d page %d", sh->bookID, sh->pageID);
-//    }
+
     m_textFormat->done();
 }
 
@@ -78,13 +72,10 @@ void SimpleDBHandler::openPage(int page, int part)
 
 QAbstractItemModel *SimpleDBHandler::indexModel()
 {
-    QTime time;
-    time.start();
     BookIndexNode *rootNode = new BookIndexNode();
 
     childTitles(rootNode, 0);
 
-    qDebug() << "Load index take:" << time.elapsed() << "ms";
     m_indexModel->setRootNode(rootNode);
 
     return m_indexModel;
@@ -93,8 +84,6 @@ QAbstractItemModel *SimpleDBHandler::indexModel()
 QAbstractItemModel * SimpleDBHandler::topIndexModel()
 {
     BookIndexModel *indexModel = new BookIndexModel();
-    QTime time;
-    time.start();
     BookIndexNode *rootNode = new BookIndexNode();
 
     QSqlQuery query(m_bookDB);
@@ -107,7 +96,6 @@ QAbstractItemModel * SimpleDBHandler::topIndexModel()
         rootNode->appendChild(catNode);
     }
 
-    qDebug() << "Load Top index take:" << time.elapsed() << "ms";
     indexModel->setRootNode(rootNode);
 
     return indexModel;

@@ -350,7 +350,6 @@ bool ShamelaImportDialog::cancel()
 void ShamelaImportDialog::importShorooh()
 {
     QList<uint> ad;
-    qDebug("Add Shorooh");
     addDebugInfo(tr("استيراد الشروح..."));
     LibraryCreator creator;
     creator.openDB();

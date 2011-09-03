@@ -94,7 +94,6 @@ void LibraryCreator::addCat(CategorieInfo *cat)
         lastId = m_bookQuery.lastInsertId().toInt();
         m_mapper->addCatMap(cat->id, lastId);
         m_catMap.insert(cat->id, lastId);
-        //qDebug("Cat %d -> %d", cat->id, lastId);
     } else {
         LOG_SQL_ERROR(m_bookQuery);
     }
@@ -147,7 +146,6 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
             bookDB = QSqlDatabase::database(connName);
         } else {
             // Remove old connection
-//            qDebug("Remove connection: %d", m_prevArchive);
             QString prevConnName(QString("mdb_%1_%2").arg(m_threadID).arg(m_prevArchive));
             QSqlDatabase::database(prevConnName, false).close();
             QSqlDatabase::removeDatabase(prevConnName);
@@ -254,7 +252,6 @@ void LibraryCreator::addQuran()
 
 void LibraryCreator::start()
 {
-    qDebug("LibraryCreator: Start transaction...");
     m_bookDB.transaction();
 }
 
@@ -263,7 +260,7 @@ void LibraryCreator::done()
     if(m_bookDB.commit())
         qDebug("LibraryCreator: Commit...");
     else
-        qDebug("Error when committing");
+        qFatal("Error when committing");
 }
 
 void LibraryCreator::importBook(ShamelaBookInfo *book, QString path)
@@ -434,8 +431,6 @@ void LibraryCreator::getShorooh(int mateenID, int shareehID)
 {
     QList<ShamelaShareehInfo *> idsList = m_shamelaManager->getShareehInfo(mateenID, shareehID);
     m_shorooh.append(idsList);
-
-//    qDebug("Add Shareeh: S:%d -> M:%d", shareehID, mateenID);
 }
 
 QList<ShamelaShareehInfo *> LibraryCreator::getShorooh()

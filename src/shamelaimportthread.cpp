@@ -58,7 +58,7 @@ void ShamelaImportThread::importBooks()
 void ShamelaImportThread::importQuran()
 {
     m_creator.addQuran();
-    qDebug("[+] Quran Added");
+    qDebug("* Quran Added");
 }
 
 QList<ShamelaShareehInfo *> ShamelaImportThread::getShorooh()
