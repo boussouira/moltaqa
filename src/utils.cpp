@@ -262,15 +262,15 @@ namespace Log {
 
 void QueryError(QSqlQuery &query, const char *file, int line)
 {
-    qCritical("[%s:%d] SQL error: %s\n\tQuery: %s",
+    qCritical("[%s:%d] SQL error: %s",
               qPrintable(QFileInfo(file).fileName()), line,
-              qPrintable(query.lastError().text()),
-              qPrintable(query.lastQuery()));
+              qPrintable(query.lastError().text()));
 }
 
 void DatabaseError(QSqlDatabase &db, const char *file, int line)
 {
     qCritical("[%s:%d] Database error: %s",
-              qPrintable(QFileInfo(file).fileName()), line, qPrintable(db.lastError().text()));
+              qPrintable(QFileInfo(file).fileName()), line,
+              qPrintable(db.lastError().text()));
 }
 }

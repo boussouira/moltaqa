@@ -10,8 +10,8 @@ RCC_DIR += .rcc
 
 unix {
         DEFINES += USE_MDBTOOLS
-        HEADERS += mdbconverter.h
-        SOURCES += mdbconverter.cpp
+        HEADERS += mdbconverter.h mdbconvertermanager.h
+        SOURCES += mdbconverter.cpp mdbconvertermanager.cpp
 
         QMAKE_CXXFLAGS += $$system(pkg-config libmdb --cflags)
         LIBS += $$system(pkg-config libmdb --libs)
@@ -71,8 +71,7 @@ SOURCES += mainwindow.cpp \
     editablecatslistmodel.cpp \
     editindexdb.cpp \
     selectauthordialog.cpp \
-    abstracteditwidget.cpp \
-    mdbconvertermanager.cpp
+    abstracteditwidget.cpp
 HEADERS += mainwindow.h \
     pageinfo.h \
     qurantextformat.h \
@@ -127,8 +126,7 @@ HEADERS += mainwindow.h \
     editablecatslistmodel.h \
     editindexdb.h \
     selectauthordialog.h \
-    abstracteditwidget.h \
-    mdbconvertermanager.h
+    abstracteditwidget.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

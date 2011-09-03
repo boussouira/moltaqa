@@ -1,7 +1,10 @@
 #ifndef MDBCONVERTERMANAGER_H
 #define MDBCONVERTERMANAGER_H
 
-#include "mdbconverter.h"
+#ifdef USE_MDBTOOLS
+    #include "mdbconverter.h"
+#endif
+
 #include <qhash.h>
 
 class MdbConverterManager
