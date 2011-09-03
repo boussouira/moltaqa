@@ -43,6 +43,11 @@ BookWidget::BookWidget(AbstractDBHandler *db, QWidget *parent): QWidget(parent),
 
 BookWidget::~BookWidget()
 {
+    if(m_watcher->isRunning()) {
+        qDebug("Waiting for model...");
+        m_watcher->waitForFinished();
+    }
+
     delete m_db;
 }
 
