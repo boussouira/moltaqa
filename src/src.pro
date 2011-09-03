@@ -14,15 +14,20 @@ unix {
         PREFIX = /usr/local
     }
     BINDIR = $$PREFIX/bin
-    DATADIR = $$PREFIX/share/$$TARGET
+    DATADIR = $$PREFIX/share
 
-    INSTALLS += target styles locale
+    INSTALLS += target styles locale fonts
 
     target.path = $$BINDIR
 
-    styles.path = $$DATADIR/styles/default
+    styles.path = $$DATADIR/$$TARGET/styles/default
     styles.files += ../share/alkotobiya/styles/default/default.css
 
-    locale.path = $$DATADIR/locale
+    locale.path = $$DATADIR/$$TARGET/locale
     locale.files += ../share/alkotobiya/locale/qt_ar.qm
+
+    fonts.path = $$DATADIR/fonts/$$TARGET
+    fonts.files += ../share/fonts/$$TARGET/LotusLinotype_Light.otf
+    fonts.files += ../share/fonts/$$TARGET/LotusLinotype_Bold.otf
 }
+

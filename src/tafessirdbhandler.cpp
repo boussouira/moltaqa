@@ -94,13 +94,10 @@ void TafessirDBHandler::openPage(int page, int part)
 
 QAbstractItemModel * TafessirDBHandler::indexModel()
 {
-    QTime time;
-    time.start();
     BookIndexNode *rootNode = new BookIndexNode();
 
     childTitles(rootNode, 0);
 
-    qDebug() << "Load index take:" << time.elapsed() << "ms";
     m_indexModel->setRootNode(rootNode);
 
     return m_indexModel;
@@ -109,8 +106,6 @@ QAbstractItemModel * TafessirDBHandler::indexModel()
 QAbstractItemModel * TafessirDBHandler::topIndexModel()
 {
     BookIndexModel *indexModel = new BookIndexModel();
-    QTime time;
-    time.start();
     BookIndexNode *rootNode = new BookIndexNode();
 
     QSqlQuery query(m_bookDB);
@@ -123,7 +118,6 @@ QAbstractItemModel * TafessirDBHandler::topIndexModel()
         rootNode->appendChild(catNode);
     }
 
-    qDebug() << "Load Top index take:" << time.elapsed() << "ms";
     indexModel->setRootNode(rootNode);
 
     return indexModel;

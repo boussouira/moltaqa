@@ -38,9 +38,8 @@ void AbstractDBHandler::openBookDB(QString pBookDBPath)
         throw BookException(tr("لم يمكن فتح قاعدة البيانات"), bookPath);
 
     m_bookQuery =  QSqlQuery(m_bookDB);
+
     connected();
-    QTime time;
-    time.start();
     getBookInfo();
 }
 

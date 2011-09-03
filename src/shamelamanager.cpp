@@ -1,5 +1,10 @@
 #include "shamelamanager.h"
 #include "utils.h"
+
+#ifdef USE_MDBTOOLS
+#include"mdbconverter.h"
+#endif
+
 #include <qvariant.h>
 #include <qsqlquery.h>
 #include <qsqlerror.h>
@@ -44,9 +49,17 @@ void ShamelaManager::openShamelaDB()
     if(!m_shamelaDB.isOpen()) {
         QString book = m_info->shamelaMainDbPath();
 
+#ifdef USE_MDBTOOLS
+    MdbConverter mdb;
+    m_tempShamelaDB = mdb.exportFromMdb(book);
+
+    m_shamelaDB = QSqlDatabase::addDatabase("QSQLITE", "shamelaBookDb_mdb_");
+    m_shamelaDB.setDatabaseName(m_tempShamelaDB);
+#else
         m_shamelaDB = QSqlDatabase::addDatabase("QODBC", "shamelaBookDb_");
         QString mdbpath = QString("DRIVER={Microsoft Access Driver (*.mdb)};FIL={MS Access};DBQ=%1").arg(book);
         m_shamelaDB.setDatabaseName(mdbpath);
+#endif
 
         if (!m_shamelaDB.open()) {
             LOG_DB_ERROR(m_shamelaDB);
@@ -61,9 +74,17 @@ void ShamelaManager::openShamelaSpecialDB()
     if(!m_shamelaSpecialDB.isOpen()) {
         QString book = m_info->shamelaSpecialDbPath();
 
+#ifdef USE_MDBTOOLS
+        MdbConverter mdb;
+        m_tempshamelaSpecialDB = mdb.exportFromMdb(book);
+
+        m_shamelaSpecialDB = QSqlDatabase::addDatabase("QSQLITE", "shamelaSpecialDb_mdb_");
+        m_shamelaSpecialDB.setDatabaseName(m_tempshamelaSpecialDB);
+#else
         m_shamelaSpecialDB = QSqlDatabase::addDatabase("QODBC", "shamelaSpecialDb_");
         QString mdbpath = QString("DRIVER={Microsoft Access Driver (*.mdb)};FIL={MS Access};DBQ=%1").arg(book);
         m_shamelaSpecialDB.setDatabaseName(mdbpath);
+#endif
 
         if (!m_shamelaSpecialDB.open()) {
             LOG_DB_ERROR(m_shamelaSpecialDB);
@@ -83,11 +104,19 @@ void ShamelaManager::close()
     if(m_shamelaDB.isOpen()) {
         delete m_shamelaQuery;
         m_shamelaDB.close();
+
+#ifdef USE_MDBTOOLS
+        QFile::remove(m_tempShamelaDB);
+#endif
     }
 
     if(m_shamelaSpecialDB.isOpen()) {
         delete m_shamelaSpecialQuery;
         m_shamelaSpecialDB.close();
+
+#ifdef USE_MDBTOOLS
+        QFile::remove(m_tempshamelaSpecialDB);
+#endif
     }
 }
 
@@ -96,8 +125,14 @@ int ShamelaManager::getBooksCount()
     openShamelaDB();
 
     int count=-1;
+
+#ifdef USE_MDBTOOLS
+    if(!m_shamelaQuery->exec("SELECT COUNT(*) FROM _bok"))
+        LOG_SQL_P_ERROR(m_shamelaQuery);
+#else
     if(!m_shamelaQuery->exec("SELECT COUNT(*) FROM 0bok"))
         LOG_SQL_P_ERROR(m_shamelaQuery);
+#endif
 
     if(m_shamelaQuery->next()) {
         count = m_shamelaQuery->value(0).toInt();
@@ -131,8 +166,13 @@ int ShamelaManager::getCatCount()
 {
     openShamelaDB();
 
-    if(m_shamelaQuery->exec("SELECT COUNT(*) FROM 0cat"))
+#ifdef USE_MDBTOOLS
+    if(!m_shamelaQuery->exec("SELECT COUNT(*) FROM _cat"))
         LOG_SQL_P_ERROR(m_shamelaQuery);
+#else
+    if(!m_shamelaQuery->exec("SELECT COUNT(*) FROM 0cat"))
+        LOG_SQL_P_ERROR(m_shamelaQuery);
+#endif
 
     if(m_shamelaQuery->next()) {
         return m_shamelaQuery->value(0).toInt();
@@ -166,8 +206,13 @@ void ShamelaManager::selectCats()
 {
     openShamelaDB();
 
+#ifdef USE_MDBTOOLS
+    if(!m_shamelaQuery->exec("SELECT id, name, catord, Lvl FROM _cat ORDER BY catord"))
+        LOG_SQL_P_ERROR(m_shamelaQuery);
+#else
     if(!m_shamelaQuery->exec("SELECT id, name, catord, Lvl FROM 0cat ORDER BY catord"))
         LOG_SQL_P_ERROR(m_shamelaQuery);
+#endif
 }
 
 CategorieInfo *ShamelaManager::nextCat()
@@ -207,8 +252,13 @@ void ShamelaManager::selectBooks()
 {
     openShamelaDB();
 
+#ifdef USE_MDBTOOLS
+    if(!m_shamelaQuery->exec("SELECT bkid, bk, cat, betaka, authno, auth, Archive, TafseerNam FROM _bok ORDER BY Archive"))
+        LOG_SQL_P_ERROR(m_shamelaQuery);
+#else
     if(!m_shamelaQuery->exec("SELECT bkid, bk, cat, betaka, authno, auth, Archive, TafseerNam FROM 0bok ORDER BY Archive"))
         LOG_SQL_P_ERROR(m_shamelaQuery);
+#endif
 }
 
 ShamelaBookInfo *ShamelaManager::nextBook()

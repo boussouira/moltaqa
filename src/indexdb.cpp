@@ -349,7 +349,6 @@ void IndexDB::updateCatParent(int catID, int parentID)
 void IndexDB::updateCatOrder(int catID, int catOrder)
 {
     QSqlQuery bookQuery(m_indexDB);
-    qDebug("SET CAT ORDER = %d FOR CAT = %d", catOrder, catID);
 
     bookQuery.prepare("UPDATE catList SET catOrder = ? WHERE id = ?");
     bookQuery.bindValue(0, catOrder);
@@ -362,7 +361,6 @@ void IndexDB::updateCatOrder(int catID, int catOrder)
 void IndexDB::makeCatPlace(int parentID, int catOrder)
 {
     QSqlQuery bookQuery(m_indexDB);
-    qDebug("Make place for order %d", catOrder);
 
     bookQuery.prepare("UPDATE catList SET catOrder = catOrder + 1 WHERE catOrder >= ? AND parentID = ?");
     bookQuery.bindValue(0, catOrder);

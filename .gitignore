@@ -55,13 +55,9 @@ cmake_install.cmake
 # MinGW generated files
 *.Debug
 *.Release
-# Binary files
-alkotobiya
-alkotobiya.exe
 
 # Directories to ignore
 # ---------------------
 
 build
 doc/html
-src/books

@@ -2,6 +2,7 @@
 #define SHAMELAIMPORTDIALOG_H
 
 #include <QDialog>
+#include <qdatetime.h>
 #include "libraryinfo.h"
 
 namespace Ui {
@@ -12,6 +13,10 @@ class ShamelaInfo;
 class ShamelaManager;
 class ShamelaImportThread;
 class QStandardItemModel;
+
+#ifdef USE_MDBTOOLS
+class MdbConverterManager;
+#endif
 
 class ShamelaImportDialog : public QDialog
 {
@@ -24,6 +29,11 @@ public:
     ShamelaManager *shamelaManager();
     ShamelaInfo *shamelaInfo();
     LibraryInfo *libraryInfo();
+
+#ifdef USE_MDBTOOLS
+    MdbConverterManager *mdbManager();
+#endif
+
     bool addAuthorsForEachBook();
     void setLibraryInfo(LibraryInfo *info);
 
@@ -67,6 +77,11 @@ private:
     QStandardItemModel *m_booksModel;
     QList<ShamelaImportThread*> m_importThreads;
     Ui::ShamelaImportDialog *ui;
+    QTime m_importTime;
+
+#ifdef USE_MDBTOOLS
+    MdbConverterManager *m_mdbManager;
+#endif
 };
 
 #endif // SHAMELAIMPORTDIALOG_H

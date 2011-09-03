@@ -130,7 +130,6 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
 
 void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDatabase &bookDB, int bookID)
 {
-    // TODO: update this code to handle tafassir an haddith number
     QSqlQuery query(bookDB);
 
 #ifdef USE_MDBTOOLS
