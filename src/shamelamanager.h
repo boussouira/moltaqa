@@ -63,6 +63,8 @@ protected:
     QList<int> m_rejected;
     QList<int> m_addedShorooh;
     QMutex m_mutex;
+    QString m_tempShamelaDB;
+    QString m_tempshamelaSpecialDB;
 };
 
 #endif // SHAMELAMANAGER_H

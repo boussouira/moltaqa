@@ -18,6 +18,10 @@ LibraryCreator::LibraryCreator()
     m_library = importDialog->libraryInfo();
     m_mapper = m_shamelaManager->mapper();
 
+#ifdef USE_MDBTOOLS
+    m_mdbManager = importDialog->mdbManager();
+#endif
+
     m_prevArchive = -1;
     m_importAuthor = false;
     m_threadID = 0;
@@ -149,9 +153,18 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
             QString prevConnName(QString("mdb_%1_%2").arg(m_threadID).arg(m_prevArchive));
             QSqlDatabase::database(prevConnName, false).close();
             QSqlDatabase::removeDatabase(prevConnName);
+#ifdef USE_MDBTOOLS
+            m_mdbManager->deleteDB(m_tempDB);
+            m_tempDB = book->path;
 
+            QString mdb = m_mdbManager->getConvertedDB(book->path);
+
+            bookDB = QSqlDatabase::addDatabase("QSQLITE", connName);
+            bookDB.setDatabaseName(mdb);
+#else
             bookDB = QSqlDatabase::addDatabase("QODBC", connName);
             bookDB.setDatabaseName(QString("DRIVER={Microsoft Access Driver (*.mdb)};FIL={MS Access};DBQ=%1").arg(book->path));
+#endif
 
             m_prevArchive = book->archive;
         }
@@ -163,8 +176,13 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
         }
 
         QSqlQuery query(bookDB);
+#ifdef USE_MDBTOOLS
+        if(!query.exec(QString("SELECT * FROM %1 LIMIT 1").arg(book->mainTable)))
+            LOG_SQL_ERROR(query);
+#else
         if(!query.exec(QString("SELECT TOP 1 * FROM %1").arg(book->mainTable)))
             LOG_SQL_ERROR(query);
+#endif
 
         int hnoCol = query.record().indexOf("hno");
         int ayaCol = query.record().indexOf("aya");
@@ -212,14 +230,23 @@ void LibraryCreator::addQuran()
 {
     QString connName(QString("shamela_quran_%1").arg(m_threadID));
     QString path = Utils::genBookName(m_library->booksDir(), true);
+    QString tempDB;
 
     {
         newQuranWriter quranWrite;
         quranWrite.setThreadID(m_threadID);
         quranWrite.createNewBook(path);
+#ifdef USE_MDBTOOLS
+        MdbConverter mdb;
+        tempDB = mdb.exportFromMdb(m_shamelaInfo->shamelaSpecialDbPath());
+
+        QSqlDatabase bookDB = QSqlDatabase::addDatabase("QSQLITE", connName);
+        bookDB.setDatabaseName(tempDB);
+#else
         QSqlDatabase bookDB = QSqlDatabase::addDatabase("QODBC", connName);
         bookDB.setDatabaseName(QString("DRIVER={Microsoft Access Driver (*.mdb)};FIL={MS Access};DBQ=%1")
                                .arg(m_shamelaInfo->shamelaSpecialDbPath()));
+#endif
 
         if (!bookDB.open()) {
             LOG_DB_ERROR(bookDB);
@@ -246,6 +273,10 @@ void LibraryCreator::addQuran()
 
     QSqlDatabase::removeDatabase(QString("newQuranDB_%1").arg(m_threadID));
     QSqlDatabase::removeDatabase(connName);
+
+#ifdef USE_MDBTOOLS
+    QFile::remove(tempDB);
+#endif
 
     importQuran(path);
 }

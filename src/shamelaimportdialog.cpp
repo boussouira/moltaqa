@@ -7,6 +7,10 @@
 #include "mainwindow.h"
 #include "indexdb.h"
 
+#ifdef USE_MDBTOOLS
+#include "mdbconvertermanager.h"
+#endif
+
 #include <qdir.h>
 #include <qfiledialog.h>
 #include <qmessagebox.h>
@@ -31,6 +35,10 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
     m_manager = new ShamelaManager(m_shamela);
     m_importedBooksCount = 0;
 
+#ifdef USE_MDBTOOLS
+    m_mdbManager = new MdbConverterManager();
+#endif
+
     ui->groupImportOptions->setEnabled(false);
     ui->stackedWidget->setCurrentIndex(0);
     ui->pushDone->hide();
@@ -44,6 +52,11 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
 
 ShamelaImportDialog::~ShamelaImportDialog()
 {
+
+#ifdef USE_MDBTOOLS
+    delete m_mdbManager;
+#endif
+
     delete m_shamela;
     delete m_manager;
     delete ui;
@@ -81,6 +94,13 @@ LibraryInfo *ShamelaImportDialog::libraryInfo()
 {
     return m_library;
 }
+
+#ifdef USE_MDBTOOLS
+MdbConverterManager *ShamelaImportDialog::mdbManager()
+{
+    return m_mdbManager;
+}
+#endif
 
 bool ShamelaImportDialog::addAuthorsForEachBook()
 {
@@ -255,11 +275,17 @@ void ShamelaImportDialog::showImportInfo()
 
 void ShamelaImportDialog::startImporting()
 {
+    m_importTime.start();
+
     ui->progressBar->setMaximum(m_manager->getBooksCount());
     ui->progressBar->setValue(0);
     ui->progressSteps->setValue(2);
 
+#ifdef USE_MDBTOOLS
+    m_importThreadCount = 1; // Don't use multi-threading with mdbtools
+#else
     m_importThreadCount = QThread::idealThreadCount();
+#endif
 
     m_manager->selectBooks();
 
@@ -313,7 +339,9 @@ void ShamelaImportDialog::doneImporting()
 
         importShorooh();
 
-        addDebugInfo(tr("تم اسيراد %1 بنجاح").arg(Utils::arPlural(m_importedBooksCount, Plural::BOOK)));
+        addDebugInfo(tr("تم استيراد %1 بنجاح خلال %2")
+                     .arg(Utils::arPlural(m_importedBooksCount, Plural::BOOK))
+                     .arg(Utils::secondsToString(m_importTime.elapsed())));
 
         if(m_importedBooksCount > 0) {
             MainWindow::mainWindow()->indexDB()->loadBooksListModel();

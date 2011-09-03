@@ -3,6 +3,7 @@
 #include "libraryinfo.h"
 #include "utils.h"
 
+#include <stdio.h>
 #include <qsqlerror.h>
 #include <qdatetime.h>
 #include <qtextcodec.h>
@@ -53,7 +54,8 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
         return QString();
     }
 
-    m_bookDB = QSqlDatabase::addDatabase("QSQLITE", "bok2sql");
+    m_bookDB = QSqlDatabase::addDatabase("QSQLITE", QString("bok2sql_%1")
+                                         .arg(qChecksum(qPrintable(convert_path), convert_path.size())));
     m_bookDB.setDatabaseName(convert_path);
 
     if (!m_bookDB.open()) {
@@ -77,6 +79,9 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
         m_bookDB.transaction();
         getTableContent(mdb, entry, false);
         m_bookDB.commit();
+
+        printf("Coneverting %d%%...\r", (int)(((double)(i+1)/(double)num_catalog)*100.));
+        fflush(stdout);
     }
 
     QString fileName = QFileInfo(mdb_path).fileName();

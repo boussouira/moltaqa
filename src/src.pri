@@ -71,7 +71,8 @@ SOURCES += mainwindow.cpp \
     editablecatslistmodel.cpp \
     editindexdb.cpp \
     selectauthordialog.cpp \
-    abstracteditwidget.cpp
+    abstracteditwidget.cpp \
+    mdbconvertermanager.cpp
 HEADERS += mainwindow.h \
     pageinfo.h \
     qurantextformat.h \
@@ -126,7 +127,8 @@ HEADERS += mainwindow.h \
     editablecatslistmodel.h \
     editindexdb.h \
     selectauthordialog.h \
-    abstracteditwidget.h
+    abstracteditwidget.h \
+    mdbconvertermanager.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \
