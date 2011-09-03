@@ -1,0 +1,18 @@
+Source: alkotobiya
+Section: education
+Priority: extra
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+XSBC-Original-Maintainer: Ahmed Saidi <ahmed7saidi@gmail.com>
+Build-Depends: debhelper (>= 7.0.50~), libqtcore4, libqtwebkit4, libqt4-sql-sqlite, libmdbtools
+Standards-Version: 3.9.1
+Homepage: http://alkotobiya.sf.net
+
+Package: alkotobiya
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Al Kotobiya is an arabic and Islamic Library
+ Al Kotobiya is an arabic library, it can help in reading,
+ searching in thousnd of islamic books, mean features:
+  * Al Kotobiya can run on Windows and linux
+  * Can import books from Shamela library
+  * Fast search
