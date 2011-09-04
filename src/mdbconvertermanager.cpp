@@ -22,12 +22,12 @@ QString MdbConverterManager::getConvertedDB(QString path)
     QPair<QString, int> ref = m_convertedFiles.value(mdbPath, qMakePair(QString(), 0));
 
     if(ref.first.isEmpty()) {
-        MdbConverter m_converter;
-        QString convereted = m_converter.exportFromMdb(path);
+        MdbConverter converter(true);
+        QString convereted = converter.exportFromMdb(path);
         m_convertedFiles.insert(mdbPath, qMakePair(convereted, 1));
         return convereted;
     } else {
-        qDebug("Coverted Book exist");
+        qDebug("Converted Book exist");
         m_convertedFiles[path].second++;
         return m_convertedFiles[path].first;
     }
@@ -40,9 +40,9 @@ void MdbConverterManager::deleteDB(QString path)
     if(!path.isEmpty() && !ref.first.isEmpty()) {
         m_convertedFiles[mdbPath].second--;
         if(m_convertedFiles[mdbPath].second <= 0) {
-            m_convertedFiles.remove(mdbPath);
             QFile::remove(m_convertedFiles[mdbPath].first);
             qDebug() << "Delete converted book" << m_convertedFiles[mdbPath].first;
+            m_convertedFiles.remove(mdbPath);
         } else {
             qDebug() << "Book is used" << m_convertedFiles[mdbPath].first;
         }

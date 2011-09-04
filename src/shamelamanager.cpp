@@ -50,11 +50,11 @@ void ShamelaManager::openShamelaDB()
         QString book = m_info->shamelaMainDbPath();
 
 #ifdef USE_MDBTOOLS
-    MdbConverter mdb;
-    m_tempShamelaDB = mdb.exportFromMdb(book);
+        MdbConverter mdb(true);
+        m_tempShamelaDB = mdb.exportFromMdb(book);
 
-    m_shamelaDB = QSqlDatabase::addDatabase("QSQLITE", "shamelaBookDb_mdb_");
-    m_shamelaDB.setDatabaseName(m_tempShamelaDB);
+        m_shamelaDB = QSqlDatabase::addDatabase("QSQLITE", "shamelaBookDb_mdb_");
+        m_shamelaDB.setDatabaseName(m_tempShamelaDB);
 #else
         m_shamelaDB = QSqlDatabase::addDatabase("QODBC", "shamelaBookDb_");
         QString mdbpath = QString("DRIVER={Microsoft Access Driver (*.mdb)};FIL={MS Access};DBQ=%1").arg(book);
@@ -75,7 +75,7 @@ void ShamelaManager::openShamelaSpecialDB()
         QString book = m_info->shamelaSpecialDbPath();
 
 #ifdef USE_MDBTOOLS
-        MdbConverter mdb;
+        MdbConverter mdb(true);
         m_tempshamelaSpecialDB = mdb.exportFromMdb(book);
 
         m_shamelaSpecialDB = QSqlDatabase::addDatabase("QSQLITE", "shamelaSpecialDb_mdb_");

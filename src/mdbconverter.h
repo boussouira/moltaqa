@@ -16,9 +16,11 @@ class QSqlQuery;
 class MdbConverter : public QObject
 {
 public:
-    MdbConverter();
+    MdbConverter(bool cache=false);
     ~MdbConverter();
     QString exportFromMdb(const QString &mdb_path, const QString &sql_path=QString());
+    static void removeConvertedDB(QString shamelaDB);
+    static void removeAllConvertedDB();
 
 protected:
     void getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry, bool fieldsName=true);
@@ -32,6 +34,7 @@ protected:
     QSqlDatabase m_bookDB;
     QSqlQuery m_bookQuery;
     QString m_tempFolder;
+    bool m_cache;
 };
 
 #endif // MDBCONVERTER_UNIX_H

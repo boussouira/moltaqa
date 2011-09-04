@@ -12,10 +12,6 @@
 #include "newbookwriter.h"
 #include "shamelamapper.h"
 
-#ifdef USE_MDBTOOLS
-#include "mdbconvertermanager.h"
-#endif
-
 class LibraryCreator
 {
     Q_DECLARE_TR_FUNCTIONS(LibraryCreator)
@@ -67,11 +63,7 @@ protected:
     bool m_importAuthor; ///< If true, import author's information when adding a book of him
     QMutex m_mutex;
     QList<ShamelaShareehInfo *> m_shorooh;
-
-#ifdef USE_MDBTOOLS
-    MdbConverterManager *m_mdbManager;
     QString m_tempDB;
-#endif
 };
 
 #endif // LIBRARYCREATOR_H

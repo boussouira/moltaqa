@@ -8,7 +8,7 @@
 #include "indexdb.h"
 
 #ifdef USE_MDBTOOLS
-#include "mdbconvertermanager.h"
+#include "mdbconverter.h"
 #endif
 
 #include <qdir.h>
@@ -35,10 +35,6 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
     m_manager = new ShamelaManager(m_shamela);
     m_importedBooksCount = 0;
 
-#ifdef USE_MDBTOOLS
-    m_mdbManager = new MdbConverterManager();
-#endif
-
     ui->groupImportOptions->setEnabled(false);
     ui->stackedWidget->setCurrentIndex(0);
     ui->pushDone->hide();
@@ -52,11 +48,6 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
 
 ShamelaImportDialog::~ShamelaImportDialog()
 {
-
-#ifdef USE_MDBTOOLS
-    delete m_mdbManager;
-#endif
-
     delete m_shamela;
     delete m_manager;
     delete ui;
@@ -94,13 +85,6 @@ LibraryInfo *ShamelaImportDialog::libraryInfo()
 {
     return m_library;
 }
-
-#ifdef USE_MDBTOOLS
-MdbConverterManager *ShamelaImportDialog::mdbManager()
-{
-    return m_mdbManager;
-}
-#endif
 
 bool ShamelaImportDialog::addAuthorsForEachBook()
 {
@@ -349,6 +333,10 @@ void ShamelaImportDialog::doneImporting()
 
         qDeleteAll(m_importThreads);
         m_importThreads.clear();
+
+#ifdef USE_MDBTOOLS
+        MdbConverter::removeAllConvertedDB();
+#endif
     }
 }
 

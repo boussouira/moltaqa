@@ -14,10 +14,6 @@ class ShamelaManager;
 class ShamelaImportThread;
 class QStandardItemModel;
 
-#ifdef USE_MDBTOOLS
-class MdbConverterManager;
-#endif
-
 class ShamelaImportDialog : public QDialog
 {
     Q_OBJECT
@@ -29,10 +25,6 @@ public:
     ShamelaManager *shamelaManager();
     ShamelaInfo *shamelaInfo();
     LibraryInfo *libraryInfo();
-
-#ifdef USE_MDBTOOLS
-    MdbConverterManager *mdbManager();
-#endif
 
     bool addAuthorsForEachBook();
     void setLibraryInfo(LibraryInfo *info);
@@ -78,10 +70,6 @@ private:
     QList<ShamelaImportThread*> m_importThreads;
     Ui::ShamelaImportDialog *ui;
     QTime m_importTime;
-
-#ifdef USE_MDBTOOLS
-    MdbConverterManager *m_mdbManager;
-#endif
 };
 
 #endif // SHAMELAIMPORTDIALOG_H

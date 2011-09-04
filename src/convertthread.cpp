@@ -6,7 +6,7 @@
 #include "bookexception.h"
 
 #ifdef USE_MDBTOOLS
-    #include "mdbconverter.h"
+#include "mdbconverter.h"
 #endif
 
 #include <qmessagebox.h>

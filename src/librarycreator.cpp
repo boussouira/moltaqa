@@ -2,12 +2,17 @@
 #include "utils.h"
 #include "newbookwriter.h"
 #include "bookinfo.h"
+#include "shamelaimportdialog.h"
+#include "newquranwriter.h"
+
+#ifdef USE_MDBTOOLS
+#include "mdbconverter.h"
+#endif
+
 #include <qdebug.h>
 #include <qvariant.h>
 #include <qfileinfo.h>
 #include <qsqlrecord.h>
-#include "shamelaimportdialog.h"
-#include "newquranwriter.h"
 
 LibraryCreator::LibraryCreator()
 {
@@ -17,10 +22,6 @@ LibraryCreator::LibraryCreator()
     m_shamelaInfo = importDialog->shamelaInfo();
     m_library = importDialog->libraryInfo();
     m_mapper = m_shamelaManager->mapper();
-
-#ifdef USE_MDBTOOLS
-    m_mdbManager = importDialog->mdbManager();
-#endif
 
     m_prevArchive = -1;
     m_importAuthor = false;
@@ -153,11 +154,13 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
             QString prevConnName(QString("mdb_%1_%2").arg(m_threadID).arg(m_prevArchive));
             QSqlDatabase::database(prevConnName, false).close();
             QSqlDatabase::removeDatabase(prevConnName);
+
 #ifdef USE_MDBTOOLS
-            m_mdbManager->deleteDB(m_tempDB);
+            MdbConverter::removeConvertedDB(m_tempDB);
             m_tempDB = book->path;
 
-            QString mdb = m_mdbManager->getConvertedDB(book->path);
+            MdbConverter converter(true);
+            QString mdb = converter.exportFromMdb(book->path);
 
             bookDB = QSqlDatabase::addDatabase("QSQLITE", connName);
             bookDB.setDatabaseName(mdb);
@@ -237,7 +240,7 @@ void LibraryCreator::addQuran()
         quranWrite.setThreadID(m_threadID);
         quranWrite.createNewBook(path);
 #ifdef USE_MDBTOOLS
-        MdbConverter mdb;
+        MdbConverter mdb(true);
         tempDB = mdb.exportFromMdb(m_shamelaInfo->shamelaSpecialDbPath());
 
         QSqlDatabase bookDB = QSqlDatabase::addDatabase("QSQLITE", connName);

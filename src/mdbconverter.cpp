@@ -12,8 +12,13 @@
 #include <qdebug.h>
 #include <qdir.h>
 #include <qfileinfo.h>
+#include <qhash.h>
 
-MdbConverter::MdbConverter()
+static int m_time = 0;
+static qint64 m_size = 0;
+static QHash<QString, QString> m_converted;
+
+MdbConverter::MdbConverter(bool cache) : m_cache(cache)
 {
     m_tempFolder = MainWindow::mainWindow()->libraryInfo()->tempDir();
 }
@@ -24,6 +29,17 @@ MdbConverter::~MdbConverter()
 
 QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_path)
 {
+    if(m_cache) {
+          QString shamelaDB(mdb_path);
+          shamelaDB = shamelaDB.toLower();
+          QString convertDB = m_converted.value(shamelaDB, QString());
+
+          if(!convertDB.isEmpty()) {
+              qDebug() << "Database:" << shamelaDB << "already converted";
+              return convertDB;
+          }
+    }
+
     QTime timer;
     timer.start();
     MdbHandle *mdb;
@@ -43,14 +59,14 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
 
     // open the database
     if (!(mdb = mdb_open (qPrintable(mdb_path), MDB_NOFLAGS))) {
-        qFatal("Couldn't open mdb database.");
+        qCritical() << "Couldn't open mdb database at" << mdb_path;
         return QString();
     }
 
 
     // read the catalog
     if (!mdb_read_catalog (mdb, MDB_TABLE)) {
-        qFatal("File does not appear to be an Access database.");
+        qCritical("File does not appear to be an Access database.");
         return QString();
     }
 
@@ -64,6 +80,20 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
     }
 
     m_bookQuery = QSqlQuery(m_bookDB);
+
+    QFileInfo info(mdb_path);
+
+//    if(m_time) {
+//        int etime = (int)((info.size() * (double)m_time)/(double)m_size);
+//        if(etime > 60000) {
+//            int seconde = (int) ((etime / 1000) % 60);
+//            int minutes = (int) (((etime / 1000) / 60) % 60);
+//            qDebug() << "Converting will take"
+//                     << qPrintable(QString("%1:%2")
+//                                   .arg(minutes, 2, 10, QChar('0'))
+//                                   .arg(seconde, 2, 10, QChar('0')));
+//        }
+//    }
 
     // loop over each entry in the catalog
     MdbCatalogEntry *entry;
@@ -80,15 +110,19 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
         getTableContent(mdb, entry, false);
         m_bookDB.commit();
 
-        printf("Coneverting %d%%...\r", (int)(((double)(i+1)/(double)num_catalog)*100.));
+        printf("Converting %d%%...\r", int(((double)(i+1)/(double)num_catalog)*100));
         fflush(stdout);
     }
 
-    QString fileName = QFileInfo(mdb_path).fileName();
-    qDebug() << "Converting" << fileName << " take " << timer.elapsed() << "ms";
+    m_size = info.size();
+    m_time = timer.elapsed();
+
+    qDebug() << "Converting" << info.fileName() << " take " << m_time << "ms";
 
     mdb_close(mdb);
     mdb_exit();
+
+    m_converted[mdb_path.toLower()] = convert_path;
 
     return convert_path;
 }
@@ -138,7 +172,7 @@ void MdbConverter::getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry, bool 
 
     table = mdb_read_table(entry);
     if (!table) {
-        qFatal("Error: Table %s does not exist in this database.", entry->object_name);
+        qCritical("Error: Table %s does not exist in this database.", entry->object_name);
         return;
     }
 
@@ -286,5 +320,25 @@ void MdbConverter::print_col(QString &str,gchar *col_val, int quote_text, int co
         str.append(quote_char);
     } else {
         str.append(value);
+    }
+}
+
+void MdbConverter::removeConvertedDB(QString shamelaDB)
+{
+    QString convertedDB = m_converted.value(shamelaDB.toLower(), QString());
+    if(!convertedDB.isEmpty()) {
+        QFile::remove(convertedDB);
+        qDebug() << "Delete converted book" << convertedDB;
+        m_converted.remove(convertedDB);
+    }
+}
+
+void MdbConverter::removeAllConvertedDB()
+{
+    QHashIterator<QString, QString> i(m_converted);
+    while (i.hasNext()) {
+        i.next();
+        qDebug() << "Remove:" << i.value();
+        QFile::remove(i.value());
     }
 }
