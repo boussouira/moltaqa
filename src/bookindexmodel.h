@@ -20,7 +20,7 @@ public:
                         int role) const;
     BookIndexNode *nodeFromIndex(const QModelIndex &index) const;
 private:
-    BookIndexNode *rootNode;
+    BookIndexNode *m_rootNode;
 };
 
 #endif // BOOKINDEXMODEL_H

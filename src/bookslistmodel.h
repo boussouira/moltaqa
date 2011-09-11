@@ -23,7 +23,7 @@ public:
     BooksListNode *nodeFromIndex(const QModelIndex &index) const;
 
 public:
-    BooksListNode *rootNode;
+    BooksListNode *m_rootNode;
 };
 
 #endif // BOOKSLISTMODEL_H

@@ -13,6 +13,7 @@ class ShamelaInfo;
 class ShamelaManager;
 class ShamelaImportThread;
 class QStandardItemModel;
+class QStandardItem;
 
 class ShamelaImportDialog : public QDialog
 {
@@ -26,7 +27,6 @@ public:
     ShamelaInfo *shamelaInfo();
     LibraryInfo *libraryInfo();
 
-    bool addAuthorsForEachBook();
     void setLibraryInfo(LibraryInfo *info);
 
 protected:
@@ -38,7 +38,7 @@ protected:
       @param index Index of page, if it eqaul -1 then go to next page
       */
     void goPage(int index=-1);
-    void showImportInfo();
+    void setupCatehories();
     void setupImporting();
     void startImporting();
     void showBooks();
@@ -56,6 +56,10 @@ private slots:
     bool cancel();
     void importShorooh();
 
+    void itemChanged(QStandardItem *item);
+    void selectAllBooks();
+    void unSelectAllBooks();
+
 signals:
     void setProgress(int value);
 
@@ -70,6 +74,7 @@ private:
     QList<ShamelaImportThread*> m_importThreads;
     Ui::ShamelaImportDialog *ui;
     QTime m_importTime;
+    bool m_proccessItemChange;
 };
 
 #endif // SHAMELAIMPORTDIALOG_H

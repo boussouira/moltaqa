@@ -23,7 +23,6 @@ void ShamelaImportThread::run()
     m_threadID = (int)currentThreadId();
     m_creator.setThreadID(m_threadID);
     m_creator.openDB();
-    m_creator.setImportAuthors(ShamelaImportDialog::importDialog()->addAuthorsForEachBook());
 
     if(m_importQuran)
         importQuran();
@@ -43,7 +42,7 @@ void ShamelaImportThread::importBooks()
     while(book) {
         book->genInfo(m_shamelaInfo);
         m_creator.addBook(book);
-        bookImported(book->name);
+        emit bookImported(book->name);
 
         delete book;
 
@@ -58,7 +57,7 @@ void ShamelaImportThread::importBooks()
 void ShamelaImportThread::importQuran()
 {
     m_creator.addQuran();
-    qDebug("* Quran Added");
+    emit bookImported(tr("القرآن الكريم"));
 }
 
 QList<ShamelaShareehInfo *> ShamelaImportThread::getShorooh()

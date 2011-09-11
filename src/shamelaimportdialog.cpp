@@ -6,6 +6,8 @@
 #include "shamelaimportthread.h"
 #include "mainwindow.h"
 #include "indexdb.h"
+#include "sortfilterproxymodel.h"
+#include "bookslistnode.h"
 
 #ifdef USE_MDBTOOLS
 #include "mdbconverter.h"
@@ -17,7 +19,6 @@
 #include <qfuture.h>
 #include <qtconcurrentrun.h>
 #include <qstandarditemmodel.h>
-#include <qsortfilterproxymodel.h>
 #include <qmessagebox.h>
 #include <qevent.h>
 
@@ -34,7 +35,9 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
     m_shamela = new ShamelaInfo();
     m_manager = new ShamelaManager(m_shamela);
     m_importedBooksCount = 0;
+    m_proccessItemChange = true;
 
+    ui->radioUseShamelaCat->setChecked(MainWindow::mainWindow()->indexDB()->categoriesCount()==0);
     ui->groupImportOptions->setEnabled(false);
     ui->stackedWidget->setCurrentIndex(0);
     ui->pushDone->hide();
@@ -44,6 +47,8 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
     connect(ui->pushDone, SIGNAL(clicked()), SLOT(accept()));
     connect(ui->buttonSelectShamela, SIGNAL(clicked()), SLOT(selectShamela()));
     connect(this, SIGNAL(setProgress(int)), ui->progressBar, SLOT(setValue(int)));
+    connect(ui->pushSelectAll, SIGNAL(clicked()), SLOT(selectAllBooks()));
+    connect(ui->pushUnSelectAll, SIGNAL(clicked()), SLOT(unSelectAllBooks()));
 }
 
 ShamelaImportDialog::~ShamelaImportDialog()
@@ -84,11 +89,6 @@ ShamelaInfo *ShamelaImportDialog::shamelaInfo()
 LibraryInfo *ShamelaImportDialog::libraryInfo()
 {
     return m_library;
-}
-
-bool ShamelaImportDialog::addAuthorsForEachBook()
-{
-    return ui->radioImportAuthorsWhenNedded->isChecked();
 }
 
 void ShamelaImportDialog::setLibraryInfo(LibraryInfo *info)
@@ -135,21 +135,23 @@ void ShamelaImportDialog::nextStep()
 
     if(index == 0) {
         if(!m_shamela->shamelaPath().isEmpty()) {
-            if(ui->radioImportAll->isChecked()) {
-                showImportInfo();
-                goPage(2);
-            } else {
-                showBooks();
-                goPage();
-            }
+            showBooks();
+            goPage();
         } else {
             QMessageBox::warning(this,
                                  tr("الاستيراد من الشاملة"),
                                  tr("لم تقم باختيار مجلد المكتبة الشاملة"));
         }
     } else if(index == 1) {
-        showImportInfo();
-        goPage();
+        createFilter();
+
+        if(ui->radioUseThisLibCat->isChecked()) {
+            setupCatehories();
+            goPage();
+        } else {
+            goPage();
+            nextStep();
+        }
     } else if(index == 2) { // Start importing
         goPage();
         setupImporting();
@@ -167,51 +169,43 @@ void ShamelaImportDialog::goPage(int index)
 
 void ShamelaImportDialog::showBooks()
 {
-    m_booksModel = new QStandardItemModel(this);
-    QSortFilterProxyModel *filterModel = new QSortFilterProxyModel(this);
+    m_booksModel = m_manager->getBooksListModel();
+    SortFilterProxyModel *filterModel = new SortFilterProxyModel(this);
 
-    m_manager->selectBooks();
-
-    ShamelaBookInfo *book = m_manager->nextBook();
-    while(book) {
-        QStandardItem *item = new QStandardItem(book->name);
-        item->setData(book->id);
-        item->setCheckable(true);
-        item->setCheckState(Qt::Unchecked);
-        m_booksModel->appendRow(item);
-
-        book = m_manager->nextBook();
-    }
     filterModel->setSourceModel(m_booksModel);
     ui->treeView->setModel(filterModel);
 
     m_booksModel->setHeaderData(0, Qt::Horizontal, tr("لائحة الكتب"), Qt::DisplayRole);
 
     connect(ui->lineBookSearch, SIGNAL(textChanged(QString)), filterModel, SLOT(setFilterRegExp(QString)));
+    connect(ui->lineBookSearch, SIGNAL(textChanged(QString)), ui->treeView, SLOT(expandAll()));
+    connect(m_booksModel, SIGNAL(itemChanged(QStandardItem*)), SLOT(itemChanged(QStandardItem*)));
 }
 
 void ShamelaImportDialog::createFilter()
 {
-    if(ui->radioImportSelectionOnly->isChecked()) {
         QList<int> selectedIDs;
 
         for(int i=0; i<m_booksModel->rowCount(); i++) {
             QStandardItem *item = m_booksModel->item(i);
-            if(item->checkState() == Qt::Checked){
-                selectedIDs.append(item->data().toInt());
+            if(item->data(ShamelaManager::typeRole).toInt() == BooksListNode::Categorie) {
+                for(int j=0; j < item->rowCount(); j++) {
+                    QStandardItem *child = item->child(j);
+                    if(child->checkState() == Qt::Checked){
+                        selectedIDs.append(child->data(ShamelaManager::idRole).toInt());
+                    }
+                }
+            } else if(item->data(ShamelaManager::typeRole).toInt() == BooksListNode::Book) {
+                if(item->checkState() == Qt::Checked){
+                    selectedIDs.append(item->data(ShamelaManager::idRole).toInt());
+                }
             }
         }
 
         m_manager->setFilterBooks(true);
-
-        if(ui->radioImportSelected->isChecked())
-            m_manager->setAcceptedBooks(selectedIDs);
-        else
-            m_manager->setRejectedBooks(selectedIDs);
-    } else {
-        qDebug("* Import all books");
-    }
+        m_manager->setAcceptedBooks(selectedIDs);
 }
+
 void ShamelaImportDialog::setupImporting()
 {
     LibraryCreator creator;
@@ -219,10 +213,6 @@ void ShamelaImportDialog::setupImporting()
     creator.createTables();
 
     creator.start();
-    if(ui->radioImportAllAuthors->isChecked()){
-        addDebugInfo(tr("جاري اضافة المؤلفيين..."));
-        creator.importAuthors();
-    }
 
     if(ui->radioUseShamelaCat->isChecked()) {
         addDebugInfo(tr("جاري استيراد الاقسام..."));
@@ -232,28 +222,10 @@ void ShamelaImportDialog::setupImporting()
     creator.done();
 }
 
-void ShamelaImportDialog::showImportInfo()
+void ShamelaImportDialog::setupCatehories()
 {
-    createFilter();
 
-    int booksCount = m_manager->getBooksCount();
-    int authorsCount = m_manager->getAuthorsCount();
-    int catCount = m_manager->getCatCount();
 
-    QString info = tr("<ul>");
-
-    if(ui->checkImportQuran->isChecked())
-        info += QString("<li>%1</li>").arg(tr("القرآن الكريم"));
-
-    info += QString("<li>%1</li>").arg(Utils::arPlural(booksCount, Plural::BOOK));
-
-    if(ui->radioImportAllAuthors->isChecked())
-        info += QString("<li>%1</li>").arg(Utils::arPlural(authorsCount, Plural::AUTHOR));
-
-    if(ui->radioUseShamelaCat->isChecked())
-        info += tr("<li>سيتم اضافة %1 الى أقسام المكتبة الحالية</li>").arg(Utils::arPlural(catCount, Plural::CATEGORIE));
-
-    ui->labelImportInfo->setText(info);
 }
 
 
@@ -384,4 +356,59 @@ void ShamelaImportDialog::importShorooh()
     }
 
     creator.done();
+}
+
+void ShamelaImportDialog::itemChanged(QStandardItem *item)
+{
+    if(item && m_proccessItemChange) {
+        m_proccessItemChange = false;
+
+        if(item->data(ShamelaManager::typeRole).toInt() == BooksListNode::Categorie) {
+            for(int i=0; i<item->rowCount(); i++) {
+                item->child(i)->setCheckState(item->checkState());
+            }
+        } else if(item->data(ShamelaManager::typeRole).toInt() == BooksListNode::Book) {
+            QStandardItem *parentItem = item->parent();
+            int checkItems = 0;
+
+            for(int i=0; i<parentItem->rowCount(); i++) {
+                if(parentItem->child(i)->checkState()==Qt::Checked)
+                    checkItems++;
+            }
+
+            if(checkItems == 0)
+                parentItem->setCheckState(Qt::Unchecked);
+            else if(checkItems < parentItem->rowCount())
+                parentItem->setCheckState(Qt::PartiallyChecked);
+            else
+                parentItem->setCheckState(Qt::Checked);
+
+        }
+
+        m_proccessItemChange = true;
+    }
+}
+
+void ShamelaImportDialog::selectAllBooks()
+{
+    int rowCount = m_booksModel->rowCount();
+    QModelIndex topLeft = m_booksModel->index(0, 0);
+    QModelIndex bottomRight = m_booksModel->index(rowCount-1, 0);
+    QItemSelection selection(topLeft, bottomRight);
+
+    foreach (QModelIndex index, selection.indexes()) {
+        m_booksModel->setData(index, Qt::Checked, Qt::CheckStateRole);
+    }
+}
+
+void ShamelaImportDialog::unSelectAllBooks()
+{
+    int rowCount = m_booksModel->rowCount();
+    QModelIndex topLeft = m_booksModel->index(0, 0);
+    QModelIndex bottomRight = m_booksModel->index(rowCount-1, 0);
+    QItemSelection selection(topLeft, bottomRight);
+
+    foreach (QModelIndex index, selection.indexes()) {
+        m_booksModel->setData(index, Qt::Unchecked, Qt::CheckStateRole);
+    }
 }

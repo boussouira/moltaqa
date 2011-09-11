@@ -1,25 +1,31 @@
 #include "bookindexmodel.h"
 
-BookIndexModel::BookIndexModel(QObject *parent) : QAbstractItemModel(parent), rootNode(0)
+BookIndexModel::BookIndexModel(QObject *parent) : QAbstractItemModel(parent), m_rootNode(0)
 {
+    m_rootNode = 0;
 }
 
 BookIndexModel::~BookIndexModel()
 {
-    delete rootNode;
+    delete m_rootNode;
 }
 
 void BookIndexModel::setRootNode(BookIndexNode *node)
 {
-    delete rootNode;
-    rootNode = node;
-    reset();
+    beginResetModel ();
+    BookIndexNode *oldNode = m_rootNode;
+    m_rootNode = node;
+
+    if(oldNode)
+        delete oldNode;
+
+    endResetModel();
 }
 
 QModelIndex BookIndexModel::index(int row, int column,
                                 const QModelIndex &parent) const
 {
-    if (!rootNode || row < 0 || column < 0)
+    if (!m_rootNode || row < 0 || column < 0)
         return QModelIndex();
     BookIndexNode *parentNode = nodeFromIndex(parent);
     BookIndexNode *childNode = parentNode->childList()->at(row);
@@ -33,7 +39,7 @@ BookIndexNode *BookIndexModel::nodeFromIndex(const QModelIndex &index) const
     if (index.isValid()) {
         return static_cast<BookIndexNode *>(index.internalPointer());
     } else {
-        return rootNode;
+        return m_rootNode;
     }
 }
 

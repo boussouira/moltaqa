@@ -258,13 +258,32 @@ QString localeDir()
 }
 }
 
+namespace Sql {
+
+QString buildLikeQuery(QString text, QString column)
+{
+    QStringList list = text.split(" ", QString::SkipEmptyParts);
+    QString sql;
+
+    for(int i=0; i < list.count(); i++) {
+        if(i>0)
+            sql.append(" AND ");
+
+        sql.append(QString("%1 LIKE '%%2%'").arg(column).arg(list.at(i)));
+    }
+
+    return sql;
+}
+}
+
 namespace Log {
 
 void QueryError(QSqlQuery &query, const char *file, int line)
 {
-    qCritical("[%s:%d] SQL error: %s",
+    qCritical("[%s:%d] SQL error: %s\n\tQuery: %s",
               qPrintable(QFileInfo(file).fileName()), line,
-              qPrintable(query.lastError().text()));
+              qPrintable(query.lastError().text()),
+              qPrintable(query.lastQuery()));
 }
 
 void DatabaseError(QSqlDatabase &db, const char *file, int line)

@@ -103,7 +103,11 @@ public:
       @return books count
       */
     int booksCount(int catID);
+    /**
+      Get categorie count
+      */
 
+    int categoriesCount();
     /**
       Change books categorie
       @param fromCat The source categorie

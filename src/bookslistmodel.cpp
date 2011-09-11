@@ -3,28 +3,29 @@
 BooksListModel::BooksListModel(QObject *parent)
     : QAbstractItemModel(parent)
 {
-    rootNode = 0;
+    m_rootNode = 0;
 }
 
 BooksListModel::~BooksListModel()
 {
-    delete rootNode;
+    delete m_rootNode;
 }
 
-void BooksListModel::setRootNode(BooksListNode *BooksListNode)
+void BooksListModel::setRootNode(BooksListNode *node)
 {
-    // TODO: delete current root node
-//    if(rootNode)
-//        delete rootNode;
+    beginResetModel();
+    BooksListNode *oldNode = m_rootNode;
+    m_rootNode = node;
 
-    rootNode = BooksListNode;
-    reset();
+    if(oldNode)
+        delete oldNode;
+    endResetModel();
 }
 
 QModelIndex BooksListModel::index(int row, int column,
                                 const QModelIndex &parent) const
 {
-    if (!rootNode || row < 0 || column < 0)
+    if (!m_rootNode || row < 0 || column < 0)
         return QModelIndex();
     BooksListNode *parentNode = nodeFromIndex(parent);
     BooksListNode *childNode = parentNode->childrenNode.value(row);
@@ -38,7 +39,7 @@ BooksListNode *BooksListModel::nodeFromIndex(const QModelIndex &index) const
     if (index.isValid()) {
         return static_cast<BooksListNode *>(index.internalPointer());
     } else {
-        return rootNode;
+        return m_rootNode;
     }
 }
 

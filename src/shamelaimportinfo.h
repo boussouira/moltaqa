@@ -4,10 +4,10 @@
 #include <qobject.h>
 #include "shamelainfo.h"
 
-class CategorieInfo
+class ShamelaCategorieInfo
 {
 public:
-    CategorieInfo(int cid, QString cname, int corder, int clevel) :
+    ShamelaCategorieInfo(int cid, QString cname, int corder, int clevel) :
         id(cid),
         name(cname),
         order(corder),
@@ -19,10 +19,10 @@ public:
     int level;
 };
 
-class AuthorInfo
+class ShamelaAuthorInfo
 {
 public:
-    AuthorInfo(int aid, int adieYear, QString aname, QString afullName, QString ainfo):
+    ShamelaAuthorInfo(int aid, int adieYear, QString aname, QString afullName, QString ainfo):
         id(aid),
         dieYear(adieYear),
         name(aname),

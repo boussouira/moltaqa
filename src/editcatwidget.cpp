@@ -18,7 +18,7 @@ EditCatWidget::EditCatWidget(QWidget *parent) :
 
     m_indexDB = MainWindow::mainWindow()->indexDB();
     m_catsModel = new EditableCatsListModel(this);
-    m_catsModel->setRootNode(m_indexDB->catsListModel()->rootNode);
+    m_catsModel->setRootNode(m_indexDB->catsListModel()->m_rootNode);
     m_catsModel->setIndexDB(m_indexDB);
 
     m_copiedNode = 0;

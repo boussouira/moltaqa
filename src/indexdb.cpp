@@ -477,3 +477,18 @@ void IndexDB::updateBookInfo(BookInfo *info)
         LOG_SQL_ERROR(bookQuery);
     }
 }
+
+int IndexDB::categoriesCount()
+{
+    QSqlQuery bookQuery(m_indexDB);
+
+    if(bookQuery.exec("SELECT COUNT(*) FROM catList")) {
+        if(bookQuery.next()) {
+            return bookQuery.value(0).toInt();
+        }
+    } else {
+        LOG_SQL_ERROR(bookQuery);
+    }
+
+    return 0;
+}

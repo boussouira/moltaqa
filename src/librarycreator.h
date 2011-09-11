@@ -18,7 +18,6 @@ class LibraryCreator
 
 public:
     LibraryCreator();
-    void setImportAuthors(bool import);
     void setThreadID(int tid) { m_threadID = tid; }
     void openDB();
     void createTables();
@@ -29,8 +28,8 @@ public:
     void importCats();
     void importAuthors();
 
-    void addCat(CategorieInfo *cat);
-    void addAuthor(AuthorInfo *auth, bool checkExist=false);
+    void addCat(ShamelaCategorieInfo *cat);
+    void addAuthor(ShamelaAuthorInfo *auth, bool checkExist=false);
     void addTafessir(ShamelaBookInfo *tafessir);
     void addBook(ShamelaBookInfo *book);
     bool getShorooh(ShamelaBookInfo *mateen);

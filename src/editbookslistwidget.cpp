@@ -18,7 +18,7 @@ EditBooksListWidget::EditBooksListWidget(QWidget *parent) :
 
     m_indexDB = MainWindow::mainWindow()->indexDB();
     m_booksModel = new EditableBooksListModel(this);
-    m_booksModel->setRootNode(m_indexDB->booksListModel()->rootNode);
+    m_booksModel->setRootNode(m_indexDB->booksListModel()->m_rootNode);
     m_booksModel->setModelEditibale(false);
 
     ui->treeView->setModel(m_booksModel);

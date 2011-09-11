@@ -1,5 +1,6 @@
 #include "shamelamanager.h"
 #include "utils.h"
+#include "bookslistnode.h"
 
 #ifdef USE_MDBTOOLS
 #include"mdbconverter.h"
@@ -120,29 +121,72 @@ void ShamelaManager::close()
     }
 }
 
+QStandardItemModel *ShamelaManager::getBooksListModel()
+{
+    openShamelaDB();
+
+    QStandardItemModel *model = new QStandardItemModel();
+
+    QSqlQuery query(m_shamelaDB);
+    if(!query.exec(QString("SELECT id, name, Lvl FROM %1 ORDER BY catord").arg(mdbTable("0cat"))))
+        LOG_SQL_ERROR(query);
+
+    while(query.next()) {
+        QStandardItem *item = new QStandardItem();
+        item->setText(query.value(1).toString());
+        item->setData(query.value(0).toInt(), idRole);
+        item->setData(BooksListNode::Categorie, typeRole);
+
+        item->setCheckable(true);
+        item->setCheckState(Qt::Unchecked);
+
+        model->appendRow(item);
+
+        booksCat(item, query.value(0).toInt());
+    }
+
+    return model;
+}
+
+void ShamelaManager::booksCat(QStandardItem *parentNode, int catID)
+{
+    openShamelaDB();
+    QSqlQuery query(m_shamelaDB);
+
+    query.prepare(QString("SELECT bkid, bk, cat, betaka, authno, auth, Archive "
+                          "FROM %1 WHERE cat = ? ORDER BY bkid").arg(mdbTable("0bok")));
+    query.bindValue(0, catID);
+    if(!query.exec())
+        LOG_SQL_ERROR(query);
+
+    while(query.next()) {
+        QStandardItem *item = new QStandardItem();
+        item->setText(query.value(1).toString());
+        item->setData(query.value(0).toInt(), idRole);
+        item->setData(BooksListNode::Book, typeRole);
+
+        item->setCheckable(true);
+        item->setCheckState(Qt::Unchecked);
+
+        parentNode->appendRow(item);
+    }
+}
+
 int ShamelaManager::getBooksCount()
 {
     openShamelaDB();
 
     int count=-1;
 
-#ifdef USE_MDBTOOLS
-    if(!m_shamelaQuery->exec("SELECT COUNT(*) FROM _bok"))
+    if(!m_shamelaQuery->exec(QString("SELECT COUNT(*) FROM %1").arg(mdbTable("0bok"))))
         LOG_SQL_P_ERROR(m_shamelaQuery);
-#else
-    if(!m_shamelaQuery->exec("SELECT COUNT(*) FROM 0bok"))
-        LOG_SQL_P_ERROR(m_shamelaQuery);
-#endif
 
     if(m_shamelaQuery->next()) {
         count = m_shamelaQuery->value(0).toInt();
     }
 
     if(m_haveBookFilter) {
-        if(!m_accepted.isEmpty())
-            count = m_accepted.count();
-        else
-            count -= m_rejected.count();
+        count = m_accepted.count();
     }
 
     return count;
@@ -181,7 +225,7 @@ int ShamelaManager::getCatCount()
     return -1;
 }
 
-AuthorInfo *ShamelaManager::getAuthorInfo(int id)
+ShamelaAuthorInfo *ShamelaManager::getAuthorInfo(int id)
 {
     openShamelaSpecialDB();
     QSqlQuery specialQuery(m_shamelaSpecialDB);
@@ -192,7 +236,7 @@ AuthorInfo *ShamelaManager::getAuthorInfo(int id)
         LOG_SQL_ERROR(specialQuery);
 
     if(specialQuery.next()) {
-        return new AuthorInfo(specialQuery.value(0).toInt(),
+        return new ShamelaAuthorInfo(specialQuery.value(0).toInt(),
                               specialQuery.value(3).toInt(),
                               specialQuery.value(1).toString(),
                               specialQuery.value(2).toString(),
@@ -206,19 +250,15 @@ void ShamelaManager::selectCats()
 {
     openShamelaDB();
 
-#ifdef USE_MDBTOOLS
-    if(!m_shamelaQuery->exec("SELECT id, name, catord, Lvl FROM _cat ORDER BY catord"))
+    if(!m_shamelaQuery->exec(QString("SELECT id, name, catord, Lvl FROM %1 ORDER BY catord")
+                             .arg(mdbTable("0cat"))))
         LOG_SQL_P_ERROR(m_shamelaQuery);
-#else
-    if(!m_shamelaQuery->exec("SELECT id, name, catord, Lvl FROM 0cat ORDER BY catord"))
-        LOG_SQL_P_ERROR(m_shamelaQuery);
-#endif
 }
 
-CategorieInfo *ShamelaManager::nextCat()
+ShamelaCategorieInfo *ShamelaManager::nextCat()
 {
     if(m_shamelaQuery->next()) {
-        return new CategorieInfo(m_shamelaQuery->value(0).toInt(),
+        return new ShamelaCategorieInfo(m_shamelaQuery->value(0).toInt(),
                                  m_shamelaQuery->value(1).toString(),
                                  m_shamelaQuery->value(2).toInt(),
                                  m_shamelaQuery->value(3).toInt());
@@ -235,10 +275,10 @@ void ShamelaManager::selectAuthors()
         LOG_SQL_P_ERROR(m_shamelaSpecialQuery);
 }
 
-AuthorInfo *ShamelaManager::nextAuthor()
+ShamelaAuthorInfo *ShamelaManager::nextAuthor()
 {
     if(m_shamelaSpecialQuery->next()) {
-        return new AuthorInfo(m_shamelaSpecialQuery->value(0).toInt(),
+        return new ShamelaAuthorInfo(m_shamelaSpecialQuery->value(0).toInt(),
                               m_shamelaSpecialQuery->value(3).toInt(),
                               m_shamelaSpecialQuery->value(1).toString(),
                               m_shamelaSpecialQuery->value(2).toString(),
@@ -252,13 +292,9 @@ void ShamelaManager::selectBooks()
 {
     openShamelaDB();
 
-#ifdef USE_MDBTOOLS
-    if(!m_shamelaQuery->exec("SELECT bkid, bk, cat, betaka, authno, auth, Archive, TafseerNam FROM _bok ORDER BY Archive"))
+    if(!m_shamelaQuery->exec(QString("SELECT bkid, bk, cat, betaka, authno, auth, Archive, TafseerNam FROM %1 ORDER BY Archive")
+                             .arg(mdbTable("0bok"))))
         LOG_SQL_P_ERROR(m_shamelaQuery);
-#else
-    if(!m_shamelaQuery->exec("SELECT bkid, bk, cat, betaka, authno, auth, Archive, TafseerNam FROM 0bok ORDER BY Archive"))
-        LOG_SQL_P_ERROR(m_shamelaQuery);
-#endif
 }
 
 ShamelaBookInfo *ShamelaManager::nextBook()
@@ -287,7 +323,7 @@ ShamelaBookInfo *ShamelaManager::nextFiltredBook()
 {
     while(m_shamelaQuery->next()) {
         int bid = m_shamelaQuery->value(0).toInt();
-        if(m_accepted.contains(bid) || (!m_rejected.contains(bid) && !m_rejected.isEmpty())) {
+        if(m_accepted.contains(bid)) {
             return new ShamelaBookInfo(m_shamelaQuery->value(0).toInt(),
                                        m_shamelaQuery->value(1).toString(),
                                        m_shamelaQuery->value(3).toString(),
@@ -310,11 +346,6 @@ void ShamelaManager::setFilterBooks(bool filter)
 void ShamelaManager::setAcceptedBooks(QList<int> accepted)
 {
     m_accepted = accepted;
-}
-
-void ShamelaManager::setRejectedBooks(QList<int> rejected)
-{
-    m_rejected = rejected;
 }
 
 int ShamelaManager::getBookShareeh(int shamelaID)
@@ -378,4 +409,15 @@ QList<ShamelaShareehInfo *> ShamelaManager::getShareehInfo(int mateen, int share
     }
 
     return list;
+}
+
+QString ShamelaManager::mdbTable(QString table)
+{
+#ifdef USE_MDBTOOLS
+    if(table.at(0).isDigit()) {
+        table[0] = '_';
+    }
+#endif
+    return table;
+
 }

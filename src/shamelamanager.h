@@ -13,6 +13,7 @@
 #include <qhash.h>
 #include <qdebug.h>
 #include <qmutex.h>
+#include <qstandarditemmodel.h>
 
 class ShamelaManager
 {
@@ -22,31 +23,40 @@ public:
     ShamelaMapper *mapper();
     void setFilterBooks(bool filter);
     void setAcceptedBooks(QList<int> accepted);
-    void setRejectedBooks(QList<int> rejected);
 
     void openIndexDB();
     void openShamelaDB();
     void openShamelaSpecialDB();
     void close();
 
+    QStandardItemModel *getBooksListModel();
+
     int getBooksCount();
     int getAuthorsCount();
     int getCatCount();
 
-    AuthorInfo *getAuthorInfo(int id);
+    ShamelaAuthorInfo *getAuthorInfo(int id);
 
     void selectCats();
     void selectAuthors();
     void selectBooks();
 
-    CategorieInfo *nextCat();
-    AuthorInfo *nextAuthor();
+    ShamelaCategorieInfo *nextCat();
+    ShamelaAuthorInfo *nextAuthor();
     ShamelaBookInfo *nextBook();
     ShamelaBookInfo *nextFiltredBook();
 
     int getBookShareeh(int shamelaID);
     int getBookMateen(int shamelaID);
     QList<ShamelaShareehInfo*> getShareehInfo(int mateen, int shareeh);
+
+    static QString mdbTable(QString table);
+
+    static const int idRole = Qt::UserRole + 2;
+    static const int typeRole = Qt::UserRole + 3;
+
+protected:
+    void booksCat(QStandardItem *parentNode, int catID);
 
 protected:
     LibraryInfo *m_library;
@@ -60,7 +70,6 @@ protected:
     QSqlQuery *m_shamelaSpecialQuery;
     bool m_haveBookFilter;
     QList<int> m_accepted;
-    QList<int> m_rejected;
     QList<int> m_addedShorooh;
     QMutex m_mutex;
     QString m_tempShamelaDB;
