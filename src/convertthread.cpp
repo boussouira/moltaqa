@@ -106,18 +106,22 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
         node->authorName = bookQuery.value(authCol).toString();
 
         if(catCol != -1) { // Some old books doesn't have this column
-            node->catID = m_indexDB->catIdFromName(bookQuery.value(catCol).toString());
-
-            if(node->catID)
-                node->catName = bookQuery.value(catCol).toString();
+            QPair<int, QString> foundCat = m_indexDB->findCategorie(bookQuery.value(catCol).toString());
+            node->setCategories(foundCat.first, foundCat.second);
         } else {
-            node->catName = tr("-- غير محدد --");
-            node->catID = 0;
+            node->setCategories(0);
         }
 
         if(betakaCol != -1) {
              node->bookInfo = bookQuery.value(betakaCol).toString();
         }
+
+         QPair<int, QString> foundAuth = m_indexDB->findAuthor(bookQuery.value(authCol).toString());
+         if(foundAuth.first)
+             node->setAuthor(foundAuth.first, foundAuth.second);
+         else
+             node->setAuthor(foundAuth.first, bookQuery.value(authCol).toString());
+
 
         qDebug() << "Importing:" << node->bookName;
 

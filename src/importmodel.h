@@ -19,6 +19,8 @@ public:
     void deleteChild(int index);
 
     void setTypeName(const QString &name);
+    void setCategories(int cid, const QString &name=QString());
+    void setAuthor(int aid, const QString &name=QString());
 
 public:
     BookInfo::Type type;
@@ -29,6 +31,7 @@ public:
     QString typeName;
     QString catName;
     int catID;
+    int authorID;
     QBrush bgColor;
     ImportModelNode *parentNode;
     QList<ImportModelNode *> childrenNode;
@@ -36,6 +39,7 @@ public:
 
 class ImportModel : public QAbstractItemModel
 {
+    Q_OBJECT
 public:
     ImportModel(QObject *parent = 0);
     ~ImportModel();

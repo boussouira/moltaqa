@@ -55,7 +55,9 @@ public:
     BookInfo *getQuranBook();
     LibraryInfo *connectionInfo();
     QList<QPair<int, QString> > getTafassirList();
-    int catIdFromName(const QString &cat);
+    QHash<int, QString> getCategoriesList();
+    QPair<int, QString> findCategorie(const QString &cat);
+    QPair<int, QString> findAuthor(const QString &name);
     int addBook(ImportModelNode *book);
     void updateBookMeta(BookInfo *info, bool newBook);
     void setConnectionInfo(LibraryInfo *info);

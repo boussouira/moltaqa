@@ -5,8 +5,7 @@ ImportModelNode::ImportModelNode(BookInfo::Type pType)
     type = pType;
     parentNode = 0;
     catID = 0;
-    authorName = "XXX";
-    catName = tr("-- غير محدد --");
+    authorID = 0;
     bgColor = Qt::white;
 }
 
@@ -47,6 +46,22 @@ void ImportModelNode::setTypeName(const QString &name)
         type = BookInfo::NormalBook;
         break;
     }
+}
+
+void ImportModelNode::setCategories(int cid, const QString &name)
+{
+    catID = cid;
+
+    if(cid)
+        catName = name;
+    else
+        catName = tr("-- غير محدد --");
+}
+
+void ImportModelNode::setAuthor(int aid, const QString &name)
+{
+    authorID = aid;
+    authorName = name;
 }
 
 // The model
@@ -144,7 +159,10 @@ QVariant ImportModel::data(const QModelIndex &index, int role) const
         if (index.column() == 0)
             return node->bookInfo;
     } else if(role == Qt::BackgroundRole) {
-        return node->bgColor;
+        if (index.column() == 1 && node->authorID == 0)
+            return QColor(0xf5, 0x82, 0x82);
+        else
+            return node->bgColor;
     }
     return QVariant();
 }
@@ -203,4 +221,3 @@ void ImportModel::removeRow(int row, const QModelIndex &parent)
     nodeFromIndex(parent)->deleteChild(row);
     endRemoveRows();
 }
-

@@ -2,6 +2,7 @@
 #include "importmodel.h"
 #include "selectcatdialog.h"
 #include "selectauthordialog.h"
+#include "shamelamanager.h"
 #include <qcombobox.h>
 
 /* Book type delegate */
@@ -81,8 +82,11 @@ void CategorieDelegate::setModelData(QWidget *editor,
         QString catName = browser->selectedCatName();
         int catID = browser->selectedCatID();
 
-        ImportModel *mod = static_cast<ImportModel*>(model);
-        mod->nodeFromIndex(index)->catID = catID;
+        ImportModel *importModel = qobject_cast<ImportModel*>(model);
+        if(importModel)
+            importModel->nodeFromIndex(index)->catID = catID;
+        else
+            model->setData(index, catID, ShamelaManager::idRole);
 
         model->setData(index, catName, Qt::EditRole);
     }
@@ -130,10 +134,12 @@ void AuthorDelegate::setModelData(QWidget *editor,
 
     if(browser->selectedAuthorID()) {
         QString authName = browser->selectedAuthorName();
-//        int catID = browser->selectedAuthorID();
+        int authID = browser->selectedAuthorID();
 
-//        ImportModel *mod = static_cast<ImportModel*>(model);
-//        mod->nodeFromIndex(index)->authorName = catID;
+        ImportModel *mod = static_cast<ImportModel*>(model);
+        ImportModelNode *node = mod->nodeFromIndex(index);
+        node->authorName = authName;
+        node->authorID = authID;
 
         model->setData(index, authName, Qt::EditRole);
     }

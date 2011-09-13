@@ -14,6 +14,7 @@ class ShamelaManager;
 class ShamelaImportThread;
 class QStandardItemModel;
 class QStandardItem;
+class IndexDB;
 
 class ShamelaImportDialog : public QDialog
 {
@@ -38,11 +39,12 @@ protected:
       @param index Index of page, if it eqaul -1 then go to next page
       */
     void goPage(int index=-1);
-    void setupCatehories();
+    void setupCategories();
     void setupImporting();
     void startImporting();
     void showBooks();
-    void createFilter();
+    bool createFilter();
+    bool categorieLinked();
 
 public slots:
     void setStepTitle(const QString &title);
@@ -67,6 +69,7 @@ private:
     int m_importThreadCount;
     int m_importedBooksCount;
     LibraryInfo *m_library;
+    IndexDB *m_indexDB;
     ShamelaInfo *m_shamela;
     ShamelaManager *m_manager;
     ShamelaImportThread *m_importThread;

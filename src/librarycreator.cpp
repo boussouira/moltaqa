@@ -4,6 +4,7 @@
 #include "bookinfo.h"
 #include "shamelaimportdialog.h"
 #include "newquranwriter.h"
+#include "mainwindow.h"
 
 #ifdef USE_MDBTOOLS
 #include "mdbconverter.h"
@@ -23,8 +24,9 @@ LibraryCreator::LibraryCreator()
     m_library = importDialog->libraryInfo();
     m_mapper = m_shamelaManager->mapper();
 
+    m_indexDB = MainWindow::mainWindow()->indexDB();
+
     m_prevArchive = -1;
-    m_importAuthor = false;
     m_threadID = 0;
 }
 
@@ -115,40 +117,25 @@ void LibraryCreator::addAuthor(ShamelaAuthorInfo *auth, bool checkExist)
 {
     QMutexLocker locker(&m_mutex);
 
-     QSqlQuery bookQuery(m_bookDB);
+    QSqlQuery bookQuery(m_bookDB);
     if(checkExist) {
-       int lid = m_mapper->mapFromShamelaAuthor(auth->id);
-       if(lid != 0) {
-           // This author is already in the map
-//           qDebug() << "[*] Author In the Map" << auth->name;
-           return;
-       } else {
-           // We look for this author in the index database
-           if(m_bookQuery.exec(QString("SELECT id, name FROM authorsList WHERE %1").arg(Sql::buildLikeQuery(auth->name, "name")))) {
-               int authID = 0;
-               int authCount = 0;
+        int lid = m_mapper->mapFromShamelaAuthor(auth->id);
+        if(lid) {
+            // This author is already in the map
+            return;
+        } else {
+            // We look for this author in the index database
+            QPair<int, QString> foundAuthor = m_indexDB->findAuthor(auth->name);
 
-               while(m_bookQuery.next()) {
-                   authID = m_bookQuery.value(0).toInt();
-                   authCount++;
-               }
-
-               // If we have one result then add it to the map
-               if(authCount == 1) {
-                   m_mapper->addAuthorMap(auth->id, authID);
-//                   qDebug() << "[*] Author in Index DB" << auth->name;
-                   return; // Every thing is done
-               } else if(authCount > 1) {
-//                   qDebug() << "[-] Found" << authCount << "for" << auth->name;
-               }
-           } else {
-               LOG_SQL_ERROR(m_bookQuery);
-           }
-       }
+            // If found the author in our database so add it to the map and return
+            if(foundAuthor.first) {
+                m_mapper->addAuthorMap(auth->id, foundAuthor.first);
+                return;
+            }
+        }
     }
 
     // Add this author from shamela
-    //qDebug() << "[*] Add author" << auth->name << "from Shamela";
     bookQuery.prepare("INSERT INTO authorsList (id, name, full_name, die_year, info) VALUES (NULL, ?, ?, ?, ?)");
     bookQuery.bindValue(0, auth->name);
     bookQuery.bindValue(1, auth->fullName);
@@ -326,13 +313,10 @@ void LibraryCreator::importBook(ShamelaBookInfo *book, QString path)
 {
     QFileInfo fileInfo(path);
 
-    if(m_importAuthor) {
-        ShamelaAuthorInfo *auth = m_shamelaManager->getAuthorInfo(book->authorID);
-
-        if(auth) {
-            addAuthor(auth, true);
-            delete auth;
-        }
+    ShamelaAuthorInfo *auth = m_shamelaManager->getAuthorInfo(book->authorID);
+    if(auth) {
+        addAuthor(auth, true);
+        delete auth;
     }
 
     m_bookQuery.prepare("INSERT INTO booksList (id, bookID, bookType, bookFlags, bookCat, "

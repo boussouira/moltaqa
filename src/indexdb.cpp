@@ -92,23 +92,73 @@ BooksListModel *IndexDB::catsListModel()
     return model;
 }
 
-int IndexDB::catIdFromName(const QString &cat)
+QPair<int, QString> IndexDB::findCategorie(const QString &cat)
 {
+    QPair<int, QString> foundCat;
     int count = 0;
     int catID = 0;
 
-    if(cat.isEmpty())
-        return catID;
-
-    QSqlQuery bookQuery(m_indexDB);
-    bookQuery.exec(QString("SELECT id FROM catList WHERE title LIKE \"%%1%\" ").arg(cat));
-    while(bookQuery.next()) {
-        catID = bookQuery.value(0).toInt();
-        count++;
-
+    if(cat.isEmpty()) {
+        foundCat.first = 0;
+        return foundCat;
     }
 
-    return (count == 1) ? catID : 0;
+    QSqlQuery bookQuery(m_indexDB);
+    bookQuery.exec(QString("SELECT id, title FROM catList WHERE %1").arg(Sql::buildLikeQuery(cat, "title")));
+    while(bookQuery.next()) {
+        catID = bookQuery.value(0).toInt();
+        foundCat.first = bookQuery.value(0).toInt();
+        foundCat.second = bookQuery.value(1).toString();
+
+        if(foundCat.second == cat) { // We got a match
+            count = 1;
+            break;
+        } else {
+            count++;
+        }
+    }
+
+    if(count != 1) {
+        foundCat.first = 0;
+        foundCat.second.clear();
+    }
+
+    return foundCat;
+}
+
+QPair<int, QString> IndexDB::findAuthor(const QString &name)
+{
+    QPair<int, QString> foundAuth;
+    int count = 0;
+
+    if(name.isEmpty()) {
+        foundAuth.first = 0;
+        return foundAuth;
+    }
+
+    QSqlQuery bookQuery(m_indexDB);
+    if(bookQuery.exec(QString("SELECT id, name FROM authorsList WHERE %1").arg(Sql::buildLikeQuery(name, "name")))) {
+        while(bookQuery.next()) {
+            foundAuth.first = bookQuery.value(0).toInt();
+            foundAuth.second = bookQuery.value(1).toString();
+
+            if(name == bookQuery.value(1).toString()) {
+                count = 1;
+                break;
+            } else {
+                count++;
+            }
+        }
+    } else {
+        LOG_SQL_ERROR(bookQuery)
+    }
+
+    if(count != 1) {
+        foundAuth.first = 0;
+        foundAuth.second.clear();
+    }
+
+    return foundAuth;
 }
 
 BookInfo *IndexDB::getBookInfo(int bookID, bool allInfo)
@@ -191,6 +241,22 @@ QList<QPair<int, QString> > IndexDB::getTafassirList()
     return list;
 }
 
+QHash<int, QString> IndexDB::getCategoriesList()
+{
+    QHash<int, QString> cats;
+    QSqlQuery catQuery(m_indexDB);
+    if(!catQuery.exec("SELECT id, title FROM catList "
+                      "ORDER BY catOrder")) {
+        LOG_SQL_ERROR(catQuery);
+    }
+
+    while(catQuery.next()) {
+        cats.insert(catQuery.value(0).toInt(), catQuery.value(1).toString());
+    }
+
+    return cats;
+}
+
 int IndexDB::addBook(ImportModelNode *book)
 {
     QSqlQuery indexQuery(m_indexDB);
@@ -208,7 +274,7 @@ int IndexDB::addBook(ImportModelNode *book)
     indexQuery.bindValue(4, book->bookName);
     indexQuery.bindValue(5, book->bookInfo);
     indexQuery.bindValue(6, book->authorName);
-    indexQuery.bindValue(7, 0);
+    indexQuery.bindValue(7, book->authorID);
     indexQuery.bindValue(8, newBookName); // Add file name
     indexQuery.bindValue(9, QVariant(QVariant::String));
 

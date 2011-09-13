@@ -240,7 +240,7 @@ bool ImportDialog::checkNodes(QList<ImportModelNode *> nodesList)
     int wrongNodes = 0;
     foreach(ImportModelNode *node, nodesList) {
         if(node->catID == 0){
-            node->bgColor = QColor(200,200,200);
+            node->bgColor = Qt::lightGray;
             wrongNodes++;
         } else {
             node->bgColor = Qt::white;
