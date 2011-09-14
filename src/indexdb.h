@@ -7,6 +7,7 @@
 #include <qhash.h>
 #include <QtConcurrentRun>
 #include <qfuture.h>
+#include <qfuturewatcher.h>
 #include <qstandarditemmodel.h>
 
 class LibraryInfo;
@@ -15,12 +16,11 @@ class BooksListModel;
 class BooksListNode;
 class ImportModelNode;
 
-class IndexDB
+class IndexDB : public QObject
 {
-    Q_DECLARE_TR_FUNCTIONS(IndexDB);
-
+    Q_OBJECT
 public:
-    IndexDB(LibraryInfo *info);
+    IndexDB(LibraryInfo *info, QObject *parent=0);
     ~IndexDB();
 
     /**
@@ -126,11 +126,18 @@ protected:
     void childCats(BooksListNode *parentNode, int pID, bool onlyCats=false);
     void loadModel();
 
+protected slots:
+    void booksListModelLoaded();
+
+signals:
+    void booksListModelLoaded(BooksListModel *model);
+
 protected:
     BooksListModel *m_model;
     LibraryInfo *m_libraryInfo;
     QSqlDatabase m_indexDB;
     QFuture<void> m_future;
+    QFutureWatcher<void> m_watcher;
     QString m_connName;
 };
 

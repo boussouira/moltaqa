@@ -8,18 +8,14 @@ BooksListModel::BooksListModel(QObject *parent)
 
 BooksListModel::~BooksListModel()
 {
+    qDebug("Delete model %p", m_rootNode);
     delete m_rootNode;
 }
 
 void BooksListModel::setRootNode(BooksListNode *node)
 {
-    beginResetModel();
-    BooksListNode *oldNode = m_rootNode;
     m_rootNode = node;
-
-    if(oldNode)
-        delete oldNode;
-    endResetModel();
+    reset();
 }
 
 QModelIndex BooksListModel::index(int row, int column,

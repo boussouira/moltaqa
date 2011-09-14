@@ -13,11 +13,13 @@
 #include <qsqlerror.h>
 #include <qdatetime.h>
 
-IndexDB::IndexDB(LibraryInfo *info)
+IndexDB::IndexDB(LibraryInfo *info, QObject *parent) : QObject(parent)
 {
+    m_model = 0;
     m_libraryInfo = info;
-    m_model = new BooksListModel();
     m_connName = "BooksIndexDB";
+
+    connect(&m_watcher, SIGNAL(finished()), SLOT(booksListModelLoaded()));
 }
 
 IndexDB::~IndexDB()
@@ -53,6 +55,7 @@ void IndexDB::open()
 void IndexDB::loadBooksListModel()
 {
     m_future = QtConcurrent::run(this, &IndexDB::loadModel);
+    m_watcher.setFuture(m_future);
 }
 
 void IndexDB::transaction()
@@ -67,7 +70,12 @@ bool IndexDB::commit()
 
 void IndexDB::loadModel()
 {
+    if(m_model)
+        delete(m_model);
+
+    m_model = new BooksListModel();
     BooksListNode *firstNode = new BooksListNode(BooksListNode::Root);
+
     childCats(firstNode, 0, false);
 
     m_model->setRootNode(firstNode);
@@ -79,6 +87,11 @@ BooksListModel *IndexDB::booksListModel()
         m_future.waitForFinished();
 
     return m_model;
+}
+
+void IndexDB::booksListModelLoaded()
+{
+    emit booksListModelLoaded(m_model);
 }
 
 BooksListModel *IndexDB::catsListModel()

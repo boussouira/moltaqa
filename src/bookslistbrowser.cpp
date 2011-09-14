@@ -20,25 +20,16 @@ BooksListBrowser::BooksListBrowser(IndexDB *indexDB, QWidget *parent) :
 
     loadSettings();
     m_indexDB = indexDB;
-    m_updateList = true;
 
     m_filterModel = new SortFilterProxyModel(this);
     connect(ui->lineSearch, SIGNAL(textChanged(QString)), m_filterModel, SLOT(setFilterRegExp(QString)));// TODO: serach in book info...
     connect(ui->lineSearch, SIGNAL(textChanged(QString)), ui->treeView, SLOT(expandAll()));
+    connect(m_indexDB, SIGNAL(booksListModelLoaded(BooksListModel*)), SLOT(setModel(BooksListModel*)));
 }
 
 BooksListBrowser::~BooksListBrowser()
 {
     delete ui;
-}
-
-void BooksListBrowser::showEvent(QShowEvent* event){
-    if(event->type() == QEvent::Show && !event->spontaneous()){
-        if(m_updateList){
-            loadBooksList();
-            m_updateList = false;
-        }
-    }
 }
 
 void BooksListBrowser::closeEvent(QCloseEvent *event)
@@ -61,9 +52,10 @@ void BooksListBrowser::loadSettings()
     settings.endGroup();
 }
 
-void BooksListBrowser::loadBooksList()
+void BooksListBrowser::setModel(BooksListModel *model)
 {
-    m_filterModel->setSourceModel(m_indexDB->booksListModel());
+    m_model = model;
+    m_filterModel->setSourceModel(m_model);
     m_filterModel->setFilterKeyColumn(0);
 
     ui->treeView->setModel(m_filterModel);

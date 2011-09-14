@@ -3,7 +3,7 @@
 
 #include <qdialog.h>
 #include <qsqldatabase.h>
-#include "qabstractitemmodel.h"
+#include "bookslistmodel.h"
 
 class IndexDB;
 class SortFilterProxyModel;
@@ -17,16 +17,14 @@ class BooksListBrowser : public QDialog {
 public:
     BooksListBrowser(IndexDB *indexDB, QWidget *parent = 0);
     ~BooksListBrowser();
-    void setUpdateList(bool update) { m_updateList = update; }
     void setIndexDB(IndexDB *indexDB) { m_indexDB = indexDB;}
 
 protected:
-    void showEvent(QShowEvent* event);
     void closeEvent(QCloseEvent *event);
     void loadSettings();
 
 public slots:
-    void loadBooksList();
+    void setModel(BooksListModel *model);
 
 private slots:
     void on_treeView_doubleClicked(QModelIndex index);
@@ -36,8 +34,8 @@ signals:
     void bookSelected(int bookID);
 
 private:
-    bool m_updateList;
     IndexDB *m_indexDB;
+    BooksListModel *m_model;
     SortFilterProxyModel *m_filterModel;
     Ui::BooksListBrowser *ui;
 };

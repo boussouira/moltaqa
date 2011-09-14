@@ -78,14 +78,8 @@ ImportModel::~ImportModel()
 
 void ImportModel::setRootNode(ImportModelNode *node)
 {
-    beginResetModel();
-    ImportModelNode *oldNode = m_rootNode;
     m_rootNode = node;
-
-    if(oldNode)
-        delete oldNode;
-
-    endResetModel();
+    reset();
 }
 
 QModelIndex ImportModel::index(int row, int column,

@@ -12,14 +12,8 @@ BookIndexModel::~BookIndexModel()
 
 void BookIndexModel::setRootNode(BookIndexNode *node)
 {
-    beginResetModel ();
-    BookIndexNode *oldNode = m_rootNode;
     m_rootNode = node;
-
-    if(oldNode)
-        delete oldNode;
-
-    endResetModel();
+    reset();
 }
 
 QModelIndex BookIndexModel::index(int row, int column,
