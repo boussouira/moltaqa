@@ -1,5 +1,5 @@
-#ifndef INDEXDB_H
-#define INDEXDB_H
+#ifndef LIBRARYMANAGER_H
+#define LIBRARYMANAGER_H
 
 #include <qobject.h>
 #include <qsqldatabase.h>
@@ -16,12 +16,12 @@ class BooksListModel;
 class BooksListNode;
 class ImportModelNode;
 
-class IndexDB : public QObject
+class LibraryManager : public QObject
 {
     Q_OBJECT
 public:
-    IndexDB(LibraryInfo *info, QObject *parent=0);
-    ~IndexDB();
+    LibraryManager(LibraryInfo *info, QObject *parent=0);
+    ~LibraryManager();
 
     /**
       Open the index database
@@ -135,10 +135,10 @@ signals:
 protected:
     BooksListModel *m_model;
     LibraryInfo *m_libraryInfo;
-    QSqlDatabase m_indexDB;
+    QSqlDatabase m_libraryManager;
     QFuture<void> m_future;
     QFutureWatcher<void> m_watcher;
     QString m_connName;
 };
 
-#endif // INDEXDB_H
+#endif // LIBRARYMANAGER_H

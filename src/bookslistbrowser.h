@@ -5,7 +5,7 @@
 #include <qsqldatabase.h>
 #include "bookslistmodel.h"
 
-class IndexDB;
+class LibraryManager;
 class SortFilterProxyModel;
 
 namespace Ui {
@@ -15,9 +15,9 @@ namespace Ui {
 class BooksListBrowser : public QDialog {
     Q_OBJECT
 public:
-    BooksListBrowser(IndexDB *indexDB, QWidget *parent = 0);
+    BooksListBrowser(LibraryManager *libraryManager, QWidget *parent = 0);
     ~BooksListBrowser();
-    void setIndexDB(IndexDB *indexDB) { m_indexDB = indexDB;}
+    void setLibraryManager(LibraryManager *libraryManager) { m_libraryManager = libraryManager;}
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -34,7 +34,7 @@ signals:
     void bookSelected(int bookID);
 
 private:
-    IndexDB *m_indexDB;
+    LibraryManager *m_libraryManager;
     BooksListModel *m_model;
     SortFilterProxyModel *m_filterModel;
     Ui::BooksListBrowser *ui;

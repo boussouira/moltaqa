@@ -2,7 +2,7 @@
 #define EDITABLEBOOKSLISTMODEL_H
 
 #include "bookslistmodel.h"
-#include "indexdb.h"
+#include "librarymanager.h"
 
 class EditableBooksListModel : public BooksListModel
 {
@@ -16,11 +16,11 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role);
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
-    void setIndexDB(IndexDB *db);
+    void setLibraryManager(LibraryManager *db);
     void setModelEditibale(bool editable);
 
 protected:
-    IndexDB *m_indexDB;
+    LibraryManager *m_libraryManager;
     bool m_editable;
 };
 

@@ -7,7 +7,7 @@ namespace Ui {
     class selectCatDialog;
 }
 
-class IndexDB;
+class LibraryManager;
 class BooksListModel;
 class BooksListNode;
 class SortFilterProxyModel;
@@ -29,7 +29,7 @@ protected slots:
     void cancel();
 
 protected:
-    IndexDB *m_indexDB;
+    LibraryManager *m_libraryManager;
     BooksListModel *m_model;
     SortFilterProxyModel *m_filter;
     BooksListNode *m_selectedNode;

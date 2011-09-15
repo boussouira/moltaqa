@@ -2,7 +2,7 @@
 #define EDITCATWIDGET_H
 
 #include "abstracteditwidget.h"
-#include "indexdb.h"
+#include "librarymanager.h"
 #include "editablecatslistmodel.h"
 
 namespace Ui {
@@ -36,7 +36,7 @@ protected slots:
     void updateActions();
 
 private:
-    IndexDB *m_indexDB;
+    LibraryManager *m_libraryManager;
     EditableCatsListModel *m_catsModel;
     BooksListNode *m_copiedNode;
     Ui::EditCatWidget *ui;

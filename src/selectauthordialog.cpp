@@ -1,7 +1,7 @@
 #include "selectauthordialog.h"
 #include "ui_selectauthordialog.h"
 #include "mainwindow.h"
-#include "indexdb.h"
+#include "librarymanager.h"
 #include "sortfilterproxymodel.h"
 
 #include <qstandarditemmodel.h>
@@ -13,8 +13,8 @@ selectAuthorDialog::selectAuthorDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    m_indexDB = MainWindow::mainWindow()->indexDB();
-    m_model = m_indexDB->getAuthorsListModel();
+    m_libraryManager = MainWindow::mainWindow()->libraryManager();
+    m_model = m_libraryManager->getAuthorsListModel();
 
     m_filter = new SortFilterProxyModel(this);
     m_filter->setSourceModel(m_model);

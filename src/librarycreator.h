@@ -11,7 +11,7 @@
 #include "shamelamanager.h"
 #include "newbookwriter.h"
 #include "shamelamapper.h"
-#include "indexdb.h"
+#include "librarymanager.h"
 
 class LibraryCreator
 {
@@ -56,7 +56,7 @@ protected:
     ShamelaManager *m_shamelaManager;
     ShamelaInfo *m_shamelaInfo;
     ShamelaMapper *m_mapper;
-    IndexDB *m_indexDB;
+    LibraryManager *m_libraryManager;
     int m_prevArchive;
     int m_threadID;
     QHash<int, int> m_catMap;

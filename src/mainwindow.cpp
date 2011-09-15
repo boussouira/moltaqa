@@ -2,7 +2,7 @@
 #include "ui_mainwindow.h"
 #include "utils.h"
 #include "booksviewer.h"
-#include "indexdb.h"
+#include "librarymanager.h"
 #include "bookslistbrowser.h"
 #include "settingsdialog.h"
 #include "bookwidget.h"
@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent):
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     m_libraryInfo(0),
-    m_indexDB(0)
+    m_libraryManager(0)
 {
     ui->setupUi(this);
     m_mainWindow = this;
@@ -99,12 +99,12 @@ bool MainWindow::init()
     try {
         m_libraryInfo = new LibraryInfo(libDir);
 
-        m_indexDB = new IndexDB(m_libraryInfo);
-        m_indexDB->open();
-        m_indexDB->loadBooksListModel();
+        m_libraryManager = new LibraryManager(m_libraryInfo);
+        m_libraryManager->open();
+        m_libraryManager->loadBooksListModel();
 
-        m_bookView = new BooksViewer(m_indexDB, this);
-        m_booksList = new BooksListBrowser(m_indexDB, 0);
+        m_bookView = new BooksViewer(m_libraryManager, this);
+        m_booksList = new BooksListBrowser(m_libraryManager, 0);
 
         setupActions();
 
@@ -124,8 +124,8 @@ MainWindow::~MainWindow()
 {
     delete ui;
 
-    if(m_indexDB)
-        delete m_indexDB;
+    if(m_libraryManager)
+        delete m_libraryManager;
 
     if(m_libraryInfo)
         delete m_libraryInfo;
@@ -226,7 +226,7 @@ void MainWindow::loadSettings()
 
 void MainWindow::on_actionImport_triggered()
 {
-    ImportDialog *dialog = new ImportDialog(m_indexDB, 0);
+    ImportDialog *dialog = new ImportDialog(m_libraryManager, 0);
     connect(dialog, SIGNAL(openBook(int)), this, SLOT(openBook(int)));
 
     dialog->show();
@@ -241,7 +241,7 @@ void MainWindow::lastTabClosed()
 void MainWindow::on_actionShamelaImport_triggered()
 {
     ShamelaImportDialog importDialog;
-    importDialog.setLibraryInfo(m_indexDB->connectionInfo());
+    importDialog.setLibraryInfo(m_libraryManager->connectionInfo());
 
     importDialog.exec();
 }
@@ -251,9 +251,9 @@ LibraryInfo *MainWindow::libraryInfo()
     return m_libraryInfo;
 }
 
-IndexDB *MainWindow::indexDB()
+LibraryManager *MainWindow::libraryManager()
 {
-    return m_indexDB;
+    return m_libraryManager;
 }
 
 BooksViewer *MainWindow::booksViewer()

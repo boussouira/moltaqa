@@ -187,14 +187,14 @@ void createIndexDB(QString path)
     QString indexPath = dir.filePath("books_index.db");
 
     {
-        QSqlDatabase indexDB = QSqlDatabase::addDatabase("QSQLITE", "createIndexDB");
-        indexDB.setDatabaseName(indexPath);
+        QSqlDatabase libraryManager = QSqlDatabase::addDatabase("QSQLITE", "createIndexDB");
+        libraryManager.setDatabaseName(indexPath);
 
-        if (!indexDB.open()) {
-            LOG_DB_ERROR(indexDB);
+        if (!libraryManager.open()) {
+            LOG_DB_ERROR(libraryManager);
         }
 
-        QSqlQuery query(indexDB);
+        QSqlQuery query(libraryManager);
 
         createIndexDB(query);
     }

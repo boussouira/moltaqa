@@ -41,7 +41,7 @@ void TafessirDBHandler::connected()
 {
     m_tafessirQuery = new TafessirQuery(m_bookDB, m_bookInfo);
 
-    m_quranInfo = m_indexDB->getQuranBook();
+    m_quranInfo = m_libraryManager->getQuranBook();
     openQuranBook();
 
     AbstractDBHandler::connected();
@@ -163,7 +163,7 @@ void TafessirDBHandler::getBookInfo()
             m_bookInfo->lastID = m_tafessirQuery->value(2).toInt();
         }
 
-        m_indexDB->updateBookMeta(m_bookInfo, false);
+        m_libraryManager->updateBookMeta(m_bookInfo, false);
     }
 }
 

@@ -2,7 +2,7 @@
 #define EDITABLECATSLISTMODEL_H
 
 #include "bookslistmodel.h"
-#include "indexdb.h"
+#include "librarymanager.h"
 
 class EditableCatsListModel : public BooksListModel
 {
@@ -28,7 +28,7 @@ public:
     void addCat(const QModelIndex &parent, const QString &title);
     void removeCat(const QModelIndex &index);
 
-    void setIndexDB(IndexDB *db);
+    void setLibraryManager(LibraryManager *db);
     void setModelEditibale(bool editable);
     bool hasBooks(int catID);
 
@@ -38,7 +38,7 @@ protected:
     void setCatOrder(BooksListNode *node, int order, bool makeplace=false);
 
 protected:
-    IndexDB *m_indexDB;
+    LibraryManager *m_libraryManager;
     bool m_editable;
 };
 

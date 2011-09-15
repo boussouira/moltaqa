@@ -5,7 +5,7 @@
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
 #include <qcoreapplication.h>
-#include "indexdb.h"
+#include "librarymanager.h"
 
 class LibraryInfo;
 class BookInfo;
@@ -24,11 +24,11 @@ public:
     void openBookDB(QString pBookDBPath=QString());
     void setBookInfo(BookInfo *bi);
     void setConnctionInfo(LibraryInfo *info);
-    void setIndexDB(IndexDB *db);
+    void setLibraryManager(LibraryManager *db);
 
     BookInfo *bookInfo() { return m_bookInfo; }
     TextFormatter *textFormatter() { return m_textFormat; }
-    IndexDB *indexDB();
+    LibraryManager *libraryManager();
 
 public:
     /**
@@ -118,7 +118,7 @@ protected:
 protected:
     LibraryInfo *m_connetionInfo;
     BookInfo *m_bookInfo;
-    IndexDB *m_indexDB;
+    LibraryManager *m_libraryManager;
     BookIndexModel *m_indexModel;
     TextFormatter *m_textFormat;
     QSqlDatabase m_bookDB;

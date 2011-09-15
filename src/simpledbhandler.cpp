@@ -58,7 +58,7 @@ void SimpleDBHandler::openID(int pid)
         m_bookInfo->currentPageNumber = m_simpleQuery->value(3).toInt();
     }
 
-    m_indexDB->getShoroohPages(m_bookInfo);
+    m_libraryManager->getShoroohPages(m_bookInfo);
 
     m_textFormat->done();
 }
@@ -133,7 +133,7 @@ void SimpleDBHandler::getBookInfo()
             m_bookInfo->lastID = m_simpleQuery->value(2).toInt();
         }
 
-        m_indexDB->updateBookMeta(m_bookInfo, false);
+        m_libraryManager->updateBookMeta(m_bookInfo, false);
     }
 }
 

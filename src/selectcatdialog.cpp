@@ -1,7 +1,7 @@
 #include "selectcatdialog.h"
 #include "ui_selectcatdialog.h"
 #include "mainwindow.h"
-#include "indexdb.h"
+#include "librarymanager.h"
 #include "bookslistmodel.h"
 #include "bookslistnode.h"
 #include "sortfilterproxymodel.h"
@@ -13,8 +13,8 @@ selectCatDialog::selectCatDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    m_indexDB = MainWindow::mainWindow()->indexDB();
-    m_model = m_indexDB->catsListModel();
+    m_libraryManager = MainWindow::mainWindow()->libraryManager();
+    m_model = m_libraryManager->catsListModel();
 
     m_filter = new SortFilterProxyModel(this);
     m_filter->setSourceModel(m_model);

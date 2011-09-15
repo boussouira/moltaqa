@@ -16,10 +16,10 @@ EditCatWidget::EditCatWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    m_indexDB = MainWindow::mainWindow()->indexDB();
+    m_libraryManager = MainWindow::mainWindow()->libraryManager();
     m_catsModel = new EditableCatsListModel(this);
-    m_catsModel->setRootNode(m_indexDB->catsListModel()->m_rootNode);
-    m_catsModel->setIndexDB(m_indexDB);
+    m_catsModel->setRootNode(m_libraryManager->catsListModel()->m_rootNode);
+    m_catsModel->setLibraryManager(m_libraryManager);
 
     m_copiedNode = 0;
 
@@ -109,7 +109,7 @@ void EditCatWidget::moveCatBooks()
                                         .arg(toNode->title),
                                         QMessageBox::Yes|QMessageBox::No, QMessageBox::No);
         if(rep == QMessageBox::Yes) {
-            if(m_indexDB->moveCatBooks(fromNode->id, toNode->id)) {
+            if(m_libraryManager->moveCatBooks(fromNode->id, toNode->id)) {
                 QMessageBox::information(this,
                                          tr("نقل كتب القسم"),
                                          tr("تم نقل الكتب الموجودة في قسم '%1' الى قسم '%2'")

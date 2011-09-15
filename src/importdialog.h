@@ -10,7 +10,7 @@ namespace Ui {
 }
 class ImportModel;
 class ImportModelNode;
-class IndexDB;
+class LibraryManager;
 class AuthorDelegate;
 class BookTypeDelegate;
 class CategorieDelegate;
@@ -20,9 +20,9 @@ class QSqlDatabase;
 class ImportDialog : public QDialog {
     Q_OBJECT
 public:
-    ImportDialog(IndexDB *indexDB, QWidget *parent = 0);
+    ImportDialog(LibraryManager *libraryManager, QWidget *parent = 0);
     ~ImportDialog();
-    void setIndexDB(IndexDB *indexDB) { m_indexDB = indexDB;}
+    void setLibraryManager(LibraryManager *libraryManager) { m_libraryManager = libraryManager;}
     void addFile(const QString &path);
     void addDir(const QString &path);
 
@@ -51,7 +51,7 @@ private slots:
 private:
     Ui::ImportDialog *ui;
     ImportModel *m_model;
-    IndexDB *m_indexDB;
+    LibraryManager *m_libraryManager;
     AuthorDelegate *m_authorDelegate;
     BookTypeDelegate *m_bookTypeDelegate;
     CategorieDelegate *m_categorieDelegate;

@@ -5,7 +5,7 @@
 #include "utils.h"
 #include "shamelaimportthread.h"
 #include "mainwindow.h"
-#include "indexdb.h"
+#include "librarymanager.h"
 #include "bookinfo.h"
 #include "sortfilterproxymodel.h"
 #include "bookslistnode.h"
@@ -36,12 +36,12 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
 
     m_shamela = new ShamelaInfo();
     m_manager = new ShamelaManager(m_shamela);
-    m_indexDB = MainWindow::mainWindow()->indexDB();
+    m_libraryManager = MainWindow::mainWindow()->libraryManager();
 
     m_importedBooksCount = 0;
     m_proccessItemChange = true;
 
-    ui->radioUseShamelaCat->setChecked(!m_indexDB->categoriesCount());
+    ui->radioUseShamelaCat->setChecked(!m_libraryManager->categoriesCount());
     ui->groupImportOptions->setEnabled(false);
     ui->stackedWidget->setCurrentIndex(0);
     ui->pushDone->hide();
@@ -198,7 +198,7 @@ void ShamelaImportDialog::showBooks()
 
     m_booksModel->setHeaderData(0, Qt::Horizontal, tr("لائحة الكتب"), Qt::DisplayRole);
 
-    ui->checkImportQuran->setChecked(m_indexDB->getQuranBook()->bookID == -1);
+    ui->checkImportQuran->setChecked(m_libraryManager->getQuranBook()->bookID == -1);
 
     connect(ui->lineBookSearch, SIGNAL(textChanged(QString)), filterModel, SLOT(setFilterRegExp(QString)));
     connect(ui->lineBookSearch, SIGNAL(textChanged(QString)), ui->treeView, SLOT(expandAll()));
@@ -283,7 +283,7 @@ void ShamelaImportDialog::setupCategories()
         shamelaItem->setEditable(false);
 
         // Try to find this cat in our library
-        QPair<int, QString> libCat = m_indexDB->findCategorie(cat->name);
+        QPair<int, QString> libCat = m_libraryManager->findCategorie(cat->name);
         if(libCat.first) {
             libraryItem = new QStandardItem;
             libraryItem->setText(libCat.second);
@@ -374,7 +374,7 @@ void ShamelaImportDialog::doneImporting()
                      .arg(Utils::secondsToString(m_importTime.elapsed())));
 
         if(m_importedBooksCount > 0) {
-            MainWindow::mainWindow()->indexDB()->loadBooksListModel();
+            MainWindow::mainWindow()->libraryManager()->loadBooksListModel();
         }
 
         qDeleteAll(m_importThreads);

@@ -3,7 +3,7 @@
 
 #include <qmainwindow.h>
 
-class IndexDB;
+class LibraryManager;
 class SettingsDialog;
 class BooksViewer;
 class BooksListBrowser;
@@ -27,7 +27,7 @@ public:
     static MainWindow *mainWindow();
 
     LibraryInfo *libraryInfo();
-    IndexDB *indexDB();
+    LibraryManager *libraryManager();
     BooksViewer *booksViewer();
     BooksListBrowser *booksListBrowser();
 
@@ -52,7 +52,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     LibraryInfo *m_libraryInfo;
-    IndexDB *m_indexDB;
+    LibraryManager *m_libraryManager;
     BooksViewer *m_bookView;
     BooksListBrowser *m_booksList;
     WelcomeWidget *m_welcomeWidget;

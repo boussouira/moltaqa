@@ -6,7 +6,7 @@
 
 class ImportModel;
 class ImportModelNode;
-class IndexDB;
+class LibraryManager;
 class QSqlDatabase;
 
 class ConvertThread : public QThread
@@ -17,7 +17,7 @@ public:
     ConvertThread(QObject *parent = 0);
     void setFiles(QStringList &list) { m_files = list;}
     void setModel(ImportModel *model) { m_model = model;}
-    void setIndexDB(IndexDB *indexDB) { m_indexDB = indexDB;}
+    void setLibraryManager(LibraryManager *libraryManager) { m_libraryManager = libraryManager;}
     int convertTime() { return m_convertTime; }
     int convertedFiles() { return m_convertedFiles; }
     void run();
@@ -35,7 +35,7 @@ signals:
 
 protected:
     ImportModel *m_model;
-    IndexDB *m_indexDB;
+    LibraryManager *m_libraryManager;
     QStringList m_files;
     QString m_tempDB;
     int m_convertTime;

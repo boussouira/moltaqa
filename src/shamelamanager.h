@@ -62,7 +62,7 @@ protected:
     LibraryInfo *m_library;
     ShamelaInfo *m_info;
     ShamelaMapper *m_mapper;
-    QSqlDatabase m_indexDB;
+    QSqlDatabase m_libraryManager;
     QSqlDatabase m_shamelaDB;
     QSqlDatabase m_shamelaSpecialDB;
     QSqlQuery *m_indexQuery;

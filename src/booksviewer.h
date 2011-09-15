@@ -4,7 +4,7 @@
 #include <qwidget.h>
 
 class BookWidget;
-class IndexDB;
+class LibraryManager;
 class TabWidget;
 class QMainWindow;
 class QToolBar;
@@ -15,9 +15,9 @@ class BooksViewer : public QWidget
 {
     Q_OBJECT
 public:
-    BooksViewer(IndexDB *indexDB, QMainWindow *parent);
+    BooksViewer(LibraryManager *libraryManager, QMainWindow *parent);
     ~BooksViewer();
-    void setIndexDB(IndexDB *indexDB) { m_indexDB = indexDB;}
+    void setLibraryManager(LibraryManager *libraryManager) { m_libraryManager = libraryManager;}
 
 public slots:
     void openBook(int bookID, int pageID = -1, bool newTab = true);
@@ -48,7 +48,7 @@ signals:
 
 private:
     TabWidget *m_tab;
-    IndexDB *m_indexDB;
+    LibraryManager *m_libraryManager;
     QList<BookWidget *> m_bookWidgets;
     QAction *m_actionNewTab;
     QAction *m_actionIndexDock;

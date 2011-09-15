@@ -2,7 +2,7 @@
 #include "ui_bookslistbrowser.h"
 #include "bookslistmodel.h"
 #include "bookslistnode.h"
-#include "indexdb.h"
+#include "librarymanager.h"
 #include "mainwindow.h"
 
 #include <qsqlquery.h>
@@ -12,19 +12,19 @@
 #include <qsettings.h>
 #include "sortfilterproxymodel.h"
 
-BooksListBrowser::BooksListBrowser(IndexDB *indexDB, QWidget *parent) :
+BooksListBrowser::BooksListBrowser(LibraryManager *libraryManager, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::BooksListBrowser)
 {
     ui->setupUi(this);
 
     loadSettings();
-    m_indexDB = indexDB;
+    m_libraryManager = libraryManager;
 
     m_filterModel = new SortFilterProxyModel(this);
     connect(ui->lineSearch, SIGNAL(textChanged(QString)), m_filterModel, SLOT(setFilterRegExp(QString)));// TODO: serach in book info...
     connect(ui->lineSearch, SIGNAL(textChanged(QString)), ui->treeView, SLOT(expandAll()));
-    connect(m_indexDB, SIGNAL(booksListModelLoaded(BooksListModel*)), SLOT(setModel(BooksListModel*)));
+    connect(m_libraryManager, SIGNAL(booksListModelLoaded(BooksListModel*)), SLOT(setModel(BooksListModel*)));
 }
 
 BooksListBrowser::~BooksListBrowser()

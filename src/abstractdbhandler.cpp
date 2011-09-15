@@ -73,14 +73,14 @@ void AbstractDBHandler::connected()
 {
 }
 
-void AbstractDBHandler::setIndexDB(IndexDB *db)
+void AbstractDBHandler::setLibraryManager(LibraryManager *db)
 {
-    m_indexDB = db;
+    m_libraryManager = db;
 }
 
-IndexDB * AbstractDBHandler::indexDB()
+LibraryManager* AbstractDBHandler::libraryManager()
 {
-    return m_indexDB;
+    return m_libraryManager;
 }
 
 bool AbstractDBHandler::needFastIndexLoad()

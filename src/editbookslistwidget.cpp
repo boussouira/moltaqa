@@ -1,7 +1,7 @@
 #include "editbookslistwidget.h"
 #include "ui_editbookslistwidget.h"
 #include "mainwindow.h"
-#include "indexdb.h"
+#include "librarymanager.h"
 #include "editablebookslistmodel.h"
 #include "bookinfo.h"
 #include "selectauthordialog.h"
@@ -16,9 +16,9 @@ EditBooksListWidget::EditBooksListWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    m_indexDB = MainWindow::mainWindow()->indexDB();
+    m_libraryManager = MainWindow::mainWindow()->libraryManager();
     m_booksModel = new EditableBooksListModel();
-    m_booksModel->setRootNode(m_indexDB->booksListModel()->m_rootNode);
+    m_booksModel->setRootNode(m_libraryManager->booksListModel()->m_rootNode);
     m_booksModel->setModelEditibale(false);
 
     ui->treeView->setModel(m_booksModel);
@@ -66,13 +66,13 @@ void EditBooksListWidget::save()
     saveCurrentBookInfo();
 
     if(!m_editedBookInfo.isEmpty()) {
-        m_indexDB->transaction();
+        m_libraryManager->transaction();
 
         foreach(BookInfo *info, m_editedBookInfo.values()) {
-            m_indexDB->updateBookInfo(info);
+            m_libraryManager->updateBookInfo(info);
         }
 
-        m_indexDB->commit();
+        m_libraryManager->commit();
 
         qDeleteAll(m_editedBookInfo);
         m_editedBookInfo.clear();
@@ -137,7 +137,7 @@ BookInfo *EditBooksListWidget::getBookInfo(int bookID)
 {
     BookInfo *info = m_editedBookInfo.value(bookID, 0);
     if(!info) {
-        info = m_indexDB->getBookInfo(bookID, true);
+        info = m_libraryManager->getBookInfo(bookID, true);
     }
 
     return info;

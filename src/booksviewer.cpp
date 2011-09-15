@@ -5,7 +5,7 @@
 #include "simpledbhandler.h"
 #include "qurandbhandler.h"
 #include "tafessirdbhandler.h"
-#include "indexdb.h"
+#include "librarymanager.h"
 #include "bookwidget.h"
 #include "bookexception.h"
 #include "openpagedialog.h"
@@ -24,11 +24,11 @@
 
 typedef QPair<int, QString> Pair;
 
-BooksViewer::BooksViewer(IndexDB *indexDB, QMainWindow *parent): QWidget(parent)
+BooksViewer::BooksViewer(LibraryManager *libraryManager, QMainWindow *parent): QWidget(parent)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
     m_tab = new TabWidget(this);
-    m_indexDB = indexDB;
+    m_libraryManager = libraryManager;
     layout->addWidget(m_tab);
     layout->setContentsMargins(0,6,0,0);
 
@@ -88,7 +88,7 @@ void BooksViewer::createMenus(QMainWindow *parent)
                                                tr("فتح تفسير الاية"),
                                                this);
     m_comboTafasir = new QComboBox(this);
-    foreach(Pair pair, m_indexDB->getTafassirList()) {
+    foreach(Pair pair, m_libraryManager->getTafassirList()) {
         m_comboTafasir->addItem(pair.second, pair.first);
     }
 
@@ -179,7 +179,7 @@ void BooksViewer::showToolBar()
 
 void BooksViewer::openBook(int bookID, int pageID, bool newTab)
 {
-    BookInfo *bookInfo = m_indexDB->getBookInfo(bookID);
+    BookInfo *bookInfo = m_libraryManager->getBookInfo(bookID);
 
     if(!bookInfo || !bookInfo->exists())
         throw BookException(tr("لم يتم العثور على ملف"), bookInfo->bookPath);
@@ -194,9 +194,9 @@ void BooksViewer::openBook(int bookID, int pageID, bool newTab)
     else
         throw BookException(tr("لم يتم التعرف على نوع الكتاب"), QString("Book Type: %1").arg(bookInfo->bookPath));
 
-    bookdb->setConnctionInfo(m_indexDB->connectionInfo());
+    bookdb->setConnctionInfo(m_libraryManager->connectionInfo());
     bookdb->setBookInfo(bookInfo);
-    bookdb->setIndexDB(m_indexDB);
+    bookdb->setLibraryManager(m_libraryManager);
 
     try {
         bookdb->openBookDB();
@@ -233,14 +233,14 @@ void BooksViewer::openTafessir()
 {
     int tafessirID = m_comboTafasir->itemData(m_comboTafasir->currentIndex()).toInt();
     qDebug("Open tafessir: %d", tafessirID);
-    BookInfo *bookInfo = m_indexDB->getBookInfo(tafessirID);
+    BookInfo *bookInfo = m_libraryManager->getBookInfo(tafessirID);
     if(!bookInfo || !bookInfo->isTafessir() || !currentBookWidget()->dbHandler()->bookInfo()->isQuran())
         return;
 
     TafessirDBHandler *bookdb = new TafessirDBHandler();
-    bookdb->setConnctionInfo(m_indexDB->connectionInfo());
+    bookdb->setConnctionInfo(m_libraryManager->connectionInfo());
     bookdb->setBookInfo(bookInfo);
-    bookdb->setIndexDB(m_indexDB);
+    bookdb->setLibraryManager(m_libraryManager);
 
     try {
         bookdb->openBookDB();

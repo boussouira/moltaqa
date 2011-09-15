@@ -43,7 +43,7 @@ SOURCES += mainwindow.cpp \
     convertthread.cpp \
     bookexception.cpp \
     libraryinfo.cpp \
-    indexdb.cpp \
+    librarymanager.cpp \
     simplequery.cpp \
     quranquery.cpp \
     welcomewidget.cpp \
@@ -69,7 +69,6 @@ SOURCES += mainwindow.cpp \
     selectcatdialog.cpp \
     editbookslistwidget.cpp \
     editablecatslistmodel.cpp \
-    editindexdb.cpp \
     selectauthordialog.cpp \
     abstracteditwidget.cpp
 HEADERS += mainwindow.h \
@@ -98,7 +97,7 @@ HEADERS += mainwindow.h \
     convertthread.h \
     bookexception.h \
     libraryinfo.h \
-    indexdb.h \
+    librarymanager.h \
     simplequery.h \
     quranquery.h \
     welcomewidget.h \
@@ -124,7 +123,6 @@ HEADERS += mainwindow.h \
     selectcatdialog.h \
     editbookslistwidget.h \
     editablecatslistmodel.h \
-    editindexdb.h \
     selectauthordialog.h \
     abstracteditwidget.h
 FORMS += mainwindow.ui settingsdialog.ui \

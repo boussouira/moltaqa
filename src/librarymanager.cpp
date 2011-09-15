@@ -1,4 +1,4 @@
-#include "indexdb.h"
+#include "librarymanager.h"
 #include "libraryinfo.h"
 #include "bookinfo.h"
 #include "bookexception.h"
@@ -13,7 +13,7 @@
 #include <qsqlerror.h>
 #include <qdatetime.h>
 
-IndexDB::IndexDB(LibraryInfo *info, QObject *parent) : QObject(parent)
+LibraryManager::LibraryManager(LibraryInfo *info, QObject *parent) : QObject(parent)
 {
     m_model = 0;
     m_libraryInfo = info;
@@ -22,53 +22,53 @@ IndexDB::IndexDB(LibraryInfo *info, QObject *parent) : QObject(parent)
     connect(&m_watcher, SIGNAL(finished()), SLOT(booksListModelLoaded()));
 }
 
-IndexDB::~IndexDB()
+LibraryManager::~LibraryManager()
 {
     if(m_future.isRunning())
         m_future.waitForFinished();
 }
 
-void IndexDB::setConnectionInfo(LibraryInfo *info)
+void LibraryManager::setConnectionInfo(LibraryInfo *info)
 {
     m_libraryInfo = info;
 }
 
-LibraryInfo *IndexDB::connectionInfo()
+LibraryInfo *LibraryManager::connectionInfo()
 {
     return m_libraryInfo;
 }
 
-void IndexDB::open()
+void LibraryManager::open()
 {
     QString booksIndexPath = m_libraryInfo->booksIndexPath();
 
     if(!QFile::exists(booksIndexPath))
        qWarning("Can't find index database: %s", qPrintable(booksIndexPath));
 
-    m_indexDB = QSqlDatabase::addDatabase("QSQLITE", m_connName);
-    m_indexDB.setDatabaseName(booksIndexPath);
+    m_libraryManager = QSqlDatabase::addDatabase("QSQLITE", m_connName);
+    m_libraryManager.setDatabaseName(booksIndexPath);
 
-    if (!m_indexDB.open())
-        throw BookException(tr("لم يمكن فتح قاعدة البيانات الأساسية"), m_indexDB.lastError().text());
+    if (!m_libraryManager.open())
+        throw BookException(tr("لم يمكن فتح قاعدة البيانات الأساسية"), m_libraryManager.lastError().text());
 }
 
-void IndexDB::loadBooksListModel()
+void LibraryManager::loadBooksListModel()
 {
-    m_future = QtConcurrent::run(this, &IndexDB::loadModel);
+    m_future = QtConcurrent::run(this, &LibraryManager::loadModel);
     m_watcher.setFuture(m_future);
 }
 
-void IndexDB::transaction()
+void LibraryManager::transaction()
 {
-    m_indexDB.transaction();
+    m_libraryManager.transaction();
 }
 
-bool IndexDB::commit()
+bool LibraryManager::commit()
 {
-    return m_indexDB.commit();
+    return m_libraryManager.commit();
 }
 
-void IndexDB::loadModel()
+void LibraryManager::loadModel()
 {
     if(m_model)
         delete(m_model);
@@ -81,7 +81,7 @@ void IndexDB::loadModel()
     m_model->setRootNode(firstNode);
 }
 
-BooksListModel *IndexDB::booksListModel()
+BooksListModel *LibraryManager::booksListModel()
 {
     if(m_future.isRunning())
         m_future.waitForFinished();
@@ -89,12 +89,12 @@ BooksListModel *IndexDB::booksListModel()
     return m_model;
 }
 
-void IndexDB::booksListModelLoaded()
+void LibraryManager::booksListModelLoaded()
 {
     emit booksListModelLoaded(m_model);
 }
 
-BooksListModel *IndexDB::catsListModel()
+BooksListModel *LibraryManager::catsListModel()
 {
     BooksListModel *model = new BooksListModel();
     BooksListNode *firstNode = new BooksListNode(BooksListNode::Root);
@@ -105,7 +105,7 @@ BooksListModel *IndexDB::catsListModel()
     return model;
 }
 
-QPair<int, QString> IndexDB::findCategorie(const QString &cat)
+QPair<int, QString> LibraryManager::findCategorie(const QString &cat)
 {
     QPair<int, QString> foundCat;
     int count = 0;
@@ -116,7 +116,7 @@ QPair<int, QString> IndexDB::findCategorie(const QString &cat)
         return foundCat;
     }
 
-    QSqlQuery bookQuery(m_indexDB);
+    QSqlQuery bookQuery(m_libraryManager);
     bookQuery.exec(QString("SELECT id, title FROM catList WHERE %1").arg(Sql::buildLikeQuery(cat, "title")));
     while(bookQuery.next()) {
         catID = bookQuery.value(0).toInt();
@@ -139,7 +139,7 @@ QPair<int, QString> IndexDB::findCategorie(const QString &cat)
     return foundCat;
 }
 
-QPair<int, QString> IndexDB::findAuthor(const QString &name)
+QPair<int, QString> LibraryManager::findAuthor(const QString &name)
 {
     QPair<int, QString> foundAuth;
     int count = 0;
@@ -149,7 +149,7 @@ QPair<int, QString> IndexDB::findAuthor(const QString &name)
         return foundAuth;
     }
 
-    QSqlQuery bookQuery(m_indexDB);
+    QSqlQuery bookQuery(m_libraryManager);
     if(bookQuery.exec(QString("SELECT id, name FROM authorsList WHERE %1").arg(Sql::buildLikeQuery(name, "name")))) {
         while(bookQuery.next()) {
             foundAuth.first = bookQuery.value(0).toInt();
@@ -174,9 +174,9 @@ QPair<int, QString> IndexDB::findAuthor(const QString &name)
     return foundAuth;
 }
 
-BookInfo *IndexDB::getBookInfo(int bookID, bool allInfo)
+BookInfo *LibraryManager::getBookInfo(int bookID, bool allInfo)
 {
-    QSqlQuery bookQuery(m_indexDB);
+    QSqlQuery bookQuery(m_libraryManager);
 
     bookQuery.prepare("SELECT booksList.bookDisplayName, booksList.bookType, booksList.fileName, "
                       "booksList.bookFullName, booksList.bookOtherNames, booksList.bookInfo, "
@@ -219,10 +219,10 @@ BookInfo *IndexDB::getBookInfo(int bookID, bool allInfo)
     return 0;
 }
 
-BookInfo *IndexDB::getQuranBook()
+BookInfo *LibraryManager::getQuranBook()
 {
     BookInfo *bookInfo = new BookInfo();
-    QSqlQuery bookQuery(m_indexDB);
+    QSqlQuery bookQuery(m_libraryManager);
 
     bookQuery.exec(QString("SELECT booksList.bookDisplayName, booksList.bookType, booksList.fileName, bookMeta.book_info, booksList.id "
                            "FROM booksList LEFT JOIN bookMeta "
@@ -241,10 +241,10 @@ BookInfo *IndexDB::getQuranBook()
     return bookInfo;
 }
 
-QList<QPair<int, QString> > IndexDB::getTafassirList()
+QList<QPair<int, QString> > LibraryManager::getTafassirList()
 {
     QList<QPair<int, QString> > list;
-    QSqlQuery bookQuery(m_indexDB);
+    QSqlQuery bookQuery(m_libraryManager);
 
     bookQuery.exec("SELECT book_id, tafessir_name FROM tafassirList");
     while(bookQuery.next()) {
@@ -254,10 +254,10 @@ QList<QPair<int, QString> > IndexDB::getTafassirList()
     return list;
 }
 
-QHash<int, QString> IndexDB::getCategoriesList()
+QHash<int, QString> LibraryManager::getCategoriesList()
 {
     QHash<int, QString> cats;
-    QSqlQuery catQuery(m_indexDB);
+    QSqlQuery catQuery(m_libraryManager);
     if(!catQuery.exec("SELECT id, title FROM catList "
                       "ORDER BY catOrder")) {
         LOG_SQL_ERROR(catQuery);
@@ -270,9 +270,9 @@ QHash<int, QString> IndexDB::getCategoriesList()
     return cats;
 }
 
-int IndexDB::addBook(ImportModelNode *book)
+int LibraryManager::addBook(ImportModelNode *book)
 {
-    QSqlQuery indexQuery(m_indexDB);
+    QSqlQuery indexQuery(m_libraryManager);
     QString newBookName = Utils::genBookName(m_libraryInfo->booksDir());
     QString newPath = m_libraryInfo->booksDir() + "/" + newBookName;
 
@@ -308,12 +308,12 @@ int IndexDB::addBook(ImportModelNode *book)
     }
 }
 
-void IndexDB::childCats(BooksListNode *parentNode, int pID, bool onlyCats)
+void LibraryManager::childCats(BooksListNode *parentNode, int pID, bool onlyCats)
 {
     if(!onlyCats)
         booksCat(parentNode, pID); // Start with books
 
-    QSqlQuery catQuery(m_indexDB);
+    QSqlQuery catQuery(m_libraryManager);
     if(!catQuery.exec(QString("SELECT id, title, catOrder, parentID FROM catList "
                            "WHERE parentID = %1 ORDER BY catOrder").arg(pID))) {
         LOG_SQL_ERROR(catQuery);
@@ -330,9 +330,9 @@ void IndexDB::childCats(BooksListNode *parentNode, int pID, bool onlyCats)
     }
 }
 
-void IndexDB::booksCat(BooksListNode *parentNode, int catID)
+void LibraryManager::booksCat(BooksListNode *parentNode, int catID)
 {
-    QSqlQuery bookQuery(m_indexDB);
+    QSqlQuery bookQuery(m_libraryManager);
     bookQuery.prepare("SELECT booksList.id, booksList.bookDisplayName, booksList.authorName, booksList.bookInfo, authorsList.name "
                            "FROM booksList LEFT JOIN authorsList "
                            "ON authorsList.id = booksList.authorID "
@@ -353,9 +353,9 @@ void IndexDB::booksCat(BooksListNode *parentNode, int catID)
     }
 }
 
-void IndexDB::updateBookMeta(BookInfo *info, bool newBook)
+void LibraryManager::updateBookMeta(BookInfo *info, bool newBook)
 {
-    QSqlQuery bookQuery(m_indexDB);
+    QSqlQuery bookQuery(m_libraryManager);
     if(newBook) {
         bookQuery.prepare("INSERT INTO bookMeta (id, book_info, add_time, update_time) VALUES (?, ?, ?, ?)");
         bookQuery.bindValue(0, info->bookID);
@@ -376,12 +376,12 @@ void IndexDB::updateBookMeta(BookInfo *info, bool newBook)
     }
 }
 
-void IndexDB::getShoroohPages(BookInfo *info)
+void LibraryManager::getShoroohPages(BookInfo *info)
 {
     qDeleteAll(info->shorooh);
     info->shorooh.clear();
 
-    QSqlQuery bookQuery(m_indexDB);
+    QSqlQuery bookQuery(m_libraryManager);
 
     bookQuery.prepare("SELECT ShareehMeta.shareeh_book, ShareehMeta.shareeh_id, booksList.bookDisplayName "
                       "FROM ShareehMeta "
@@ -401,9 +401,9 @@ void IndexDB::getShoroohPages(BookInfo *info)
     }
 }
 
-void IndexDB::updateCatTitle(int catID, QString title)
+void LibraryManager::updateCatTitle(int catID, QString title)
 {
-    QSqlQuery bookQuery(m_indexDB);
+    QSqlQuery bookQuery(m_libraryManager);
 
     bookQuery.prepare("UPDATE catList SET title = ? WHERE id = ?");
     bookQuery.bindValue(0, title);
@@ -413,9 +413,9 @@ void IndexDB::updateCatTitle(int catID, QString title)
     }
 }
 
-void IndexDB::updateCatParent(int catID, int parentID)
+void LibraryManager::updateCatParent(int catID, int parentID)
 {
-    QSqlQuery bookQuery(m_indexDB);
+    QSqlQuery bookQuery(m_libraryManager);
 
     bookQuery.prepare("UPDATE catList SET parentID = ? WHERE id = ?");
     bookQuery.bindValue(0, parentID);
@@ -425,9 +425,9 @@ void IndexDB::updateCatParent(int catID, int parentID)
     }
 }
 
-void IndexDB::updateCatOrder(int catID, int catOrder)
+void LibraryManager::updateCatOrder(int catID, int catOrder)
 {
-    QSqlQuery bookQuery(m_indexDB);
+    QSqlQuery bookQuery(m_libraryManager);
 
     bookQuery.prepare("UPDATE catList SET catOrder = ? WHERE id = ?");
     bookQuery.bindValue(0, catOrder);
@@ -437,9 +437,9 @@ void IndexDB::updateCatOrder(int catID, int catOrder)
     }
 }
 
-void IndexDB::makeCatPlace(int parentID, int catOrder)
+void LibraryManager::makeCatPlace(int parentID, int catOrder)
 {
-    QSqlQuery bookQuery(m_indexDB);
+    QSqlQuery bookQuery(m_libraryManager);
 
     bookQuery.prepare("UPDATE catList SET catOrder = catOrder + 1 WHERE catOrder >= ? AND parentID = ?");
     bookQuery.bindValue(0, catOrder);
@@ -449,9 +449,9 @@ void IndexDB::makeCatPlace(int parentID, int catOrder)
     }
 }
 
-int IndexDB::booksCount(int catID)
+int LibraryManager::booksCount(int catID)
 {
-    QSqlQuery bookQuery(m_indexDB);
+    QSqlQuery bookQuery(m_libraryManager);
 
     bookQuery.prepare("SELECT COUNT(*) FROM booksList WHERE bookCat = ?");
     bookQuery.bindValue(0, catID);
@@ -466,9 +466,9 @@ int IndexDB::booksCount(int catID)
     return 0;
 }
 
-int IndexDB::addNewCat(const QString &title)
+int LibraryManager::addNewCat(const QString &title)
 {
-    QSqlQuery bookQuery(m_indexDB);
+    QSqlQuery bookQuery(m_libraryManager);
 
     bookQuery.prepare("INSERT INTO catList (id, title) VALUES (NULL, ?)");
     bookQuery.bindValue(0, title);
@@ -482,9 +482,9 @@ int IndexDB::addNewCat(const QString &title)
     return 0;
 }
 
-void IndexDB::removeCat(int catID)
+void LibraryManager::removeCat(int catID)
 {
-    QSqlQuery bookQuery(m_indexDB);
+    QSqlQuery bookQuery(m_libraryManager);
 
     bookQuery.prepare("DELETE FROM catList WHERE id = ?");
     bookQuery.bindValue(0, catID);
@@ -493,9 +493,9 @@ void IndexDB::removeCat(int catID)
     }
 }
 
-bool IndexDB::moveCatBooks(int fromCat, int toCat)
+bool LibraryManager::moveCatBooks(int fromCat, int toCat)
 {
-    QSqlQuery bookQuery(m_indexDB);
+    QSqlQuery bookQuery(m_libraryManager);
 
     bookQuery.prepare("UPDATE booksList SET bookCat = ? WHERE bookCat = ?");
     bookQuery.bindValue(0, toCat);
@@ -508,11 +508,11 @@ bool IndexDB::moveCatBooks(int fromCat, int toCat)
     }
 }
 
-QStandardItemModel *IndexDB::getAuthorsListModel()
+QStandardItemModel *LibraryManager::getAuthorsListModel()
 {
     QStandardItemModel *model = new QStandardItemModel();
     QStandardItem *item;
-    QSqlQuery bookQuery(m_indexDB);
+    QSqlQuery bookQuery(m_libraryManager);
     bookQuery.prepare("SELECT id, name, full_name FROM authorsList");
     if(bookQuery.exec()) {
         while(bookQuery.next()) {
@@ -529,9 +529,9 @@ QStandardItemModel *IndexDB::getAuthorsListModel()
     return model;
 }
 
-void IndexDB::updateBookInfo(BookInfo *info)
+void LibraryManager::updateBookInfo(BookInfo *info)
 {
-    QSqlQuery bookQuery(m_indexDB);
+    QSqlQuery bookQuery(m_libraryManager);
     bookQuery.prepare("UPDATE booksList SET "
                           "bookDisplayName = ?, "
                           "bookFullName = ?, "
@@ -557,9 +557,9 @@ void IndexDB::updateBookInfo(BookInfo *info)
     }
 }
 
-int IndexDB::categoriesCount()
+int LibraryManager::categoriesCount()
 {
-    QSqlQuery bookQuery(m_indexDB);
+    QSqlQuery bookQuery(m_libraryManager);
 
     if(bookQuery.exec("SELECT COUNT(*) FROM catList")) {
         if(bookQuery.next()) {

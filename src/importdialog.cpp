@@ -2,7 +2,7 @@
 #include "ui_importdialog.h"
 #include "importmodel.h"
 #include "importdelegates.h"
-#include "indexdb.h"
+#include "librarymanager.h"
 #include "convertthread.h"
 #include "bookslistmodel.h"
 #include "utils.h"
@@ -25,13 +25,13 @@
 #include <QTime>
 #include <qtconcurrentrun.h>
 
-ImportDialog::ImportDialog(IndexDB *indexDB, QWidget *parent) :
+ImportDialog::ImportDialog(LibraryManager *libraryManager, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ImportDialog)
 {
     ui->setupUi(this);
     m_model = new ImportModel(ui->treeView);
-    m_indexDB = indexDB;
+    m_libraryManager = libraryManager;
 
     setAcceptDrops(true);
 
@@ -110,7 +110,7 @@ void ImportDialog::convertBooks()
     ConvertThread *thread = new ConvertThread(this);
     thread->setFiles(files);
     thread->setModel(m_model);
-    thread->setIndexDB(m_indexDB);
+    thread->setLibraryManager(m_libraryManager);
 
     connect(thread, SIGNAL(finished()), this, SLOT(doneConverting()));
     connect(thread, SIGNAL(setProgress(int)), ui->progressBar, SLOT(setValue(int)));
@@ -182,7 +182,7 @@ void ImportDialog::startImporting()
 
     for(int i=0;i<nodesList.count();i++) {
         ImportModelNode *node = nodesList.at(i);
-        int lastInsert = m_indexDB->addBook(node);
+        int lastInsert = m_libraryManager->addBook(node);
 
         if(lastInsert != -1) {
             imported++;
@@ -236,7 +236,7 @@ void ImportDialog::doneImporting()
 
     ui->stackedWidget->setCurrentIndex(2);
 
-    m_indexDB->loadBooksListModel();
+    m_libraryManager->loadBooksListModel();
 }
 
 bool ImportDialog::checkNodes(QList<ImportModelNode *> nodesList)

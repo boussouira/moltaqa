@@ -31,17 +31,17 @@ ShamelaMapper *ShamelaManager::mapper()
 
 void ShamelaManager::openIndexDB()
 {
-    if(!m_indexDB.isOpen()) {
+    if(!m_libraryManager.isOpen()) {
         QString book = m_library->booksIndexPath();
 
-        m_indexDB = QSqlDatabase::addDatabase("QSQLITE", "indexDb_");
-        m_indexDB.setDatabaseName(book);
+        m_libraryManager = QSqlDatabase::addDatabase("QSQLITE", "indexDb_");
+        m_libraryManager.setDatabaseName(book);
 
-        if (!m_indexDB.open()) {
-            LOG_DB_ERROR(m_indexDB);
+        if (!m_libraryManager.open()) {
+            LOG_DB_ERROR(m_libraryManager);
         }
 
-        m_indexQuery = new QSqlQuery(m_indexDB);
+        m_indexQuery = new QSqlQuery(m_libraryManager);
     }
 }
 
@@ -97,9 +97,9 @@ void ShamelaManager::openShamelaSpecialDB()
 
 void ShamelaManager::close()
 {
-    if(m_indexDB.isOpen()) {
+    if(m_libraryManager.isOpen()) {
         delete m_indexQuery;
-        m_indexDB.close();
+        m_libraryManager.close();
     }
 
     if(m_shamelaDB.isOpen()) {

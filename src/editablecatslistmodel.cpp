@@ -146,9 +146,9 @@ void EditableCatsListModel::moveDown(const QModelIndex &index)
     }
 }
 
-void EditableCatsListModel::setIndexDB(IndexDB *db)
+void EditableCatsListModel::setLibraryManager(LibraryManager *db)
 {
-    m_indexDB = db;
+    m_libraryManager = db;
 }
 
 void EditableCatsListModel::setModelEditibale(bool editable)
@@ -158,21 +158,21 @@ void EditableCatsListModel::setModelEditibale(bool editable)
 
 void EditableCatsListModel::setCatTitle(BooksListNode *node)
 {
-    m_indexDB->updateCatTitle(node->id, node->title);
+    m_libraryManager->updateCatTitle(node->id, node->title);
 }
 
 void EditableCatsListModel::setCatParent(BooksListNode *node)
 {
-    m_indexDB->updateCatParent(node->id, node->parentNode->id);
+    m_libraryManager->updateCatParent(node->id, node->parentNode->id);
 }
 
 void EditableCatsListModel::setCatOrder(BooksListNode *node, int order, bool makeplace)
 {
     if(makeplace) {
-        m_indexDB->makeCatPlace(node->parentNode->id, order);
+        m_libraryManager->makeCatPlace(node->parentNode->id, order);
     }
 
-    m_indexDB->updateCatOrder(node->id, order);
+    m_libraryManager->updateCatOrder(node->id, order);
 }
 
 void EditableCatsListModel::addCat(const QModelIndex &parent, const QString &title)
@@ -181,7 +181,7 @@ void EditableCatsListModel::addCat(const QModelIndex &parent, const QString &tit
     BooksListNode *parentNode = nodeFromIndex(parent);
     parentNode->appendChild(node);
 
-    node->id = m_indexDB->addNewCat(title);
+    node->id = m_libraryManager->addNewCat(title);
 
     setCatParent(node);
     setCatOrder(node, parentNode->childrenNode.count()-1);
@@ -195,7 +195,7 @@ void EditableCatsListModel::removeCat(const QModelIndex &index)
     BooksListNode *parentNode = nodeFromIndex(index.parent());
 
     parentNode->childrenNode.removeAt(index.row());
-    m_indexDB->removeCat(node->id);
+    m_libraryManager->removeCat(node->id);
 
 //    delete node;
 
@@ -204,5 +204,5 @@ void EditableCatsListModel::removeCat(const QModelIndex &index)
 
 bool EditableCatsListModel::hasBooks(int catID)
 {
-    return m_indexDB->booksCount(catID);
+    return m_libraryManager->booksCount(catID);
 }

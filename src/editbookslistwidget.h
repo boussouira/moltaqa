@@ -9,7 +9,7 @@ namespace Ui {
     class EditBooksListWidget;
 }
 
-class IndexDB;
+class LibraryManager;
 class BookInfo;
 class EditableBooksListModel;
 
@@ -38,7 +38,7 @@ private slots:
 
 protected:
     Ui::EditBooksListWidget *ui;
-    IndexDB *m_indexDB;
+    LibraryManager *m_libraryManager;
     BookInfo *m_bookInfo;
     EditableBooksListModel *m_booksModel;
     QHash<int, BookInfo *> m_editedBookInfo;

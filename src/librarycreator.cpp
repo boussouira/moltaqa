@@ -24,7 +24,7 @@ LibraryCreator::LibraryCreator()
     m_library = importDialog->libraryInfo();
     m_mapper = m_shamelaManager->mapper();
 
-    m_indexDB = MainWindow::mainWindow()->indexDB();
+    m_libraryManager = MainWindow::mainWindow()->libraryManager();
 
     m_prevArchive = -1;
     m_threadID = 0;
@@ -125,7 +125,7 @@ void LibraryCreator::addAuthor(ShamelaAuthorInfo *auth, bool checkExist)
             return;
         } else {
             // We look for this author in the index database
-            QPair<int, QString> foundAuthor = m_indexDB->findAuthor(auth->name);
+            QPair<int, QString> foundAuthor = m_libraryManager->findAuthor(auth->name);
 
             // If found the author in our database so add it to the map and return
             if(foundAuthor.first) {

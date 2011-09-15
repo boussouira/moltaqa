@@ -1,6 +1,6 @@
 #include "convertthread.h"
 #include "importmodel.h"
-#include "indexdb.h"
+#include "librarymanager.h"
 #include "newbookwriter.h"
 #include "utils.h"
 #include "bookexception.h"
@@ -106,7 +106,7 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
         node->authorName = bookQuery.value(authCol).toString();
 
         if(catCol != -1) { // Some old books doesn't have this column
-            QPair<int, QString> foundCat = m_indexDB->findCategorie(bookQuery.value(catCol).toString());
+            QPair<int, QString> foundCat = m_libraryManager->findCategorie(bookQuery.value(catCol).toString());
             node->setCategories(foundCat.first, foundCat.second);
         } else {
             node->setCategories(0);
@@ -116,7 +116,7 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
              node->bookInfo = bookQuery.value(betakaCol).toString();
         }
 
-         QPair<int, QString> foundAuth = m_indexDB->findAuthor(bookQuery.value(authCol).toString());
+         QPair<int, QString> foundAuth = m_libraryManager->findAuthor(bookQuery.value(authCol).toString());
          if(foundAuth.first)
              node->setAuthor(foundAuth.first, foundAuth.second);
          else

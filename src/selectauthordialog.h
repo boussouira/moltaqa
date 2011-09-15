@@ -7,7 +7,7 @@ namespace Ui {
     class selectAuthorDialog;
 }
 
-class IndexDB;
+class LibraryManager;
 class QStandardItemModel;
 class SortFilterProxyModel;
 class QModelIndex;
@@ -33,7 +33,7 @@ signals:
 
 protected:
     Ui::selectAuthorDialog *ui;
-    IndexDB *m_indexDB;
+    LibraryManager *m_libraryManager;
     QStandardItemModel *m_model;
     SortFilterProxyModel *m_filter;
     QString m_authorName;

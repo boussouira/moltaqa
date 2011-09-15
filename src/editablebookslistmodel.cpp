@@ -54,9 +54,9 @@ Qt::ItemFlags EditableBooksListModel::flags(const QModelIndex &index) const
     return flags;
 }
 
-void EditableBooksListModel::setIndexDB(IndexDB *db)
+void EditableBooksListModel::setLibraryManager(LibraryManager *db)
 {
-    m_indexDB = db;
+    m_libraryManager = db;
 }
 
 void EditableBooksListModel::setModelEditibale(bool editable)
