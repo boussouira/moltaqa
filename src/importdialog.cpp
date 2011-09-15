@@ -41,9 +41,13 @@ ImportDialog::ImportDialog(IndexDB *indexDB, QWidget *parent) :
     ImportModelNode *node = new ImportModelNode(BookInfo::NormalBook);
     m_model->setRootNode(node);
 
-    ui->treeView->setItemDelegateForColumn(1, new AuthorDelegate(this));
-    ui->treeView->setItemDelegateForColumn(2, new BookTypeDelegate(this));
-    ui->treeView->setItemDelegateForColumn(3, new CategorieDelegate(this));
+    m_authorDelegate = new AuthorDelegate(this);
+    m_bookTypeDelegate = new BookTypeDelegate(this);
+    m_categorieDelegate = new CategorieDelegate(this);
+
+    ui->treeView->setItemDelegateForColumn(1, m_authorDelegate);
+    ui->treeView->setItemDelegateForColumn(2, m_bookTypeDelegate);
+    ui->treeView->setItemDelegateForColumn(3, m_categorieDelegate);
     ui->treeView->setModel(m_model);
     ui->progressBar->hide();
 }

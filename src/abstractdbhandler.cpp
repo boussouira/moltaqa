@@ -15,13 +15,15 @@
 AbstractDBHandler::AbstractDBHandler()
 {
     m_indexModel = new BookIndexModel();
-    m_bookInfo = new BookInfo();
+    m_bookInfo = 0;
 }
 
 AbstractDBHandler::~AbstractDBHandler()
 {
     delete m_indexModel;
-    delete m_bookInfo;
+
+    if(m_bookInfo)
+        delete m_bookInfo;
 }
 
 void AbstractDBHandler::openBookDB(QString pBookDBPath)

@@ -43,8 +43,9 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
     QTime timer;
     timer.start();
     MdbHandle *mdb;
+    char *env = g_strdup("MDB_JET3_CHARSET=cp1256");
 
-    putenv(strdup("MDB_JET3_CHARSET=cp1256"));
+    putenv(env);
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("windows-1256"));
 
     QString convert_path;
@@ -119,6 +120,7 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
 
     qDebug() << "Converting" << info.fileName() << " take " << m_time << "ms";
 
+    g_free(env);
     mdb_close(mdb);
     mdb_exit();
 
@@ -127,46 +129,14 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
     return convert_path;
 }
 
-int MdbConverter::getTables(MdbHandle *mdb, char *buffer[])
-{
-    // loop over each entry in the catalog
-    MdbCatalogEntry *entry;
-
-    unsigned int num_catalog = mdb->num_catalog;
-    int tables_count=0;
-
-    for (unsigned int i=0; i < num_catalog; i++) {
-        entry = (MdbCatalogEntry*) g_ptr_array_index (mdb->catalog, i);
-
-        if (entry->object_type != MDB_TABLE || mdb_is_system_table(entry))
-            continue;
-
-        buffer[tables_count++] = entry->object_name;
-    }
-
-    return tables_count;
-}
-
-void MdbConverter::getTableSchema(MdbHandle *mdb, char *tabname)
-{
-    for (unsigned int i=0; i < mdb->num_catalog; i++) {
-        MdbCatalogEntry *entry = (MdbCatalogEntry*) g_ptr_array_index (mdb->catalog, i);
-        if (entry->object_type == MDB_TABLE) {
-            if ((tabname && !strcmp(entry->object_name, tabname))
-                || (!tabname && mdb_is_user_table(entry))) {
-                generateTableSchema(entry);
-            }
-        }
-    }
-}
-
 void MdbConverter::getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry, bool fieldsName)
 {
     MdbTableDef *table;
     MdbColumn *col;
 
     char **bound_values;
-    char *quote_char = (char *) g_strdup("\"");
+    char *quote_char = g_strdup("\"");
+    char *null_str = g_strdup("NULL");
     char *escape_char = NULL;
     int  *bound_lens;
 
@@ -213,7 +183,7 @@ void MdbConverter::getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry, bool 
                 sqlCmd.append(", ");
 
             if (!bound_lens[p])
-                print_col(sqlCmd, g_strdup("NULL"), 0, col->col_type, quote_char, escape_char);
+                print_col(sqlCmd, null_str, 0, col->col_type, quote_char, escape_char);
              else
                 print_col(sqlCmd, bound_values[p], 1, col->col_type, quote_char, escape_char);
         }
@@ -228,6 +198,8 @@ void MdbConverter::getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry, bool 
         g_free(bound_values[n]);
 
     g_free(bound_values);
+    g_free(quote_char);
+    g_free(null_str);
     g_free(bound_lens);
     mdb_free_tabledef(table);
 

@@ -8,7 +8,6 @@ BooksListModel::BooksListModel(QObject *parent)
 
 BooksListModel::~BooksListModel()
 {
-    qDebug("Delete model %p", m_rootNode);
     delete m_rootNode;
 }
 

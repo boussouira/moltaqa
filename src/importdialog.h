@@ -11,8 +11,11 @@ namespace Ui {
 class ImportModel;
 class ImportModelNode;
 class IndexDB;
-class QSqlDatabase;
+class AuthorDelegate;
+class BookTypeDelegate;
+class CategorieDelegate;
 class QSignalMapper;
+class QSqlDatabase;
 
 class ImportDialog : public QDialog {
     Q_OBJECT
@@ -49,6 +52,9 @@ private:
     Ui::ImportDialog *ui;
     ImportModel *m_model;
     IndexDB *m_indexDB;
+    AuthorDelegate *m_authorDelegate;
+    BookTypeDelegate *m_bookTypeDelegate;
+    CategorieDelegate *m_categorieDelegate;
     QHash<int, QString> m_booksList;
     QFutureWatcher<void> m_importWatcher;
     QSignalMapper *m_signalMapper;

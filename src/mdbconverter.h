@@ -23,11 +23,9 @@ public:
     static void removeAllConvertedDB();
 
 protected:
-    void getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry, bool fieldsName=true);
-    void getTableSchema(MdbHandle *mdb, char *tabname);
-    int getTables(MdbHandle *mdb, char *buffer[]);
-    void print_col(QString &std, gchar *col_val, int quote_text, int col_type, char *quote_char, char *escape_char);
     void generateTableSchema(MdbCatalogEntry *entry);
+    void getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry, bool fieldsName=true);
+    void print_col(QString &std, gchar *col_val, int quote_text, int col_type, char *quote_char, char *escape_char);
     char *sanitizeName(char *str);
 
 protected:
