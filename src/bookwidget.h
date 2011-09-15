@@ -48,7 +48,6 @@ protected:
     WebView *m_view;
     IndexWidget *m_indexWidget;
     AbstractDBHandler *m_db;
-    QList<int> m_splitterSizes;
     QFuture<QAbstractItemModel*> m_retModel;
     QFutureWatcher<QAbstractItemModel*> *m_watcher;
 };

@@ -70,7 +70,8 @@ SOURCES += mainwindow.cpp \
     editbookslistwidget.cpp \
     editablecatslistmodel.cpp \
     selectauthordialog.cpp \
-    abstracteditwidget.cpp
+    abstracteditwidget.cpp \
+    viewsmanagerwidget.cpp
 HEADERS += mainwindow.h \
     pageinfo.h \
     qurantextformat.h \
@@ -124,7 +125,8 @@ HEADERS += mainwindow.h \
     editbookslistwidget.h \
     editablecatslistmodel.h \
     selectauthordialog.h \
-    abstracteditwidget.h
+    abstracteditwidget.h \
+    viewsmanagerwidget.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \
@@ -141,3 +143,5 @@ FORMS += mainwindow.ui settingsdialog.ui \
 
 RESOURCES += ../share/alkotobiya/qt_rc.qrc
 win32:RC_FILE = ../share/alkotobiya/win_rc.rc
+
+

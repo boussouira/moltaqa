@@ -2,6 +2,7 @@
 #define BOOKSVIEWER_H
 
 #include <qwidget.h>
+#include "viewsmanagerwidget.h"
 
 class BookWidget;
 class LibraryManager;
@@ -20,7 +21,7 @@ public:
     void setLibraryManager(LibraryManager *libraryManager) { m_libraryManager = libraryManager;}
 
 public slots:
-    void openBook(int bookID, int pageID = -1, bool newTab = true);
+    void openBook(int bookID, int pageID = -1);
     void nextUnit();
     void previousUnit();
     void nextPage();
@@ -30,14 +31,10 @@ public slots:
     void goToPage();
     void updateActions();
     void showIndexWidget();
-    void tabChangePosition(int fromIndex, int toIndex);
-    void tabCloseRequest(int tabIndex);
     void showToolBar();
     void removeToolBar();
-    void openTafessir(); // TODO: should be private?
+    void openTafessir();
     void openShareeh();
-    BookWidget *currentBookWidget();
-    BookWidget *currentBookWidget(int index);
     void tabChanged(int newIndex);
 
 protected:
@@ -47,9 +44,8 @@ signals:
     void lastTabClosed();
 
 private:
-    TabWidget *m_tab;
     LibraryManager *m_libraryManager;
-    QList<BookWidget *> m_bookWidgets;
+    ViewsManagerWidget *m_viewManager;
     QAction *m_actionNewTab;
     QAction *m_actionIndexDock;
     QAction *m_actionSearchDock;

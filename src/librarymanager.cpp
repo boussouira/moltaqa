@@ -371,8 +371,6 @@ void LibraryManager::updateBookMeta(BookInfo *info, bool newBook)
 
     if(!bookQuery.exec()) {
         LOG_SQL_ERROR(bookQuery);
-    } else {
-        qDebug() << "Meta for" << info->bookID << (newBook?"Inserted":"Updated");
     }
 }
 

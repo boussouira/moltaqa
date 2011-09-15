@@ -12,8 +12,6 @@
 #include <QCloseEvent>
 #include <QFile>
 
-Q_DECLARE_METATYPE(QList<int>);
-
 BookWidget::BookWidget(AbstractDBHandler *db, QWidget *parent): QWidget(parent), m_db(db)
 {
     m_layout = new QVBoxLayout(this);
@@ -31,8 +29,6 @@ BookWidget::BookWidget(AbstractDBHandler *db, QWidget *parent): QWidget(parent),
     m_layout->setMargin(0);
     setLayout(m_layout);
     setAutoFillBackground(true);
-
-    m_splitterSizes << 0;
 
     loadSettings();
     displayInfo();
@@ -55,9 +51,9 @@ void BookWidget::loadSettings()
 {
     QSettings settings;
     settings.beginGroup("BookWidget");
-    QList<int> sizes = settings.value("splitter").value<QList<int> >();
+    QByteArray sizes = settings.value("splitter").toByteArray();
     if(!sizes.isEmpty())
-        m_splitter->setSizes(sizes);
+        m_splitter->restoreState(sizes);
     settings.endGroup();
 }
 
@@ -65,7 +61,7 @@ void BookWidget::saveSettings()
 {
     QSettings settings;
     settings.beginGroup("BookWidget");
-    settings.setValue("splitter", QVariant::fromValue< QList<int> >(m_splitter->sizes()));
+    settings.setValue("splitter", m_splitter->saveState());
     settings.endGroup();
 }
 
@@ -193,31 +189,18 @@ void BookWidget::openHaddit(int hadditNum)
 
 void BookWidget::hideIndexWidget()
 {
+    QList<int> sizes;
 
-    // For debugging stuff
-    QFile file("xout.html");
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-        return;
-
-    QTextStream out(&file);
-    out.setCodec("utf-8");
-    out << m_view->page()->mainFrame()->toHtml();
-
-
-    QList<int> hide;
-    hide << 0;
-
-    if(m_splitter->sizes().at(0) > 0){
-        m_splitterSizes.clear();
-        m_splitterSizes << m_indexWidget->width() << m_view->width();
-        m_splitter->setSizes(hide);
+    if(m_splitter->sizes().at(0) == 0){
+        sizes << 300 << 1000;
+        m_splitter->setSizes(sizes);
     } else {
-        m_splitter->setSizes(m_splitterSizes);
+        sizes << 0 << 10;
+        m_splitter->setSizes(sizes);
     }
 }
 
 void BookWidget::indexModelReady()
 {
-    // TODO: stop this watcher when closing this widget if it is running
     m_indexWidget->setIndex(m_retModel.result());
 }

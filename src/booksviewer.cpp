@@ -10,6 +10,7 @@
 #include "bookexception.h"
 #include "openpagedialog.h"
 #include "mainwindow.h"
+#include "viewsmanagerwidget.h"
 
 #include <qmainwindow.h>
 #include <qmenubar.h>
@@ -27,17 +28,16 @@ typedef QPair<int, QString> Pair;
 BooksViewer::BooksViewer(LibraryManager *libraryManager, QMainWindow *parent): QWidget(parent)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
-    m_tab = new TabWidget(this);
+    m_viewManager = new ViewsManagerWidget(this);
+
     m_libraryManager = libraryManager;
-    layout->addWidget(m_tab);
+    layout->addWidget(m_viewManager);
     layout->setContentsMargins(0,6,0,0);
 
     createMenus(parent);
 
-    connect(m_tab, SIGNAL(currentChanged(int)), SLOT(tabChanged(int)));
-    connect(m_tab, SIGNAL(tabMoved(int,int)), SLOT(tabChangePosition(int,int)));
-    connect(m_tab, SIGNAL(tabCloseRequested(int)), SLOT(tabCloseRequest(int)));
-    connect(m_tab, SIGNAL(lastTabClosed()), SIGNAL(lastTabClosed()));
+    connect(m_viewManager, SIGNAL(currentTabChanged(int)), SLOT(updateActions()));
+    connect(m_viewManager, SIGNAL(lastTabClosed()), SIGNAL(lastTabClosed()));
 }
 
 BooksViewer::~BooksViewer()
@@ -177,7 +177,7 @@ void BooksViewer::showToolBar()
     m_navMenu->setVisible(true);
 }
 
-void BooksViewer::openBook(int bookID, int pageID, bool newTab)
+void BooksViewer::openBook(int bookID, int pageID)
 {
     BookInfo *bookInfo = m_libraryManager->getBookInfo(bookID);
 
@@ -206,18 +206,9 @@ void BooksViewer::openBook(int bookID, int pageID, bool newTab)
     }
 
     BookWidget *bookWidget = new BookWidget(bookdb, this);
-    int tabIndex;
-    if(newTab) {
-        m_bookWidgets.append(bookWidget);
-        tabIndex = m_tab->addTab(bookWidget, bookdb->bookInfo()->bookDisplayName);
-    } else {
-        tabIndex = m_tab->currentIndex();
-        m_tab->removeTab(tabIndex);
-        m_tab->insertTab(tabIndex, bookWidget, bookdb->bookInfo()->bookDisplayName);
-        m_bookWidgets.replace(tabIndex, bookWidget);
-    }
 
-    m_tab->setCurrentIndex(tabIndex);
+    m_viewManager->addBook(bookWidget);
+
     if(pageID == -1)
         bookWidget->firstPage();
     else
@@ -234,7 +225,7 @@ void BooksViewer::openTafessir()
     int tafessirID = m_comboTafasir->itemData(m_comboTafasir->currentIndex()).toInt();
     qDebug("Open tafessir: %d", tafessirID);
     BookInfo *bookInfo = m_libraryManager->getBookInfo(tafessirID);
-    if(!bookInfo || !bookInfo->isTafessir() || !currentBookWidget()->dbHandler()->bookInfo()->isQuran())
+    if(!bookInfo || !bookInfo->isTafessir() || !m_viewManager->activeBook()->dbHandler()->bookInfo()->isQuran())
         return;
 
     TafessirDBHandler *bookdb = new TafessirDBHandler();
@@ -251,14 +242,11 @@ void BooksViewer::openTafessir()
                              e.what());
     }
 
-    int sora = currentBookWidget()->dbHandler()->bookInfo()->currentSoraNumber;
-    int aya = currentBookWidget()->dbHandler()->bookInfo()->currentAyaNumber;
+    int sora = m_viewManager->activeBookInfo()->currentSoraNumber;
+    int aya = m_viewManager->activeBookInfo()->currentAyaNumber;
 
     BookWidget *bookWidget = new BookWidget(bookdb, this);
-
-    m_bookWidgets.append(bookWidget);
-    int tabIndex = m_tab->addTab(bookWidget, bookdb->bookInfo()->bookDisplayName);
-    m_tab->setCurrentIndex(tabIndex);
+    m_viewManager->addBook(bookWidget);
 
     bookWidget->openSora(sora, aya);
 
@@ -267,7 +255,7 @@ void BooksViewer::openTafessir()
 
 void BooksViewer::openShareeh()
 {
-    BookInfo *info = currentBookWidget()->dbHandler()->bookInfo();
+    BookInfo *info = m_viewManager->activeBookInfo();
 
     if(info->shorooh.isEmpty())
         return;
@@ -294,52 +282,52 @@ void BooksViewer::openShareeh()
 
 void BooksViewer::nextUnit()
 {
-    currentBookWidget()->nextUnit();
+    m_viewManager->activeBook()->nextUnit();
     updateActions();
 }
 
 void BooksViewer::previousUnit()
 {
-    currentBookWidget()->prevUnit();
+    m_viewManager->activeBook()->prevUnit();
     updateActions();
 }
 
 void BooksViewer::nextPage()
 {
-    currentBookWidget()->nextPage();
+    m_viewManager->activeBook()->nextPage();
     updateActions();
 }
 
 void BooksViewer::previousPage()
 {
-    currentBookWidget()->prevPage();
+    m_viewManager->activeBook()->prevPage();
     updateActions();
 }
 
 void BooksViewer::firstPage()
 {
-    currentBookWidget()->firstPage();
+    m_viewManager->activeBook()->firstPage();
     updateActions();
 }
 
 void BooksViewer::lastPage()
 {
-    currentBookWidget()->lastPage();
+    m_viewManager->activeBook()->lastPage();
     updateActions();
 }
 
 void BooksViewer::goToPage()
 {
     OpenPageDialog dialog(this);
-    dialog.setBookInfo(currentBookWidget()->dbHandler()->bookInfo());
+    dialog.setBookInfo(m_viewManager->activeBookInfo());
 
     if(dialog.exec() == QDialog::Accepted) {
         if(dialog.currentPage() == 0) // Open selected page/part
-            currentBookWidget()->openPage(dialog.selectedPage(), dialog.selectedPart());
+            m_viewManager->activeBook()->openPage(dialog.selectedPage(), dialog.selectedPart());
         else if(dialog.currentPage() == 1) // Open selected sora/page
-            currentBookWidget()->openSora(dialog.selectedSora(), dialog.selectedAya());
+            m_viewManager->activeBook()->openSora(dialog.selectedSora(), dialog.selectedAya());
         else if(dialog.currentPage() == 2) // Open selected haddit
-            currentBookWidget()->openHaddit(dialog.selectedHaddit());
+            m_viewManager->activeBook()->openHaddit(dialog.selectedHaddit());
         else
             qDebug("What to do?");
     }
@@ -347,42 +335,25 @@ void BooksViewer::goToPage()
 
 void BooksViewer::updateActions()
 {
-    bool hasNext = currentBookWidget()->dbHandler()->hasNext();
-    bool hasPrev = currentBookWidget()->dbHandler()->hasPrev();
+    if(m_viewManager->activeBook()) {
+        bool hasNext = m_viewManager->activeDBHandler()->hasNext();
+        bool hasPrev = m_viewManager->activeDBHandler()->hasPrev();
 
-    m_actionNextPage->setEnabled(hasNext);
-    m_actionLastPage->setEnabled(hasNext);
-    m_actionPrevPage->setEnabled(hasPrev);
-    m_actionFirstPage->setEnabled(hasPrev);
-    m_toolBarShorooh->setEnabled(currentBookWidget()->dbHandler()->bookInfo()->isNormal() &&
-                                 !currentBookWidget()->dbHandler()->bookInfo()->shorooh.isEmpty());
+        m_actionNextPage->setEnabled(hasNext);
+        m_actionLastPage->setEnabled(hasNext);
+        m_actionPrevPage->setEnabled(hasPrev);
+        m_actionFirstPage->setEnabled(hasPrev);
+        m_toolBarShorooh->setEnabled(m_viewManager->activeBookInfo()->isNormal() &&
+                                     !m_viewManager->activeBookInfo()->shorooh.isEmpty());
+    }
 }
 
 void BooksViewer::showIndexWidget()
 {
-    currentBookWidget()->hideIndexWidget();
-}
+    BookWidget *book = m_viewManager->activeBook();
 
-BookWidget *BooksViewer::currentBookWidget()
-{
-    return currentBookWidget(m_tab->currentIndex());
-}
-
-BookWidget *BooksViewer::currentBookWidget(int index)
-{
-    return (m_bookWidgets.count() > 0) ? m_bookWidgets.at(index) : NULL;
-}
-
-void BooksViewer::tabChangePosition(int fromIndex, int toIndex)
-{
-    m_bookWidgets.move(fromIndex, toIndex);
-}
-
-void BooksViewer::tabCloseRequest(int tabIndex)
-{
-    currentBookWidget()->saveSettings();
-    m_bookWidgets.removeAt(tabIndex);
-    m_tab->removeTab(tabIndex);
+    if(book)
+        book->hideIndexWidget();
 }
 
 void BooksViewer::tabChanged(int newIndex)
@@ -390,16 +361,16 @@ void BooksViewer::tabChanged(int newIndex)
     if(newIndex != -1) {
         updateActions();
 
-        bool showTafsssir = currentBookWidget()->dbHandler()->bookInfo()->isQuran();
-        bool showShorooh = currentBookWidget()->dbHandler()->bookInfo()->isNormal();
+        bool showTafsssir = m_viewManager->activeBookInfo()->isQuran();
+        bool showShorooh = m_viewManager->activeBookInfo()->isNormal();
 
         m_toolBarTafesir->setVisible(showTafsssir);
         m_toolBarTafesir->setEnabled(showTafsssir);
 
         m_toolBarShorooh->setVisible(showShorooh);
-        m_toolBarShorooh->setEnabled(showShorooh && !currentBookWidget()->dbHandler()->bookInfo()->shorooh.isEmpty());
+        m_toolBarShorooh->setEnabled(showShorooh && !m_viewManager->activeBookInfo()->shorooh.isEmpty());
 
-        if(currentBookWidget()->dbHandler()->bookInfo()->isQuran()) {
+        if(m_viewManager->activeBookInfo()->isQuran()) {
             m_actionNextAYA->setText(tr("الآية التالية"));
             m_actionPrevAYA->setText(tr("الآية السابقة"));
         } else {
