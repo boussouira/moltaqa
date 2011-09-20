@@ -61,6 +61,7 @@ public:
     int addBook(ImportModelNode *book);
     void updateBookMeta(BookInfo *info, bool newBook);
     void setConnectionInfo(LibraryInfo *info);
+    bool hasShareeh(int bookID);
     void getShoroohPages(BookInfo *info);
 
     /**

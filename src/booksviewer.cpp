@@ -37,6 +37,7 @@ BooksViewer::BooksViewer(LibraryManager *libraryManager, QMainWindow *parent): Q
     createMenus(parent);
 
     connect(m_viewManager, SIGNAL(currentTabChanged(int)), SLOT(updateActions()));
+    connect(m_viewManager, SIGNAL(currentTabChanged(int)), SLOT(tabChanged(int)));
     connect(m_viewManager, SIGNAL(lastTabClosed()), SIGNAL(lastTabClosed()));
 }
 
@@ -223,7 +224,7 @@ void BooksViewer::openBook(int bookID, int pageID)
 void BooksViewer::openTafessir()
 {
     int tafessirID = m_comboTafasir->itemData(m_comboTafasir->currentIndex()).toInt();
-    qDebug("Open tafessir: %d", tafessirID);
+
     BookInfo *bookInfo = m_libraryManager->getBookInfo(tafessirID);
     if(!bookInfo || !bookInfo->isTafessir() || !m_viewManager->activeBook()->dbHandler()->bookInfo()->isQuran())
         return;
@@ -362,13 +363,13 @@ void BooksViewer::tabChanged(int newIndex)
         updateActions();
 
         bool showTafsssir = m_viewManager->activeBookInfo()->isQuran();
-        bool showShorooh = m_viewManager->activeBookInfo()->isNormal();
+        bool showShorooh = m_viewManager->activeBookInfo()->hasShareeh;
 
         m_toolBarTafesir->setVisible(showTafsssir);
         m_toolBarTafesir->setEnabled(showTafsssir);
 
         m_toolBarShorooh->setVisible(showShorooh);
-        m_toolBarShorooh->setEnabled(showShorooh && !m_viewManager->activeBookInfo()->shorooh.isEmpty());
+        m_toolBarShorooh->setEnabled(showShorooh);
 
         if(m_viewManager->activeBookInfo()->isQuran()) {
             m_actionNextAYA->setText(tr("الآية التالية"));

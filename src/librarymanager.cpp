@@ -210,13 +210,34 @@ BookInfo *LibraryManager::getBookInfo(int bookID, bool allInfo)
                 bookInfo->authorName = bookQuery.value(11).toString();
             }
 
+            bookInfo->hasShareeh = hasShareeh(bookID);
+
             return bookInfo;
         }
     } else {
-        LOG_SQL_ERROR(bookQuery);;
+        LOG_SQL_ERROR(bookQuery);
     }
 
     return 0;
+}
+
+bool LibraryManager::hasShareeh(int bookID)
+{
+    QSqlQuery bookQuery(m_libraryManager);
+    int count = 0;
+
+    bookQuery.prepare("SELECT COUNT(*) FROM ShareehMeta WHERE "
+                      "mateen_book = ?");
+    bookQuery.bindValue(0, bookID);
+    if(bookQuery.exec()) {
+        if(bookQuery.next()) {
+            count = bookQuery.value(0).toInt();
+        }
+    } else {
+        LOG_SQL_ERROR(bookQuery);
+    }
+
+    return count;
 }
 
 BookInfo *LibraryManager::getQuranBook()

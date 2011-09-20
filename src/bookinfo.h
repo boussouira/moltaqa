@@ -61,6 +61,7 @@ public:
     int lastID;
     int bookID;
     int authorID;
+    bool hasShareeh;
 
 protected:
     QHash<int, int> m_firstPages;
