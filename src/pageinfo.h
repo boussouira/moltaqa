@@ -8,15 +8,13 @@ class PageInfo
 public:
     PageInfo();
 
-    QString currentSoraName ;
-    QString currentSoraDescent;
-    int currentSoraNumber;
-    int currentAyaNumber;
-    int currentSoraAyatCount ;
-    int currentPageNumber;
-    int currentPageID;
-    int currentPartNumber;
-    int currentHadditNumber;
+    int sora;   ///< Sora Number
+    int aya;    ///< Aya number
+    int ayatCount;  ///< Current sora ayat count
+    int page;   ///< Page number
+    int pageID; ///< Page id
+    int part;   ///< Part number
+    int haddit; ///< Haddit number
 };
 
 #endif // PAGEINFO_H

@@ -2,11 +2,11 @@
 
 PageInfo::PageInfo()
 {
-    currentSoraNumber = 0;
-    currentAyaNumber = 0;
-    currentSoraAyatCount  = 0;
-    currentPageNumber = 0;
-    currentPageID = 0;
-    currentPartNumber = 0;
-    currentHadditNumber = 0;
+    sora = 0;
+    aya = 0;
+    ayatCount  = 0;
+    page = 0;
+    pageID = 0;
+    part = 0;
+    haddit = 0;
 }

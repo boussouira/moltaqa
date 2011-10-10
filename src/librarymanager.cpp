@@ -408,7 +408,7 @@ void LibraryManager::getShoroohPages(BookInfo *info)
                       "ON booksList.id =  ShareehMeta.shareeh_book "
                       "WHERE ShareehMeta.mateen_book = ? AND ShareehMeta.mateen_id = ?");
     bookQuery.bindValue(0, info->bookID);
-    bookQuery.bindValue(1, info->currentPageID);
+    bookQuery.bindValue(1, info->currentPage.pageID);
     if(!bookQuery.exec()) {
         LOG_SQL_ERROR(bookQuery);
     }

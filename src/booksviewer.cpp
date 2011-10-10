@@ -243,8 +243,8 @@ void BooksViewer::openTafessir()
                              e.what());
     }
 
-    int sora = m_viewManager->activeBookInfo()->currentSoraNumber;
-    int aya = m_viewManager->activeBookInfo()->currentAyaNumber;
+    int sora = m_viewManager->activeBookInfo()->currentPage.sora;
+    int aya = m_viewManager->activeBookInfo()->currentPage.aya;
 
     BookWidget *bookWidget = new BookWidget(bookdb, this);
     m_viewManager->addBook(bookWidget);

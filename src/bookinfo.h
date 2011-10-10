@@ -14,7 +14,7 @@ public:
     QString bookName;
 };
 
-class BookInfo : public PageInfo
+class BookInfo
 {
 public:
     BookInfo();
@@ -62,6 +62,7 @@ public:
     int bookID;
     int authorID;
     bool hasShareeh;
+    PageInfo currentPage;
 
 protected:
     QHash<int, int> m_firstPages;

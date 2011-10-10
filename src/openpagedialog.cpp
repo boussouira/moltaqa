@@ -40,18 +40,18 @@ int OpenPageDialog::selectedPart()
 
 void OpenPageDialog::setBookInfo(BookInfo *info)
 {
-    ui->spinPage->setValue(info->currentPageNumber);
-    ui->spinPart->setValue(info->currentPartNumber);
+    ui->spinPage->setValue(info->currentPage.page);
+    ui->spinPart->setValue(info->currentPage.part);
 
     if(info->isQuran() || info->isTafessir()) {
-        ui->spinAya->setValue(info->currentAyaNumber);
-        ui->comboSora->setCurrentIndex(qMax(0, info->currentSoraNumber-1));
+        ui->spinAya->setValue(info->currentPage.aya);
+        ui->comboSora->setCurrentIndex(qMax(0, info->currentPage.sora-1));
     } else {
         ui->tab_2->setEnabled(false);
     }
 
     if(!info->isQuran())
-        ui->spinHaddit->setValue(info->currentHadditNumber);
+        ui->spinHaddit->setValue(info->currentPage.haddit);
 }
 
 void OpenPageDialog::loadSowarNames()
