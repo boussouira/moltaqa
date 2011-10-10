@@ -185,12 +185,14 @@ void QuranDBHandler::prevUnit()
     int aya = m_bookInfo->currentPage.aya-1;
     int sora = m_bookInfo->currentPage.sora;
     if(aya < 1) {
-        aya = 1;
-        sora--;
+        if(--sora < 1)
+            sora = 114;
+
+        aya = getSoraAyatCount(sora);
     }
-    if(sora < 1)
-        sora = 114;
+
     int page = getPageNumber(sora, aya);
+
     m_bookInfo->currentPage.sora = sora;
     m_bookInfo->currentPage.aya = aya;
     m_bookInfo->currentPage.ayatCount = getSoraAyatCount(sora);
