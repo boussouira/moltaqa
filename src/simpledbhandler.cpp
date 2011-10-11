@@ -13,14 +13,13 @@
 #include <qdebug.h>
 #include <qdatetime.h>
 
-SimpleDBHandler::SimpleDBHandler()
+RichSimpleBookReader::RichSimpleBookReader(QObject *parent) : RichBookReader(parent)
 {
     m_textFormat = new SimpleTextFormat();
-    m_fastIndex = true;
     m_simpleQuery = 0;
 }
 
-SimpleDBHandler::~SimpleDBHandler()
+RichSimpleBookReader::~RichSimpleBookReader()
 {
     delete m_textFormat;
 
@@ -28,13 +27,13 @@ SimpleDBHandler::~SimpleDBHandler()
         delete m_simpleQuery;
 }
 
-void SimpleDBHandler::connected()
+void RichSimpleBookReader::connected()
 {
     m_simpleQuery = new SimpleQuery(m_bookDB, m_bookInfo);
-    AbstractDBHandler::connected();
+    AbstractBookReader::connected();
 }
 
-void SimpleDBHandler::openID(int pid)
+void RichSimpleBookReader::goToPage(int pid)
 {
     m_textFormat->start();
 
@@ -61,16 +60,18 @@ void SimpleDBHandler::openID(int pid)
     m_libraryManager->getShoroohPages(m_bookInfo);
 
     m_textFormat->done();
+
+    emit textChanged();
 }
 
-void SimpleDBHandler::openPage(int page, int part)
+void RichSimpleBookReader::goToPage(int page, int part)
 {
     m_simpleQuery->page(page, part);
     if(m_simpleQuery->next())
-        openID(m_simpleQuery->value(0).toInt());
+        goToPage(m_simpleQuery->value(0).toInt());
 }
 
-QAbstractItemModel *SimpleDBHandler::indexModel()
+QAbstractItemModel *RichSimpleBookReader::indexModel()
 {
     BookIndexNode *rootNode = new BookIndexNode();
 
@@ -81,7 +82,7 @@ QAbstractItemModel *SimpleDBHandler::indexModel()
     return m_indexModel;
 }
 
-QAbstractItemModel * SimpleDBHandler::topIndexModel()
+QAbstractItemModel * RichSimpleBookReader::topIndexModel()
 {
     BookIndexModel *indexModel = new BookIndexModel();
     BookIndexNode *rootNode = new BookIndexNode();
@@ -101,7 +102,7 @@ QAbstractItemModel * SimpleDBHandler::topIndexModel()
     return indexModel;
 }
 
-void SimpleDBHandler::childTitles(BookIndexNode *parentNode, int tid)
+void RichSimpleBookReader::childTitles(BookIndexNode *parentNode, int tid)
 {
     QSqlQuery query(m_bookDB);
     query.exec(QString("SELECT id, parentID, pageID, title FROM bookIndex "
@@ -115,7 +116,7 @@ void SimpleDBHandler::childTitles(BookIndexNode *parentNode, int tid)
     }
 }
 
-void SimpleDBHandler::getBookInfo()
+void RichSimpleBookReader::getBookInfo()
 {
     m_bookInfo->textTable = "bookPages";
     m_bookInfo->indexTable = "bookIndex";
@@ -137,40 +138,39 @@ void SimpleDBHandler::getBookInfo()
     }
 }
 
-void SimpleDBHandler::nextPage()
+void RichSimpleBookReader::nextPage()
 {
     if(hasNext())
-        openID(m_bookInfo->currentPage.pageID+1);
+        goToPage(m_bookInfo->currentPage.pageID+1);
 }
 
-void SimpleDBHandler::prevPage()
+void RichSimpleBookReader::prevPage()
 {
     if(hasPrev())
-        openID(m_bookInfo->currentPage.pageID-1);
+        goToPage(m_bookInfo->currentPage.pageID-1);
 }
 
-bool SimpleDBHandler::hasNext()
+bool RichSimpleBookReader::hasNext()
 {
     return (m_bookInfo->currentPage.pageID < m_bookInfo->lastID);
 }
 
-bool SimpleDBHandler::hasPrev()
+bool RichSimpleBookReader::hasPrev()
 {
     return (m_bookInfo->currentPage.pageID > m_bookInfo->firstID);
 }
 
-void SimpleDBHandler::goToSora(int sora, int aya)
+void RichSimpleBookReader::goToSora(int sora, int aya)
 {
     //Doesn't do any thing
     Q_UNUSED(sora);
     Q_UNUSED(aya);
 }
 
-void SimpleDBHandler::goToHaddit(int hadditNum)
+void RichSimpleBookReader::goToHaddit(int hadditNum)
 {
     int page = m_simpleQuery->getHaddithPage(hadditNum);
 
     if(page)
-        openID(page);
+        goToPage(page);
 }
-

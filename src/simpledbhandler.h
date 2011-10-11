@@ -1,17 +1,19 @@
 #ifndef SIMPLEDBHANDLER_H
 #define SIMPLEDBHANDLER_H
 
-#include "abstractdbhandler.h"
+#include "richbookreader.h"
 
 class BookIndexNode;
 class SimpleQuery;
 
-class SimpleDBHandler : public AbstractDBHandler
+class RichSimpleBookReader : public RichBookReader
 {
 public:
-    SimpleDBHandler();
-    ~SimpleDBHandler();
+    RichSimpleBookReader(QObject *parent=0);
+    ~RichSimpleBookReader();
 
+    void goToPage(int pid = -1);
+    void goToPage(int page, int part);
     void goToSora(int sora, int aya);
     void goToHaddit(int hadditNum);
 
@@ -25,8 +27,6 @@ public:
     QAbstractItemModel *topIndexModel();
 
 protected:
-    void openID(int id = -1);
-    void openPage(int page, int part =1);
     void getBookInfo();
     void childTitles(BookIndexNode *parentNode, int tid);
     void connected();

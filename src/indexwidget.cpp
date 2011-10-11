@@ -107,17 +107,21 @@ void IndexWidget::ayaNumChange(int pAyaNum)
         emit ayaNumberChange(pAyaNum);
 }
 
-void IndexWidget::listDoubleClicked(QModelIndex pIndex)
+void IndexWidget::listDoubleClicked(QModelIndex index)
 {
-    if(sendSignals)
-        emit openSora(pIndex.row()+1);
-    BookIndexModel *model = static_cast<BookIndexModel*>(ui->treeView->model());
-    emit openPage(model->nodeFromIndex(pIndex)->id());
+    if(sendSignals) {
+        if(m_bookInfo->isQuran()) {
+            emit openSora(index.row()+1, 1);
+        } else {
+            BookIndexModel *model = static_cast<BookIndexModel*>(ui->treeView->model());
+            emit openPage(model->nodeFromIndex(index)->id());
+        }
+    }
 }
 
 void IndexWidget::openSoraInCurrentTab()
 {
-    emit openSora(ui->treeView->currentIndex().row()+1);
+    emit openSora(ui->treeView->currentIndex().row()+1, 1);
 }
 
 void IndexWidget::openSoraInNewTab()

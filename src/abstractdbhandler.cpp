@@ -12,83 +12,73 @@
 #include <QTime>
 #include <QDebug>
 
-AbstractDBHandler::AbstractDBHandler()
+AbstractBookReader::AbstractBookReader(QObject *parent) : QObject(parent)
 {
     m_indexModel = new BookIndexModel();
+    m_currentPage = new PageInfo();
     m_bookInfo = 0;
 }
 
-AbstractDBHandler::~AbstractDBHandler()
+AbstractBookReader::~AbstractBookReader()
 {
     delete m_indexModel;
 
     if(m_bookInfo)
         delete m_bookInfo;
+
+    m_bookDB = QSqlDatabase();
+    QSqlDatabase::removeDatabase(m_connectionName);
 }
 
-void AbstractDBHandler::openBookDB(QString pBookDBPath)
+void AbstractBookReader::openBookDB()
 {
-    QString bookPath = pBookDBPath.isEmpty() ? m_bookInfo->bookPath : pBookDBPath;
-    if(QSqlDatabase::contains(m_connectionName)) {
-        m_bookDB = QSqlDatabase::database(m_connectionName);
-    } else {
-        m_bookDB = QSqlDatabase::addDatabase("QSQLITE", m_connectionName);
-        m_bookDB.setDatabaseName(bookPath);
-    }
+    Q_ASSERT(m_bookInfo);
+
+    m_connectionName = QString("book_i%1").arg(m_bookInfo->bookID);
+    while(QSqlDatabase::contains(m_connectionName))
+        m_connectionName.append("_");
+
+    m_bookDB = QSqlDatabase::addDatabase("QSQLITE", m_connectionName);
+    m_bookDB.setDatabaseName(m_bookInfo->bookPath);
+
 
     if (!m_bookDB.open())
-        throw BookException(tr("لم يمكن فتح قاعدة البيانات"), bookPath);
+        throw BookException(tr("لم يمكن فتح قاعدة البيانات"), m_bookInfo->bookPath);
 
-    m_bookQuery =  QSqlQuery(m_bookDB);
+    m_bookQuery = QSqlQuery(m_bookDB);
 
     connected();
     getBookInfo();
 }
 
-void AbstractDBHandler::setBookInfo(BookInfo *bi)
+void AbstractBookReader::setBookInfo(BookInfo *bi)
 {
     m_bookInfo = bi;
-    m_connectionName = QString("book_i%1").arg(m_bookInfo->bookID);
 }
 
-void AbstractDBHandler::setConnctionInfo(LibraryInfo *info)
+void AbstractBookReader::setConnctionInfo(LibraryInfo *info)
 {
     m_connetionInfo = info;
 }
 
-void AbstractDBHandler::nextUnit()
+void AbstractBookReader::nextAya()
 {
 }
 
-void AbstractDBHandler::prevUnit()
+void AbstractBookReader::prevAya()
 {
 }
 
-void AbstractDBHandler::openIndexID(int pid)
-{
-    openID(pid);
-}
-
-void AbstractDBHandler::connected()
+void AbstractBookReader::connected()
 {
 }
 
-void AbstractDBHandler::setLibraryManager(LibraryManager *db)
+void AbstractBookReader::setLibraryManager(LibraryManager *db)
 {
     m_libraryManager = db;
 }
 
-LibraryManager* AbstractDBHandler::libraryManager()
+LibraryManager* AbstractBookReader::libraryManager()
 {
     return m_libraryManager;
-}
-
-bool AbstractDBHandler::needFastIndexLoad()
-{
-    return m_fastIndex;
-}
-
-void AbstractDBHandler::goToPage(int page, int part)
-{
-    openPage(page, part);
 }

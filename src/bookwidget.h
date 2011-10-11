@@ -6,7 +6,7 @@
 
 class WebView;
 class IndexWidget;
-class AbstractDBHandler;
+class RichBookReader;
 class QSplitter;
 class QVBoxLayout;
 class QAbstractItemModel;
@@ -16,38 +16,40 @@ class BookWidget: public QWidget
     Q_OBJECT
 
 public:
-    BookWidget(AbstractDBHandler *db, QWidget *parent=0);
+    BookWidget(RichBookReader *db, QWidget *parent=0);
     ~BookWidget();
-    void setDBHandler(AbstractDBHandler *db);
+    void setDBHandler(RichBookReader *db);
     void displayInfo();
-    AbstractDBHandler *dbHandler() { return m_db; }
+    RichBookReader *dbHandler() { return m_db; }
     IndexWidget *indexWidget() { return m_indexWidget; }
     void firstPage();
     void lastPage();
     void nextPage();
     void prevPage();
-    void nextUnit();
-    void prevUnit();
+    void scrollDown();
+    void scrollUp();
     void hideIndexWidget();
     void saveSettings();
 
-    void openPage(int pageNum, int partNum);
-    void openSora(int sora, int aya);
-    void openHaddit(int hadditNum);
 
 protected:
     void loadSettings();
 
 public slots:
-    void openID(int id);
+    void openPage(int id);
+    void openPage(int pageNum, int partNum);
+    void openSora(int sora, int aya);
+    void openHaddit(int hadditNum);
+
     void indexModelReady();
+    void readerTextChanged();
 
 protected:
     QSplitter *m_splitter;
     QVBoxLayout *m_layout;
     WebView *m_view;
     IndexWidget *m_indexWidget;
-    AbstractDBHandler *m_db;
+    RichBookReader *m_db;
     QFuture<QAbstractItemModel*> m_retModel;
     QFutureWatcher<QAbstractItemModel*> *m_watcher;
 };

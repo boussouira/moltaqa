@@ -34,12 +34,13 @@ protected:
 private slots:
     void on_pushCancel_clicked();
     void on_pushGo_clicked();
-
     void on_comboSora_currentIndexChanged(int index);
+    void on_spinPart_editingFinished();
 
 private:
     int m_pageNum; ///< Selected page number
     int m_partNum; ///< Selected part number
+    BookInfo *m_info;
     Ui::OpenPageDialog *ui;
 };
 

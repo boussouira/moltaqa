@@ -9,40 +9,37 @@
 
 class LibraryInfo;
 class BookInfo;
+class PageInfo;
 class BookIndexModel;
 class TextFormatter;
 class QAbstractItemModel;
 class QSqlQuery;
 
-class AbstractDBHandler
+class AbstractBookReader : public QObject
 {
-    Q_DECLARE_TR_FUNCTIONS(AbstractDBHandler);
 
 public:
-    AbstractDBHandler();
-    virtual ~AbstractDBHandler();
-    void openBookDB(QString pBookDBPath=QString());
+    AbstractBookReader(QObject *parent=0);
+    ~AbstractBookReader();
+    void openBookDB();
     void setBookInfo(BookInfo *bi);
     void setConnctionInfo(LibraryInfo *info);
     void setLibraryManager(LibraryManager *db);
 
     BookInfo *bookInfo() { return m_bookInfo; }
-    TextFormatter *textFormatter() { return m_textFormat; }
     LibraryManager *libraryManager();
 
-public:
     /**
-      Open page with the given index
+      Open page with the given id
 
-      This method should be used to handle index widget calls(ex. when double click on a title)
       @param pid page id, if pid == -1 then open the first page, if pid == -2 the open last page
       */
-    virtual void openIndexID(int pid = -1);
+    virtual void goToPage(int pid = -1)=0;
 
     /**
       Open page at the given page and part number
       */
-    virtual void goToPage(int page, int part);
+    virtual void goToPage(int page, int part)=0;
 
     /**
       Open first page with given sora and aya number
@@ -74,12 +71,12 @@ public:
       will scroll the page down, and if it reach the end of page, calling it will open the next
       page.
       */
-    virtual void nextUnit();
+    virtual void nextAya();
 
     /**
       Go to Previous unit
       */
-    virtual void prevUnit();
+    virtual void prevAya();
 
     /**
       Check if this handler can go to the next page
@@ -93,39 +90,28 @@ public:
     virtual bool hasPrev() = 0;
 
     /**
-      Check if this handler can have some books that need some time to load thier index model
-
-      A fast index load mean that we should call first \ref topIndexModel and use
-      threading to get the full index by calling \ref indexModel.
-      @return True if it can take some time to load the full index model
+      Get current page text
       */
-    bool needFastIndexLoad();
-    /**
-      Get the full index model of the curren book
-      */
-    virtual QAbstractItemModel *indexModel() = 0;
-    /**
-      Get only a top level index model
-      */
-    virtual QAbstractItemModel *topIndexModel()=0;
-    virtual void getBookInfo() = 0;
+    virtual QString text() = 0;
 
 protected:
-    virtual void openPage(int page, int part=1) = 0;
-    virtual void openID(int id = -1) = 0;
+    /**
+      Generate book info
+      */
+    virtual void getBookInfo() = 0;
+
     virtual void connected();
 
 protected:
     LibraryInfo *m_connetionInfo;
     BookInfo *m_bookInfo;
+    PageInfo *m_currentPage;
     LibraryManager *m_libraryManager;
     BookIndexModel *m_indexModel;
-    TextFormatter *m_textFormat;
     QSqlDatabase m_bookDB;
     QSqlQuery m_bookQuery;
     QString m_bookDBPath;
     QString m_connectionName;
-    bool m_fastIndex;
 };
 
 #endif // ABSTRACTDBHANDLER_H

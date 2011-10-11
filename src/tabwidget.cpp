@@ -2,8 +2,8 @@
 #include <qevent.h>
 #include <qmenu.h>
 #include <qaction.h>
-#include <abstractdbhandler.h>
 #include <bookinfo.h>
+#include "richbookreader.h"
 #include "webview.h"
 
 TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)

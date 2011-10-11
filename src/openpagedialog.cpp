@@ -9,6 +9,7 @@ OpenPageDialog::OpenPageDialog(QWidget *parent) :
 
     m_pageNum = -1;
     m_partNum = -1;
+    m_info = 0;
 
     loadSowarNames();
 }
@@ -40,8 +41,16 @@ int OpenPageDialog::selectedPart()
 
 void OpenPageDialog::setBookInfo(BookInfo *info)
 {
+    m_info = info;
+
     ui->spinPage->setValue(info->currentPage.page);
     ui->spinPart->setValue(info->currentPage.part);
+
+    ui->spinPart->setMaximum(info->partsCount);
+
+    if(info->isQuran()) {
+        ui->spinPage->setMaximum(info->lastPage());
+    }
 
     if(info->isQuran() || info->isTafessir()) {
         ui->spinAya->setValue(info->currentPage.aya);
@@ -311,4 +320,16 @@ int OpenPageDialog::currentPage()
 void OpenPageDialog::on_comboSora_currentIndexChanged(int index)
 {
     ui->spinAya->setMaximum(ui->comboSora->itemData(index).toInt());
+}
+
+void OpenPageDialog::on_spinPart_editingFinished()
+{
+    /*
+    if(!m_info)
+        return;
+
+    if(ui->spinPart->value() < m_info->partsCount) {
+        ui->spinPage->setMaximum(m_info->lastPage(ui->spinPart->value()));
+    }
+    */
 }

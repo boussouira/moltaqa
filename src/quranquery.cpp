@@ -43,6 +43,7 @@ void QuranQuery::soraAyatCount(int sora)
 
 void QuranQuery::firstSoraAndAya(int page)
 {
-    exec(QString("SELECT MIN(soraNumber), MIN(ayaNumber) "
-                 "FROM quranText WHERE pageNumber = %1").arg(page));
+    exec(QString("SELECT soraNumber, ayaNumber "
+                 "FROM quranText WHERE pageNumber = %1 "
+                 "ORDER BY id LIMIT 1").arg(page));
 }

@@ -1,18 +1,20 @@
 #ifndef TAFESSIRDBHANDLER_H
 #define TAFESSIRDBHANDLER_H
 
-#include "abstractdbhandler.h"
+#include "richbookreader.h"
 
 class TafessirQuery;
 class BookIndexNode;
 class TafessirTextFormat;
 
-class TafessirDBHandler : public AbstractDBHandler
+class RichTafessirReader : public RichBookReader
 {
 public:
-    TafessirDBHandler();
-    ~TafessirDBHandler();
+    RichTafessirReader(QObject *parent=0);
+    ~RichTafessirReader();
 
+    void goToPage(int pid = -1);
+    void goToPage(int page, int part);
     void goToSora(int sora, int aya);
     void goToHaddit(int hadditNum);
 
@@ -26,8 +28,6 @@ public:
     QAbstractItemModel *topIndexModel();
 
 protected:
-    void openID(int pid = -1);
-    void openPage(int page, int part =1);
     void getBookInfo();
     void childTitles(BookIndexNode *parentNode, int tid);
     void connected();

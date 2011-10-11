@@ -9,15 +9,14 @@
 
 #include <qsqldatabase.h>
 
-QuranDBHandler::QuranDBHandler()
+RichQuranReader::RichQuranReader(QObject *parent) : RichBookReader(parent)
 {
     m_formatter = new QuranTextFormat();
     m_textFormat = m_formatter;
-    m_fastIndex = false;
     m_quranQuery = 0;
 }
 
-QuranDBHandler::~QuranDBHandler()
+RichQuranReader::~RichQuranReader()
 {
     delete m_formatter;
 
@@ -25,13 +24,13 @@ QuranDBHandler::~QuranDBHandler()
         delete m_quranQuery;
 }
 
-void QuranDBHandler::connected()
+void RichQuranReader::connected()
 {
     m_quranQuery = new QuranQuery(m_bookDB, m_bookInfo);
-    AbstractDBHandler::connected();
+    AbstractBookReader::connected();
 }
 
-void QuranDBHandler::openID(int pid)
+void RichQuranReader::goToPage(int pid)
 {
     int page;
     if(pid == -1)       // First page number
@@ -41,15 +40,19 @@ void QuranDBHandler::openID(int pid)
     else                // The given page number
         page = pid;
 
-    openPage(page);
+    goToPage(page, 1);
 
 }
-void QuranDBHandler::openPage(int page, int part)
+void RichQuranReader::goToPage(int page, int part)
 {
     m_formatter->start();
     m_bookInfo->currentPage.page = page;
     m_bookInfo->currentPage.part = part;
 
+    PageInfo info = firstSoraAndAya(page);
+    m_bookInfo->currentPage.sora = info.sora;
+    m_bookInfo->currentPage.aya = info.aya;
+    m_bookInfo->currentPage.ayatCount = info.ayatCount;
 
     m_quranQuery->page(page);
 
@@ -66,25 +69,33 @@ void QuranDBHandler::openPage(int page, int part)
                                      m_quranQuery->value(2).toInt(),
                                      m_quranQuery->value(4).toInt());
     }
+
     m_formatter->done();
+
+    emit textChanged();
 }
 
-void QuranDBHandler::openSora(int num)
+void RichQuranReader::goToSora(int sora, int aya)
 {
-    openPage(getPageNumber(num));
-}
-
-void QuranDBHandler::openIndexID(int pid)
-{
-    int sora = qMax(pid, 1);
+    int page = getPageNumber(sora, aya);
     m_bookInfo->currentPage.sora = sora;
-    m_bookInfo->currentPage.aya = 1;
+    m_bookInfo->currentPage.aya = aya;
     m_bookInfo->currentPage.ayatCount = getSoraAyatCount(sora);
 
-    openPage(getPageNumber(sora));
+    if(page != m_bookInfo->currentPage.page)
+        goToPage(page, 1);
 }
 
-QAbstractItemModel *QuranDBHandler::indexModel()
+void RichQuranReader::goToHaddit(int /*hadditNum*/)
+{
+}
+
+bool RichQuranReader::needFastIndexLoad()
+{
+    return false;
+}
+
+QAbstractItemModel *RichQuranReader::indexModel()
 {
     BookIndexNode *rootNode = new BookIndexNode();
 
@@ -99,7 +110,7 @@ QAbstractItemModel *QuranDBHandler::indexModel()
     return m_indexModel;
 }
 
-void QuranDBHandler::getBookInfo()
+void RichQuranReader::getBookInfo()
 {
     m_quranQuery->prepare("SELECT  MIN(pageNumber), MAX(pageNumber), MIN(id), MAX(id) "
                           "FROM quranText");
@@ -117,7 +128,7 @@ void QuranDBHandler::getBookInfo()
     }
 }
 
-int QuranDBHandler::getPageNumber(int soraNumber, int ayaNumber)
+int RichQuranReader::getPageNumber(int soraNumber, int ayaNumber)
 {
     int page = 1;
     m_quranQuery->pageNumber(ayaNumber, soraNumber);
@@ -130,37 +141,35 @@ int QuranDBHandler::getPageNumber(int soraNumber, int ayaNumber)
     return page;
 }
 
-void QuranDBHandler::nextPage()
+void RichQuranReader::nextPage()
 {
     if(hasNext()) {
         int page = m_bookInfo->currentPage.page+1;
-        firstSoraAndAya(page);
 
-        openPage(page);
+        goToPage(page, 1);
     }
 }
 
-void QuranDBHandler::prevPage()
+void RichQuranReader::prevPage()
 {
     if(hasPrev()) {
         int page = m_bookInfo->currentPage.page-1;
-        firstSoraAndAya(page);
 
-        openPage(page);
+        goToPage(page, 1);
     }
 }
 
-bool QuranDBHandler::hasNext()
+bool RichQuranReader::hasNext()
 {
     return m_bookInfo->currentPage.page < m_bookInfo->lastPage();
 }
 
-bool QuranDBHandler::hasPrev()
+bool RichQuranReader::hasPrev()
 {
     return m_bookInfo->currentPage.page > m_bookInfo->firstPage();
 }
 
-void QuranDBHandler::nextUnit()
+void RichQuranReader::nextAya()
 {
     int aya = m_bookInfo->currentPage.aya+1;
     int sora = m_bookInfo->currentPage.sora;
@@ -176,11 +185,11 @@ void QuranDBHandler::nextUnit()
     m_bookInfo->currentPage.ayatCount = getSoraAyatCount(sora);
 
     if(page != m_bookInfo->currentPage.page)
-        openPage(page);
+        goToPage(page, 1);
 
 }
 
-void QuranDBHandler::prevUnit()
+void RichQuranReader::prevAya()
 {
     int aya = m_bookInfo->currentPage.aya-1;
     int sora = m_bookInfo->currentPage.sora;
@@ -198,51 +207,28 @@ void QuranDBHandler::prevUnit()
     m_bookInfo->currentPage.ayatCount = getSoraAyatCount(sora);
 
     if(page != m_bookInfo->currentPage.page)
-        openPage(page);
+        goToPage(page, 1);
 }
 
-int QuranDBHandler::getSoraAyatCount(int sora)
+int RichQuranReader::getSoraAyatCount(int sora)
 {
     m_quranQuery->soraAyatCount(sora);
 
     return m_quranQuery->next() ? m_quranQuery->value(0).toInt() : 0;
 }
 
-void QuranDBHandler::firstSoraAndAya(int page)
+PageInfo RichQuranReader::firstSoraAndAya(int page)
 {
+    PageInfo info;
+
     m_quranQuery->firstSoraAndAya(page);
     if(m_quranQuery->next()) {
         // The first SORA number in page
-        m_bookInfo->currentPage.sora = m_quranQuery->value(0).toInt();
+        info.sora = m_quranQuery->value(0).toInt();
         // First aya number in page
-        m_bookInfo->currentPage.aya = m_quranQuery->value(1).toInt();
-        m_bookInfo->currentPage.ayatCount = getSoraAyatCount(m_quranQuery->value(0).toInt());
+        info.aya = m_quranQuery->value(1).toInt();
+        info.ayatCount = getSoraAyatCount(m_quranQuery->value(0).toInt());
     }
-}
 
-QAbstractItemModel * QuranDBHandler::topIndexModel()
-{
-    return 0;
-}
-
-void QuranDBHandler::goToPage(int page, int part)
-{
-    firstSoraAndAya(page);
-    openPage(page, part);
-}
-
-void QuranDBHandler::goToSora(int sora, int aya)
-{
-    int page = getPageNumber(sora, aya);
-    m_bookInfo->currentPage.sora = sora;
-    m_bookInfo->currentPage.aya = aya;
-    m_bookInfo->currentPage.ayatCount = getSoraAyatCount(sora);
-
-    if(page != m_bookInfo->currentPage.page)
-        openPage(page);
-}
-
-void QuranDBHandler::goToHaddit(int /*hadditNum*/)
-{
-
+    return info;
 }

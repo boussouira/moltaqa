@@ -16,15 +16,14 @@
 #include <qdebug.h>
 #include <qdatetime.h>
 
-TafessirDBHandler::TafessirDBHandler()
+RichTafessirReader::RichTafessirReader(QObject *parent) : RichBookReader(parent)
 {
     m_formatter = new TafessirTextFormat();
     m_textFormat = m_formatter;
-    m_fastIndex = true;
     m_tafessirQuery = 0;
 }
 
-TafessirDBHandler::~TafessirDBHandler()
+RichTafessirReader::~RichTafessirReader()
 {
     delete m_formatter;
 
@@ -37,17 +36,17 @@ TafessirDBHandler::~TafessirDBHandler()
     }
 }
 
-void TafessirDBHandler::connected()
+void RichTafessirReader::connected()
 {
     m_tafessirQuery = new TafessirQuery(m_bookDB, m_bookInfo);
 
     m_quranInfo = m_libraryManager->getQuranBook();
     openQuranBook();
 
-    AbstractDBHandler::connected();
+    AbstractBookReader::connected();
 }
 
-void TafessirDBHandler::openID(int pid)
+void RichTafessirReader::goToPage(int pid)
 {
     m_formatter->start();
 
@@ -83,16 +82,18 @@ void TafessirDBHandler::openID(int pid)
     m_formatter->insertText(text);
 
     m_formatter->done();
+
+    emit textChanged();
 }
 
-void TafessirDBHandler::openPage(int page, int part)
+void RichTafessirReader::goToPage(int page, int part)
 {
     m_tafessirQuery->page(page, part);
     if(m_tafessirQuery->next())
-        openID(m_tafessirQuery->value(0).toInt());
+        goToPage(m_tafessirQuery->value(0).toInt());
 }
 
-QAbstractItemModel * TafessirDBHandler::indexModel()
+QAbstractItemModel * RichTafessirReader::indexModel()
 {
     BookIndexNode *rootNode = new BookIndexNode();
 
@@ -103,7 +104,7 @@ QAbstractItemModel * TafessirDBHandler::indexModel()
     return m_indexModel;
 }
 
-QAbstractItemModel * TafessirDBHandler::topIndexModel()
+QAbstractItemModel * RichTafessirReader::topIndexModel()
 {
     BookIndexModel *indexModel = new BookIndexModel();
     BookIndexNode *rootNode = new BookIndexNode();
@@ -123,29 +124,29 @@ QAbstractItemModel * TafessirDBHandler::topIndexModel()
     return indexModel;
 }
 
-void TafessirDBHandler::nextPage()
+void RichTafessirReader::nextPage()
 {
     if(hasNext())
-        openID(m_bookInfo->currentPage.pageID+1);
+        goToPage(m_bookInfo->currentPage.pageID+1);
 }
 
-void TafessirDBHandler::prevPage()
+void RichTafessirReader::prevPage()
 {
     if(hasPrev())
-        openID(m_bookInfo->currentPage.pageID-1);
+        goToPage(m_bookInfo->currentPage.pageID-1);
 }
 
-bool TafessirDBHandler::hasNext()
+bool RichTafessirReader::hasNext()
 {
     return (m_bookInfo->currentPage.pageID < m_bookInfo->lastID);
 }
 
-bool TafessirDBHandler::hasPrev()
+bool RichTafessirReader::hasPrev()
 {
     return (m_bookInfo->currentPage.pageID > m_bookInfo->firstID);
 }
 
-void TafessirDBHandler::getBookInfo()
+void RichTafessirReader::getBookInfo()
 {
     m_bookInfo->textTable = "bookPages";
     m_bookInfo->indexTable = "bookIndex";
@@ -167,13 +168,12 @@ void TafessirDBHandler::getBookInfo()
     }
 }
 
-void TafessirDBHandler::childTitles(BookIndexNode *parentNode, int tid)
+void RichTafessirReader::childTitles(BookIndexNode *parentNode, int tid)
 {
     QSqlQuery query(m_bookDB);
     query.exec(QString("SELECT id, parentID, pageID, title FROM bookIndex "
                        "WHERE parentID = %1 ORDER BY id").arg(tid));
-    while(query.next())
-    {
+    while(query.next()) {
         BookIndexNode *catNode = new BookIndexNode(query.value(3).toString(),
                                                    query.value(2).toInt());
         childTitles(catNode, query.value(0).toInt());
@@ -181,7 +181,7 @@ void TafessirDBHandler::childTitles(BookIndexNode *parentNode, int tid)
     }
 }
 
-void TafessirDBHandler::openQuranBook()
+void RichTafessirReader::openQuranBook()
 {
     if(QSqlDatabase::contains(QString("quran_tafessir_%1").arg(m_bookInfo->bookID))) {
         m_quranDB = QSqlDatabase::database(QString("quran_tafessir_%1").arg(m_bookInfo->bookID));
@@ -196,7 +196,7 @@ void TafessirDBHandler::openQuranBook()
     m_quranQuery = new QSqlQuery(m_quranDB);
 }
 
-void TafessirDBHandler::readQuranText(int sora, int aya, int count)
+void RichTafessirReader::readQuranText(int sora, int aya, int count)
 {
     if(count>0) {
         m_formatter->beginQuran();
@@ -217,18 +217,18 @@ void TafessirDBHandler::readQuranText(int sora, int aya, int count)
     }
 }
 
-void TafessirDBHandler::goToSora(int sora, int aya)
+void RichTafessirReader::goToSora(int sora, int aya)
 {
     int pageID = m_tafessirQuery->getPageID(sora, aya);
 
     if(pageID > 0)
-        openID(pageID);
+        goToPage(pageID);
 }
 
-void TafessirDBHandler::goToHaddit(int hadditNum)
+void RichTafessirReader::goToHaddit(int hadditNum)
 {
     int pageID = m_tafessirQuery->getHaddithPage(hadditNum);
 
     if(pageID > 0)
-        openID(pageID);
+        goToPage(pageID);
 }

@@ -1,46 +1,41 @@
 #ifndef QURANDBHANDLER_H
 #define QURANDBHANDLER_H
 
-#include "abstractdbhandler.h"
+#include "richbookreader.h"
 
 class QuranQuery;
 class QuranTextFormat;
 
-class QuranDBHandler : public AbstractDBHandler
+class RichQuranReader : public RichBookReader
 {
 public:
-    QuranDBHandler();
-    ~QuranDBHandler();
+    RichQuranReader(QObject *parent=0);
+    ~RichQuranReader();
 
-    void openIndexID(int pid = -1);
+    void goToPage(int pid = -1);
     void goToPage(int page, int part);
     void goToSora(int sora, int aya);
     void goToHaddit(int hadditNum);
 
-    void openSora(int num);
-
     void nextPage();
     void prevPage();
 
-    void nextUnit();
-    void prevUnit();
+    void nextAya();
+    void prevAya();
 
     bool hasNext();
     bool hasPrev();
 
-protected:
-    void openID(int id = -1);
-    void openPage(int page, int part =1);
+    bool needFastIndexLoad();
 
     QAbstractItemModel *indexModel();
-    QAbstractItemModel *topIndexModel();
 
 protected:
     void connected();
     void getBookInfo();
     int getPageNumber(int soraNumber, int ayaNumber=1);
     int getSoraAyatCount(int sora);
-    void firstSoraAndAya(int page);
+    PageInfo firstSoraAndAya(int page);
 
 protected:
     QuranQuery *m_quranQuery;

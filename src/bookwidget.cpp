@@ -12,7 +12,7 @@
 #include <QCloseEvent>
 #include <QFile>
 
-BookWidget::BookWidget(AbstractDBHandler *db, QWidget *parent): QWidget(parent), m_db(db)
+BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_db(db)
 {
     m_layout = new QVBoxLayout(this);
     m_splitter = new QSplitter(this);
@@ -32,9 +32,10 @@ BookWidget::BookWidget(AbstractDBHandler *db, QWidget *parent): QWidget(parent),
 
     loadSettings();
     displayInfo();
-    connect(m_indexWidget, SIGNAL(openPage(int)), this, SLOT(openID(int)));
-    connect(m_db->textFormatter(), SIGNAL(doneReading(QString)), m_view, SLOT(setText(QString))); // TODO: don't call setText directly
-    connect(m_view, SIGNAL(textChanged()), m_indexWidget, SLOT(displayBookInfo()));
+    connect(m_indexWidget, SIGNAL(openPage(int)), this, SLOT(openPage(int)));
+    connect(m_indexWidget, SIGNAL(openSora(int,int)), SLOT(openSora(int,int)));
+    connect(m_db, SIGNAL(textChanged()), SLOT(readerTextChanged()));
+    connect(m_db, SIGNAL(textChanged()), m_indexWidget, SLOT(displayBookInfo()));
 }
 
 BookWidget::~BookWidget()
@@ -65,17 +66,17 @@ void BookWidget::saveSettings()
     settings.endGroup();
 }
 
-void BookWidget::setDBHandler(AbstractDBHandler *db)
+void BookWidget::setDBHandler(RichBookReader *db)
 {
     m_db = db;
     m_indexWidget->setBookInfo(db->bookInfo());
-    connect(db->textFormatter(), SIGNAL(doneReading(QString)), m_view, SLOT(setText(QString))); // TODO: don't call setText directly
+    connect(db, SIGNAL(textChanged()), SLOT(readerTextChanged()));
 }
 
 void BookWidget::displayInfo()
 {
     if(m_db->needFastIndexLoad()) {
-        m_retModel = QtConcurrent::run(m_db, &AbstractDBHandler::indexModel);
+        m_retModel = QtConcurrent::run(m_db, &RichBookReader::indexModel);
         m_watcher->setFuture(m_retModel);
 
         m_indexWidget->setIndex(m_db->topIndexModel());
@@ -87,9 +88,9 @@ void BookWidget::displayInfo()
     m_indexWidget->hidePartSpin(m_db->bookInfo()->partsCount > 1);
 }
 
-void BookWidget::openID(int id)
+void BookWidget::openPage(int id)
 {
-    m_db->openIndexID(id);
+    m_db->goToPage(id);
 
     if(m_db->bookInfo()->isQuran())
         m_view->scrollToSora(id);
@@ -97,7 +98,7 @@ void BookWidget::openID(int id)
 
 void BookWidget::firstPage()
 {
-    m_db->openIndexID();
+    m_db->goToPage();
 
     if(m_db->bookInfo()->isQuran())
         m_view->scrollToSora(1); // First sora
@@ -109,7 +110,7 @@ void BookWidget::lastPage()
         m_db->goToPage(m_db->bookInfo()->lastPage(), 1);
         m_view->scrollToAya(112, 1);
     } else {
-        m_db->openIndexID(-2);
+        m_db->goToPage(-2);
     }
 }
 
@@ -133,10 +134,10 @@ void BookWidget::prevPage()
     }
 }
 
-void BookWidget::nextUnit()
+void BookWidget::scrollDown()
 {
     if(m_db->bookInfo()->isQuran()) {
-        m_db->nextUnit();
+        m_db->nextAya();
         m_view->scrollToAya(m_db->bookInfo()->currentPage.sora,
                             m_db->bookInfo()->currentPage.aya);
     } else {
@@ -147,10 +148,10 @@ void BookWidget::nextUnit()
     }
 }
 
-void BookWidget::prevUnit()
+void BookWidget::scrollUp()
 {
     if(m_db->bookInfo()->isQuran()) {
-        m_db->prevUnit();
+        m_db->prevAya();
         m_view->scrollToAya(m_db->bookInfo()->currentPage.sora,
                             m_db->bookInfo()->currentPage.aya);
     } else {
@@ -203,4 +204,9 @@ void BookWidget::hideIndexWidget()
 void BookWidget::indexModelReady()
 {
     m_indexWidget->setIndex(m_retModel.result());
+}
+
+void BookWidget::readerTextChanged()
+{
+    m_view->setHtml(m_db->text());
 }

@@ -79,7 +79,7 @@ void TextFormatter::done()
                      "<div id=\"%2\">%3</div>"
                      "</body></html>").arg(m_styleFile).arg(m_cssID).arg(m_text);
 
-    emit doneReading(m_html);
+    emit doneReading();
 }
 
 void TextFormatter::openHtmlTag(QString tag, QString className, QString idName)

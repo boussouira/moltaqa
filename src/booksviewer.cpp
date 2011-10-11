@@ -185,13 +185,13 @@ void BooksViewer::openBook(int bookID, int pageID)
     if(!bookInfo || !bookInfo->exists())
         throw BookException(tr("لم يتم العثور على ملف"), bookInfo->bookPath);
 
-    AbstractDBHandler *bookdb;
+    RichBookReader *bookdb;
     if(bookInfo->isQuran())
-        bookdb = new QuranDBHandler();
+        bookdb = new RichQuranReader();
     else if(bookInfo->isNormal())
-        bookdb = new SimpleDBHandler();
+        bookdb = new RichSimpleBookReader();
     else if(bookInfo->isTafessir())
-        bookdb = new TafessirDBHandler();
+        bookdb = new RichTafessirReader();
     else
         throw BookException(tr("لم يتم التعرف على نوع الكتاب"), QString("Book Type: %1").arg(bookInfo->bookPath));
 
@@ -213,7 +213,7 @@ void BooksViewer::openBook(int bookID, int pageID)
     if(pageID == -1)
         bookWidget->firstPage();
     else
-        bookWidget->openID(pageID);
+        bookWidget->openPage(pageID);
 
     connect(bookWidget->indexWidget(), SIGNAL(openPage(int)), SLOT(updateActions()));
 
@@ -229,7 +229,7 @@ void BooksViewer::openTafessir()
     if(!bookInfo || !bookInfo->isTafessir() || !m_viewManager->activeBook()->dbHandler()->bookInfo()->isQuran())
         return;
 
-    TafessirDBHandler *bookdb = new TafessirDBHandler();
+    RichTafessirReader *bookdb = new RichTafessirReader();
     bookdb->setConnctionInfo(m_libraryManager->connectionInfo());
     bookdb->setBookInfo(bookInfo);
     bookdb->setLibraryManager(m_libraryManager);
@@ -283,13 +283,13 @@ void BooksViewer::openShareeh()
 
 void BooksViewer::nextUnit()
 {
-    m_viewManager->activeBook()->nextUnit();
+    m_viewManager->activeBook()->scrollDown();
     updateActions();
 }
 
 void BooksViewer::previousUnit()
 {
-    m_viewManager->activeBook()->prevUnit();
+    m_viewManager->activeBook()->scrollUp();
     updateActions();
 }
 

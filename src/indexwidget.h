@@ -41,7 +41,7 @@ private slots:
 
 signals:
     void ayaNumberChange(int pNewAyaNumber);
-    void openSora(int pSoraNumber);
+    void openSora(int sora, int aya);
     void openSoraInNewTab(int pSoraNumber);
     void openPage(int pageID);
 

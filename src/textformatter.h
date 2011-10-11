@@ -31,7 +31,7 @@ public slots:
 
 signals:
     void startReading();
-    void doneReading(const QString &text);
+    void doneReading();
 
 protected:
     QString m_styleFile;

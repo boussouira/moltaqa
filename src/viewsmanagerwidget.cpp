@@ -64,10 +64,10 @@ void ViewsManagerWidget::tabCloseRequest(int tabIndex)
 {
     setActiveTab(sender());
     bookWidget(tabIndex)->saveSettings();
-    QWidget *w = m_activeTab->widget(tabIndex);
+//    QWidget *w = m_activeTab->widget(tabIndex);
     m_activeTab->removeTab(tabIndex);
 
-    delete w;
+//    delete w;
 }
 
 void ViewsManagerWidget::tabChanged(int newIndex)
@@ -121,7 +121,7 @@ BookInfo *ViewsManagerWidget::activeBookInfo()
     return activeBook()->dbHandler()->bookInfo();
 }
 
-AbstractDBHandler *ViewsManagerWidget::activeDBHandler()
+RichBookReader *ViewsManagerWidget::activeDBHandler()
 {
     return activeBook()->dbHandler();
 }
