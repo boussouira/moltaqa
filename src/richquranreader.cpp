@@ -1,4 +1,4 @@
-#include "qurandbhandler.h"
+#include "richquranreader.h"
 #include "bookinfo.h"
 #include "bookindexmodel.h"
 #include "bookexception.h"

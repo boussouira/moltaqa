@@ -1,4 +1,4 @@
-#include "tafessirdbhandler.h"
+#include "richtafessirreader.h"
 #include "tafessirtextformat.h"
 #include "tafessirquery.h"
 #include "bookinfo.h"

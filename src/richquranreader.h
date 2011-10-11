@@ -1,5 +1,5 @@
-#ifndef QURANDBHANDLER_H
-#define QURANDBHANDLER_H
+#ifndef RICHQURANREADER_H
+#define RICHQURANREADER_H
 
 #include "richbookreader.h"
 
@@ -42,4 +42,4 @@ protected:
     QuranTextFormat *m_formatter;
 };
 
-#endif // QURANDBHANDLER_H
+#endif // RICHQURANREADER_H

@@ -1,7 +1,7 @@
 #ifndef RICHBOOKREADER_H
 #define RICHBOOKREADER_H
 
-#include "abstractdbhandler.h"
+#include "abstractbookreader.h"
 
 class RichBookReader : public AbstractBookReader
 {

@@ -27,9 +27,9 @@ SOURCES += mainwindow.cpp \
     bookslistbrowser.cpp \
     bookslistmodel.cpp \
     bookslistnode.cpp \
-    abstractdbhandler.cpp \
-    qurandbhandler.cpp \
-    simpledbhandler.cpp \
+    abstractbookreader.cpp \
+    richquranreader.cpp \
+    richsimplebookreader.cpp \
     bookindexmodel.cpp \
     bookindexnode.cpp \
     bookinfo.cpp \
@@ -59,7 +59,7 @@ SOURCES += mainwindow.cpp \
     newquranwriter.cpp \
     sortfilterproxymodel.cpp \
     newlibrarydialog.cpp \
-    tafessirdbhandler.cpp \
+    richtafessirreader.cpp \
     tafessirtextformat.cpp \
     tafessirquery.cpp \
     shamelamapper.cpp \
@@ -83,9 +83,9 @@ HEADERS += mainwindow.h \
     bookslistbrowser.h \
     bookslistmodel.h \
     bookslistnode.h \
-    abstractdbhandler.h \
-    qurandbhandler.h \
-    simpledbhandler.h \
+    abstractbookreader.h \
+    richquranreader.h \
+    richsimplebookreader.h \
     bookindexmodel.h \
     bookindexnode.h \
     bookinfo.h \
@@ -115,7 +115,7 @@ HEADERS += mainwindow.h \
     newquranwriter.h \
     sortfilterproxymodel.h \
     newlibrarydialog.h \
-    tafessirdbhandler.h \
+    richtafessirreader.h \
     tafessirtextformat.h \
     tafessirquery.h \
     shamelamapper.h \

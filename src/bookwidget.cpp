@@ -1,9 +1,9 @@
 #include "bookwidget.h"
 #include "indexwidget.h"
-#include "abstractdbhandler.h"
+#include "abstractbookreader.h"
 #include "webview.h"
 #include "textformatter.h"
-#include "simpledbhandler.h"
+#include "richsimplebookreader.h"
 
 #include <qsplitter.h>
 #include <qboxlayout.h>

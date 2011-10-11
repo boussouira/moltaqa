@@ -1,5 +1,5 @@
-#include "simpledbhandler.h"
-#include "abstractdbhandler.h"
+#include "richsimplebookreader.h"
+#include "abstractbookreader.h"
 #include "bookinfo.h"
 #include "bookindexmodel.h"
 #include "bookindexnode.h"

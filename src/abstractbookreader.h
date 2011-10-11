@@ -1,5 +1,5 @@
-#ifndef ABSTRACTDBHANDLER_H
-#define ABSTRACTDBHANDLER_H
+#ifndef ABSTRACTBOOKREADER_H
+#define ABSTRACTBOOKREADER_H
 
 #include <qobject.h>
 #include <qsqldatabase.h>
@@ -63,13 +63,9 @@ public:
     /**
       Go to next unit
 
-      In quarn book, unit mean an AYA, so when calling this function on QuranDBHandler while
+      In quarn book, unit mean an AYA, so when calling this function on RichQuranReader while
       highlight the next aya if it exists in the currentpage, or it go to the next page and
       highlight it.
-
-      In a simple book unit mean visible part of page, calling this function on SimpleDBHandler
-      will scroll the page down, and if it reach the end of page, calling it will open the next
-      page.
       */
     virtual void nextAya();
 
@@ -114,4 +110,4 @@ protected:
     QString m_connectionName;
 };
 
-#endif // ABSTRACTDBHANDLER_H
+#endif // ABSTRACTBOOKREADER_H

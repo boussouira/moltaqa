@@ -1,17 +1,16 @@
-#ifndef TAFESSIRDBHANDLER_H
-#define TAFESSIRDBHANDLER_H
+#ifndef RICHSIMPLEBOOKREADER_H
+#define RICHSIMPLEBOOKREADER_H
 
 #include "richbookreader.h"
 
-class TafessirQuery;
 class BookIndexNode;
-class TafessirTextFormat;
+class SimpleQuery;
 
-class RichTafessirReader : public RichBookReader
+class RichSimpleBookReader : public RichBookReader
 {
 public:
-    RichTafessirReader(QObject *parent=0);
-    ~RichTafessirReader();
+    RichSimpleBookReader(QObject *parent=0);
+    ~RichSimpleBookReader();
 
     void goToPage(int pid = -1);
     void goToPage(int page, int part);
@@ -31,15 +30,9 @@ protected:
     void getBookInfo();
     void childTitles(BookIndexNode *parentNode, int tid);
     void connected();
-    void openQuranBook();
-    void readQuranText(int sora, int aya, int count);
 
 protected:
-    TafessirTextFormat *m_formatter;
-    QSqlDatabase m_quranDB;
-    QSqlQuery *m_quranQuery;
-    BookInfo *m_quranInfo;
-    TafessirQuery *m_tafessirQuery;
+    SimpleQuery *m_simpleQuery;
 };
 
-#endif // TAFESSIRDBHANDLER_H
+#endif // RICHSIMPLEBOOKREADER_H
