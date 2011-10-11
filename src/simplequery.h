@@ -3,12 +3,12 @@
 
 #include <qsqlquery.h>
 
-class BookInfo;
+class LibraryBook;
 
 class SimpleQuery : public QSqlQuery
 {
 public:
-    SimpleQuery(QSqlDatabase db, BookInfo *bookInfo);
+    SimpleQuery(QSqlDatabase db, LibraryBook *bookInfo);
 
     void nextPage(int id);
     void prevPage(int id);
@@ -19,7 +19,7 @@ public:
     void partInfo(int part);
 
 protected:
-    BookInfo *m_bookInfo;
+    LibraryBook *m_bookInfo;
 };
 
 #endif // SIMPLEQUERY_H

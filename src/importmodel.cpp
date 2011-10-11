@@ -1,6 +1,6 @@
 #include "importmodel.h"
 
-ImportModelNode::ImportModelNode(BookInfo::Type pType)
+ImportModelNode::ImportModelNode(LibraryBook::Type pType)
 {
     type = pType;
     parentNode = 0;
@@ -37,13 +37,13 @@ void ImportModelNode::setTypeName(const QString &name)
     int index = types.indexOf(name)+1;
     switch(index){
     case 1:
-        type = BookInfo::QuranBook;
+        type = LibraryBook::QuranBook;
         break;
     case 2:
-        type = BookInfo::TafessirBook;
+        type = LibraryBook::TafessirBook;
         break;
     case 3:
-        type = BookInfo::NormalBook;
+        type = LibraryBook::NormalBook;
         break;
     }
 }

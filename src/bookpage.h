@@ -3,10 +3,10 @@
 
 #include <QString>
 
-class PageInfo
+class BookPage
 {
 public:
-    PageInfo();
+    BookPage();
 
     int sora;   ///< Sora Number
     int aya;    ///< Aya number

@@ -1,6 +1,6 @@
-#include "pageinfo.h"
+#include "bookpage.h"
 
-PageInfo::PageInfo()
+BookPage::BookPage()
 {
     sora = 0;
     aya = 0;

@@ -38,7 +38,7 @@ ImportDialog::ImportDialog(LibraryManager *libraryManager, QWidget *parent) :
     m_signalMapper = new QSignalMapper(this);
     connect(m_signalMapper, SIGNAL(mapped(int)), this, SIGNAL(openBook(int)));
 
-    ImportModelNode *node = new ImportModelNode(BookInfo::NormalBook);
+    ImportModelNode *node = new ImportModelNode(LibraryBook::NormalBook);
     m_model->setRootNode(node);
 
     m_authorDelegate = new AuthorDelegate(this);

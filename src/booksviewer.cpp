@@ -180,7 +180,7 @@ void BooksViewer::showToolBar()
 
 void BooksViewer::openBook(int bookID, int pageID)
 {
-    BookInfo *bookInfo = m_libraryManager->getBookInfo(bookID);
+    LibraryBook *bookInfo = m_libraryManager->getBookInfo(bookID);
 
     if(!bookInfo || !bookInfo->exists())
         throw BookException(tr("لم يتم العثور على ملف"), bookInfo->bookPath);
@@ -225,7 +225,7 @@ void BooksViewer::openTafessir()
 {
     int tafessirID = m_comboTafasir->itemData(m_comboTafasir->currentIndex()).toInt();
 
-    BookInfo *bookInfo = m_libraryManager->getBookInfo(tafessirID);
+    LibraryBook *bookInfo = m_libraryManager->getBookInfo(tafessirID);
     if(!bookInfo || !bookInfo->isTafessir() || !m_viewManager->activeBook()->dbHandler()->bookInfo()->isQuran())
         return;
 
@@ -256,7 +256,7 @@ void BooksViewer::openTafessir()
 
 void BooksViewer::openShareeh()
 {
-    BookInfo *info = m_viewManager->activeBookInfo();
+    LibraryBook *info = m_viewManager->activeBookInfo();
 
     if(info->shorooh.isEmpty())
         return;

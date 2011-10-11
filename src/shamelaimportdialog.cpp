@@ -6,7 +6,7 @@
 #include "shamelaimportthread.h"
 #include "mainwindow.h"
 #include "librarymanager.h"
-#include "bookinfo.h"
+#include "librarybook.h"
 #include "sortfilterproxymodel.h"
 #include "bookslistnode.h"
 #include "importdelegates.h"

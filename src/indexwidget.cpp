@@ -1,6 +1,6 @@
 #include "indexwidget.h"
 #include "ui_indexwidget.h"
-#include "pageinfo.h"
+#include "bookpage.h"
 #include "bookindexmodel.h"
 
 IndexWidget::IndexWidget(QWidget *parent) :

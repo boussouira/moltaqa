@@ -1,6 +1,6 @@
 #include "richsimplebookreader.h"
 #include "abstractbookreader.h"
-#include "bookinfo.h"
+#include "librarybook.h"
 #include "bookindexmodel.h"
 #include "bookindexnode.h"
 #include "bookexception.h"

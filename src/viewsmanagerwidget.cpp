@@ -116,7 +116,7 @@ BookWidget *ViewsManagerWidget::activeBook()
     return qobject_cast<BookWidget*>(m_activeTab->widget(m_activeTab->currentIndex()));
 }
 
-BookInfo *ViewsManagerWidget::activeBookInfo()
+LibraryBook *ViewsManagerWidget::activeBookInfo()
 {
     return activeBook()->dbHandler()->bookInfo();
 }

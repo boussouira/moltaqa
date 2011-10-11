@@ -2,7 +2,7 @@
 #include <qevent.h>
 #include <qmenu.h>
 #include <qaction.h>
-#include <bookinfo.h>
+#include "librarybook.h"
 #include "richbookreader.h"
 #include "webview.h"
 

@@ -18,7 +18,7 @@ unix {
 }
 
 SOURCES += mainwindow.cpp \
-    pageinfo.cpp \
+    bookpage.cpp \
     qurantextformat.cpp \
     tabwidget.cpp \
     settingsdialog.cpp \
@@ -32,7 +32,7 @@ SOURCES += mainwindow.cpp \
     richsimplebookreader.cpp \
     bookindexmodel.cpp \
     bookindexnode.cpp \
-    bookinfo.cpp \
+    librarybook.cpp \
     simpletextformat.cpp \
     bookwidget.cpp \
     webview.cpp \
@@ -74,7 +74,7 @@ SOURCES += mainwindow.cpp \
     viewsmanagerwidget.cpp \
     richbookreader.cpp
 HEADERS += mainwindow.h \
-    pageinfo.h \
+    bookpage.h \
     qurantextformat.h \
     tabwidget.h \
     settingsdialog.h \
@@ -88,7 +88,7 @@ HEADERS += mainwindow.h \
     richsimplebookreader.h \
     bookindexmodel.h \
     bookindexnode.h \
-    bookinfo.h \
+    librarybook.h \
     simpletextformat.h \
     bookwidget.h \
     webview.h \

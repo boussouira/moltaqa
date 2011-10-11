@@ -1,6 +1,6 @@
 #include "abstractbookreader.h"
 #include "libraryinfo.h"
-#include "bookinfo.h"
+#include "librarybook.h"
 #include "bookindexmodel.h"
 #include "bookexception.h"
 #include "textformatter.h"
@@ -15,7 +15,7 @@
 AbstractBookReader::AbstractBookReader(QObject *parent) : QObject(parent)
 {
     m_indexModel = new BookIndexModel();
-    m_currentPage = new PageInfo();
+    m_currentPage = new BookPage();
     m_bookInfo = 0;
 }
 
@@ -51,7 +51,7 @@ void AbstractBookReader::openBookDB()
     getBookInfo();
 }
 
-void AbstractBookReader::setBookInfo(BookInfo *bi)
+void AbstractBookReader::setBookInfo(LibraryBook *bi)
 {
     m_bookInfo = bi;
 }

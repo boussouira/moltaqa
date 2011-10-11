@@ -1,5 +1,5 @@
 #include "richquranreader.h"
-#include "bookinfo.h"
+#include "librarybook.h"
 #include "bookindexmodel.h"
 #include "bookexception.h"
 #include "qurantextformat.h"
@@ -49,7 +49,7 @@ void RichQuranReader::goToPage(int page, int part)
     m_bookInfo->currentPage.page = page;
     m_bookInfo->currentPage.part = part;
 
-    PageInfo info = firstSoraAndAya(page);
+    BookPage info = firstSoraAndAya(page);
     m_bookInfo->currentPage.sora = info.sora;
     m_bookInfo->currentPage.aya = info.aya;
     m_bookInfo->currentPage.ayatCount = info.ayatCount;
@@ -217,9 +217,9 @@ int RichQuranReader::getSoraAyatCount(int sora)
     return m_quranQuery->next() ? m_quranQuery->value(0).toInt() : 0;
 }
 
-PageInfo RichQuranReader::firstSoraAndAya(int page)
+BookPage RichQuranReader::firstSoraAndAya(int page)
 {
-    PageInfo info;
+    BookPage info;
 
     m_quranQuery->firstSoraAndAya(page);
     if(m_quranQuery->next()) {

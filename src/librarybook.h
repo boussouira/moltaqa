@@ -1,7 +1,7 @@
-#ifndef BOOKINFO_H
-#define BOOKINFO_H
+#ifndef LIBRARYBOOK_H
+#define LIBRARYBOOK_H
 
-#include "pageinfo.h"
+#include "bookpage.h"
 #include <qhash.h>
 #include <qdebug.h>
 
@@ -14,10 +14,10 @@ public:
     QString bookName;
 };
 
-class BookInfo
+class LibraryBook
 {
 public:
-    BookInfo();
+    LibraryBook();
 
     enum Type {
         QuranBook = 1,
@@ -42,7 +42,7 @@ public:
     QList<BookShorooh*> shorooh;
 
 public:
-    BookInfo::Type bookType;
+    LibraryBook::Type bookType;
     QString bookPath;
     QString bookDisplayName;
     QString bookFullName;
@@ -62,7 +62,7 @@ public:
     int bookID;
     int authorID;
     bool hasShareeh;
-    PageInfo currentPage;
+    BookPage currentPage;
 
 protected:
     QHash<int, int> m_firstPages;
@@ -70,6 +70,6 @@ protected:
     bool m_hasInfo;
 };
 
-QDebug operator<<(QDebug, BookInfo *);
+QDebug operator<<(QDebug, LibraryBook *);
 
-#endif // BOOKINFO_H
+#endif // LIBRARYBOOK_H

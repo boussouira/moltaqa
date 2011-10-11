@@ -1,7 +1,7 @@
 #ifndef INDEXWIDGET_H
 #define INDEXWIDGET_H
 
-#include "bookinfo.h"
+#include "librarybook.h"
 #include <qdockwidget.h>
 #include <qstringlistmodel.h>
 
@@ -9,7 +9,7 @@ namespace Ui {
     class IndexWidget;
 }
 
-class PageInfo;
+class BookPage;
 
 class IndexWidget : public QWidget
 {
@@ -20,7 +20,7 @@ public:
     void hideAyaSpin(bool visible);
     void hidePageSpin(bool visible);
     void hidePartSpin(bool visible);
-    void setBookInfo(BookInfo *bInfo) { m_bookInfo = bInfo; }
+    void setBookInfo(LibraryBook *bInfo) { m_bookInfo = bInfo; }
 
 protected:
     void changeEvent(QEvent *e);
@@ -46,7 +46,7 @@ signals:
     void openPage(int pageID);
 
 private:
-    BookInfo *m_bookInfo;
+    LibraryBook *m_bookInfo;
     Ui::IndexWidget *ui;
     bool sendSignals;
 };

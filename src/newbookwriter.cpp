@@ -3,7 +3,7 @@
 #include "mainwindow.h"
 #include "libraryinfo.h"
 #include "utils.h"
-#include "bookinfo.h"
+#include "librarybook.h"
 
 #include <qsettings.h>
 #include <qdir.h>

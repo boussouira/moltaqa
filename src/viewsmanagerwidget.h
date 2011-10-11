@@ -7,7 +7,7 @@ class BookWidget;
 class LibraryManager;
 class TabWidget;
 class QSplitter;
-class BookInfo;
+class LibraryBook;
 class RichBookReader;
 
 class ViewsManagerWidget : public QWidget
@@ -20,7 +20,7 @@ public:
     void addBook(BookWidget* book);
     BookWidget *bookWidget(int index);
     BookWidget *activeBook();
-    BookInfo *activeBookInfo();
+    LibraryBook *activeBookInfo();
     RichBookReader *activeDBHandler();
     TabWidget *activeTab();
     void setActiveTab(QObject *obj);

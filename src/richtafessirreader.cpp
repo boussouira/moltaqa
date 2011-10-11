@@ -1,7 +1,7 @@
 #include "richtafessirreader.h"
 #include "tafessirtextformat.h"
 #include "tafessirquery.h"
-#include "bookinfo.h"
+#include "librarybook.h"
 #include "bookindexmodel.h"
 #include "bookindexnode.h"
 #include "libraryinfo.h"

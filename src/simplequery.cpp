@@ -1,10 +1,10 @@
 #include "simplequery.h"
-#include "bookinfo.h"
+#include "librarybook.h"
 #include "utils.h"
 #include <qvariant.h>
 #include <qsqlerror.h>
 
-SimpleQuery::SimpleQuery(QSqlDatabase db, BookInfo *bookInfo) : QSqlQuery(db), m_bookInfo(bookInfo)
+SimpleQuery::SimpleQuery(QSqlDatabase db, LibraryBook *bookInfo) : QSqlQuery(db), m_bookInfo(bookInfo)
 {
 }
 

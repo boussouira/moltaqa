@@ -2,7 +2,7 @@
 #define OPENPAGEDIALOG_H
 
 #include <QDialog>
-#include "bookinfo.h"
+#include "librarybook.h"
 
 namespace Ui {
     class OpenPageDialog;
@@ -16,7 +16,7 @@ public:
     OpenPageDialog(QWidget *parent = 0);
     ~OpenPageDialog();
 
-    void setBookInfo(BookInfo *info);
+    void setBookInfo(LibraryBook *info);
 
     int currentPage();
 
@@ -40,7 +40,7 @@ private slots:
 private:
     int m_pageNum; ///< Selected page number
     int m_partNum; ///< Selected part number
-    BookInfo *m_info;
+    LibraryBook *m_info;
     Ui::OpenPageDialog *ui;
 };
 

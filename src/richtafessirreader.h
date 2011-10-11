@@ -38,7 +38,7 @@ protected:
     TafessirTextFormat *m_formatter;
     QSqlDatabase m_quranDB;
     QSqlQuery *m_quranQuery;
-    BookInfo *m_quranInfo;
+    LibraryBook *m_quranInfo;
     TafessirQuery *m_tafessirQuery;
 };
 

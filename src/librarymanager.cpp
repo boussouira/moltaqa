@@ -1,6 +1,6 @@
 #include "librarymanager.h"
 #include "libraryinfo.h"
-#include "bookinfo.h"
+#include "librarybook.h"
 #include "bookexception.h"
 #include "bookslistmodel.h"
 #include "importmodel.h"
@@ -174,7 +174,7 @@ QPair<int, QString> LibraryManager::findAuthor(const QString &name)
     return foundAuth;
 }
 
-BookInfo *LibraryManager::getBookInfo(int bookID, bool allInfo)
+LibraryBook *LibraryManager::getBookInfo(int bookID, bool allInfo)
 {
     QSqlQuery bookQuery(m_libraryManager);
 
@@ -190,10 +190,10 @@ BookInfo *LibraryManager::getBookInfo(int bookID, bool allInfo)
 
     if(bookQuery.exec()) {
         if(bookQuery.next()) {
-            BookInfo *bookInfo = new BookInfo();
+            LibraryBook *bookInfo = new LibraryBook();
 
             bookInfo->bookDisplayName = bookQuery.value(0).toString();
-            bookInfo->bookType = (BookInfo::Type)bookQuery.value(1).toInt();
+            bookInfo->bookType = (LibraryBook::Type)bookQuery.value(1).toInt();
             bookInfo->bookID = bookID;
             bookInfo->bookPath = m_libraryInfo->bookPath(bookQuery.value(2).toString());
 
@@ -240,19 +240,19 @@ bool LibraryManager::hasShareeh(int bookID)
     return count;
 }
 
-BookInfo *LibraryManager::getQuranBook()
+LibraryBook *LibraryManager::getQuranBook()
 {
     QSqlQuery bookQuery(m_libraryManager);
 
     bookQuery.exec(QString("SELECT booksList.bookDisplayName, booksList.bookType, booksList.fileName, bookMeta.book_info, booksList.id "
                            "FROM booksList LEFT JOIN bookMeta "
                            "ON bookMeta.id = booksList.id "
-                           "WHERE booksList.bookType = %1 LIMIT 1").arg(BookInfo::QuranBook));
+                           "WHERE booksList.bookType = %1 LIMIT 1").arg(LibraryBook::QuranBook));
 
     if(bookQuery.next()) {
-        BookInfo *bookInfo = new BookInfo();
+        LibraryBook *bookInfo = new LibraryBook();
         bookInfo->bookDisplayName = bookQuery.value(0).toString();
-        bookInfo->bookType = BookInfo::QuranBook;
+        bookInfo->bookType = LibraryBook::QuranBook;
         bookInfo->bookID = bookQuery.value(4).toInt();
         bookInfo->bookPath = m_libraryInfo->bookPath(bookQuery.value(2).toString());
 
@@ -376,7 +376,7 @@ void LibraryManager::booksCat(BooksListNode *parentNode, int catID)
     }
 }
 
-void LibraryManager::updateBookMeta(BookInfo *info, bool newBook)
+void LibraryManager::updateBookMeta(LibraryBook *info, bool newBook)
 {
     QSqlQuery bookQuery(m_libraryManager);
     if(newBook) {
@@ -397,7 +397,7 @@ void LibraryManager::updateBookMeta(BookInfo *info, bool newBook)
     }
 }
 
-void LibraryManager::getShoroohPages(BookInfo *info)
+void LibraryManager::getShoroohPages(LibraryBook *info)
 {
     qDeleteAll(info->shorooh);
     info->shorooh.clear();
@@ -550,7 +550,7 @@ QStandardItemModel *LibraryManager::getAuthorsListModel()
     return model;
 }
 
-void LibraryManager::updateBookInfo(BookInfo *info)
+void LibraryManager::updateBookInfo(LibraryBook *info)
 {
     QSqlQuery bookQuery(m_libraryManager);
     bookQuery.prepare("UPDATE booksList SET "

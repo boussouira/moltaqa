@@ -3,15 +3,15 @@
 
 #include <qsqlquery.h>
 
-class BookInfo;
+class LibraryBook;
 
 class QuranQuery : public QSqlQuery
 {
 public:
     QuranQuery();
     QuranQuery(QSqlDatabase db);
-    QuranQuery(QSqlDatabase db, BookInfo *bookInfo);
-    void setBookInfo(BookInfo *bookInfo);
+    QuranQuery(QSqlDatabase db, LibraryBook *bookInfo);
+    void setBookInfo(LibraryBook *bookInfo);
 
     void page(int page);
     void index();
@@ -20,7 +20,7 @@ public:
     void firstSoraAndAya(int page);
 
 protected:
-    BookInfo *m_bookInfo;
+    LibraryBook *m_bookInfo;
 };
 
 #endif // QURANQUERY_H

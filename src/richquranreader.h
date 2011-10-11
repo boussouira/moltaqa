@@ -35,7 +35,7 @@ protected:
     void getBookInfo();
     int getPageNumber(int soraNumber, int ayaNumber=1);
     int getSoraAyatCount(int sora);
-    PageInfo firstSoraAndAya(int page);
+    BookPage firstSoraAndAya(int page);
 
 protected:
     QuranQuery *m_quranQuery;

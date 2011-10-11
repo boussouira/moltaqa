@@ -10,7 +10,7 @@ namespace Ui {
 }
 
 class LibraryManager;
-class BookInfo;
+class LibraryBook;
 class EditableBooksListModel;
 
 class EditBooksListWidget : public AbstractEditWidget
@@ -26,7 +26,7 @@ public:
 protected:
     void setupActions();
     void saveCurrentBookInfo();
-    BookInfo *getBookInfo(int bookID);
+    LibraryBook *getBookInfo(int bookID);
 
 public slots:
     void save();
@@ -39,9 +39,9 @@ private slots:
 protected:
     Ui::EditBooksListWidget *ui;
     LibraryManager *m_libraryManager;
-    BookInfo *m_bookInfo;
+    LibraryBook *m_bookInfo;
     EditableBooksListModel *m_booksModel;
-    QHash<int, BookInfo *> m_editedBookInfo;
+    QHash<int, LibraryBook *> m_editedBookInfo;
 };
 
 #endif // EDITBOOKSLISTWIDGET_H

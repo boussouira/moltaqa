@@ -1,11 +1,11 @@
 #include "tafessirquery.h"
-#include "bookinfo.h"
+#include "librarybook.h"
 #include "utils.h"
 #include <qsqlerror.h>
 #include <qvariant.h>
 #include <qdebug.h>
 
-TafessirQuery::TafessirQuery(QSqlDatabase db, BookInfo *bookInfo) : QSqlQuery(db), m_bookInfo(bookInfo)
+TafessirQuery::TafessirQuery(QSqlDatabase db, LibraryBook *bookInfo) : QSqlQuery(db), m_bookInfo(bookInfo)
 {
 }
 

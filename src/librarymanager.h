@@ -11,7 +11,7 @@
 #include <qstandarditemmodel.h>
 
 class LibraryInfo;
-class BookInfo;
+class LibraryBook;
 class BooksListModel;
 class BooksListNode;
 class ImportModelNode;
@@ -51,18 +51,18 @@ public:
       @param bookID the book id
       @return BookInfo that contains information about the specified Book
       */
-    BookInfo *getBookInfo(int bookID, bool allInfo = false);
-    BookInfo *getQuranBook();
+    LibraryBook *getBookInfo(int bookID, bool allInfo = false);
+    LibraryBook *getQuranBook();
     LibraryInfo *connectionInfo();
     QList<QPair<int, QString> > getTafassirList();
     QHash<int, QString> getCategoriesList();
     QPair<int, QString> findCategorie(const QString &cat);
     QPair<int, QString> findAuthor(const QString &name);
     int addBook(ImportModelNode *book);
-    void updateBookMeta(BookInfo *info, bool newBook);
+    void updateBookMeta(LibraryBook *info, bool newBook);
     void setConnectionInfo(LibraryInfo *info);
     bool hasShareeh(int bookID);
-    void getShoroohPages(BookInfo *info);
+    void getShoroohPages(LibraryBook *info);
 
     /**
       Change categorie title
@@ -120,7 +120,7 @@ public:
     bool moveCatBooks(int fromCat, int toCat);
 
     QStandardItemModel *getAuthorsListModel();
-    void updateBookInfo(BookInfo *info);
+    void updateBookInfo(LibraryBook *info);
 
 protected:
     void booksCat(BooksListNode *parentNode, int catID);

@@ -1,7 +1,7 @@
 #ifndef IMPORTMODEL_H
 #define IMPORTMODEL_H
 
-#include "bookinfo.h"
+#include "librarybook.h"
 #include <qobject.h>
 #include <qabstractitemmodel.h>
 #include <qicon.h>
@@ -13,7 +13,7 @@ class ImportModelNode
     Q_DECLARE_TR_FUNCTIONS(ImportModelNode);
 
 public:
-    ImportModelNode(BookInfo::Type pType);
+    ImportModelNode(LibraryBook::Type pType);
     ~ImportModelNode();
     void appendChild(ImportModelNode *pNode);
     void deleteChild(int index);
@@ -23,7 +23,7 @@ public:
     void setAuthor(int aid, const QString &name=QString());
 
 public:
-    BookInfo::Type type;
+    LibraryBook::Type type;
     QString bookName;
     QString authorName;
     QString bookInfo;

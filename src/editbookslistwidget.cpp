@@ -3,7 +3,7 @@
 #include "mainwindow.h"
 #include "librarymanager.h"
 #include "editablebookslistmodel.h"
-#include "bookinfo.h"
+#include "librarybook.h"
 #include "selectauthordialog.h"
 
 #include <qdebug.h>
@@ -68,7 +68,7 @@ void EditBooksListWidget::save()
     if(!m_editedBookInfo.isEmpty()) {
         m_libraryManager->transaction();
 
-        foreach(BookInfo *info, m_editedBookInfo.values()) {
+        foreach(LibraryBook *info, m_editedBookInfo.values()) {
             m_libraryManager->updateBookInfo(info);
         }
 
@@ -86,7 +86,7 @@ void EditBooksListWidget::on_treeView_doubleClicked(const QModelIndex &index)
 {
     BooksListNode *node = m_booksModel->nodeFromIndex(index);
     if(node->type == BooksListNode::Book) {
-        BookInfo *info = getBookInfo(node->id);
+        LibraryBook *info = getBookInfo(node->id);
         if(info) {
             saveCurrentBookInfo();
             m_bookInfo = 0; // Block from emit edited() signal
@@ -133,9 +133,9 @@ void EditBooksListWidget::saveCurrentBookInfo()
     }
 }
 
-BookInfo *EditBooksListWidget::getBookInfo(int bookID)
+LibraryBook *EditBooksListWidget::getBookInfo(int bookID)
 {
-    BookInfo *info = m_editedBookInfo.value(bookID, 0);
+    LibraryBook *info = m_editedBookInfo.value(bookID, 0);
     if(!info) {
         info = m_libraryManager->getBookInfo(bookID, true);
     }

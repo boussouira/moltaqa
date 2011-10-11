@@ -1,7 +1,7 @@
 #include "librarycreator.h"
 #include "utils.h"
 #include "newbookwriter.h"
-#include "bookinfo.h"
+#include "librarybook.h"
 #include "shamelaimportdialog.h"
 #include "newquranwriter.h"
 #include "mainwindow.h"
@@ -325,7 +325,7 @@ void LibraryCreator::importBook(ShamelaBookInfo *book, QString path)
                        ":book_info, :author_name, :author_id, :file_name, :book_folder)");
 
     m_bookQuery.bindValue(":book_id", 0);
-    m_bookQuery.bindValue(":book_type", book->tafessirName.isEmpty() ? BookInfo::NormalBook : BookInfo::TafessirBook);
+    m_bookQuery.bindValue(":book_type", book->tafessirName.isEmpty() ? LibraryBook::NormalBook : LibraryBook::TafessirBook);
     m_bookQuery.bindValue(":book_flags", 0);
     m_bookQuery.bindValue(":cat_id", m_mapper->mapFromShamelaCat(book->cat));
     m_bookQuery.bindValue(":book_name", book->name);
@@ -352,7 +352,7 @@ void LibraryCreator::importQuran(QString path)
                         ":book_info, :author_name, :author_id, :file_name, :book_folder)");
 
     m_bookQuery.bindValue(":book_id", 0);
-    m_bookQuery.bindValue(":book_type", BookInfo::QuranBook);
+    m_bookQuery.bindValue(":book_type", LibraryBook::QuranBook);
     m_bookQuery.bindValue(":book_flags", 0);
     m_bookQuery.bindValue(":cat_id", 0);
     m_bookQuery.bindValue(":book_name", tr("القرآن الكريم"));

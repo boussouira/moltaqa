@@ -3,12 +3,12 @@
 
 #include <qsqlquery.h>
 
-class BookInfo;
+class LibraryBook;
 
 class TafessirQuery : public QSqlQuery
 {
 public:
-    TafessirQuery(QSqlDatabase db, BookInfo *bookInfo);
+    TafessirQuery(QSqlDatabase db, LibraryBook *bookInfo);
 
     void nextPage(int id);
     void prevPage(int id);
@@ -20,7 +20,7 @@ public:
     int getHaddithPage(int hadditNum);
 
 protected:
-    BookInfo *m_bookInfo;
+    LibraryBook *m_bookInfo;
 };
 
 #endif // TAFESSIRQUERY_H

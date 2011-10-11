@@ -39,7 +39,7 @@ int OpenPageDialog::selectedPart()
     return ui->spinPart->value();
 }
 
-void OpenPageDialog::setBookInfo(BookInfo *info)
+void OpenPageDialog::setBookInfo(LibraryBook *info)
 {
     m_info = info;
 

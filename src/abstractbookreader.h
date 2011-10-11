@@ -8,8 +8,8 @@
 #include "librarymanager.h"
 
 class LibraryInfo;
-class BookInfo;
-class PageInfo;
+class LibraryBook;
+class BookPage;
 class BookIndexModel;
 class TextFormatter;
 class QAbstractItemModel;
@@ -22,11 +22,11 @@ public:
     AbstractBookReader(QObject *parent=0);
     ~AbstractBookReader();
     void openBookDB();
-    void setBookInfo(BookInfo *bi);
+    void setBookInfo(LibraryBook *bi);
     void setConnctionInfo(LibraryInfo *info);
     void setLibraryManager(LibraryManager *db);
 
-    BookInfo *bookInfo() { return m_bookInfo; }
+    LibraryBook *bookInfo() { return m_bookInfo; }
     LibraryManager *libraryManager();
 
     /**
@@ -100,8 +100,8 @@ protected:
 
 protected:
     LibraryInfo *m_connetionInfo;
-    BookInfo *m_bookInfo;
-    PageInfo *m_currentPage;
+    LibraryBook *m_bookInfo;
+    BookPage *m_currentPage;
     LibraryManager *m_libraryManager;
     BookIndexModel *m_indexModel;
     QSqlDatabase m_bookDB;

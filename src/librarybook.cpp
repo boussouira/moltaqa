@@ -1,8 +1,8 @@
-#include "bookinfo.h"
+#include "librarybook.h"
 #include <qfile.h>
 #include <qstringlist.h>
 
-BookInfo::BookInfo()
+LibraryBook::LibraryBook()
 {
     partsCount = -1;
     firstID = -1;
@@ -11,7 +11,7 @@ BookInfo::BookInfo()
     m_hasInfo = false;
 }
 
-void BookInfo::setFirstPage(int count, int part)
+void LibraryBook::setFirstPage(int count, int part)
 {
     if(part <= partsCount)
         m_firstPages.insert(part, count);
@@ -19,7 +19,7 @@ void BookInfo::setFirstPage(int count, int part)
         qWarning("The given part(%d) is out of range(%d)", part, partsCount);
 }
 
-int BookInfo::firstPage(int part)
+int LibraryBook::firstPage(int part)
 {
     if(part <= partsCount)
         return m_firstPages.value(part);
@@ -29,7 +29,7 @@ int BookInfo::firstPage(int part)
     }
 }
 
-void BookInfo::setLastPage(int count, int part)
+void LibraryBook::setLastPage(int count, int part)
 {
     if(part <= partsCount)
         m_lastPages.insert(part, count);
@@ -37,7 +37,7 @@ void BookInfo::setLastPage(int count, int part)
         qWarning("The given part(%d) is out of range(%d)", part, partsCount);
 }
 
-int BookInfo::lastPage(int part)
+int LibraryBook::lastPage(int part)
 {
     if(part <= partsCount)
         return m_lastPages.value(part);
@@ -47,7 +47,7 @@ int BookInfo::lastPage(int part)
     }
 }
 
-bool BookInfo::exists()
+bool LibraryBook::exists()
 {
     if(!bookPath.isEmpty()){
         return QFile::exists(bookPath);
@@ -57,7 +57,7 @@ bool BookInfo::exists()
     }
 }
 
-QString BookInfo::toString()
+QString LibraryBook::toString()
 {
     QString text;
 
@@ -67,7 +67,7 @@ QString BookInfo::toString()
     return text;
 }
 
-void BookInfo::fromString(QString info)
+void LibraryBook::fromString(QString info)
 {
     if(info.isEmpty())
         return;
@@ -96,12 +96,12 @@ void BookInfo::fromString(QString info)
     m_hasInfo = true;
 }
 
-bool BookInfo::haveInfo()
+bool LibraryBook::haveInfo()
 {
     return m_hasInfo;
 }
 
-QDebug operator<<(QDebug dbg, BookInfo *info)
+QDebug operator<<(QDebug dbg, LibraryBook *info)
 {
     dbg.nospace() << "BookInfo(\n\t"
                   << "Type: " << info->bookType << "\n\t"
