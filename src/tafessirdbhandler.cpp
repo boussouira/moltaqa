@@ -21,6 +21,7 @@ RichTafessirReader::RichTafessirReader(QObject *parent) : RichBookReader(parent)
     m_formatter = new TafessirTextFormat();
     m_textFormat = m_formatter;
     m_tafessirQuery = 0;
+    m_quranInfo = 0;
 }
 
 RichTafessirReader::~RichTafessirReader()
@@ -41,7 +42,8 @@ void RichTafessirReader::connected()
     m_tafessirQuery = new TafessirQuery(m_bookDB, m_bookInfo);
 
     m_quranInfo = m_libraryManager->getQuranBook();
-    openQuranBook();
+    if(m_quranInfo)
+        openQuranBook();
 
     AbstractBookReader::connected();
 }
@@ -75,9 +77,11 @@ void RichTafessirReader::goToPage(int pid)
     }
 
     // TODO: don't show quran text when browsing tafessir book directly?
-    readQuranText(m_bookInfo->currentPage.sora,
-                  m_bookInfo->currentPage.aya,
-                  m_tafessirQuery->getAyatCount(m_bookInfo->currentPage.sora, m_bookInfo->currentPage.aya));
+    if(m_quranInfo) {
+        readQuranText(m_bookInfo->currentPage.sora,
+                      m_bookInfo->currentPage.aya,
+                      m_tafessirQuery->getAyatCount(m_bookInfo->currentPage.sora, m_bookInfo->currentPage.aya));
+    }
 
     m_formatter->insertText(text);
 

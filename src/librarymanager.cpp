@@ -242,7 +242,6 @@ bool LibraryManager::hasShareeh(int bookID)
 
 BookInfo *LibraryManager::getQuranBook()
 {
-    BookInfo *bookInfo = new BookInfo();
     QSqlQuery bookQuery(m_libraryManager);
 
     bookQuery.exec(QString("SELECT booksList.bookDisplayName, booksList.bookType, booksList.fileName, bookMeta.book_info, booksList.id "
@@ -251,15 +250,18 @@ BookInfo *LibraryManager::getQuranBook()
                            "WHERE booksList.bookType = %1 LIMIT 1").arg(BookInfo::QuranBook));
 
     if(bookQuery.next()) {
+        BookInfo *bookInfo = new BookInfo();
         bookInfo->bookDisplayName = bookQuery.value(0).toString();
         bookInfo->bookType = BookInfo::QuranBook;
         bookInfo->bookID = bookQuery.value(4).toInt();
         bookInfo->bookPath = m_libraryInfo->bookPath(bookQuery.value(2).toString());
 
         bookInfo->fromString(bookQuery.value(3).toString());
+
+        return bookInfo;
     }
 
-    return bookInfo;
+    return 0;
 }
 
 QList<QPair<int, QString> > LibraryManager::getTafassirList()
