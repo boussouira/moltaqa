@@ -15,7 +15,6 @@ public:
     void goToPage(int pid = -1);
     void goToPage(int page, int part);
     void goToSora(int sora, int aya);
-    void goToHaddit(int hadditNum);
 
     void nextPage();
     void prevPage();

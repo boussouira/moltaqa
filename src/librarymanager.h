@@ -51,7 +51,7 @@ public:
       @param bookID the book id
       @return BookInfo that contains information about the specified Book
       */
-    LibraryBook *getBookInfo(int bookID, bool allInfo = false);
+    LibraryBook *getBookInfo(int bookID);
     LibraryBook *getQuranBook();
     LibraryInfo *connectionInfo();
     QList<QPair<int, QString> > getTafassirList();

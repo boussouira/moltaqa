@@ -82,3 +82,58 @@ LibraryManager* AbstractBookReader::libraryManager()
 {
     return m_libraryManager;
 }
+
+void AbstractBookReader::goToSora(int sora, int aya)
+{
+    Q_UNUSED(sora);
+    Q_UNUSED(aya);
+}
+
+void AbstractBookReader::goToHaddit(int hadditNum)
+{
+    Q_UNUSED(hadditNum);
+}
+
+void AbstractBookReader::nextPage()
+{
+    if(hasNext())
+        goToPage(m_bookInfo->currentPage.pageID+1);
+}
+
+void AbstractBookReader::prevPage()
+{
+    if(hasPrev())
+        goToPage(m_bookInfo->currentPage.pageID-1);
+}
+
+bool AbstractBookReader::hasNext()
+{
+    return (m_bookInfo->currentPage.pageID < m_bookInfo->lastID);
+}
+
+bool AbstractBookReader::hasPrev()
+{
+    return (m_bookInfo->currentPage.pageID > m_bookInfo->firstID);
+}
+
+void AbstractBookReader::getBookInfo()
+{
+    m_bookInfo->textTable = "bookPages";
+    m_bookInfo->indexTable = "bookIndex";
+
+    if(!m_bookInfo->haveInfo()) {
+        m_bookQuery.exec(QString("SELECT MAX(partNum), MIN(id), MAX(id) from %1 ").arg(m_bookInfo->textTable));
+        if(m_bookQuery.next()) {
+            bool ok;
+            int parts = m_bookQuery.value(0).toInt(&ok);
+            if(!ok)
+                qWarning("Can't get parts count");
+
+            m_bookInfo->partsCount = parts;
+            m_bookInfo->firstID = m_bookQuery.value(1).toInt();
+            m_bookInfo->lastID = m_bookQuery.value(2).toInt();
+        }
+
+        m_libraryManager->updateBookMeta(m_bookInfo, false);
+    }
+}

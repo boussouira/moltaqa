@@ -174,7 +174,7 @@ QPair<int, QString> LibraryManager::findAuthor(const QString &name)
     return foundAuth;
 }
 
-LibraryBook *LibraryManager::getBookInfo(int bookID, bool allInfo)
+LibraryBook *LibraryManager::getBookInfo(int bookID)
 {
     QSqlQuery bookQuery(m_libraryManager);
 
@@ -197,20 +197,19 @@ LibraryBook *LibraryManager::getBookInfo(int bookID, bool allInfo)
             bookInfo->bookID = bookID;
             bookInfo->bookPath = m_libraryInfo->bookPath(bookQuery.value(2).toString());
 
-            bookInfo->fromString(bookQuery.value(10).toString());
 
-            if(allInfo) {
-                bookInfo->bookFullName = bookQuery.value(3).toString();
-                bookInfo->bookOtherNames = bookQuery.value(4).toString();
-                bookInfo->bookInfo = bookQuery.value(5).toString();
-                bookInfo->bookEdition = bookQuery.value(6).toString();
-                bookInfo->bookPublisher = bookQuery.value(7).toString();
-                bookInfo->bookMohaqeq = bookQuery.value(8).toString();
-                bookInfo->authorID = bookQuery.value(9).toInt();
-                bookInfo->authorName = bookQuery.value(11).toString();
-            }
+            bookInfo->bookFullName = bookQuery.value(3).toString();
+            bookInfo->bookOtherNames = bookQuery.value(4).toString();
+            bookInfo->bookInfo = bookQuery.value(5).toString();
+            bookInfo->bookEdition = bookQuery.value(6).toString();
+            bookInfo->bookPublisher = bookQuery.value(7).toString();
+            bookInfo->bookMohaqeq = bookQuery.value(8).toString();
+            bookInfo->authorID = bookQuery.value(9).toInt();
+            bookInfo->authorName = bookQuery.value(11).toString();
 
             bookInfo->hasShareeh = hasShareeh(bookID);
+
+            bookInfo->fromString(bookQuery.value(10).toString());
 
             return bookInfo;
         }

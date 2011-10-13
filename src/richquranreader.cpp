@@ -86,10 +86,6 @@ void RichQuranReader::goToSora(int sora, int aya)
         goToPage(page, 1);
 }
 
-void RichQuranReader::goToHaddit(int /*hadditNum*/)
-{
-}
-
 bool RichQuranReader::needFastIndexLoad()
 {
     return false;

@@ -128,50 +128,6 @@ QAbstractItemModel * RichTafessirReader::topIndexModel()
     return indexModel;
 }
 
-void RichTafessirReader::nextPage()
-{
-    if(hasNext())
-        goToPage(m_bookInfo->currentPage.pageID+1);
-}
-
-void RichTafessirReader::prevPage()
-{
-    if(hasPrev())
-        goToPage(m_bookInfo->currentPage.pageID-1);
-}
-
-bool RichTafessirReader::hasNext()
-{
-    return (m_bookInfo->currentPage.pageID < m_bookInfo->lastID);
-}
-
-bool RichTafessirReader::hasPrev()
-{
-    return (m_bookInfo->currentPage.pageID > m_bookInfo->firstID);
-}
-
-void RichTafessirReader::getBookInfo()
-{
-    m_bookInfo->textTable = "bookPages";
-    m_bookInfo->indexTable = "bookIndex";
-
-    if(!m_bookInfo->haveInfo()) {
-        m_tafessirQuery->exec(QString("SELECT MAX(partNum), MIN(id), MAX(id) from %1 ").arg(m_bookInfo->textTable));
-        if(m_tafessirQuery->next()) {
-            bool ok;
-            int parts = m_tafessirQuery->value(0).toInt(&ok);
-            if(!ok)
-                qWarning("Can't get parts count");
-
-            m_bookInfo->partsCount = parts;
-            m_bookInfo->firstID = m_tafessirQuery->value(1).toInt();
-            m_bookInfo->lastID = m_tafessirQuery->value(2).toInt();
-        }
-
-        m_libraryManager->updateBookMeta(m_bookInfo, false);
-    }
-}
-
 void RichTafessirReader::childTitles(BookIndexNode *parentNode, int tid)
 {
     QSqlQuery query(m_bookDB);

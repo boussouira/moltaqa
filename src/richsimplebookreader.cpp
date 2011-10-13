@@ -71,6 +71,14 @@ void RichSimpleBookReader::goToPage(int page, int part)
         goToPage(m_simpleQuery->value(0).toInt());
 }
 
+void RichSimpleBookReader::goToHaddit(int hadditNum)
+{
+    int page = m_simpleQuery->getHaddithPage(hadditNum);
+
+    if(page)
+        goToPage(page);
+}
+
 QAbstractItemModel *RichSimpleBookReader::indexModel()
 {
     BookIndexNode *rootNode = new BookIndexNode();
@@ -114,63 +122,4 @@ void RichSimpleBookReader::childTitles(BookIndexNode *parentNode, int tid)
         childTitles(catNode, query.value(0).toInt());
         parentNode->appendChild(catNode);
     }
-}
-
-void RichSimpleBookReader::getBookInfo()
-{
-    m_bookInfo->textTable = "bookPages";
-    m_bookInfo->indexTable = "bookIndex";
-
-    if(!m_bookInfo->haveInfo()) {
-        m_simpleQuery->exec(QString("SELECT MAX(partNum), MIN(id), MAX(id) from %1 ").arg(m_bookInfo->textTable));
-        if(m_simpleQuery->next()) {
-            bool ok;
-            int parts = m_simpleQuery->value(0).toInt(&ok);
-            if(!ok)
-                qWarning("Can't get parts count");
-
-            m_bookInfo->partsCount = parts;
-            m_bookInfo->firstID = m_simpleQuery->value(1).toInt();
-            m_bookInfo->lastID = m_simpleQuery->value(2).toInt();
-        }
-
-        m_libraryManager->updateBookMeta(m_bookInfo, false);
-    }
-}
-
-void RichSimpleBookReader::nextPage()
-{
-    if(hasNext())
-        goToPage(m_bookInfo->currentPage.pageID+1);
-}
-
-void RichSimpleBookReader::prevPage()
-{
-    if(hasPrev())
-        goToPage(m_bookInfo->currentPage.pageID-1);
-}
-
-bool RichSimpleBookReader::hasNext()
-{
-    return (m_bookInfo->currentPage.pageID < m_bookInfo->lastID);
-}
-
-bool RichSimpleBookReader::hasPrev()
-{
-    return (m_bookInfo->currentPage.pageID > m_bookInfo->firstID);
-}
-
-void RichSimpleBookReader::goToSora(int sora, int aya)
-{
-    //Doesn't do any thing
-    Q_UNUSED(sora);
-    Q_UNUSED(aya);
-}
-
-void RichSimpleBookReader::goToHaddit(int hadditNum)
-{
-    int page = m_simpleQuery->getHaddithPage(hadditNum);
-
-    if(page)
-        goToPage(page);
 }

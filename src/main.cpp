@@ -25,9 +25,6 @@ int main(int argc, char *argv[])
 
     qsrand(QDateTime::currentDateTime().toTime_t());
 
-//    SettingsChecker checker(&app);
-//    checker.checkSettings();
-
     int ret = -1;
 
     MainWindow w;

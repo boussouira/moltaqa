@@ -18,17 +18,10 @@ public:
     void goToSora(int sora, int aya);
     void goToHaddit(int hadditNum);
 
-    void nextPage();
-    void prevPage();
-
-    bool hasNext();
-    bool hasPrev();
-
     QAbstractItemModel *indexModel();
     QAbstractItemModel *topIndexModel();
 
 protected:
-    void getBookInfo();
     void childTitles(BookIndexNode *parentNode, int tid);
     void connected();
     void openQuranBook();

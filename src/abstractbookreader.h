@@ -44,21 +44,21 @@ public:
     /**
       Open first page with given sora and aya number
       */
-    virtual void goToSora(int sora, int aya)=0;
+    virtual void goToSora(int sora, int aya);
 
     /**
       Open page with the given haddit number
       */
-    virtual void goToHaddit(int hadditNum)=0;
+    virtual void goToHaddit(int hadditNum);
 
     /**
       Open next page
       */
-    virtual void nextPage() = 0;
+    virtual void nextPage();
     /**
       Open Previous page
       */
-    virtual void prevPage() = 0;
+    virtual void prevPage();
 
     /**
       Go to next unit
@@ -78,12 +78,12 @@ public:
       Check if this handler can go to the next page
       @return True if it can go to the next page
       */
-    virtual bool hasNext() = 0;
+    virtual bool hasNext();
     /**
       Check if this handler can go to the previous page
       @return True if it can go to the previous page
       */
-    virtual bool hasPrev() = 0;
+    virtual bool hasPrev();
 
     /**
       Get current page text
@@ -94,7 +94,7 @@ protected:
     /**
       Generate book info
       */
-    virtual void getBookInfo() = 0;
+    virtual void getBookInfo();
 
     virtual void connected();
 
