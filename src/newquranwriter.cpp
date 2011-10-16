@@ -10,7 +10,7 @@
 
 newQuranWriter::newQuranWriter()
 {
-    m_tempFolder = MainWindow::mainWindow()->libraryInfo()->tempDir();
+    m_tempFolder = MW->libraryInfo()->tempDir();
     m_threadID = 0;
 }
 

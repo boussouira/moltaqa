@@ -195,7 +195,6 @@ void BooksViewer::openBook(int bookID, int pageID)
     else
         throw BookException(tr("لم يتم التعرف على نوع الكتاب"), QString("Book Type: %1").arg(bookInfo->bookPath));
 
-    bookdb->setConnctionInfo(m_libraryManager->connectionInfo());
     bookdb->setBookInfo(bookInfo);
     bookdb->setLibraryManager(m_libraryManager);
 
@@ -230,7 +229,6 @@ void BooksViewer::openTafessir()
         return;
 
     RichTafessirReader *bookdb = new RichTafessirReader();
-    bookdb->setConnctionInfo(m_libraryManager->connectionInfo());
     bookdb->setBookInfo(bookInfo);
     bookdb->setLibraryManager(m_libraryManager);
 

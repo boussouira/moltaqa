@@ -36,7 +36,7 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
 
     m_shamela = new ShamelaInfo();
     m_manager = new ShamelaManager(m_shamela);
-    m_libraryManager = MainWindow::mainWindow()->libraryManager();
+    m_libraryManager = MW->libraryManager();
 
     m_importedBooksCount = 0;
     m_proccessItemChange = true;
@@ -374,7 +374,7 @@ void ShamelaImportDialog::doneImporting()
                      .arg(Utils::secondsToString(m_importTime.elapsed())));
 
         if(m_importedBooksCount > 0) {
-            MainWindow::mainWindow()->libraryManager()->loadBooksListModel();
+            MW->libraryManager()->loadBooksListModel();
         }
 
         qDeleteAll(m_importThreads);

@@ -24,7 +24,7 @@ LibraryCreator::LibraryCreator()
     m_library = importDialog->libraryInfo();
     m_mapper = m_shamelaManager->mapper();
 
-    m_libraryManager = MainWindow::mainWindow()->libraryManager();
+    m_libraryManager = MW->libraryManager();
 
     m_prevArchive = -1;
     m_threadID = 0;

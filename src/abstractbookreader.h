@@ -23,7 +23,6 @@ public:
     ~AbstractBookReader();
     void openBookDB();
     void setBookInfo(LibraryBook *bi);
-    void setConnctionInfo(LibraryInfo *info);
     void setLibraryManager(LibraryManager *db);
 
     LibraryBook *bookInfo() { return m_bookInfo; }
@@ -99,7 +98,6 @@ protected:
     virtual void connected();
 
 protected:
-    LibraryInfo *m_connetionInfo;
     LibraryBook *m_bookInfo;
     BookPage *m_currentPage;
     LibraryManager *m_libraryManager;

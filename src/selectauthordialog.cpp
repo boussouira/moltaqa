@@ -13,7 +13,7 @@ selectAuthorDialog::selectAuthorDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    m_libraryManager = MainWindow::mainWindow()->libraryManager();
+    m_libraryManager = MW->libraryManager();
     m_model = m_libraryManager->getAuthorsListModel();
 
     m_filter = new SortFilterProxyModel(this);

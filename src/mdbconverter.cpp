@@ -20,7 +20,7 @@ static QHash<QString, QString> m_converted;
 
 MdbConverter::MdbConverter(bool cache) : m_cache(cache)
 {
-    m_tempFolder = MainWindow::mainWindow()->libraryInfo()->tempDir();
+    m_tempFolder = MW->libraryInfo()->tempDir();
 }
 
 MdbConverter::~MdbConverter()

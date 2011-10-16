@@ -12,7 +12,7 @@
 
 NewBookWriter::NewBookWriter()
 {
-    m_tempFolder = MainWindow::mainWindow()->libraryInfo()->tempDir();
+    m_tempFolder = MW->libraryInfo()->tempDir();
     m_pageId = 0;
     m_threadID = 0;
     m_isTafessir = false;

@@ -3,12 +3,15 @@
 
 #include <qmainwindow.h>
 
+#define MW MainWindow::mainWindow()
+
 class LibraryManager;
 class SettingsDialog;
 class BooksViewer;
 class BooksListBrowser;
 class WelcomeWidget;
 class LibraryInfo;
+class IndexTracker;
 
 namespace Ui
 {
@@ -30,6 +33,7 @@ public:
     LibraryManager *libraryManager();
     BooksViewer *booksViewer();
     BooksListBrowser *booksListBrowser();
+    IndexTracker *indexTracker();
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -56,6 +60,7 @@ private:
     BooksViewer *m_bookView;
     BooksListBrowser *m_booksList;
     WelcomeWidget *m_welcomeWidget;
+    IndexTracker *m_indexTracker;
     int defaultQuran;
 };
 

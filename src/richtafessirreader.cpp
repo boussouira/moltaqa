@@ -26,8 +26,6 @@ RichTafessirReader::RichTafessirReader(QObject *parent) : RichBookReader(parent)
 
 RichTafessirReader::~RichTafessirReader()
 {
-    delete m_formatter;
-
     if(m_tafessirQuery)
         delete m_tafessirQuery;
 

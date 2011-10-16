@@ -16,7 +16,7 @@ EditBooksListWidget::EditBooksListWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    m_libraryManager = MainWindow::mainWindow()->libraryManager();
+    m_libraryManager = MW->libraryManager();
     m_booksModel = new EditableBooksListModel();
     m_booksModel->setRootNode(m_libraryManager->booksListModel()->m_rootNode);
     m_booksModel->setModelEditibale(false);

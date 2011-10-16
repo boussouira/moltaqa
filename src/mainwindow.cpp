@@ -13,6 +13,7 @@
 #include "shamelaimportdialog.h"
 #include "newlibrarydialog.h"
 #include "controlcenterdialog.h"
+#include "indextracker.h"
 
 #include <qmessagebox.h>
 #include <qsettings.h>
@@ -27,7 +28,8 @@ MainWindow::MainWindow(QWidget *parent):
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     m_libraryInfo(0),
-    m_libraryManager(0)
+    m_libraryManager(0),
+    m_indexTracker(0)
 {
     ui->setupUi(this);
     m_mainWindow = this;
@@ -48,7 +50,8 @@ bool MainWindow::init()
             // We have a path to the library but it is invalid
             ret = QMessageBox::question(this,
                                         App::name(),
-                                        tr("لم يتم العثور على المكتبة في المجلد:" "<br>") + QDir(libDir).absolutePath() + "<br>" +
+                                        tr("لم يتم العثور على المكتبة في المجلد:" "<br>")
+                                        + QDir(libDir).absolutePath() + "<br>" +
                                         tr("ما الذي تريد القيام به؟"),
                                         tr("تحديث مجلد المكتبة"), tr("انشاء مكتبة مفرغة"), tr("خروج"),
                                         2);
@@ -106,6 +109,8 @@ bool MainWindow::init()
         m_bookView = new BooksViewer(m_libraryManager, this);
         m_booksList = new BooksListBrowser(m_libraryManager, 0);
 
+        m_indexTracker = new IndexTracker(this);
+
         setupActions();
 
         ui->stackedWidget->addWidget(m_bookView);
@@ -135,6 +140,8 @@ MainWindow::~MainWindow()
 
 MainWindow *MainWindow::mainWindow()
 {
+    Q_ASSERT(m_mainWindow);
+
     return m_mainWindow;
 }
 
@@ -248,11 +255,15 @@ void MainWindow::on_actionShamelaImport_triggered()
 
 LibraryInfo *MainWindow::libraryInfo()
 {
+    Q_ASSERT(m_libraryInfo);
+
     return m_libraryInfo;
 }
 
 LibraryManager *MainWindow::libraryManager()
 {
+    Q_ASSERT(m_libraryInfo);
+
     return m_libraryManager;
 }
 
@@ -264,6 +275,13 @@ BooksViewer *MainWindow::booksViewer()
 BooksListBrowser *MainWindow::booksListBrowser()
 {
     return m_booksList;
+}
+
+IndexTracker *MainWindow::indexTracker()
+{
+    Q_ASSERT(m_indexTracker);
+
+    return m_indexTracker;
 }
 
 void MainWindow::controlCenter()

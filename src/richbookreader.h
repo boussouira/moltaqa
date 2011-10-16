@@ -9,6 +9,7 @@ class RichBookReader : public AbstractBookReader
 
 public:
     RichBookReader(QObject *parent=0);
+    ~RichBookReader();
 
     /**
       Check if this handler can have some books that need some time to load thier index model

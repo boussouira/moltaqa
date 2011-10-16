@@ -21,8 +21,6 @@ RichSimpleBookReader::RichSimpleBookReader(QObject *parent) : RichBookReader(par
 
 RichSimpleBookReader::~RichSimpleBookReader()
 {
-    delete m_textFormat;
-
     if(m_simpleQuery)
         delete m_simpleQuery;
 }

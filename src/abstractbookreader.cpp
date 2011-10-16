@@ -56,11 +56,6 @@ void AbstractBookReader::setBookInfo(LibraryBook *bi)
     m_bookInfo = bi;
 }
 
-void AbstractBookReader::setConnctionInfo(LibraryInfo *info)
-{
-    m_connetionInfo = info;
-}
-
 void AbstractBookReader::nextAya()
 {
 }

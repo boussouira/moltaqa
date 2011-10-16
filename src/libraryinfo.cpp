@@ -1,7 +1,9 @@
 #include "libraryinfo.h"
 #include "bookexception.h"
-#include <QFile>
-#include <QtXml>
+#include <qfile.h>
+#include <qtextstream.h>
+#include <qdir.h>
+#include <QDomDocument>
 
 LibraryInfo::LibraryInfo(QString booksPath)
 {
@@ -66,6 +68,9 @@ void LibraryInfo::loafInfo(QString path)
     QDomElement pathElement = root.firstChildElement("path");
     QDomElement booksDirElement = root.firstChildElement("books-dir");
     QDomElement tempsDirElement = root.firstChildElement("temps-dir");
+    QDomElement indexDirElement = root.firstChildElement("index-dir");
+    QDomElement indexTrackerElement = root.firstChildElement("tracker-file");
+    QDomElement indexDataDirElement = root.firstChildElement("index-datat-dir");
 
     m_name = nameElement.firstChild().nodeValue();
     if(!pathElement.isNull())
@@ -83,6 +88,21 @@ void LibraryInfo::loafInfo(QString path)
     else
         m_tempsDir = "temp";
 
+    if(!indexDirElement.isNull())
+        m_indexDir = indexDirElement.firstChild().nodeValue();
+    else
+        m_indexDir = "index";
+
+    if(!indexDataDirElement.isNull())
+        m_indexDataDir = indexDataDirElement.firstChild().nodeValue();
+    else
+        m_indexDataDir = "data";
+
+    if(!indexTrackerElement.isNull())
+        m_trackerFile = indexTrackerElement.firstChild().nodeValue();
+    else
+        m_trackerFile = "tracker.xml";
+
     QDir booksDir(m_path);
     if(!booksDir.exists(m_booksDir))
         booksDir.mkdir(m_booksDir);
@@ -96,6 +116,33 @@ void LibraryInfo::loafInfo(QString path)
 
     tempDir.cd(m_tempsDir);
     m_tempsDir = tempDir.absolutePath();
+
+    QDir indexDir(m_path);
+    if(!indexDir.exists(m_indexDir))
+        indexDir.mkdir(m_indexDir);
+
+    indexDir.cd(m_indexDir);
+    m_indexDir = indexDir.absolutePath();
+    m_trackerFile = indexDir.absoluteFilePath(m_trackerFile);
+
+    if(!indexDir.exists(m_trackerFile)) {
+        QFile file(m_trackerFile);
+        if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            QTextStream out(&file);
+            out.setCodec("utf-8");
+
+            out << "<?xml version='1.0' encoding='UTF-8'?>" << "\n";
+            out << "<task-list>" << "\n";
+            out << "</task-list>" << "\n";
+        }
+    }
+
+    if(!indexDir.exists(m_indexDataDir))
+        indexDir.mkdir(m_indexDataDir);
+
+    indexDir.cd(m_indexDataDir);
+
+    m_indexDataDir = indexDir.absolutePath();
 }
 
 QString LibraryInfo::booksIndexPath()
@@ -115,5 +162,20 @@ QString LibraryInfo::bookPath(QString bookName)
 QString LibraryInfo::tempDir()
 {
     return m_tempsDir;
+}
+
+QString LibraryInfo::indexDir()
+{
+    return m_indexDir;
+}
+
+QString LibraryInfo::trackerFile()
+{
+    return m_trackerFile;
+}
+
+QString LibraryInfo::indexDataDir()
+{
+    return m_indexDataDir;
 }
 

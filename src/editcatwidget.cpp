@@ -16,7 +16,7 @@ EditCatWidget::EditCatWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    m_libraryManager = MainWindow::mainWindow()->libraryManager();
+    m_libraryManager = MW->libraryManager();
     m_catsModel = new EditableCatsListModel(this);
     m_catsModel->setRootNode(m_libraryManager->catsListModel()->m_rootNode);
     m_catsModel->setLibraryManager(m_libraryManager);

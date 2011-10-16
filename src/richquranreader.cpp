@@ -18,8 +18,6 @@ RichQuranReader::RichQuranReader(QObject *parent) : RichBookReader(parent)
 
 RichQuranReader::~RichQuranReader()
 {
-    delete m_formatter;
-
     if(m_quranQuery)
         delete m_quranQuery;
 }

@@ -72,7 +72,15 @@ SOURCES += mainwindow.cpp \
     selectauthordialog.cpp \
     abstracteditwidget.cpp \
     viewsmanagerwidget.cpp \
-    richbookreader.cpp
+    richbookreader.cpp \
+    indextracker.cpp \
+    indextaskiter.cpp \
+    textbookreader.cpp \
+    libraryindexmanager.cpp \
+    bookindexer.cpp \
+    arabicanalyzer.cpp \
+    arabicfilter.cpp \
+    arabictokenizer.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -128,7 +136,17 @@ HEADERS += mainwindow.h \
     selectauthordialog.h \
     abstracteditwidget.h \
     viewsmanagerwidget.h \
-    richbookreader.h
+    richbookreader.h \
+    indextracker.h \
+    indextaskiter.h \
+    textbookreader.h \
+    libraryindexmanager.h \
+    bookindexer.h \
+    clheader.h \
+    arabicanalyzer.h \
+    arabicfilter.h \
+    arabictokenizer.h \
+    clconstants.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

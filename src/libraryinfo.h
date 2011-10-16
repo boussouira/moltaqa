@@ -27,6 +27,21 @@ public:
       */
     QString tempDir();
 
+    /**
+      Index direcrory
+      */
+    QString indexDir();
+
+    /**
+      CLucene index path
+      */
+    QString indexDataDir();
+
+    /**
+      Path to the index tracker file
+      */
+    QString trackerFile();
+
     void setName(QString name);
     void setPath(QString path);
     void setBooksDir(QString dir);
@@ -51,6 +66,9 @@ protected:
     QString m_path;         ///< Library path
     QString m_booksDir;     ///< Absolute Books path
     QString m_tempsDir;     ///< Absolute temp path
+    QString m_indexDir;
+    QString m_indexDataDir;
+    QString m_trackerFile;
 };
 
 #endif // CONNECTIONINFO_H
