@@ -12,6 +12,7 @@
 
 class LibraryInfo;
 class LibraryBook;
+class BookPage;
 class BooksListModel;
 class BooksListNode;
 class ImportModelNode;
@@ -62,7 +63,7 @@ public:
     void updateBookMeta(LibraryBook *info, bool newBook);
     void setConnectionInfo(LibraryInfo *info);
     bool hasShareeh(int bookID);
-    void getShoroohPages(LibraryBook *info);
+    void getShoroohPages(LibraryBook *info, BookPage *page);
 
     /**
       Change categorie title

@@ -21,12 +21,13 @@ class AbstractBookReader : public QObject
 public:
     AbstractBookReader(QObject *parent=0);
     ~AbstractBookReader();
-    void openBookDB();
+    void openBook();
     void setBookInfo(LibraryBook *bi);
     void setLibraryManager(LibraryManager *db);
 
     LibraryBook *bookInfo() { return m_bookInfo; }
     LibraryManager *libraryManager();
+    BookPage *page();
 
     /**
       Open page with the given id
@@ -74,12 +75,12 @@ public:
     virtual void prevAya();
 
     /**
-      Check if this handler can go to the next page
+      Check if this reader can go to the next page
       @return True if it can go to the next page
       */
     virtual bool hasNext();
     /**
-      Check if this handler can go to the previous page
+      Check if this reader can go to the previous page
       @return True if it can go to the previous page
       */
     virtual bool hasPrev();

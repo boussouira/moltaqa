@@ -18,9 +18,9 @@ class BookWidget: public QWidget
 public:
     BookWidget(RichBookReader *db, QWidget *parent=0);
     ~BookWidget();
-    void setDBHandler(RichBookReader *db);
+    void setBookReader(RichBookReader *db);
     void displayInfo();
-    RichBookReader *dbHandler() { return m_db; }
+    RichBookReader *bookReader() { return m_db; }
     IndexWidget *indexWidget() { return m_indexWidget; }
     void firstPage();
     void lastPage();
@@ -30,7 +30,6 @@ public:
     void scrollUp();
     void hideIndexWidget();
     void saveSettings();
-
 
 protected:
     void loadSettings();

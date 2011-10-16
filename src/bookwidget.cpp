@@ -19,6 +19,7 @@ BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_
     m_view = new WebView(m_splitter);
     m_indexWidget = new IndexWidget(m_splitter);
     m_indexWidget->setBookInfo(db->bookInfo());
+    m_indexWidget->setCurrentPage(db->page());
 
     m_watcher = new QFutureWatcher<QAbstractItemModel*>(this);
     connect(m_watcher, SIGNAL(finished()), SLOT(indexModelReady()));
@@ -66,10 +67,12 @@ void BookWidget::saveSettings()
     settings.endGroup();
 }
 
-void BookWidget::setDBHandler(RichBookReader *db)
+void BookWidget::setBookReader(RichBookReader *db)
 {
     m_db = db;
     m_indexWidget->setBookInfo(db->bookInfo());
+    m_indexWidget->setCurrentPage(db->page());
+
     connect(db, SIGNAL(textChanged()), SLOT(readerTextChanged()));
 }
 
@@ -116,21 +119,21 @@ void BookWidget::lastPage()
 
 void BookWidget::nextPage()
 {
-    if(dbHandler()->hasNext()) {
+    if(bookReader()->hasNext()) {
        m_db->nextPage();
         if(m_db->bookInfo()->isQuran())
-            m_view->scrollToAya(m_db->bookInfo()->currentPage.sora,
-                                m_db->bookInfo()->currentPage.aya);
+            m_view->scrollToAya(m_db->page()->sora,
+                                m_db->page()->aya);
     }
 }
 
 void BookWidget::prevPage()
 {
-    if(dbHandler()->hasPrev()) {
+    if(bookReader()->hasPrev()) {
         m_db->prevPage();
         if(m_db->bookInfo()->isQuran())
-            m_view->scrollToAya(m_db->bookInfo()->currentPage.sora,
-                                m_db->bookInfo()->currentPage.aya);
+            m_view->scrollToAya(m_db->page()->sora,
+                                m_db->page()->aya);
     }
 }
 
@@ -138,8 +141,8 @@ void BookWidget::scrollDown()
 {
     if(m_db->bookInfo()->isQuran()) {
         m_db->nextAya();
-        m_view->scrollToAya(m_db->bookInfo()->currentPage.sora,
-                            m_db->bookInfo()->currentPage.aya);
+        m_view->scrollToAya(m_db->page()->sora,
+                            m_db->page()->aya);
     } else {
         if(!m_view->maxDown())
             m_view->pageDown();
@@ -152,8 +155,8 @@ void BookWidget::scrollUp()
 {
     if(m_db->bookInfo()->isQuran()) {
         m_db->prevAya();
-        m_view->scrollToAya(m_db->bookInfo()->currentPage.sora,
-                            m_db->bookInfo()->currentPage.aya);
+        m_view->scrollToAya(m_db->page()->sora,
+                            m_db->page()->aya);
     } else {
         if(!m_view->maxUp())
             m_view->pageUp();
@@ -166,8 +169,8 @@ void BookWidget::openPage(int pageNum, int partNum)
 {
     m_db->goToPage(pageNum, partNum);
     if(m_db->bookInfo()->isQuran())
-        m_view->scrollToAya(m_db->bookInfo()->currentPage.sora,
-                            m_db->bookInfo()->currentPage.aya);
+        m_view->scrollToAya(m_db->page()->sora,
+                            m_db->page()->aya);
 }
 
 void BookWidget::openSora(int sora, int aya)
@@ -176,8 +179,8 @@ void BookWidget::openSora(int sora, int aya)
    {     m_db->goToSora(sora, aya);
 
     if(m_db->bookInfo()->isQuran())
-        m_view->scrollToAya(m_db->bookInfo()->currentPage.sora,
-                            m_db->bookInfo()->currentPage.aya);
+        m_view->scrollToAya(m_db->page()->sora,
+                            m_db->page()->aya);
     else if(m_db->bookInfo()->isTafessir())
         m_view->scrollToAya(sora, aya);
 }}

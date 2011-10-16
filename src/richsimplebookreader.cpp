@@ -43,19 +43,19 @@ void RichSimpleBookReader::goToPage(int pid)
     else // The given page id
         id = pid;
 
-    if(id >= m_bookInfo->currentPage.pageID)
+    if(id >= m_currentPage->pageID)
         m_simpleQuery->nextPage(id);
     else
         m_simpleQuery->prevPage(id);
 
     if(m_simpleQuery->next()) {
         m_textFormat->insertText(QString::fromUtf8(qUncompress(m_simpleQuery->value(1).toByteArray())));
-        m_bookInfo->currentPage.pageID = m_simpleQuery->value(0).toInt();
-        m_bookInfo->currentPage.part = m_simpleQuery->value(2).toInt();
-        m_bookInfo->currentPage.page = m_simpleQuery->value(3).toInt();
+        m_currentPage->pageID = m_simpleQuery->value(0).toInt();
+        m_currentPage->part = m_simpleQuery->value(2).toInt();
+        m_currentPage->page = m_simpleQuery->value(3).toInt();
     }
 
-    m_libraryManager->getShoroohPages(m_bookInfo);
+    m_libraryManager->getShoroohPages(m_bookInfo, m_currentPage);
 
     m_textFormat->done();
 

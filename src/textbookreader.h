@@ -11,8 +11,15 @@ public:
     TextBookReader(QObject *parent = 0);
     ~TextBookReader();
 
+    void goFirst();
     void goToPage(int pid);
     void goToPage(int page, int part);
+
+    bool hasPrev();
+    bool hasNext();
+
+    void nextPage();
+
     QString text();
 
 protected:

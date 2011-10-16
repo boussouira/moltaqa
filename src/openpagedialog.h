@@ -16,7 +16,7 @@ public:
     OpenPageDialog(QWidget *parent = 0);
     ~OpenPageDialog();
 
-    void setBookInfo(LibraryBook *info);
+    void setInfo(LibraryBook *info, BookPage *page);
 
     int currentPage();
 

@@ -13,6 +13,14 @@ TextBookReader::~TextBookReader()
         delete m_simpleQuery;
 }
 
+void TextBookReader::goFirst()
+{
+    m_currentPage->pageID = m_bookInfo->firstID;
+
+    m_bookQuery.exec(QString("SELECT id, pageText, partNum, pageNum from %1 "
+                             "ORDER BY id").arg(m_bookInfo->textTable));
+}
+
 void TextBookReader::goToPage(int pid)
 {
     int id;
@@ -23,19 +31,17 @@ void TextBookReader::goToPage(int pid)
     else // The given page id
         id = pid;
 
-    if(id >= m_bookInfo->currentPage.pageID)
+    if(id >= m_currentPage->pageID)
         m_simpleQuery->nextPage(id);
     else
         m_simpleQuery->prevPage(id);
 
     if(m_simpleQuery->next()) {
         m_text = QString::fromUtf8(qUncompress(m_simpleQuery->value(1).toByteArray()));
-        m_bookInfo->currentPage.pageID = m_simpleQuery->value(0).toInt();
-        m_bookInfo->currentPage.part = m_simpleQuery->value(2).toInt();
-        m_bookInfo->currentPage.page = m_simpleQuery->value(3).toInt();
+        m_currentPage->pageID = m_simpleQuery->value(0).toInt();
+        m_currentPage->part = m_simpleQuery->value(2).toInt();
+        m_currentPage->page = m_simpleQuery->value(3).toInt();
     }
-
-    m_libraryManager->getShoroohPages(m_bookInfo);
 }
 
 void TextBookReader::goToPage(int page, int part)
@@ -53,4 +59,22 @@ QString TextBookReader::text()
 void TextBookReader::connected()
 {
     m_simpleQuery = new SimpleQuery(m_bookDB, m_bookInfo);
+}
+
+bool TextBookReader::hasPrev()
+{
+    return false;
+}
+
+bool TextBookReader::hasNext()
+{
+    return m_bookQuery.next();
+}
+
+void TextBookReader::nextPage()
+{
+    m_text = QString::fromUtf8(qUncompress(m_bookQuery.value(1).toByteArray()));
+    m_currentPage->pageID = m_bookQuery.value(0).toInt();
+    m_currentPage->part = m_bookQuery.value(2).toInt();
+    m_currentPage->page = m_bookQuery.value(3).toInt();
 }

@@ -58,27 +58,27 @@ void RichTafessirReader::goToPage(int pid)
     else // The given page id
         id = pid;
 
-    if(id >= m_bookInfo->currentPage.pageID)
+    if(id >= m_currentPage->pageID)
         m_tafessirQuery->nextPage(id);
     else
         m_tafessirQuery->prevPage(id);
 
     QString text;
     if(m_tafessirQuery->next()) {
-        m_bookInfo->currentPage.pageID = m_tafessirQuery->value(0).toInt();
-        m_bookInfo->currentPage.part = m_tafessirQuery->value(2).toInt();
-        m_bookInfo->currentPage.page = m_tafessirQuery->value(3).toInt();
-        m_bookInfo->currentPage.aya =  m_tafessirQuery->value(4).toInt();
-        m_bookInfo->currentPage.sora =  m_tafessirQuery->value(5).toInt();
+        m_currentPage->pageID = m_tafessirQuery->value(0).toInt();
+        m_currentPage->part = m_tafessirQuery->value(2).toInt();
+        m_currentPage->page = m_tafessirQuery->value(3).toInt();
+        m_currentPage->aya =  m_tafessirQuery->value(4).toInt();
+        m_currentPage->sora =  m_tafessirQuery->value(5).toInt();
 
         text = QString::fromUtf8(qUncompress(m_tafessirQuery->value(1).toByteArray()));
     }
 
     // TODO: don't show quran text when browsing tafessir book directly?
     if(m_quranInfo) {
-        readQuranText(m_bookInfo->currentPage.sora,
-                      m_bookInfo->currentPage.aya,
-                      m_tafessirQuery->getAyatCount(m_bookInfo->currentPage.sora, m_bookInfo->currentPage.aya));
+        readQuranText(m_currentPage->sora,
+                      m_currentPage->aya,
+                      m_tafessirQuery->getAyatCount(m_currentPage->sora, m_currentPage->aya));
     }
 
     m_formatter->insertText(text);

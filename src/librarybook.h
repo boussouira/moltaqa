@@ -62,7 +62,6 @@ public:
     int bookID;
     int authorID;
     bool hasShareeh;
-    BookPage currentPage;
 
 protected:
     QHash<int, int> m_firstPages;

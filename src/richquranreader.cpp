@@ -44,13 +44,13 @@ void RichQuranReader::goToPage(int pid)
 void RichQuranReader::goToPage(int page, int part)
 {
     m_formatter->start();
-    m_bookInfo->currentPage.page = page;
-    m_bookInfo->currentPage.part = part;
+    m_currentPage->page = page;
+    m_currentPage->part = part;
 
     BookPage info = firstSoraAndAya(page);
-    m_bookInfo->currentPage.sora = info.sora;
-    m_bookInfo->currentPage.aya = info.aya;
-    m_bookInfo->currentPage.ayatCount = info.ayatCount;
+    m_currentPage->sora = info.sora;
+    m_currentPage->aya = info.aya;
+    m_currentPage->ayatCount = info.ayatCount;
 
     m_quranQuery->page(page);
 
@@ -76,11 +76,11 @@ void RichQuranReader::goToPage(int page, int part)
 void RichQuranReader::goToSora(int sora, int aya)
 {
     int page = getPageNumber(sora, aya);
-    m_bookInfo->currentPage.sora = sora;
-    m_bookInfo->currentPage.aya = aya;
-    m_bookInfo->currentPage.ayatCount = getSoraAyatCount(sora);
+    m_currentPage->sora = sora;
+    m_currentPage->aya = aya;
+    m_currentPage->ayatCount = getSoraAyatCount(sora);
 
-    if(page != m_bookInfo->currentPage.page)
+    if(page != m_currentPage->page)
         goToPage(page, 1);
 }
 
@@ -129,8 +129,8 @@ int RichQuranReader::getPageNumber(int soraNumber, int ayaNumber)
 
     if(m_quranQuery->next()) {
         page = m_quranQuery->value(0).toInt();
-        m_bookInfo->currentPage.aya = 1;
-        m_bookInfo->currentPage.sora = soraNumber;
+        m_currentPage->aya = 1;
+        m_currentPage->sora = soraNumber;
     }
     return page;
 }
@@ -138,7 +138,7 @@ int RichQuranReader::getPageNumber(int soraNumber, int ayaNumber)
 void RichQuranReader::nextPage()
 {
     if(hasNext()) {
-        int page = m_bookInfo->currentPage.page+1;
+        int page = m_currentPage->page+1;
 
         goToPage(page, 1);
     }
@@ -147,7 +147,7 @@ void RichQuranReader::nextPage()
 void RichQuranReader::prevPage()
 {
     if(hasPrev()) {
-        int page = m_bookInfo->currentPage.page-1;
+        int page = m_currentPage->page-1;
 
         goToPage(page, 1);
     }
@@ -155,38 +155,38 @@ void RichQuranReader::prevPage()
 
 bool RichQuranReader::hasNext()
 {
-    return m_bookInfo->currentPage.page < m_bookInfo->lastPage();
+    return m_currentPage->page < m_bookInfo->lastPage();
 }
 
 bool RichQuranReader::hasPrev()
 {
-    return m_bookInfo->currentPage.page > m_bookInfo->firstPage();
+    return m_currentPage->page > m_bookInfo->firstPage();
 }
 
 void RichQuranReader::nextAya()
 {
-    int aya = m_bookInfo->currentPage.aya+1;
-    int sora = m_bookInfo->currentPage.sora;
-    if(aya > m_bookInfo->currentPage.ayatCount) {
+    int aya = m_currentPage->aya+1;
+    int sora = m_currentPage->sora;
+    if(aya > m_currentPage->ayatCount) {
         aya = 1;
         sora++;
     }
     if(sora > 114)
         sora = 1;
     int page = getPageNumber(sora, aya);
-    m_bookInfo->currentPage.sora = sora;
-    m_bookInfo->currentPage.aya = aya;
-    m_bookInfo->currentPage.ayatCount = getSoraAyatCount(sora);
+    m_currentPage->sora = sora;
+    m_currentPage->aya = aya;
+    m_currentPage->ayatCount = getSoraAyatCount(sora);
 
-    if(page != m_bookInfo->currentPage.page)
+    if(page != m_currentPage->page)
         goToPage(page, 1);
 
 }
 
 void RichQuranReader::prevAya()
 {
-    int aya = m_bookInfo->currentPage.aya-1;
-    int sora = m_bookInfo->currentPage.sora;
+    int aya = m_currentPage->aya-1;
+    int sora = m_currentPage->sora;
     if(aya < 1) {
         if(--sora < 1)
             sora = 114;
@@ -196,11 +196,11 @@ void RichQuranReader::prevAya()
 
     int page = getPageNumber(sora, aya);
 
-    m_bookInfo->currentPage.sora = sora;
-    m_bookInfo->currentPage.aya = aya;
-    m_bookInfo->currentPage.ayatCount = getSoraAyatCount(sora);
+    m_currentPage->sora = sora;
+    m_currentPage->aya = aya;
+    m_currentPage->ayatCount = getSoraAyatCount(sora);
 
-    if(page != m_bookInfo->currentPage.page)
+    if(page != m_currentPage->page)
         goToPage(page, 1);
 }
 

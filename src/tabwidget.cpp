@@ -26,7 +26,7 @@ TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)
 
 int TabWidget::addBookWidget(BookWidget *book)
 {
-    int index = addTab(book, book->dbHandler()->bookInfo()->bookDisplayName);
+    int index = addTab(book, book->bookReader()->bookInfo()->bookDisplayName);
     return index;
 }
 

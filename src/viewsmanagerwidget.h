@@ -19,9 +19,9 @@ public:
 
     void addBook(BookWidget* book);
     BookWidget *bookWidget(int index);
-    BookWidget *activeBook();
-    LibraryBook *activeBookInfo();
-    RichBookReader *activeDBHandler();
+    BookWidget *activeBookWidget();
+    LibraryBook *activeBook();
+    RichBookReader *activeBookReader();
     TabWidget *activeTab();
     void setActiveTab(QObject *obj);
 

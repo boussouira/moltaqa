@@ -396,7 +396,7 @@ void LibraryManager::updateBookMeta(LibraryBook *info, bool newBook)
     }
 }
 
-void LibraryManager::getShoroohPages(LibraryBook *info)
+void LibraryManager::getShoroohPages(LibraryBook *info, BookPage *page)
 {
     qDeleteAll(info->shorooh);
     info->shorooh.clear();
@@ -409,7 +409,7 @@ void LibraryManager::getShoroohPages(LibraryBook *info)
                       "ON booksList.id =  ShareehMeta.shareeh_book "
                       "WHERE ShareehMeta.mateen_book = ? AND ShareehMeta.mateen_id = ?");
     bookQuery.bindValue(0, info->bookID);
-    bookQuery.bindValue(1, info->currentPage.pageID);
+    bookQuery.bindValue(1, page->pageID);
     if(!bookQuery.exec()) {
         LOG_SQL_ERROR(bookQuery);
     }

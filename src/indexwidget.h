@@ -21,6 +21,7 @@ public:
     void hidePageSpin(bool visible);
     void hidePartSpin(bool visible);
     void setBookInfo(LibraryBook *bInfo) { m_bookInfo = bInfo; }
+    void setCurrentPage(BookPage *page) { m_page = page; }
 
 protected:
     void changeEvent(QEvent *e);
@@ -47,6 +48,7 @@ signals:
 
 private:
     LibraryBook *m_bookInfo;
+    BookPage *m_page;
     Ui::IndexWidget *ui;
     bool sendSignals;
 };

@@ -111,19 +111,19 @@ BookWidget *ViewsManagerWidget::bookWidget(int index)
     return qobject_cast<BookWidget*>(m_activeTab->widget(index));
 }
 
-BookWidget *ViewsManagerWidget::activeBook()
+BookWidget *ViewsManagerWidget::activeBookWidget()
 {
     return qobject_cast<BookWidget*>(m_activeTab->widget(m_activeTab->currentIndex()));
 }
 
-LibraryBook *ViewsManagerWidget::activeBookInfo()
+LibraryBook *ViewsManagerWidget::activeBook()
 {
-    return activeBook()->dbHandler()->bookInfo();
+    return activeBookWidget()->bookReader()->bookInfo();
 }
 
-RichBookReader *ViewsManagerWidget::activeDBHandler()
+RichBookReader *ViewsManagerWidget::activeBookReader()
 {
-    return activeBook()->dbHandler();
+    return activeBookWidget()->bookReader();
 }
 
 TabWidget *ViewsManagerWidget::activeTab()

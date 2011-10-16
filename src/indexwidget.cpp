@@ -55,8 +55,8 @@ void IndexWidget::setIndex(QAbstractItemModel *pList)
 void IndexWidget::displayBookInfo()
 {
     sendSignals = false;
-    int part = qMax(1, m_bookInfo->currentPage.part);
-    ui->spinPage->setValue(qMax(1, m_bookInfo->currentPage.page));
+    int part = qMax(1, m_page->part);
+    ui->spinPage->setValue(qMax(1, m_page->page));
 
     if(m_bookInfo->partsCount > 1) {
         ui->spinPart->setMaximum(m_bookInfo->partsCount);
@@ -66,14 +66,14 @@ void IndexWidget::displayBookInfo()
     }
 
     if(m_bookInfo->isQuran()) {
-        ui->spinAya->setMaximum(m_bookInfo->currentPage.ayatCount);
-        ui->spinAya->setSuffix(QString(" / %1").arg(m_bookInfo->currentPage.ayatCount));
-        ui->spinAya->setValue(m_bookInfo->currentPage.aya);
-        setSelectedSora(m_bookInfo->currentPage.sora);
+        ui->spinAya->setMaximum(m_page->ayatCount);
+        ui->spinAya->setSuffix(QString(" / %1").arg(m_page->ayatCount));
+        ui->spinAya->setValue(m_page->aya);
+        setSelectedSora(m_page->sora);
     }
 
     if(m_bookInfo->isTafessir()) {
-        ui->spinAya->setValue(m_bookInfo->currentPage.aya);
+        ui->spinAya->setValue(m_page->aya);
     }
 
     sendSignals = true;

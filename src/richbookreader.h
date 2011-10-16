@@ -12,7 +12,7 @@ public:
     ~RichBookReader();
 
     /**
-      Check if this handler can have some books that need some time to load thier index model
+      Check if this reader can have some books that need some time to load thier index model
 
       A fast index load mean that we should call first \ref topIndexModel and use
       threading to get the full index by calling \ref indexModel.

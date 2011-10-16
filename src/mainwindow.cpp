@@ -14,6 +14,7 @@
 #include "newlibrarydialog.h"
 #include "controlcenterdialog.h"
 #include "indextracker.h"
+#include "libraryindexmanager.h"
 
 #include <qmessagebox.h>
 #include <qsettings.h>
@@ -29,7 +30,8 @@ MainWindow::MainWindow(QWidget *parent):
     ui(new Ui::MainWindow),
     m_libraryInfo(0),
     m_libraryManager(0),
-    m_indexTracker(0)
+    m_indexTracker(0),
+    m_indexManager(0)
 {
     ui->setupUi(this);
     m_mainWindow = this;
@@ -111,6 +113,7 @@ bool MainWindow::init()
 
         m_indexTracker = new IndexTracker(this);
 
+        m_indexManager = new LibraryIndexManager(this);
         setupActions();
 
         ui->stackedWidget->addWidget(m_bookView);
@@ -162,6 +165,8 @@ void MainWindow::setupActions()
 
 void MainWindow::aboutAlKotobiya()
 {
+    m_indexManager->start();
+
     QMessageBox::information(this,
                              App::name(),
                              tr("برنامج الكتبية لقراءة القرءان الكريم"));
@@ -282,6 +287,13 @@ IndexTracker *MainWindow::indexTracker()
     Q_ASSERT(m_indexTracker);
 
     return m_indexTracker;
+}
+
+LibraryIndexManager * MainWindow::indexManager()
+{
+    Q_ASSERT(m_indexManager);
+
+    return m_indexManager;
 }
 
 void MainWindow::controlCenter()

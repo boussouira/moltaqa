@@ -26,11 +26,14 @@ AbstractBookReader::~AbstractBookReader()
     if(m_bookInfo)
         delete m_bookInfo;
 
+    if(m_currentPage)
+        delete m_currentPage;
+
     m_bookDB = QSqlDatabase();
     QSqlDatabase::removeDatabase(m_connectionName);
 }
 
-void AbstractBookReader::openBookDB()
+void AbstractBookReader::openBook()
 {
     Q_ASSERT(m_bookInfo);
 
@@ -78,6 +81,11 @@ LibraryManager* AbstractBookReader::libraryManager()
     return m_libraryManager;
 }
 
+BookPage * AbstractBookReader::page()
+{
+    return m_currentPage;
+}
+
 void AbstractBookReader::goToSora(int sora, int aya)
 {
     Q_UNUSED(sora);
@@ -92,23 +100,23 @@ void AbstractBookReader::goToHaddit(int hadditNum)
 void AbstractBookReader::nextPage()
 {
     if(hasNext())
-        goToPage(m_bookInfo->currentPage.pageID+1);
+        goToPage(m_currentPage->pageID+1);
 }
 
 void AbstractBookReader::prevPage()
 {
     if(hasPrev())
-        goToPage(m_bookInfo->currentPage.pageID-1);
+        goToPage(m_currentPage->pageID-1);
 }
 
 bool AbstractBookReader::hasNext()
 {
-    return (m_bookInfo->currentPage.pageID < m_bookInfo->lastID);
+    return (m_currentPage->pageID < m_bookInfo->lastID);
 }
 
 bool AbstractBookReader::hasPrev()
 {
-    return (m_bookInfo->currentPage.pageID > m_bookInfo->firstID);
+    return (m_currentPage->pageID > m_bookInfo->firstID);
 }
 
 void AbstractBookReader::getBookInfo()
