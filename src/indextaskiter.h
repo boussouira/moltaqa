@@ -2,12 +2,19 @@
 #define INDEXTASKITER_H
 
 #include "librarybook.h"
-#include <qset.h>
+#include "textbookreader.h"
 #include <qmutex.h>
 
 class IndexTask {
 public:
-    IndexTask() {}
+    IndexTask() : bookID(0), book(0), reader(0), task(Unknow)
+    {}
+
+    ~IndexTask()
+    {
+        if(reader)
+            delete reader;
+    }
 
     enum Task {
         Unknow,
@@ -18,6 +25,7 @@ public:
 
     int bookID;
     LibraryBook *book;
+    TextBookReader *reader;
     Task task;
 
     bool operator==(const IndexTask &other);
@@ -25,12 +33,14 @@ public:
     static QString taskToString(const Task &task);
 };
 
-QDebug &operator <<(QDebug &dbg, IndexTask task);
+QDebug &operator <<(QDebug &dbg, const IndexTask &task);
+QDebug &operator <<(QDebug &dbg, IndexTask *task);
 
 class IndexTaskIter
 {
 public:
     IndexTaskIter();
+    ~IndexTaskIter();
 
     void addTask(IndexTask *task);
     void removeTask(IndexTask *task);

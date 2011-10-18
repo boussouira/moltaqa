@@ -6,6 +6,8 @@
 #include "convertthread.h"
 #include "bookslistmodel.h"
 #include "utils.h"
+#include "mainwindow.h"
+#include "indextracker.h"
 
 #ifdef USE_MDBTOOLS
     #include "mdbconverter.h"
@@ -227,6 +229,9 @@ void ImportDialog::doneImporting()
         connect(button, SIGNAL(clicked()), m_signalMapper, SLOT(map()));
         m_signalMapper->setMapping(button, i.key());
     }
+
+    MW->indexTracker()->addTask(m_booksList.keys(), IndexTask::Add);
+    MW->indexTracker()->flush();
 
     setEnabled(true);
     setModal(false);

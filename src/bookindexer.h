@@ -18,11 +18,11 @@ public:
 
 protected:
     void startIndexing();
-    void indexBook(LibraryBook *book);
+    void indexBook(IndexTask *task);
 
 signals:
     void doneIndexing();
-    void bookIndexed(const QString &bookName);
+    void taskDone(IndexTask *task);
 
 protected:
     IndexWriter *m_writer;

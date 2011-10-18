@@ -21,7 +21,7 @@ class AbstractBookReader : public QObject
 public:
     AbstractBookReader(QObject *parent=0);
     ~AbstractBookReader();
-    void openBook();
+    void openBook(bool fastOpen=false);
     void setBookInfo(LibraryBook *bi);
     void setLibraryManager(LibraryManager *db);
 

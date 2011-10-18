@@ -1,5 +1,8 @@
 #include "bookindexer.h"
 #include "bookexception.h"
+#include "clconstants.h"
+#include "mainwindow.h"
+#include "clutils.h"
 
 BookIndexer::BookIndexer(QObject *parent) :
     QThread(parent),
@@ -30,26 +33,53 @@ void BookIndexer::startIndexing()
 
     while(task && !m_stop) {
         try {
-            indexBook(task->book);
+            task->book = MW->libraryManager()->getBookInfo(task->bookID);
+
+            if(task->book) {
+                indexBook(task);
+            }
         } catch (BookException &e) {
             qCritical() << "Indexing error:" << e.what();
         }
+
+        task = m_trackerIter->next();
     }
 
     emit doneIndexing();
 }
 
-void BookIndexer::indexBook(LibraryBook *book)
+void BookIndexer::indexBook(IndexTask *task)
 {
-    TextBookReader reader;
-    reader.setBookInfo(book);
+    TextBookReader *reader = task->reader;
+    BookPage *page = reader->page();
 
-    reader.openBookDB();
+    Document doc;
+    int tokenAndNoStore = Field::STORE_NO | Field::INDEX_TOKENIZED;
+    int storeAndNoToken = Field::STORE_YES | Field::INDEX_UNTOKENIZED;
+    wchar_t bookID[128];
+    wchar_t pageID[128];
 
-    while (reader.hasNext()) {
-        reader.nextPage();
+    reader->setBookInfo(task->book);
+    reader->setLibraryManager(MW->libraryManager());
 
+    reader->openBook(true);
+    reader->goFirst();
+
+    _itow(task->bookID, bookID, 10);
+
+    while (reader->hasNext()) {
+        reader->nextPage();
+
+        _itow(page->pageID, pageID, 10);
+
+        doc.add( *_CLNEW Field(PAGE_ID_FIELD, pageID, storeAndNoToken));
+        doc.add( *_CLNEW Field(BOOK_ID_FIELD, bookID, storeAndNoToken));
+        doc.add( *_CLNEW Field(PAGE_TEXT_FIELD,
+                               QSTRING_TO_WCHAR(reader->text()), tokenAndNoStore));
+
+        m_writer->addDocument(&doc);
+        doc.clear();
     }
 
-    emit bookIndexed(book->bookDisplayName);
+    emit taskDone(task);
 }

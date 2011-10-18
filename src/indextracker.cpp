@@ -7,10 +7,10 @@
 #include <qdir.h>
 #include <qdebug.h>
 
-bool operator ==(const QDomElement &node, const IndexTask &task)
+bool operator ==(const QDomElement &node, IndexTask *task)
 {
-    return (node.attribute("book").toInt() == task.bookID &&
-            IndexTask::stringToTask(node.attribute("type")) == task.task);
+    return (node.attribute("book").toInt() == task->bookID &&
+            IndexTask::stringToTask(node.attribute("type")) == task->task);
 }
 
 IndexTracker::IndexTracker(QObject *parent) :
@@ -61,53 +61,83 @@ void IndexTracker::loadTask()
     QDomElement taskNode = m_rootElement.firstChildElement("task");
 
     while(!taskNode.isNull()) {
-        IndexTask task;
-        task.bookID = taskNode.attribute("book").toInt();
-        task.task = IndexTask::stringToTask(taskNode.attribute("type"));
+        IndexTask *task = new IndexTask();
+        task->bookID = taskNode.attribute("book").toInt();
+        task->task = IndexTask::stringToTask(taskNode.attribute("type"));
         m_tasks.append(task);
 
         taskNode = taskNode.nextSiblingElement("task");
     }
 }
 
-void IndexTracker::addTask(IndexTask task)
+void IndexTracker::addTask(IndexTask *task)
 {
-    if(!m_tasks.contains(task)) {
+    if(!contains(task)) {
 
         QDomElement newTask = m_doc.createElement("task");
 
-        newTask.setAttribute("book", task.bookID);
-        newTask.setAttribute("type", IndexTask::taskToString(task.task));
+        newTask.setAttribute("book", task->bookID);
+        newTask.setAttribute("type", IndexTask::taskToString(task->task));
         m_rootElement.appendChild(newTask);
 
         m_tasks.append(task);
-        flush();
+
     } else {
         qWarning() << "Task exists:" << task;
     }
 }
-
-void IndexTracker::removeTask(IndexTask task)
+void IndexTracker::addTask(int bookID, IndexTask::Task task)
 {
-    QDomNodeList nodesList = m_rootElement.elementsByTagName("task");
+    IndexTask *t = new IndexTask();
+    t->bookID = bookID;
+    t->task = task;
 
-    for (int i=0; i<nodesList.count(); i++) {
-        QDomElement indexElement = nodesList.at(i).toElement();
+    addTask(t);
+}
 
-        if(indexElement == task) {
-            m_rootElement.removeChild(indexElement);
-
-            loadTask();
-            break;
-        }
+void IndexTracker::addTask(const QList<int> &books, IndexTask::Task task)
+{
+    foreach(int bookID, books) {
+        addTask(bookID, task);
     }
+
+    emit gotTask();
+}
+
+void IndexTracker::removeTask(IndexTask *task)
+{
+    if(contains(task)) {
+        QDomNodeList nodesList = m_rootElement.elementsByTagName("task");
+
+        for (int i=0; i<nodesList.count(); i++) {
+            QDomElement indexElement = nodesList.at(i).toElement();
+
+            if(indexElement == task) {
+                m_rootElement.removeChild(indexElement);
+                deleteTask(task);
+                break;
+            }
+        }
+    } else {
+        qDebug() << "Task" << task << "doesn't exist";
+    }
+}
+
+bool IndexTracker::contains(IndexTask *task)
+{
+    foreach (IndexTask *t, m_tasks) {
+        if(t->bookID == task->bookID && t->task == task->task)
+            return true;
+    }
+
+    return false;
 }
 
 void IndexTracker::flush()
 {
     QFile file(m_trackerFile);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-        qWarning("File not opened");
+        qWarning() << "Can not open file:" << m_trackerFile;
         return;
     }
 
@@ -124,15 +154,30 @@ int IndexTracker::taskCount()
 
 IndexTaskIter* IndexTracker::getTaskIter()
 {
+    loadTask();
+
     IndexTaskIter *iter = new IndexTaskIter();
 
-    foreach(IndexTask task, m_tasks) {
+    foreach(IndexTask *task, m_tasks) {
         IndexTask *t = new IndexTask();
-        t->bookID = task.bookID;
-        t->task = task.task;
-        t->book = m_libraryManager->getBookInfo(t->bookID);
+        TextBookReader *reader = new TextBookReader();
+        t->bookID = task->bookID;
+        t->task = task->task;
+        t->reader = reader;
+
         iter->addTask(t);
     }
 
     return iter;
+}
+
+void IndexTracker::deleteTask(IndexTask *task)
+{
+    for(int i=0; i < m_tasks.size(); i++) {
+        IndexTask *t = m_tasks.at(i);
+        if(t->bookID == task->bookID && t->task == task->task) {
+            delete m_tasks.takeAt(i);
+            break;
+        }
+    }
 }

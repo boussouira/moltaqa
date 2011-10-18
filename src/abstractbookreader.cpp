@@ -33,7 +33,7 @@ AbstractBookReader::~AbstractBookReader()
     QSqlDatabase::removeDatabase(m_connectionName);
 }
 
-void AbstractBookReader::openBook()
+void AbstractBookReader::openBook(bool fastOpen)
 {
     Q_ASSERT(m_bookInfo);
 
@@ -50,8 +50,10 @@ void AbstractBookReader::openBook()
 
     m_bookQuery = QSqlQuery(m_bookDB);
 
-    connected();
-    getBookInfo();
+    if(!fastOpen) {
+        connected();
+        getBookInfo();
+    }
 }
 
 void AbstractBookReader::setBookInfo(LibraryBook *bi)

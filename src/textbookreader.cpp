@@ -4,51 +4,27 @@
 TextBookReader::TextBookReader(QObject *parent) :
     AbstractBookReader(parent)
 {
-    m_simpleQuery = 0;
 }
 
 TextBookReader::~TextBookReader()
 {
-    if(m_simpleQuery)
-        delete m_simpleQuery;
 }
 
 void TextBookReader::goFirst()
 {
-    m_currentPage->pageID = m_bookInfo->firstID;
-
-    m_bookQuery.exec(QString("SELECT id, pageText, partNum, pageNum from %1 "
-                             "ORDER BY id").arg(m_bookInfo->textTable));
+    m_bookQuery.exec(QString("SELECT id, pageText, partNum, pageNum from bookPages "
+                             "ORDER BY id"));
 }
 
 void TextBookReader::goToPage(int pid)
 {
-    int id;
-    if(pid == -1) // First page
-        id = m_bookInfo->firstID;
-    else if(pid == -2) //Last page
-        id = m_bookInfo->lastID;
-    else // The given page id
-        id = pid;
-
-    if(id >= m_currentPage->pageID)
-        m_simpleQuery->nextPage(id);
-    else
-        m_simpleQuery->prevPage(id);
-
-    if(m_simpleQuery->next()) {
-        m_text = QString::fromUtf8(qUncompress(m_simpleQuery->value(1).toByteArray()));
-        m_currentPage->pageID = m_simpleQuery->value(0).toInt();
-        m_currentPage->part = m_simpleQuery->value(2).toInt();
-        m_currentPage->page = m_simpleQuery->value(3).toInt();
-    }
+    Q_UNUSED(pid);
 }
 
 void TextBookReader::goToPage(int page, int part)
 {
-    m_simpleQuery->page(page, part);
-    if(m_simpleQuery->next())
-        goToPage(m_simpleQuery->value(0).toInt());
+    Q_UNUSED(page);
+    Q_UNUSED(part);
 }
 
 QString TextBookReader::text()
@@ -58,7 +34,6 @@ QString TextBookReader::text()
 
 void TextBookReader::connected()
 {
-    m_simpleQuery = new SimpleQuery(m_bookDB, m_bookInfo);
 }
 
 bool TextBookReader::hasPrev()

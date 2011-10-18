@@ -2,6 +2,7 @@
 #define LIBRARYINDEXMANAGER_H
 
 #include <QObject>
+#include <qdatetime.h>
 #include "bookindexer.h"
 #include "clheader.h"
 #include "libraryinfo.h"
@@ -19,20 +20,26 @@ protected:
 public slots:
     void start();
     void stop();
+    void taskDone(IndexTask *task);
+    void threadDoneIndexing();
 
 signals:
     void started();
     void progress(int value, int max);
-    void bookIndexed(QString name);
+    void taskDone(QString name);
     void done();
 
 protected:
     LibraryInfo *m_library;
     IndexWriter *m_writer;
     IndexTracker *m_indexTracker;
+    IndexTaskIter *m_taskIter;
+    QList<BookIndexer*> m_threads;
+    QTime m_indexingTime;
     int m_booksCount;
     int m_indexedBooks;
     int m_threadCount;
+    int m_indexedBookCount;
 };
 
 #endif // LIBRARYINDEXMANAGER_H

@@ -11,6 +11,12 @@ LibraryBook::LibraryBook()
     m_hasInfo = false;
 }
 
+LibraryBook::~LibraryBook()
+{
+    qDeleteAll(shorooh);
+    shorooh.clear();
+}
+
 void LibraryBook::setFirstPage(int count, int part)
 {
     if(part <= partsCount)

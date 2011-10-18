@@ -5,6 +5,12 @@ IndexTaskIter::IndexTaskIter()
     m_currentTask = -1;
 }
 
+IndexTaskIter::~IndexTaskIter()
+{
+    qDeleteAll(m_tasks);
+    m_tasks.clear();
+}
+
 bool IndexTask::operator ==(const IndexTask &other)
 {
     return bookID == other.bookID && task == other.task;
@@ -73,8 +79,15 @@ int IndexTaskIter::taskCount()
     return m_tasks.size();
 }
 
-QDebug& operator <<(QDebug &dbg, IndexTask task)
+QDebug& operator <<(QDebug &dbg, const IndexTask &task)
 {
-    return dbg.space() << "Book:" << task.bookID
-                       << "Task:" << IndexTask::taskToString(task.task);
+    dbg.nospace() << "(Book: " << task.bookID
+                  << ", Task: " << qPrintable(IndexTask::taskToString(task.task))
+                  << ")";
+    return dbg.space();
+}
+
+QDebug& operator <<(QDebug &dbg, IndexTask *task)
+{
+    return dbg << *task;
 }

@@ -111,9 +111,11 @@ bool MainWindow::init()
         m_bookView = new BooksViewer(m_libraryManager, this);
         m_booksList = new BooksListBrowser(m_libraryManager, 0);
 
+        // IndexTracker should be created before the IndexManager
         m_indexTracker = new IndexTracker(this);
 
         m_indexManager = new LibraryIndexManager(this);
+
         setupActions();
 
         ui->stackedWidget->addWidget(m_bookView);
@@ -161,6 +163,8 @@ void MainWindow::setupActions()
     connect(m_bookView, SIGNAL(lastTabClosed()), SLOT(lastTabClosed()));
     connect(m_booksList, SIGNAL(bookSelected(int)), SLOT(openBook(int)));
     connect(ui->actionBooksList, SIGNAL(triggered()), SLOT(showBooksList()));
+
+    connect(m_indexTracker, SIGNAL(gotTask()), m_indexManager, SLOT(start()));
 }
 
 void MainWindow::aboutAlKotobiya()

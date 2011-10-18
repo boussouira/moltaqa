@@ -1,10 +1,12 @@
 #include "libraryindexmanager.h"
-#include <QSettings>
-#include <QDir>
-#include <QThread>
+#include <qsettings.h>
+#include <qdir.h>
+#include <qthread.h>
+#include <qvariant.h>
 
 #include "mainwindow.h"
 #include "arabicanalyzer.h"
+#include "bookindexer.h"
 
 LibraryIndexManager::LibraryIndexManager(QObject *parent) :
     QObject(parent)
@@ -20,7 +22,6 @@ bool LibraryIndexManager::openWriter()
     ArabicAnalyzer *analyzer = new ArabicAnalyzer();
 
     int ramSize = settings.value("ramSize", 100).toInt();
-    m_threadCount = settings.value("threadCount", QThread::idealThreadCount()).toInt();
 
     if(!dir.exists(m_library->indexDataDir()))
         dir.mkdir(m_library->indexDataDir());
@@ -43,9 +44,56 @@ bool LibraryIndexManager::openWriter()
 
 void LibraryIndexManager::start()
 {
+    if(!openWriter()) {
+        qWarning("Can't open IndexWriter");
+        return;
+    }
 
+    QSettings settings;
+    m_threadCount = settings.value("threadCount", QThread::idealThreadCount()).toInt();
+    m_taskIter = m_indexTracker->getTaskIter();
+    m_indexedBookCount = 0;
+
+    m_threads.clear();
+    m_indexingTime.start();
+
+    for(int i=0;i<m_threadCount;i++) {
+        BookIndexer *indexThread = new BookIndexer();
+        connect(indexThread, SIGNAL(taskDone(IndexTask*)), SLOT(taskDone(IndexTask*)));
+        connect(indexThread, SIGNAL(doneIndexing()), SLOT(threadDoneIndexing()));
+
+        indexThread->setTaskIter(m_taskIter);
+        indexThread->setWirter(m_writer);
+
+        indexThread->start();
+        m_threads.append(indexThread);
+    }
 }
 
 void LibraryIndexManager::stop()
 {
+}
+
+void LibraryIndexManager::taskDone(IndexTask *task)
+{
+    qDebug() << "Indexed:" << task->book->bookDisplayName;
+    m_indexTracker->removeTask(task);
+    emit progress(++m_indexedBookCount, m_taskIter->taskCount());
+}
+
+void LibraryIndexManager::threadDoneIndexing()
+{
+    if(--m_threadCount <= 0) {
+        m_writer->close();
+        _CLLDELETE(m_writer);
+        qDebug("Done indexing %d ms", m_indexingTime.elapsed());
+
+        delete m_taskIter;
+        qDeleteAll(m_threads);
+        m_threads.clear();
+
+        m_indexTracker->flush();
+
+        emit done();
+    }
 }

@@ -26,7 +26,6 @@ protected:
     void connected();
 
 protected:
-    SimpleQuery *m_simpleQuery;
     QString m_text;
 };
 

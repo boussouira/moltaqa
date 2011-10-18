@@ -15,23 +15,31 @@ public:
     IndexTracker(QObject *parent = 0);
     ~IndexTracker();
 
-    void addTask(IndexTask task);
-    void removeTask(IndexTask task);
+    void addTask(IndexTask *task);
+    void addTask(int bookID, IndexTask::Task task);
+    void addTask(const QList<int> &books, IndexTask::Task task);
+    void removeTask(IndexTask *task);
 
+    bool contains(IndexTask *task);
     int taskCount();
     IndexTaskIter* getTaskIter();
 
-protected:
-    void open();
     void loadTask();
     void flush();
+
+protected:
+    void open();
+    void deleteTask(IndexTask *task);
+
+signals:
+    void gotTask();
 
 protected:
     LibraryInfo *m_libraryInfo;
     LibraryManager *m_libraryManager;
     QDomDocument m_doc;
     QDomElement m_rootElement;
-    QList<IndexTask> m_tasks;
+    QList<IndexTask*> m_tasks;
     QString m_trackerFile;
 };
 

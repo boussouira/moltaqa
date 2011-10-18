@@ -18,6 +18,7 @@ class LibraryBook
 {
 public:
     LibraryBook();
+    ~LibraryBook();
 
     enum Type {
         QuranBook = 1,
