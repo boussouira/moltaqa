@@ -107,7 +107,7 @@ void ImportDialog::convertBooks()
 
     QStringList files;
     for(int i=0;i<ui->fileListWidget->count();i++)
-        files.append(ui->fileListWidget->item(i)->text());
+        files.append(ui->fileListWidget->item(i)->toolTip());
 
     ConvertThread *thread = new ConvertThread(this);
     thread->setFiles(files);
@@ -290,8 +290,13 @@ void ImportDialog::addFile(const QString &path)
 {
     QFileInfo info(path);
     if(info.isFile() && info.suffix().compare("bok", Qt::CaseInsensitive)==0) {
-        if(!fileExsistInList(path))
-            ui->fileListWidget->addItem(path);
+        if(!fileExsistInList(path)) {
+            QListWidgetItem *item = new QListWidgetItem(ui->fileListWidget);
+            item->setText(info.baseName());
+            item->setToolTip(path);
+
+            ui->fileListWidget->addItem(item);
+        }
     }
 }
 
@@ -311,7 +316,7 @@ void ImportDialog::addDir(const QString &path)
 bool ImportDialog::fileExsistInList(const QString &path)
 {
     for(int i=0;i<ui->fileListWidget->count();i++){
-        if(ui->fileListWidget->item(i)->text().compare(path, Qt::CaseInsensitive) == 0) {
+        if(ui->fileListWidget->item(i)->toolTip().compare(path, Qt::CaseInsensitive) == 0) {
             return true;
         }
     }
