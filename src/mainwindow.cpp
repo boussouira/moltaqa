@@ -14,7 +14,7 @@
 #include "newlibrarydialog.h"
 #include "controlcenterdialog.h"
 #include "indextracker.h"
-#include "libraryindexmanager.h"
+#include "indexmanager.h"
 
 #include <qmessagebox.h>
 #include <qsettings.h>
@@ -114,7 +114,7 @@ bool MainWindow::init()
 
         // IndexTracker should be created before the IndexManager
         m_indexTracker = new IndexTracker(this);
-        m_indexManager = new LibraryIndexManager(this);
+        m_indexManager = new IndexManager(this);
 
         m_indexBar = new QProgressBar(statusBar());
         m_indexBar->setMaximumWidth(200);
@@ -303,7 +303,7 @@ IndexTracker *MainWindow::indexTracker()
     return m_indexTracker;
 }
 
-LibraryIndexManager * MainWindow::indexManager()
+IndexManager * MainWindow::indexManager()
 {
     Q_ASSERT(m_indexManager);
 

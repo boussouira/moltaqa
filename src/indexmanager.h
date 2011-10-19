@@ -1,5 +1,5 @@
-#ifndef LIBRARYINDEXMANAGER_H
-#define LIBRARYINDEXMANAGER_H
+#ifndef INDEXMANAGER_H
+#define INDEXMANAGER_H
 
 #include <QObject>
 #include <qdatetime.h>
@@ -8,11 +8,11 @@
 #include "libraryinfo.h"
 #include "indextracker.h"
 
-class LibraryIndexManager : public QObject
+class IndexManager : public QObject
 {
     Q_OBJECT
 public:
-    LibraryIndexManager(QObject *parent = 0);
+    IndexManager(QObject *parent = 0);
 
 protected:
     bool openWriter();
@@ -42,4 +42,4 @@ protected:
     int m_indexedBookCount;
 };
 
-#endif // LIBRARYINDEXMANAGER_H
+#endif // INDEXMANAGER_H

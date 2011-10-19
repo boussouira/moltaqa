@@ -76,7 +76,7 @@ SOURCES += mainwindow.cpp \
     indextracker.cpp \
     indextaskiter.cpp \
     textbookreader.cpp \
-    libraryindexmanager.cpp \
+    indexmanager.cpp \
     bookindexer.cpp \
     arabicanalyzer.cpp \
     arabicfilter.cpp \
@@ -141,7 +141,7 @@ HEADERS += mainwindow.h \
     indextracker.h \
     indextaskiter.h \
     textbookreader.h \
-    libraryindexmanager.h \
+    indexmanager.h \
     bookindexer.h \
     clheader.h \
     arabicanalyzer.h \

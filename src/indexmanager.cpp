@@ -1,4 +1,4 @@
-#include "libraryindexmanager.h"
+#include "indexmanager.h"
 #include <qsettings.h>
 #include <qdir.h>
 #include <qthread.h>
@@ -8,14 +8,14 @@
 #include "arabicanalyzer.h"
 #include "bookindexer.h"
 
-LibraryIndexManager::LibraryIndexManager(QObject *parent) :
+IndexManager::IndexManager(QObject *parent) :
     QObject(parent)
 {
     m_indexTracker = MW->indexTracker();
     m_library = MW->libraryInfo();
 }
 
-bool LibraryIndexManager::openWriter()
+bool IndexManager::openWriter()
 {
     QDir dir;
     QSettings settings;
@@ -42,7 +42,7 @@ bool LibraryIndexManager::openWriter()
     return true;
 }
 
-void LibraryIndexManager::start()
+void IndexManager::start()
 {
     if(!openWriter()) {
         qWarning("Can't open IndexWriter");
@@ -72,18 +72,18 @@ void LibraryIndexManager::start()
     emit started();
 }
 
-void LibraryIndexManager::stop()
+void IndexManager::stop()
 {
 }
 
-void LibraryIndexManager::taskDone(IndexTask *task)
+void IndexManager::taskDone(IndexTask *task)
 {
     qDebug() << "Indexed:" << task->book->bookDisplayName;
     m_indexTracker->removeTask(task);
     emit progress(++m_indexedBookCount, m_taskIter->taskCount());
 }
 
-void LibraryIndexManager::threadDoneIndexing()
+void IndexManager::threadDoneIndexing()
 {
     if(--m_threadCount <= 0) {
         m_writer->close();
