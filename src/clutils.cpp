@@ -7,7 +7,7 @@ QString Utils::WCharToString(const wchar_t *str)
 
 wchar_t* Utils::QStringToWChar(const QString &str)
 {
-    wchar_t *string = new wchar_t[str.length()+1];
+    wchar_t *string = (wchar_t*) malloc((str.length()+1) * sizeof(wchar_t));
     str.toWCharArray(string);
     string[str.length()] = 0;
 

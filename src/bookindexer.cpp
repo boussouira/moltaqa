@@ -58,6 +58,7 @@ void BookIndexer::indexBook(IndexTask *task)
     int storeAndNoToken = Field::STORE_YES | Field::INDEX_UNTOKENIZED;
     wchar_t bookID[128];
     wchar_t pageID[128];
+    wchar_t *text = NULL;
 
     reader->setBookInfo(task->book);
     reader->setLibraryManager(MW->libraryManager());
@@ -68,14 +69,16 @@ void BookIndexer::indexBook(IndexTask *task)
     _itow(task->bookID, bookID, 10);
 
     while (reader->hasNext()) {
+
         reader->nextPage();
 
         _itow(page->pageID, pageID, 10);
+        text = Utils::QStringToWChar(reader->text());
 
         doc.add( *_CLNEW Field(PAGE_ID_FIELD, pageID, storeAndNoToken));
         doc.add( *_CLNEW Field(BOOK_ID_FIELD, bookID, storeAndNoToken));
-        doc.add( *_CLNEW Field(PAGE_TEXT_FIELD,
-                               QSTRING_TO_WCHAR(reader->text()), tokenAndNoStore));
+        doc.add( *_CLNEW Field(PAGE_TEXT_FIELD, text, tokenAndNoStore, false));
+
         m_writer->addDocument(&doc);
         doc.clear();
     }
