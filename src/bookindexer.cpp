@@ -76,7 +76,6 @@ void BookIndexer::indexBook(IndexTask *task)
         doc.add( *_CLNEW Field(BOOK_ID_FIELD, bookID, storeAndNoToken));
         doc.add( *_CLNEW Field(PAGE_TEXT_FIELD,
                                QSTRING_TO_WCHAR(reader->text()), tokenAndNoStore));
-
         m_writer->addDocument(&doc);
         doc.clear();
     }

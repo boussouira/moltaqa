@@ -10,6 +10,11 @@ wchar_t* QStringToWChar(const QString &str);
 
 }
 
-#define QSTRING_TO_WCHAR(s) (const wchar_t*)s.utf16()
+#ifdef Q_OS_WIN
+    #define QSTRING_TO_WCHAR(s) (const wchar_t*)s.utf16()
+#else
+    #define QSTRING_TO_WCHAR(s) Utils::QStringToWChar(s)
+    #define _itow _itot
+#endif
 
 #endif // CLUTILS_H

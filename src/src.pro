@@ -34,9 +34,10 @@ win32 {
                     _CRT_NONSTDC_NO_DEPRECATE
     }
 
-    win32-g++ {
-        CLUCENE_LIBS_PATH = $$CLUCENE_BUILD_PATH/bin
-    }
+}
+
+unix {
+    CLUCENE_LIBS_PATH = $$CLUCENE_BUILD_PATH/bin
 }
 
 DEFINES += _REENTRANT _UCS2 _UNICODE
