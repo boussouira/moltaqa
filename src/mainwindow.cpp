@@ -22,6 +22,7 @@
 #include <qfile.h>
 #include <qtimer.h>
 #include <qfiledialog.h>
+#include <qprogressbar.h>
 
 static MainWindow *m_mainWindow = 0;
 
@@ -113,8 +114,14 @@ bool MainWindow::init()
 
         // IndexTracker should be created before the IndexManager
         m_indexTracker = new IndexTracker(this);
-
         m_indexManager = new LibraryIndexManager(this);
+
+        m_indexBar = new QProgressBar(statusBar());
+        m_indexBar->setMaximumWidth(200);
+        m_indexBar->setFormat("");
+        m_indexBar->setToolTip(tr("تقدم تحديث الفهرس"));
+        m_indexBar->hide();
+        statusBar()->addPermanentWidget(m_indexBar);
 
         setupActions();
 
@@ -164,6 +171,9 @@ void MainWindow::setupActions()
     connect(m_booksList, SIGNAL(bookSelected(int)), SLOT(openBook(int)));
     connect(ui->actionBooksList, SIGNAL(triggered()), SLOT(showBooksList()));
 
+    connect(m_indexManager, SIGNAL(progress(int,int)), SLOT(indexProgress(int,int)));
+    connect(m_indexManager, SIGNAL(started()), SLOT(startIndexing()));
+    connect(m_indexManager, SIGNAL(done()), SLOT(stopIndexing()));
     connect(m_indexTracker, SIGNAL(gotTask()), m_indexManager, SLOT(start()));
 }
 
@@ -304,4 +314,20 @@ void MainWindow::controlCenter()
 {
     ControlCenterDialog dialog(this);
     dialog.exec();
+}
+
+void MainWindow::startIndexing()
+{
+    m_indexBar->show();
+}
+
+void MainWindow::stopIndexing()
+{
+    m_indexBar->hide();
+}
+
+void MainWindow::indexProgress(int value, int max)
+{
+    m_indexBar->setMaximum(max);
+    m_indexBar->setValue(value);
 }

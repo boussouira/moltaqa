@@ -68,6 +68,8 @@ void LibraryIndexManager::start()
         indexThread->start();
         m_threads.append(indexThread);
     }
+
+    emit started();
 }
 
 void LibraryIndexManager::stop()

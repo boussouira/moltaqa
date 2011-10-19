@@ -13,6 +13,7 @@ class WelcomeWidget;
 class LibraryInfo;
 class IndexTracker;
 class LibraryIndexManager;
+class QProgressBar;
 
 namespace Ui
 {
@@ -50,6 +51,9 @@ public slots:
     void openBook(int pBookID);
     void lastTabClosed();
     void controlCenter();
+    void startIndexing();
+    void stopIndexing();
+    void indexProgress(int value, int max);
 
 private slots:
     void on_actionImport_triggered();
@@ -64,6 +68,7 @@ private:
     WelcomeWidget *m_welcomeWidget;
     IndexTracker *m_indexTracker;
     LibraryIndexManager *m_indexManager;
+    QProgressBar *m_indexBar;
     int defaultQuran;
 };
 
