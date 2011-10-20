@@ -1,5 +1,5 @@
-#ifndef VIEWSMANAGERWIDGET_H
-#define VIEWSMANAGERWIDGET_H
+#ifndef BOOKWIDGETMANAGER_H
+#define BOOKWIDGETMANAGER_H
 
 #include <QWidget>
 
@@ -10,12 +10,12 @@ class QSplitter;
 class LibraryBook;
 class RichBookReader;
 
-class ViewsManagerWidget : public QWidget
+class BookWidgetManager : public QWidget
 {
     Q_OBJECT
 public:
-    ViewsManagerWidget(QWidget *parent = 0);
-    ~ViewsManagerWidget();
+    BookWidgetManager(QWidget *parent = 0);
+    ~BookWidgetManager();
 
     void addBook(BookWidget* book);
     BookWidget *bookWidget(int index);
@@ -48,4 +48,4 @@ protected:
     bool m_showOtherTab;
 };
 
-#endif // VIEWSMANAGERWIDGET_H
+#endif // BOOKWIDGETMANAGER_H

@@ -2,7 +2,7 @@
 #define BOOKSVIEWER_H
 
 #include "abstarctview.h"
-#include "viewsmanagerwidget.h"
+#include "bookwidgetmanager.h"
 
 class BookWidget;
 class LibraryManager;
@@ -47,7 +47,7 @@ signals:
 
 private:
     LibraryManager *m_libraryManager;
-    ViewsManagerWidget *m_viewManager;
+    BookWidgetManager *m_viewManager;
     QAction *m_actionNewTab;
     QAction *m_actionIndexDock;
     QAction *m_actionSearchDock;

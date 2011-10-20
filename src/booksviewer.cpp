@@ -10,7 +10,7 @@
 #include "bookexception.h"
 #include "openpagedialog.h"
 #include "mainwindow.h"
-#include "viewsmanagerwidget.h"
+#include "bookwidgetmanager.h"
 
 #include <qmainwindow.h>
 #include <qmenubar.h>
@@ -28,7 +28,7 @@ typedef QPair<int, QString> Pair;
 BooksViewer::BooksViewer(LibraryManager *libraryManager, QMainWindow *parent): AbstarctView(parent)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
-    m_viewManager = new ViewsManagerWidget(this);
+    m_viewManager = new BookWidgetManager(this);
 
     m_libraryManager = libraryManager;
     layout->addWidget(m_viewManager);

@@ -71,7 +71,7 @@ SOURCES += mainwindow.cpp \
     editablecatslistmodel.cpp \
     selectauthordialog.cpp \
     abstracteditwidget.cpp \
-    viewsmanagerwidget.cpp \
+    bookwidgetmanager.cpp \
     richbookreader.cpp \
     indextracker.cpp \
     indextaskiter.cpp \
@@ -138,7 +138,7 @@ HEADERS += mainwindow.h \
     editablecatslistmodel.h \
     selectauthordialog.h \
     abstracteditwidget.h \
-    viewsmanagerwidget.h \
+    bookwidgetmanager.h \
     richbookreader.h \
     indextracker.h \
     indextaskiter.h \

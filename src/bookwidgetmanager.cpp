@@ -1,4 +1,4 @@
-#include "viewsmanagerwidget.h"
+#include "bookwidgetmanager.h"
 #include "tabwidget.h"
 #include "indexwidget.h"
 #include "bookslistbrowser.h"
@@ -22,7 +22,7 @@
 #include <qdebug.h>
 #include <qmessagebox.h>
 
-ViewsManagerWidget::ViewsManagerWidget(QWidget *parent) :
+BookWidgetManager::BookWidgetManager(QWidget *parent) :
     QWidget(parent)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
@@ -46,11 +46,11 @@ ViewsManagerWidget::ViewsManagerWidget(QWidget *parent) :
     connectTab(m_bottomTab);
 }
 
-ViewsManagerWidget::~ViewsManagerWidget()
+BookWidgetManager::~BookWidgetManager()
 {
 }
 
-void ViewsManagerWidget::connectTab(TabWidget *tab)
+void BookWidgetManager::connectTab(TabWidget *tab)
 {
     connect(tab, SIGNAL(currentChanged(int)), SLOT(tabChanged(int)));
     connect(tab, SIGNAL(currentChanged(int)), SIGNAL(currentTabChanged(int)));
@@ -60,7 +60,7 @@ void ViewsManagerWidget::connectTab(TabWidget *tab)
     connect(tab, SIGNAL(reverseSplitter()), SLOT(reverseSplitter()));
 }
 
-void ViewsManagerWidget::tabCloseRequest(int tabIndex)
+void BookWidgetManager::tabCloseRequest(int tabIndex)
 {
     setActiveTab(sender());
     bookWidget(tabIndex)->saveSettings();
@@ -70,7 +70,7 @@ void ViewsManagerWidget::tabCloseRequest(int tabIndex)
 //    delete w;
 }
 
-void ViewsManagerWidget::tabChanged(int newIndex)
+void BookWidgetManager::tabChanged(int newIndex)
 {
     Q_UNUSED(newIndex);
 
@@ -94,44 +94,44 @@ void ViewsManagerWidget::tabChanged(int newIndex)
     }
 }
 
-void ViewsManagerWidget::changeActiveTab()
+void BookWidgetManager::changeActiveTab()
 {
     setActiveTab(sender());
 }
 
-void ViewsManagerWidget::addBook(BookWidget *book)
+void BookWidgetManager::addBook(BookWidget *book)
 {
     int tabIndex = m_activeTab->addBookWidget(book);
 
     m_activeTab->setCurrentIndex(tabIndex);
 }
 
-BookWidget *ViewsManagerWidget::bookWidget(int index)
+BookWidget *BookWidgetManager::bookWidget(int index)
 {
     return qobject_cast<BookWidget*>(m_activeTab->widget(index));
 }
 
-BookWidget *ViewsManagerWidget::activeBookWidget()
+BookWidget *BookWidgetManager::activeBookWidget()
 {
     return qobject_cast<BookWidget*>(m_activeTab->widget(m_activeTab->currentIndex()));
 }
 
-LibraryBook *ViewsManagerWidget::activeBook()
+LibraryBook *BookWidgetManager::activeBook()
 {
     return activeBookWidget()->bookReader()->bookInfo();
 }
 
-RichBookReader *ViewsManagerWidget::activeBookReader()
+RichBookReader *BookWidgetManager::activeBookReader()
 {
     return activeBookWidget()->bookReader();
 }
 
-TabWidget *ViewsManagerWidget::activeTab()
+TabWidget *BookWidgetManager::activeTab()
 {
     return m_activeTab;
 }
 
-void ViewsManagerWidget::moveToOtherTab(int index)
+void BookWidgetManager::moveToOtherTab(int index)
 {
     setActiveTab(sender());
 
@@ -154,7 +154,7 @@ void ViewsManagerWidget::moveToOtherTab(int index)
     }
 }
 
-void ViewsManagerWidget::setActiveTab(QObject *obj)
+void BookWidgetManager::setActiveTab(QObject *obj)
 {
     if(obj != m_activeTab) {
         TabWidget *tab = qobject_cast<TabWidget*>(obj);
@@ -166,7 +166,7 @@ void ViewsManagerWidget::setActiveTab(QObject *obj)
     }
 }
 
-void ViewsManagerWidget::reverseSplitter()
+void BookWidgetManager::reverseSplitter()
 {
     m_splitter->setOrientation((m_splitter->orientation()==Qt::Horizontal) ?
                                    Qt::Vertical : Qt::Horizontal);
