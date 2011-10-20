@@ -81,7 +81,9 @@ SOURCES += mainwindow.cpp \
     arabicanalyzer.cpp \
     arabicfilter.cpp \
     arabictokenizer.cpp \
-    clutils.cpp
+    clutils.cpp \
+    abstarctview.cpp \
+    viewmanager.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -148,7 +150,9 @@ HEADERS += mainwindow.h \
     arabicfilter.h \
     arabictokenizer.h \
     clconstants.h \
-    clutils.h
+    clutils.h \
+    abstarctview.h \
+    viewmanager.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

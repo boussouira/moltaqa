@@ -44,7 +44,6 @@ void ConvertThread::run()
             emit setProgress(++m_convertedFiles);
 
 #ifdef USE_MDBTOOLS
-            QSqlDatabase::removeDatabase("mdb");
             QSqlDatabase::removeDatabase("bok2sql");
 
             if(!m_tempDB.isEmpty()) {
@@ -52,7 +51,7 @@ void ConvertThread::run()
                 m_tempDB.clear();
             }
 #else
-            QSqlDatabase::removeDatabase("mdb");
+
 #endif
 
         } catch(BookException &e) {
@@ -130,6 +129,10 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
 
         QSqlDatabase::removeDatabase(QString("newBookDB_%1").arg((int)currentThreadId()));
     }
+
+    bookDB = QSqlDatabase();
+    bookQuery.clear();
+    QSqlDatabase::removeDatabase("mdb");
 }
 
 void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDatabase &bookDB, int bookID)

@@ -5,6 +5,7 @@
 
 #define MW MainWindow::mainWindow()
 
+class ViewManager;
 class LibraryManager;
 class SettingsDialog;
 class BooksViewer;
@@ -43,8 +44,8 @@ protected:
     void setupActions();
     void loadSettings();
 
-public slots:
-    void aboutAlKotobiya();
+protected slots:
+    void aboutApp();
     void settingDialog();
     void quranWindow();
     void showBooksList();
@@ -61,6 +62,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    ViewManager *m_viewManager;
     LibraryInfo *m_libraryInfo;
     LibraryManager *m_libraryManager;
     BooksViewer *m_bookView;

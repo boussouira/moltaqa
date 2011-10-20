@@ -1,19 +1,21 @@
 #ifndef WELCOMEWIDGET_H
 #define WELCOMEWIDGET_H
 
-#include <QWidget>
+#include "abstarctview.h"
 
 namespace Ui {
     class WelcomeWidget;
 }
 
-class WelcomeWidget : public QWidget
+class WelcomeWidget : public AbstarctView
 {
     Q_OBJECT
 
 public:
-    explicit WelcomeWidget(QWidget *parent = 0);
+    WelcomeWidget(QWidget *parent = 0);
     ~WelcomeWidget();
+
+    QString title();
 
 private slots:
     void on_pushBooksList_clicked();

@@ -25,7 +25,7 @@
 
 typedef QPair<int, QString> Pair;
 
-BooksViewer::BooksViewer(LibraryManager *libraryManager, QMainWindow *parent): QWidget(parent)
+BooksViewer::BooksViewer(LibraryManager *libraryManager, QMainWindow *parent): AbstarctView(parent)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
     m_viewManager = new ViewsManagerWidget(this);
@@ -43,6 +43,11 @@ BooksViewer::BooksViewer(LibraryManager *libraryManager, QMainWindow *parent): Q
 
 BooksViewer::~BooksViewer()
 {
+}
+
+QString BooksViewer::title()
+{
+    return tr("تصفح الكتب");
 }
 
 void BooksViewer::createMenus(QMainWindow *parent)
@@ -123,23 +128,16 @@ void BooksViewer::createMenus(QMainWindow *parent)
     navMenu->addAction(m_actionNextPage);
     navMenu->addAction(m_actionLastPage);
     navMenu->addSeparator();
-    navMenu->addAction(m_actionGotToPage); // TODO: implement this
+    navMenu->addAction(m_actionGotToPage);
 
-
-    // Hide those toolbars
-    m_toolBarGeneral->hide();
-    m_toolBarNavigation->hide();
-    m_toolBarTafesir->hide();
-    m_toolBarShorooh->hide();
-
-    parent->addToolBar(m_toolBarGeneral);
-    parent->addToolBar(m_toolBarNavigation);
-    parent->addToolBar(m_toolBarTafesir);
-    parent->addToolBar(m_toolBarShorooh);
+    m_toolBars << m_toolBarGeneral;
+    m_toolBars << m_toolBarNavigation;
+    m_toolBars << m_toolBarTafesir;
+    m_toolBars << m_toolBarShorooh;
 
     QAction *act = parent->menuBar()->actions().at(1);
     m_navMenu = parent->menuBar()->insertMenu(act, navMenu);
-    m_navMenu->setVisible(false);
+    m_navMenu->setEnabled(false);
 
     // Setup connections
     // Navigation actions
@@ -162,20 +160,30 @@ void BooksViewer::createMenus(QMainWindow *parent)
     connect(m_actionOpenShareeh, SIGNAL(triggered()), SLOT(openShareeh()));
 }
 
-void BooksViewer::removeToolBar()
+void BooksViewer::showToolBars()
 {
-    m_toolBarGeneral->hide();
-    m_toolBarNavigation->hide();
-    m_toolBarTafesir->hide();
-    m_toolBarShorooh->hide();
-    m_navMenu->setVisible(false);
-}
+    bool showTafsssir = m_viewManager->activeBook()->isQuran();
+    bool showShorooh = m_viewManager->activeBook()->hasShareeh;
 
-void BooksViewer::showToolBar()
-{
+    m_toolBarTafesir->setEnabled(showTafsssir);
+    m_toolBarTafesir->setVisible(showTafsssir);
+
+    m_toolBarShorooh->setEnabled(showShorooh);
+    m_toolBarShorooh->setVisible(showShorooh);
+
     m_toolBarGeneral->show();
     m_toolBarNavigation->show();
+}
+
+void BooksViewer::showMenu()
+{
     m_navMenu->setVisible(true);
+    m_navMenu->setEnabled(true);
+}
+
+void BooksViewer::hideMenu()
+{
+    m_navMenu->setEnabled(false);
 }
 
 void BooksViewer::openBook(int bookID, int pageID)
@@ -359,15 +367,7 @@ void BooksViewer::tabChanged(int newIndex)
 {
     if(newIndex != -1) {
         updateActions();
-
-        bool showTafsssir = m_viewManager->activeBook()->isQuran();
-        bool showShorooh = m_viewManager->activeBook()->hasShareeh;
-
-        m_toolBarTafesir->setVisible(showTafsssir);
-        m_toolBarTafesir->setEnabled(showTafsssir);
-
-        m_toolBarShorooh->setVisible(showShorooh);
-        m_toolBarShorooh->setEnabled(showShorooh);
+        showToolBars();
 
         if(m_viewManager->activeBook()->isQuran()) {
             m_actionNextAYA->setText(tr("الآية التالية"));

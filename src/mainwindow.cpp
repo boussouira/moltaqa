@@ -15,6 +15,7 @@
 #include "controlcenterdialog.h"
 #include "indextracker.h"
 #include "indexmanager.h"
+#include "viewmanager.h"
 
 #include <qmessagebox.h>
 #include <qsettings.h>
@@ -98,9 +99,13 @@ bool MainWindow::init()
         }
     }
 
+    m_viewManager = new ViewManager(this);
+    m_viewManager->setMenu(ui->menuWindow);
+    setCentralWidget(m_viewManager);
+
     m_welcomeWidget = new WelcomeWidget(this);
-    ui->stackedWidget->addWidget(m_welcomeWidget);
-    ui->stackedWidget->setCurrentIndex(0);
+    m_viewManager->addView(m_welcomeWidget);
+    m_viewManager->setCurrentView(0);
 
     try {
         m_libraryInfo = new LibraryInfo(libDir);
@@ -110,6 +115,8 @@ bool MainWindow::init()
         m_libraryManager->loadBooksListModel();
 
         m_bookView = new BooksViewer(m_libraryManager, this);
+        m_bookView->setSelectable(false);
+
         m_booksList = new BooksListBrowser(m_libraryManager, 0);
 
         // IndexTracker should be created before the IndexManager
@@ -125,7 +132,7 @@ bool MainWindow::init()
 
         setupActions();
 
-        ui->stackedWidget->addWidget(m_bookView);
+        m_viewManager->addView(m_bookView);
     } catch(BookException &e) {
         QMessageBox::information(this,
                                  App::name(),
@@ -161,7 +168,7 @@ void MainWindow::setupActions()
 {
 
     connect(ui->actionExit, SIGNAL(triggered()), SLOT(close()));
-    connect(ui->actionAbout, SIGNAL(triggered()), SLOT(aboutAlKotobiya()));
+    connect(ui->actionAbout, SIGNAL(triggered()), SLOT(aboutApp()));
     connect(ui->actionSettings, SIGNAL(triggered()), SLOT(settingDialog()));
     connect(ui->actionControlCenter, SIGNAL(triggered()), SLOT(controlCenter()));
 
@@ -177,10 +184,8 @@ void MainWindow::setupActions()
     connect(m_indexTracker, SIGNAL(gotTask()), m_indexManager, SLOT(start()));
 }
 
-void MainWindow::aboutAlKotobiya()
+void MainWindow::aboutApp()
 {
-    m_indexManager->start();
-
     QMessageBox::information(this,
                              App::name(),
                              tr("برنامج الكتبية لقراءة القرءان الكريم"));
@@ -199,15 +204,14 @@ void MainWindow::quranWindow()
 
 void MainWindow::openBook(int pBookID)
 {
-    m_bookView->showToolBar();
-
     try {
         m_bookView->openBook(pBookID);
 
         if(m_bookView->isHidden())
             m_bookView->show();
 
-        ui->stackedWidget->setCurrentIndex(1);
+        m_bookView->setSelectable(true);
+        m_viewManager->setCurrentView(1);
 
     } catch(BookException &e) {
         QMessageBox::information(this,
@@ -260,8 +264,8 @@ void MainWindow::on_actionImport_triggered()
 
 void MainWindow::lastTabClosed()
 {
-    ui->stackedWidget->setCurrentIndex(0);
-    m_bookView->removeToolBar();
+    m_bookView->setSelectable(false);
+    m_viewManager->setCurrentView(0);
 }
 
 void MainWindow::on_actionShamelaImport_triggered()

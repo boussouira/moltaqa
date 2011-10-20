@@ -198,7 +198,8 @@ void ShamelaImportDialog::showBooks()
 
     m_booksModel->setHeaderData(0, Qt::Horizontal, tr("لائحة الكتب"), Qt::DisplayRole);
 
-    ui->checkImportQuran->setChecked(m_libraryManager->getQuranBook()->bookID == -1);
+    LibraryBook *quranBook = m_libraryManager->getQuranBook();
+    ui->checkImportQuran->setChecked(!quranBook || quranBook->bookID == -1);
 
     connect(ui->lineBookSearch, SIGNAL(textChanged(QString)), filterModel, SLOT(setFilterRegExp(QString)));
     connect(ui->lineBookSearch, SIGNAL(textChanged(QString)), ui->treeView, SLOT(expandAll()));

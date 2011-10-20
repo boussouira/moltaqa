@@ -1,7 +1,7 @@
 #ifndef BOOKSVIEWER_H
 #define BOOKSVIEWER_H
 
-#include <qwidget.h>
+#include "abstarctview.h"
 #include "viewsmanagerwidget.h"
 
 class BookWidget;
@@ -12,13 +12,17 @@ class QToolBar;
 class QMenu;
 class QComboBox;
 
-class BooksViewer : public QWidget
+class BooksViewer : public AbstarctView
 {
     Q_OBJECT
 public:
     BooksViewer(LibraryManager *libraryManager, QMainWindow *parent);
     ~BooksViewer();
     void setLibraryManager(LibraryManager *libraryManager) { m_libraryManager = libraryManager;}
+    QString title();
+    void showToolBars();
+    void showMenu();
+    void hideMenu();
 
 public slots:
     void openBook(int bookID, int pageID = -1);
@@ -31,8 +35,6 @@ public slots:
     void goToPage();
     void updateActions();
     void showIndexWidget();
-    void showToolBar();
-    void removeToolBar();
     void openTafessir();
     void openShareeh();
     void tabChanged(int newIndex);
