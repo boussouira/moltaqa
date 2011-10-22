@@ -22,3 +22,19 @@ QString WelcomeWidget::title()
 {
     return tr("صفحة البداية");
 }
+
+void WelcomeWidget::on_webView_loadStarted()
+{
+    ui->progressBar->setValue(0);
+    ui->progressBar->show();
+}
+
+void WelcomeWidget::on_webView_loadFinished(bool arg1)
+{
+    ui->progressBar->hide();
+}
+
+void WelcomeWidget::on_webView_loadProgress(int progress)
+{
+    ui->progressBar->setValue(progress);
+}

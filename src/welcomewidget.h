@@ -19,6 +19,9 @@ public:
 
 private slots:
     void on_pushBooksList_clicked();
+    void on_webView_loadStarted();
+    void on_webView_loadFinished(bool arg1);
+    void on_webView_loadProgress(int progress);
 
 signals:
     void showBooksList();
