@@ -1,4 +1,5 @@
 #include "clutils.h"
+#include <stdlib.h>
 
 QString Utils::WCharToString(const wchar_t *str)
 {
