@@ -83,7 +83,14 @@ SOURCES += mainwindow.cpp \
     arabictokenizer.cpp \
     clutils.cpp \
     abstarctview.cpp \
-    viewmanager.cpp
+    viewmanager.cpp \
+    searchview.cpp \
+    searchwidget.cpp \
+    fancylineedit.cpp \
+    cssformatter.cpp \
+    searchfiltermanager.cpp \
+    librarysearcher.cpp \
+    searchresult.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -152,7 +159,15 @@ HEADERS += mainwindow.h \
     clconstants.h \
     clutils.h \
     abstarctview.h \
-    viewmanager.h
+    viewmanager.h \
+    searchview.h \
+    searchwidget.h \
+    fancylineedit.h \
+    cssformatter.h \
+    searchfiltermanager.h \
+    modelenums.h \
+    librarysearcher.h \
+    searchresult.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \
@@ -165,7 +180,16 @@ FORMS += mainwindow.ui settingsdialog.ui \
     editcatwidget.ui \
     selectcatdialog.ui \
     editbookslistwidget.ui \
-    selectauthordialog.ui
+    selectauthordialog.ui \
+    searchwidget.ui
 
 RESOURCES += ../share/alkotobiya/qt_rc.qrc
 win32:RC_FILE = ../share/alkotobiya/win_rc.rc
+
+
+
+
+
+
+
+

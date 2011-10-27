@@ -29,7 +29,7 @@ void WelcomeWidget::on_webView_loadStarted()
     ui->progressBar->show();
 }
 
-void WelcomeWidget::on_webView_loadFinished(bool arg1)
+void WelcomeWidget::on_webView_loadFinished(bool)
 {
     ui->progressBar->hide();
 }

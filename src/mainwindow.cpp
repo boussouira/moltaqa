@@ -105,7 +105,7 @@ bool MainWindow::init()
 
     m_welcomeWidget = new WelcomeWidget(this);
     m_viewManager->addView(m_welcomeWidget);
-    m_viewManager->setCurrentView(0);
+    m_viewManager->setCurrentView(m_welcomeWidget);
 
     try {
         m_libraryInfo = new LibraryInfo(libDir);
@@ -129,6 +129,10 @@ bool MainWindow::init()
         m_indexBar->setToolTip(tr("تقدم تحديث الفهرس"));
         m_indexBar->hide();
         statusBar()->addPermanentWidget(m_indexBar);
+
+        m_searchview = new SearchView(this);
+        m_viewManager->addView(m_searchview);
+        m_viewManager->setCurrentView(m_searchview);
 
         setupActions();
 
@@ -211,7 +215,7 @@ void MainWindow::openBook(int pBookID)
             m_bookView->show();
 
         m_bookView->setSelectable(true);
-        m_viewManager->setCurrentView(1);
+        m_viewManager->setCurrentView(m_bookView);
 
     } catch(BookException &e) {
         QMessageBox::information(this,
@@ -265,7 +269,7 @@ void MainWindow::on_actionImport_triggered()
 void MainWindow::lastTabClosed()
 {
     m_bookView->setSelectable(false);
-    m_viewManager->setCurrentView(0);
+    m_viewManager->setCurrentView(m_welcomeWidget);
 }
 
 void MainWindow::on_actionShamelaImport_triggered()

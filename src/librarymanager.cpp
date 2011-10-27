@@ -5,6 +5,7 @@
 #include "bookslistmodel.h"
 #include "importmodel.h"
 #include "utils.h"
+#include "searchresult.h"
 
 #include <qdebug.h>
 #include <qsqlquery.h>
@@ -45,11 +46,11 @@ void LibraryManager::open()
     if(!QFile::exists(booksIndexPath))
        qWarning("Can't find index database: %s", qPrintable(booksIndexPath));
 
-    m_libraryManager = QSqlDatabase::addDatabase("QSQLITE", m_connName);
-    m_libraryManager.setDatabaseName(booksIndexPath);
+    m_indexDB = QSqlDatabase::addDatabase("QSQLITE", m_connName);
+    m_indexDB.setDatabaseName(booksIndexPath);
 
-    if (!m_libraryManager.open())
-        throw BookException(tr("لم يمكن فتح قاعدة البيانات الأساسية"), m_libraryManager.lastError().text());
+    if (!m_indexDB.open())
+        throw BookException(tr("لم يمكن فتح قاعدة البيانات الأساسية"), m_indexDB.lastError().text());
 }
 
 void LibraryManager::loadBooksListModel()
@@ -60,12 +61,12 @@ void LibraryManager::loadBooksListModel()
 
 void LibraryManager::transaction()
 {
-    m_libraryManager.transaction();
+    m_indexDB.transaction();
 }
 
 bool LibraryManager::commit()
 {
-    return m_libraryManager.commit();
+    return m_indexDB.commit();
 }
 
 void LibraryManager::loadModel()
@@ -116,7 +117,7 @@ QPair<int, QString> LibraryManager::findCategorie(const QString &cat)
         return foundCat;
     }
 
-    QSqlQuery bookQuery(m_libraryManager);
+    QSqlQuery bookQuery(m_indexDB);
     bookQuery.exec(QString("SELECT id, title FROM catList WHERE %1").arg(Sql::buildLikeQuery(cat, "title")));
     while(bookQuery.next()) {
         catID = bookQuery.value(0).toInt();
@@ -149,7 +150,7 @@ QPair<int, QString> LibraryManager::findAuthor(const QString &name)
         return foundAuth;
     }
 
-    QSqlQuery bookQuery(m_libraryManager);
+    QSqlQuery bookQuery(m_indexDB);
     if(bookQuery.exec(QString("SELECT id, name FROM authorsList WHERE %1").arg(Sql::buildLikeQuery(name, "name")))) {
         while(bookQuery.next()) {
             foundAuth.first = bookQuery.value(0).toInt();
@@ -176,7 +177,7 @@ QPair<int, QString> LibraryManager::findAuthor(const QString &name)
 
 LibraryBook *LibraryManager::getBookInfo(int bookID)
 {
-    QSqlQuery bookQuery(m_libraryManager);
+    QSqlQuery bookQuery(m_indexDB);
 
     bookQuery.prepare("SELECT booksList.bookDisplayName, booksList.bookType, booksList.fileName, "
                       "booksList.bookFullName, booksList.bookOtherNames, booksList.bookInfo, "
@@ -197,6 +198,8 @@ LibraryBook *LibraryManager::getBookInfo(int bookID)
             bookInfo->bookID = bookID;
             bookInfo->bookPath = m_libraryInfo->bookPath(bookQuery.value(2).toString());
 
+            bookInfo->textTable = "bookPages";
+            bookInfo->indexTable = "bookIndex";
 
             bookInfo->bookFullName = bookQuery.value(3).toString();
             bookInfo->bookOtherNames = bookQuery.value(4).toString();
@@ -222,7 +225,7 @@ LibraryBook *LibraryManager::getBookInfo(int bookID)
 
 bool LibraryManager::hasShareeh(int bookID)
 {
-    QSqlQuery bookQuery(m_libraryManager);
+    QSqlQuery bookQuery(m_indexDB);
     int count = 0;
 
     bookQuery.prepare("SELECT COUNT(*) FROM ShareehMeta WHERE "
@@ -241,7 +244,7 @@ bool LibraryManager::hasShareeh(int bookID)
 
 LibraryBook *LibraryManager::getQuranBook()
 {
-    QSqlQuery bookQuery(m_libraryManager);
+    QSqlQuery bookQuery(m_indexDB);
 
     bookQuery.exec(QString("SELECT booksList.bookDisplayName, booksList.bookType, booksList.fileName, bookMeta.book_info, booksList.id "
                            "FROM booksList LEFT JOIN bookMeta "
@@ -266,7 +269,7 @@ LibraryBook *LibraryManager::getQuranBook()
 QList<QPair<int, QString> > LibraryManager::getTafassirList()
 {
     QList<QPair<int, QString> > list;
-    QSqlQuery bookQuery(m_libraryManager);
+    QSqlQuery bookQuery(m_indexDB);
 
     bookQuery.exec("SELECT book_id, tafessir_name FROM tafassirList");
     while(bookQuery.next()) {
@@ -279,7 +282,7 @@ QList<QPair<int, QString> > LibraryManager::getTafassirList()
 QHash<int, QString> LibraryManager::getCategoriesList()
 {
     QHash<int, QString> cats;
-    QSqlQuery catQuery(m_libraryManager);
+    QSqlQuery catQuery(m_indexDB);
     if(!catQuery.exec("SELECT id, title FROM catList "
                       "ORDER BY catOrder")) {
         LOG_SQL_ERROR(catQuery);
@@ -294,7 +297,7 @@ QHash<int, QString> LibraryManager::getCategoriesList()
 
 int LibraryManager::addBook(ImportModelNode *book)
 {
-    QSqlQuery indexQuery(m_libraryManager);
+    QSqlQuery indexQuery(m_indexDB);
     QString newBookName = Utils::genBookName(m_libraryInfo->booksDir());
     QString newPath = m_libraryInfo->booksDir() + "/" + newBookName;
 
@@ -335,7 +338,7 @@ void LibraryManager::childCats(BooksListNode *parentNode, int pID, bool onlyCats
     if(!onlyCats)
         booksCat(parentNode, pID); // Start with books
 
-    QSqlQuery catQuery(m_libraryManager);
+    QSqlQuery catQuery(m_indexDB);
     if(!catQuery.exec(QString("SELECT id, title, catOrder, parentID FROM catList "
                            "WHERE parentID = %1 ORDER BY catOrder").arg(pID))) {
         LOG_SQL_ERROR(catQuery);
@@ -354,7 +357,7 @@ void LibraryManager::childCats(BooksListNode *parentNode, int pID, bool onlyCats
 
 void LibraryManager::booksCat(BooksListNode *parentNode, int catID)
 {
-    QSqlQuery bookQuery(m_libraryManager);
+    QSqlQuery bookQuery(m_indexDB);
     bookQuery.prepare("SELECT booksList.id, booksList.bookDisplayName, booksList.authorName, booksList.bookInfo, authorsList.name "
                            "FROM booksList LEFT JOIN authorsList "
                            "ON authorsList.id = booksList.authorID "
@@ -377,7 +380,7 @@ void LibraryManager::booksCat(BooksListNode *parentNode, int catID)
 
 void LibraryManager::updateBookMeta(LibraryBook *info, bool newBook)
 {
-    QSqlQuery bookQuery(m_libraryManager);
+    QSqlQuery bookQuery(m_indexDB);
     if(newBook) {
         bookQuery.prepare("INSERT INTO bookMeta (id, book_info, add_time, update_time) VALUES (?, ?, ?, ?)");
         bookQuery.bindValue(0, info->bookID);
@@ -401,7 +404,7 @@ void LibraryManager::getShoroohPages(LibraryBook *info, BookPage *page)
     qDeleteAll(info->shorooh);
     info->shorooh.clear();
 
-    QSqlQuery bookQuery(m_libraryManager);
+    QSqlQuery bookQuery(m_indexDB);
 
     bookQuery.prepare("SELECT ShareehMeta.shareeh_book, ShareehMeta.shareeh_id, booksList.bookDisplayName "
                       "FROM ShareehMeta "
@@ -423,7 +426,7 @@ void LibraryManager::getShoroohPages(LibraryBook *info, BookPage *page)
 
 void LibraryManager::updateCatTitle(int catID, QString title)
 {
-    QSqlQuery bookQuery(m_libraryManager);
+    QSqlQuery bookQuery(m_indexDB);
 
     bookQuery.prepare("UPDATE catList SET title = ? WHERE id = ?");
     bookQuery.bindValue(0, title);
@@ -435,7 +438,7 @@ void LibraryManager::updateCatTitle(int catID, QString title)
 
 void LibraryManager::updateCatParent(int catID, int parentID)
 {
-    QSqlQuery bookQuery(m_libraryManager);
+    QSqlQuery bookQuery(m_indexDB);
 
     bookQuery.prepare("UPDATE catList SET parentID = ? WHERE id = ?");
     bookQuery.bindValue(0, parentID);
@@ -447,7 +450,7 @@ void LibraryManager::updateCatParent(int catID, int parentID)
 
 void LibraryManager::updateCatOrder(int catID, int catOrder)
 {
-    QSqlQuery bookQuery(m_libraryManager);
+    QSqlQuery bookQuery(m_indexDB);
 
     bookQuery.prepare("UPDATE catList SET catOrder = ? WHERE id = ?");
     bookQuery.bindValue(0, catOrder);
@@ -459,7 +462,7 @@ void LibraryManager::updateCatOrder(int catID, int catOrder)
 
 void LibraryManager::makeCatPlace(int parentID, int catOrder)
 {
-    QSqlQuery bookQuery(m_libraryManager);
+    QSqlQuery bookQuery(m_indexDB);
 
     bookQuery.prepare("UPDATE catList SET catOrder = catOrder + 1 WHERE catOrder >= ? AND parentID = ?");
     bookQuery.bindValue(0, catOrder);
@@ -471,7 +474,7 @@ void LibraryManager::makeCatPlace(int parentID, int catOrder)
 
 int LibraryManager::booksCount(int catID)
 {
-    QSqlQuery bookQuery(m_libraryManager);
+    QSqlQuery bookQuery(m_indexDB);
 
     bookQuery.prepare("SELECT COUNT(*) FROM booksList WHERE bookCat = ?");
     bookQuery.bindValue(0, catID);
@@ -488,7 +491,7 @@ int LibraryManager::booksCount(int catID)
 
 int LibraryManager::addNewCat(const QString &title)
 {
-    QSqlQuery bookQuery(m_libraryManager);
+    QSqlQuery bookQuery(m_indexDB);
 
     bookQuery.prepare("INSERT INTO catList (id, title) VALUES (NULL, ?)");
     bookQuery.bindValue(0, title);
@@ -504,7 +507,7 @@ int LibraryManager::addNewCat(const QString &title)
 
 void LibraryManager::removeCat(int catID)
 {
-    QSqlQuery bookQuery(m_libraryManager);
+    QSqlQuery bookQuery(m_indexDB);
 
     bookQuery.prepare("DELETE FROM catList WHERE id = ?");
     bookQuery.bindValue(0, catID);
@@ -515,7 +518,7 @@ void LibraryManager::removeCat(int catID)
 
 bool LibraryManager::moveCatBooks(int fromCat, int toCat)
 {
-    QSqlQuery bookQuery(m_libraryManager);
+    QSqlQuery bookQuery(m_indexDB);
 
     bookQuery.prepare("UPDATE booksList SET bookCat = ? WHERE bookCat = ?");
     bookQuery.bindValue(0, toCat);
@@ -532,7 +535,7 @@ QStandardItemModel *LibraryManager::getAuthorsListModel()
 {
     QStandardItemModel *model = new QStandardItemModel();
     QStandardItem *item;
-    QSqlQuery bookQuery(m_libraryManager);
+    QSqlQuery bookQuery(m_indexDB);
     bookQuery.prepare("SELECT id, name, full_name FROM authorsList");
     if(bookQuery.exec()) {
         while(bookQuery.next()) {
@@ -551,7 +554,7 @@ QStandardItemModel *LibraryManager::getAuthorsListModel()
 
 void LibraryManager::updateBookInfo(LibraryBook *info)
 {
-    QSqlQuery bookQuery(m_libraryManager);
+    QSqlQuery bookQuery(m_indexDB);
     bookQuery.prepare("UPDATE booksList SET "
                           "bookDisplayName = ?, "
                           "bookFullName = ?, "
@@ -577,9 +580,60 @@ void LibraryManager::updateBookInfo(LibraryBook *info)
     }
 }
 
+BookPage *LibraryManager::getBookPage(LibraryBook *book, int pageID)
+{
+    if(!book) {
+        qWarning("getBookPage: No book with given id");
+        return 0;
+    }
+
+    BookPage *page = 0;
+    QString connName = QString("getBookPage_b%1_p%2").arg(book->bookID).arg(pageID);
+    QSqlDatabase bookDB;
+    while(QSqlDatabase::contains(connName)) {
+        connName.append('_');
+    }
+    bookDB = QSqlDatabase::addDatabase("QSQLITE", connName);
+    bookDB.setDatabaseName(book->bookPath);
+
+    if (!bookDB.open()) {
+        LOG_DB_ERROR(bookDB);
+        return 0;
+    }
+
+    QSqlQuery bookQuery(bookDB);
+
+    bookQuery.prepare(QString("SELECT id, pageText, partNum, pageNum "
+                              "FROM %1 WHERE id = ?").arg(book->textTable));
+    bookQuery.bindValue(0, pageID);
+    if(bookQuery.exec()) {
+        if(bookQuery.first()){
+            page = new BookPage();
+            page->pageID = bookQuery.value(0).toInt();
+            page->part = bookQuery.value(2).toInt();
+            page->page = bookQuery.value(3).toInt();
+            page->text = QString::fromUtf8(qUncompress(bookQuery.value(1).toByteArray()));
+        } else {
+            qWarning("No result found for id %d book %d", pageID, book->bookID);
+        }
+    } else {
+        LOG_SQL_ERROR(bookQuery);
+    }
+
+    bookDB = QSqlDatabase();
+    QSqlDatabase::removeDatabase(connName);
+
+    return page;
+}
+
+BookPage *LibraryManager::getBookPage(int bookID, int pageID)
+{
+    return getBookPage(getBookInfo(bookID), pageID);
+}
+
 int LibraryManager::categoriesCount()
 {
-    QSqlQuery bookQuery(m_libraryManager);
+    QSqlQuery bookQuery(m_indexDB);
 
     if(bookQuery.exec("SELECT COUNT(*) FROM catList")) {
         if(bookQuery.next()) {

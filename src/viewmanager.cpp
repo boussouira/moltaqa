@@ -21,28 +21,32 @@ void ViewManager::removeView(AbstarctView *view)
     setupActions();
 }
 
-void ViewManager::setCurrentView(int index)
+void ViewManager::setCurrentView(AbstarctView *view)
 {
-    AbstarctView *currentView;
-
-    currentView = qobject_cast<AbstarctView*>(currentWidget());
+    AbstarctView *currentView = qobject_cast<AbstarctView*>(currentWidget());
     foreach (QToolBar *bar, currentView->toolBars()) {
         m_mainWindow->removeToolBar(bar);
     }
 
     currentView->hideMenu();
 
-    setCurrentIndex(index);
+    setCurrentWidget(view);
 
-    currentView = qobject_cast<AbstarctView*>(currentWidget());
-    foreach (QToolBar *bar, currentView->toolBars()) {
+    foreach (QToolBar *bar, view->toolBars()) {
         m_mainWindow->addToolBar(bar);
     }
 
-    currentView->showToolBars();
-    currentView->showMenu();
+    view->showToolBars();
+    view->showMenu();
 
     setupActions();
+}
+
+void ViewManager::setCurrentView(int index)
+{
+    AbstarctView *view = qobject_cast<AbstarctView*>(widget(index));
+    if(view)
+        setCurrentView(view);
 }
 
 void ViewManager::setMenu(QMenu *menu)

@@ -123,6 +123,9 @@ public:
     QStandardItemModel *getAuthorsListModel();
     void updateBookInfo(LibraryBook *info);
 
+    BookPage *getBookPage(LibraryBook *book, int pageID);
+    BookPage *getBookPage(int bookID, int pageID);
+
 protected:
     void booksCat(BooksListNode *parentNode, int catID);
     void childCats(BooksListNode *parentNode, int pID, bool onlyCats=false);
@@ -137,7 +140,7 @@ signals:
 protected:
     BooksListModel *m_model;
     LibraryInfo *m_libraryInfo;
-    QSqlDatabase m_libraryManager;
+    QSqlDatabase m_indexDB;
     QFuture<void> m_future;
     QFutureWatcher<void> m_watcher;
     QString m_connName;

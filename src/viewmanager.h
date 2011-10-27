@@ -16,6 +16,7 @@ public:
     void addView(AbstarctView *view);
     void removeView(AbstarctView *view);
     void setCurrentView(int index);
+    void setCurrentView(AbstarctView *view);
 
     void setMenu(QMenu *menu);
     void setupActions();

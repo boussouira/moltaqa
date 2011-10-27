@@ -123,9 +123,6 @@ bool AbstractBookReader::hasPrev()
 
 void AbstractBookReader::getBookInfo()
 {
-    m_bookInfo->textTable = "bookPages";
-    m_bookInfo->indexTable = "bookIndex";
-
     if(!m_bookInfo->haveInfo()) {
         m_bookQuery.exec(QString("SELECT MAX(partNum), MIN(id), MAX(id) from %1 ").arg(m_bookInfo->textTable));
         if(m_bookQuery.next()) {

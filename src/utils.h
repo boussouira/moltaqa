@@ -59,8 +59,8 @@ QString buildLikeQuery(QString text, QString column);
 
 namespace Log {
 
-void QueryError(QSqlQuery &query, const char *file, int line);
-void DatabaseError(QSqlDatabase &db, const char *file, int line);
+void QueryError(const QSqlQuery &query, const char *file, int line);
+void DatabaseError(const QSqlDatabase &db, const char *file, int line);
 }
 
 #define LOG_DB_ERROR(db) Log::DatabaseError(db, __FILE__, __LINE__);

@@ -19,8 +19,10 @@
 #include <CLucene/highlighter/QueryScorer.h>
 #include <CLucene/highlighter/Highlighter.h>
 #include <CLucene/highlighter/TokenGroup.h>
-#include <CLucene/highlighter/SimpleHTMLFormatter.h>
+#include <CLucene/highlighter/Formatter.h>
 #include <CLucene/highlighter/SimpleFragmenter.h>
+#include <CLucene/highlighter/SpanHighlightScorer.h>
+#include <CLucene/analysis/CachingTokenFilter.h>
 
 using namespace lucene::index;
 using namespace lucene::analysis;
@@ -30,32 +32,5 @@ using namespace lucene::document;
 using namespace lucene::queryParser;
 using namespace lucene::search;
 using namespace lucene::search::highlight;
-
-class SimpleCssFormatter : public Formatter {
-public:
-    int numHighlights;
-
-    SimpleCssFormatter() {
-        numHighlights = 0;
-    }
-
-    ~SimpleCssFormatter() {
-    }
-
-    TCHAR* highlightTerm(const TCHAR* originalText, const TokenGroup* group) {
-        if (group->getTotalScore() <= 0) {
-            return STRDUP_TtoT(originalText);
-        }
-        numHighlights++; //update stats used in assertions
-
-        int len = _tcslen(originalText) + 40;
-        TCHAR* ret = _CL_NEWARRAY(TCHAR, len + 1);
-        _tcscpy(ret, _T("<b style=\"background-color:#ffff63\">"));
-        _tcscat(ret, originalText);
-        _tcscat(ret, _T("</b>"));
-
-        return ret;
-    }
-};
 
 #endif // CLHEADER_H

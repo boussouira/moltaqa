@@ -1,0 +1,176 @@
+#include "librarysearcher.h"
+#include "mainwindow.h"
+#include "clutils.h"
+#include "clconstants.h"
+#include "librarybook.h"
+#include "utils.h"
+#include <QTime>
+#include <qsqlquery.h>
+
+LibrarySearcher::LibrarySearcher(QObject *parent)
+    : QThread(parent),
+      m_action(SEARCH),
+      m_searcher(0),
+      m_hits(0),
+      m_searchQuery(0),
+      m_filterQuery(0),
+      m_query(0)
+{
+    m_libraryInfo = MW->libraryInfo();
+    m_libraryManager = MW->libraryManager();
+
+    m_resultParPage = 10;
+}
+
+LibrarySearcher::~LibrarySearcher()
+{
+}
+
+void LibrarySearcher::run()
+{
+    try {
+        if(m_action == SEARCH){
+            search();
+
+            if(m_hits->length() > 0)
+                fetech();
+
+        } else if (m_action == FETECH) {
+            fetech();
+        }
+    } catch(CLuceneError &e) {
+        qCritical("Search error: %s", e.what());
+        emit gotException(e.what(), e.number());
+    } catch(std::exception &e){
+        emit gotException(e.what(), 0);
+    } catch(...) {
+        qCritical("Unknow error when searching at \"%s\".",
+                  qPrintable(m_libraryInfo->indexDataDir()));
+        emit gotException("UNKNOW", -1);
+    }
+}
+
+void LibrarySearcher::open()
+{
+    if(!m_searcher) {
+        m_searcher = new IndexSearcher(qPrintable(m_libraryInfo->indexDataDir()));
+    }
+}
+
+void LibrarySearcher::buildQuery()
+{
+    BooleanQuery *q = new BooleanQuery;
+    q->add(m_searchQuery, BooleanClause::MUST);
+
+    if(m_filterQuery)
+        q->add(m_filterQuery, m_filterClause);
+
+    m_query = m_searcher->rewrite(q);
+
+//    qDebug() << "Search [Orig]:" << Utils::WCharToString(q->toString(PAGE_TEXT_FIELD));
+    qDebug() << "Search for:" << Utils::WCharToString(m_query->toString(PAGE_TEXT_FIELD));
+}
+
+void LibrarySearcher::search()
+{
+    emit startSearching();
+
+    open();
+    buildQuery();
+    qDeleteAll(m_resultsHash);
+    m_resultsHash.clear();
+
+    QTime time;
+    time.start();
+
+    m_hits = m_searcher->search(m_query);
+
+    m_timeSearch = time.elapsed();
+
+    m_pageCount = ceil((resultsCount()/(double)m_resultParPage));
+    m_currentPage = 0;
+
+    emit doneSearching();
+}
+
+void LibrarySearcher::fetech()
+{
+    emit startFeteching();
+
+    int start = m_currentPage * m_resultParPage;
+    int maxResult  =  (resultsCount() >= start+m_resultParPage)
+                    ? (start+m_resultParPage)
+                    : resultsCount();
+
+    for(int i=start; i < maxResult;i++){
+
+        SearchResult *savedResult = m_resultsHash.value(i, 0);
+        if(savedResult) {
+            emit gotResult(savedResult);
+            continue;
+        }
+
+        Document &doc = m_hits->doc(i);
+        int entryID = _wtoi(doc.get(PAGE_ID_FIELD));
+        int bookID = _wtoi(doc.get(BOOK_ID_FIELD));
+        int score = (int) (m_hits->score(i) * 100.0);
+
+        LibraryBook *book = m_libraryManager->getBookInfo(bookID);
+
+        if(!book) {
+            qCritical("LibrarySearcher::fetech: No book with id %d where found", bookID);
+            continue;
+        }
+
+        BookPage *page = m_libraryManager->getBookPage(book, entryID);
+
+        if(page) {
+            SearchResult *result = new SearchResult(book, page);
+            result->snippet = Utils::highlightText(page->text, m_searchQuery);
+            result->resultID = i;
+            result->score = score;
+
+            m_resultsHash.insert(i, result);
+            qDebug() << *result;
+            emit gotResult(result);
+        } else {
+            qWarning("No result found for id %d book %d", entryID, bookID);
+        }
+    }
+
+    emit doneFeteching();
+}
+
+void LibrarySearcher::setQuery(Query *searchQuery, Query *filterQuery, BooleanClause::Occur filterClause)
+{
+    Q_ASSERT(searchQuery);
+
+    m_searchQuery = searchQuery;
+    m_filterQuery = filterQuery;
+    m_filterClause = filterClause;
+}
+
+int LibrarySearcher::pageCount()
+{
+    return m_pageCount;
+}
+
+int LibrarySearcher::currentPage()
+{
+    return m_currentPage;
+}
+
+int LibrarySearcher::resultsCount()
+{
+    return m_hits->length();
+}
+
+int LibrarySearcher::searchTime()
+{
+    return m_timeSearch;
+}
+
+int LibrarySearcher::resultsPeerPage()
+{
+    return m_resultParPage;
+}

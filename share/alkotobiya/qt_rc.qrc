@@ -20,5 +20,7 @@
         <file>images/go-up2.png</file>
         <file>images/add.png</file>
         <file>images/remove.png</file>
+        <file>images/magnifier.png</file>
+        <file>images/clear.png</file>
     </qresource>
 </RCC>

@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <qmainwindow.h>
+#include "searchview.h"
 
 #define MW MainWindow::mainWindow()
 
@@ -71,6 +72,7 @@ private:
     IndexTracker *m_indexTracker;
     IndexManager *m_indexManager;
     QProgressBar *m_indexBar;
+    SearchView *m_searchview;
     int defaultQuran;
 };
 
