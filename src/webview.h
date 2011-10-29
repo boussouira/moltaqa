@@ -20,6 +20,10 @@ public:
     bool maxDown();
     bool maxUp();
 
+    QVariant execJS(QString js);
+    void addObject(const QString &name, QObject *object);
+    QString toHtml();
+
 public slots:
     void setText(const QString &text);
 

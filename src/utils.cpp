@@ -249,6 +249,14 @@ QString stylesDir()
     return dir.absolutePath();
 }
 
+QString jsDir()
+{
+    QDir dir(shareDir());
+    dir.cd("js");
+
+    return dir.absolutePath();
+}
+
 QString localeDir()
 {
     QDir dir(shareDir());

@@ -76,14 +76,29 @@ void WebView::scrollToPosition(const QPoint &pos, int duration)
 
 bool WebView::maxDown()
 {
-    return (page()->mainFrame()->scrollBarMaximum(Qt::Vertical)==
-            page()->mainFrame()->scrollPosition().y());
+    return (m_frame->scrollBarMaximum(Qt::Vertical)==
+            m_frame->scrollPosition().y());
 }
 
 bool WebView::maxUp()
 {
-    return (page()->mainFrame()->scrollBarMinimum(Qt::Vertical)==
-            page()->mainFrame()->scrollPosition().y());
+    return (m_frame->scrollBarMinimum(Qt::Vertical)==
+            m_frame->scrollPosition().y());
+}
+
+QVariant WebView::execJS(QString js)
+{
+    return m_frame->evaluateJavaScript(js);
+}
+
+void WebView::addObject(const QString &name, QObject *object)
+{
+    m_frame->addToJavaScriptWindowObject(name, object);
+}
+
+QString WebView::toHtml()
+{
+    return m_frame->toHtml();
 }
 
 void WebView::setText(const QString &text)

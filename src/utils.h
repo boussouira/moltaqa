@@ -50,6 +50,7 @@ QString appDir();
 QString binDir();
 QString shareDir();
 QString stylesDir();
+QString jsDir();
 QString localeDir();
 }
 

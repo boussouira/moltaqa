@@ -32,7 +32,13 @@ public:
     int searchTime();
     int resultsPeerPage();
 
-public:
+    void nextPage();
+    void prevPage();
+    void firstPage();
+    void lastPage();
+    void fetechResults(int page);
+
+protected:
     void open();
     void buildQuery();
     void search();

@@ -16,6 +16,7 @@ public:
     int part;   ///< Part number
     int haddit; ///< Haddit number
     QString text; ///< Page Text
+    QString title; ///< Page title
 };
 
 #endif // PAGEINFO_H

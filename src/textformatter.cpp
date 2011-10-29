@@ -12,11 +12,15 @@ TextFormatter::TextFormatter(QObject *parent): QObject(parent)
 
 void TextFormatter::laodSettings()
 {
-    QDir dir(App::stylesDir());
-    dir.cd("default");
+    QDir styleDir(App::stylesDir());
+    styleDir.cd("default");
 
-    QString style = dir.filePath("default.css");
+    QString style = styleDir.filePath("default.css");
     m_styleFile = QUrl::fromLocalFile(style).toString();
+
+    QDir jsDir(App::jsDir());
+    m_jqueryFile = QUrl::fromLocalFile(jsDir.filePath("jquery.js")).toString();
+    m_scriptFile = QUrl::fromLocalFile(jsDir.filePath("scripts.js")).toString();
 }
 
 QString TextFormatter::getText()
@@ -73,11 +77,13 @@ void TextFormatter::done()
     m_html = QString("<html>"
                      "<head>"
                      "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />"
-                     "<link href= \"%1\" rel=\"stylesheet\" type=\"text/css\"/>"
+                     "<link href= \"%1\" rel=\"stylesheet\" type=\"text/css\" />"
                      "</head>"
                      "<body>"
                      "<div id=\"%2\">%3</div>"
-                     "</body></html>").arg(m_styleFile).arg(m_cssID).arg(m_text);
+                     "<script type=\"text/javascript\" src=\"%4\" />"
+                     "<script type=\"text/javascript\" src=\"%5\" />"
+                     "</body></html>").arg(m_styleFile, m_cssID, m_text, m_jqueryFile, m_scriptFile);
 
     emit doneReading();
 }

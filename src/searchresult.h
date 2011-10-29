@@ -15,7 +15,6 @@ public:
 
     LibraryBook *book;
     BookPage *page;
-    QString title;
     QString snippet;
     QString bgColor;
     int resultID;

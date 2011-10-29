@@ -131,7 +131,7 @@ void LibrarySearcher::fetech()
             result->score = score;
 
             m_resultsHash.insert(i, result);
-            qDebug() << *result;
+
             emit gotResult(result);
         } else {
             qWarning("No result found for id %d book %d", entryID, bookID);
@@ -173,4 +173,60 @@ int LibrarySearcher::searchTime()
 int LibrarySearcher::resultsPeerPage()
 {
     return m_resultParPage;
+}
+
+void LibrarySearcher::nextPage()
+{
+    if(!isRunning()) {
+        if(m_currentPage+1 < pageCount()) {
+            m_currentPage++;
+            m_action = FETECH;
+
+            start();
+        }
+    }
+}
+
+void LibrarySearcher::prevPage()
+{
+    if(!isRunning()) {
+        if(m_currentPage-1 >= 0) {
+            m_currentPage--;
+            m_action = FETECH;
+
+            start();
+        }
+    }
+}
+
+void LibrarySearcher::firstPage()
+{
+    if(!isRunning()) {
+        m_currentPage=0;
+        m_action = FETECH;
+
+        start();
+    }
+}
+
+void LibrarySearcher::lastPage()
+{
+    if(!isRunning()) {
+        m_currentPage = pageCount()-1;
+        m_action = FETECH;
+
+        start();
+    }
+}
+
+void LibrarySearcher::fetechResults(int page)
+{
+    if(!isRunning()) {
+        if(page < pageCount()) {
+            m_currentPage = page;
+            m_action = FETECH;
+
+            start();
+        }
+    }
 }

@@ -5,11 +5,7 @@ a {
     text-decoration:none;
 }
 
-@font-face {
-  font-family: "UthmanTN1";
-  src: url("file:///D:/Programming/alkotobiya-build/src/release/styles/default/uthman_tn1_08.otf") format("opentype");
-}
-
+/* Reader */
 #quran {
     border:1px solid #CCCCCC;
     font-family:'Lotus Linotype';
@@ -74,4 +70,116 @@ footnote a{
 }
 .ayaDiv {
     display: inline;
+}
+
+/* Search */
+.result {
+    -webkit-border-radius:10px;
+    margin:5px 5px 10px 5px;
+    padding:5px 0px;
+    background-color:#feffed;
+    border:1px solid #666800;
+}
+
+.result h3 {
+    margin:0px 5px 5px 5px;
+    font-size:18px;
+    color:rgb(0, 68, 255);
+    display:inline-block;
+}
+
+.result .resultText {
+    margin:0px;
+    padding:5px;
+    display:block;
+    cursor:pointer;
+}
+
+.result .resultInfo {
+    padding:0px 10px;
+    margin:5px 0px;
+}
+
+.result .resultHead {
+    margin:0px;
+    margin-bottom:15px;
+    padding:0px;
+    border-bottom:1px dotted #ccc;
+}
+
+.result .bookName {
+    margin-left:7px;
+    color:green;
+    font-weight:bold
+}
+
+.result .progSpan {
+    float: left;
+    height: 10px;
+    background-color: rgb(167, 239, 170);
+    margin:0px 5px;
+    margin-top:5px;
+}
+
+.result .progSpanContainre {
+    float: left;
+    height: 9px;
+    width: 99px;
+    border:1px solid #999999;
+}
+
+.result .prev {
+    font-style:oblique;
+    float:right;
+}
+
+.result .next {
+    font-style:oblique;
+    float:right;
+}
+
+#growlcontainer{
+  position: fixed;
+  left: 20px;
+  top: 20px;
+  z-index: 1000;
+  font-size: 12px;
+  width: 300px;
+}
+.growlstatus{
+  position: relative;
+  background-color: #000; /*fallback for ie*/
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 3px #000 solid;
+  padding: 15px;
+  color: #fff;
+  margin-bottom: 5px;
+  
+  -webkit-border-radius:10px;
+}
+.growlstatus .growltitle{
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+.growlstatusclose{
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width:30px;
+  height:30px;
+  cursor: pointer;
+  display: none;
+  background: transparent url(../../images/growlclose.png) no-repeat;
+}
+.growlstatus:hover{
+  background-color: rgba(0, 0, 0, 0.9);
+  border: 3px #fff solid;
+}
+.growlstatus:hover .growlstatusclose{
+  display: block;
+}
+.growlwithicon{
+  padding-right: 50px;
+  background-position: 5px 10px;
+  background-repeat:no-repeat;
 }

@@ -13,7 +13,8 @@
 
 SearchWidget::SearchWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::SearchWidget)
+    ui(new Ui::SearchWidget),
+    m_searcher(0)
 {
     ui->setupUi(this);
 
@@ -23,17 +24,31 @@ SearchWidget::SearchWidget(QWidget *parent) :
     ui->treeViewBooks->setModel(m_filterManager->filterModel());
     ui->treeViewBooks->resizeColumnToContents(0);
 
+    m_resultWidget = new ResultWidget(this);
+    ui->stackedWidget->insertWidget(1, m_resultWidget);
+
     connect(ui->lineFilter, SIGNAL(textChanged(QString)),
             ui->treeViewBooks, SLOT(expandAll()));
-    connect(ui->pushSearch, SIGNAL(clicked()), SLOT(testSearch()));
+
+    connect(ui->lineQueryMust, SIGNAL(returnPressed()), SLOT(search()));
+    connect(ui->lineQueryShould, SIGNAL(returnPressed()), SLOT(search()));
+    connect(ui->lineQueryShouldNot, SIGNAL(returnPressed()), SLOT(search()));
+    connect(ui->pushSearch, SIGNAL(clicked()), SLOT(search()));
+
     setupCleanMenu();
 
+    setCurrentWidget(Search);
     ui->lineQueryMust->setText(tr("الله اعلم"));
 }
 
 SearchWidget::~SearchWidget()
 {
     delete ui;
+}
+
+void SearchWidget::setCurrentWidget(SearchWidget::CurrentWidget index)
+{
+    ui->stackedWidget->setCurrentIndex(index);
 }
 
 void SearchWidget::setupCleanMenu()
@@ -185,13 +200,7 @@ void SearchWidget::testSearch()
             qDebug("No query...");
             return;
         }
-        /*
-        IndexSearcher *Searcher = new IndexSearcher(qPrintable(MW->libraryInfo()->indexDataDir()));
-        if(q) {
-            Hits *h = Searcher->search(q);
-            qDebug() << "Query:" << Utils::WCharToString(q->toString(PAGE_TEXT_FIELD));
-            qDebug() << "Results count:" << h->length();
-        }*/
+
         LibrarySearcher se;
         se.setQuery(searchQuery, searchFilter->filterQuery, searchFilter->clause);
         se.run();
@@ -199,4 +208,24 @@ void SearchWidget::testSearch()
     } catch(CLuceneError &e) {
         qDebug() << "Error:" << e.what();
     }
+}
+
+void SearchWidget::search()
+{
+    SearchFilter *searchFilter = m_filterManager->getFilterQuery();
+    Query *searchQuery = getSearchQuery();
+
+    if(!searchQuery)
+        return;
+
+    if(!m_searcher) {
+        delete m_searcher;
+        m_searcher = 0;
+    }
+
+    m_searcher = new LibrarySearcher(this);
+    m_searcher->setQuery(searchQuery, searchFilter->filterQuery, searchFilter->clause);
+
+    m_resultWidget->search(m_searcher);
+    setCurrentWidget(Result);
 }

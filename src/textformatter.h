@@ -13,7 +13,7 @@ class TextFormatter : public QObject
 
 public:
     TextFormatter(QObject *parent = 0);
-    void laodSettings();
+
     QString getText();
     void insertText(QString text);
     void insertHtmlTag(QString tag, QString text, QString className="", QString idName="");
@@ -23,6 +23,7 @@ public:
     void closeHtmlTag(QString tag=QString());
 
 protected:
+    void laodSettings();
     void clearText();
 
 public slots:
@@ -35,6 +36,8 @@ signals:
 
 protected:
     QString m_styleFile;
+    QString m_jqueryFile;
+    QString m_scriptFile;
     QString m_cssID;
     QString m_text;
     QString m_html;

@@ -2,6 +2,7 @@
 #define SEARCHWIDGET_H
 
 #include <QWidget>
+#include "resultwidget.h"
 
 namespace Ui {
     class SearchWidget;
@@ -23,18 +24,29 @@ public:
     SearchWidget(QWidget *parent = 0);
     ~SearchWidget();
 
+    enum CurrentWidget {
+        Search,
+        Result
+    };
+
+    void setCurrentWidget(CurrentWidget index);
+
 protected:
     void setupCleanMenu();
     lucene::search::Query *getSearchQuery();
+    void initWebView();
 
 public slots:
     void clearSpecialChar();
     void clearLineText();
     void testSearch();
+    void search();
 
 private:
     Ui::SearchWidget *ui;
     SearchFilterManager *m_filterManager;
+    ResultWidget *m_resultWidget;
+    LibrarySearcher *m_searcher;
 };
 
 #endif // SEARCHWIDGET_H

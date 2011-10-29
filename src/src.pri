@@ -90,7 +90,8 @@ SOURCES += mainwindow.cpp \
     cssformatter.cpp \
     searchfiltermanager.cpp \
     librarysearcher.cpp \
-    searchresult.cpp
+    searchresult.cpp \
+    resultwidget.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -167,7 +168,8 @@ HEADERS += mainwindow.h \
     searchfiltermanager.h \
     modelenums.h \
     librarysearcher.h \
-    searchresult.h
+    searchresult.h \
+    resultwidget.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \
@@ -181,15 +183,8 @@ FORMS += mainwindow.ui settingsdialog.ui \
     selectcatdialog.ui \
     editbookslistwidget.ui \
     selectauthordialog.ui \
-    searchwidget.ui
+    searchwidget.ui \
+    resultwidget.ui
 
 RESOURCES += ../share/alkotobiya/qt_rc.qrc
 win32:RC_FILE = ../share/alkotobiya/win_rc.rc
-
-
-
-
-
-
-
-

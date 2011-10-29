@@ -603,8 +603,12 @@ BookPage *LibraryManager::getBookPage(LibraryBook *book, int pageID)
 
     QSqlQuery bookQuery(bookDB);
 
-    bookQuery.prepare(QString("SELECT id, pageText, partNum, pageNum "
-                              "FROM %1 WHERE id = ?").arg(book->textTable));
+    bookQuery.prepare(QString("SELECT %1.id, %1.pageText, %1.partNum, %1.pageNum, %2.title "
+                              "FROM %1 "
+                              "LEFT JOIN %2 "
+                              "ON %2.pageID <= %1.id "
+                              "WHERE %1.id = ? "
+                              "ORDER BY %2.pageID DESC").arg(book->textTable, book->indexTable));
     bookQuery.bindValue(0, pageID);
     if(bookQuery.exec()) {
         if(bookQuery.first()){
@@ -613,6 +617,7 @@ BookPage *LibraryManager::getBookPage(LibraryBook *book, int pageID)
             page->part = bookQuery.value(2).toInt();
             page->page = bookQuery.value(3).toInt();
             page->text = QString::fromUtf8(qUncompress(bookQuery.value(1).toByteArray()));
+            page->title = bookQuery.value(4).toString();
         } else {
             qWarning("No result found for id %d book %d", pageID, book->bookID);
         }
