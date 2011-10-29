@@ -27,6 +27,7 @@ public:
     void setQuery(Query *searchQuery, Query *filterQuery, BooleanClause::Occur filterClause);
 
     SearchResult *getResult(int resultD);
+    Query* getSearchQuery();
     int pageCount();
     int currentPage();
     int resultsCount();

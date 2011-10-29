@@ -28,14 +28,15 @@ wchar_t* Utils::intToWChar(int num, int radix)
     return str;
 }
 
-QString Utils::highlightText(QString orignalText, lucene::search::Query *query)
+QString Utils::highlightText(QString orignalText, lucene::search::Query *query, bool fragment)
 {
     // Highlight the text
     ArabicAnalyzer hl_analyzer;
     SpanHighlightScorer scorer( true );
     CssFormatter hl_formatter;
-    int maxNumFragments = 5; // Fragment count
-    int fragmentSize = 100; // Fragment lenght
+
+    int maxNumFragments = fragment ? 5 : 100; // Fragment count
+    int fragmentSize = fragment ? 100 : 10000; // Fragment lenght
     const wchar_t* fragmentSeparator = _T("...");
 
     Highlighter highlighter(&hl_formatter, &scorer);

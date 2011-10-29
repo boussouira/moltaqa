@@ -191,7 +191,7 @@ void BooksViewer::hideMenu()
     m_navMenu->setEnabled(false);
 }
 
-int BooksViewer::openBook(int bookID, int pageID)
+int BooksViewer::openBook(int bookID, int pageID, lucene::search::Query *query)
 {
     int tabIndex = -1;
     LibraryBook *bookInfo = m_libraryManager->getBookInfo(bookID);
@@ -219,8 +219,10 @@ int BooksViewer::openBook(int bookID, int pageID)
         throw;
     }
 
-    BookWidget *bookWidget = new BookWidget(bookdb, this);
+    if(query && pageID != -1)
+        bookdb->highlightPage(pageID, query);
 
+    BookWidget *bookWidget = new BookWidget(bookdb, this);
     tabIndex = m_viewManager->addBook(bookWidget);
 
     if(pageID == -1)

@@ -126,7 +126,7 @@ void LibrarySearcher::fetech()
 
         if(page) {
             SearchResult *result = new SearchResult(book, page);
-            result->snippet = Utils::highlightText(page->text, m_searchQuery);
+            result->snippet = Utils::highlightText(page->text, m_searchQuery, true);
             result->resultID = i;
             result->score = score;
 
@@ -153,6 +153,11 @@ void LibrarySearcher::setQuery(Query *searchQuery, Query *filterQuery, BooleanCl
 SearchResult *LibrarySearcher::getResult(int resultD)
 {
     return m_resultsHash.value(resultD, 0);
+}
+
+Query *LibrarySearcher::getSearchQuery()
+{
+    return m_searchQuery;
 }
 
 int LibrarySearcher::pageCount()

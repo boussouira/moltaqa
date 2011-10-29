@@ -208,7 +208,7 @@ void ResultWidget::openResult(int resultID)
 {
     SearchResult *result = m_searcher->getResult(resultID);
 
-    m_readerview->openBook(result->book->bookID, result->page->pageID);
+    m_readerview->openBook(result->book->bookID, result->page->pageID, m_searcher->getSearchQuery());
     ensureReaderVisible();
 }
 

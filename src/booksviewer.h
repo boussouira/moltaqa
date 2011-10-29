@@ -3,6 +3,7 @@
 
 #include "abstarctview.h"
 #include "bookwidgetmanager.h"
+#include "clutils.h"
 
 class BookWidget;
 class LibraryManager;
@@ -25,7 +26,7 @@ public:
     void hideMenu();
 
 public slots:
-    int openBook(int bookID, int pageID = -1);
+    int openBook(int bookID, int pageID = -1, lucene::search::Query *query=0);
     void nextUnit();
     void previousUnit();
     void nextPage();

@@ -2,6 +2,7 @@
 #define CSSFORMATTER_H
 
 #include "clheader.h"
+#include <qhash.h>
 
 class CssFormatter : public Formatter {
 public:
@@ -13,6 +14,10 @@ public:
 
 protected:
     int numHighlights;
+    QList<QString> m_colors;
+    QHash<QString, QString> m_wordColor;
+    int m_colorIndex;
+    bool m_useColor;
 };
 
 
