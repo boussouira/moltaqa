@@ -28,6 +28,11 @@ wchar_t* Utils::intToWChar(int num, int radix)
     return str;
 }
 
+int Utils::WCharToInt(const wchar_t *str)
+{
+    return _wtoi(str);
+}
+
 QString Utils::highlightText(QString orignalText, lucene::search::Query *query, bool fragment)
 {
     // Highlight the text

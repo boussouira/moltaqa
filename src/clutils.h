@@ -14,11 +14,13 @@ namespace Utils {
 QString WCharToString(const wchar_t *str);
 wchar_t* QStringToWChar(const QString &str);
 wchar_t* intToWChar(int num, int radix=10);
+int WCharToInt(const wchar_t *str);
 QString highlightText(QString orignalText, lucene::search::Query *query, bool fragment);
 }
 
 #ifndef Q_OS_WIN
     #define _itow _itot
+    #define _wtoi _ttoi
 #endif
 
 #endif // CLUTILS_H

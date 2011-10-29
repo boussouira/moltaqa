@@ -111,8 +111,8 @@ void LibrarySearcher::fetech()
         }
 
         Document &doc = m_hits->doc(i);
-        int entryID = _wtoi(doc.get(PAGE_ID_FIELD));
-        int bookID = _wtoi(doc.get(BOOK_ID_FIELD));
+        int entryID = Utils::WCharToInt(doc.get(PAGE_ID_FIELD));
+        int bookID = Utils::WCharToInt(doc.get(BOOK_ID_FIELD));
         int score = (int) (m_hits->score(i) * 100.0);
 
         LibraryBook *book = m_libraryManager->getBookInfo(bookID);
