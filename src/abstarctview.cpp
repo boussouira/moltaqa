@@ -8,6 +8,12 @@ AbstarctView::AbstarctView(QWidget *parent) :
 
 QList<QToolBar*> AbstarctView::toolBars()
 {
+    foreach(QToolBar *bar, m_toolBars) {
+        foreach(QAction *act, bar->actions()) {
+
+        }
+    }
+
     return m_toolBars;
 }
 
@@ -15,6 +21,13 @@ void AbstarctView::showToolBars()
 {
     foreach(QToolBar *bar, m_toolBars) {
         bar->show();
+    }
+}
+
+void AbstarctView::hideToolBars()
+{
+    foreach(QToolBar *bar, m_toolBars) {
+        bar->hide();
     }
 }
 

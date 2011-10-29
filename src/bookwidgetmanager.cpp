@@ -99,11 +99,12 @@ void BookWidgetManager::changeActiveTab()
     setActiveTab(sender());
 }
 
-void BookWidgetManager::addBook(BookWidget *book)
+int BookWidgetManager::addBook(BookWidget *book)
 {
     int tabIndex = m_activeTab->addBookWidget(book);
-
     m_activeTab->setCurrentIndex(tabIndex);
+
+    return tabIndex;
 }
 
 BookWidget *BookWidgetManager::bookWidget(int index)

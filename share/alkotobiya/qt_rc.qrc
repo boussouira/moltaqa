@@ -22,5 +22,6 @@
         <file>images/remove.png</file>
         <file>images/magnifier.png</file>
         <file>images/clear.png</file>
+        <file>images/delete.png</file>
     </qresource>
 </RCC>

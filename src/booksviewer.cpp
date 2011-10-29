@@ -135,8 +135,13 @@ void BooksViewer::createMenus(QMainWindow *parent)
     m_toolBars << m_toolBarTafesir;
     m_toolBars << m_toolBarShorooh;
 
-    QAction *act = parent->menuBar()->actions().at(1);
-    m_navMenu = parent->menuBar()->insertMenu(act, navMenu);
+    if(parent) {
+        QAction *act = parent->menuBar()->actions().at(1);
+        m_navMenu = parent->menuBar()->insertMenu(act, navMenu);
+    } else {
+        m_navMenu = new QAction(0);
+    }
+
     m_navMenu->setEnabled(false);
 
     // Setup connections
@@ -186,8 +191,9 @@ void BooksViewer::hideMenu()
     m_navMenu->setEnabled(false);
 }
 
-void BooksViewer::openBook(int bookID, int pageID)
+int BooksViewer::openBook(int bookID, int pageID)
 {
+    int tabIndex = -1;
     LibraryBook *bookInfo = m_libraryManager->getBookInfo(bookID);
 
     if(!bookInfo || !bookInfo->exists())
@@ -215,7 +221,7 @@ void BooksViewer::openBook(int bookID, int pageID)
 
     BookWidget *bookWidget = new BookWidget(bookdb, this);
 
-    m_viewManager->addBook(bookWidget);
+    tabIndex = m_viewManager->addBook(bookWidget);
 
     if(pageID == -1)
         bookWidget->firstPage();
@@ -226,6 +232,8 @@ void BooksViewer::openBook(int bookID, int pageID)
 
     updateActions();
     activateWindow();
+
+    return tabIndex;
 }
 
 void BooksViewer::openTafessir()

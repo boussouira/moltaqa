@@ -150,6 +150,11 @@ void LibrarySearcher::setQuery(Query *searchQuery, Query *filterQuery, BooleanCl
     m_filterClause = filterClause;
 }
 
+SearchResult *LibrarySearcher::getResult(int resultD)
+{
+    return m_resultsHash.value(resultD, 0);
+}
+
 int LibrarySearcher::pageCount()
 {
     return m_pageCount;

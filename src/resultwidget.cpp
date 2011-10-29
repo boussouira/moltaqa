@@ -2,8 +2,11 @@
 #include "ui_resultwidget.h"
 #include "utils.h"
 #include "webview.h"
+#include "booksviewer.h"
+#include "mainwindow.h"
 #include <qdir.h>
-#include <QPlainTextEdit>
+#include <qplaintextedit.h>
+#include <qboxlayout.h>
 
 ResultWidget::ResultWidget(QWidget *parent) :
     QWidget(parent),
@@ -18,7 +21,8 @@ ResultWidget::ResultWidget(QWidget *parent) :
             SIGNAL(javaScriptWindowObjectCleared()),
             SLOT(populateJavaScriptWindowObject()));
 
-    initWebView();
+    setupWebView();
+    setupBookReaderView();
 }
 
 ResultWidget::~ResultWidget()
@@ -39,8 +43,63 @@ void ResultWidget::search(LibrarySearcher *searcher)
     m_searcher->start();
 }
 
+void ResultWidget::setupBookReaderView()
+{
+    // Setup the book reader view
+    m_readerview = new BooksViewer(MW->libraryManager());
+    m_readerview->hideMenu();
 
-void ResultWidget::initWebView()
+    m_readerWidget = new QWidget(this);
+    QWidget *toolBarWidget = new QWidget(this);
+    QHBoxLayout *toolBarLayout = new QHBoxLayout();
+    QVBoxLayout *mainlayout = new QVBoxLayout();
+
+    foreach(QToolBar *bar, m_readerview->toolBars()) {
+        toolBarLayout->addWidget(bar);
+    }
+
+    // hide/maximize/minmize buttons
+    QSpacerItem *horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+    toolBarLayout->addItem(horizontalSpacer);
+
+    QToolButton *buttonMinBookView = new QToolButton(this);
+    buttonMinBookView->setArrowType(Qt::DownArrow);
+    buttonMinBookView->setAutoRaise(true);
+
+    toolBarLayout->addWidget(buttonMinBookView);
+
+    QToolButton *buttonMaxBookView = new QToolButton(this);
+    buttonMaxBookView->setArrowType(Qt::UpArrow);
+    buttonMaxBookView->setAutoRaise(true);
+
+    toolBarLayout->addWidget(buttonMaxBookView);
+
+    QToolButton * buttonHideBookView = new QToolButton(this);
+    buttonHideBookView->setIcon(QIcon(":/menu/images/delete.png"));
+    buttonHideBookView->setAutoRaise(true);
+
+    toolBarLayout->addWidget(buttonHideBookView);
+
+    toolBarLayout->setContentsMargins(0, 0, 0, 0);
+    toolBarLayout->setSpacing(0);
+    toolBarWidget->setLayout(toolBarLayout);
+
+    mainlayout->setMenuBar(toolBarWidget);
+    mainlayout->addWidget(m_readerview);
+
+    m_readerWidget->setLayout(mainlayout);
+    ui->splitter->addWidget(m_readerWidget);
+    ensureReaderHidden(false);
+
+    connect(m_readerview, SIGNAL(lastTabClosed()), SLOT(lastTabClosed()));
+    connect(buttonHideBookView, SIGNAL(clicked()), SLOT(ensureReaderHidden()));
+    connect(buttonMaxBookView, SIGNAL(clicked()), SLOT(maximizeBookReader()));
+    connect(buttonMinBookView, SIGNAL(clicked()), SLOT(minimizeBookReader()));
+}
+
+
+void ResultWidget::setupWebView()
 {
     QDir styleDir(App::stylesDir());
     styleDir.cd("default");
@@ -102,9 +161,55 @@ void ResultWidget::updateButtonStat()
     ui->buttonGoLast->setEnabled(next);
 }
 
+void ResultWidget::ensureReaderVisible()
+{
+    m_readerWidget->show();
+
+    if(ui->splitter->sizes().at(1) == 0){
+        QList<int> sizes;
+        sizes << 200 << 100;
+        ui->splitter->setSizes(sizes);
+    }
+}
+
+void ResultWidget::ensureReaderHidden(bool accessible)
+{
+    QList<int> sizes;
+    sizes << 200 << 0;
+    ui->splitter->setSizes(sizes);
+
+    m_readerWidget->setVisible(accessible);
+}
+
+void ResultWidget::maximizeBookReader()
+{
+    QList<int> sizes;
+    sizes << 0;
+    sizes << 100;
+
+    ui->splitter->setSizes(sizes);
+}
+
+void ResultWidget::minimizeBookReader()
+{
+    QList<int> sizes;
+    sizes << 200;
+    sizes << 100;
+
+    ui->splitter->setSizes(sizes);
+}
+
+void ResultWidget::lastTabClosed()
+{
+    ensureReaderHidden(false);
+}
+
 void ResultWidget::openResult(int resultID)
 {
-    qDebug("ID: %d", resultID);
+    SearchResult *result = m_searcher->getResult(resultID);
+
+    m_readerview->openBook(result->book->bookID, result->page->pageID);
+    ensureReaderVisible();
 }
 
 void ResultWidget::searchStarted()
@@ -118,7 +223,7 @@ void ResultWidget::searchStarted()
 void ResultWidget::searchFinnished()
 {
     m_view->execJS("searchFinnished();");
-    m_view->execJS(QString("searchInfo('%1', '%2');")
+    m_view->execJS(QString("searchInfo(%1, %2);")
                    .arg(m_searcher->searchTime())
                    .arg(m_searcher->resultsCount()));
 }

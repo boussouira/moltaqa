@@ -16,7 +16,7 @@ class BooksViewer : public AbstarctView
 {
     Q_OBJECT
 public:
-    BooksViewer(LibraryManager *libraryManager, QMainWindow *parent);
+    BooksViewer(LibraryManager *libraryManager, QMainWindow *parent=0);
     ~BooksViewer();
     void setLibraryManager(LibraryManager *libraryManager) { m_libraryManager = libraryManager;}
     QString title();
@@ -25,7 +25,7 @@ public:
     void hideMenu();
 
 public slots:
-    void openBook(int bookID, int pageID = -1);
+    int openBook(int bookID, int pageID = -1);
     void nextUnit();
     void previousUnit();
     void nextPage();

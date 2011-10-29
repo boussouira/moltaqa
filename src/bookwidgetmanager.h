@@ -17,7 +17,7 @@ public:
     BookWidgetManager(QWidget *parent = 0);
     ~BookWidgetManager();
 
-    void addBook(BookWidget* book);
+    int addBook(BookWidget* book);
     BookWidget *bookWidget(int index);
     BookWidget *activeBookWidget();
     LibraryBook *activeBook();

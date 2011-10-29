@@ -18,6 +18,7 @@ public:
 
     virtual QList<QToolBar*> toolBars();
     virtual void showToolBars();
+    virtual void hideToolBars();
     virtual void hideMenu();
     virtual void showMenu();
     virtual QString title()=0;

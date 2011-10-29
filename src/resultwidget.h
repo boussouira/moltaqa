@@ -8,6 +8,7 @@ namespace Ui {
 class ResultWidget;
 }
 
+class BooksViewer;
 class WebView;
 
 class ResultWidget : public QWidget
@@ -21,7 +22,8 @@ public:
     void search(LibrarySearcher *searcher);
 
 protected:
-    void initWebView();
+    void setupBookReaderView();
+    void setupWebView();
     void showNavigationButton(bool show);
     void updateNavigationInfo();
     void updateButtonStat();
@@ -29,7 +31,7 @@ protected:
 public slots:
     void openResult(int resultID);
 
-protected slots:
+private slots:
     void searchStarted();
     void searchFinnished();
     void fetechStarted();
@@ -38,7 +40,12 @@ protected slots:
     void gotException(QString what, int id);
     void populateJavaScriptWindowObject();
 
-private slots:
+    void ensureReaderVisible();
+    void ensureReaderHidden(bool accessible=true);
+    void maximizeBookReader();
+    void minimizeBookReader();
+    void lastTabClosed();
+
     void on_buttonGoFirst_clicked();
     void on_buttonGoLast_clicked();
     void on_buttonGoPrev_clicked();
@@ -46,6 +53,8 @@ private slots:
 
 private:
     Ui::ResultWidget *ui;
+    BooksViewer *m_readerview;
+    QWidget *m_readerWidget;
     WebView *m_view;
     LibrarySearcher *m_searcher;
 };
