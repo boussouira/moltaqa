@@ -137,6 +137,8 @@ bool MainWindow::init()
         setupActions();
 
         m_viewManager->addView(m_bookView);
+
+        m_indexTracker->addTask(m_libraryManager->getNonIndexedBooks(), IndexTask::Add);
     } catch(BookException &e) {
         QMessageBox::information(this,
                                  App::name(),

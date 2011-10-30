@@ -12,8 +12,8 @@ public:
 
     ~IndexTask()
     {
-        if(reader)
-            delete reader;
+        if(book)
+            delete book;
     }
 
     enum Task {

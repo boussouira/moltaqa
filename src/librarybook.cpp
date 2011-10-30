@@ -107,6 +107,33 @@ bool LibraryBook::haveInfo()
     return m_hasInfo;
 }
 
+LibraryBook *LibraryBook::clone()
+{
+    LibraryBook *book = new LibraryBook();
+    book->bookType = bookType;
+    book->bookPath = bookPath;
+    book->bookDisplayName = bookDisplayName;
+    book->bookFullName = bookFullName;
+    book->bookOtherNames = bookOtherNames;
+    book->textTable = textTable;
+    book->indexTable = indexTable;
+    book->metaTable = metaTable;
+    book->tafessirTable = tafessirTable;
+    book->authorName = authorName;
+    book->bookEdition = bookEdition;
+    book->bookPublisher = bookPublisher;
+    book->bookMohaqeq = bookMohaqeq;
+    book->bookInfo = bookInfo;
+    book->partsCount = partsCount;
+    book->firstID = firstID;
+    book->lastID = lastID;
+    book->bookID = bookID;
+    book->authorID = authorID;
+    book->hasShareeh = hasShareeh;
+
+    return book;
+}
+
 QDebug operator<<(QDebug dbg, LibraryBook *info)
 {
     dbg.nospace() << "BookInfo(\n\t"

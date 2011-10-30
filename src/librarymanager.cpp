@@ -198,8 +198,15 @@ LibraryBook *LibraryManager::getBookInfo(int bookID)
             bookInfo->bookID = bookID;
             bookInfo->bookPath = m_libraryInfo->bookPath(bookQuery.value(2).toString());
 
-            bookInfo->textTable = "bookPages";
-            bookInfo->indexTable = "bookIndex";
+            if(bookInfo->isNormal() || bookInfo->isTafessir()) {
+                bookInfo->textTable = "bookPages";
+                bookInfo->indexTable = "bookIndex";
+            } else if(bookInfo->isQuran()) {
+                bookInfo->textTable = "quranText";
+
+            } else {
+                qWarning("getBookInfo: Unknow book type");
+            }
 
             bookInfo->bookFullName = bookQuery.value(3).toString();
             bookInfo->bookOtherNames = bookQuery.value(4).toString();
@@ -580,60 +587,39 @@ void LibraryManager::updateBookInfo(LibraryBook *info)
     }
 }
 
-BookPage *LibraryManager::getBookPage(LibraryBook *book, int pageID)
+void LibraryManager::setBookIndexStat(int bookID, bool indexed)
 {
-    if(!book) {
-        qWarning("getBookPage: No book with given id");
-        return 0;
+    QSqlQuery bookQuery(m_indexDB);
+    bookQuery.prepare("UPDATE booksList "
+                      "SET bookFlags = bookFlags | ? "
+                      "WHERE id = ?");
+
+    bookQuery.bindValue(0, 1);
+    bookQuery.bindValue(1, bookID);
+
+    if(!bookQuery.exec()) {
+        LOG_SQL_ERROR(bookQuery);
     }
+}
 
-    BookPage *page = 0;
-    QString connName = QString("getBookPage_b%1_p%2").arg(book->bookID).arg(pageID);
-    QSqlDatabase bookDB;
-    while(QSqlDatabase::contains(connName)) {
-        connName.append('_');
-    }
-    bookDB = QSqlDatabase::addDatabase("QSQLITE", connName);
-    bookDB.setDatabaseName(book->bookPath);
+QList<int> LibraryManager::getNonIndexedBooks()
+{
+    QList<int> list;
+    QSqlQuery bookQuery(m_indexDB);
+    bookQuery.prepare("SELECT id FROM booksList "
+                      "WHERE NOT bookFlags & ?");
 
-    if (!bookDB.open()) {
-        LOG_DB_ERROR(bookDB);
-        return 0;
-    }
+    bookQuery.bindValue(0, 1);
 
-    QSqlQuery bookQuery(bookDB);
-
-    bookQuery.prepare(QString("SELECT %1.id, %1.pageText, %1.partNum, %1.pageNum, %2.title "
-                              "FROM %1 "
-                              "LEFT JOIN %2 "
-                              "ON %2.pageID <= %1.id "
-                              "WHERE %1.id = ? "
-                              "ORDER BY %2.pageID DESC").arg(book->textTable, book->indexTable));
-    bookQuery.bindValue(0, pageID);
     if(bookQuery.exec()) {
-        if(bookQuery.first()){
-            page = new BookPage();
-            page->pageID = bookQuery.value(0).toInt();
-            page->part = bookQuery.value(2).toInt();
-            page->page = bookQuery.value(3).toInt();
-            page->text = QString::fromUtf8(qUncompress(bookQuery.value(1).toByteArray()));
-            page->title = bookQuery.value(4).toString();
-        } else {
-            qWarning("No result found for id %d book %d", pageID, book->bookID);
+        while(bookQuery.next()) {
+            list << bookQuery.value(0).toInt();
         }
     } else {
         LOG_SQL_ERROR(bookQuery);
     }
 
-    bookDB = QSqlDatabase();
-    QSqlDatabase::removeDatabase(connName);
-
-    return page;
-}
-
-BookPage *LibraryManager::getBookPage(int bookID, int pageID)
-{
-    return getBookPage(getBookInfo(bookID), pageID);
+    return list;
 }
 
 int LibraryManager::categoriesCount()

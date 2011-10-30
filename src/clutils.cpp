@@ -20,12 +20,15 @@ wchar_t* Utils::QStringToWChar(const QString &str)
     return string;
 }
 
+inline wchar_t* Utils::intToWChar(int num, wchar_t *dest, int radix)
+{
+    return _itow(num, dest, radix);
+}
+
 wchar_t* Utils::intToWChar(int num, int radix)
 {
-    wchar_t *str = (wchar_t*) malloc(10 * sizeof(wchar_t));
-    _itow(num, str, radix);
-
-    return str;
+    wchar_t *str = (wchar_t*) malloc(128 * sizeof(wchar_t));
+    return Utils::intToWChar(num, str, radix);
 }
 
 int Utils::WCharToInt(const wchar_t *str)

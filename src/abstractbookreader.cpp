@@ -4,6 +4,7 @@
 #include "bookindexmodel.h"
 #include "bookexception.h"
 #include "textformatter.h"
+#include "utils.h"
 
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
@@ -119,6 +120,180 @@ bool AbstractBookReader::hasNext()
 bool AbstractBookReader::hasPrev()
 {
     return (m_currentPage->pageID > m_bookInfo->firstID);
+}
+
+BookPage *AbstractBookReader::getBookPage(LibraryBook *book, int pageID)
+{
+    if(!book) {
+        qWarning("getBookPage: No book with given id");
+        return 0;
+    }
+
+    if(book->isNormal())
+        return getSimpleBookPage(book, pageID);
+    else if(book->isTafessir())
+        return getTafessirPage(book, pageID);
+    else if(book->isQuran())
+        return getQuranPage(book, pageID);
+    else
+        return 0;
+}
+
+BookPage *AbstractBookReader::getSimpleBookPage(LibraryBook *book, int pageID)
+{
+    BookPage *page = 0;
+    QString connName = QString("getSimpleBookPage_b%1_p%2").arg(book->bookID).arg(pageID);
+    QSqlDatabase bookDB;
+
+    while(QSqlDatabase::contains(connName))
+        connName.append('_');
+
+    bookDB = QSqlDatabase::addDatabase("QSQLITE", connName);
+    bookDB.setDatabaseName(book->bookPath);
+
+    if (!bookDB.open()) {
+        LOG_DB_ERROR(bookDB);
+        return 0;
+    }
+
+    QSqlQuery bookQuery(bookDB);
+
+    bookQuery.prepare(QString("SELECT %1.id, %1.pageText, %1.partNum, %1.pageNum, %2.title "
+                              "FROM %1 "
+                              "LEFT JOIN %2 "
+                              "ON %2.pageID <= %1.id "
+                              "WHERE %1.id = ? "
+                              "ORDER BY %2.pageID DESC").arg(book->textTable, book->indexTable));
+    bookQuery.bindValue(0, pageID);
+    if(bookQuery.exec()) {
+        if(bookQuery.first()){
+            page = new BookPage();
+            page->pageID = bookQuery.value(0).toInt();
+            page->part = bookQuery.value(2).toInt();
+            page->page = bookQuery.value(3).toInt();
+            page->text = QString::fromUtf8(qUncompress(bookQuery.value(1).toByteArray()));
+            page->title = bookQuery.value(4).toString();
+        } else {
+            qWarning("No result found for id %d book %d", pageID, book->bookID);
+        }
+    } else {
+        LOG_SQL_ERROR(bookQuery);
+    }
+
+    bookDB = QSqlDatabase();
+    QSqlDatabase::removeDatabase(connName);
+
+    return page;
+}
+
+BookPage *AbstractBookReader::getTafessirPage(LibraryBook *book, int pageID)
+{
+    BookPage *page = 0;
+    QString connName = QString("getTafessirPage_b%1_p%2").arg(book->bookID).arg(pageID);
+    QSqlDatabase bookDB;
+
+    while(QSqlDatabase::contains(connName))
+        connName.append('_');
+
+    bookDB = QSqlDatabase::addDatabase("QSQLITE", connName);
+    bookDB.setDatabaseName(book->bookPath);
+
+    if (!bookDB.open()) {
+        LOG_DB_ERROR(bookDB);
+        return 0;
+    }
+
+    QSqlQuery bookQuery(bookDB);
+
+    bookQuery.prepare(QString("SELECT bookPages.id, bookPages.pageText, "
+                                "bookPages.partNum, bookPages.pageNum, bookIndex.title, "
+                              "tafessirMeta.aya_number , tafessirMeta.sora_number "
+                              "FROM bookPages "
+                              "LEFT JOIN bookIndex "
+                              "ON bookIndex.pageID <= bookPages.id "
+                              "LEFT JOIN tafessirMeta "
+                              "ON tafessirMeta.page_id = bookPages.id "
+                              "WHERE bookPages.id = ? "
+                              "ORDER BY bookIndex.pageID DESC"));
+
+    bookQuery.bindValue(0, pageID);
+
+    if(bookQuery.exec()) {
+        if(bookQuery.first()){
+            page = new BookPage();
+            page->pageID = bookQuery.value(0).toInt();
+            page->part = bookQuery.value(2).toInt();
+            page->page = bookQuery.value(3).toInt();
+            page->sora = bookQuery.value(6).toInt();
+            page->aya = bookQuery.value(5).toInt();
+            page->text = QString::fromUtf8(qUncompress(bookQuery.value(1).toByteArray()));
+            page->title = bookQuery.value(4).toString();
+            if(page->title.size() < 9) {
+                page->title = tr("تفسير سورة %1، الاية %2").arg(page->sora).arg(page->aya);
+            }
+
+        } else {
+            qWarning("No result found for id %d book %d", pageID, book->bookID);
+        }
+    } else {
+        LOG_SQL_ERROR(bookQuery);
+    }
+
+    bookDB = QSqlDatabase();
+    QSqlDatabase::removeDatabase(connName);
+
+    return page;
+}
+
+BookPage *AbstractBookReader::getQuranPage(LibraryBook *book, int pageID)
+{
+    BookPage *page = 0;
+    QString connName = QString("getQuranPage_b%1_p%2").arg(book->bookID).arg(pageID);
+    QSqlDatabase bookDB;
+
+    while(QSqlDatabase::contains(connName))
+        connName.append('_');
+
+    bookDB = QSqlDatabase::addDatabase("QSQLITE", connName);
+    bookDB.setDatabaseName(book->bookPath);
+
+    if (!bookDB.open()) {
+        LOG_DB_ERROR(bookDB);
+        return 0;
+    }
+
+    QSqlQuery bookQuery(bookDB);
+
+    bookQuery.prepare("SELECT quranText.id, quranText.ayaText, quranText.ayaNumber, "
+                      "quranText.pageNumber, quranText.soraNumber, quranSowar.SoraName "
+                      "FROM quranText "
+                      "LEFT JOIN quranSowar "
+                      "ON quranSowar.id = quranText.soraNumber "
+                      "WHERE quranText.id = ?");
+
+    bookQuery.bindValue(0, pageID);
+
+    if(bookQuery.exec()) {
+        if(bookQuery.first()){
+            page = new BookPage();
+            page->pageID = bookQuery.value(0).toInt();
+            page->text = bookQuery.value(1).toString();
+            page->page = bookQuery.value(3).toInt();
+            page->aya = bookQuery.value(2).toInt();
+            page->sora = bookQuery.value(4).toInt();
+            page->title = tr("سورة %1، الاية %2").arg(bookQuery.value(5).toString()).arg(page->aya);
+            page->part = 1;
+        } else {
+            qWarning("No result found for id %d book %d", pageID, book->bookID);
+        }
+    } else {
+        LOG_SQL_ERROR(bookQuery);
+    }
+
+    bookDB = QSqlDatabase();
+    QSqlDatabase::removeDatabase(connName);
+
+    return page;
 }
 
 void AbstractBookReader::getBookInfo()

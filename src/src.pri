@@ -91,7 +91,9 @@ SOURCES += mainwindow.cpp \
     searchfiltermanager.cpp \
     librarysearcher.cpp \
     searchresult.cpp \
-    resultwidget.cpp
+    resultwidget.cpp \
+    textsimplebookreader.cpp \
+    textquranreader.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -169,7 +171,9 @@ HEADERS += mainwindow.h \
     modelenums.h \
     librarysearcher.h \
     searchresult.h \
-    resultwidget.h
+    resultwidget.h \
+    textsimplebookreader.h \
+    textquranreader.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

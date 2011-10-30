@@ -30,6 +30,16 @@ LibraryCreator::LibraryCreator()
     m_threadID = 0;
 }
 
+LibraryCreator::~LibraryCreator()
+{
+    if(m_bookDB.isOpen()) {
+        QString conn = m_bookDB.connectionName();
+        m_bookDB = QSqlDatabase();
+
+        QSqlDatabase::removeDatabase(conn);
+    }
+}
+
 void LibraryCreator::openDB()
 {
     if(!m_bookDB.isOpen()) {

@@ -97,11 +97,18 @@ void IndexTracker::addTask(int bookID, IndexTask::Task task)
 
 void IndexTracker::addTask(const QList<int> &books, IndexTask::Task task)
 {
-    foreach(int bookID, books) {
-        addTask(bookID, task);
-    }
+    if(!books.isEmpty()) {
 
-    emit gotTask();
+        foreach(int bookID, books) {
+            addTask(bookID, task);
+        }
+
+        qDebug("Got %d books to %s",
+               books.size(),
+               qPrintable(IndexTask::taskToString(task)));
+
+        emit gotTask();
+    }
 }
 
 void IndexTracker::removeTask(IndexTask *task)
@@ -115,6 +122,8 @@ void IndexTracker::removeTask(IndexTask *task)
             if(indexElement == task) {
                 m_rootElement.removeChild(indexElement);
                 deleteTask(task);
+
+                m_libraryManager->setBookIndexStat(task->bookID, true);
                 break;
             }
         }
@@ -160,10 +169,8 @@ IndexTaskIter* IndexTracker::getTaskIter()
 
     foreach(IndexTask *task, m_tasks) {
         IndexTask *t = new IndexTask();
-        TextBookReader *reader = new TextBookReader();
         t->bookID = task->bookID;
         t->task = task->task;
-        t->reader = reader;
 
         iter->addTask(t);
     }

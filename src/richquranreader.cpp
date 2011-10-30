@@ -76,12 +76,13 @@ void RichQuranReader::goToPage(int page, int part)
 void RichQuranReader::goToSora(int sora, int aya)
 {
     int page = getPageNumber(sora, aya);
-    m_currentPage->sora = sora;
-    m_currentPage->aya = aya;
-    m_currentPage->ayatCount = getSoraAyatCount(sora);
 
     if(page != m_currentPage->page)
         goToPage(page, 1);
+
+    m_currentPage->sora = sora;
+    m_currentPage->aya = aya;
+    m_currentPage->ayatCount = getSoraAyatCount(sora);
 }
 
 bool RichQuranReader::needFastIndexLoad()

@@ -9,6 +9,8 @@ function resultEvents()
         var resultID = p.attr('rid');
 
         resultWidget.openResult(resultID);
+
+        scroll(d.position().left, d.position().top);
     });
 }
 
@@ -37,7 +39,7 @@ function fetechStarted()
 
 function fetechFinnished()
 {
-    resultEvents();    
+    resultEvents();
     clearBody = true;
 }
 
@@ -47,11 +49,11 @@ function searchInfo(searchTime, searchCount)
     if(sec.indexOf('.') != -1) {
         sec = sec.substr(0, sec.indexOf('.')+5);
     }
-    
+
     $.Growl.show({
         'title' : "انتهى البحث",
         'message': "تم البحث خلال " + sec + " ثانية" +
                     "<br>" + "عدد النتائج: " + searchCount,
         'timeout':3000
-    }); 
+    });
 }

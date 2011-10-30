@@ -26,7 +26,7 @@ public:
     void hideMenu();
 
 public slots:
-    int openBook(int bookID, int pageID = -1, lucene::search::Query *query=0);
+    BookWidget *openBook(int bookID, int pageID = -1, lucene::search::Query *query=0);
     void nextUnit();
     void previousUnit();
     void nextPage();

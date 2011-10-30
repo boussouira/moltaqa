@@ -4,6 +4,7 @@
 #include "webview.h"
 #include "booksviewer.h"
 #include "mainwindow.h"
+#include "bookwidget.h"
 #include <qdir.h>
 #include <qplaintextedit.h>
 #include <qboxlayout.h>
@@ -167,7 +168,7 @@ void ResultWidget::ensureReaderVisible()
 
     if(ui->splitter->sizes().at(1) == 0){
         QList<int> sizes;
-        sizes << 200 << 100;
+        sizes << 200 << 300;
         ui->splitter->setSizes(sizes);
     }
 }
@@ -207,9 +208,14 @@ void ResultWidget::lastTabClosed()
 void ResultWidget::openResult(int resultID)
 {
     SearchResult *result = m_searcher->getResult(resultID);
+    BookWidget *bookWidget = m_readerview->openBook(result->book->bookID,
+                                                    result->page->pageID,
+                                                    m_searcher->getSearchQuery());
 
-    m_readerview->openBook(result->book->bookID, result->page->pageID, m_searcher->getSearchQuery());
     ensureReaderVisible();
+
+    if(result->book->isQuran())
+        bookWidget->openSora(result->page->sora, result->page->aya);
 }
 
 void ResultWidget::searchStarted()

@@ -123,8 +123,8 @@ public:
     QStandardItemModel *getAuthorsListModel();
     void updateBookInfo(LibraryBook *info);
 
-    BookPage *getBookPage(LibraryBook *book, int pageID);
-    BookPage *getBookPage(int bookID, int pageID);
+    void setBookIndexStat(int bookID, bool indexed);
+    QList<int> getNonIndexedBooks();
 
 protected:
     void booksCat(BooksListNode *parentNode, int catID);

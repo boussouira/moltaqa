@@ -175,15 +175,12 @@ void BookWidget::openPage(int pageNum, int partNum)
 
 void BookWidget::openSora(int sora, int aya)
 {
-    if(m_db->bookInfo()->isQuran() || m_db->bookInfo()->isTafessir())
-   {     m_db->goToSora(sora, aya);
-
-    if(m_db->bookInfo()->isQuran())
+    if(m_db->bookInfo()->isQuran() || m_db->bookInfo()->isTafessir()) {
+        m_db->goToSora(sora, aya);
         m_view->scrollToAya(m_db->page()->sora,
                             m_db->page()->aya);
-    else if(m_db->bookInfo()->isTafessir())
-        m_view->scrollToAya(sora, aya);
-}}
+    }
+}
 
 void BookWidget::openHaddit(int hadditNum)
 {

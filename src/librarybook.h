@@ -42,6 +42,8 @@ public:
     bool haveInfo();
     QList<BookShorooh*> shorooh;
 
+    LibraryBook *clone();
+
 public:
     LibraryBook::Type bookType;
     QString bookPath;

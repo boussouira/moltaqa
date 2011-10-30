@@ -90,6 +90,8 @@ public:
       */
     virtual QString text() = 0;
 
+    static BookPage *getBookPage(LibraryBook *book, int pageID);
+
 protected:
     /**
       Generate book info
@@ -97,6 +99,11 @@ protected:
     virtual void getBookInfo();
 
     virtual void connected();
+
+private:
+    static BookPage *getSimpleBookPage(LibraryBook *book, int pageID);
+    static BookPage *getTafessirPage(LibraryBook *book, int pageID);
+    static BookPage *getQuranPage(LibraryBook *book, int pageID);
 
 protected:
     LibraryBook *m_bookInfo;

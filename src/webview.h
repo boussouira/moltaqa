@@ -26,6 +26,7 @@ public:
 
 public slots:
     void setText(const QString &text);
+    void startScrolling();
 
 signals:
     void textChanged();
@@ -33,6 +34,8 @@ signals:
 protected:
     QWebFrame *m_frame;
     QPropertyAnimation *m_animation;
+    int m_scrollSora;
+    int m_scrollAya;
 };
 
 #endif // KWEBVIEW_H

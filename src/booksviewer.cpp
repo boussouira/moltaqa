@@ -191,7 +191,7 @@ void BooksViewer::hideMenu()
     m_navMenu->setEnabled(false);
 }
 
-int BooksViewer::openBook(int bookID, int pageID, lucene::search::Query *query)
+BookWidget *BooksViewer::openBook(int bookID, int pageID, lucene::search::Query *query)
 {
     int tabIndex = -1;
     LibraryBook *bookInfo = m_libraryManager->getBookInfo(bookID);
@@ -235,7 +235,7 @@ int BooksViewer::openBook(int bookID, int pageID, lucene::search::Query *query)
     updateActions();
     activateWindow();
 
-    return tabIndex;
+    return bookWidget;
 }
 
 void BooksViewer::openTafessir()

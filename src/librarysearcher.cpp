@@ -4,6 +4,7 @@
 #include "clconstants.h"
 #include "librarybook.h"
 #include "utils.h"
+#include "abstractbookreader.h"
 #include <QTime>
 #include <qsqlquery.h>
 
@@ -122,7 +123,7 @@ void LibrarySearcher::fetech()
             continue;
         }
 
-        BookPage *page = m_libraryManager->getBookPage(book, entryID);
+        BookPage *page = AbstractBookReader::getBookPage(book, entryID);
 
         if(page) {
             SearchResult *result = new SearchResult(book, page);

@@ -3,6 +3,8 @@
 #include "clconstants.h"
 #include "mainwindow.h"
 #include "clutils.h"
+#include "textsimplebookreader.h"
+#include "textquranreader.h"
 
 BookIndexer::BookIndexer(QObject *parent) :
     QThread(parent),
@@ -50,7 +52,16 @@ void BookIndexer::startIndexing()
 
 void BookIndexer::indexBook(IndexTask *task)
 {
-    TextBookReader *reader = task->reader;
+    TextBookReader *reader = 0;
+    if(task->book->isNormal() || task->book->isTafessir()) {
+        reader = new TextSimpleBookReader();
+    } else if (task->book->isQuran()) {
+        reader = new TextQuranReader();
+    } else {
+        qWarning("indexBook: Unknow book type");
+        return;
+    }
+
     BookPage *page = reader->page();
 
     Document doc;
@@ -60,19 +71,19 @@ void BookIndexer::indexBook(IndexTask *task)
     wchar_t pageID[128];
     wchar_t *text = NULL;
 
-    reader->setBookInfo(task->book);
+    reader->setBookInfo(task->book->clone()); // The reader will delete this clone
     reader->setLibraryManager(MW->libraryManager());
 
     reader->openBook(true);
     reader->goFirst();
 
-    _itow(task->bookID, bookID, 10);
+    Utils::intToWChar(task->bookID, bookID, 10);
 
     while (reader->hasNext()) {
 
         reader->nextPage();
 
-        _itow(page->pageID, pageID, 10);
+        Utils::intToWChar(page->pageID, pageID, 10);
         text = Utils::QStringToWChar(reader->text());
 
         doc.add( *_CLNEW Field(PAGE_ID_FIELD, pageID, storeAndNoToken));
@@ -84,4 +95,7 @@ void BookIndexer::indexBook(IndexTask *task)
     }
 
     emit taskDone(task);
+
+    if(reader)
+        delete reader;
 }

@@ -19,6 +19,7 @@ class LibraryCreator
 
 public:
     LibraryCreator();
+    ~LibraryCreator();
     void setThreadID(int tid) { m_threadID = tid; }
     void openDB();
     void createTables();

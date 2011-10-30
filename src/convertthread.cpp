@@ -100,7 +100,7 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
         int bookID = bookQuery.value(bkIdCol).toInt();
 
         ImportModelNode *node = new ImportModelNode(LibraryBook::NormalBook);
-        node->typeName = getBookType(bookDB);
+        node->setTypeName(getBookType(bookDB));
         node->bookName = bookQuery.value(bkCol).toString();
         node->authorName = bookQuery.value(authCol).toString();
 
