@@ -1,5 +1,6 @@
 #include "richbookreader.h"
 #include "textformatter.h"
+#include "librarybook.h"
 #include "bookpage.h"
 
 RichBookReader::RichBookReader(QObject *parent) : AbstractBookReader(parent)
@@ -24,7 +25,7 @@ QString RichBookReader::text()
 {
     Q_ASSERT(m_textFormat);
 
-    if(m_query && m_highlightPageID == m_currentPage->pageID) {
+    if(!m_bookInfo->isQuran() && m_query && m_highlightPageID == m_currentPage->pageID) {
         return Utils::highlightText(m_textFormat->getText(), m_query, false);
     } else {
         return m_textFormat->getText();

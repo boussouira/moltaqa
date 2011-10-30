@@ -12,8 +12,8 @@ SearchFilterManager::SearchFilterManager(QObject *parent)
     : QObject(parent),
       m_model(0),
       m_treeView(0),
-      m_filterColumn(0),
       m_role(Qt::DisplayRole),
+      m_filterColumn(0),
       m_proccessItemChange(true)
 {
     m_libraryInfo = MW->libraryInfo();

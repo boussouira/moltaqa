@@ -20,7 +20,7 @@ wchar_t* Utils::QStringToWChar(const QString &str)
     return string;
 }
 
-inline wchar_t* Utils::intToWChar(int num, wchar_t *dest, int radix)
+wchar_t* Utils::intToWChar(int num, wchar_t *dest, int radix)
 {
     return _itow(num, dest, radix);
 }

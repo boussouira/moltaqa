@@ -63,9 +63,17 @@ void RichQuranReader::goToPage(int page, int part)
             if(m_quranQuery->value(4).toInt() != 1 && m_quranQuery->value(4).toInt() != 9)
                 m_formatter->insertBassemala();
         }
-        m_formatter->insertAyaText(m_quranQuery->value(1).toString(),
-                                     m_quranQuery->value(2).toInt(),
-                                     m_quranQuery->value(4).toInt());
+
+        QString text;
+        if(m_query && m_highlightPageID == m_quranQuery->value(0).toInt())
+            text = Utils::highlightText(m_quranQuery->value(1).toString(),
+                                        m_query, false);
+        else
+            text = m_quranQuery->value(1).toString();
+
+        m_formatter->insertAyaText(text,
+                                   m_quranQuery->value(2).toInt(),
+                                   m_quranQuery->value(4).toInt());
     }
 
     m_formatter->done();
