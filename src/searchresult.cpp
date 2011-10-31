@@ -1,40 +1,56 @@
 #include "searchresult.h"
 
-SearchResult::SearchResult(LibraryBook *_book, BookPage *_page)
+SearchResult::SearchResult(LibraryBook *_book, BookPage *_page) :
+    book(_book),
+    page(_page)
 {
     Q_ASSERT(_book);
     Q_ASSERT(_page);
-
-    book = _book;
-    page = _page;
 }
 
 SearchResult::~SearchResult()
 {
+    if(book)
+        delete book;
+
+    if(page)
+        delete page;
 }
 
 void SearchResult::generateHTML()
 {
-    m_html = QObject::tr("<div class=\"result %1\">"
-                         "<div class=\"resultHead\">"
-                         "<h3>%2</h3>"
-                         "<span class=\"progSpan\" style=\"width: %3px;\">"
-                         "<span class=\"progSpanContainre\"></span>"
-                         "</span>"
-                         "</div>"
-                         "<div class=\"resultText\" bookid=\"%4\" rid=\"%5\">%6</div>"
-                         "<div class=\"resultInfo\" bookid=\"b%4\"> كتاب: <span class=\"bookName\">%7</span>"
-                         "<span style=\"float: left;margin: 5px 0px\">الصفحة: <span style=\"margin-left: 7px;\">%8</span>  الجزء: <span>%9</span></span>"
-                         "</div></div>")
-            .arg(bgColor)               // backround class name (%1)
-            .arg(page->title)           // bab (%2)
-            .arg(score)                 // score (%3)
-            .arg(book->bookID)          // Book id (%4)
-            .arg(resultID)              // Result id (%5)
-            .arg(snippet.simplified())  // text snippet (%6)
-            .arg(book->bookDisplayName) // book name (%7)
-            .arg(page->page)            // page (%8)
-            .arg(page->part);           // part (%9)
+    m_html = QObject::tr
+            (
+            "<div class=\"result\">"
+                "<div class=\"resultHead\">"
+                    "<h3>%1</h3>"
+                    "<span class=\"progSpan\" style=\"width: %2px;\">"
+                        "<span class=\"progSpanContainre\"></span>"
+                    "</span>"
+                "</div>"
+                "<div class=\"resultText\" bookid=\"%3\" rid=\"%4\">%5</div>"
+                "<div class=\"resultInfo\" bookid=\"b%3\">"
+                    "<div class=\"bookInfo\">"
+                        "<span class=\"book\">كتاب:</span>"
+                        "<span class=\"bookName\">%6</span>"
+                    "</div>"
+                    "<div class=\"pageInfo\">"
+                        "<span class=\"page\">الصفحة:</span><span class=\"pageVal\">%7</span>"
+                        "<span class=\"part\">الجزء:</span><span class=\"partVal\">%8</span>"
+                    "</div>"
+                    "<div class=\"clear\">"
+                    "</div>"
+                "</div>"
+            "</div>"
+             ) // Nice formating :)
+            .arg(page->title)           // bab (%1)
+            .arg(score)                 // score (%2)
+            .arg(book->bookID)          // Book id (%3)
+            .arg(resultID)              // Result id (%4)
+            .arg(snippet.simplified())  // text snippet (%5)
+            .arg(book->bookDisplayName) // book name (%6)
+            .arg(page->page)            // page (%7)
+            .arg(page->part);           // part (%8)
 
 }
 

@@ -25,6 +25,27 @@ LibrarySearcher::LibrarySearcher(QObject *parent)
 
 LibrarySearcher::~LibrarySearcher()
 {
+    if(m_hits)
+        _CLDELETE(m_hits);
+
+    if(m_query)
+        _CLDELETE(m_query);
+
+    if(m_filterQuery)
+        _CLDELETE(m_filterQuery);
+
+    if(m_searcher) {
+        m_searcher->close();
+        _CLDELETE(m_searcher);
+    }
+
+
+    qDeleteAll(m_resultsHash);
+    m_resultsHash.clear();
+
+    m_currentPage = 0;
+    m_pageCount = 0;
+    m_timeSearch = 0;
 }
 
 void LibrarySearcher::run()
@@ -60,16 +81,19 @@ void LibrarySearcher::open()
 
 void LibrarySearcher::buildQuery()
 {
-    BooleanQuery *q = new BooleanQuery;
-    q->add(m_searchQuery, BooleanClause::MUST);
+    BooleanQuery *booleanQuery = new BooleanQuery;
+    booleanQuery->add(m_searchQuery, BooleanClause::MUST);
 
     if(m_filterQuery)
-        q->add(m_filterQuery, m_filterClause);
+        booleanQuery->add(m_filterQuery, m_filterClause);
 
-    m_query = m_searcher->rewrite(q);
+    m_query = m_searcher->rewrite(booleanQuery);
 
-//    qDebug() << "Search [Orig]:" << Utils::WCharToString(q->toString(PAGE_TEXT_FIELD));
-    qDebug() << "Search for:" << Utils::WCharToString(m_query->toString(PAGE_TEXT_FIELD));
+    wchar_t *queryText = m_query->toString(PAGE_TEXT_FIELD);
+    qDebug() << "Search query:" << Utils::WCharToString(queryText);
+
+    free(queryText);
+    delete booleanQuery;
 }
 
 void LibrarySearcher::search()
@@ -99,9 +123,7 @@ void LibrarySearcher::fetech()
     emit startFeteching();
 
     int start = m_currentPage * m_resultParPage;
-    int maxResult  =  (resultsCount() >= start+m_resultParPage)
-                    ? (start+m_resultParPage)
-                    : resultsCount();
+    int maxResult  = qMin(start+m_resultParPage, resultsCount());
 
     for(int i=start; i < maxResult;i++){
 

@@ -239,6 +239,8 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
   </layout>
+  <zorder>stackedWidget</zorder>
+  <zorder>toolButton</zorder>
  </widget>
  <customwidgets>
   <customwidget>

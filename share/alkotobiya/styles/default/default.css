@@ -73,6 +73,10 @@ footnote a{
 }
 
 /* Search */
+div.clear {
+    clear: both;
+}
+
 .result {
     -webkit-border-radius:10px;
     margin:5px 5px 10px 5px;
@@ -100,17 +104,42 @@ footnote a{
     margin:5px 0px;
 }
 
+.result .resultInfo .bookInfo  {
+    float: right;
+}
+
+.result .resultInfo .bookInfo .book {
+}
+
+.result .resultInfo .bookInfo .bookName {
+    margin-left:7px;
+    color:green;
+    font-weight:bold
+}
+
+.result .resultInfo .pageInfo {
+    float: left;
+}
+
+.result .resultInfo .pageInfo .page {
+}
+
+.result .resultInfo .pageInfo .pageVal {
+    margin-left: 7px;
+}
+
+.result .resultInfo .pageInfo .part {
+}
+
+.result .resultInfo .pageInfo .partVal {
+    margin-left: 7px;
+}
+
 .result .resultHead {
     margin:0px;
     margin-bottom:15px;
     padding:0px;
     border-bottom:1px dotted #ccc;
-}
-
-.result .bookName {
-    margin-left:7px;
-    color:green;
-    font-weight:bold
 }
 
 .result .progSpan {
@@ -138,48 +167,46 @@ footnote a{
     float:right;
 }
 
-#growlcontainer{
-  position: fixed;
-  left: 20px;
-  top: 20px;
-  z-index: 1000;
-  font-size: 12px;
-  width: 300px;
+#growlcontainer {
+    font-size: 12px;
+    left: 20px;
+    position: fixed;
+    top: 20px;
+    width: 300px;
+    z-index: 1000;
 }
-.growlstatus{
-  position: relative;
-  background-color: #000; /*fallback for ie*/
-  background-color: rgba(0, 0, 0, 0.8);
-  border: 3px #000 solid;
-  padding: 15px;
-  color: #fff;
-  margin-bottom: 5px;
-  
-  -webkit-border-radius:10px;
+.growlstatus {
+    background-color: rgba(248, 255, 137, 0.8);
+    border: 3px solid #E3CE67;
+    border-radius: 10px;
+    color: #000000;
+    margin-bottom: 5px;
+    padding: 15px;
+    position: relative;
 }
-.growlstatus .growltitle{
-  font-weight: bold;
-  margin-bottom: 5px;
+.growlstatus .growltitle {
+    font-weight: bold;
+    margin-bottom: 5px;
 }
-.growlstatusclose{
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  width:30px;
-  height:30px;
-  cursor: pointer;
-  display: none;
-  background: transparent url(../../images/growlclose.png) no-repeat;
+.growlstatusclose {
+    background: url("../../images/growlclose.png") no-repeat scroll 0 0 transparent;
+    cursor: pointer;
+    display: none;
+    height: 30px;
+    left: 5px;
+    position: absolute;
+    top: 5px;
+    width: 30px;
 }
-.growlstatus:hover{
-  background-color: rgba(0, 0, 0, 0.9);
-  border: 3px #fff solid;
+.growlstatus:hover {
+    background-color: rgba(255, 254, 153, 0.7);
+    border: 3px solid rgba(225, 225, 121, 0.7) ;
 }
-.growlstatus:hover .growlstatusclose{
-  display: block;
+.growlstatus:hover .growlstatusclose {
+    display: block;
 }
-.growlwithicon{
-  padding-right: 50px;
-  background-position: 5px 10px;
-  background-repeat:no-repeat;
+.growlwithicon {
+    background-position: 5px 10px;
+    background-repeat: no-repeat;
+    padding-right: 50px;
 }

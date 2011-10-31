@@ -163,7 +163,8 @@ BookPage *AbstractBookReader::getSimpleBookPage(LibraryBook *book, int pageID)
                               "LEFT JOIN %2 "
                               "ON %2.pageID <= %1.id "
                               "WHERE %1.id = ? "
-                              "ORDER BY %2.pageID DESC").arg(book->textTable, book->indexTable));
+                              "ORDER BY %2.pageID DESC "
+                              "LIMIT 1").arg(book->textTable, book->indexTable));
     bookQuery.bindValue(0, pageID);
     if(bookQuery.exec()) {
         if(bookQuery.first()){
@@ -206,7 +207,7 @@ BookPage *AbstractBookReader::getTafessirPage(LibraryBook *book, int pageID)
     QSqlQuery bookQuery(bookDB);
 
     bookQuery.prepare(QString("SELECT bookPages.id, bookPages.pageText, "
-                                "bookPages.partNum, bookPages.pageNum, bookIndex.title, "
+                              "bookPages.partNum, bookPages.pageNum, bookIndex.title, "
                               "tafessirMeta.aya_number , tafessirMeta.sora_number "
                               "FROM bookPages "
                               "LEFT JOIN bookIndex "
@@ -214,7 +215,8 @@ BookPage *AbstractBookReader::getTafessirPage(LibraryBook *book, int pageID)
                               "LEFT JOIN tafessirMeta "
                               "ON tafessirMeta.page_id = bookPages.id "
                               "WHERE bookPages.id = ? "
-                              "ORDER BY bookIndex.pageID DESC"));
+                              "ORDER BY bookIndex.pageID DESC "
+                              "LIMIT 1"));
 
     bookQuery.bindValue(0, pageID);
 

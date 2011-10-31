@@ -6,11 +6,6 @@
 #include <stdlib.h>
 #include <qregexp.h>
 
-QString Utils::WCharToString(const wchar_t *str)
-{
-    return QString::fromWCharArray(str);
-}
-
 wchar_t* Utils::QStringToWChar(const QString &str)
 {
     wchar_t *string = (wchar_t*) malloc((str.length()+1) * sizeof(wchar_t));
@@ -20,34 +15,24 @@ wchar_t* Utils::QStringToWChar(const QString &str)
     return string;
 }
 
-wchar_t* Utils::intToWChar(int num, wchar_t *dest, int radix)
-{
-    return _itow(num, dest, radix);
-}
-
 wchar_t* Utils::intToWChar(int num, int radix)
 {
     wchar_t *str = (wchar_t*) malloc(128 * sizeof(wchar_t));
     return Utils::intToWChar(num, str, radix);
 }
 
-int Utils::WCharToInt(const wchar_t *str)
-{
-    return _wtoi(str);
-}
-
 QString Utils::highlightText(QString orignalText, lucene::search::Query *query, bool fragment)
 {
     // Highlight the text
-    ArabicAnalyzer hl_analyzer;
+    ArabicAnalyzer analyzer;
     SpanHighlightScorer scorer( true );
-    CssFormatter hl_formatter;
+    CssFormatter formatter;
 
     int maxNumFragments = fragment ? 5 : 100; // Fragment count
     int fragmentSize = fragment ? 100 : 10000; // Fragment lenght
     const wchar_t* fragmentSeparator = _T("...");
 
-    Highlighter highlighter(&hl_formatter, &scorer);
+    Highlighter highlighter(&formatter, &scorer);
     SimpleFragmenter frag(fragmentSize);
     highlighter.setTextFragmenter(&frag);
 
@@ -55,19 +40,19 @@ QString Utils::highlightText(QString orignalText, lucene::search::Query *query, 
 
     wchar_t* text = QStringToWChar(orignalText);
     StringReader reader(text);
-    CachingTokenFilter tokenStream( hl_analyzer.tokenStream( PAGE_TEXT_FIELD, &reader ), true);
-    scorer.init( query, PAGE_TEXT_FIELD, &tokenStream );
+    CachingTokenFilter tokenStream(analyzer.tokenStream(PAGE_TEXT_FIELD, &reader), true);
+    scorer.init(query, PAGE_TEXT_FIELD, &tokenStream);
     tokenStream.reset();
 
-    wchar_t* hi_result = highlighter.getBestFragments(
+    wchar_t* highlighterResult = highlighter.getBestFragments(
             &tokenStream,
             text,
             maxNumFragments,
             fragmentSeparator);
 
-    QString highlightedText = WCharToString(hi_result);
+    QString highlightedText = WCharToString(highlighterResult);
 
-    _CLDELETE_CARRAY(hi_result)
+    _CLDELETE_CARRAY(highlighterResult)
     _CLDELETE_CARRAY(text);
 
     return highlightedText;

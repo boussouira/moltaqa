@@ -117,45 +117,51 @@ Query *SearchWidget::getSearchQuery()
 
     ArabicAnalyzer analyzer;
     BooleanQuery *q = new BooleanQuery;
-    QueryParser *queryPareser;
 
-    queryPareser = new QueryParser(PAGE_TEXT_FIELD, &analyzer);
-    queryPareser->setAllowLeadingWildcard(true);
+    QueryParser queryPareser(PAGE_TEXT_FIELD, &analyzer);
+    queryPareser.setAllowLeadingWildcard(true);
 
     try {
         if(!mustQureyStr.isEmpty()) {
             if(ui->checkQueryMust->isChecked())
-                queryPareser->setDefaultOperator(QueryParser::AND_OPERATOR);
+                queryPareser.setDefaultOperator(QueryParser::AND_OPERATOR);
             else
-                queryPareser->setDefaultOperator(QueryParser::OR_OPERATOR);
+                queryPareser.setDefaultOperator(QueryParser::OR_OPERATOR);
 
-            Query *mq = queryPareser->parse(Utils::QStringToWChar(mustQureyStr));
+            wchar_t *queryText = Utils::QStringToWChar(mustQureyStr);
+            Query *mq = queryPareser.parse(queryText);
             q->add(mq, BooleanClause::MUST);
 
+            free(queryText);
         }
 
         if(!shouldQureyStr.isEmpty()) {
             if(ui->checkQueryShould->isChecked())
-                queryPareser->setDefaultOperator(QueryParser::AND_OPERATOR);
+                queryPareser.setDefaultOperator(QueryParser::AND_OPERATOR);
             else
-                queryPareser->setDefaultOperator(QueryParser::OR_OPERATOR);
+                queryPareser.setDefaultOperator(QueryParser::OR_OPERATOR);
 
-            Query *mq = queryPareser->parse(Utils::QStringToWChar(shouldQureyStr));
+            wchar_t *queryText = Utils::QStringToWChar(shouldQureyStr);
+            Query *mq = queryPareser.parse(queryText);
             q->add(mq, BooleanClause::SHOULD);
 
+            free(queryText);
         }
 
         if(!shouldNotQureyStr.isEmpty()) {
             if(ui->checkQueryShouldNot->isChecked())
-                queryPareser->setDefaultOperator(QueryParser::AND_OPERATOR);
+                queryPareser.setDefaultOperator(QueryParser::AND_OPERATOR);
             else
-                queryPareser->setDefaultOperator(QueryParser::OR_OPERATOR);
+                queryPareser.setDefaultOperator(QueryParser::OR_OPERATOR);
 
-            Query *mq = queryPareser->parse(Utils::QStringToWChar(shouldNotQureyStr));
+            wchar_t *queryText = Utils::QStringToWChar(shouldNotQureyStr);
+            Query *mq = queryPareser.parse(queryText);
             q->add(mq, BooleanClause::MUST_NOT);
+
+            free(queryText);
         }
 
-        qDebug() << "Search:" << Utils::WCharToString(q->toString(PAGE_TEXT_FIELD));
+//        qDebug() << "Search:" << Utils::WCharToString(q->toString(PAGE_TEXT_FIELD));
 
         return q;
 
@@ -175,7 +181,6 @@ Query *SearchWidget::getSearchQuery()
                                  tr("code: %1\nError: %2").arg(e.number()).arg(e.what()));
 
         _CLDELETE(q);
-        _CLDELETE(queryPareser);
 
         return 0;
     }
@@ -184,7 +189,6 @@ Query *SearchWidget::getSearchQuery()
                              "CLucene Query error",
                              tr("Unknow error"));
         _CLDELETE(q);
-        _CLDELETE(queryPareser);
 
         return 0;
     }
