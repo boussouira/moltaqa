@@ -33,6 +33,10 @@ public:
 
     void highlightPage(int pageID, lucene::search::Query *query);
 
+    bool scrollToHighlight();
+
+    void stopModelLoad();
+
 signals:
     void textChanged();
 
@@ -40,6 +44,7 @@ protected:
     TextFormatter *m_textFormat;
     lucene::search::Query *m_query;
     int m_highlightPageID;
+    bool m_stopModelLoad;
 };
 
 #endif // RICHBOOKREADER_H

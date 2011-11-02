@@ -8,6 +8,7 @@ RichBookReader::RichBookReader(QObject *parent) : AbstractBookReader(parent)
     m_textFormat = 0;
     m_query = 0;
     m_highlightPageID = -1;
+    m_stopModelLoad = false;
 }
 
 RichBookReader::~RichBookReader()
@@ -36,6 +37,16 @@ void RichBookReader::highlightPage(int pageID, lucene::search::Query *query)
 {
     m_query = query;
     m_highlightPageID = pageID;
+}
+
+bool RichBookReader::scrollToHighlight()
+{
+    return (!m_bookInfo->isQuran() && m_query && m_highlightPageID == m_currentPage->pageID);
+}
+
+void RichBookReader::stopModelLoad()
+{
+    m_stopModelLoad = true;
 }
 
 QAbstractItemModel * RichBookReader::topIndexModel()

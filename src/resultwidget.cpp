@@ -82,7 +82,7 @@ void ResultWidget::setupBookReaderView()
 
     toolBarLayout->addWidget(buttonHideBookView);
 
-    toolBarLayout->setContentsMargins(0, 0, 0, 0);
+    toolBarLayout->setContentsMargins(9, 0, 9, 0);
     toolBarLayout->setSpacing(0);
     toolBarWidget->setLayout(toolBarLayout);
 
@@ -120,9 +120,9 @@ void ResultWidget::setupWebView()
                            "</head>"
                            "<body>"
                            "<div id=\"searchResult\">.</div>"
-                           "<script type=\"text/javascript\" src=\"%2\" />"
-                           "<script type=\"text/javascript\" src=\"%3\" />"
-                           "<script type=\"text/javascript\" src=\"%4\" />"
+                           "<script type=\"text/javascript\" src=\"%2\"></script>"
+                           "<script type=\"text/javascript\" src=\"%3\"></script>"
+                           "<script type=\"text/javascript\" src=\"%4\"></script>"
                            "</body></html>").arg(m_styleFile, m_jqueryFile, m_jqueryGrowlFile, m_scriptFile);
     m_view->setHtml(html);
 }

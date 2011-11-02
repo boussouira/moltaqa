@@ -124,19 +124,23 @@ bool AbstractBookReader::hasPrev()
 
 BookPage *AbstractBookReader::getBookPage(LibraryBook *book, int pageID)
 {
+    BookPage *page = 0;
+
     if(!book) {
         qWarning("getBookPage: No book with given id");
-        return 0;
+        return page;
     }
 
     if(book->isNormal())
-        return getSimpleBookPage(book, pageID);
+        page = getSimpleBookPage(book, pageID);
     else if(book->isTafessir())
-        return getTafessirPage(book, pageID);
+        page = getTafessirPage(book, pageID);
     else if(book->isQuran())
-        return getQuranPage(book, pageID);
+        page = getQuranPage(book, pageID);
     else
-        return 0;
+        qWarning("getBookPage: Unknow book type");
+
+    return page;
 }
 
 BookPage *AbstractBookReader::getSimpleBookPage(LibraryBook *book, int pageID)

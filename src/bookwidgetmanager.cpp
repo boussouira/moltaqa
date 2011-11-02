@@ -64,10 +64,10 @@ void BookWidgetManager::tabCloseRequest(int tabIndex)
 {
     setActiveTab(sender());
     bookWidget(tabIndex)->saveSettings();
-//    QWidget *w = m_activeTab->widget(tabIndex);
+    QWidget *w = m_activeTab->widget(tabIndex);
     m_activeTab->removeTab(tabIndex);
 
-//    delete w;
+    delete w;
 }
 
 void BookWidgetManager::tabChanged(int newIndex)

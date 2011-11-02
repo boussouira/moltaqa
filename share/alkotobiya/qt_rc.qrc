@@ -23,5 +23,7 @@
         <file>images/magnifier.png</file>
         <file>images/clear.png</file>
         <file>images/delete.png</file>
+        <file>images/tab-new.png</file>
+        <file>images/switch.png</file>
     </qresource>
 </RCC>

@@ -25,6 +25,9 @@ public:
     bool isSelectable();
     void setSelectable(bool selectebale);
 
+signals:
+    void hideMe();
+
 protected:
     QList<QToolBar *> m_toolBars;
     bool m_selectable;

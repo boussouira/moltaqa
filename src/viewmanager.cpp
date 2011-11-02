@@ -7,16 +7,25 @@ ViewManager::ViewManager(QWidget *parent) :
     QStackedWidget(parent)
 {
     m_mainWindow = MW;
+    m_defautView = 0;
 }
 
-void ViewManager::addView(AbstarctView *view)
+void ViewManager::addView(AbstarctView *view, bool selectable)
 {
+    view->setSelectable(selectable);
+
     addWidget(view);
     setupActions();
+
+    m_viewDisplay.push(view);
+
+    connect(view, SIGNAL(hideMe()), SLOT(hideView()));
 }
 
 void ViewManager::removeView(AbstarctView *view)
 {
+    removeViewFromStack(view);
+
     removeWidget(view);
     setupActions();
 }
@@ -40,6 +49,11 @@ void ViewManager::setCurrentView(AbstarctView *view)
     view->showMenu();
 
     setupActions();
+}
+
+void ViewManager::setDefautView(AbstarctView *view)
+{
+    m_defautView = view;
 }
 
 void ViewManager::setCurrentView(int index)
@@ -73,6 +87,21 @@ void ViewManager::setupActions()
     }
 }
 
+void ViewManager::removeViewFromStack(AbstarctView *view)
+{
+    for(int i=0; i<m_viewDisplay.size(); i++) {
+        if(m_viewDisplay[i] == view) {
+            m_viewDisplay.remove(i);
+        }
+    }
+}
+
+void ViewManager::addViewToStack(AbstarctView *view)
+{
+    removeViewFromStack(view);
+    m_viewDisplay.push(view);
+}
+
 void ViewManager::changeWindow()
 {
     QAction *act = qobject_cast<QAction*>(sender());
@@ -89,5 +118,24 @@ void ViewManager::changeWindow()
         }
 
         setCurrentView(act->data().toInt());
+    }
+}
+
+void ViewManager::hideView()
+{
+    AbstarctView *w = qobject_cast<AbstarctView*>(sender());
+    if(w) {
+        w->setSelectable(false);
+        bool useDefautView = true;
+        while(!m_viewDisplay.isEmpty()) {
+            AbstarctView *prevView = m_viewDisplay.pop();
+            if(prevView && prevView != w && prevView->isSelectable()) {
+                setCurrentView(prevView);
+                useDefautView = false;
+            }
+        }
+
+        if(useDefautView)
+            setCurrentView(m_defautView);
     }
 }

@@ -39,6 +39,7 @@ BooksViewer::BooksViewer(LibraryManager *libraryManager, QMainWindow *parent): A
     connect(m_viewManager, SIGNAL(currentTabChanged(int)), SLOT(updateActions()));
     connect(m_viewManager, SIGNAL(currentTabChanged(int)), SLOT(tabChanged(int)));
     connect(m_viewManager, SIGNAL(lastTabClosed()), SIGNAL(lastTabClosed()));
+    connect(m_viewManager, SIGNAL(lastTabClosed()), SIGNAL(hideMe()));
 }
 
 BooksViewer::~BooksViewer()
@@ -138,11 +139,10 @@ void BooksViewer::createMenus(QMainWindow *parent)
     if(parent) {
         QAction *act = parent->menuBar()->actions().at(1);
         m_navMenu = parent->menuBar()->insertMenu(act, navMenu);
+        m_navMenu->setEnabled(false);
     } else {
-        m_navMenu = new QAction(0);
+        m_navMenu = 0;
     }
-
-    m_navMenu->setEnabled(false);
 
     // Setup connections
     // Navigation actions
@@ -182,13 +182,17 @@ void BooksViewer::showToolBars()
 
 void BooksViewer::showMenu()
 {
-    m_navMenu->setVisible(true);
-    m_navMenu->setEnabled(true);
+    if(m_navMenu) {
+        m_navMenu->setVisible(true);
+        m_navMenu->setEnabled(true);
+    }
 }
 
 void BooksViewer::hideMenu()
 {
-    m_navMenu->setEnabled(false);
+    if(m_navMenu) {
+        m_navMenu->setEnabled(false);
+    }
 }
 
 BookWidget *BooksViewer::openBook(int bookID, int pageID, lucene::search::Query *query)

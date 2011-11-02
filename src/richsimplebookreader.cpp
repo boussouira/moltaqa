@@ -113,8 +113,8 @@ void RichSimpleBookReader::childTitles(BookIndexNode *parentNode, int tid)
     QSqlQuery query(m_bookDB);
     query.exec(QString("SELECT id, parentID, pageID, title FROM bookIndex "
                           "WHERE parentID = %1 ORDER BY id").arg(tid));
-    while(query.next())
-    {
+    while(!m_stopModelLoad && query.next()){
+
         BookIndexNode *catNode = new BookIndexNode(query.value(3).toString(),
                                                    query.value(2).toInt());
         childTitles(catNode, query.value(0).toInt());

@@ -105,6 +105,7 @@ bool MainWindow::init()
 
     m_welcomeWidget = new WelcomeWidget(this);
     m_viewManager->addView(m_welcomeWidget);
+    m_viewManager->setDefautView(m_welcomeWidget);
     m_viewManager->setCurrentView(m_welcomeWidget);
 
     try {
@@ -115,7 +116,7 @@ bool MainWindow::init()
         m_libraryManager->loadBooksListModel();
 
         m_bookView = new BooksViewer(m_libraryManager, this);
-        m_bookView->setSelectable(false);
+        m_viewManager->addView(m_bookView, false);
 
         m_booksList = new BooksListBrowser(m_libraryManager, 0);
 
@@ -131,12 +132,11 @@ bool MainWindow::init()
         statusBar()->addPermanentWidget(m_indexBar);
 
         m_searchview = new SearchView(this);
-        m_viewManager->addView(m_searchview);
-        m_viewManager->setCurrentView(m_searchview);
+        m_viewManager->addView(m_searchview, false);
+        showSearchView();
 
         setupActions();
 
-        m_viewManager->addView(m_bookView);
 
         m_indexTracker->addTask(m_libraryManager->getNonIndexedBooks(), IndexTask::Add);
     } catch(BookException &e) {
@@ -183,6 +183,7 @@ void MainWindow::setupActions()
     connect(m_bookView, SIGNAL(lastTabClosed()), SLOT(lastTabClosed()));
     connect(m_booksList, SIGNAL(bookSelected(int)), SLOT(openBook(int)));
     connect(ui->actionBooksList, SIGNAL(triggered()), SLOT(showBooksList()));
+    connect(ui->actionSearchView, SIGNAL(triggered()), SLOT(showSearchView()));
 
     connect(m_indexManager, SIGNAL(progress(int,int)), SLOT(indexProgress(int,int)));
     connect(m_indexManager, SIGNAL(started()), SLOT(startIndexing()));
@@ -233,6 +234,13 @@ void MainWindow::showBooksList()
     m_booksList->activateWindow();
 }
 
+void MainWindow::showSearchView()
+{
+    m_searchview->setSelectable(true);
+    m_searchview->ensureTabIsOpen();
+    m_viewManager->setCurrentView(m_searchview);
+}
+
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     QSettings settings;
@@ -270,8 +278,6 @@ void MainWindow::on_actionImport_triggered()
 
 void MainWindow::lastTabClosed()
 {
-    m_bookView->setSelectable(false);
-    m_viewManager->setCurrentView(m_welcomeWidget);
 }
 
 void MainWindow::on_actionShamelaImport_triggered()

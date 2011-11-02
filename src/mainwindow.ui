@@ -46,6 +46,7 @@
      <string>ملف</string>
     </property>
     <addaction name="actionBooksList"/>
+    <addaction name="actionSearchView"/>
     <addaction name="separator"/>
     <addaction name="actionImport"/>
     <addaction name="actionShamelaImport"/>
@@ -134,6 +135,14 @@
   <action name="actionControlCenter">
    <property name="text">
     <string>غرفة التحكم</string>
+   </property>
+  </action>
+  <action name="actionSearchView">
+   <property name="text">
+    <string>بحث متقدم...</string>
+   </property>
+   <property name="toolTip">
+    <string>بحث متقدم</string>
    </property>
   </action>
  </widget>

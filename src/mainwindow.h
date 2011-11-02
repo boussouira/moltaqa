@@ -50,6 +50,7 @@ protected slots:
     void settingDialog();
     void quranWindow();
     void showBooksList();
+    void showSearchView();
     void openBook(int pBookID);
     void lastTabClosed();
     void controlCenter();

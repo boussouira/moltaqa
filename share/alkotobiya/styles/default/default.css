@@ -1,67 +1,66 @@
 body {
-	direction:rtl;
+    direction: rtl;
 }
 a {
-    text-decoration:none;
+    text-decoration: none;
 }
 
 /* Reader */
+
 #quran {
-    border:1px solid #CCCCCC;
-    font-family:'Lotus Linotype';
-    font-size:30px;
-    padding:15px;
-    text-align:center;
+    border: 1px solid #CCCCCC;
+    font-family: 'Lotus Linotype';
+    font-size: 30px;
+    padding: 15px;
+    text-align: center;
 }
 #simpleBook {
-    border:1px solid #CCCCCC;
-    font-family:'Lotus Linotype';
-    font-size:30px;
-    padding:15px;
-    text-align:right;
+    border: 1px solid #CCCCCC;
+    font-family: 'Lotus Linotype';
+    font-size: 30px;
+    padding: 15px;
+    text-align: right;
 }
 .soraname {
-	border:1px solid #CCCCCC;
-	color:#444444;
-	font-size:30px;
-	margin-left:5px;
-	margin-right:5px;
-	margin-bottom:25px;
-	text-align:center;
+    border: 1px solid #CCCCCC;
+    color: #444444;
+    font-size: 30px;
+    margin-bottom: 25px;
+    margin-left: 5px;
+    margin-right: 5px;
+    text-align: center;
 }
 .ayanumber {
-	color:Teal;
-	margin-left:4px;
-	margin-right:4px;
+    color: Teal;
+    margin-left: 4px;
+    margin-right: 4px;
 }
 .ayatxt {
-	font-size:30px;
-	text-align:justify;
+    font-size: 30px;
+    text-align: justify;
 }
 .bassemala {
-	color:DarkBlue;
-	margin-bottom:10px;
-	text-align:center;
+    color: DarkBlue;
+    margin-bottom: 10px;
+    text-align: center;
 }
-.highlighted{
-	color: #ec0033;
+.highlighted {
+    color: #EC0033;
 }
 footnote {
-    /*color:gray;*/
-    font-size:20px;
+    font-size: 20px;
 }
-footnote a{
-    font-size:17px;
-    color:green;
+footnote a {
+    color: green;
+    font-size: 17px;
 }
 .footn {
-    color:green;
-    font-size:20px;
-    padding-bottom:4px;
+    color: green;
+    font-size: 20px;
+    padding-bottom: 4px;
 }
-
 .tafessir_quran {
-    -webkit-border-radius:10px;
+    border-radius:10px;
     background-color: #FFF2F2;
     border: 1px solid #FFD2D2;
     font-size: 0.9em;
@@ -73,100 +72,153 @@ footnote a{
 }
 
 /* Search */
+
 div.clear {
     clear: both;
 }
-
 .result {
-    -webkit-border-radius:10px;
-    margin:5px 5px 10px 5px;
-    padding:5px 0px;
-    background-color:#feffed;
-    border:1px solid #666800;
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #AAAAAA;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 0 10px #CBCBCB;
+    margin: 5px 5px 15px;
+    padding-bottom: 3px;
 }
-
 .result h3 {
-    margin:0px 5px 5px 5px;
-    font-size:18px;
-    color:rgb(0, 68, 255);
-    display:inline-block;
+    color: #555555;
+    display: inline-block;
+    font-size: 16px;
+    margin: 0;
+    padding: 8px 5px;
+    text-shadow: 1px 1px 0 #FFFFFF;
 }
-
 .result .resultText {
-    margin:0px;
-    padding:5px;
-    display:block;
-    cursor:pointer;
+    color: #333333;
+    cursor: pointer;
+    display: block;
+    font-size: 1.2em;
+    margin: 0;
+    padding: 10px 5px;
 }
-
 .result .resultInfo {
-    padding:0px 10px;
-    margin:5px 0px;
+    border-top: 1px solid #E7E7E7;
+    margin: 5px 0;
+    padding: 10px 10px 5px 5px;
 }
-
-.result .resultInfo .bookInfo  {
+.result .resultInfo .bookInfo {
     float: right;
 }
-
 .result .resultInfo .bookInfo .book {
+    color: #666666;
+    font-weight: bold;
+    margin-left: 5px;
 }
-
 .result .resultInfo .bookInfo .bookName {
-    margin-left:7px;
-    color:green;
-    font-weight:bold
+    color: #ED8E28;
+    font-weight: bold;
+    margin-left: 7px;
 }
-
 .result .resultInfo .pageInfo {
     float: left;
 }
-
 .result .resultInfo .pageInfo .page {
+    color: #666666;
+    font-weight: bold;
+    margin-left: 5px;
 }
-
 .result .resultInfo .pageInfo .pageVal {
-    margin-left: 7px;
+    color: #E38C0B;
+    font-weight: bold;
+    margin-left: 10px;
 }
-
 .result .resultInfo .pageInfo .part {
+    color: #666666;
+    font-weight: bold;
+    margin-left: 5px;
 }
-
 .result .resultInfo .pageInfo .partVal {
+    color: #E38C0B;
+    font-weight: bold;
     margin-left: 7px;
 }
-
 .result .resultHead {
-    margin:0px;
-    margin-bottom:15px;
-    padding:0px;
-    border-bottom:1px dotted #ccc;
+    background-color: #EDEDED;
+    background-image: -webkit-linear-gradient(#FFFFFF, #E7E7E7);
+    background-image: -moz-linear-gradient(#FFFFFF, #E7E7E7);
+    border-bottom: 1px solid #D5D5D5;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    margin: 0 0 15px;
 }
-
 .result .progSpan {
+    background-color: #B7CBB4;
     float: left;
     height: 10px;
-    background-color: rgb(167, 239, 170);
-    margin:0px 5px;
-    margin-top:5px;
+    margin: 5px 5px 0;
 }
-
 .result .progSpanContainre {
+    border: 1px solid #B1B5AE;
     float: left;
     height: 9px;
     width: 99px;
-    border:1px solid #999999;
 }
-
 .result .prev {
-    font-style:oblique;
-    float:right;
+    float: right;
+    font-style: oblique;
 }
-
 .result .next {
-    font-style:oblique;
-    float:right;
+    float: right;
+    font-style: oblique;
 }
 
+/* Result highlight */
+
+.resultHL {
+    background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.1));
+    background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.1));
+}
+
+.resultHL_0 {
+    background-color: #ffff63;
+}
+
+.resultHL_1 {
+    background-color: #ef86fb;
+}
+
+.resultHL_2 {
+    background-color: #a5ffff;
+}
+
+.resultHL_3 {
+    background-color: #F77A7E;
+}
+
+.resultHL_4 {
+    background-color: #9cff9c;
+}
+
+.resultHL_5 {
+    background-color: #d4ce62;
+}
+
+.resultHL_6 {
+    background-color: #ab9bff;
+}
+
+.resultHL_7 {
+    background-color: #e7cda4;
+}
+
+.resultHL_8 {
+    background-color: #c8dc79;
+}
+
+.resultHL_default{
+    background-color: #b6d7c6;
+}
+
+/* Info message */
 #growlcontainer {
     font-size: 12px;
     left: 20px;
@@ -176,9 +228,11 @@ div.clear {
     z-index: 1000;
 }
 .growlstatus {
-    background-color: rgba(248, 255, 137, 0.8);
-    border: 3px solid #E3CE67;
-    border-radius: 10px;
+    background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.7), rgba(222, 214, 214, 0.7));
+    background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.7), rgba(222, 214, 214, 0.7));
+    border: 3px solid #E1E1E1;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 0 5px 0 rgba(200, 200, 200, 0.8) inset;
     color: #000000;
     margin-bottom: 5px;
     padding: 15px;
@@ -199,8 +253,8 @@ div.clear {
     width: 30px;
 }
 .growlstatus:hover {
-    background-color: rgba(255, 254, 153, 0.7);
-    border: 3px solid rgba(225, 225, 121, 0.7) ;
+    border: 3px solid rgba(193, 193, 193, 0.7);
+    box-shadow: 0 0 5px 2px #CCCCCC;
 }
 .growlstatus:hover .growlstatusclose {
     display: block;

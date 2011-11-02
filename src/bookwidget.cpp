@@ -42,6 +42,7 @@ BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_
 BookWidget::~BookWidget()
 {
     if(m_watcher->isRunning()) {
+        m_db->stopModelLoad();
         qDebug("Waiting for model...");
         m_watcher->waitForFinished();
     }
@@ -209,4 +210,8 @@ void BookWidget::indexModelReady()
 void BookWidget::readerTextChanged()
 {
     m_view->setHtml(m_db->text());
+
+    if(m_db->scrollToHighlight()){
+        m_view->scrollToElement(".resultHL");
+    }
 }

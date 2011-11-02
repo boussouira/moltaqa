@@ -14,9 +14,8 @@ public:
 
 protected:
     int numHighlights;
-    QList<QString> m_colors;
-    QHash<QString, QString> m_wordColor;
-    int m_colorIndex;
+    QList<QString> m_words;
+    int m_numColor;
     bool m_useColor;
 };
 

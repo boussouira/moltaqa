@@ -30,6 +30,7 @@ public:
     };
 
     void setCurrentWidget(CurrentWidget index);
+    void toggleWidget();
 
 protected:
     void setupCleanMenu();

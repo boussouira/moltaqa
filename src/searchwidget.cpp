@@ -51,6 +51,12 @@ void SearchWidget::setCurrentWidget(SearchWidget::CurrentWidget index)
     ui->stackedWidget->setCurrentIndex(index);
 }
 
+void SearchWidget::toggleWidget()
+{
+    if(m_searcher) // Do we have any search result?
+        setCurrentWidget(ui->stackedWidget->currentIndex()==Search ? Result : Search);
+}
+
 void SearchWidget::setupCleanMenu()
 {
     QList<FancyLineEdit*> lines;

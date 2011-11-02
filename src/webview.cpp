@@ -1,9 +1,7 @@
 #include "webview.h"
 
 WebView::WebView(QWidget *parent) :
-    QWebView(parent),
-    m_scrollSora(-1),
-    m_scrollAya(-1)
+    QWebView(parent)
 {
     m_frame = page()->mainFrame();
 
@@ -13,10 +11,28 @@ WebView::WebView(QWidget *parent) :
 
 void WebView::scrollToAya(int pSoraNumber, int pAyaNumber)
 {
-    m_scrollSora = pSoraNumber;
-    m_scrollAya = pAyaNumber;
+    // First we unhighlight the highlighted AYA
+    m_frame->findFirstElement("span.highlighted").removeClass("highlighted");
 
-    startScrolling();
+    // Since each AYA has it own uniq id, we can highlight
+    // any AYA in the current page by adding the class "highlighted"
+    m_frame->findFirstElement(QString("span#s%1a%2")
+                            .arg(pSoraNumber).arg(pAyaNumber)).addClass("highlighted");
+
+    // Get the postion of the selected AYA
+    QRect highElement = m_frame->findFirstElement("span.highlighted").geometry();
+    // m_frame heihgt
+    int frameHeihgt = m_frame->geometry().height() / 2;
+    // The height that should be added to center the selected aya
+    int addHeight = highElement.height() / 2 ;
+    // it must be less than frameHeight
+    while (frameHeihgt < addHeight )
+        addHeight = addHeight / 2;
+    // The aya position equal ((ayaHeight - frameHeight) + addHeight)
+    int ayaPosition = (highElement.y() - frameHeihgt) + addHeight;
+
+    // Animation the scrolling to the selected AYA
+    scrollToPosition(QPoint(0, ayaPosition));
 }
 
 void WebView::scrollToSora(int soraNumber)
@@ -92,34 +108,22 @@ void WebView::setText(const QString &text)
     emit textChanged();
 }
 
-void WebView::startScrolling()
+void WebView::scrollToElement(QString elementQuery)
 {
-    if(m_scrollSora == -1 || m_scrollAya == -1)
-        return;
+    QWebElement element = m_frame->findFirstElement(elementQuery);
+    if(!element.isNull()) {
+        QRect highElement = element.geometry();
+        // m_frame heihgt
+        int frameHeihgt = m_frame->geometry().height() / 2;
+        // The height that should be added to center the selected aya
+        int addHeight = highElement.height() / 2 ;
+        // it must be less than frameHeight
+        while (frameHeihgt < addHeight )
+            addHeight = addHeight / 2;
+        // The aya position equal ((ayaHeight - frameHeight) + addHeight)
+        int ayaPosition = (highElement.y() - frameHeihgt) + addHeight;
 
-    // First we unhighlight the highlighted AYA
-    m_frame->findFirstElement("span.highlighted").removeClass("highlighted");
-
-    // Since each AYA has it own uniq id, we can highlight
-    // any AYA in the current page by adding the class "highlighted"
-    m_frame->findFirstElement(QString("span#s%1a%2")
-                            .arg(m_scrollSora).arg(m_scrollAya)).addClass("highlighted");
-
-    // Get the postion of the selected AYA
-    QRect highElement = m_frame->findFirstElement("span.highlighted").geometry();
-    // m_frame heihgt
-    int frameHeihgt = m_frame->geometry().height() / 2;
-    // The height that should be added to center the selected aya
-    int addHeight = highElement.height() / 2 ;
-    // it must be less than frameHeight
-    while (frameHeihgt < addHeight )
-        addHeight = addHeight / 2;
-    // The aya position equal ((ayaHeight - frameHeight) + addHeight)
-    int ayaPosition = (highElement.y() - frameHeihgt) + addHeight;
-
-    // Animation the scrolling to the selected AYA
-    scrollToPosition(QPoint(0, ayaPosition));
-
-    m_scrollSora = -1;
-    m_scrollAya = -1;
+        // Animation the scrolling to the selected AYA
+        scrollToPosition(QPoint(0, ayaPosition));
+    }
 }
