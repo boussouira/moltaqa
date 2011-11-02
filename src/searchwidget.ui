@@ -87,7 +87,7 @@ p, li { white-space: pre-wrap; }
             <item row="2" column="1">
              <widget class="FancyLineEdit" name="lineQueryShouldNot">
               <property name="pixmap" stdset="0">
-               <pixmap resource="../share/alkotobiya/qt_rc.qrc">:/menu/images/clear.png</pixmap>
+               <pixmap resource="../share/moltaqa-lib/qt_rc.qrc">:/menu/images/clear.png</pixmap>
               </property>
              </widget>
             </item>
@@ -107,7 +107,7 @@ p, li { white-space: pre-wrap; }
                </sizepolicy>
               </property>
               <property name="pixmap" stdset="0">
-               <pixmap resource="../share/alkotobiya/qt_rc.qrc">:/menu/images/clear.png</pixmap>
+               <pixmap resource="../share/moltaqa-lib/qt_rc.qrc">:/menu/images/clear.png</pixmap>
               </property>
               <property name="extraPadding" stdset="0">
                <bool>false</bool>
@@ -124,7 +124,7 @@ p, li { white-space: pre-wrap; }
             <item row="1" column="1">
              <widget class="FancyLineEdit" name="lineQueryShould">
               <property name="pixmap" stdset="0">
-               <pixmap resource="../share/alkotobiya/qt_rc.qrc">:/menu/images/clear.png</pixmap>
+               <pixmap resource="../share/moltaqa-lib/qt_rc.qrc">:/menu/images/clear.png</pixmap>
               </property>
              </widget>
             </item>
@@ -164,7 +164,7 @@ p, li { white-space: pre-wrap; }
          <item>
           <widget class="FancyLineEdit" name="lineFilter">
            <property name="pixmap" stdset="0">
-            <pixmap resource="../share/alkotobiya/qt_rc.qrc">:/menu/images/magnifier.png</pixmap>
+            <pixmap resource="../share/moltaqa-lib/qt_rc.qrc">:/menu/images/magnifier.png</pixmap>
            </property>
            <property name="extraPadding" stdset="0">
             <bool>true</bool>
@@ -250,7 +250,7 @@ p, li { white-space: pre-wrap; }
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../share/alkotobiya/qt_rc.qrc"/>
+  <include location="../share/moltaqa-lib/qt_rc.qrc"/>
  </resources>
  <connections/>
 </ui>

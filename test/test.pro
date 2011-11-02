@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = alkotobiya_test
+TARGET = moltaqa-lib_test
 QT += testlib sql
 
 CONFIG += qtestlib

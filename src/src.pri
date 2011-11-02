@@ -190,5 +190,5 @@ FORMS += mainwindow.ui settingsdialog.ui \
     searchwidget.ui \
     resultwidget.ui
 
-RESOURCES += ../share/alkotobiya/qt_rc.qrc
-win32:RC_FILE = ../share/alkotobiya/win_rc.rc
+RESOURCES += ../share/moltaqa-lib/qt_rc.qrc
+win32:RC_FILE = ../share/moltaqa-lib/win_rc.rc

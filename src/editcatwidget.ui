@@ -34,7 +34,7 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset resource="../share/alkotobiya/qt_rc.qrc">
+        <iconset resource="../share/moltaqa-lib/qt_rc.qrc">
          <normaloff>:/menu/images/add.png</normaloff>:/menu/images/add.png</iconset>
        </property>
       </widget>
@@ -51,7 +51,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="../share/alkotobiya/qt_rc.qrc">
+        <iconset resource="../share/moltaqa-lib/qt_rc.qrc">
          <normaloff>:/menu/images/remove.png</normaloff>:/menu/images/remove.png</iconset>
        </property>
        <property name="shortcut">
@@ -75,7 +75,7 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset resource="../share/alkotobiya/qt_rc.qrc">
+        <iconset resource="../share/moltaqa-lib/qt_rc.qrc">
          <normaloff>:/menu/images/go-up2.png</normaloff>:/menu/images/go-up2.png</iconset>
        </property>
       </widget>
@@ -92,7 +92,7 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset resource="../share/alkotobiya/qt_rc.qrc">
+        <iconset resource="../share/moltaqa-lib/qt_rc.qrc">
          <normaloff>:/menu/images/go-down2.png</normaloff>:/menu/images/go-down2.png</iconset>
        </property>
       </widget>
@@ -115,7 +115,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../share/alkotobiya/qt_rc.qrc"/>
+  <include location="../share/moltaqa-lib/qt_rc.qrc"/>
  </resources>
  <connections/>
 </ui>

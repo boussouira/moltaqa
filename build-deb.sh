@@ -1,9 +1,9 @@
 #!/bin/bash
 
-APP_NAME="alkotobiya"
+APP_NAME="moltaqa-lib"
 APP_VERSION="0.8"
 APP_DIR_NAME="${APP_NAME}-${APP_VERSION}"
-APP_FILES="alkotobiya.pro CMakeLists.txt  Doxyfile  README  share  src  test"
+APP_FILES="moltaqa-lib.pro CMakeLists.txt  Doxyfile  README  share  src  test"
 TEMP_DIR="temp-build-deb"
 SOURCE_ARCHIVE="${APP_NAME}-${APP_VERSION}.tar.gz"
 SOURCE_ARCHIVE_ORIG="${APP_NAME}_${APP_VERSION}.orig.tar.gz"

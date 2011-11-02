@@ -236,7 +236,7 @@ QString shareDir()
 {
     QDir dir(appDir());
     dir.cd("share");
-    dir.cd("alkotobiya");
+    dir.cd("moltaqa-lib");
 
     return dir.absolutePath();
 }

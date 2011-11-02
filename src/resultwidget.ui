@@ -79,7 +79,7 @@
              <string>...</string>
             </property>
             <property name="icon">
-             <iconset resource="../share/alkotobiya/qt_rc.qrc">
+             <iconset resource="../share/moltaqa-lib/qt_rc.qrc">
               <normaloff>:/menu/images/go-last.png</normaloff>:/menu/images/go-last.png</iconset>
             </property>
             <property name="iconSize">
@@ -102,7 +102,7 @@
              <string>..</string>
             </property>
             <property name="icon">
-             <iconset resource="../share/alkotobiya/qt_rc.qrc">
+             <iconset resource="../share/moltaqa-lib/qt_rc.qrc">
               <normaloff>:/menu/images/go-next.png</normaloff>:/menu/images/go-next.png</iconset>
             </property>
             <property name="iconSize">
@@ -158,7 +158,7 @@
              <string>التالي</string>
             </property>
             <property name="icon">
-             <iconset resource="../share/alkotobiya/qt_rc.qrc">
+             <iconset resource="../share/moltaqa-lib/qt_rc.qrc">
               <normaloff>:/menu/images/go-previous.png</normaloff>:/menu/images/go-previous.png</iconset>
             </property>
             <property name="iconSize">
@@ -181,7 +181,7 @@
              <string>..</string>
             </property>
             <property name="icon">
-             <iconset resource="../share/alkotobiya/qt_rc.qrc">
+             <iconset resource="../share/moltaqa-lib/qt_rc.qrc">
               <normaloff>:/menu/images/go-first.png</normaloff>:/menu/images/go-first.png</iconset>
             </property>
             <property name="iconSize">
@@ -205,7 +205,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../share/alkotobiya/qt_rc.qrc"/>
+  <include location="../share/moltaqa-lib/qt_rc.qrc"/>
  </resources>
  <connections/>
 </ui>

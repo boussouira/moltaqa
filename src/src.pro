@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = alkotobiya
+TARGET = moltaqa-lib
 
 CODECFORSRC = UTF-8
 CODECFORTR  = UTF-8
@@ -65,10 +65,10 @@ unix {
     target.path = $$BINDIR
 
     styles.path = $$DATADIR/$$TARGET/styles/default
-    styles.files += ../share/alkotobiya/styles/default/default.css
+    styles.files += ../share/moltaqa-lib/styles/default/default.css
 
     locale.path = $$DATADIR/$$TARGET/locale
-    locale.files += ../share/alkotobiya/locale/qt_ar.qm
+    locale.files += ../share/moltaqa-lib/locale/qt_ar.qm
 
     fonts.path = $$DATADIR/fonts/$$TARGET
     fonts.files += ../share/fonts/$$TARGET/LotusLinotype_Light.otf

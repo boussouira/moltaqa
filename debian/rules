@@ -29,7 +29,7 @@ builddir:
 	mkdir -p builddir
 
 builddir/Makefile: builddir patch
-	cd builddir && qmake PREFIX=/usr ../alkotobiya.pro
+	cd builddir && qmake PREFIX=/usr ../moltaqa-lib.pro
 
 build-stamp: builddir/Makefile
 	dh_testdir
@@ -45,8 +45,8 @@ install: build
 	dh_clean -k 
 	dh_installdirs
 
-	# Add here commands to install the package into debian/alkotobiya
-	cd builddir && $(MAKE) INSTALL_ROOT=$(CURDIR)/debian/alkotobiya install
+	# Add here commands to install the package into debian/moltaqa-lib
+	cd builddir && $(MAKE) INSTALL_ROOT=$(CURDIR)/debian/moltaqa-lib install
 
 
 binary-indep: install

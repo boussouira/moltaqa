@@ -18,9 +18,9 @@ int main(int argc, char *argv[])
     translator.load(QString("qt_ar"), ":/locale");
     app.installTranslator(&translator);
 
-    app.setOrganizationName("alkotobiya");
-    app.setOrganizationDomain("alkotobiya.sf.net");
-    app.setApplicationName("Al-Kotobiya");
+    app.setOrganizationName("Ahl-Alhdeeth");
+    app.setOrganizationDomain("ahlalhdeeth.com");
+    app.setApplicationName("Moltaqa-Library");
     app.setApplicationVersion("0.5");
 
     qsrand(QDateTime::currentDateTime().toTime_t());

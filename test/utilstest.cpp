@@ -64,9 +64,9 @@ void UtilsTest::appDirs()
 
     QVERIFY(QApplication::applicationDirPath().startsWith(App::appDir()));
     QVERIFY(App::binDir().endsWith("/bin"));
-    QVERIFY(App::shareDir().endsWith("/share/alkotobiya"));
-    QVERIFY(App::stylesDir().endsWith("/share/alkotobiya/styles"));
-    QVERIFY(App::localeDir().endsWith("/share/alkotobiya/locale"));
+    QVERIFY(App::shareDir().endsWith("/share/moltaqa-lib"));
+    QVERIFY(App::stylesDir().endsWith("/share/moltaqa-lib/styles"));
+    QVERIFY(App::localeDir().endsWith("/share/moltaqa-lib/locale"));
 }
 
 QTEST_MAIN(UtilsTest)
