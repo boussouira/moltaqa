@@ -77,8 +77,9 @@ void RichSimpleBookReader::goToHaddit(int hadditNum)
         goToPage(page);
 }
 
-QAbstractItemModel *RichSimpleBookReader::indexModel()
+BookIndexModel *RichSimpleBookReader::indexModel()
 {
+    m_indexModel = new BookIndexModel();
     BookIndexNode *rootNode = new BookIndexNode();
 
     childTitles(rootNode, 0);
@@ -88,7 +89,7 @@ QAbstractItemModel *RichSimpleBookReader::indexModel()
     return m_indexModel;
 }
 
-QAbstractItemModel * RichSimpleBookReader::topIndexModel()
+BookIndexModel * RichSimpleBookReader::topIndexModel()
 {
     BookIndexModel *indexModel = new BookIndexModel();
     BookIndexNode *rootNode = new BookIndexNode();

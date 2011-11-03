@@ -9,7 +9,7 @@ class IndexWidget;
 class RichBookReader;
 class QSplitter;
 class QVBoxLayout;
-class QAbstractItemModel;
+class BookIndexModel;
 
 class BookWidget: public QWidget
 {
@@ -49,8 +49,8 @@ protected:
     WebView *m_view;
     IndexWidget *m_indexWidget;
     RichBookReader *m_db;
-    QFuture<QAbstractItemModel*> m_retModel;
-    QFutureWatcher<QAbstractItemModel*> *m_watcher;
+    QFuture<BookIndexModel*> m_retModel;
+    QFutureWatcher<BookIndexModel*> *m_watcher;
 };
 
 #endif // BOOKWIDGET_H

@@ -16,6 +16,7 @@
 #include "indextracker.h"
 #include "indexmanager.h"
 #include "viewmanager.h"
+#include "bookreaderhelper.h"
 
 #include <qmessagebox.h>
 #include <qsettings.h>
@@ -33,7 +34,8 @@ MainWindow::MainWindow(QWidget *parent):
     m_libraryInfo(0),
     m_libraryManager(0),
     m_indexTracker(0),
-    m_indexManager(0)
+    m_indexManager(0),
+    m_readerHelper(0)
 {
     ui->setupUi(this);
     m_mainWindow = this;
@@ -137,6 +139,7 @@ bool MainWindow::init()
 
         setupActions();
 
+        m_readerHelper = new BookReaderHelper();
 
         m_indexTracker->addTask(m_libraryManager->getNonIndexedBooks(), IndexTask::Add);
     } catch(BookException &e) {
@@ -159,6 +162,9 @@ MainWindow::~MainWindow()
 
     if(m_libraryInfo)
         delete m_libraryInfo;
+
+    if(m_readerHelper)
+        delete m_readerHelper;
 
     m_mainWindow = 0;
 }
@@ -324,6 +330,13 @@ IndexManager * MainWindow::indexManager()
     Q_ASSERT(m_indexManager);
 
     return m_indexManager;
+}
+
+BookReaderHelper *MainWindow::readerHelper()
+{
+    Q_ASSERT(m_readerHelper);
+
+    return m_readerHelper;
 }
 
 void MainWindow::controlCenter()

@@ -27,7 +27,7 @@ public:
 
     bool needFastIndexLoad();
 
-    QAbstractItemModel *indexModel();
+    BookIndexModel *indexModel();
 
 protected:
     void connected();

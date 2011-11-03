@@ -11,7 +11,8 @@ namespace Utils {
 
 int randInt(int smin, int smax)
 {
-    return (smin + (qrand() % (smax-smin+1)));
+    int rVal = (smin + (qrand() % (smax-smin+1)));
+    return qBound(smin, rVal, smax);
 }
 
 QString genBookName(QString path, bool fullPath, QString ext, QString namePrefix)
@@ -261,6 +262,14 @@ QString localeDir()
 {
     QDir dir(shareDir());
     dir.cd("locale");
+
+    return dir.absolutePath();
+}
+
+QString dataDir()
+{
+    QDir dir(shareDir());
+    dir.cd("data");
 
     return dir.absolutePath();
 }

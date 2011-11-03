@@ -23,11 +23,11 @@ public:
     /**
       Get the full index model of the curren book
       */
-    virtual QAbstractItemModel *indexModel() = 0;
+    virtual BookIndexModel *indexModel() = 0;
     /**
       Get only a top level index model
       */
-    virtual QAbstractItemModel *topIndexModel();
+    virtual BookIndexModel *topIndexModel();
 
     QString text();
 

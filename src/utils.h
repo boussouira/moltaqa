@@ -52,6 +52,7 @@ QString shareDir();
 QString stylesDir();
 QString jsDir();
 QString localeDir();
+QString dataDir();
 }
 
 namespace Sql {

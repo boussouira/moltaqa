@@ -98,8 +98,9 @@ bool RichQuranReader::needFastIndexLoad()
     return false;
 }
 
-QAbstractItemModel *RichQuranReader::indexModel()
+BookIndexModel *RichQuranReader::indexModel()
 {
+    m_indexModel = new BookIndexModel();
     BookIndexNode *rootNode = new BookIndexNode();
 
     m_quranQuery->index();

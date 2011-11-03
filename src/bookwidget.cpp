@@ -4,6 +4,8 @@
 #include "webview.h"
 #include "textformatter.h"
 #include "richsimplebookreader.h"
+#include "mainwindow.h"
+#include "bookreaderhelper.h"
 
 #include <qsplitter.h>
 #include <qboxlayout.h>
@@ -21,7 +23,7 @@ BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_
     m_indexWidget->setBookInfo(db->bookInfo());
     m_indexWidget->setCurrentPage(db->page());
 
-    m_watcher = new QFutureWatcher<QAbstractItemModel*>(this);
+    m_watcher = new QFutureWatcher<BookIndexModel*>(this);
     connect(m_watcher, SIGNAL(finished()), SLOT(indexModelReady()));
 
     m_splitter->addWidget(m_indexWidget);
@@ -45,6 +47,7 @@ BookWidget::~BookWidget()
         m_db->stopModelLoad();
         qDebug("Waiting for model...");
         m_watcher->waitForFinished();
+        qDebug("Done");
     }
 
     delete m_db;
@@ -80,10 +83,16 @@ void BookWidget::setBookReader(RichBookReader *db)
 void BookWidget::displayInfo()
 {
     if(m_db->needFastIndexLoad()) {
-        m_retModel = QtConcurrent::run(m_db, &RichBookReader::indexModel);
-        m_watcher->setFuture(m_retModel);
+        BookIndexModel *savedModel = MW->readerHelper()->getBookModel(m_db->bookInfo()->bookID);
+        if(savedModel) {
+            m_indexWidget->setIndex(savedModel);
+            m_db->setBookIndexModel(savedModel);
+        } else {
+            m_retModel = QtConcurrent::run(m_db, &RichBookReader::indexModel);
+            m_watcher->setFuture(m_retModel);
 
-        m_indexWidget->setIndex(m_db->topIndexModel());
+            m_indexWidget->setIndex(m_db->topIndexModel());
+        }
     } else {
         m_indexWidget->setIndex(m_db->indexModel());
     }
@@ -204,7 +213,10 @@ void BookWidget::hideIndexWidget()
 
 void BookWidget::indexModelReady()
 {
-    m_indexWidget->setIndex(m_retModel.result());
+    BookIndexModel *model = m_retModel.result();
+    m_indexWidget->setIndex(model);
+
+    MW->readerHelper()->addBookModel(m_db->bookInfo()->bookID, model);
 }
 
 void BookWidget::readerTextChanged()

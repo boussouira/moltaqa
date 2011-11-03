@@ -12,7 +12,6 @@ class LibraryBook;
 class BookPage;
 class BookIndexModel;
 class TextFormatter;
-class QAbstractItemModel;
 class QSqlQuery;
 
 class AbstractBookReader : public QObject
@@ -24,6 +23,7 @@ public:
     void openBook(bool fastOpen=false);
     void setBookInfo(LibraryBook *bi);
     void setLibraryManager(LibraryManager *db);
+    void setBookIndexModel(BookIndexModel *model);
 
     LibraryBook *bookInfo() { return m_bookInfo; }
     LibraryManager *libraryManager();

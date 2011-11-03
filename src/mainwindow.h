@@ -15,6 +15,7 @@ class WelcomeWidget;
 class LibraryInfo;
 class IndexTracker;
 class IndexManager;
+class BookReaderHelper;
 class QProgressBar;
 
 namespace Ui
@@ -39,6 +40,7 @@ public:
     BooksListBrowser *booksListBrowser();
     IndexTracker *indexTracker();
     IndexManager *indexManager();
+    BookReaderHelper *readerHelper();
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -74,6 +76,7 @@ private:
     IndexManager *m_indexManager;
     QProgressBar *m_indexBar;
     SearchView *m_searchview;
+    BookReaderHelper *m_readerHelper;
     int defaultQuran;
 };
 

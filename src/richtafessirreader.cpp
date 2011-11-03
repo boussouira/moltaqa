@@ -22,6 +22,7 @@ RichTafessirReader::RichTafessirReader(QObject *parent) : RichBookReader(parent)
     m_textFormat = m_formatter;
     m_tafessirQuery = 0;
     m_quranInfo = 0;
+    m_quranQuery = 0;
 }
 
 RichTafessirReader::~RichTafessirReader()
@@ -30,8 +31,13 @@ RichTafessirReader::~RichTafessirReader()
         delete m_tafessirQuery;
 
     if(m_quranDB.isOpen()) {
+        if(m_quranQuery)
+            delete m_quranQuery;
+
+        QString conn = m_quranDB.connectionName();
         m_quranDB.close();
-        delete m_quranQuery;
+        m_quranDB = QSqlDatabase();
+        QSqlDatabase::removeDatabase(conn);
     }
 }
 
@@ -95,8 +101,9 @@ void RichTafessirReader::goToPage(int page, int part)
         goToPage(m_tafessirQuery->value(0).toInt());
 }
 
-QAbstractItemModel * RichTafessirReader::indexModel()
+BookIndexModel * RichTafessirReader::indexModel()
 {
+    m_indexModel= new BookIndexModel();
     BookIndexNode *rootNode = new BookIndexNode();
 
     childTitles(rootNode, 0);
@@ -106,7 +113,7 @@ QAbstractItemModel * RichTafessirReader::indexModel()
     return m_indexModel;
 }
 
-QAbstractItemModel * RichTafessirReader::topIndexModel()
+BookIndexModel *RichTafessirReader::topIndexModel()
 {
     BookIndexModel *indexModel = new BookIndexModel();
     BookIndexNode *rootNode = new BookIndexNode();
@@ -131,7 +138,7 @@ void RichTafessirReader::childTitles(BookIndexNode *parentNode, int tid)
     QSqlQuery query(m_bookDB);
     query.exec(QString("SELECT id, parentID, pageID, title FROM bookIndex "
                        "WHERE parentID = %1 ORDER BY id").arg(tid));
-    while(query.next()) {
+    while(!m_stopModelLoad && query.next()) {
         BookIndexNode *catNode = new BookIndexNode(query.value(3).toString(),
                                                    query.value(2).toInt());
         childTitles(catNode, query.value(0).toInt());
@@ -141,12 +148,14 @@ void RichTafessirReader::childTitles(BookIndexNode *parentNode, int tid)
 
 void RichTafessirReader::openQuranBook()
 {
-    if(QSqlDatabase::contains(QString("quran_tafessir_%1").arg(m_bookInfo->bookID))) {
-        m_quranDB = QSqlDatabase::database(QString("quran_tafessir_%1").arg(m_bookInfo->bookID));
-    } else {
-        m_quranDB = QSqlDatabase::addDatabase("QSQLITE", QString("quran_tafessir_%1").arg(m_bookInfo->bookID));
-        m_quranDB.setDatabaseName(m_quranInfo->bookPath);
+    QString connName = QString("quran_tafessir_%1").arg(m_bookInfo->bookID);
+
+    while(QSqlDatabase::contains(connName)) {
+        connName.append("_");
     }
+
+    m_quranDB = QSqlDatabase::addDatabase("QSQLITE", connName);
+    m_quranDB.setDatabaseName(m_quranInfo->bookPath);
 
     if (!m_quranDB.open())
         throw BookException(tr("لم يمكن فتح قاعدة البيانات"), m_quranInfo->bookPath);

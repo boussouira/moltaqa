@@ -2,6 +2,7 @@
 #include "textformatter.h"
 #include "librarybook.h"
 #include "bookpage.h"
+#include "bookindexmodel.h"
 
 RichBookReader::RichBookReader(QObject *parent) : AbstractBookReader(parent)
 {
@@ -49,7 +50,7 @@ void RichBookReader::stopModelLoad()
     m_stopModelLoad = true;
 }
 
-QAbstractItemModel * RichBookReader::topIndexModel()
+BookIndexModel *RichBookReader::topIndexModel()
 {
-    return new QStandardItemModel();
+    return new BookIndexModel();
 }

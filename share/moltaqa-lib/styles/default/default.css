@@ -151,15 +151,18 @@ div.clear {
     margin: 0 0 15px;
 }
 .result .progSpan {
-    background-color: #B7CBB4;
+    background-color: #C3EBBC;
+    border-radius: 3px;
     float: left;
-    height: 10px;
+    height: 22px;
     margin: 5px 5px 0;
 }
 .result .progSpanContainre {
     border: 1px solid #B1B5AE;
+    border-radius: 3px;
+    box-shadow: 0 0 5px 0 #C8C8C8;
     float: left;
-    height: 9px;
+    height: 20px;
     width: 99px;
 }
 .result .prev {

@@ -5,6 +5,8 @@
 #include "bookexception.h"
 #include "textformatter.h"
 #include "utils.h"
+#include "mainwindow.h"
+#include "bookreaderhelper.h"
 
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
@@ -15,30 +17,35 @@
 
 AbstractBookReader::AbstractBookReader(QObject *parent) : QObject(parent)
 {
-    m_indexModel = new BookIndexModel();
+    m_indexModel = 0;
     m_currentPage = new BookPage();
     m_bookInfo = 0;
 }
 
 AbstractBookReader::~AbstractBookReader()
 {
-    delete m_indexModel;
+    qDebug("~AbstractBookReader()");
+
+    m_bookDB = QSqlDatabase();
+    QSqlDatabase::removeDatabase(m_connectionName);
+
+    if(m_indexModel) // Should be remove after removing the database
+        MW->readerHelper()->removeModel(m_bookInfo->bookID);
+    else
+        qDebug("No model to delete");
 
     if(m_bookInfo)
         delete m_bookInfo;
 
     if(m_currentPage)
         delete m_currentPage;
-
-    m_bookDB = QSqlDatabase();
-    QSqlDatabase::removeDatabase(m_connectionName);
 }
 
 void AbstractBookReader::openBook(bool fastOpen)
 {
     Q_ASSERT(m_bookInfo);
 
-    m_connectionName = QString("book_i%1").arg(m_bookInfo->bookID);
+    m_connectionName = QString("book_i%1_").arg(m_bookInfo->bookID);
     while(QSqlDatabase::contains(m_connectionName))
         m_connectionName.append("_");
 
@@ -77,6 +84,11 @@ void AbstractBookReader::connected()
 void AbstractBookReader::setLibraryManager(LibraryManager *db)
 {
     m_libraryManager = db;
+}
+
+void AbstractBookReader::setBookIndexModel(BookIndexModel *model)
+{
+    m_indexModel = model;
 }
 
 LibraryManager* AbstractBookReader::libraryManager()
@@ -235,7 +247,9 @@ BookPage *AbstractBookReader::getTafessirPage(LibraryBook *book, int pageID)
             page->text = QString::fromUtf8(qUncompress(bookQuery.value(1).toByteArray()));
             page->title = bookQuery.value(4).toString();
             if(page->title.size() < 9) {
-                page->title = tr("تفسير سورة %1، الاية %2").arg(page->sora).arg(page->aya);
+                QuranSora *quranSora = MW->readerHelper()->getQuranSora(page->sora);
+                if(quranSora)
+                    page->title = tr("تفسير سورة %1، الاية %2").arg(quranSora->name).arg(page->aya);
             }
 
         } else {

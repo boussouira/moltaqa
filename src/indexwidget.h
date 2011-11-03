@@ -2,8 +2,8 @@
 #define INDEXWIDGET_H
 
 #include "librarybook.h"
+#include "bookindexmodel.h"
 #include <qdockwidget.h>
-#include <qstringlistmodel.h>
 
 namespace Ui {
     class IndexWidget;
@@ -27,7 +27,7 @@ protected:
     void changeEvent(QEvent *e);
 
 public slots:
-    void setIndex(QAbstractItemModel *pList);
+    void setIndex(BookIndexModel *pList);
     void displayBookInfo();
     void setSelectedSora(int pSoraNumber);
     void updatePageAndAyaNum(int pPageNumber, int pAyaNumber);

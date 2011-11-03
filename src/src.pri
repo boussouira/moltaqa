@@ -93,7 +93,8 @@ SOURCES += mainwindow.cpp \
     searchresult.cpp \
     resultwidget.cpp \
     textsimplebookreader.cpp \
-    textquranreader.cpp
+    textquranreader.cpp \
+    bookreaderhelper.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -173,7 +174,8 @@ HEADERS += mainwindow.h \
     searchresult.h \
     resultwidget.h \
     textsimplebookreader.h \
-    textquranreader.h
+    textquranreader.h \
+    bookreaderhelper.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \
@@ -192,3 +194,5 @@ FORMS += mainwindow.ui settingsdialog.ui \
 
 RESOURCES += ../share/moltaqa-lib/qt_rc.qrc
 win32:RC_FILE = ../share/moltaqa-lib/win_rc.rc
+
+

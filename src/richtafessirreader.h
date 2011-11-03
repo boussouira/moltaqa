@@ -18,8 +18,8 @@ public:
     void goToSora(int sora, int aya);
     void goToHaddit(int hadditNum);
 
-    QAbstractItemModel *indexModel();
-    QAbstractItemModel *topIndexModel();
+    BookIndexModel *indexModel();
+    BookIndexModel *topIndexModel();
 
 protected:
     void childTitles(BookIndexNode *parentNode, int tid);
