@@ -25,11 +25,18 @@ QString NewBookWriter::bookPath()
 
 void NewBookWriter::createNewBook(QString bookPath)
 {
-    // TODO: check if this file exsists
     if(bookPath.isEmpty())
         m_bookPath = Utils::genBookName(m_tempFolder, true);
     else
         m_bookPath = bookPath;
+
+    if(QFile::exists(m_bookPath)) {
+        qWarning() << "createNewBook: File at:" << m_bookPath << "already exists";
+        if(QFile::remove(m_bookPath))
+            qWarning() << "Delete it";
+        else
+            qWarning("Can't delete it!");
+    }
 
     m_bookDB = QSqlDatabase::addDatabase("QSQLITE", QString("newBookDB_%1").arg(m_threadID));
     m_bookDB.setDatabaseName(m_bookPath);

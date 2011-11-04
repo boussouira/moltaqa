@@ -44,7 +44,6 @@ void newQuranWriter::createBookTables()
                      "ayatCount INTEGER,"
                      "SoraDescent TEXT)");
 
-    // TODO: categorie order
     m_bookQuery.exec("DROP TABLE IF EXISTS quranText");
     m_bookQuery.exec("CREATE TABLE quranText ("
                      "id INTEGER PRIMARY KEY, "

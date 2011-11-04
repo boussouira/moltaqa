@@ -18,7 +18,6 @@ public:
     QString title();
 
 private slots:
-    void on_pushBooksList_clicked();
     void on_webView_loadStarted();
     void on_webView_loadFinished(bool);
     void on_webView_loadProgress(int progress);

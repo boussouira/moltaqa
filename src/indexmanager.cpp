@@ -21,7 +21,7 @@ bool IndexManager::openWriter()
     QSettings settings;
     ArabicAnalyzer *analyzer = new ArabicAnalyzer();
 
-    int ramSize = settings.value("ramSize", 100).toInt();
+    int ramSize = settings.value("Search/ramSize", 100).toInt();
 
     if(!dir.exists(m_library->indexDataDir()))
         dir.mkdir(m_library->indexDataDir());

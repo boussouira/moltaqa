@@ -43,6 +43,13 @@ SearchWidget::SearchWidget(QWidget *parent) :
 
 SearchWidget::~SearchWidget()
 {
+    if(!m_searcher) {
+        delete m_searcher;
+        m_searcher = 0;
+    }
+
+    delete m_resultWidget;
+    delete m_filterManager;
     delete ui;
 }
 

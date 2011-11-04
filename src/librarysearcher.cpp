@@ -5,8 +5,9 @@
 #include "librarybook.h"
 #include "utils.h"
 #include "abstractbookreader.h"
-#include <QTime>
+#include <qdatetime.h>
 #include <qsqlquery.h>
+#include <qsettings.h>
 
 LibrarySearcher::LibrarySearcher(QObject *parent)
     : QThread(parent),
@@ -20,7 +21,8 @@ LibrarySearcher::LibrarySearcher(QObject *parent)
     m_libraryInfo = MW->libraryInfo();
     m_libraryManager = MW->libraryManager();
 
-    m_resultParPage = 10;
+    QSettings settings;
+    m_resultParPage = settings.value("Search/resultPeerPage", 10).toInt();
 }
 
 LibrarySearcher::~LibrarySearcher()

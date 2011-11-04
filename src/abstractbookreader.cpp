@@ -24,15 +24,11 @@ AbstractBookReader::AbstractBookReader(QObject *parent) : QObject(parent)
 
 AbstractBookReader::~AbstractBookReader()
 {
-    qDebug("~AbstractBookReader()");
-
     m_bookDB = QSqlDatabase();
     QSqlDatabase::removeDatabase(m_connectionName);
 
     if(m_indexModel) // Should be remove after removing the database
         MW->readerHelper()->removeModel(m_bookInfo->bookID);
-    else
-        qDebug("No model to delete");
 
     if(m_bookInfo)
         delete m_bookInfo;

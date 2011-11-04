@@ -8,6 +8,7 @@
 #include <qdir.h>
 #include <qplaintextedit.h>
 #include <qboxlayout.h>
+#include <qsettings.h>
 
 ResultWidget::ResultWidget(QWidget *parent) :
     QWidget(parent),
@@ -28,6 +29,8 @@ ResultWidget::ResultWidget(QWidget *parent) :
 
 ResultWidget::~ResultWidget()
 {
+    delete m_view;
+    delete m_readerview;
     delete ui;
 }
 
@@ -238,6 +241,10 @@ void ResultWidget::fetechStarted()
 {
     m_view->execJS("fetechStarted();");
     showNavigationButton(false);
+
+    QSettings settings;
+    ui->progressBar->setMaximum(settings.value("Search/resultPeerPage", 10).toInt());
+    ui->progressBar->setValue(0);
 }
 
 void ResultWidget::fetechFinnished()
@@ -255,6 +262,8 @@ void ResultWidget::gotResult(SearchResult *result)
 {
     result->generateHTML();
     m_view->execJS(QString("addResult('%1')").arg(result->toHtml()));
+
+    ui->progressBar->setValue(ui->progressBar->value()+1);
 }
 
 void ResultWidget::gotException(QString what, int id)

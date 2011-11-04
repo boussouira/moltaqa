@@ -13,11 +13,6 @@ WelcomeWidget::~WelcomeWidget()
     delete ui;
 }
 
-void WelcomeWidget::on_pushBooksList_clicked()
-{
-    emit showBooksList();
-}
-
 QString WelcomeWidget::title()
 {
     return tr("صفحة البداية");

@@ -44,6 +44,7 @@ BooksViewer::BooksViewer(LibraryManager *libraryManager, QMainWindow *parent): A
 
 BooksViewer::~BooksViewer()
 {
+    delete m_viewManager;
 }
 
 QString BooksViewer::title()

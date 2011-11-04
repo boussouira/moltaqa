@@ -5,6 +5,7 @@
 #include <qfile.h>
 #include <qmessagebox.h>
 #include <qfiledialog.h>
+#include <qthread.h>
 
 SettingsDialog::SettingsDialog(QWidget *parent) :
     QDialog(parent),
@@ -30,6 +31,31 @@ void SettingsDialog::loadSettings()
     QString booksPath = settings.value("library_dir").toString();
     if(!booksPath.isEmpty())
         ui->lineBooksDir->setText(booksPath);
+
+    settings.beginGroup("Search");
+    ui->spinResultPeerPage->setValue(settings.value("resultPeerPage", 10).toInt());
+    ui->spinThreadCount->setValue(settings.value("threadCount", QThread::idealThreadCount()).toInt());
+    ui->spinThreadCount->setMinimum(1);
+    ui->spinThreadCount->setMaximum(QThread::idealThreadCount()*2);
+
+    ui->comboBox->addItem(tr("%1 ميغا").arg(100), 100);
+    ui->comboBox->addItem(tr("%1 ميغا").arg(200), 200);
+    ui->comboBox->addItem(tr("%1 ميغا").arg(300), 300);
+    ui->comboBox->addItem(tr("%1 ميغا").arg(500), 500);
+    ui->comboBox->addItem(tr("%1 جيغا").arg(1), 1000);
+    ui->comboBox->addItem(tr("%1 جيغا").arg(1.5), 1500);
+    ui->comboBox->addItem(tr("%1 جيغا").arg(2), 2000);
+    ui->comboBox->addItem(tr("%1 جيغا").arg(3), 3000);
+
+    int currentSize = settings.value("ramSize", 100).toInt();
+    for(int i=0; i<ui->comboBox->count(); i++) {
+        if(ui->comboBox->itemData(i).toInt() == currentSize) {
+            ui->comboBox->setCurrentIndex(i);
+            break;
+        }
+    }
+
+    settings.endGroup();
 }
 
 QString SettingsDialog::getFilePath()
@@ -70,6 +96,13 @@ void SettingsDialog::saveSettings()
     QString appPath = ui->lineBooksDir->text();
 
     settings.setValue("library_dir", appPath);
+
+    settings.beginGroup("Search");
+    settings.setValue("resultPeerPage", ui->spinResultPeerPage->value());
+    settings.setValue("threadCount", ui->spinThreadCount->value());
+    settings.setValue("ramSize", ui->comboBox->itemData(ui->comboBox->currentIndex()));
+    settings.endGroup();
+
     accept();
 }
 
