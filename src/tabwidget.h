@@ -11,6 +11,7 @@ class TabWidget : public QTabWidget
 public:
     TabWidget(QWidget *parent = 0);
     int addBookWidget(BookWidget *book);
+    void setCanMoveToOtherTabWidget(bool canMove);
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
@@ -26,6 +27,7 @@ signals:
 
 private:
     QTabBar *m_tabBar;
+    bool m_canMoveToOtherTabWidget;
 };
 
 #endif // TABWIDGET_H

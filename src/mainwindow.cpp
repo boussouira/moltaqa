@@ -40,6 +40,10 @@ MainWindow::MainWindow(QWidget *parent):
     ui->setupUi(this);
     m_mainWindow = this;
 
+    m_welcomeWidget = 0;
+    m_bookView = 0;
+    m_searchView = 0;
+
     setWindowTitle(App::name());
     loadSettings();
 }
@@ -133,8 +137,8 @@ bool MainWindow::init()
         m_indexBar->hide();
         statusBar()->addPermanentWidget(m_indexBar);
 
-        m_searchview = new SearchView(this);
-        m_viewManager->addView(m_searchview, false);
+        m_searchView = new SearchView(this);
+        m_viewManager->addView(m_searchView, false);
         showSearchView();
 
         setupActions();
@@ -155,7 +159,9 @@ bool MainWindow::init()
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+    delete m_welcomeWidget;
+    delete m_bookView;
+    delete m_searchView;
 
     if(m_libraryManager)
         delete m_libraryManager;
@@ -165,6 +171,8 @@ MainWindow::~MainWindow()
 
     if(m_readerHelper)
         delete m_readerHelper;
+
+    delete ui;
 
     m_mainWindow = 0;
 }
@@ -242,9 +250,9 @@ void MainWindow::showBooksList()
 
 void MainWindow::showSearchView()
 {
-    m_searchview->setSelectable(true);
-    m_searchview->ensureTabIsOpen();
-    m_viewManager->setCurrentView(m_searchview);
+    m_searchView->setSelectable(true);
+    m_searchView->ensureTabIsOpen();
+    m_viewManager->setCurrentView(m_searchView);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

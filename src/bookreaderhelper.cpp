@@ -66,9 +66,7 @@ void BookReaderHelper::addBookModel(int bookID, BookIndexModel *model)
 {
     m_models.insert(bookID, model);
 
-    qDebug("Add model for book %d", bookID);
-
-    if(m_modelToDelete.size() > 10)
+    if(m_models.size() > 20)
         removeUnusedModel();
 }
 
@@ -76,20 +74,22 @@ void BookReaderHelper::removeModel(int bookID)
 {
     m_modelToDelete.insert(bookID);
 
-    if(m_modelToDelete.size() > 10)
+    if(m_modelToDelete.size() > 20)
         removeUnusedModel();
 }
 
 void BookReaderHelper::removeUnusedModel()
 {
-    qDebug("Remove Unused Model");
+    int removedModels = 0;
+    int totalModels = m_models.size();
+
     foreach(int bookID, m_modelToDelete) {
         bool delModel = true;
         QAbstractItemModel *model = m_models.value(bookID, 0);
 
         if(model) {
             QString bookConn(QString("book_i%1_").arg(bookID));
-            qDebug() << QSqlDatabase::connectionNames();
+
             foreach(QString conn, QSqlDatabase::connectionNames()) {
                 if(conn.startsWith(bookConn)) {
                     delModel = false;
@@ -98,19 +98,18 @@ void BookReaderHelper::removeUnusedModel()
             }
 
             if(delModel) {
-                qDebug("Delete model for book %d", bookID);
                 m_models.remove(bookID);
                 m_modelToDelete.remove(bookID);
 
                 delete model;
-            } else {
-                qDebug("Model for book %d is in use", bookID);
+                removedModels++;
             }
         } else {
-            qDebug("No model found for book %d", bookID);
             m_modelToDelete.remove(bookID);
         }
     }
+
+    qDebug("Remove %d/%d Unused Model", removedModels, totalModels);
 }
 
 void BookReaderHelper::open()

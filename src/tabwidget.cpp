@@ -9,6 +9,7 @@
 TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)
 {
     m_tabBar = new QTabBar(this);
+    m_canMoveToOtherTabWidget = true;
 
     m_tabBar->setTabsClosable(true);
     m_tabBar->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -30,6 +31,11 @@ int TabWidget::addBookWidget(BookWidget *book)
     return index;
 }
 
+void TabWidget::setCanMoveToOtherTabWidget(bool canMove)
+{
+    m_canMoveToOtherTabWidget = canMove;
+}
+
 bool TabWidget::eventFilter(QObject *obj, QEvent *event)
 {
     Q_UNUSED(obj);
@@ -47,10 +53,21 @@ bool TabWidget::eventFilter(QObject *obj, QEvent *event)
 void TabWidget::showTabBarMenu(QPoint point)
 {
     QMenu menu(this);
+    // TODO: implemet this
+    QAction *closeAct = new QAction(tr("اغلاق التبويب"), &menu);
+    QAction *closeOtherAct = new QAction(tr("اغلاق كل التبويبات الاخرى"), &menu);
+
+    menu.addAction(closeAct);
+    menu.addAction(closeOtherAct);
+
     QAction *moveAct = new QAction(tr("نقل الى نافذة اخرى"), &menu);
     QAction *revAct = new QAction(tr("عكس تجاور النوافذ"), &menu);
-    menu.addAction(moveAct);
-    menu.addAction(revAct);
+
+    if(m_canMoveToOtherTabWidget) {
+        menu.addSeparator();
+        menu.addAction(moveAct);
+        menu.addAction(revAct);
+    }
 
     QAction *ret = menu.exec(QCursor::pos());
     if(ret) {

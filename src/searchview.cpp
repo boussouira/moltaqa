@@ -7,7 +7,7 @@ SearchView::SearchView(QWidget *parent) : AbstarctView(parent)
 {
     m_layout = new QVBoxLayout(this);
     m_tabWidget = new TabWidget(this);
-//    m_tabWidget->setDocumentMode(true);
+    m_tabWidget->setCanMoveToOtherTabWidget(false);
 
     m_layout->addWidget(m_tabWidget);
     m_layout->setContentsMargins(0, 6, 0, 0);

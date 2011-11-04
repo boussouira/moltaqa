@@ -75,7 +75,7 @@ private:
     IndexTracker *m_indexTracker;
     IndexManager *m_indexManager;
     QProgressBar *m_indexBar;
-    SearchView *m_searchview;
+    SearchView *m_searchView;
     BookReaderHelper *m_readerHelper;
     int defaultQuran;
 };

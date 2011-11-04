@@ -31,6 +31,7 @@ void BookIndexer::run()
 
 void BookIndexer::startIndexing()
 {
+    // TODO: implement delete and update books
     IndexTask *task = m_trackerIter->next();
 
     while(task && !m_stop) {
