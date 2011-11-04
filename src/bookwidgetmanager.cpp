@@ -103,6 +103,9 @@ int BookWidgetManager::addBook(BookWidget *book)
 {
     int tabIndex = m_activeTab->addBookWidget(book);
     m_activeTab->setCurrentIndex(tabIndex);
+    m_activeTab->setTabIcon(tabIndex, book->icon());
+
+    connect(book, SIGNAL(setIcon(QIcon)), SLOT(changeTabIcon(QIcon)));
 
     return tabIndex;
 }
@@ -147,6 +150,7 @@ void BookWidgetManager::moveToOtherTab(int index)
         active->removeTab(index);
         int i = otherTab->addBookWidget(book);
         otherTab->setCurrentIndex(i);
+        otherTab->setTabIcon(i, book->icon());
         m_showOtherTab = true;
         tabChanged(0);
 
@@ -171,5 +175,25 @@ void BookWidgetManager::reverseSplitter()
 {
     m_splitter->setOrientation((m_splitter->orientation()==Qt::Horizontal) ?
                                    Qt::Vertical : Qt::Horizontal);
+}
+
+void BookWidgetManager::changeTabIcon(QIcon tabIcon)
+{
+    QWidget *tab = qobject_cast<QWidget*>(sender());
+    if(tab) {
+        for(int i=0; i<m_topTab->count(); i++) {
+            if(m_topTab->widget(i) == tab) {
+                m_topTab->setTabIcon(i, tabIcon);
+                return;
+            }
+        }
+
+        for(int i=0; i<m_bottomTab->count(); i++) {
+            if(m_bottomTab->widget(i) == tab) {
+                m_bottomTab->setTabIcon(i, tabIcon);
+                return;
+            }
+        }
+    }
 }
 

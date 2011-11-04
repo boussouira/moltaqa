@@ -1,7 +1,8 @@
 #ifndef BOOKWIDGETMANAGER_H
 #define BOOKWIDGETMANAGER_H
 
-#include <QWidget>
+#include <qwidget.h>
+#include <qicon.h>
 
 class BookWidget;
 class LibraryManager;
@@ -34,6 +35,9 @@ public slots:
     void changeActiveTab();
     void moveToOtherTab(int index);
     void reverseSplitter();
+
+protected slots:
+    void changeTabIcon(QIcon tabIcon);
 
 signals:
     void lastTabClosed();

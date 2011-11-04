@@ -25,5 +25,6 @@
         <file>images/delete.png</file>
         <file>images/tab-new.png</file>
         <file>images/switch.png</file>
+        <file>images/process.png</file>
     </qresource>
 </RCC>

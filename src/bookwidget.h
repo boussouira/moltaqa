@@ -3,6 +3,7 @@
 
 #include <qwidget.h>
 #include <qfuture.h>
+#include <qicon.h>
 
 class WebView;
 class IndexWidget;
@@ -18,10 +19,16 @@ class BookWidget: public QWidget
 public:
     BookWidget(RichBookReader *db, QWidget *parent=0);
     ~BookWidget();
+
+    enum TabIcon{
+        Loading,
+        Ready
+    };
     void setBookReader(RichBookReader *db);
     void displayInfo();
     RichBookReader *bookReader() { return m_db; }
     IndexWidget *indexWidget() { return m_indexWidget; }
+    QIcon icon() { return m_icon; }
     void firstPage();
     void lastPage();
     void nextPage();
@@ -33,6 +40,7 @@ public:
 
 protected:
     void loadSettings();
+    void changeIcon(TabIcon iconType);
 
 public slots:
     void openPage(int id);
@@ -43,6 +51,9 @@ public slots:
     void indexModelReady();
     void readerTextChanged();
 
+signals:
+    void setIcon(QIcon icon);
+
 protected:
     QSplitter *m_splitter;
     QVBoxLayout *m_layout;
@@ -51,6 +62,7 @@ protected:
     RichBookReader *m_db;
     QFuture<BookIndexModel*> m_retModel;
     QFutureWatcher<BookIndexModel*> *m_watcher;
+    QIcon m_icon;
 };
 
 #endif // BOOKWIDGET_H
