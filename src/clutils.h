@@ -2,6 +2,8 @@
 #define CLUTILS_H
 
 #include <qstring.h>
+#include <CLucene/StdHeader.h>
+#include <CLucene/config/repl_wchar.h>
 
 namespace lucene {
     namespace search {

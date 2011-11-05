@@ -262,23 +262,3 @@ void ResultWidget::populateJavaScriptWindowObject()
 {
     m_view->addObject("resultWidget", this);
 }
-
-void ResultWidget::on_buttonGoNext_clicked()
-{
-    m_searcher->nextPage();
-}
-
-void ResultWidget::on_buttonGoPrev_clicked()
-{
-    m_searcher->prevPage();
-}
-
-void ResultWidget::on_buttonGoLast_clicked()
-{
-    m_searcher->lastPage();
-}
-
-void ResultWidget::on_buttonGoFirst_clicked()
-{
-    m_searcher->firstPage();
-}

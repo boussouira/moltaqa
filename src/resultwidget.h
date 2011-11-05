@@ -45,11 +45,6 @@ private slots:
     void minimizeBookReader();
     void lastTabClosed();
 
-    void on_buttonGoFirst_clicked();
-    void on_buttonGoLast_clicked();
-    void on_buttonGoPrev_clicked();
-    void on_buttonGoNext_clicked();
-
 private:
     Ui::ResultWidget *ui;
     BooksViewer *m_readerview;
