@@ -16,24 +16,26 @@ function resultEvents()
 
 function addResult(str)
 {
-    $('body').append($(str));
+    $('#searchResult').append($(str));
 }
 
 function searchStarted()
 {
-    $('body').html($('<p>', {text: "جاري البحث...", 'class': 'statusDiv'}));
+    $('#searchResult').html($('<p>', {text: "جاري البحث...", 'class': 'statusDiv'}));
 }
 
 function searchFinnished()
 {
-    $('body').html('');
+    $('#searchResult').html('');
+    $('#pagination').html('');
     clearBody = false;
 }
 
 function fetechStarted()
 {
     if(clearBody) {
-        $('body').html('');
+        $('#searchResult').html('');
+        $('#pagination').html('');
     }
 }
 
@@ -55,5 +57,24 @@ function searchInfo(searchTime, searchCount)
         'message': "تم البحث خلال " + sec + " ثانية" +
                     "<br>" + "عدد النتائج: " + searchCount,
         'timeout':3000
+    });
+}
+
+function handlePaginationClick(new_page_index, pagination_container)
+{
+    resultWidget.goToPage(new_page_index);
+    return true;
+}
+
+function setPagination(currentPage, resultCount, resultPeerPage)
+{
+    $("#pagination").pagination(resultCount, {
+        items_per_page:resultPeerPage,
+        current_page: currentPage,
+        num_edge_entries: 2,
+        load_first_page: false,
+        next_text: '&gt;',
+        prev_text: '&lt;',
+        callback:handlePaginationClick
     });
 }
