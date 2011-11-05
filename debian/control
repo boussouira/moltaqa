@@ -1,5 +1,5 @@
 Source: moltaqa-lib
-Section: education
+Section: Education
 Priority: extra
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 XSBC-Original-Maintainer: Ahmed Saidi <ahmed7saidi@gmail.com>
@@ -10,8 +10,8 @@ Homepage: http://ahlalhdeeth.com
 Package: moltaqa-lib
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Al Kotobiya is an arabic and Islamic Library
- Al Kotobiya is an arabic library, it can help in reading,
+Description: Moltaqa Library is an arabic and Islamic Library
+ Al Moltaqa Library is an arabic library, it can help in reading,
  searching in thousnd of islamic books, mean features:
   * Al Kotobiya can run on Windows and linux
   * Can import books from Shamela library
