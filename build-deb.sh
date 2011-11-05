@@ -3,7 +3,7 @@
 APP_NAME="moltaqa-lib"
 APP_VERSION="0.8"
 APP_DIR_NAME="${APP_NAME}-${APP_VERSION}"
-APP_FILES="moltaqa-lib.pro  Doxyfile share  src  test"
+APP_FILES="moltaqa-lib.pro  Doxyfile share bin  src  test"
 TEMP_DIR="temp-build-deb"
 SOURCE_ARCHIVE="${APP_NAME}-${APP_VERSION}.tar.gz"
 SOURCE_ARCHIVE_ORIG="${APP_NAME}_${APP_VERSION}.orig.tar.gz"
@@ -30,7 +30,7 @@ echo "[*] Enter application directory"
 cd $TEMP_DIR/$APP_DIR_NAME
 
 echo "[*] Start building deb"
-debuild >> /dev/null
+debuild
 
 cd ..
 echo "[*] Generated deb:" *.deb

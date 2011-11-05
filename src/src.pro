@@ -54,17 +54,28 @@ LIBS += -lclucene-core$$CLUCENE_LIB_SUFFIX \
         -L$$CLUCENE_LIBS_PATH
 
 unix {
+
     isEmpty(PREFIX) {
         PREFIX = /usr/local
     }
+
     BINDIR = $$PREFIX/bin
+    LIBDIR = $$PREFIX/lib
     DATADIR = $$PREFIX/share
 
     APPNAME = $$TARGET
 
-    INSTALLS += target data images styles js locale fonts
+    INSTALLS += target script lib data images styles js locale fonts
 
     target.path = $$BINDIR
+
+    script.path = $$BINDIR
+    script.files += ../bin/moltaqa-lib.sh
+
+    lib.path = $$LIBDIR/$$APPNAME
+    lib.files += $$CLUCENE_LIBS_PATH/libclucene-core.*
+    lib.files += $$CLUCENE_LIBS_PATH/libclucene-shared.*
+    lib.files += $$CLUCENE_LIBS_PATH/libclucene-contribs-lib.*
 
     data.path = $$DATADIR/$$APPNAME/data
     data.files += ../share/$$APPNAME/data/quran-meta.db
