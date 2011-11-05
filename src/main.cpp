@@ -6,7 +6,6 @@
 #include <qtextcodec.h>
 #include <qsettings.h>
 #include <qdatetime.h>
-#include <qmessagebox.h>
 
 int main(int argc, char *argv[])
 {
@@ -25,14 +24,6 @@ int main(int argc, char *argv[])
     app.setApplicationVersion("0.5");
 
     qsrand(QDateTime::currentDateTime().toTime_t());
-
-    if(!App::checkFiles()) {
-        QMessageBox::warning(0,
-                             App::name(),
-                             QObject::tr("لم يتم العثور على بعض الملفات في مجلد البرنامج"
-                                         "\n"
-                                         "من فضلك قم باعادة تتبيث البرنامج"));
-    }
 
     int ret = -1;
 

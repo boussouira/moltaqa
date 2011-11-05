@@ -7,6 +7,9 @@
 #include <qdir.h>
 #include <qapplication.h>
 #include <qdebug.h>
+#include <qmessagebox.h>
+
+static QString appRootPath;
 
 namespace Utils {
 
@@ -243,7 +246,7 @@ bool checkFiles(QStringList files, QDir dir)
 
     foreach(QString fileName, files) {
         if(!dir.exists(fileName)) {
-            qWarning() << "checkFiles: Files doesn't exist" << dir.filePath(fileName);
+            qWarning() << "checkFiles: File doesn't exist" << dir.filePath(fileName);
             ret = false;
         }
     }
@@ -253,8 +256,32 @@ bool checkFiles(QStringList files, QDir dir)
 
 QString appDir()
 {
-    QDir dir(QApplication::applicationDirPath());
-    dir.cdUp();
+    if(appRootPath.isEmpty()) {
+        QDir dir(QApplication::applicationDirPath());
+        dir.cdUp();
+
+        appRootPath = dir.absolutePath();
+        if(!checkFiles()) {
+            qWarning() << "Can't find some files at" << appRootPath;
+            qWarning() << "Check if we can use current working directory...";
+            appRootPath = QDir::currentPath();
+            if(!checkFiles()) {
+                QMessageBox::warning(0,
+                                     App::name(),
+                                     QObject::tr("لم يتم العثور على بعض الملفات في مجلد البرنامج"
+                                                 "\n"
+                                                 "من فضلك قم باعادة تتبيث البرنامج"));
+
+                qFatal("Some files are messing");
+            } else {
+                qDebug() << "Using current working directory:" << appRootPath;
+            }
+        } else {
+            qDebug() << "Using application directory:" << appRootPath;
+        }
+    }
+
+    QDir dir(appRootPath);
 
     return dir.absolutePath();
 }

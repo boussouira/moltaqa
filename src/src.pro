@@ -62,15 +62,24 @@ unix {
 
     APPNAME = $$TARGET
 
-    INSTALLS += target data styles locale fonts
+    INSTALLS += target data images styles js locale fonts
 
     target.path = $$BINDIR
 
     data.path = $$DATADIR/$$APPNAME/data
     data.files += ../share/$$APPNAME/data/quran-meta.db
 
+    images.path = $$DATADIR/$$APPNAME/images
+    images.files += ../share/$$APPNAME/images/magnifier.png
+
     styles.path = $$DATADIR/$$APPNAME/styles/default
     styles.files += ../share/$$APPNAME/styles/default/default.css
+
+    js.path = $$DATADIR/$$APPNAME/js
+    js.files += ../share/$$APPNAME/js/jquery.js
+    js.files += ../share/$$APPNAME/js/jquery.growl.js
+    js.files += ../share/$$APPNAME/js/jquery.pagination.js
+    js.files += ../share/$$APPNAME/js/scripts.js
 
     locale.path = $$DATADIR/$$APPNAME/locale
     locale.files += ../share/$$APPNAME/locale/qt_ar.qm
