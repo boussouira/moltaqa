@@ -24,12 +24,11 @@ public:
 protected:
     void setupBookReaderView();
     void setupWebView();
-    void showNavigationButton(bool show);
-    void updateNavigationInfo();
-    void updateButtonStat();
+    void showProgressBar(bool show);
 
 public slots:
     void openResult(int resultID);
+    void goToPage(int page);
 
 private slots:
     void searchStarted();

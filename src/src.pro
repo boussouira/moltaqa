@@ -60,17 +60,22 @@ unix {
     BINDIR = $$PREFIX/bin
     DATADIR = $$PREFIX/share
 
-    INSTALLS += target styles locale fonts
+    APPNAME = $$TARGET
+
+    INSTALLS += target data styles locale fonts
 
     target.path = $$BINDIR
 
-    styles.path = $$DATADIR/$$TARGET/styles/default
-    styles.files += ../share/moltaqa-lib/styles/default/default.css
+    data.path = $$DATADIR/$$APPNAME/data
+    data.files += ../share/$$APPNAME/data/quran-meta.db
 
-    locale.path = $$DATADIR/$$TARGET/locale
-    locale.files += ../share/moltaqa-lib/locale/qt_ar.qm
+    styles.path = $$DATADIR/$$APPNAME/styles/default
+    styles.files += ../share/$$APPNAME/styles/default/default.css
 
-    fonts.path = $$DATADIR/fonts/$$TARGET
-    fonts.files += ../share/fonts/$$TARGET/LotusLinotype_Light.otf
-    fonts.files += ../share/fonts/$$TARGET/LotusLinotype_Bold.otf
+    locale.path = $$DATADIR/$$APPNAME/locale
+    locale.files += ../share/$$APPNAME/locale/qt_ar.qm
+
+    fonts.path = $$DATADIR/fonts/$$APPNAME
+    fonts.files += ../share/fonts/$$APPNAME/LotusLinotype_Light.otf
+    fonts.files += ../share/fonts/$$APPNAME/LotusLinotype_Bold.otf
 }

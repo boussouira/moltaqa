@@ -9,6 +9,7 @@
 #include <qplaintextedit.h>
 #include <qboxlayout.h>
 #include <qsettings.h>
+#include <qtoolbutton.h>
 
 ResultWidget::ResultWidget(QWidget *parent) :
     QWidget(parent),
@@ -113,6 +114,7 @@ void ResultWidget::setupWebView()
 
     QDir jsDir(App::jsDir());
     QString  m_jqueryGrowlFile = QUrl::fromLocalFile(jsDir.filePath("jquery.growl.js")).toString();
+    QString  m_jPagination = QUrl::fromLocalFile(jsDir.filePath("jquery.pagination.js")).toString();
     QString  m_jqueryFile = QUrl::fromLocalFile(jsDir.filePath("jquery.js")).toString();
     QString  m_scriptFile = QUrl::fromLocalFile(jsDir.filePath("scripts.js")).toString();
 
@@ -123,46 +125,22 @@ void ResultWidget::setupWebView()
                            "</head>"
                            "<body>"
                            "<div id=\"searchResult\">.</div>"
+                           "<div id=\"pagination\"></div>"
                            "<script type=\"text/javascript\" src=\"%2\"></script>"
                            "<script type=\"text/javascript\" src=\"%3\"></script>"
                            "<script type=\"text/javascript\" src=\"%4\"></script>"
-                           "</body></html>").arg(m_styleFile, m_jqueryFile, m_jqueryGrowlFile, m_scriptFile);
+                           "<script type=\"text/javascript\" src=\"%5\"></script>"
+                           "</body></html>").arg(m_styleFile,
+                                                 m_jqueryFile,
+                                                 m_jqueryGrowlFile,
+                                                 m_jPagination,
+                                                 m_scriptFile);
     m_view->setHtml(html);
 }
 
-void ResultWidget::showNavigationButton(bool show)
+void ResultWidget::showProgressBar(bool show)
 {
-    ui->progressWidget->setVisible(!show);
-    ui->widgetNavigationButtons->setVisible(show);
-}
-
-void ResultWidget::updateNavigationInfo()
-{
-    int currentPage = m_searcher->currentPage();
-    int pageCount = m_searcher->pageCount();
-
-    int start = (currentPage * m_searcher->resultsPeerPage()) + 1 ;
-    int end = qMax(1, (currentPage * m_searcher->resultsPeerPage()) + m_searcher->resultsPeerPage());
-
-    end = (pageCount >= end) ? end : pageCount;
-    ui->labelNav->setText(tr("%1 - %2 من %3 نتيجة")
-                       .arg(start)
-                       .arg(end)
-                       .arg(pageCount));
-
-    updateButtonStat();
-}
-
-void ResultWidget::updateButtonStat()
-{
-    bool back = (m_searcher->currentPage() > 0);
-    bool next = (m_searcher->currentPage() < m_searcher->pageCount()-1);
-
-    ui->buttonGoPrev->setEnabled(back);
-    ui->buttonGoFirst->setEnabled(back);
-
-    ui->buttonGoNext->setEnabled(next);
-    ui->buttonGoLast->setEnabled(next);
+    ui->progressWidget->setVisible(show);
 }
 
 void ResultWidget::ensureReaderVisible()
@@ -221,12 +199,17 @@ void ResultWidget::openResult(int resultID)
         bookWidget->openSora(result->page->sora, result->page->aya);
 }
 
+void ResultWidget::goToPage(int page)
+{
+    m_searcher->fetechResults(page);
+}
+
 void ResultWidget::searchStarted()
 {
     m_view->execJS("searchStarted();");
 
     ui->progressBar->setMaximum(0);
-    showNavigationButton(false);
+    showProgressBar(true);
 }
 
 void ResultWidget::searchFinnished()
@@ -240,7 +223,7 @@ void ResultWidget::searchFinnished()
 void ResultWidget::fetechStarted()
 {
     m_view->execJS("fetechStarted();");
-    showNavigationButton(false);
+    showProgressBar(true);
 
     QSettings settings;
     ui->progressBar->setMaximum(settings.value("Search/resultPeerPage", 10).toInt());
@@ -250,12 +233,16 @@ void ResultWidget::fetechStarted()
 void ResultWidget::fetechFinnished()
 {
     m_view->execJS("fetechFinnished();");
-    updateNavigationInfo();
-    showNavigationButton(true);
+    m_view->execJS(QString("setPagination(%1, %2, %3)")
+                   .arg(m_searcher->currentPage())
+                   .arg(m_searcher->resultsCount())
+                   .arg(m_searcher->resultsPeerPage()));
 
-    //QPlainTextEdit *edit = new QPlainTextEdit(0);
-    //edit->setPlainText(m_view->toHtml());
-    //edit->show();
+    showProgressBar(false);
+
+//    QPlainTextEdit *edit = new QPlainTextEdit(0);
+//    edit->setPlainText(m_view->toHtml());
+//    edit->show();
 }
 
 void ResultWidget::gotResult(SearchResult *result)

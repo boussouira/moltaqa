@@ -1,11 +1,12 @@
 #include "mainwindow.h"
-#include <QApplication>
-#include <QTranslator>
-#include <QLocale>
-#include <QLibraryInfo>
-#include <QTextCodec>
-#include <QSettings>
+#include "utils.h"
+#include <qapplication.h>
+#include <qtranslator.h>
+#include <qlocale.h>
+#include <qtextcodec.h>
+#include <qsettings.h>
 #include <qdatetime.h>
+#include <qmessagebox.h>
 
 int main(int argc, char *argv[])
 {
@@ -15,7 +16,7 @@ int main(int argc, char *argv[])
     QSettings::setDefaultFormat(QSettings::IniFormat);
 
     QTranslator translator;
-    translator.load(QString("qt_ar"), ":/locale");
+    translator.load(QString("qt_ar"), App::localeDir());
     app.installTranslator(&translator);
 
     app.setOrganizationName("Ahl-Alhdeeth");
@@ -24,6 +25,14 @@ int main(int argc, char *argv[])
     app.setApplicationVersion("0.5");
 
     qsrand(QDateTime::currentDateTime().toTime_t());
+
+    if(!App::checkFiles()) {
+        QMessageBox::warning(0,
+                             App::name(),
+                             QObject::tr("لم يتم العثور على بعض الملفات في مجلد البرنامج"
+                                         "\n"
+                                         "من فضلك قم باعادة تتبيث البرنامج"));
+    }
 
     int ret = -1;
 

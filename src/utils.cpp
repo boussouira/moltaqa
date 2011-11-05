@@ -6,6 +6,7 @@
 #include <qfileinfo.h>
 #include <qdir.h>
 #include <qapplication.h>
+#include <qdebug.h>
 
 namespace Utils {
 
@@ -218,6 +219,36 @@ const char *version()
 int versionNumber()
 {
     return APP_VERSION;
+}
+
+bool checkFiles()
+{
+    bool ret = true;
+    ret &= checkFiles(QStringList()
+                      << "quran-meta.db", dataDir());
+    ret &= checkFiles(QStringList()
+                      << "jquery.pagination.js"
+                      << "jquery.growl.js"
+                      << "jquery.js"
+                      << "scripts.js", jsDir());
+    ret &=  checkFiles(QStringList()
+                       << "qt_ar.qm", localeDir());
+
+    return ret;
+}
+
+bool checkFiles(QStringList files, QDir dir)
+{
+    bool ret = true;
+
+    foreach(QString fileName, files) {
+        if(!dir.exists(fileName)) {
+            qWarning() << "checkFiles: Files doesn't exist" << dir.filePath(fileName);
+            ret = false;
+        }
+    }
+
+    return ret;
 }
 
 QString appDir()

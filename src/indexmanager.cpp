@@ -50,7 +50,7 @@ void IndexManager::start()
     }
 
     QSettings settings;
-    m_threadCount = settings.value("threadCount", QThread::idealThreadCount()).toInt();
+    m_threadCount = settings.value("Search/threadCount", QThread::idealThreadCount()).toInt();
     m_taskIter = m_indexTracker->getTaskIter();
     m_indexedBookCount = 0;
 

@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>images/main.ico</file>
-        <file>locale/qt_ar.qm</file>
     </qresource>
     <qresource prefix="/menu">
         <file>images/bookmark-new.png</file>

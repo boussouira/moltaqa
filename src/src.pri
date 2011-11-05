@@ -194,5 +194,3 @@ FORMS += mainwindow.ui settingsdialog.ui \
 
 RESOURCES += ../share/moltaqa-lib/qt_rc.qrc
 win32:RC_FILE = ../share/moltaqa-lib/win_rc.rc
-
-
