@@ -45,8 +45,6 @@ void ConvertThread::run()
             emit setProgress(++m_convertedFiles);
 
 #ifdef USE_MDBTOOLS
-            QSqlDatabase::removeDatabase("bok2sql");
-
             if(!m_tempDB.isEmpty()) {
                 QFile::remove(m_tempDB);
                 m_tempDB.clear();

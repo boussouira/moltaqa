@@ -100,9 +100,6 @@ void BookIndexer::indexBook(IndexTask *task)
 
         m_writer->addDocument(&doc);
         doc.clear();
-
-        free(pageID);
-        free(text);
     }
 
     emit taskDone(task);

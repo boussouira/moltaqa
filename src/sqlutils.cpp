@@ -13,7 +13,7 @@ DatabaseRemover::DatabaseRemover() :
 DatabaseRemover::~DatabaseRemover()
 {
     if(!connectionName.isEmpty()) {
-        qDebug("Remove database: %s", qPrintable(connectionName));
+        //qDebug("Remove database: %s", qPrintable(connectionName));
         QSqlDatabase::removeDatabase(connectionName);
     }
 
