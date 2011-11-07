@@ -13,13 +13,16 @@ IndexManager::IndexManager(QObject *parent) :
 {
     m_indexTracker = MW->indexTracker();
     m_library = MW->libraryInfo();
+
+    m_taskIter = 0;
+    m_analyzer = 0;
 }
 
 bool IndexManager::openWriter()
 {
     QDir dir;
     QSettings settings;
-    ArabicAnalyzer *analyzer = new ArabicAnalyzer();
+    m_analyzer = new ArabicAnalyzer();
 
     int ramSize = settings.value("Search/ramSize", 100).toInt();
 
@@ -29,16 +32,16 @@ bool IndexManager::openWriter()
         if(IndexReader::isLocked(qPrintable(m_library->indexDataDir())))
             IndexReader::unlock(qPrintable(m_library->indexDataDir()));
 
-        m_writer = _CLNEW IndexWriter( qPrintable(m_library->indexDataDir()) ,analyzer, false);
+        m_writer = _CLNEW IndexWriter( qPrintable(m_library->indexDataDir()), m_analyzer, false);
     } else {
-        m_writer = _CLNEW IndexWriter( qPrintable(m_library->indexDataDir()) ,analyzer, true);
+        m_writer = _CLNEW IndexWriter( qPrintable(m_library->indexDataDir()), m_analyzer, true);
     }
 
     m_writer->setUseCompoundFile(false);
     m_writer->setMaxFieldLength(IndexWriter::DEFAULT_MAX_FIELD_LENGTH);
     m_writer->setRAMBufferSizeMB(ramSize);
     m_writer->setMergeFactor(25);
-
+    qDebug("Using %d MB of RAM", ramSize);
     return true;
 }
 
@@ -57,23 +60,35 @@ void IndexManager::start()
     m_threads.clear();
     m_indexingTime.start();
 
-    for(int i=0;i<m_threadCount;i++) {
-        BookIndexer *indexThread = new BookIndexer();
-        connect(indexThread, SIGNAL(taskDone(IndexTask*)), SLOT(taskDone(IndexTask*)));
-        connect(indexThread, SIGNAL(doneIndexing()), SLOT(threadDoneIndexing()));
+    if(m_taskIter->taskCount()) {
+        for(int i=0;i<m_threadCount;i++) {
+            BookIndexer *indexThread = new BookIndexer();
+            connect(indexThread, SIGNAL(taskDone(IndexTask*)), SLOT(taskDone(IndexTask*)));
+            connect(indexThread, SIGNAL(doneIndexing()), SLOT(threadDoneIndexing()));
 
-        indexThread->setTaskIter(m_taskIter);
-        indexThread->setWirter(m_writer);
+            indexThread->setTaskIter(m_taskIter);
+            indexThread->setWirter(m_writer);
 
-        indexThread->start();
-        m_threads.append(indexThread);
+            indexThread->start();
+            m_threads.append(indexThread);
+        }
+
+        emit started();
     }
-
-    emit started();
 }
 
 void IndexManager::stop()
 {
+    foreach (BookIndexer *thread, m_threads) {
+            thread->stop();
+    }
+
+    foreach (BookIndexer *thread, m_threads) {
+        if(thread->isRunning()) {
+            qDebug("Wait for thread to finnish...");
+            thread->wait();
+        }
+    }
 }
 
 void IndexManager::taskDone(IndexTask *task)
@@ -86,11 +101,24 @@ void IndexManager::taskDone(IndexTask *task)
 void IndexManager::threadDoneIndexing()
 {
     if(--m_threadCount <= 0) {
-        m_writer->close();
-        _CLLDELETE(m_writer);
+        if(m_writer) {
+            m_writer->close();
+            _CLLDELETE(m_writer);
+            m_writer = 0;
+        }
+
+        if(m_analyzer) {
+            delete m_analyzer;
+            m_analyzer = 0;
+        }
+
         qDebug("Done indexing %d ms", m_indexingTime.elapsed());
 
-        delete m_taskIter;
+        if(m_taskIter) {
+            delete m_taskIter;
+            m_taskIter = 0;
+        }
+
         qDeleteAll(m_threads);
         m_threads.clear();
 

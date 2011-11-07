@@ -18,6 +18,12 @@ NewBookWriter::NewBookWriter()
     m_isTafessir = false;
 }
 
+NewBookWriter::~NewBookWriter()
+{
+    if(m_bookDB.isOpen())
+        m_remover.connectionName = m_bookDB.connectionName();
+}
+
 QString NewBookWriter::bookPath()
 {
     return m_bookPath;

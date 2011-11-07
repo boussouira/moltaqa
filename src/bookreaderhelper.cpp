@@ -1,5 +1,6 @@
 #include "bookreaderhelper.h"
 #include "utils.h"
+
 #include <qdir.h>
 #include <qsqlquery.h>
 #include <qvariant.h>
@@ -12,12 +13,8 @@ BookReaderHelper::BookReaderHelper()
 
 BookReaderHelper::~BookReaderHelper()
 {
-    if(m_quranDB.isOpen()) {
-        QString conn = m_quranDB.databaseName();
-
-        m_quranDB = QSqlDatabase();
-        QSqlDatabase::removeDatabase(conn);
-    }
+    if(m_quranDB.isOpen())
+        m_remover.connectionName = m_quranDB.connectionName();
 
     qDeleteAll(m_sowar);
     m_sowar.clear();

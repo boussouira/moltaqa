@@ -139,13 +139,13 @@ bool MainWindow::init()
 
         m_searchView = new SearchView(this);
         m_viewManager->addView(m_searchView, false);
-        showSearchView();
+//        showSearchView();
 
         setupActions();
 
         m_readerHelper = new BookReaderHelper();
 
-        m_indexTracker->addTask(m_libraryManager->getNonIndexedBooks(), IndexTask::Add);
+        m_indexTracker->findTasks();
     } catch(BookException &e) {
         QMessageBox::information(this,
                                  App::name(),
@@ -159,9 +159,14 @@ bool MainWindow::init()
 
 MainWindow::~MainWindow()
 {
-    delete m_welcomeWidget;
-    delete m_bookView;
-    delete m_searchView;
+    if(m_welcomeWidget)
+        delete m_welcomeWidget;
+
+    if(m_bookView)
+        delete m_bookView;
+
+    if(m_searchView)
+        delete m_searchView;
 
     if(m_libraryManager)
         delete m_libraryManager;
@@ -171,6 +176,9 @@ MainWindow::~MainWindow()
 
     if(m_readerHelper)
         delete m_readerHelper;
+
+    if(m_indexTracker)
+        delete m_indexTracker;
 
     delete ui;
 
@@ -265,6 +273,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     settings.endGroup();
 
     m_booksList->close();
+    m_indexManager->stop();
 
     event->accept();
 }

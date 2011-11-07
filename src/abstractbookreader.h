@@ -6,6 +6,7 @@
 #include <qsqlquery.h>
 #include <qcoreapplication.h>
 #include "librarymanager.h"
+#include "sqlutils.h"
 
 class LibraryInfo;
 class LibraryBook;
@@ -106,6 +107,7 @@ private:
     static BookPage *getQuranPage(LibraryBook *book, int pageID);
 
 protected:
+    Utils::DatabaseRemover m_remover;
     LibraryBook *m_bookInfo;
     BookPage *m_currentPage;
     LibraryManager *m_libraryManager;

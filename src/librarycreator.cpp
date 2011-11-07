@@ -32,12 +32,8 @@ LibraryCreator::LibraryCreator()
 
 LibraryCreator::~LibraryCreator()
 {
-    if(m_bookDB.isOpen()) {
-        QString conn = m_bookDB.connectionName();
-        m_bookDB = QSqlDatabase();
-
-        QSqlDatabase::removeDatabase(conn);
-    }
+    if(m_bookDB.isOpen())
+        m_remover.connectionName = m_bookDB.connectionName();
 }
 
 void LibraryCreator::openDB()
@@ -160,85 +156,82 @@ void LibraryCreator::addAuthor(ShamelaAuthorInfo *auth, bool checkExist)
 
 void LibraryCreator::addBook(ShamelaBookInfo *book)
 {
+    Utils::DatabaseRemover remover;
     QString connName(QString("mdb_%1_%2").arg(m_threadID).arg(book->archive));
     QString path = Utils::genBookName(m_library->booksDir(), true);
 
-    {
-        NewBookWriter bookWrite;
-        bookWrite.setThreadID(m_threadID);
-        bookWrite.createNewBook(path);
+    NewBookWriter bookWrite;
+    bookWrite.setThreadID(m_threadID);
+    bookWrite.createNewBook(path);
 
-        QSqlDatabase bookDB;
-        if(book->archive && book->archive == m_prevArchive) {
-            bookDB = QSqlDatabase::database(connName);
-        } else {
-            // Remove old connection
-            QString prevConnName(QString("mdb_%1_%2").arg(m_threadID).arg(m_prevArchive));
-            QSqlDatabase::database(prevConnName, false).close();
-            QSqlDatabase::removeDatabase(prevConnName);
+    QSqlDatabase bookDB;
+    if(book->archive && book->archive == m_prevArchive) {
+        bookDB = QSqlDatabase::database(connName);
+    } else {
+        // Remove old connection
+        QString prevConnName(QString("mdb_%1_%2").arg(m_threadID).arg(m_prevArchive));
+        QSqlDatabase::database(prevConnName, false).close();
+        QSqlDatabase::removeDatabase(prevConnName);
 
 #ifdef USE_MDBTOOLS
-            MdbConverter::removeConvertedDB(m_tempDB);
-            m_tempDB = book->path;
+        MdbConverter::removeConvertedDB(m_tempDB);
+        m_tempDB = book->path;
 
-            MdbConverter converter(true);
-            QString mdb = converter.exportFromMdb(book->path);
+        MdbConverter converter(true);
+        QString mdb = converter.exportFromMdb(book->path);
 
-            bookDB = QSqlDatabase::addDatabase("QSQLITE", connName);
-            bookDB.setDatabaseName(mdb);
+        bookDB = QSqlDatabase::addDatabase("QSQLITE", connName);
+        bookDB.setDatabaseName(mdb);
 #else
-            bookDB = QSqlDatabase::addDatabase("QODBC", connName);
-            bookDB.setDatabaseName(QString("DRIVER={Microsoft Access Driver (*.mdb)};FIL={MS Access};DBQ=%1").arg(book->path));
+        bookDB = QSqlDatabase::addDatabase("QODBC", connName);
+        bookDB.setDatabaseName(QString("DRIVER={Microsoft Access Driver (*.mdb)};FIL={MS Access};DBQ=%1").arg(book->path));
 #endif
 
-            m_prevArchive = book->archive;
-        }
-
-        if(!bookDB.isOpen()) {
-            if (!bookDB.open()) {
-                LOG_DB_ERROR(bookDB);
-            }
-        }
-
-        QSqlQuery query(bookDB);
-#ifdef USE_MDBTOOLS
-        if(!query.exec(QString("SELECT * FROM %1 LIMIT 1").arg(book->mainTable)))
-            LOG_SQL_ERROR(query);
-#else
-        if(!query.exec(QString("SELECT TOP 1 * FROM %1").arg(book->mainTable)))
-            LOG_SQL_ERROR(query);
-#endif
-
-        int hnoCol = query.record().indexOf("hno");
-        int ayaCol = query.record().indexOf("aya");
-        int soraCol = query.record().indexOf("sora");
-
-        bookWrite.startReading();
-
-        if(ayaCol != -1 && soraCol != -1) {
-            readTafessirBook(book, query, bookWrite, hnoCol!=-1);
-        } else {
-            readSimpleBook(book, query, bookWrite, hnoCol!=-1);
-        }
-
-        query.prepare(QString("SELECT id, tit, lvl, sub FROM %1 ORDER BY id").arg(book->tocTable));
-        if(query.exec()) {
-            while(query.next()) {
-                bookWrite.addTitle(query.value(1).toString(),
-                                   query.value(0).toInt(),
-                                   query.value(2).toInt());
-            }
-        } else {
-            LOG_SQL_ERROR(query);
-        }
-
-        bookWrite.endReading();
+        m_prevArchive = book->archive;
     }
 
-    QSqlDatabase::removeDatabase(QString("newBookDB_%1").arg(m_threadID));
+    if(!bookDB.isOpen()) {
+        if (!bookDB.open()) {
+            LOG_DB_ERROR(bookDB);
+        }
+    }
+
+    QSqlQuery query(bookDB);
+#ifdef USE_MDBTOOLS
+    if(!query.exec(QString("SELECT * FROM %1 LIMIT 1").arg(book->mainTable)))
+        LOG_SQL_ERROR(query);
+#else
+    if(!query.exec(QString("SELECT TOP 1 * FROM %1").arg(book->mainTable)))
+        LOG_SQL_ERROR(query);
+#endif
+
+    int hnoCol = query.record().indexOf("hno");
+    int ayaCol = query.record().indexOf("aya");
+    int soraCol = query.record().indexOf("sora");
+
+    bookWrite.startReading();
+
+    if(ayaCol != -1 && soraCol != -1) {
+        readTafessirBook(book, query, bookWrite, hnoCol!=-1);
+    } else {
+        readSimpleBook(book, query, bookWrite, hnoCol!=-1);
+    }
+
+    query.prepare(QString("SELECT id, tit, lvl, sub FROM %1 ORDER BY id").arg(book->tocTable));
+    if(query.exec()) {
+        while(query.next()) {
+            bookWrite.addTitle(query.value(1).toString(),
+                               query.value(0).toInt(),
+                               query.value(2).toInt());
+        }
+    } else {
+        LOG_SQL_ERROR(query);
+    }
+
+    bookWrite.endReading();
 
     if(!book->archive)
-        QSqlDatabase::removeDatabase(connName);
+        remover.connectionName = connName;
 
     importBook(book, path);
 

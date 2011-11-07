@@ -126,6 +126,8 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
 
     m_converted[mdb_path.toLower()] = convert_path;
 
+    m_remover.connectionName = m_bookDB.connectionName();
+
     return convert_path;
 }
 

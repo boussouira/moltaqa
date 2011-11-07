@@ -9,6 +9,7 @@
 #include <qfuture.h>
 #include <qfuturewatcher.h>
 #include <qstandarditemmodel.h>
+#include <QTime>
 
 class LibraryInfo;
 class LibraryBook;
@@ -144,6 +145,7 @@ protected:
     QFuture<void> m_future;
     QFutureWatcher<void> m_watcher;
     QString m_connName;
+    QTime m_modelTime;
 };
 
 #endif // LIBRARYMANAGER_H

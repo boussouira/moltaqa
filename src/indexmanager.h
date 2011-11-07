@@ -8,6 +8,8 @@
 #include "libraryinfo.h"
 #include "indextracker.h"
 
+class ArabicAnalyzer;
+
 class IndexManager : public QObject
 {
     Q_OBJECT
@@ -35,6 +37,7 @@ protected:
     IndexTracker *m_indexTracker;
     IndexTaskIter *m_taskIter;
     QList<BookIndexer*> m_threads;
+    ArabicAnalyzer *m_analyzer;
     QTime m_indexingTime;
     int m_booksCount;
     int m_indexedBooks;

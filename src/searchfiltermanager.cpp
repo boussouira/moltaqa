@@ -55,7 +55,9 @@ void SearchFilterManager::open()
 
 void SearchFilterManager::close()
 {
+    // TODO: remove this database properly
     QString conn = m_indexDB.connectionName();
+    m_indexDB.close();
     m_indexDB = QSqlDatabase();
 
     QSqlDatabase::removeDatabase(conn);

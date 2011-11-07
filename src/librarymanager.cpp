@@ -74,6 +74,8 @@ void LibraryManager::loadModel()
     if(m_model)
         delete(m_model);
 
+    m_modelTime.start();
+
     m_model = new BooksListModel();
     BooksListNode *firstNode = new BooksListNode(BooksListNode::Root);
 
@@ -92,6 +94,8 @@ BooksListModel *LibraryManager::booksListModel()
 
 void LibraryManager::booksListModelLoaded()
 {
+    qDebug("Load books model take %d ms", m_modelTime.elapsed());
+
     emit booksListModelLoaded(m_model);
 }
 

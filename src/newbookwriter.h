@@ -6,11 +6,13 @@
 #include <qsqlerror.h>
 #include <qhash.h>
 #include <QTime>
+#include "sqlutils.h"
 
 class NewBookWriter
 {
 public:
     NewBookWriter();
+    ~NewBookWriter();
     void setThreadID(int id) { m_threadID = id; }
     void createNewBook(QString bookPath=QString());
     QString bookPath();
@@ -29,6 +31,7 @@ protected:
     void createBookTables();
 
 protected:
+    Utils::DatabaseRemover m_remover;
     QString m_tempFolder;
     QString m_bookPath;
     QSqlDatabase m_bookDB;

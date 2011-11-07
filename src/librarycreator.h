@@ -12,6 +12,7 @@
 #include "newbookwriter.h"
 #include "shamelamapper.h"
 #include "librarymanager.h"
+#include "sqlutils.h"
 
 class LibraryCreator
 {
@@ -51,6 +52,7 @@ protected:
     void getShorooh(int mateenID, int shareehID);
 
 protected:
+    Utils::DatabaseRemover m_remover;
     QSqlDatabase m_bookDB;
     QSqlQuery m_bookQuery;
     LibraryInfo *m_library;

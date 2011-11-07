@@ -24,11 +24,8 @@ AbstractBookReader::AbstractBookReader(QObject *parent) : QObject(parent)
 
 AbstractBookReader::~AbstractBookReader()
 {
-    m_bookDB = QSqlDatabase();
-    QSqlDatabase::removeDatabase(m_connectionName);
-
-    if(m_indexModel) // Should be remove after removing the database
-        MW->readerHelper()->removeModel(m_bookInfo->bookID);
+    if(m_indexModel)
+        m_remover.removeModel = m_bookInfo->bookID;
 
     if(m_bookInfo)
         delete m_bookInfo;
@@ -50,9 +47,12 @@ void AbstractBookReader::openBook(bool fastOpen)
 
 
     if (!m_bookDB.open())
-        throw BookException(tr("لم يمكن فتح قاعدة البيانات"), m_bookInfo->bookPath);
+        throw BookException(tr("لم يمكن فتح قاعدة البيانات")+ ": " +m_bookInfo->bookPath,
+                            m_bookDB.lastError().text());
 
     m_bookQuery = QSqlQuery(m_bookDB);
+
+    m_remover.connectionName = m_connectionName;
 
     if(!fastOpen) {
         connected();
@@ -155,6 +155,7 @@ BookPage *AbstractBookReader::getSimpleBookPage(LibraryBook *book, int pageID)
 {
     BookPage *page = 0;
     QString connName = QString("getSimpleBookPage_b%1_p%2").arg(book->bookID).arg(pageID);
+    Utils::DatabaseRemover remover;
     QSqlDatabase bookDB;
 
     while(QSqlDatabase::contains(connName))
@@ -193,8 +194,7 @@ BookPage *AbstractBookReader::getSimpleBookPage(LibraryBook *book, int pageID)
         LOG_SQL_ERROR(bookQuery);
     }
 
-    bookDB = QSqlDatabase();
-    QSqlDatabase::removeDatabase(connName);
+    remover.connectionName = connName;
 
     return page;
 }
@@ -203,6 +203,7 @@ BookPage *AbstractBookReader::getTafessirPage(LibraryBook *book, int pageID)
 {
     BookPage *page = 0;
     QString connName = QString("getTafessirPage_b%1_p%2").arg(book->bookID).arg(pageID);
+    Utils::DatabaseRemover remover;
     QSqlDatabase bookDB;
 
     while(QSqlDatabase::contains(connName))
@@ -255,8 +256,7 @@ BookPage *AbstractBookReader::getTafessirPage(LibraryBook *book, int pageID)
         LOG_SQL_ERROR(bookQuery);
     }
 
-    bookDB = QSqlDatabase();
-    QSqlDatabase::removeDatabase(connName);
+    remover.connectionName = connName;
 
     return page;
 }
@@ -265,6 +265,7 @@ BookPage *AbstractBookReader::getQuranPage(LibraryBook *book, int pageID)
 {
     BookPage *page = 0;
     QString connName = QString("getQuranPage_b%1_p%2").arg(book->bookID).arg(pageID);
+    Utils::DatabaseRemover remover;
     QSqlDatabase bookDB;
 
     while(QSqlDatabase::contains(connName))
@@ -306,8 +307,7 @@ BookPage *AbstractBookReader::getQuranPage(LibraryBook *book, int pageID)
         LOG_SQL_ERROR(bookQuery);
     }
 
-    bookDB = QSqlDatabase();
-    QSqlDatabase::removeDatabase(connName);
+    remover.connectionName = connName;
 
     return page;
 }

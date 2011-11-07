@@ -5,6 +5,7 @@
 #include <qhash.h>
 #include <bookindexmodel.h>
 #include <qset.h>
+#include "sqlutils.h"
 
 class QuranSora {
 public:
@@ -33,6 +34,7 @@ protected:
     void removeUnusedModel();
 
 protected:
+    Utils::DatabaseRemover m_remover;
     QSqlDatabase m_quranDB;
     QHash<int, QuranSora*> m_sowar;
     QHash<int, BookIndexModel*> m_models;

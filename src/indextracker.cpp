@@ -19,6 +19,8 @@ IndexTracker::IndexTracker(QObject *parent) :
     m_libraryInfo = MW->libraryInfo();
     m_libraryManager = MW->libraryManager();
 
+    setAutoDelete(false);
+
     try {
         open();
         loadTask();
@@ -30,6 +32,9 @@ IndexTracker::IndexTracker(QObject *parent) :
 IndexTracker::~IndexTracker()
 {
     flush();
+
+    qDeleteAll(m_tasks);
+    m_tasks.clear();
 }
 
 void IndexTracker::open()
@@ -56,6 +61,7 @@ void IndexTracker::open()
 
 void IndexTracker::loadTask()
 {
+    qDeleteAll(m_tasks);
     m_tasks.clear();
 
     QDomElement taskNode = m_rootElement.firstChildElement("task");
@@ -82,10 +88,9 @@ void IndexTracker::addTask(IndexTask *task)
 
         m_tasks.append(task);
 
-    } else {
-        qWarning() << "Task exists:" << task;
     }
 }
+
 void IndexTracker::addTask(int bookID, IndexTask::Task task)
 {
     IndexTask *t = new IndexTask();
@@ -154,6 +159,16 @@ void IndexTracker::flush()
     out.setCodec("utf-8");
 
     out << m_doc.toString(4);
+}
+
+void IndexTracker::findTasks()
+{
+    QThreadPool::globalInstance()->start(this);
+}
+
+void IndexTracker::run()
+{
+    addTask(m_libraryManager->getNonIndexedBooks(), IndexTask::Add);
 }
 
 int IndexTracker::taskCount()

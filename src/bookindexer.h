@@ -14,6 +14,7 @@ public:
 
     void setWirter(IndexWriter* writer);
     void setTaskIter(IndexTaskIter *iter);
+    void stop();
     void run();
 
 protected:

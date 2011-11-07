@@ -94,7 +94,8 @@ SOURCES += mainwindow.cpp \
     resultwidget.cpp \
     textsimplebookreader.cpp \
     textquranreader.cpp \
-    bookreaderhelper.cpp
+    bookreaderhelper.cpp \
+    sqlutils.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -175,7 +176,8 @@ HEADERS += mainwindow.h \
     resultwidget.h \
     textsimplebookreader.h \
     textquranreader.h \
-    bookreaderhelper.h
+    bookreaderhelper.h \
+    sqlutils.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

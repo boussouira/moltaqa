@@ -8,7 +8,7 @@
 #include "librarymanager.h"
 #include "indextaskiter.h"
 
-class IndexTracker : public QObject
+class IndexTracker : public QObject, public QRunnable
 {
     Q_OBJECT
 public:
@@ -26,6 +26,9 @@ public:
 
     void loadTask();
     void flush();
+
+    void findTasks();
+    void run();
 
 protected:
     void open();

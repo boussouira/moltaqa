@@ -5,6 +5,7 @@
 #include "clutils.h"
 #include "textsimplebookreader.h"
 #include "textquranreader.h"
+#include <exception>
 
 BookIndexer::BookIndexer(QObject *parent) :
     QThread(parent),
@@ -22,6 +23,11 @@ void BookIndexer::setWirter(IndexWriter *writer)
 void BookIndexer::setTaskIter(IndexTaskIter *iter)
 {
     m_trackerIter = iter;
+}
+
+void BookIndexer::stop()
+{
+    m_stop = true;
 }
 
 void BookIndexer::run()
@@ -43,6 +49,8 @@ void BookIndexer::startIndexing()
             }
         } catch (BookException &e) {
             qCritical() << "Indexing error:" << e.what();
+        } catch (std::exception &e) {
+            qCritical() << "Indexing std error:" << e.what();
         }
 
         task = m_trackerIter->next();
@@ -68,8 +76,8 @@ void BookIndexer::indexBook(IndexTask *task)
     Document doc;
     int tokenAndNoStore = Field::STORE_NO | Field::INDEX_TOKENIZED;
     int storeAndNoToken = Field::STORE_YES | Field::INDEX_UNTOKENIZED;
-    wchar_t bookID[128];
-    wchar_t pageID[128];
+    wchar_t *bookID;
+    wchar_t *pageID;
     wchar_t *text = NULL;
 
     reader->setBookInfo(task->book->clone()); // The reader will delete this clone
@@ -78,25 +86,28 @@ void BookIndexer::indexBook(IndexTask *task)
     reader->openBook(true);
     reader->goFirst();
 
-    Utils::intToWChar(task->bookID, bookID, 10);
+    bookID = Utils::intToWChar(task->bookID);
 
     while (reader->hasNext()) {
-
         reader->nextPage();
 
-        Utils::intToWChar(page->pageID, pageID, 10);
+        pageID = Utils::intToWChar(page->pageID);
         text = Utils::QStringToWChar(reader->text());
 
-        doc.add( *_CLNEW Field(PAGE_ID_FIELD, pageID, storeAndNoToken));
         doc.add( *_CLNEW Field(BOOK_ID_FIELD, bookID, storeAndNoToken));
+        doc.add( *_CLNEW Field(PAGE_ID_FIELD, pageID, storeAndNoToken, false));
         doc.add( *_CLNEW Field(PAGE_TEXT_FIELD, text, tokenAndNoStore, false));
 
         m_writer->addDocument(&doc);
         doc.clear();
+
+        free(pageID);
+        free(text);
     }
 
     emit taskDone(task);
 
+    free(bookID);
     if(reader)
         delete reader;
 }

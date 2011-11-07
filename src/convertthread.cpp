@@ -4,6 +4,7 @@
 #include "newbookwriter.h"
 #include "utils.h"
 #include "bookexception.h"
+#include "sqlutils.h"
 
 #ifdef USE_MDBTOOLS
 #include "mdbconverter.h"
@@ -66,6 +67,8 @@ void ConvertThread::run()
 
 void ConvertThread::ConvertShamelaBook(const QString &path)
 {
+    Utils::DatabaseRemover remover;
+
 #ifdef USE_MDBTOOLS
     MdbConverter mdb;
     m_tempDB = mdb.exportFromMdb(path);
@@ -126,13 +129,9 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
 
         copyBookFromShamelaBook(node, bookDB, bookID);
         m_model->appendNode(node);
-
-        QSqlDatabase::removeDatabase(QString("newBookDB_%1").arg((int)currentThreadId()));
     }
 
-    bookDB = QSqlDatabase();
-    bookQuery.clear();
-    QSqlDatabase::removeDatabase("mdb");
+    remover.connectionName = "mdb";
 }
 
 void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDatabase &bookDB, int bookID)
