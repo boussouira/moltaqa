@@ -224,29 +224,39 @@ int versionNumber()
     return APP_VERSION;
 }
 
-bool checkFiles()
+bool checkDir(bool showWarnings)
 {
     bool ret = true;
     ret &= checkFiles(QStringList()
-                      << "quran-meta.db", dataDir());
+                      << "quran-meta.db",
+                      dataDir(),
+                      showWarnings);
+
     ret &= checkFiles(QStringList()
                       << "jquery.pagination.js"
                       << "jquery.growl.js"
                       << "jquery.js"
-                      << "scripts.js", jsDir());
+                      << "scripts.js",
+                      jsDir(),
+                      showWarnings);
+
     ret &=  checkFiles(QStringList()
-                       << "qt_ar.qm", localeDir());
+                       << "qt_ar.qm",
+                       localeDir(),
+                       showWarnings);
 
     return ret;
 }
 
-bool checkFiles(QStringList files, QDir dir)
+bool checkFiles(QStringList files, QDir dir, bool showWarnings)
 {
     bool ret = true;
 
     foreach(QString fileName, files) {
         if(!dir.exists(fileName)) {
-            qWarning() << "checkFiles: File doesn't exist" << dir.filePath(fileName);
+            if(showWarnings)
+                qWarning() << "checkFiles: File doesn't exist"
+                           << dir.filePath(fileName);
             ret = false;
         }
     }
@@ -261,11 +271,11 @@ QString appDir()
         dir.cdUp();
 
         appRootPath = dir.absolutePath();
-        if(!checkFiles()) {
+        if(!checkDir(false)) {
             qWarning() << "Can't find some files at" << appRootPath;
             qWarning() << "Check if we can use current working directory...";
             appRootPath = QDir::currentPath();
-            if(!checkFiles()) {
+            if(!checkDir(true)) {
                 QMessageBox::warning(0,
                                      App::name(),
                                      QObject::tr("لم يتم العثور على بعض الملفات في مجلد البرنامج"
