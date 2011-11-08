@@ -45,19 +45,33 @@ function fetechFinnished()
     clearBody = true;
 }
 
+function showError(title, desc)
+{
+    errorDiv = $('<div>', {'class': 'error'});
+    errorDiv.append($('<p>', {'text': title}));
+    errorDiv.append($('<p>', {'text': desc}));
+
+    $('#searchResult').html(errorDiv);
+    $('#pagination').html('');
+}
+
 function searchInfo(searchTime, searchCount)
 {
-    var sec = '' + searchTime / 1000;
-    if(sec.indexOf('.') != -1) {
-        sec = sec.substr(0, sec.indexOf('.')+5);
-    }
+    if(searchCount == 0) {
+        showError('لم يتم العثور على ما يطابق بحثك');
+    } else {
+        var sec = '' + searchTime / 1000;
+        if(sec.indexOf('.') != -1) {
+            sec = sec.substr(0, sec.indexOf('.')+5);
+        }
 
-    $.Growl.show({
-        'title' : "انتهى البحث",
-        'message': "تم البحث خلال " + sec + " ثانية" +
-                    "<br>" + "عدد النتائج: " + searchCount,
-        'timeout':3000
-    });
+        $.Growl.show({
+            'title' : "انتهى البحث",
+            'message': "تم البحث خلال " + sec + " ثانية" +
+                        "<br>" + "عدد النتائج: " + searchCount,
+            'timeout': 5000
+        });
+    }
 }
 
 function handlePaginationClick(new_page_index, pagination_container)

@@ -218,6 +218,8 @@ void ResultWidget::searchFinnished()
     m_view->execJS(QString("searchInfo(%1, %2);")
                    .arg(m_searcher->searchTime())
                    .arg(m_searcher->resultsCount()));
+
+    showProgressBar(false);
 }
 
 void ResultWidget::fetechStarted()
@@ -240,9 +242,9 @@ void ResultWidget::fetechFinnished()
 
     showProgressBar(false);
 
-//    QPlainTextEdit *edit = new QPlainTextEdit(0);
-//    edit->setPlainText(m_view->toHtml());
-//    edit->show();
+    //QPlainTextEdit *edit = new QPlainTextEdit(0);
+    //edit->setPlainText(m_view->toHtml());
+    //edit->show();
 }
 
 void ResultWidget::gotResult(SearchResult *result)
@@ -255,7 +257,28 @@ void ResultWidget::gotResult(SearchResult *result)
 
 void ResultWidget::gotException(QString what, int id)
 {
-    id++;
+    QString errorTitle;
+    QString errorDesc;
+
+    if(id == CL_ERR_TooManyClauses) {
+        errorTitle = tr("احتمالات البحث كثيرة جدا");
+        errorDesc = what;
+    } else if(id == CL_ERR_IO){
+        errorTitle = tr("لم تقم بانشاء الفهرس بعد");
+        errorDesc = what;
+    } else if(id == CL_ERR_CorruptIndex){
+        errorTitle = tr("الفهرس غير سليم");
+        errorDesc = what;
+    } else {
+        errorTitle = tr("خطأ غير معروف");
+        errorDesc = what;
+    }
+
+    m_view->execJS(QString("showError('%1', '%2');")
+                   .arg(errorTitle.replace('\'', "\\'"))
+                   .arg(errorDesc.replace('\'', "\\'")));
+
+    showProgressBar(false);
 }
 
 void ResultWidget::populateJavaScriptWindowObject()

@@ -268,6 +268,22 @@ div.clear {
     padding-right: 50px;
 }
 
+div.error {
+    background-image: -moz-linear-gradient(#FFE7E7, #FF9595);
+    background-image: -webkit-linear-gradient(#FFE7E7, #FF9595);
+    border: 1px solid #CCCCCC;
+    border-radius: 7px 7px 7px 7px;
+    margin: 10px 15px;
+    padding: 20px 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+div.error p{
+    padding: 0;
+    margin: 0;
+}
+
 /* Pagination */
 .pagination {
     font-size: 0.9em;
@@ -312,7 +328,7 @@ div.clear {
 }
 
 .pagination .current.prev, .pagination .current.next{
-        color:#999;
-        border-color:#999;
-        background:#fff;
+    color:#999;
+    border-color:#999;
+    background:#fff;
 }

@@ -63,7 +63,7 @@ void LibrarySearcher::run()
             fetech();
         }
     } catch(CLuceneError &e) {
-        qCritical("Search error: %s", e.what());
+        qCritical("Search error(%d): %s", e.number(), e.what());
         emit gotException(e.what(), e.number());
     } catch(std::exception &e){
         emit gotException(e.what(), 0);
