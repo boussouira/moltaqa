@@ -39,6 +39,7 @@ public slots:
     void openTafessir();
     void openShareeh();
     void tabChanged(int newIndex);
+    void loadTafessirList();
 
 protected:
     void createMenus(QMainWindow *parent);

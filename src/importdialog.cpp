@@ -197,6 +197,8 @@ void ImportDialog::startImporting()
                                    Q_ARG(int, i+1));
     }
 
+    if(metaObject()->invokeMethod(m_libraryManager, "bookAdded"))
+
     qDebug() << "Importing" << imported << "books take" << time.elapsed() << "ms";
 }
 

@@ -137,6 +137,7 @@ protected slots:
 
 signals:
     void booksListModelLoaded(BooksListModel *model);
+    void bookAdded();
 
 protected:
     BooksListModel *m_model;

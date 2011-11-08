@@ -35,6 +35,7 @@ BooksViewer::BooksViewer(LibraryManager *libraryManager, QMainWindow *parent): A
     layout->setContentsMargins(0,6,0,0);
 
     createMenus(parent);
+    loadTafessirList();
 
     connect(m_viewManager, SIGNAL(currentTabChanged(int)), SLOT(updateActions()));
     connect(m_viewManager, SIGNAL(currentTabChanged(int)), SLOT(tabChanged(int)));
@@ -96,9 +97,6 @@ void BooksViewer::createMenus(QMainWindow *parent)
                                                tr("فتح تفسير الاية"),
                                                this);
     m_comboTafasir = new QComboBox(this);
-    foreach(Pair pair, m_libraryManager->getTafassirList()) {
-        m_comboTafasir->addItem(pair.second, pair.first);
-    }
 
     // Shorooh action
     m_actionOpenShareeh = new QAction(QIcon(":/menu/images/arrow-left.png"),
@@ -168,17 +166,21 @@ void BooksViewer::createMenus(QMainWindow *parent)
 
 void BooksViewer::showToolBars()
 {
-    bool showTafsssir = m_viewManager->activeBook()->isQuran();
-    bool showShorooh = m_viewManager->activeBook()->hasShareeh;
+    LibraryBook *book = m_viewManager->activeBook();
 
-    m_toolBarTafesir->setEnabled(showTafsssir);
-    m_toolBarTafesir->setVisible(showTafsssir);
+    if(book) {
+        bool showTafsssir = book->isQuran() && m_comboTafasir->count();
+        bool showShorooh = book->hasShareeh;
 
-    m_toolBarShorooh->setEnabled(showShorooh);
-    m_toolBarShorooh->setVisible(showShorooh);
+        m_toolBarTafesir->setEnabled(showTafsssir);
+        m_toolBarTafesir->setVisible(showTafsssir);
 
-    m_toolBarGeneral->show();
-    m_toolBarNavigation->show();
+        m_toolBarShorooh->setEnabled(showShorooh);
+        m_toolBarShorooh->setVisible(showShorooh);
+
+        m_toolBarGeneral->show();
+        m_toolBarNavigation->show();
+    }
 }
 
 void BooksViewer::showMenu()
@@ -392,4 +394,15 @@ void BooksViewer::tabChanged(int newIndex)
             m_actionPrevAYA->setText(tr("رفع الصفحة"));
         }
     }
+}
+
+void BooksViewer::loadTafessirList()
+{
+    m_comboTafasir->clear();
+
+    foreach(Pair pair, m_libraryManager->getTafassirList()) {
+        m_comboTafasir->addItem(pair.second, pair.first);
+    }
+
+    showToolBars();
 }

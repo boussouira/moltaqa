@@ -203,6 +203,7 @@ void MainWindow::setupActions()
     //TODO: open Quran quickly
     connect(m_welcomeWidget, SIGNAL(showBooksList()), SLOT(showBooksList()));
     connect(m_bookView, SIGNAL(lastTabClosed()), SLOT(lastTabClosed()));
+    connect(m_libraryManager, SIGNAL(bookAdded()), m_bookView, SLOT(loadTafessirList()));
     connect(m_booksList, SIGNAL(bookSelected(int)), SLOT(openBook(int)));
     connect(ui->actionBooksList, SIGNAL(triggered()), SLOT(showBooksList()));
     connect(ui->actionSearchView, SIGNAL(triggered()), SLOT(showSearchView()));

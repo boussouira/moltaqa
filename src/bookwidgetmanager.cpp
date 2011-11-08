@@ -122,7 +122,8 @@ BookWidget *BookWidgetManager::activeBookWidget()
 
 LibraryBook *BookWidgetManager::activeBook()
 {
-    return activeBookWidget()->bookReader()->bookInfo();
+    BookWidget *bookWidget = activeBookWidget();
+    return bookWidget ? bookWidget->bookReader()->bookInfo() : 0;
 }
 
 RichBookReader *BookWidgetManager::activeBookReader()
