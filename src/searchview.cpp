@@ -1,7 +1,11 @@
 #include "searchview.h"
 #include "tabwidget.h"
 #include "searchwidget.h"
+#include "mainwindow.h"
+#include "indexmanager.h"
+
 #include <qboxlayout.h>
+#include <qmessagebox.h>
 
 SearchView::SearchView(QWidget *parent) : AbstarctView(parent)
 {
@@ -13,8 +17,14 @@ SearchView::SearchView(QWidget *parent) : AbstarctView(parent)
     m_layout->setContentsMargins(0, 6, 0, 0);
 
     QToolBar *bar = new QToolBar(this);
-    bar->addAction(QIcon(":/menu/images/tab-new.png"), tr("تبويب بحث جديد"), this, SLOT(newTab()));
-    bar->addAction(QIcon(":/menu/images/switch.png"), tr("تنقل بين نافذة البحث والنتائج"), this, SLOT(switchSearchWidget()));
+
+    bar->addAction(QIcon(":/menu/images/tab-new.png"),
+                   tr("تبويب بحث جديد"),
+                   this, SLOT(newTab()));
+
+    bar->addAction(QIcon(":/menu/images/switch.png"),
+                   tr("تنقل بين نافذة البحث والنتائج"),
+                   this, SLOT(switchSearchWidget()));
 
     m_toolBars << bar;
     setLayout(m_layout);
@@ -28,10 +38,20 @@ QString SearchView::title()
     return tr("نافذة البحث");
 }
 
-void SearchView::ensureTabIsOpen()
+bool SearchView::ensureTabIsOpen()
 {
+    if(MW->indexManager()->isIndexing()) {
+        QMessageBox::warning(this,
+                             tr("بحث متقدم"),
+                             tr("البرنامج يقوم بفهرسة الكتب" "\n"
+                                "من فضلك انتظر حتى تنتهي الفهرسة"));
+        return false;
+    }
+
     if(m_tabWidget->count() <= 0)
         newTab();
+
+    return true;
 }
 
 void SearchView::newTab()

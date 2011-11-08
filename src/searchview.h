@@ -15,7 +15,7 @@ public:
     SearchView(QWidget *parent=0);
 
     QString title();
-    void ensureTabIsOpen();
+    bool ensureTabIsOpen();
 
 public slots:
     void newTab();

@@ -41,8 +41,13 @@ bool IndexManager::openWriter()
     m_writer->setMaxFieldLength(IndexWriter::DEFAULT_MAX_FIELD_LENGTH);
     m_writer->setRAMBufferSizeMB(ramSize);
     m_writer->setMergeFactor(25);
-    qDebug("Using %d MB of RAM", ramSize);
+
     return true;
+}
+
+bool IndexManager::isIndexing()
+{
+    return !m_threads.isEmpty();
 }
 
 void IndexManager::start()
@@ -79,6 +84,7 @@ void IndexManager::start()
 
 void IndexManager::stop()
 {
+    qDebug("Stop indexer...");
     foreach (BookIndexer *thread, m_threads) {
             thread->stop();
     }

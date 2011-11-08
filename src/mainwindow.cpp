@@ -259,9 +259,10 @@ void MainWindow::showBooksList()
 
 void MainWindow::showSearchView()
 {
-    m_searchView->setSelectable(true);
-    m_searchView->ensureTabIsOpen();
-    m_viewManager->setCurrentView(m_searchView);
+    if(m_searchView->ensureTabIsOpen()){
+        m_searchView->setSelectable(true);
+        m_viewManager->setCurrentView(m_searchView);
+    }
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -274,7 +275,9 @@ void MainWindow::closeEvent(QCloseEvent *event)
     settings.endGroup();
 
     m_booksList->close();
-    m_indexManager->stop();
+
+    if(m_indexManager->isIndexing())
+        m_indexManager->stop();
 
     event->accept();
 }

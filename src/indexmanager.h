@@ -16,6 +16,8 @@ class IndexManager : public QObject
 public:
     IndexManager(QObject *parent = 0);
 
+    bool isIndexing();
+
 protected:
     bool openWriter();
 
