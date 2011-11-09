@@ -22,7 +22,7 @@ SearchWidget::SearchWidget(QWidget *parent) :
     m_filterManager->setLineEdit(ui->lineFilter);
 
     ui->treeViewBooks->setModel(m_filterManager->filterModel());
-    ui->treeViewBooks->resizeColumnToContents(0);
+    ui->treeViewBooks->setColumnWidth(0, 300);
 
     m_resultWidget = new ResultWidget(this);
     ui->stackedWidget->insertWidget(1, m_resultWidget);
@@ -34,6 +34,8 @@ SearchWidget::SearchWidget(QWidget *parent) :
     connect(ui->lineQueryShould, SIGNAL(returnPressed()), SLOT(search()));
     connect(ui->lineQueryShouldNot, SIGNAL(returnPressed()), SLOT(search()));
     connect(ui->pushSearch, SIGNAL(clicked()), SLOT(search()));
+    connect(ui->labelTools, SIGNAL(linkActivated(QString)),
+            SLOT(showFilterTools()));
 
     setupCleanMenu();
 
@@ -92,6 +94,45 @@ void SearchWidget::clearLineText()
 
     if(edit) {
         edit->clear();
+    }
+}
+
+void SearchWidget::showFilterTools()
+{
+    QMenu menu(this);
+    QAction *selectAllAct = new QAction(tr("اختيار الكل"), &menu);
+    QAction *unSelectAllAct = new QAction(tr("الغاء الكل"), &menu);
+
+    QAction *selectVisisbleAct = new QAction(tr("اختيار الكتب الظاهرة فقط"), &menu);
+    QAction *unSelectVisisbleAct = new QAction(tr("الغاء الكتب الظاهرة فقط"), &menu);
+
+    QAction *expandTreeAct = new QAction(tr("عرض الشجرة"), &menu);
+    QAction *collapseTreeAct = new QAction(tr("ضغط الشجرة"), &menu);
+
+    menu.addAction(selectAllAct);
+    menu.addAction(unSelectAllAct);
+    menu.addSeparator();
+    menu.addAction(selectVisisbleAct);
+    menu.addAction(unSelectVisisbleAct);
+    menu.addSeparator();
+    menu.addAction(expandTreeAct);
+    menu.addAction(collapseTreeAct);
+
+    QAction *ret = menu.exec(QCursor::pos());
+    if(ret) {
+        if(ret == selectAllAct) {
+            m_filterManager->selectAllBooks();
+        } else if(ret == unSelectAllAct) {
+            m_filterManager->unSelectAllBooks();
+        } else if(ret == selectVisisbleAct) {
+            m_filterManager->selectVisibleBooks();
+        } else if(ret == unSelectVisisbleAct) {
+            m_filterManager->unSelectVisibleBooks();
+        } else if(ret == expandTreeAct) {
+            ui->treeViewBooks->expandAll();
+        } else if(ret == collapseTreeAct) {
+            ui->treeViewBooks->collapseAll();
+        }
     }
 }
 

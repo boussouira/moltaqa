@@ -218,7 +218,7 @@ void MainWindow::aboutApp()
 {
     QMessageBox::information(this,
                              App::name(),
-                             tr("برنامج الكتبية لقراءة القرءان الكريم"));
+                             tr("مكتبة ملتقى اهل الحديث"));
 }
 
 void MainWindow::settingDialog()

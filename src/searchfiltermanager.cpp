@@ -7,6 +7,7 @@
 #include "clutils.h"
 #include <qsqlquery.h>
 #include <qitemselectionmodel.h>
+#include <QTime>
 
 SearchFilterManager::SearchFilterManager(QObject *parent)
     : QObject(parent),
@@ -20,7 +21,10 @@ SearchFilterManager::SearchFilterManager(QObject *parent)
     m_filterModel = new SortFilterProxyModel(this);
 
     setupMenu();
+    QTime time;
+    time.start();
     loadModel();
+    qDebug("Load search model take %d ms", time.elapsed());
 }
 
 SearchFilterManager::~SearchFilterManager()
@@ -115,7 +119,8 @@ void SearchFilterManager::loadModel()
 
     getBookItems(0, catIem);
 
-    m_model->appendRow(catIem);
+    if(catIem->child(0))
+        m_model->appendRow(catIem);
 
     QSqlQuery query(m_indexDB);
     query.prepare("SELECT id, title, description FROM catList ORDER BY id");
@@ -145,9 +150,12 @@ void SearchFilterManager::loadModel()
 void SearchFilterManager::getBookItems(int catID, QStandardItem *catItem)
 {
     QSqlQuery query(m_indexDB);
-    query.prepare("SELECT id, bookDisplayName, bookInfo, authorName FROM booksList "
-                  "WHERE bookCat = ? "
-                  "ORDER BY id");
+
+    query.prepare("SELECT booksList.id, booksList.bookDisplayName, "
+                  "booksList.bookInfo, authorsList.name "
+                  "FROM booksList LEFT JOIN authorsList "
+                  "ON authorsList.id = booksList.authorID "
+                  "WHERE booksList.bookCat = ?");
     query.bindValue(0, catID);
 
     if(query.exec()) {

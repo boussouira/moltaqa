@@ -103,11 +103,12 @@ public:
     void makeCatPlace(int parentID, int catOrder);
 
     /**
-      Get categorie books count
+      Get books count
       @param catID categorie id
-      @return books count
+      @return if catID != -1 return books with the given categorie id,
+              otherwise return library books count
       */
-    int booksCount(int catID);
+    int booksCount(int catID=-1);
     /**
       Get categorie count
       */

@@ -204,6 +204,9 @@ void ShamelaImportDialog::showBooks()
     connect(ui->lineBookSearch, SIGNAL(textChanged(QString)), filterModel, SLOT(setFilterRegExp(QString)));
     connect(ui->lineBookSearch, SIGNAL(textChanged(QString)), ui->treeView, SLOT(expandAll()));
     connect(m_booksModel, SIGNAL(itemChanged(QStandardItem*)), SLOT(itemChanged(QStandardItem*)));
+
+    if(MW->libraryManager()->booksCount() < m_manager->getBooksCount())
+        selectAllBooks();
 }
 
 bool ShamelaImportDialog::createFilter()

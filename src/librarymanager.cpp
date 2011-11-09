@@ -487,8 +487,13 @@ int LibraryManager::booksCount(int catID)
 {
     QSqlQuery bookQuery(m_indexDB);
 
-    bookQuery.prepare("SELECT COUNT(*) FROM booksList WHERE bookCat = ?");
-    bookQuery.bindValue(0, catID);
+    if(catID != -1) {
+        bookQuery.prepare("SELECT COUNT(*) FROM booksList WHERE bookCat = ?");
+        bookQuery.bindValue(0, catID);
+    } else {
+        bookQuery.prepare("SELECT COUNT(*) FROM booksList");
+    }
+
     if(bookQuery.exec()) {
         if(bookQuery.next()) {
             return bookQuery.value(0).toInt();
