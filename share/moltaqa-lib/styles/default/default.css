@@ -223,7 +223,7 @@ div.clear {
 
 /* Info message */
 #growlcontainer {
-    font-size: 12px;
+    font-size: .9em;
     left: 20px;
     position: fixed;
     top: 20px;
@@ -231,8 +231,8 @@ div.clear {
     z-index: 1000;
 }
 .growlstatus {
-    background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.7), rgba(222, 214, 214, 0.7));
-    background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.7), rgba(222, 214, 214, 0.7));
+    background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.9), rgba(222, 214, 214, 0.9));
+    background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.9), rgba(222, 214, 214, 0.9));
     border: 3px solid #E1E1E1;
     border-radius: 5px 5px 5px 5px;
     box-shadow: 0 0 5px 0 rgba(200, 200, 200, 0.8) inset;
@@ -282,6 +282,17 @@ div.error {
 div.error p{
     padding: 0;
     margin: 0;
+}
+
+div.info {
+    background-image: -moz-linear-gradient(#FFFFFF, #B8FB9E);
+    background-image: -webkit-linear-gradient(#FFFFFF, #B8FB9E);
+    border: 1px solid #CCCCCC;
+    border-radius: 7px 7px 7px 7px;
+    margin: 10px 15px;
+    padding: 20px 10px;
+    text-align: center;
+    vertical-align: middle;
 }
 
 /* Pagination */

@@ -1,5 +1,10 @@
 var clearBody = true;
 
+function clear(selector)
+{
+    $(selector).html('');
+}
+
 function resultEvents()
 {
     $('.result .resultText').click(function() {
@@ -21,21 +26,23 @@ function addResult(str)
 
 function searchStarted()
 {
-    $('#searchResult').html($('<p>', {text: "جاري البحث...", 'class': 'statusDiv'}));
+    $('#searchResult').html($('<div>', {text: "جاري البحث...", 'class': 'info'}));
+    clear('#pagination');
 }
 
 function searchFinnished()
 {
-    $('#searchResult').html('');
-    $('#pagination').html('');
+    clear('#searchResult');
+    clear('#pagination');
+
     clearBody = false;
 }
 
 function fetechStarted()
 {
     if(clearBody) {
-        $('#searchResult').html('');
-        $('#pagination').html('');
+        clear('#searchResult');
+        clear('#pagination');
     }
 }
 
@@ -52,7 +59,7 @@ function showError(title, desc)
     errorDiv.append($('<p>', {'text': desc}));
 
     $('#searchResult').html(errorDiv);
-    $('#pagination').html('');
+    clear('#pagination');
 }
 
 function searchInfo(searchTime, searchCount)
