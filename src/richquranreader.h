@@ -29,6 +29,8 @@ public:
 
     BookIndexModel *indexModel();
 
+    int getPageTitleID(int pageID);
+
 protected:
     void connected();
     void getBookInfo();

@@ -13,6 +13,7 @@ public:
     int ayatCount;  ///< Current sora ayat count
     int page;   ///< Page number
     int pageID; ///< Page id
+    int titleID; ///< Title id
     int part;   ///< Part number
     int haddit; ///< Haddit number
     QString text; ///< Page Text

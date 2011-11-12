@@ -39,6 +39,7 @@ BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_
     connect(m_indexWidget, SIGNAL(openSora(int,int)), SLOT(openSora(int,int)));
     connect(m_db, SIGNAL(textChanged()), SLOT(readerTextChanged()));
     connect(m_db, SIGNAL(textChanged()), m_indexWidget, SLOT(displayBookInfo()));
+    connect(m_watcher, SIGNAL(finished()), m_indexWidget, SLOT(displayBookInfo()));
 }
 
 BookWidget::~BookWidget()

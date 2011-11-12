@@ -37,6 +37,8 @@ public:
 
     void stopModelLoad();
 
+    virtual int getPageTitleID(int pageID);
+
 signals:
     void textChanged();
 

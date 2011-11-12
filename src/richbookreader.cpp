@@ -3,6 +3,7 @@
 #include "librarybook.h"
 #include "bookpage.h"
 #include "bookindexmodel.h"
+#include "utils.h"
 
 RichBookReader::RichBookReader(QObject *parent) : AbstractBookReader(parent)
 {
@@ -48,6 +49,27 @@ bool RichBookReader::scrollToHighlight()
 void RichBookReader::stopModelLoad()
 {
     m_stopModelLoad = true;
+}
+
+int RichBookReader::getPageTitleID(int pageID)
+{
+    QSqlQuery query(m_bookDB);
+
+    query.prepare(QString("SELECT pageID FROM %1 "
+                          "WHERE pageID <= ? "
+                          "ORDER BY pageID DESC LIMIT 1")
+                  .arg(m_bookInfo->indexTable));
+
+    query.bindValue(0, pageID);
+    if(query.exec()) {
+        if(query.next()) {
+            return query.value(0).toInt();
+        }
+    } else {
+        LOG_SQL_ERROR(query);
+    }
+
+    return 0;
 }
 
 BookIndexModel *RichBookReader::topIndexModel()

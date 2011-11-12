@@ -55,6 +55,8 @@ void RichSimpleBookReader::goToPage(int pid)
         m_currentPage->page = m_simpleQuery->value(3).toInt();
     }
 
+    m_currentPage->titleID = getPageTitleID(m_currentPage->pageID);
+
     m_libraryManager->getShoroohPages(m_bookInfo, m_currentPage);
 
     m_textFormat->done();

@@ -22,12 +22,14 @@ public:
     void hidePartSpin(bool visible);
     void setBookInfo(LibraryBook *bInfo) { m_bookInfo = bInfo; }
     void setCurrentPage(BookPage *page) { m_page = page; }
+    void selectTitle(int tid);
 
 protected:
     void changeEvent(QEvent *e);
+    bool fitchChild(QModelIndex parent, int tid);
 
 public slots:
-    void setIndex(BookIndexModel *pList);
+    void setIndex(BookIndexModel *indexModel);
     void displayBookInfo();
     void setSelectedSora(int pSoraNumber);
     void updatePageAndAyaNum(int pPageNumber, int pAyaNumber);
@@ -47,6 +49,7 @@ signals:
     void openPage(int pageID);
 
 private:
+    BookIndexModel *m_model;
     LibraryBook *m_bookInfo;
     BookPage *m_page;
     Ui::IndexWidget *ui;

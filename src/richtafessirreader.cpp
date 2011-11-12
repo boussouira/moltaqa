@@ -80,6 +80,8 @@ void RichTafessirReader::goToPage(int pid)
         text = QString::fromUtf8(qUncompress(m_tafessirQuery->value(1).toByteArray()));
     }
 
+    m_currentPage->titleID = getPageTitleID(m_currentPage->pageID);
+
     // TODO: don't show quran text when browsing tafessir book directly?
     if(m_quranInfo) {
         readQuranText(m_currentPage->sora,

@@ -76,6 +76,8 @@ void RichQuranReader::goToPage(int page, int part)
                                    m_quranQuery->value(4).toInt());
     }
 
+    m_currentPage->titleID = getPageTitleID(m_currentPage->pageID);
+
     m_formatter->done();
 
     emit textChanged();
@@ -114,6 +116,12 @@ BookIndexModel *RichQuranReader::indexModel()
     return m_indexModel;
 }
 
+int RichQuranReader::getPageTitleID(int pageID)
+{
+    Q_UNUSED(pageID);
+    return m_currentPage->sora;
+}
+
 void RichQuranReader::getBookInfo()
 {
     m_quranQuery->prepare("SELECT  MIN(pageNumber), MAX(pageNumber), MIN(id), MAX(id) "
@@ -139,9 +147,8 @@ int RichQuranReader::getPageNumber(int soraNumber, int ayaNumber)
 
     if(m_quranQuery->next()) {
         page = m_quranQuery->value(0).toInt();
-        m_currentPage->aya = 1;
-        m_currentPage->sora = soraNumber;
     }
+
     return page;
 }
 
@@ -184,13 +191,13 @@ void RichQuranReader::nextAya()
     if(sora > 114)
         sora = 1;
     int page = getPageNumber(sora, aya);
-    m_currentPage->sora = sora;
-    m_currentPage->aya = aya;
-    m_currentPage->ayatCount = getSoraAyatCount(sora);
 
     if(page != m_currentPage->page)
         goToPage(page, 1);
 
+    m_currentPage->sora = sora;
+    m_currentPage->aya = aya;
+    m_currentPage->ayatCount = getSoraAyatCount(sora);
 }
 
 void RichQuranReader::prevAya()
@@ -206,12 +213,12 @@ void RichQuranReader::prevAya()
 
     int page = getPageNumber(sora, aya);
 
+    if(page != m_currentPage->page)
+        goToPage(page, 1);
+
     m_currentPage->sora = sora;
     m_currentPage->aya = aya;
     m_currentPage->ayatCount = getSoraAyatCount(sora);
-
-    if(page != m_currentPage->page)
-        goToPage(page, 1);
 }
 
 int RichQuranReader::getSoraAyatCount(int sora)

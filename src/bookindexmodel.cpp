@@ -1,4 +1,5 @@
 #include "bookindexmodel.h"
+#include "modelenums.h"
 
 BookIndexModel::BookIndexModel(QObject *parent) : QAbstractItemModel(parent), m_rootNode(0)
 {
@@ -21,10 +22,18 @@ QModelIndex BookIndexModel::index(int row, int column,
 {
     if (!m_rootNode || row < 0 || column < 0)
         return QModelIndex();
+
     BookIndexNode *parentNode = nodeFromIndex(parent);
-    BookIndexNode *childNode = parentNode->childList()->at(row);
+    if(!parentNode)
+        return QModelIndex();
+
+    if(parentNode->childs.size() <= row)
+        return QModelIndex();
+
+    BookIndexNode *childNode = parentNode->childs.at(row);
     if (!childNode)
         return QModelIndex();
+
     return createIndex(row, column, childNode);
 }
 
@@ -44,7 +53,7 @@ int BookIndexModel::rowCount(const QModelIndex &parent) const
     BookIndexNode *parentNode = nodeFromIndex(parent);
     if (!parentNode)
         return 0;
-    return parentNode->childList()->count();
+    return parentNode->childs.count();
 }
 
 int BookIndexModel::columnCount(const QModelIndex & /* parent */) const
@@ -57,13 +66,13 @@ QModelIndex BookIndexModel::parent(const QModelIndex &child) const
     BookIndexNode *node = nodeFromIndex(child);
     if (!node)
         return QModelIndex();
-    BookIndexNode *parentNode = node->parent();
+    BookIndexNode *parentNode = node->parentNode;
     if (!parentNode)
         return QModelIndex();
-    BookIndexNode *grandparentNode = parentNode->parent();
+    BookIndexNode *grandparentNode = parentNode->parentNode;
     if (!grandparentNode)
         return QModelIndex();
-    int row = grandparentNode->childList()->indexOf(parentNode);
+    int row = grandparentNode->childs.indexOf(parentNode);
     return createIndex(row, 0, parentNode);
 }
 
@@ -73,10 +82,12 @@ QVariant BookIndexModel::data(const QModelIndex &index, int role) const
     if (!node)
         return QVariant();
 
-    if (role == Qt::DisplayRole) // there is only one column
-        return node->title();
-    else if(role == Qt::ToolTipRole)
-        return QString("<p>%1</p>").arg(node->title());
+    if(index.column() == 0) {
+        if (role == Qt::DisplayRole || role == Qt::ToolTipRole)
+            return node->title;
+        else if(role == ItemRole::idRole)
+            return node->id;
+    }
 
     return QVariant();
 }
@@ -87,4 +98,3 @@ QVariant BookIndexModel::headerData(int /*section*/,
 {
     return QVariant();
 }
-
