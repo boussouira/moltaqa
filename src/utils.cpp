@@ -126,6 +126,18 @@ QString secondsToString(int milsec, bool html)
     return time;
 }
 
+QString abbreviate(QString str, int size) {
+        if (str.length() <= size-3)
+                return str;
+
+        str.simplified();
+        int index = str.lastIndexOf(' ', size-3);
+        if (index <= -1)
+                return "";
+
+        return str.left(index).append("...");
+}
+
 bool isLibraryPath(QString path)
 {
     QDir dir(path);

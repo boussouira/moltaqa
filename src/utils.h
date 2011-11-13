@@ -36,6 +36,8 @@ int randInt(int smin, int smax);
 
 QString arPlural(int count, int word, bool html=false);
 QString secondsToString(int milsec, bool html=false);
+QString abbreviate(QString str, int size);
+
 bool isLibraryPath(QString path);
 void createIndexDB(QSqlQuery &query);
 void createIndexDB(QString path);
