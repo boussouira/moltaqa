@@ -59,17 +59,22 @@ bool TabWidget::eventFilter(QObject *obj, QEvent *event)
 void TabWidget::showTabBarMenu(QPoint point)
 {
     QMenu menu(this);
-    // TODO: implemet this
+
     QAction *closeAct = new QAction(tr("اغلاق التبويب"), &menu);
     QAction *closeOtherAct = new QAction(tr("اغلاق كل التبويبات الاخرى"), &menu);
+    QAction *closeAllAct = new QAction(tr("اغلاق كل التبويبات"), &menu);
 
     menu.addAction(closeAct);
     menu.addAction(closeOtherAct);
+    menu.addAction(closeAllAct);
 
-    QAction *moveAct = new QAction(tr("نقل الى نافذة اخرى"), &menu);
-    QAction *revAct = new QAction(tr("عكس تجاور النوافذ"), &menu);
+    QAction *moveAct = 0;
+    QAction *revAct = 0;
 
     if(m_canMoveToOtherTabWidget) {
+        moveAct = new QAction(tr("نقل الى نافذة اخرى"), &menu);
+        revAct = new QAction(tr("عكس تجاور النوافذ"), &menu);
+
         menu.addSeparator();
         menu.addAction(moveAct);
         menu.addAction(revAct);
@@ -83,6 +88,23 @@ void TabWidget::showTabBarMenu(QPoint point)
                 emit moveToOtherTab(tabIndex);
         } else if(ret == revAct) {
             emit reverseSplitter();
+        } else if(ret == closeAct) {
+            int tabIndex = m_tabBar->tabAt(point);
+            if(tabIndex != -1)
+                emit tabCloseRequested(tabIndex);
+        } else if(ret == closeOtherAct) {
+            QWidget *w = widget(m_tabBar->tabAt(point));
+            if(w) {
+                for(int i=count()-1; i>=0; i--) {
+                    if(widget(i) != w) {
+                        emit tabCloseRequested(i);
+                    }
+                }
+            }
+        } else if(ret == closeAllAct) {
+            for(int i=count()-1; i>=0; i--) {
+                emit tabCloseRequested(i);
+            }
         }
     }
 }
