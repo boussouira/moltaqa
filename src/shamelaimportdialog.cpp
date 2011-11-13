@@ -60,6 +60,8 @@ ShamelaImportDialog::~ShamelaImportDialog()
     delete m_shamela;
     delete m_manager;
     delete ui;
+
+    m_importDialog = 0;
 }
 
 void ShamelaImportDialog::closeEvent(QCloseEvent *event)
@@ -77,6 +79,8 @@ void ShamelaImportDialog::closeEvent(QCloseEvent *event)
 
 ShamelaImportDialog *ShamelaImportDialog::importDialog()
 {
+    Q_ASSERT(m_importDialog);
+
     return m_importDialog;
 }
 
@@ -313,7 +317,6 @@ void ShamelaImportDialog::startImporting()
 
     ui->progressBar->setMaximum(m_manager->getBooksCount());
     ui->progressBar->setValue(0);
-    ui->progressSteps->setValue(2);
 
 #ifdef USE_MDBTOOLS
     m_importThreadCount = 1; // Don't use multi-threading with mdbtools
@@ -369,7 +372,6 @@ void ShamelaImportDialog::doneImporting()
         ui->pushDone->show();
 
         ui->progressBar->setValue(ui->progressBar->maximum());
-        ui->progressSteps->setValue(ui->progressSteps->maximum());
 
         importShorooh();
 

@@ -25,9 +25,6 @@
    </property>
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
-     <property name="currentIndex">
-      <number>2</number>
-     </property>
      <widget class="QWidget" name="page">
       <layout class="QVBoxLayout" name="verticalLayout">
        <property name="margin">
@@ -214,34 +211,6 @@ p, li { white-space: pre-wrap; }
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_3">
-         <property name="title">
-          <string>التقدم الكلي:</string>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_8">
-          <item>
-           <widget class="QProgressBar" name="progressSteps">
-            <property name="maximum">
-             <number>3</number>
-            </property>
-            <property name="value">
-             <number>0</number>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-            <property name="textVisible">
-             <bool>true</bool>
-            </property>
-            <property name="format">
-             <string>%v/%m</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
         <widget class="QGroupBox" name="groupStep">
          <property name="title">
           <string>استيراد الكتب:</string>
@@ -249,20 +218,8 @@ p, li { white-space: pre-wrap; }
          <layout class="QVBoxLayout" name="verticalLayout_9">
           <item>
            <widget class="QProgressBar" name="progressBar">
-            <property name="minimum">
-             <number>0</number>
-            </property>
-            <property name="maximum">
-             <number>100</number>
-            </property>
-            <property name="value">
-             <number>0</number>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-            <property name="textVisible">
-             <bool>true</bool>
+            <property name="format">
+             <string>%p% (%v/%m)</string>
             </property>
            </widget>
           </item>
