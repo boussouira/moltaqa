@@ -15,7 +15,6 @@ a {
     text-align: center;
 }
 #simpleBook {
-    border: 1px solid #CCCCCC;
     font-family: 'Lotus Linotype';
     font-size: 30px;
     padding: 15px;
@@ -47,6 +46,33 @@ a {
 .highlighted {
     color: #EC0033;
 }
+
+#simpleBook #pageHeader {
+  border-bottom: 1px solid #CCCCCC;
+  margin-bottom: 15px;
+}
+
+#simpleBook #pageHeader .bookName {
+  color: #AA0000;
+  font-size: 0.7em;
+}
+
+#simpleBook #pageHeader .part {
+  float: left;
+  font-size: 0.7em;
+}
+
+#simpleBook #pageFooter {
+  border-top: 1px solid #CCCCCC;
+  margin-top: 15px;
+  text-align: center;
+}
+
+#simpleBook #pageFooter .page {
+  color: #333333;
+  font-size: 0.9em;
+}
+
 footnote {
     font-size: 20px;
 }
@@ -59,13 +85,32 @@ footnote a {
     font-size: 20px;
     padding-bottom: 4px;
 }
-.tafessir_quran {
-    border-radius:10px;
+.tafessir_quran .quran_text {
+    border-radius:0 0 10px 10px;
     background-color: #FFF2F2;
-    border: 1px solid #FFD2D2;
+    border-color: #FFD2D2;
+    border-style: none solid solid;
+    border-width: medium 1px 1px;
+    display: none;
     font-size: 0.9em;
     margin-bottom: 15px;
     padding: 10px;
+}
+.tafessir_quran .toggale_quran {
+    background-color: #FFF2F2;
+    border: 1px solid #FFD2D2;
+    border-radius: 10px 10px 0 0;
+    padding: 5px;
+    text-align: left;
+}
+
+.tafessir_quran .toggale_quran img {
+    cursor: pointer;
+}
+
+.tafessir_quran .toggale_quran .quran_info {
+    float: right;
+    font-size: 0.9em;
 }
 .ayaDiv {
     display: inline;

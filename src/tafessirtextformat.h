@@ -11,7 +11,7 @@ public:
     void insertBassemala();
     void insertAyaText(const QString &pAyaText, int pAyaNumber, int pSoraNumber);
 
-    void beginQuran();
+    void beginQuran(QString soraName, int firstAya, int lastAya);
     void endQuran();
 
 };

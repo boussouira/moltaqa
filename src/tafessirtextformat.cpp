@@ -24,12 +24,29 @@ void TafessirTextFormat::insertAyaText(const QString &pAyaText, int pAyaNumber, 
     closeHtmlTag();
 }
 
-void TafessirTextFormat::beginQuran()
+void TafessirTextFormat::beginQuran(QString soraName, int firstAya, int lastAya)
 {
+    QString quranTextInfo;
+    if(firstAya < lastAya) {
+        quranTextInfo = tr("سورة %1، من الاية %2 الى الاية %3")
+                .arg(soraName).arg(firstAya).arg(lastAya);
+    } else {
+        quranTextInfo = tr("سورة %1، الاية %2").arg(soraName).arg(firstAya);
+    }
+
     openHtmlTag("div", "tafessir_quran");
+
+    openHtmlTag("div", "toggale_quran");
+    insertSpanTag(quranTextInfo, "quran_info");
+    insertImage("qrc:/menu/images/add.png");
+    insertDivTag("", "clear");
+    closeHtmlTag();
+
+    openHtmlTag("div", "quran_text");
 }
 
 void TafessirTextFormat::endQuran()
 {
+    closeHtmlTag();
     closeHtmlTag();
 }

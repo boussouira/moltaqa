@@ -28,7 +28,7 @@ RichSimpleBookReader::~RichSimpleBookReader()
 void RichSimpleBookReader::connected()
 {
     m_simpleQuery = new SimpleQuery(m_bookDB, m_bookInfo);
-    AbstractBookReader::connected();
+    RichBookReader::connected();
 }
 
 void RichSimpleBookReader::goToPage(int pid)
@@ -49,10 +49,16 @@ void RichSimpleBookReader::goToPage(int pid)
         m_simpleQuery->prevPage(id);
 
     if(m_simpleQuery->next()) {
-        m_textFormat->insertText(QString::fromUtf8(qUncompress(m_simpleQuery->value(1).toByteArray())));
+        QString pageText = QString::fromUtf8(qUncompress(m_simpleQuery->value(1).toByteArray()));
+
         m_currentPage->pageID = m_simpleQuery->value(0).toInt();
         m_currentPage->part = m_simpleQuery->value(2).toInt();
         m_currentPage->page = m_simpleQuery->value(3).toInt();
+
+        if(m_query && m_highlightPageID == m_currentPage->pageID)
+            m_textFormat->insertText(Utils::highlightText(pageText, m_query, false));
+        else
+            m_textFormat->insertText(pageText);
     }
 
     m_currentPage->titleID = getPageTitleID(m_currentPage->pageID);

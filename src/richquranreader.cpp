@@ -25,7 +25,7 @@ RichQuranReader::~RichQuranReader()
 void RichQuranReader::connected()
 {
     m_quranQuery = new QuranQuery(m_bookDB, m_bookInfo);
-    AbstractBookReader::connected();
+    RichBookReader::connected();
 }
 
 void RichQuranReader::goToPage(int pid)

@@ -9,6 +9,8 @@
 #include "bookindexnode.h"
 #include "bookexception.h"
 #include "utils.h"
+#include "mainwindow.h"
+#include "bookreaderhelper.h"
 
 #include <qsqlquery.h>
 #include <qstringlist.h>
@@ -49,7 +51,7 @@ void RichTafessirReader::connected()
     if(m_quranInfo)
         openQuranBook();
 
-    AbstractBookReader::connected();
+    RichBookReader::connected();
 }
 
 void RichTafessirReader::goToPage(int pid)
@@ -89,7 +91,10 @@ void RichTafessirReader::goToPage(int pid)
                       m_tafessirQuery->getAyatCount(m_currentPage->sora, m_currentPage->aya));
     }
 
-    m_formatter->insertText(text);
+    if(m_query && m_highlightPageID == m_currentPage->pageID)
+        m_formatter->insertText(Utils::highlightText(text, m_query, false));
+    else
+        m_formatter->insertText(text);
 
     m_formatter->done();
 
@@ -168,18 +173,19 @@ void RichTafessirReader::openQuranBook()
 void RichTafessirReader::readQuranText(int sora, int aya, int count)
 {
     if(count>0) {
-        m_formatter->beginQuran();
+        QuranSora *soraInfo = MW->readerHelper()->getQuranSora(sora);
 
-        m_quranQuery->exec(QString("SELECT quranText.id, quranText.ayaText, quranText.ayaNumber, "
-                                   "quranText.pageNumber, quranText.soraNumber, quranSowar.SoraName "
-                                   "FROM quranText LEFT JOIN quranSowar "
-                                   "ON quranSowar.id = quranText.soraNumber "
+        m_formatter->beginQuran(soraInfo->name, aya, aya+count-1);
+
+        m_quranQuery->exec(QString("SELECT quranText.ayaText, quranText.ayaNumber, "
+                                   "quranText.soraNumber "
+                                   "FROM quranText "
                                    "WHERE quranText.ayaNumber >= %1 AND quranText.soraNumber = %2 "
                                    "ORDER BY quranText.id LIMIT %3").arg(aya).arg(sora).arg(count));
         while(m_quranQuery->next()) {
-            m_formatter->insertAyaText(m_quranQuery->value(1).toString(),
-                                       m_quranQuery->value(2).toInt(),
-                                       m_quranQuery->value(4).toInt());
+            m_formatter->insertAyaText(m_quranQuery->value(0).toString(),
+                                       m_quranQuery->value(1).toInt(),
+                                       m_quranQuery->value(2).toInt());
         }
 
         m_formatter->endQuran();

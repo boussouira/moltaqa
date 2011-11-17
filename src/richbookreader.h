@@ -39,6 +39,9 @@ public:
 
     virtual int getPageTitleID(int pageID);
 
+protected:
+    virtual void connected();
+
 signals:
     void textChanged();
 

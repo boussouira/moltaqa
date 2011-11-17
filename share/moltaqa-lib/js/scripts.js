@@ -99,3 +99,14 @@ function setPagination(currentPage, resultCount, resultPeerPage)
         callback:handlePaginationClick
     });
 }
+
+$('.toggale_quran > img').click(function() {
+    if($('.quran_text').css('display')!="none") {
+        // Hide the quran text
+        $(this).attr('src', 'qrc:/menu/images/add.png');
+        $('.quran_text').fadeOut('slow');
+    } else {
+        $(this).attr('src', 'qrc:/menu/images/remove.png');
+        $('.quran_text').fadeIn('slow');
+    }
+});

@@ -19,6 +19,14 @@ RichBookReader::~RichBookReader()
         delete m_textFormat;
 }
 
+void RichBookReader::connected()
+{
+    if(!m_bookInfo->isQuran())
+        m_textFormat->setData(m_bookInfo, m_currentPage);
+
+    AbstractBookReader::connected();
+}
+
 bool RichBookReader::needFastIndexLoad()
 {
     return true;
@@ -28,11 +36,7 @@ QString RichBookReader::text()
 {
     Q_ASSERT(m_textFormat);
 
-    if(!m_bookInfo->isQuran() && m_query && m_highlightPageID == m_currentPage->pageID) {
-        return Utils::highlightText(m_textFormat->getText(), m_query, false);
-    } else {
-        return m_textFormat->getText();
-    }
+    return m_textFormat->getText();
 }
 
 void RichBookReader::highlightPage(int pageID, lucene::search::Query *query)

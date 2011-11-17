@@ -6,6 +6,8 @@ WelcomeWidget::WelcomeWidget(QWidget *parent) :
     ui(new Ui::WelcomeWidget)
 {
     ui->setupUi(this);
+
+    ui->webView->setUrl(QUrl("http://www.ahlalhdeeth.com/vb/forumdisplay.php?f=75"));
 }
 
 WelcomeWidget::~WelcomeWidget()

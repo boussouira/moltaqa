@@ -13,6 +13,7 @@
 #include <qfuturewatcher.h>
 #include <QCloseEvent>
 #include <QFile>
+#include <QPlainTextEdit>
 
 BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_db(db)
 {
@@ -238,6 +239,12 @@ void BookWidget::indexModelReady()
 
 void BookWidget::readerTextChanged()
 {
+//    static QPlainTextEdit *plain = new QPlainTextEdit();
+//    plain->setPlainText(m_db->text());
+//    plain->setWindowTitle("HTML Source");
+//    plain->resize(600, 400);
+//    plain->show();
+
     m_view->setHtml(m_db->text());
 
     if(m_db->scrollToHighlight()){
