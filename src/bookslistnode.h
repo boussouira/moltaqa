@@ -3,6 +3,7 @@
 
 #include <qstring.h>
 #include <qlist.h>
+#include "librarybook.h"
 
 class BooksListNode
 {
@@ -17,10 +18,14 @@ public:
 
 public:
     Type type;
+    LibraryBook::Type bookType;
     QString title;
     QString authorName;
+    QString authorDeath;
+    int authorDeathYear;
     QString infoToolTip;
     int id;
+    int order;
     BooksListNode *parentNode;
     QList<BooksListNode *> childrenNode;
 };

@@ -361,7 +361,10 @@ void LibraryManager::childCats(BooksListNode *parentNode, int pID, bool onlyCats
                                                    catQuery.value(1).toString(),
                                                    QString(),
                                                    catQuery.value(0).toInt());
+        catNode->order = catQuery.value(2).toInt();
+
         childCats(catNode, catQuery.value(0).toInt(), onlyCats);
+
         parentNode->appendChild(catNode);
     }
 }
@@ -369,7 +372,9 @@ void LibraryManager::childCats(BooksListNode *parentNode, int pID, bool onlyCats
 void LibraryManager::booksCat(BooksListNode *parentNode, int catID)
 {
     QSqlQuery bookQuery(m_indexDB);
-    bookQuery.prepare("SELECT booksList.id, booksList.bookDisplayName, booksList.authorName, booksList.bookInfo, authorsList.name "
+    bookQuery.prepare("SELECT booksList.id, booksList.bookDisplayName, "
+                      "booksList.bookType, booksList.bookInfo, "
+                      "authorsList.name, authorsList.die_year "
                            "FROM booksList LEFT JOIN authorsList "
                            "ON authorsList.id = booksList.authorID "
                            "WHERE booksList.bookCat = ?");
@@ -384,7 +389,11 @@ void LibraryManager::booksCat(BooksListNode *parentNode, int catID)
                                                        bookQuery.value(1).toString(),
                                                        bookQuery.value(4).toString(),
                                                        bookQuery.value(0).toInt());
+        secondChild->bookType = (LibraryBook::Type)bookQuery.value(2).toInt();
         secondChild->infoToolTip = bookQuery.value(3).toString();
+        secondChild->authorDeathYear = bookQuery.value(5).toInt();
+        secondChild->authorDeath = Utils::hijriYear(secondChild->authorDeathYear);
+
         parentNode->appendChild(secondChild);
     }
 }

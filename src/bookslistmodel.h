@@ -5,6 +5,7 @@
 #include <qabstractitemmodel.h>
 #include <qicon.h>
 #include "bookslistnode.h"
+#include "modelenums.h"
 
 class BooksListModel : public QAbstractItemModel
 {
@@ -21,6 +22,13 @@ public:
     virtual QVariant headerData(int section, Qt::Orientation orientation,
                                 int role) const;
     BooksListNode *nodeFromIndex(const QModelIndex &index) const;
+
+    enum {
+        BookNameCol,
+        AuthorNameCol,
+        AuthorDeathCol,
+        ColumnCount
+    };
 
 public:
     BooksListNode *m_rootNode;

@@ -138,6 +138,26 @@ QString abbreviate(QString str, int size) {
         return str.left(index).append("...");
 }
 
+QString hijriYear(int hYear)
+{
+    if(hYear <= 0)
+        return QObject::tr("%1 م").arg(hijriToGregorian(hYear));
+    else if(hYear >= 99999)
+        return QObject::tr("معاصر");
+    else
+        return QObject::tr("%1 هـ").arg(hYear);
+}
+
+int hijriToGregorian(int hYear)
+{
+    return (hYear + 622) - (hYear / 33);
+}
+
+int gregorianToHijri(int gYear)
+{
+    return  (gYear - 622) + ((gYear - 622) / 32);
+}
+
 bool isLibraryPath(QString path)
 {
     QDir dir(path);

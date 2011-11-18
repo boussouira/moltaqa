@@ -28,7 +28,7 @@ public slots:
 
 private slots:
     void on_treeView_doubleClicked(QModelIndex index);
-    void on_pushButton_clicked();
+    void on_comboBox_currentIndexChanged(int index);
 
 signals:
     void bookSelected(int bookID);

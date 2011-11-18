@@ -21,10 +21,17 @@ BooksListBrowser::BooksListBrowser(LibraryManager *libraryManager, QWidget *pare
     loadSettings();
     m_libraryManager = libraryManager;
 
+    m_model = 0;
     m_filterModel = new SortFilterProxyModel(this);
-    connect(ui->lineSearch, SIGNAL(textChanged(QString)), m_filterModel, SLOT(setFilterRegExp(QString)));// TODO: serach in book info...
-    connect(ui->lineSearch, SIGNAL(textChanged(QString)), ui->treeView, SLOT(expandAll()));
-    connect(m_libraryManager, SIGNAL(booksListModelLoaded(BooksListModel*)), SLOT(setModel(BooksListModel*)));
+
+    connect(ui->lineSearch, SIGNAL(textChanged(QString)), m_filterModel,
+            SLOT(setFilterRegExp(QString)));// TODO: serach in book info...
+
+    connect(ui->lineSearch, SIGNAL(textChanged(QString)),
+            ui->treeView, SLOT(expandAll()));
+
+    connect(m_libraryManager, SIGNAL(booksListModelLoaded(BooksListModel*)),
+            SLOT(setModel(BooksListModel*)));
 }
 
 BooksListBrowser::~BooksListBrowser()
@@ -38,6 +45,12 @@ void BooksListBrowser::closeEvent(QCloseEvent *event)
     settings.beginGroup("BooksListWidget");
     settings.setValue("pos", pos());
     settings.setValue("size", size());
+
+    if(m_model) {
+        settings.setValue("col_1", ui->treeView->columnWidth(0));
+        settings.setValue("col_2", ui->treeView->columnWidth(1));
+    }
+
     settings.endGroup();
 
     event->accept();
@@ -48,26 +61,26 @@ void BooksListBrowser::loadSettings()
     QSettings settings;
     settings.beginGroup("BooksListWidget");
     move(settings.value("pos", pos()).toPoint());
-    resize(settings.value("size", size()).toSize());
+    resize(settings.value("size", QSize(680, 500)).toSize());
     settings.endGroup();
 }
 
 void BooksListBrowser::setModel(BooksListModel *model)
 {
+    QSettings settings;
+    settings.beginGroup("BooksListWidget");
+
     m_model = model;
     m_filterModel->setSourceModel(m_model);
-    m_filterModel->setFilterKeyColumn(0);
+    m_filterModel->setFilterKeyColumn(BooksListModel::BookNameCol);
 
     ui->treeView->setModel(m_filterModel);
 
-//    ui->treeView->expandAll();
-    ui->treeView->resizeColumnToContents(0);
-    ui->treeView->resizeColumnToContents(1);
-}
+    ui->treeView->setColumnWidth(BooksListModel::BookNameCol,
+                                 settings.value("col_1", 350).toInt());
 
-void BooksListBrowser::on_pushButton_clicked()
-{
-    hide();
+    ui->treeView->setColumnWidth(BooksListModel::AuthorNameCol,
+                                 settings.value("col_2", 200).toInt());
 }
 
 void BooksListBrowser::on_treeView_doubleClicked(QModelIndex index)
@@ -76,5 +89,20 @@ void BooksListBrowser::on_treeView_doubleClicked(QModelIndex index)
     BooksListNode *node = model->nodeFromIndex(m_filterModel->mapToSource(index));
     if(node->type == BooksListNode::Book) {
         emit bookSelected(node->id);
+    }
+}
+
+void BooksListBrowser::on_comboBox_currentIndexChanged(int index)
+{
+    int sortCol = qMax(0, index-1);
+    ui->treeView->sortByColumn(sortCol, Qt::AscendingOrder);
+
+    if(index) {
+        if(sortCol != BooksListModel::AuthorDeathCol)
+            m_filterModel->setSortRole(Qt::DisplayRole);
+        else
+            m_filterModel->setSortRole(ItemRole::authorDeathRole);
+    } else {
+        m_filterModel->setSortRole(ItemRole::orderRole);
     }
 }

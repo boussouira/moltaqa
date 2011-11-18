@@ -50,7 +50,7 @@ int BooksListModel::rowCount(const QModelIndex &parent) const
 
 int BooksListModel::columnCount(const QModelIndex & /* parent */) const
 {
-    return 2;
+    return ColumnCount;
 }
 
 QModelIndex BooksListModel::parent(const QModelIndex &child) const
@@ -75,25 +75,33 @@ QVariant BooksListModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     if (role == Qt::DisplayRole || role == Qt::EditRole) {
-        if (index.column() == 0){
+        if (index.column() == BookNameCol){
             return node->title;
-        } else if (index.column() == 1) {
-            if(node->type == BooksListNode::Book)
+        } else if (index.column() == AuthorNameCol) {
+            if(node->type == BooksListNode::Book && node->bookType != LibraryBook::QuranBook)
                 return node->authorName;
+        } else if(index.column() == AuthorDeathCol) {
+            if(node->type == BooksListNode::Book && node->bookType != LibraryBook::QuranBook)
+                return node->authorDeath;
         }
 
     } else if (role == Qt::ToolTipRole && node->type == BooksListNode::Book) {
-        if (index.column() == 0)
+        if (index.column() == BookNameCol)
             return node->infoToolTip;
 
-    } else if (role == Qt::DecorationRole && index.column() == 0) {
+    } else if (role == Qt::DecorationRole && index.column() == BookNameCol) {
         if(node->type == BooksListNode::Categorie)
             return QIcon(":/menu/images/book-cat.png");
         else if (node->type == BooksListNode::Book)
             return QIcon(":/menu/images/book.png");
-    } else if (role == Qt::UserRole) {
+    } else if (role == ItemRole::idRole) {
         return node->id;
+    } else if (role == ItemRole::orderRole) {
+        return node->order;
+    } else if (role == ItemRole::authorDeathRole) {
+        return node->authorDeathYear;
     }
+
     return QVariant();
 }
 
@@ -102,11 +110,14 @@ QVariant BooksListModel::headerData(int section,
                                   int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-        if (section == 0) {
+        if (section == BookNameCol) {
             return tr("الكتاب");
-        } else if (section == 1) {
+        } else if (section == AuthorNameCol) {
             return tr("المؤلف");
+        } else if (section == AuthorDeathCol) {
+            return tr("وفاة المؤلف");
         }
     }
+
     return QVariant();
 }

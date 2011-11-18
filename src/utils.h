@@ -37,6 +37,10 @@ int randInt(int smin, int smax);
 QString arPlural(int count, int word, bool html=false);
 QString secondsToString(int milsec, bool html=false);
 QString abbreviate(QString str, int size);
+QString hijriYear(int hYear);
+
+int hijriToGregorian(int hYear);
+int gregorianToHijri(int gYear);
 
 bool isLibraryPath(QString path);
 void createIndexDB(QSqlQuery &query);

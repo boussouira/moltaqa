@@ -9,7 +9,9 @@ namespace ItemRole {
         idRole = Qt::UserRole + 2,
         typeRole,
         soraRole,
-        ayaRole
+        ayaRole,
+        orderRole,
+        authorDeathRole
     };
 }
 
