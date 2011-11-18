@@ -60,12 +60,20 @@ void BookWidgetManager::connectTab(TabWidget *tab)
     connect(tab, SIGNAL(reverseSplitter()), SLOT(reverseSplitter()));
 }
 
+void BookWidgetManager::reverseActiveTab()
+{
+    setActiveTab(m_activeTab == m_topTab ? m_bottomTab : m_topTab);
+}
+
 void BookWidgetManager::tabCloseRequest(int tabIndex)
 {
     setActiveTab(sender());
     bookWidget(tabIndex)->saveSettings();
     QWidget *w = m_activeTab->widget(tabIndex);
     m_activeTab->removeTab(tabIndex);
+
+    if(m_activeTab->count() <= 0)
+        reverseActiveTab();
 
     delete w;
 }
@@ -157,6 +165,8 @@ void BookWidgetManager::moveToOtherTab(int index)
 
         active->blockSignals(false);
         otherTab->blockSignals(false);
+
+        reverseActiveTab();
     }
 }
 

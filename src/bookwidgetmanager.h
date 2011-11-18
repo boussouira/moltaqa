@@ -28,6 +28,7 @@ public:
 
 protected:
     void connectTab(TabWidget *tab);
+    void reverseActiveTab();
 
 public slots:
     void tabChanged(int newIndex);
