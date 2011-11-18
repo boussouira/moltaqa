@@ -11,15 +11,17 @@
 #include <qboxlayout.h>
 #include <qtconcurrentrun.h>
 #include <qfuturewatcher.h>
-#include <QCloseEvent>
-#include <QFile>
-#include <QPlainTextEdit>
+#include <qevent.h>
+#include <qfile.h>
+#include <qplaintextedit.h>
+#include <qtreeview.h>
 
 BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_db(db)
 {
     m_layout = new QVBoxLayout(this);
     m_splitter = new QSplitter(this);
     m_view = new WebView(m_splitter);
+
     m_indexWidget = new IndexWidget(m_splitter);
     m_indexWidget->setBookInfo(db->bookInfo());
     m_indexWidget->setCurrentPage(db->page());
@@ -41,6 +43,11 @@ BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_
     connect(m_db, SIGNAL(textChanged()), SLOT(readerTextChanged()));
     connect(m_db, SIGNAL(textChanged()), m_indexWidget, SLOT(displayBookInfo()));
     connect(m_watcher, SIGNAL(finished()), m_indexWidget, SLOT(displayBookInfo()));
+
+    setFocusPolicy(Qt::StrongFocus);
+
+    m_view->installEventFilter(this);
+    m_indexWidget->treeView()->installEventFilter(this);
 }
 
 BookWidget::~BookWidget()
@@ -82,6 +89,21 @@ void BookWidget::saveSettings()
     settings.beginGroup("BookWidget");
     settings.setValue("splitter", m_splitter->saveState());
     settings.endGroup();
+}
+
+bool BookWidget::eventFilter(QObject *obj, QEvent *event)
+{
+    if(obj == m_view || obj == m_indexWidget->treeView()) {
+        if(event->type() == QEvent::FocusIn)
+            emit gotFocus();
+    }
+
+    return false;
+}
+
+void BookWidget::focusInEvent(QFocusEvent *event)
+{
+    emit gotFocus();
 }
 
 void BookWidget::setBookReader(RichBookReader *db)

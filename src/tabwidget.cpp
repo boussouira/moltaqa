@@ -34,6 +34,8 @@ int TabWidget::addBookWidget(BookWidget *book)
     int index = addTab(book, shortBookName);
     setTabToolTip(index, bookName);
 
+    connect(book, SIGNAL(gotFocus()), SIGNAL(gotFocus()));
+
     return index;
 }
 
@@ -60,16 +62,22 @@ void TabWidget::showTabBarMenu(QPoint point)
 {
     QMenu menu(this);
 
-    QAction *closeAct = new QAction(tr("اغلاق التبويب"), &menu);
-    QAction *closeOtherAct = new QAction(tr("اغلاق كل التبويبات الاخرى"), &menu);
-    QAction *closeAllAct = new QAction(tr("اغلاق كل التبويبات"), &menu);
-
-    menu.addAction(closeAct);
-    menu.addAction(closeOtherAct);
-    menu.addAction(closeAllAct);
+    QAction *closeAct = 0;
+    QAction *closeOtherAct = 0;
+    QAction *closeAllAct =0;
 
     QAction *moveAct = 0;
     QAction *revAct = 0;
+
+    if(tabsClosable()) {
+        QAction *closeAct = new QAction(tr("اغلاق التبويب"), &menu);
+        QAction *closeOtherAct = new QAction(tr("اغلاق كل التبويبات الاخرى"), &menu);
+        QAction *closeAllAct = new QAction(tr("اغلاق كل التبويبات"), &menu);
+
+        menu.addAction(closeAct);
+        menu.addAction(closeOtherAct);
+        menu.addAction(closeAllAct);
+    }
 
     if(m_canMoveToOtherTabWidget) {
         moveAct = new QAction(tr("نقل الى نافذة اخرى"), &menu);

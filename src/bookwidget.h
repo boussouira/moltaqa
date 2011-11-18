@@ -39,6 +39,8 @@ public:
     void saveSettings();
 
 protected:
+    bool eventFilter(QObject *obj, QEvent *event);
+    void focusInEvent(QFocusEvent *event);
     void loadSettings();
     void changeIcon(TabIcon iconType);
 
@@ -53,6 +55,7 @@ public slots:
 
 signals:
     void setIcon(QIcon icon);
+    void gotFocus();
 
 protected:
     QSplitter *m_splitter;

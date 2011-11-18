@@ -185,6 +185,11 @@ void IndexWidget::selectTitle(int tid)
     }
 }
 
+QTreeView *IndexWidget::treeView()
+{
+    return ui->treeView;
+}
+
 bool IndexWidget::fitchChild(QModelIndex parent, int tid)
 {
     QModelIndex nodeIndex = parent.child(0, 0);

@@ -10,6 +10,7 @@ namespace Ui {
 }
 
 class BookPage;
+class QTreeView;
 
 class IndexWidget : public QWidget
 {
@@ -17,12 +18,15 @@ class IndexWidget : public QWidget
 public:
     IndexWidget(QWidget *parent = 0);
     ~IndexWidget();
+
     void hideAyaSpin(bool visible);
     void hidePageSpin(bool visible);
     void hidePartSpin(bool visible);
     void setBookInfo(LibraryBook *bInfo) { m_bookInfo = bInfo; }
     void setCurrentPage(BookPage *page) { m_page = page; }
     void selectTitle(int tid);
+
+    QTreeView *treeView();
 
 protected:
     void changeEvent(QEvent *e);
