@@ -132,7 +132,8 @@ bool MainWindow::init()
 
         m_indexBar = new QProgressBar(statusBar());
         m_indexBar->setMaximumWidth(200);
-        m_indexBar->setFormat("%p% (%v/%m)");
+        m_indexBar->setFormat("%v/%m");
+        m_indexBar->setAlignment(Qt::AlignCenter);
         m_indexBar->setToolTip(tr("تقدم تحديث الفهرس"));
         m_indexBar->hide();
         statusBar()->addPermanentWidget(m_indexBar);

@@ -243,7 +243,7 @@ void createIndexDB(QString path)
 namespace App {
 QString name()
 {
-    return QObject::tr("برنامج الكتبية");
+    return QObject::tr("مكتبة الملتقى");
 }
 
 const char *version()

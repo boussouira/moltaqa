@@ -25,6 +25,9 @@
    </property>
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
+     <property name="currentIndex">
+      <number>3</number>
+     </property>
      <widget class="QWidget" name="page">
       <layout class="QVBoxLayout" name="verticalLayout">
        <property name="margin">
@@ -218,6 +221,9 @@ p, li { white-space: pre-wrap; }
          <layout class="QVBoxLayout" name="verticalLayout_9">
           <item>
            <widget class="QProgressBar" name="progressBar">
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
             <property name="format">
              <string>%p% (%v/%m)</string>
             </property>

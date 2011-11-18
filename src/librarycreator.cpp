@@ -101,7 +101,7 @@ void LibraryCreator::addCat(ShamelaCategorieInfo *cat)
     m_bookQuery.prepare("INSERT INTO catList (id, title, parentID, catOrder) VALUES (NULL, ?, ?, ?)");
     m_bookQuery.bindValue(0, cat->name);
     m_bookQuery.bindValue(1, m_levels.value(cat->level-1, 0));
-    m_bookQuery.bindValue(2, 0);
+    m_bookQuery.bindValue(2, 999);
 
     if(m_bookQuery.exec()) {
         lastId = m_bookQuery.lastInsertId().toInt();
