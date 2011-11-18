@@ -5,6 +5,8 @@
 #include "clheader.h"
 #include "clconstants.h"
 #include "clutils.h"
+#include "libraryenums.h"
+
 #include <qsqlquery.h>
 #include <qitemselectionmodel.h>
 #include <QTime>
@@ -155,8 +157,10 @@ void SearchFilterManager::getBookItems(int catID, QStandardItem *catItem)
                   "booksList.bookInfo, authorsList.name "
                   "FROM booksList LEFT JOIN authorsList "
                   "ON authorsList.id = booksList.authorID "
-                  "WHERE booksList.bookCat = ?");
+                  "WHERE booksList.bookCat = ? AND booksList.indexFlags = ?");
+
     query.bindValue(0, catID);
+    query.bindValue(1, Enums::Indexed);
 
     if(query.exec()) {
         while(query.next()) {

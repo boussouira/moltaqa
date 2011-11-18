@@ -177,7 +177,8 @@ HEADERS += mainwindow.h \
     textsimplebookreader.h \
     textquranreader.h \
     bookreaderhelper.h \
-    sqlutils.h
+    sqlutils.h \
+    libraryenums.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

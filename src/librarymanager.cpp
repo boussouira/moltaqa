@@ -313,8 +313,8 @@ int LibraryManager::addBook(ImportModelNode *book)
     QString newPath = m_libraryInfo->booksDir() + "/" + newBookName;
 
     indexQuery.prepare("INSERT INTO booksList (id, bookID, bookType, bookFlags, bookCat, "
-                       "bookDisplayName, bookInfo, authorName, authorID, fileName, bookFolder) "
-                       "VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                       "bookDisplayName, bookInfo, authorName, authorID, fileName, bookFolder, indexFlags) "
+                       "VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
     indexQuery.bindValue(0, 0);
     indexQuery.bindValue(1, book->type);
@@ -326,6 +326,7 @@ int LibraryManager::addBook(ImportModelNode *book)
     indexQuery.bindValue(7, book->authorID);
     indexQuery.bindValue(8, newBookName); // Add file name
     indexQuery.bindValue(9, QVariant(QVariant::String));
+    indexQuery.bindValue(10, Enums::NotIndexed);
 
     if(QFile::copy(book->bookPath, newPath)){
         if(!QFile::remove(book->bookPath))
@@ -605,14 +606,14 @@ void LibraryManager::updateBookInfo(LibraryBook *info)
     }
 }
 
-void LibraryManager::setBookIndexStat(int bookID, bool indexed)
+void LibraryManager::setBookIndexStat(int bookID, Enums::indexFlags indexFlag)
 {
     QSqlQuery bookQuery(m_indexDB);
     bookQuery.prepare("UPDATE booksList "
-                      "SET bookFlags = bookFlags | ? "
+                      "SET indexFlags = ? "
                       "WHERE id = ?");
 
-    bookQuery.bindValue(0, 1);
+    bookQuery.bindValue(0, indexFlag);
     bookQuery.bindValue(1, bookID);
 
     if(!bookQuery.exec()) {
@@ -625,9 +626,9 @@ QList<int> LibraryManager::getNonIndexedBooks()
     QList<int> list;
     QSqlQuery bookQuery(m_indexDB);
     bookQuery.prepare("SELECT id FROM booksList "
-                      "WHERE NOT bookFlags & ?");
+                      "WHERE indexFlags = ?");
 
-    bookQuery.bindValue(0, 1);
+    bookQuery.bindValue(0, Enums::NotIndexed);
 
     if(bookQuery.exec()) {
         while(bookQuery.next()) {

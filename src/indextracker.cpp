@@ -128,7 +128,7 @@ void IndexTracker::removeTask(IndexTask *task)
                 m_rootElement.removeChild(indexElement);
                 deleteTask(task);
 
-                m_libraryManager->setBookIndexStat(task->bookID, true);
+                m_libraryManager->setBookIndexStat(task->bookID, Enums::Indexed);
                 break;
             }
         }

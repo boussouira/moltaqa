@@ -10,6 +10,7 @@
 #include <qfuturewatcher.h>
 #include <qstandarditemmodel.h>
 #include <QTime>
+#include "libraryenums.h"
 
 class LibraryInfo;
 class LibraryBook;
@@ -125,7 +126,7 @@ public:
     QStandardItemModel *getAuthorsListModel();
     void updateBookInfo(LibraryBook *info);
 
-    void setBookIndexStat(int bookID, bool indexed);
+    void setBookIndexStat(int bookID, Enums::indexFlags indexFlag);
     QList<int> getNonIndexedBooks();
 
 protected:

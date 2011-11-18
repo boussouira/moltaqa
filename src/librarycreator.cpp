@@ -5,6 +5,7 @@
 #include "shamelaimportdialog.h"
 #include "newquranwriter.h"
 #include "mainwindow.h"
+#include "libraryenums.h"
 
 #ifdef USE_MDBTOOLS
 #include "mdbconverter.h"
@@ -323,9 +324,9 @@ void LibraryCreator::importBook(ShamelaBookInfo *book, QString path)
     }
 
     m_bookQuery.prepare("INSERT INTO booksList (id, bookID, bookType, bookFlags, bookCat, "
-                       "bookDisplayName, bookInfo, authorName, authorID, fileName, bookFolder) "
+                       "bookDisplayName, bookInfo, authorName, authorID, fileName, bookFolder, indexFlags) "
                        "VALUES(NULL, :book_id, :book_type, :book_flags, :cat_id, :book_name, "
-                       ":book_info, :author_name, :author_id, :file_name, :book_folder)");
+                       ":book_info, :author_name, :author_id, :file_name, :book_folder, :index_flags)");
 
     m_bookQuery.bindValue(":book_id", 0);
     m_bookQuery.bindValue(":book_type", book->tafessirName.isEmpty() ? LibraryBook::NormalBook : LibraryBook::TafessirBook);
@@ -337,6 +338,7 @@ void LibraryCreator::importBook(ShamelaBookInfo *book, QString path)
     m_bookQuery.bindValue(":author_id", m_mapper->mapFromShamelaAuthor(book->authorID));
     m_bookQuery.bindValue(":file_name", fileInfo.fileName()); // Add file name
     m_bookQuery.bindValue(":book_folder", QVariant(QVariant::String));
+    m_bookQuery.bindValue(":index_flags", Enums::NotIndexed);
 
     if(m_bookQuery.exec()) {
         m_mapper->addBookMap(book->id, m_bookQuery.lastInsertId().toInt());
@@ -350,9 +352,9 @@ void LibraryCreator::importQuran(QString path)
     QFileInfo fileInfo(path);
 
     m_bookQuery.prepare("INSERT INTO booksList (id, bookID, bookType, bookFlags, bookCat, "
-                        "bookDisplayName, bookInfo, authorName, authorID, fileName, bookFolder) "
+                        "bookDisplayName, bookInfo, authorName, authorID, fileName, bookFolder, indexFlags) "
                         "VALUES(NULL, :book_id, :book_type, :book_flags, :cat_id, :book_name, "
-                        ":book_info, :author_name, :author_id, :file_name, :book_folder)");
+                        ":book_info, :author_name, :author_id, :file_name, :book_folder, :index_flags)");
 
     m_bookQuery.bindValue(":book_id", 0);
     m_bookQuery.bindValue(":book_type", LibraryBook::QuranBook);
@@ -364,6 +366,7 @@ void LibraryCreator::importQuran(QString path)
     m_bookQuery.bindValue(":author_id", 0);
     m_bookQuery.bindValue(":file_name", fileInfo.fileName()); // Add file name
     m_bookQuery.bindValue(":book_folder", QVariant(QVariant::String));
+    m_bookQuery.bindValue(":index_flags", Enums::NotIndexed);
 
     if(!m_bookQuery.exec()) {
         LOG_SQL_ERROR(m_bookQuery);

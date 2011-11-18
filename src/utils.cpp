@@ -184,7 +184,7 @@ void createIndexDB(QSqlQuery &query)
                      "authorID INTEGER , "
                      "fileName TEXT , "
                      "bookFolder TEXT, "
-                     "pdfID INTEGER)");
+                     "indexFlags INTEGER)");
 
     query.exec("CREATE TABLE catList ("
                      "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
