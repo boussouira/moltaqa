@@ -50,6 +50,7 @@ void EditBooksListWidget::enableEditWidgets(bool enable)
 {
     ui->groupBox->setEnabled(enable);
     ui->tabWidget->setEnabled(enable);
+    ui->plainBookNames->setEnabled(enable);
 }
 
 void EditBooksListWidget::editted()
@@ -101,6 +102,8 @@ void EditBooksListWidget::on_treeView_doubleClicked(const QModelIndex &index)
             ui->linePublisher->setText(info->bookPublisher);
 
             enableEditWidgets(true);
+            setupEdit(info);
+
             m_bookInfo = info;
         }
     }
@@ -117,6 +120,16 @@ void EditBooksListWidget::on_toolChangeAuthor_clicked()
             m_bookInfo->authorName = dialog.selectedAuthorName();
         }
     }
+}
+
+void EditBooksListWidget::setupEdit(LibraryBook *info)
+{
+    ui->lineAuthorName->setEnabled(!info->isQuran());
+    ui->toolChangeAuthor->setEnabled(!info->isQuran());
+    ui->plainBookNames->setEnabled(!info->isQuran());
+    ui->lineEdition->setEnabled(!info->isQuran());
+    ui->lineMohaqeq->setEnabled(!info->isQuran());
+    ui->linePublisher->setEnabled(!info->isQuran());
 }
 
 void EditBooksListWidget::saveCurrentBookInfo()

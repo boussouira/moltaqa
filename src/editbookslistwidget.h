@@ -34,6 +34,7 @@ public slots:
 private slots:
     void on_treeView_doubleClicked(const QModelIndex &index);
     void on_toolChangeAuthor_clicked();
+    void setupEdit(LibraryBook *info);
     void editted();
 
 protected:
