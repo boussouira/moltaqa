@@ -18,6 +18,8 @@ class BookPage;
 class BooksListModel;
 class BooksListNode;
 class ImportModelNode;
+class EditableCatsListModel;
+class EditableBooksListModel;
 
 class LibraryManager : public QObject
 {
@@ -38,11 +40,13 @@ public:
       Get the books list model that contians categories and books
       */
     BooksListModel *booksListModel();
+    EditableBooksListModel *editBooksListModel();
 
     /**
       Get categories list
       */
     BooksListModel *catsListModel();
+    EditableCatsListModel *editCatsListModel();
 
     /**
       Load the books list model asynchronously

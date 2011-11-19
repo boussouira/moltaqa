@@ -6,6 +6,8 @@
 #include "importmodel.h"
 #include "utils.h"
 #include "searchresult.h"
+#include "editablecatslistmodel.h"
+#include "editablebookslistmodel.h"
 
 #include <qdebug.h>
 #include <qsqlquery.h>
@@ -92,6 +94,18 @@ BooksListModel *LibraryManager::booksListModel()
     return m_model;
 }
 
+EditableBooksListModel *LibraryManager::editBooksListModel()
+{
+    EditableBooksListModel *model = new EditableBooksListModel();
+    BooksListNode *firstNode = new BooksListNode(BooksListNode::Root);
+
+    childCats(firstNode, 0, false);
+
+    model->setRootNode(firstNode);
+
+    return model;
+}
+
 void LibraryManager::booksListModelLoaded()
 {
     qDebug("Load books model take %d ms", m_modelTime.elapsed());
@@ -102,6 +116,17 @@ void LibraryManager::booksListModelLoaded()
 BooksListModel *LibraryManager::catsListModel()
 {
     BooksListModel *model = new BooksListModel();
+    BooksListNode *firstNode = new BooksListNode(BooksListNode::Root);
+    childCats(firstNode, 0, true);
+
+    model->setRootNode(firstNode);
+
+    return model;
+}
+
+EditableCatsListModel *LibraryManager::editCatsListModel()
+{
+    EditableCatsListModel *model = new EditableCatsListModel();
     BooksListNode *firstNode = new BooksListNode(BooksListNode::Root);
     childCats(firstNode, 0, true);
 

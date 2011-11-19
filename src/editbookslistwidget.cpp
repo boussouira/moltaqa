@@ -17,22 +17,19 @@ EditBooksListWidget::EditBooksListWidget(QWidget *parent) :
     ui->setupUi(this);
 
     m_libraryManager = MW->libraryManager();
-    m_booksModel = new EditableBooksListModel();
-    m_booksModel->setRootNode(m_libraryManager->booksListModel()->m_rootNode);
-    m_booksModel->setModelEditibale(false);
-
-    ui->treeView->setModel(m_booksModel);
-    ui->treeView->resizeColumnToContents(0);
-    ui->treeView->resizeColumnToContents(1);
-
     m_bookInfo = 0;
+    m_booksModel = 0;
 
     enableEditWidgets(false);
+    loadModel();
     setupActions();
 }
 
 EditBooksListWidget::~EditBooksListWidget()
 {
+    if(m_booksModel)
+        delete m_booksModel;
+
     delete ui;
 }
 
@@ -51,6 +48,16 @@ void EditBooksListWidget::enableEditWidgets(bool enable)
     ui->groupBox->setEnabled(enable);
     ui->tabWidget->setEnabled(enable);
     ui->plainBookNames->setEnabled(enable);
+}
+
+void EditBooksListWidget::loadModel()
+{
+    m_booksModel = m_libraryManager->editBooksListModel();
+    m_booksModel->setModelEditibale(false);
+
+    ui->treeView->setModel(m_booksModel);
+    ui->treeView->resizeColumnToContents(0);
+    ui->treeView->resizeColumnToContents(1);
 }
 
 void EditBooksListWidget::editted()

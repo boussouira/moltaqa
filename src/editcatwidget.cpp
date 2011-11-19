@@ -17,17 +17,11 @@ EditCatWidget::EditCatWidget(QWidget *parent) :
     ui->setupUi(this);
 
     m_libraryManager = MW->libraryManager();
-    m_catsModel = new EditableCatsListModel(this);
-    m_catsModel->setRootNode(m_libraryManager->catsListModel()->m_rootNode);
-    m_catsModel->setLibraryManager(m_libraryManager);
-
-    m_copiedNode = 0;
-
-    ui->treeView->setModel(m_catsModel);
-    ui->treeView->setColumnHidden(1, true);
-    ui->treeView->resizeColumnToContents(0);
     ui->treeView->setContextMenuPolicy(Qt::CustomContextMenu);
+    m_copiedNode = 0;
+    m_catsModel = 0;
 
+    loadModel();
     updateActions();
 
     connect(ui->toolAddCat, SIGNAL(clicked()), SLOT(addCat()));
@@ -43,7 +37,20 @@ EditCatWidget::EditCatWidget(QWidget *parent) :
 
 EditCatWidget::~EditCatWidget()
 {
+    if(m_catsModel)
+        delete m_catsModel;
+
     delete ui;
+}
+
+void EditCatWidget::loadModel()
+{
+    m_catsModel = m_libraryManager->editCatsListModel();
+    m_catsModel->setLibraryManager(m_libraryManager);
+
+    ui->treeView->setModel(m_catsModel);
+    ui->treeView->setColumnHidden(1, true);
+    ui->treeView->resizeColumnToContents(0);
 }
 
 void EditCatWidget::save()
@@ -243,6 +250,9 @@ void EditCatWidget::menuRequested(QPoint)
 
 void EditCatWidget::updateActions()
 {
+    if(!m_catsModel)
+        return;
+
     if(ui->treeView->selectionModel()->selectedIndexes().isEmpty()) {
         ui->toolMoveDown->setEnabled(false);
         ui->toolMoveUp->setEnabled(false);

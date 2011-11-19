@@ -37,6 +37,9 @@
         <iconset resource="../share/moltaqa-lib/qt_rc.qrc">
          <normaloff>:/menu/images/add.png</normaloff>:/menu/images/add.png</iconset>
        </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -56,6 +59,9 @@
        </property>
        <property name="shortcut">
         <string>Del</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -78,6 +84,9 @@
         <iconset resource="../share/moltaqa-lib/qt_rc.qrc">
          <normaloff>:/menu/images/go-up2.png</normaloff>:/menu/images/go-up2.png</iconset>
        </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -94,6 +103,9 @@
        <property name="icon">
         <iconset resource="../share/moltaqa-lib/qt_rc.qrc">
          <normaloff>:/menu/images/go-down2.png</normaloff>:/menu/images/go-down2.png</iconset>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

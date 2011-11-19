@@ -17,6 +17,9 @@ public:
     EditCatWidget(QWidget *parent = 0);
     ~EditCatWidget();
 
+protected:
+    void loadModel();
+
 public slots:
     void save();
 
@@ -31,7 +34,6 @@ protected slots:
     void moveCatBooks();
     void modelEdited();
 
-protected slots:
     void menuRequested(QPoint);
     void updateActions();
 

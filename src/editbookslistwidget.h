@@ -24,6 +24,7 @@ public:
     void enableEditWidgets(bool enable);
 
 protected:
+    void loadModel();
     void setupActions();
     void saveCurrentBookInfo();
     LibraryBook *getBookInfo(int bookID);
