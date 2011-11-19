@@ -21,6 +21,7 @@ BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_
     m_layout = new QVBoxLayout(this);
     m_splitter = new QSplitter(this);
     m_view = new WebView(m_splitter);
+    m_view->setStopScroll(!m_db->bookInfo()->isQuran());
 
     m_indexWidget = new IndexWidget(m_splitter);
     m_indexWidget->setBookInfo(db->bookInfo());
@@ -33,6 +34,7 @@ BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_
     m_splitter->addWidget(m_view);
     m_layout->addWidget(m_splitter);
     m_layout->setMargin(0);
+
     setLayout(m_layout);
     setAutoFillBackground(true);
 
@@ -103,7 +105,8 @@ bool BookWidget::eventFilter(QObject *obj, QEvent *event)
 
 void BookWidget::focusInEvent(QFocusEvent *event)
 {
-    emit gotFocus();
+    if(event->gotFocus())
+        emit gotFocus();
 }
 
 void BookWidget::setBookReader(RichBookReader *db)

@@ -20,6 +20,8 @@ public:
     bool maxDown();
     bool maxUp();
 
+    void setStopScroll(bool stopScroll);
+
     QVariant execJS(QString js);
     void addObject(const QString &name, QObject *object);
     QString toHtml();
@@ -34,6 +36,7 @@ signals:
 protected:
     QWebFrame *m_frame;
     QPropertyAnimation *m_animation;
+    bool m_stopScrolling;
 };
 
 #endif // KWEBVIEW_H

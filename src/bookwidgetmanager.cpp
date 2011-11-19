@@ -175,7 +175,8 @@ void BookWidgetManager::setActiveTab(QObject *obj)
     if(obj != m_activeTab) {
         TabWidget *tab = qobject_cast<TabWidget*>(obj);
         if(tab) {
-            //qDebug("changeActiveTab: %s", (tab==m_topTab)?"TOP":"BOTTOM");
+            //static int count = 0;
+            //qDebug("%d - changeActiveTab: %s", count++, (tab==m_topTab)?"TOP":"BOTTOM");
             m_activeTab = tab;
             emit currentTabChanged(m_activeTab->currentIndex());
         }

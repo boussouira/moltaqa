@@ -5,6 +5,8 @@ WebView::WebView(QWidget *parent) :
 {
     m_frame = page()->mainFrame();
 
+    m_stopScrolling = false;
+
     m_animation = new QPropertyAnimation(m_frame, "scrollPosition", this);
     connect(m_frame, SIGNAL(contentsSizeChanged(QSize)), m_animation, SLOT(stop()));
 }
@@ -62,9 +64,13 @@ void WebView::pageUp()
 
 void WebView::scrollToPosition(const QPoint &pos, int duration)
 {
+    bool scroll = true;
     if(m_animation->state() == QPropertyAnimation::Running) {
         m_animation->stop();
-    } else {
+        scroll = false;
+    }
+
+    if(scroll || !m_stopScrolling){
         m_animation->setDuration(duration);
         m_animation->setStartValue(m_frame->scrollPosition());
         m_animation->setEndValue(pos);
@@ -85,6 +91,11 @@ bool WebView::maxUp()
 {
     return (m_frame->scrollBarMinimum(Qt::Vertical)==
             m_frame->scrollPosition().y());
+}
+
+void WebView::setStopScroll(bool stopScroll)
+{
+    m_stopScrolling = stopScroll;
 }
 
 QVariant WebView::execJS(QString js)
