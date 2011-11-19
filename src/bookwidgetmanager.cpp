@@ -62,7 +62,7 @@ void BookWidgetManager::connectTab(TabWidget *tab)
 
 void BookWidgetManager::reverseActiveTab()
 {
-    setActiveTab(m_activeTab == m_topTab ? m_bottomTab : m_topTab);
+    setActiveTab(unActiveTab());
 }
 
 void BookWidgetManager::tabCloseRequest(int tabIndex)
@@ -144,6 +144,11 @@ TabWidget *BookWidgetManager::activeTab()
     return m_activeTab;
 }
 
+TabWidget *BookWidgetManager::unActiveTab()
+{
+    return (m_activeTab == m_topTab ? m_bottomTab : m_topTab);
+}
+
 void BookWidgetManager::moveToOtherTab(int index)
 {
     setActiveTab(sender());
@@ -179,6 +184,9 @@ void BookWidgetManager::setActiveTab(QObject *obj)
             //qDebug("%d - changeActiveTab: %s", count++, (tab==m_topTab)?"TOP":"BOTTOM");
             m_activeTab = tab;
             emit currentTabChanged(m_activeTab->currentIndex());
+
+            m_activeTab->setEnableTabBar(true);
+            unActiveTab()->setEnableTabBar(false);
         }
     }
 }

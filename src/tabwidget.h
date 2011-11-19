@@ -12,6 +12,7 @@ public:
     TabWidget(QWidget *parent = 0);
     int addBookWidget(BookWidget *book);
     void setCanMoveToOtherTabWidget(bool canMove);
+   void setEnableTabBar(bool enable);
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);

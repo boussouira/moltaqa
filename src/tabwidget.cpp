@@ -44,6 +44,11 @@ void TabWidget::setCanMoveToOtherTabWidget(bool canMove)
     m_canMoveToOtherTabWidget = canMove;
 }
 
+void TabWidget::setEnableTabBar(bool enable)
+{
+    m_tabBar->setEnabled(enable);
+}
+
 bool TabWidget::eventFilter(QObject *obj, QEvent *event)
 {
     Q_UNUSED(obj);

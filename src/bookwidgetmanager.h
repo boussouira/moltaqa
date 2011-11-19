@@ -24,6 +24,7 @@ public:
     LibraryBook *activeBook();
     RichBookReader *activeBookReader();
     TabWidget *activeTab();
+    TabWidget *unActiveTab();
     void setActiveTab(QObject *obj);
 
 protected:
