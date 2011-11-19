@@ -22,6 +22,7 @@
 #include <qboxlayout.h>
 #include <qdebug.h>
 #include <qmessagebox.h>
+#include <qkeysequence.h>
 
 typedef QPair<int, QString> Pair;
 
@@ -91,6 +92,12 @@ void BooksViewer::createMenus(QMainWindow *parent)
                                  this);
     m_actionGotToPage = new QAction(tr("انتقل الى..."),
                                   this);
+
+    m_actionNextAYA->setShortcut(QKeySequence("J"));
+    m_actionPrevAYA->setShortcut(QKeySequence("K"));
+    m_actionNextPage->setShortcut(QKeySequence("N"));
+    m_actionPrevPage->setShortcut(QKeySequence("P"));
+    m_actionGotToPage->setShortcut(QKeySequence("G"));
 
     // Tafressir actions
     m_openSelectedTafsir =  new QAction(QIcon(":/menu/images/arrow-left.png"),
