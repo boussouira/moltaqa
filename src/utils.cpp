@@ -207,9 +207,11 @@ void createIndexDB(QSqlQuery &query)
                      "info BLOB)");
 
     query.exec("CREATE TABLE tafassirList("
-                     "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " // TODO: should be AUTOINCREMENT?
-                     "book_id INTEGER, "
-                     "tafessir_name TEXT)");
+               "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
+               "book_id INTEGER, "
+               "tafessir_name TEXT, "
+               "tafessir_order INTEGER, "
+               "show_tafessir INTEGER");
 
     query.exec("CREATE TABLE ShareehMeta("
                      "mateen_book INTEGER, "

@@ -95,7 +95,8 @@ SOURCES += mainwindow.cpp \
     textsimplebookreader.cpp \
     textquranreader.cpp \
     bookreaderhelper.cpp \
-    sqlutils.cpp
+    sqlutils.cpp \
+    edittaffasirlistwidget.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -178,7 +179,8 @@ HEADERS += mainwindow.h \
     textquranreader.h \
     bookreaderhelper.h \
     sqlutils.h \
-    libraryenums.h
+    libraryenums.h \
+    edittaffasirlistwidget.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \
@@ -193,7 +195,8 @@ FORMS += mainwindow.ui settingsdialog.ui \
     editbookslistwidget.ui \
     selectauthordialog.ui \
     searchwidget.ui \
-    resultwidget.ui
+    resultwidget.ui \
+    edittaffasirlistwidget.ui
 
 RESOURCES += ../share/moltaqa-lib/qt_rc.qrc
 win32:RC_FILE = ../share/moltaqa-lib/win_rc.rc

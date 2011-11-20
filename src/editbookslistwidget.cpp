@@ -90,6 +90,10 @@ void EditBooksListWidget::save()
     }
 }
 
+void EditBooksListWidget::beginEdit()
+{
+}
+
 void EditBooksListWidget::on_treeView_doubleClicked(const QModelIndex &index)
 {
     BooksListNode *node = m_booksModel->nodeFromIndex(index);

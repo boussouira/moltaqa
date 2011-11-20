@@ -20,8 +20,8 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation,
                                 int role) const;
 
-    bool appendNode(BooksListNode *node, const QModelIndex &parent);
-    bool appendNode(BooksListNode *node, int row, const QModelIndex &parent);
+    int appendNode(BooksListNode *node, const QModelIndex &parent);
+    int appendNode(BooksListNode *node, int row, const QModelIndex &parent);
     void swap(const QModelIndex &parent, int sourceRow, int destRow);
     void moveUp(const QModelIndex &index);
     void moveDown(const QModelIndex &index);

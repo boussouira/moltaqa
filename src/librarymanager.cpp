@@ -135,6 +135,61 @@ EditableCatsListModel *LibraryManager::editCatsListModel()
     return model;
 }
 
+QStandardItemModel *LibraryManager::taffessirModel(bool allTafassir)
+{
+    QStandardItemModel *model = new QStandardItemModel();
+
+    QSqlQuery query(m_indexDB);
+
+    QString sql = "SELECT book_id, tafessir_name, show_tafessir, tafessir_order "
+            "FROM tafassirList ";
+
+    if(!allTafassir) {
+        sql.append(QString("WHERE show_tafessir = %1 ").arg(Qt::Checked));
+    }
+
+    sql.append("ORDER BY tafessir_order, tafessir_name");
+
+    if(query.exec(sql)) {
+        while(query.next()) {
+            QStandardItem *nameItem = new QStandardItem();
+            nameItem->setText(query.value(1).toString());
+            nameItem->setData(query.value(0).toInt(), ItemRole::idRole);
+
+            QStandardItem *showItem = new QStandardItem();
+            showItem->setCheckable(true);
+            showItem->setCheckState(static_cast<Qt::CheckState>(query.value(2).toInt()));
+
+            model->appendRow(QList<QStandardItem*>() << nameItem << showItem);
+        }
+    } else {
+        LOG_SQL_ERROR(query);
+    }
+
+    model->setHorizontalHeaderLabels(QStringList()
+                                     << tr("التفسير")
+                                     << tr("عرض عند تصفح القرآن الكريم"));
+    return model;
+}
+
+void LibraryManager::updateTafessir(int bookID, QString name, int order, int showInViewer)
+{
+    QSqlQuery query(m_indexDB);
+    query.prepare("UPDATE tafassirList SET "
+                  "tafessir_name = ?, "
+                  "tafessir_order = ?, "
+                  "show_tafessir = ? "
+                  "WHERE book_id = ?");
+    query.bindValue(0, name.trimmed());
+    query.bindValue(1, order);
+    query.bindValue(2, showInViewer);
+    query.bindValue(3, bookID);
+
+    if(!query.exec()) {
+        LOG_SQL_ERROR(query);
+    }
+}
+
 QPair<int, QString> LibraryManager::findCategorie(const QString &cat)
 {
     QPair<int, QString> foundCat;

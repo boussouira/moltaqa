@@ -22,6 +22,7 @@ protected:
 
 public slots:
     void save();
+    void beginEdit();
 
 protected slots:
     void cutNode();
@@ -29,6 +30,8 @@ protected slots:
     void pastSublingNode();
     void moveUp();
     void moveDown();
+    void moveRight();
+    void moveLeft();
     void addCat();
     void removeCat();
     void moveCatBooks();

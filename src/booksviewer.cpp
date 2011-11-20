@@ -23,6 +23,7 @@
 #include <qdebug.h>
 #include <qmessagebox.h>
 #include <qkeysequence.h>
+#include <QCompleter>
 
 typedef QPair<int, QString> Pair;
 
@@ -254,7 +255,7 @@ BookWidget *BooksViewer::openBook(int bookID, int pageID, lucene::search::Query 
 
 void BooksViewer::openTafessir()
 {
-    int tafessirID = m_comboTafasir->itemData(m_comboTafasir->currentIndex()).toInt();
+    int tafessirID = m_comboTafasir->itemData(m_comboTafasir->currentIndex(), ItemRole::idRole).toInt();
 
     LibraryBook *bookInfo = m_libraryManager->getBookInfo(tafessirID);
     if(!bookInfo || !bookInfo->isTafessir() || !m_viewManager->activeBook()->isQuran())
@@ -406,10 +407,10 @@ void BooksViewer::tabChanged(int newIndex)
 void BooksViewer::loadTafessirList()
 {
     m_comboTafasir->clear();
+    m_comboTafasir->setModel(m_libraryManager->taffessirModel(false));
 
-    foreach(Pair pair, m_libraryManager->getTafassirList()) {
-        m_comboTafasir->addItem(pair.second, pair.first);
-    }
+    m_comboTafasir->setEditable(true);
+    m_comboTafasir->completer()->setCompletionMode(QCompleter::PopupCompletion);
 
     showToolBars();
 }

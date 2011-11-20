@@ -75,14 +75,13 @@ QVariant EditableCatsListModel::headerData(int section, Qt::Orientation orientat
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         if (section == 0) {
             return tr("القسم");
-        } else if (section == 1) {
-            return tr("عدد الكتب");
         }
     }
+
     return QVariant();
 }
 
-bool EditableCatsListModel::appendNode(BooksListNode *node, const QModelIndex &parent)
+int EditableCatsListModel::appendNode(BooksListNode *node, const QModelIndex &parent)
 {
     BooksListNode *parentNode = nodeFromIndex(parent);
     if(parentNode) {
@@ -90,16 +89,17 @@ bool EditableCatsListModel::appendNode(BooksListNode *node, const QModelIndex &p
         parentNode->appendChild(node);
         endInsertRows();
 
+        int nodeRow = node->parentNode->childrenNode.count()-1;
         setCatParent(node);
-        setCatOrder(node, node->parentNode->childrenNode.count()-1);
+        setCatOrder(node, nodeRow);
 
-        return true;
+        return nodeRow;
     }
 
-    return false;
+    return -1;
 }
 
-bool EditableCatsListModel::appendNode(BooksListNode *node, int row, const QModelIndex &parent)
+int EditableCatsListModel::appendNode(BooksListNode *node, int row, const QModelIndex &parent)
 {
     BooksListNode *parentNode = nodeFromIndex(parent);
     if(parentNode) {
@@ -110,10 +110,10 @@ bool EditableCatsListModel::appendNode(BooksListNode *node, int row, const QMode
         setCatParent(node);
         setCatOrder(node, row, true);
 
-        return true;
+        return row;
     }
 
-    return false;
+    return -1;
 }
 
 void EditableCatsListModel::swap(const QModelIndex &parent, int sourceRow, int destRow)

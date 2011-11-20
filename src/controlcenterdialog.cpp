@@ -2,6 +2,7 @@
 #include "ui_controlcenterdialog.h"
 #include "editcatwidget.h"
 #include "editbookslistwidget.h"
+#include "edittaffasirlistwidget.h"
 #include <qevent.h>
 
 ControlCenterDialog::ControlCenterDialog(QWidget *parent) :
@@ -15,6 +16,9 @@ ControlCenterDialog::ControlCenterDialog(QWidget *parent) :
 
     EditBooksListWidget *bookWidget = new EditBooksListWidget(this);
     addEditWidget(1, bookWidget);
+
+    EditTaffasirListWidget *taffessirWidget = new EditTaffasirListWidget(this);
+    addEditWidget(2, taffessirWidget);
 
     rowChanged(0);
     enableSave(false);
@@ -48,6 +52,7 @@ void ControlCenterDialog::rowChanged(int row)
     ui->stackedWidget->setCurrentIndex(row);
     ui->labelControlName->setText(ui->stackedWidget->currentWidget()->windowTitle());
 
+    beginEdit();
     enableSave(false);
 }
 
@@ -57,6 +62,15 @@ void ControlCenterDialog::save()
 
     if(w) {
         w->save();
+    }
+}
+
+void ControlCenterDialog::beginEdit()
+{
+    AbstractEditWidget *w = qobject_cast<AbstractEditWidget *>(ui->stackedWidget->currentWidget());
+
+    if(w) {
+        w->beginEdit();
     }
 }
 

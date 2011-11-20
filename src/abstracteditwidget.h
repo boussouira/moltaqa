@@ -16,6 +16,7 @@ protected:
 
 public slots:
     virtual void save()=0;
+    virtual void beginEdit()=0;
 
 signals:
     void edited(bool e);

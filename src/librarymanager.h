@@ -48,6 +48,9 @@ public:
     BooksListModel *catsListModel();
     EditableCatsListModel *editCatsListModel();
 
+    QStandardItemModel *taffessirModel(bool allTafassir);
+    void updateTafessir(int bookID, QString name, int order, int showInViewer);
+
     /**
       Load the books list model asynchronously
       */

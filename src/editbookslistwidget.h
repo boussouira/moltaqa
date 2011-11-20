@@ -31,6 +31,7 @@ protected:
 
 public slots:
     void save();
+    void beginEdit();
 
 private slots:
     void on_treeView_doubleClicked(const QModelIndex &index);

@@ -25,5 +25,7 @@
         <file>images/tab-new.png</file>
         <file>images/switch.png</file>
         <file>images/process.png</file>
+        <file>images/go-next2.png</file>
+        <file>images/go-previous2.png</file>
     </qresource>
 </RCC>
