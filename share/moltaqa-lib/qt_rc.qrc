@@ -27,5 +27,6 @@
         <file>images/process.png</file>
         <file>images/go-next2.png</file>
         <file>images/go-previous2.png</file>
+        <file>images/growlclose.png</file>
     </qresource>
 </RCC>

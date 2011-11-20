@@ -290,7 +290,7 @@ div.clear {
     margin-bottom: 5px;
 }
 .growlstatusclose {
-    background: url("../../images/growlclose.png") no-repeat scroll 0 0 transparent;
+    background: url("qrc:/menu/images/growlclose.png") no-repeat scroll 0 0 transparent;
     cursor: pointer;
     display: none;
     height: 30px;
