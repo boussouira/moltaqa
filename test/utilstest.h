@@ -12,7 +12,6 @@ public:
 private slots:
     void randInt();
     void generateFileName();
-    void appDirs();
 };
 
 #endif // UTILSTEST_H

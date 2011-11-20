@@ -53,20 +53,4 @@ void UtilsTest::generateFileName()
     QVERIFY(name6.endsWith(".sqlite"));
 }
 
-void UtilsTest::appDirs()
-{
-    qDebug() << "\n\t"
-            <<  "appDir:" << App::appDir() << "\n\t"
-            <<  "binDir:" <<   App::binDir() << "\n\t"
-            <<  "shareDir:" <<   App::shareDir() << "\n\t"
-            <<  "stylesDir:" <<   App::stylesDir() << "\n\t"
-            <<  "localeDir:" <<   App::localeDir();
-
-    QVERIFY(QApplication::applicationDirPath().startsWith(App::appDir()));
-    QVERIFY(App::binDir().endsWith("/bin"));
-    QVERIFY(App::shareDir().endsWith("/share/moltaqa-lib"));
-    QVERIFY(App::stylesDir().endsWith("/share/moltaqa-lib/styles"));
-    QVERIFY(App::localeDir().endsWith("/share/moltaqa-lib/locale"));
-}
-
 QTEST_MAIN(UtilsTest)
