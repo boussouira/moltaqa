@@ -114,6 +114,7 @@ int BookWidgetManager::addBook(BookWidget *book)
     m_activeTab->setTabIcon(tabIndex, book->icon());
 
     connect(book, SIGNAL(setIcon(QIcon)), SLOT(changeTabIcon(QIcon)));
+    connect(book->indexWidget(), SIGNAL(bookInfoChanged()), SIGNAL(pageChanged()));
 
     return tabIndex;
 }
@@ -195,6 +196,53 @@ void BookWidgetManager::reverseSplitter()
 {
     m_splitter->setOrientation((m_splitter->orientation()==Qt::Horizontal) ?
                                    Qt::Vertical : Qt::Horizontal);
+}
+
+void BookWidgetManager::nextAya()
+{
+    activeBookWidget()->scrollDown();
+}
+
+void BookWidgetManager::previousAya()
+{
+    activeBookWidget()->scrollUp();
+}
+
+void BookWidgetManager::nextPage()
+{
+    activeBookWidget()->nextPage();
+}
+
+void BookWidgetManager::previousPage()
+{
+    activeBookWidget()->prevPage();
+}
+
+void BookWidgetManager::firstPage()
+{
+    activeBookWidget()->firstPage();
+}
+
+void BookWidgetManager::lastPage()
+{
+    activeBookWidget()->lastPage();
+}
+
+void BookWidgetManager::goToPage()
+{
+    OpenPageDialog dialog(this);
+    dialog.setInfo(activeBook(), activeBookReader()->page());
+
+    if(dialog.exec() == QDialog::Accepted) {
+        if(dialog.currentPage() == 0) // Open selected page/part
+            activeBookWidget()->openPage(dialog.selectedPage(), dialog.selectedPart());
+        else if(dialog.currentPage() == 1) // Open selected sora/page
+            activeBookWidget()->openSora(dialog.selectedSora(), dialog.selectedAya());
+        else if(dialog.currentPage() == 2) // Open selected haddit
+            activeBookWidget()->openHaddit(dialog.selectedHaddit());
+        else
+            qDebug("What to do?");
+    }
 }
 
 void BookWidgetManager::changeTabIcon(QIcon tabIcon)

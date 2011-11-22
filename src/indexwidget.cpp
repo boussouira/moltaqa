@@ -79,6 +79,8 @@ void IndexWidget::displayBookInfo()
     selectTitle(m_page->titleID);
 
     sendSignals = true;
+
+    emit bookInfoChanged();
 }
 
 void IndexWidget::setSelectedSora(int pSoraNumber)

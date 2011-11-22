@@ -27,13 +27,6 @@ public:
 
 public slots:
     BookWidget *openBook(int bookID, int pageID = -1, lucene::search::Query *query=0);
-    void nextUnit();
-    void previousUnit();
-    void nextPage();
-    void previousPage();
-    void firstPage();
-    void lastPage();
-    void goToPage();
     void updateActions();
     void showIndexWidget();
     void openTafessir();

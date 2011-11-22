@@ -38,12 +38,21 @@ public slots:
     void moveToOtherTab(int index);
     void reverseSplitter();
 
+    void nextAya();
+    void previousAya();
+    void nextPage();
+    void previousPage();
+    void firstPage();
+    void lastPage();
+    void goToPage();
+
 protected slots:
     void changeTabIcon(QIcon tabIcon);
 
 signals:
     void lastTabClosed();
     void currentTabChanged(int index);
+    void pageChanged();
 
 protected:
     TabWidget *m_topTab;

@@ -51,6 +51,7 @@ signals:
     void openSora(int sora, int aya);
     void openSoraInNewTab(int pSoraNumber);
     void openPage(int pageID);
+    void bookInfoChanged();
 
 private:
     BookIndexModel *m_model;

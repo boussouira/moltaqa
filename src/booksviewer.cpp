@@ -152,14 +152,16 @@ void BooksViewer::createMenus(QMainWindow *parent)
     }
 
     // Setup connections
+    connect(m_viewManager, SIGNAL(pageChanged()), SLOT(updateActions()));
+
     // Navigation actions
-    connect(m_actionNextPage, SIGNAL(triggered()), SLOT(nextPage()));
-    connect(m_actionPrevPage, SIGNAL(triggered()), SLOT(previousPage()));
-    connect(m_actionNextAYA, SIGNAL(triggered()), SLOT(nextUnit()));
-    connect(m_actionPrevAYA, SIGNAL(triggered()), SLOT(previousUnit()));
-    connect(m_actionFirstPage, SIGNAL(triggered()), SLOT(firstPage()));
-    connect(m_actionLastPage, SIGNAL(triggered()), SLOT(lastPage()));
-    connect(m_actionGotToPage, SIGNAL(triggered()), SLOT(goToPage()));
+    connect(m_actionNextPage, SIGNAL(triggered()), m_viewManager, SLOT(nextPage()));
+    connect(m_actionPrevPage, SIGNAL(triggered()), m_viewManager, SLOT(previousPage()));
+    connect(m_actionNextAYA, SIGNAL(triggered()), m_viewManager, SLOT(nextAya()));
+    connect(m_actionPrevAYA, SIGNAL(triggered()), m_viewManager, SLOT(previousAya()));
+    connect(m_actionFirstPage, SIGNAL(triggered()), m_viewManager, SLOT(firstPage()));
+    connect(m_actionLastPage, SIGNAL(triggered()), m_viewManager, SLOT(lastPage()));
+    connect(m_actionGotToPage, SIGNAL(triggered()), m_viewManager, SLOT(goToPage()));
 
     // Index widget
     connect(m_actionIndexDock, SIGNAL(triggered()), SLOT(showIndexWidget()));
@@ -309,59 +311,6 @@ void BooksViewer::openShareeh()
         int pageID = retList.last().toInt();
 
         openBook(bookID, pageID);
-    }
-}
-
-void BooksViewer::nextUnit()
-{
-    m_viewManager->activeBookWidget()->scrollDown();
-    updateActions();
-}
-
-void BooksViewer::previousUnit()
-{
-    m_viewManager->activeBookWidget()->scrollUp();
-    updateActions();
-}
-
-void BooksViewer::nextPage()
-{
-    m_viewManager->activeBookWidget()->nextPage();
-    updateActions();
-}
-
-void BooksViewer::previousPage()
-{
-    m_viewManager->activeBookWidget()->prevPage();
-    updateActions();
-}
-
-void BooksViewer::firstPage()
-{
-    m_viewManager->activeBookWidget()->firstPage();
-    updateActions();
-}
-
-void BooksViewer::lastPage()
-{
-    m_viewManager->activeBookWidget()->lastPage();
-    updateActions();
-}
-
-void BooksViewer::goToPage()
-{
-    OpenPageDialog dialog(this);
-    dialog.setInfo(m_viewManager->activeBook(), m_viewManager->activeBookReader()->page());
-
-    if(dialog.exec() == QDialog::Accepted) {
-        if(dialog.currentPage() == 0) // Open selected page/part
-            m_viewManager->activeBookWidget()->openPage(dialog.selectedPage(), dialog.selectedPart());
-        else if(dialog.currentPage() == 1) // Open selected sora/page
-            m_viewManager->activeBookWidget()->openSora(dialog.selectedSora(), dialog.selectedAya());
-        else if(dialog.currentPage() == 2) // Open selected haddit
-            m_viewManager->activeBookWidget()->openHaddit(dialog.selectedHaddit());
-        else
-            qDebug("What to do?");
     }
 }
 
