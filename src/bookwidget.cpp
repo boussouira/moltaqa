@@ -194,6 +194,8 @@ void BookWidget::scrollDown()
         m_db->nextAya();
         m_view->scrollToAya(m_db->page()->sora,
                             m_db->page()->aya);
+
+        m_indexWidget->displayBookInfo();
     } else {
         if(!m_view->maxDown())
             m_view->pageDown();
@@ -208,6 +210,8 @@ void BookWidget::scrollUp()
         m_db->prevAya();
         m_view->scrollToAya(m_db->page()->sora,
                             m_db->page()->aya);
+
+        m_indexWidget->displayBookInfo();
     } else {
         if(!m_view->maxUp())
             m_view->pageUp();
