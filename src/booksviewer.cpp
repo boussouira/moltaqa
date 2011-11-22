@@ -94,12 +94,6 @@ void BooksViewer::createMenus(QMainWindow *parent)
     m_actionGotToPage = new QAction(tr("انتقل الى..."),
                                   this);
 
-    m_actionNextAYA->setShortcut(QKeySequence("J"));
-    m_actionPrevAYA->setShortcut(QKeySequence("K"));
-    m_actionNextPage->setShortcut(QKeySequence("N"));
-    m_actionPrevPage->setShortcut(QKeySequence("P"));
-    m_actionGotToPage->setShortcut(QKeySequence("G"));
-
     // Tafressir actions
     m_openSelectedTafsir =  new QAction(QIcon(":/menu/images/arrow-left.png"),
                                                tr("فتح تفسير الاية"),
