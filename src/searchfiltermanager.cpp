@@ -9,7 +9,7 @@
 
 #include <qsqlquery.h>
 #include <qitemselectionmodel.h>
-#include <QTime>
+#include <qdatetime.h>
 
 SearchFilterManager::SearchFilterManager(QObject *parent)
     : QObject(parent),
@@ -121,7 +121,7 @@ void SearchFilterManager::loadModel()
 
     getBookItems(0, catIem);
 
-    if(catIem->child(0))
+    if(catIem->rowCount())
         m_model->appendRow(catIem);
 
     QSqlQuery query(m_indexDB);
@@ -271,12 +271,32 @@ void SearchFilterManager::enableCatSelection()
     QModelIndex topLeft = m_filterModel->index(0, 0);
     QModelIndex bottomRight = m_filterModel->index(rowCount-1, 0);
     QItemSelection selection(topLeft, bottomRight);
+    QItemSelection sourceSelection = m_filterModel->mapSelectionToSource(selection);
 
-    foreach (QModelIndex index, selection.indexes()) {
-        m_model->item(index.row())->setCheckable(catCheckable);
+    foreach (QModelIndex index, sourceSelection.indexes()) {
+        QStandardItem *item = m_model->itemFromIndex(index);
+        if(item) {
+            item->setCheckable(catCheckable);
+            setCatCheckable(item, catCheckable);
+        }
     }
 }
 
+void SearchFilterManager::setCatCheckable(QStandardItem *parent, bool checkable)
+{
+    int row = 0;
+    QStandardItem *child = parent->child(row);
+
+    while(child) {
+        if(child->rowCount()) {
+            child->setCheckable(checkable);
+
+            setCatCheckable(child, checkable);
+        }
+
+        child = parent->child(++row);
+    }
+}
 
 void SearchFilterManager::selectAllBooks()
 {
@@ -311,14 +331,9 @@ void SearchFilterManager::selectVisibleBooks()
 
     foreach (QModelIndex index, selection.indexes()) {
         if(index.data(ItemRole::typeRole).toInt() == ItemType::CategorieItem) {
-            QModelIndex child = index.child(0, 0);
-
-            while(child.isValid()) {
-                if(child.data(ItemRole::typeRole).toInt() == ItemType::BookItem)
-                    m_filterModel->setData(child, Qt::Checked, Qt::CheckStateRole);
-
-                child = index.child(child.row()+1, 0);
-            }
+            checkIndex(m_filterModel, index, Qt::Checked);
+        } else {
+            m_filterModel->setData(index, Qt::Checked, Qt::CheckStateRole);
         }
     }
 }
@@ -332,15 +347,24 @@ void SearchFilterManager::unSelectVisibleBooks()
 
     foreach (QModelIndex index, selection.indexes()) {
         if(index.data(ItemRole::typeRole).toInt() == ItemType::CategorieItem) {
-            QModelIndex child = index.child(0, 0);
-
-            while(child.isValid()) {
-                if(child.data(ItemRole::typeRole).toInt() == ItemType::BookItem)
-                    m_filterModel->setData(child, Qt::Unchecked, Qt::CheckStateRole);
-
-                child = index.child(child.row()+1, 0);
-            }
+            checkIndex(m_filterModel, index, Qt::Unchecked);
+        } else {
+            m_filterModel->setData(index, Qt::Unchecked, Qt::CheckStateRole);
         }
+    }
+}
+
+void SearchFilterManager::checkIndex(QAbstractItemModel *model, const QModelIndex &parent, Qt::CheckState checkStat)
+{
+    QModelIndex child = parent.child(0, 0);
+
+    while(child.isValid()) {
+        if(child.data(ItemRole::typeRole).toInt() == ItemType::BookItem)
+            model->setData(child, checkStat, Qt::CheckStateRole);
+        else
+            checkIndex(model, child, checkStat);
+
+        child = parent.child(child.row()+1, 0);
     }
 }
 
@@ -360,34 +384,50 @@ void SearchFilterManager::collapseFilterView()
 
 void SearchFilterManager::itemChanged(QStandardItem *item)
 {
-    if(item && m_proccessItemChange) {
+    if(m_proccessItemChange){
         m_proccessItemChange = false;
 
-        if(item->data(ItemRole::typeRole).toInt() == ItemType::CategorieItem) {
-            if(item->checkState() != Qt::PartiallyChecked) {
-                for(int i=0; i<item->rowCount(); i++) {
-                    item->child(i)->setCheckState(item->checkState());
-                }
-            }
-        } else if(item->data(ItemRole::typeRole).toInt() == ItemType::BookItem) {
-            QStandardItem *parentItem = item->parent();
+        if(item->checkState() != Qt::PartiallyChecked) {
+            checkChilds(item, item->checkState());
+        }
+
+        QStandardItem *parent = item->parent();
+
+        while(parent) {
             int checkItems = 0;
+            int partiallyChecked = 0;
 
-            for(int i=0; i<parentItem->rowCount(); i++) {
-                if(parentItem->child(i)->checkState()==Qt::Checked)
+            for(int i=0; i<parent->rowCount(); i++) {
+                if(parent->child(i)->checkState()==Qt::Checked)
                     checkItems++;
+                else if(parent->child(i)->checkState()==Qt::PartiallyChecked)
+                    partiallyChecked++;
             }
 
-            if(checkItems == 0)
-                parentItem->setCheckState(Qt::Unchecked);
-            else if(checkItems < parentItem->rowCount())
-                parentItem->setCheckState(Qt::PartiallyChecked);
+            if(checkItems == 0 && partiallyChecked == 0)
+                parent->setCheckState(Qt::Unchecked);
+            else if(checkItems < parent->rowCount() || partiallyChecked)
+                parent->setCheckState(Qt::PartiallyChecked);
             else
-                parentItem->setCheckState(Qt::Checked);
+                parent->setCheckState(Qt::Checked);
 
+            parent = parent->parent();
         }
 
         m_proccessItemChange = true;
+    }
+}
+
+void SearchFilterManager::checkChilds(QStandardItem *parent, Qt::CheckState checkStat)
+{
+    int row = 0;
+    QStandardItem *child = parent->child(0);
+
+    while(child) {
+        child->setCheckState(checkStat);
+        checkChilds(child, checkStat);
+
+        child = parent->child(++row);
     }
 }
 
@@ -398,23 +438,25 @@ void SearchFilterManager::generateLists()
 
     QModelIndex index = m_model->index(0, 0);
     while(index.isValid()) {
-        getBooks(index);
+        getBooks(index, ItemType::BookItem);
 
         index = index.sibling(index.row()+1, 0);
     }
 }
 
-void SearchFilterManager::getBooks(QModelIndex index)
+void SearchFilterManager::getBooks(const QModelIndex &index, int role)
 {
     if(index.isValid()) {
         QModelIndex child = index.child(0, 0);
         while(child.isValid()) {
-            if(child.data(ItemRole::typeRole).toInt() == ItemType::BookItem) {
+            if(child.data(ItemRole::typeRole).toInt() == role) {
                 if(child.data(Qt::CheckStateRole).toInt() ==  Qt::Checked) {
                     m_selectedBooks.append(child.data(ItemRole::idRole).toInt());
                 } else {
                     m_unSelectedBooks.append(child.data(ItemRole::idRole).toInt());
                 }
+            } else {
+                getBooks(child, role);
             }
 
             child = index.child(child.row()+1, 0);

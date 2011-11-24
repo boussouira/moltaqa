@@ -46,7 +46,7 @@ protected:
     void getBookItems(int catID, QStandardItem *catItem);
 
     void generateLists();
-    void getBooks(QModelIndex index);
+    void getBooks(const QModelIndex &index, int role);
     QList<int> selectedBooks();
     QList<int> unSelectedBooks();
     int selectedBooksCount();
@@ -59,6 +59,7 @@ public slots:
     void showUnSelected();
     void clearFilter();
     void enableCatSelection();
+    void setCatCheckable(QStandardItem *parent, bool checkable);
 
     void selectAllBooks();
     void unSelectAllBooks();
@@ -67,6 +68,8 @@ public slots:
     void expandFilterView();
     void collapseFilterView();
     void itemChanged(QStandardItem *item);
+    void checkChilds(QStandardItem *parent, Qt::CheckState checkStat);
+    void checkIndex(QAbstractItemModel *model, const QModelIndex &parent, Qt::CheckState checkStat);
 
 protected:
     SortFilterProxyModel *m_filterModel;
