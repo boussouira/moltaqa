@@ -248,26 +248,6 @@ Query *SearchWidget::getSearchQuery()
     }
 }
 
-void SearchWidget::testSearch()
-{
-    qDebug("Test Search..");
-    try {
-        SearchFilter *searchFilter = m_filterManager->getFilterQuery();
-        Query *searchQuery = getSearchQuery();
-        if(!searchQuery) {
-            qDebug("No query...");
-            return;
-        }
-
-        LibrarySearcher se;
-        se.setQuery(searchQuery, searchFilter->filterQuery, searchFilter->clause);
-        se.run();
-        qDebug("Result count: %d", se.resultsCount());
-    } catch(CLuceneError &e) {
-        qDebug() << "Error:" << e.what();
-    }
-}
-
 void SearchWidget::search()
 {
     SearchFilter *searchFilter = m_filterManager->getFilterQuery();

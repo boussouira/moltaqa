@@ -37,11 +37,10 @@ protected:
     lucene::search::Query *getSearchQuery();
     void initWebView();
 
-public slots:
+protected slots:
     void clearSpecialChar();
     void clearLineText();
     void showFilterTools();
-    void testSearch();
     void search();
 
 private:
