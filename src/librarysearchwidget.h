@@ -1,11 +1,11 @@
-#ifndef SEARCHWIDGET_H
-#define SEARCHWIDGET_H
+#ifndef LIBRARYSEARCHWIDGET_H
+#define LIBRARYSEARCHWIDGET_H
 
 #include <QWidget>
 #include "resultwidget.h"
 
 namespace Ui {
-    class SearchWidget;
+    class LibrarySearchWidget;
 }
 
 namespace lucene {
@@ -16,13 +16,13 @@ namespace lucene {
 
 class SearchFilterManager;
 
-class SearchWidget : public QWidget
+class LibrarySearchWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    SearchWidget(QWidget *parent = 0);
-    ~SearchWidget();
+    LibrarySearchWidget(QWidget *parent = 0);
+    ~LibrarySearchWidget();
 
     enum CurrentWidget {
         Search,
@@ -44,10 +44,10 @@ protected slots:
     void search();
 
 private:
-    Ui::SearchWidget *ui;
+    Ui::LibrarySearchWidget *ui;
     SearchFilterManager *m_filterManager;
     ResultWidget *m_resultWidget;
     LibrarySearcher *m_searcher;
 };
 
-#endif // SEARCHWIDGET_H
+#endif // LIBRARYSEARCHWIDGET_H

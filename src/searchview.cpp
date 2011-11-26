@@ -1,6 +1,6 @@
 #include "searchview.h"
 #include "tabwidget.h"
-#include "searchwidget.h"
+#include "librarysearchwidget.h"
 #include "mainwindow.h"
 #include "indexmanager.h"
 
@@ -56,7 +56,7 @@ bool SearchView::ensureTabIsOpen()
 
 void SearchView::newTab()
 {
-    SearchWidget *searchWidget = new SearchWidget(this);
+    LibrarySearchWidget *searchWidget = new LibrarySearchWidget(this);
     searchWidget->setAutoFillBackground(true);
 
     int tabIndex = m_tabWidget->addTab(searchWidget,
@@ -79,7 +79,7 @@ void SearchView::closeTab(int index)
 
 void SearchView::switchSearchWidget()
 {
-    SearchWidget *w = qobject_cast<SearchWidget*>(m_tabWidget->currentWidget());
+    LibrarySearchWidget *w = qobject_cast<LibrarySearchWidget*>(m_tabWidget->currentWidget());
 
     if(w) {
         w->toggleWidget();

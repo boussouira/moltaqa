@@ -1,5 +1,5 @@
-#include "searchwidget.h"
-#include "ui_searchwidget.h"
+#include "librarysearchwidget.h"
+#include "ui_librarysearchwidget.h"
 #include "clheader.h"
 #include "clutils.h"
 #include "clconstants.h"
@@ -11,9 +11,9 @@
 #include "mainwindow.h"
 #include "librarysearcher.h"
 
-SearchWidget::SearchWidget(QWidget *parent) :
+LibrarySearchWidget::LibrarySearchWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::SearchWidget),
+    ui(new Ui::LibrarySearchWidget),
     m_searcher(0)
 {
     ui->setupUi(this);
@@ -43,7 +43,7 @@ SearchWidget::SearchWidget(QWidget *parent) :
     ui->lineQueryMust->setText(tr("الله اعلم"));
 }
 
-SearchWidget::~SearchWidget()
+LibrarySearchWidget::~LibrarySearchWidget()
 {
     if(!m_searcher) {
         delete m_searcher;
@@ -55,18 +55,18 @@ SearchWidget::~SearchWidget()
     delete ui;
 }
 
-void SearchWidget::setCurrentWidget(SearchWidget::CurrentWidget index)
+void LibrarySearchWidget::setCurrentWidget(LibrarySearchWidget::CurrentWidget index)
 {
     ui->stackedWidget->setCurrentIndex(index);
 }
 
-void SearchWidget::toggleWidget()
+void LibrarySearchWidget::toggleWidget()
 {
     if(m_searcher) // Do we have any search result?
         setCurrentWidget(ui->stackedWidget->currentIndex()==Search ? Result : Search);
 }
 
-void SearchWidget::setupCleanMenu()
+void LibrarySearchWidget::setupCleanMenu()
 {
     QList<FancyLineEdit*> lines;
     lines << ui->lineQueryMust;
@@ -88,7 +88,7 @@ void SearchWidget::setupCleanMenu()
     }
 }
 
-void SearchWidget::clearLineText()
+void LibrarySearchWidget::clearLineText()
 {
     FancyLineEdit *edit = qobject_cast<FancyLineEdit*>(sender()->parent());
 
@@ -97,7 +97,7 @@ void SearchWidget::clearLineText()
     }
 }
 
-void SearchWidget::showFilterTools()
+void LibrarySearchWidget::showFilterTools()
 {
     QMenu menu(this);
     QAction *selectAllAct = new QAction(tr("اختيار الكل"), &menu);
@@ -136,7 +136,7 @@ void SearchWidget::showFilterTools()
     }
 }
 
-void SearchWidget::clearSpecialChar()
+void LibrarySearchWidget::clearSpecialChar()
 {
     FancyLineEdit *edit = qobject_cast<FancyLineEdit*>(sender()->parent());
 
@@ -151,7 +151,7 @@ void SearchWidget::clearSpecialChar()
     }
 }
 
-Query *SearchWidget::getSearchQuery()
+Query *LibrarySearchWidget::getSearchQuery()
 {
     if(ui->lineQueryMust->text().isEmpty()){
         if(!ui->lineQueryShould->text().isEmpty()){
@@ -248,7 +248,7 @@ Query *SearchWidget::getSearchQuery()
     }
 }
 
-void SearchWidget::search()
+void LibrarySearchWidget::search()
 {
     SearchFilter *searchFilter = m_filterManager->getFilterQuery();
     Query *searchQuery = getSearchQuery();

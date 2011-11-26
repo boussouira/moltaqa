@@ -85,7 +85,7 @@ SOURCES += mainwindow.cpp \
     abstarctview.cpp \
     viewmanager.cpp \
     searchview.cpp \
-    searchwidget.cpp \
+    librarysearchwidget.cpp \
     fancylineedit.cpp \
     cssformatter.cpp \
     searchfiltermanager.cpp \
@@ -167,7 +167,7 @@ HEADERS += mainwindow.h \
     abstarctview.h \
     viewmanager.h \
     searchview.h \
-    searchwidget.h \
+    librarysearchwidget.h \
     fancylineedit.h \
     cssformatter.h \
     searchfiltermanager.h \
@@ -194,7 +194,7 @@ FORMS += mainwindow.ui settingsdialog.ui \
     selectcatdialog.ui \
     editbookslistwidget.ui \
     selectauthordialog.ui \
-    searchwidget.ui \
+    librarysearchwidget.ui \
     resultwidget.ui \
     edittaffasirlistwidget.ui
 

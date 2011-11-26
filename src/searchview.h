@@ -4,7 +4,7 @@
 #include "abstarctview.h"
 
 class TabWidget;
-class SearchWidget;
+class LibrarySearchWidget;
 class QVBoxLayout;
 
 class SearchView : public AbstarctView
@@ -27,7 +27,7 @@ signals:
 
 protected:
     TabWidget *m_tabWidget;
-    SearchWidget *m_searchWidget;
+    LibrarySearchWidget *m_searchWidget;
     QVBoxLayout *m_layout;
 };
 
