@@ -1,5 +1,11 @@
 TEMPLATE = app
-TARGET = moltaqa-lib
+APPNAME = moltaqa-lib
+
+win32 {
+    TARGET = $$APPNAME
+} else {
+    TARGET = $$join(APPNAME, "","", ".bin")
+}
 
 CODECFORSRC = UTF-8
 CODECFORTR  = UTF-8
@@ -63,14 +69,13 @@ unix {
     LIBDIR = $$PREFIX/lib
     DATADIR = $$PREFIX/share
 
-    APPNAME = $$TARGET
 
-    INSTALLS += target script lib data images styles js locale fonts
+    INSTALLS += target script lib data styles js locale fonts
 
     target.path = $$BINDIR
 
     script.path = $$BINDIR
-    script.files += ../bin/moltaqa-lib.sh
+    script.files += ../bin/moltaqa-lib
 
     lib.path = $$LIBDIR/$$APPNAME
     lib.files += $$CLUCENE_LIBS_PATH/libclucene-core.*
@@ -79,9 +84,6 @@ unix {
 
     data.path = $$DATADIR/$$APPNAME/data
     data.files += ../share/$$APPNAME/data/quran-meta.db
-
-    images.path = $$DATADIR/$$APPNAME/images
-    images.files += ../share/$$APPNAME/images/magnifier.png
 
     styles.path = $$DATADIR/$$APPNAME/styles/default
     styles.files += ../share/$$APPNAME/styles/default/default.css

@@ -32,4 +32,4 @@ bindir=`dirname "$me"`
 libdir=`cd "$bindir/../lib" ; pwd`
 LD_LIBRARY_PATH=$libdir:$libdir/moltaqa-lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 export LD_LIBRARY_PATH
-exec "$bindir/moltaqa-lib" ${1+"$@"}
+exec "$bindir/moltaqa-lib.bin" ${1+"$@"}
