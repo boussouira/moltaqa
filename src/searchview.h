@@ -2,9 +2,9 @@
 #define SEARCHVIEW_H
 
 #include "abstarctview.h"
+#include "searchwidget.h"
 
 class TabWidget;
-class LibrarySearchWidget;
 class QVBoxLayout;
 
 class SearchView : public AbstarctView
@@ -18,7 +18,7 @@ public:
     bool ensureTabIsOpen();
 
 public slots:
-    void newTab();
+    void newTab(SearchWidget::SearchType searchType);
     void closeTab(int index);
     void switchSearchWidget();
 
@@ -27,7 +27,6 @@ signals:
 
 protected:
     TabWidget *m_tabWidget;
-    LibrarySearchWidget *m_searchWidget;
     QVBoxLayout *m_layout;
 };
 

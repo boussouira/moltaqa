@@ -28,26 +28,21 @@ LibrarySearcher::LibrarySearcher(QObject *parent)
 LibrarySearcher::~LibrarySearcher()
 {
     if(m_hits)
-        _CLDELETE(m_hits);
+        delete m_hits;
 
     if(m_query)
-        _CLDELETE(m_query);
+        delete m_query;
 
     if(m_filterQuery)
-        _CLDELETE(m_filterQuery);
+        delete m_filterQuery;
 
     if(m_searcher) {
         m_searcher->close();
-        _CLDELETE(m_searcher);
+        delete m_searcher;
     }
-
 
     qDeleteAll(m_resultsHash);
     m_resultsHash.clear();
-
-    m_currentPage = 0;
-    m_pageCount = 0;
-    m_timeSearch = 0;
 }
 
 void LibrarySearcher::run()

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>LibrarySearchWidget</class>
- <widget class="QWidget" name="LibrarySearchWidget">
+ <class>SearchWidget</class>
+ <widget class="QWidget" name="SearchWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -137,7 +137,7 @@ p, li { white-space: pre-wrap; }
         </widget>
        </item>
        <item>
-        <widget class="QTreeView" name="treeViewBooks">
+        <widget class="QTreeView" name="treeView">
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>

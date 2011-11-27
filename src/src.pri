@@ -196,7 +196,7 @@ FORMS += mainwindow.ui settingsdialog.ui \
     selectcatdialog.ui \
     editbookslistwidget.ui \
     selectauthordialog.ui \
-    librarysearchwidget.ui \
+    searchwidget.ui \
     resultwidget.ui \
     edittaffasirlistwidget.ui
 

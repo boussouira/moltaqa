@@ -1,5 +1,6 @@
 #include "librarysearchwidget.h"
-#include "ui_librarysearchwidget.h"
+#include "ui_searchwidget.h"
+#include "resultwidget.h"
 #include "clheader.h"
 #include "clutils.h"
 #include "clconstants.h"
@@ -13,143 +14,58 @@
 
 LibrarySearchWidget::LibrarySearchWidget(QWidget *parent) :
     SearchWidget(parent),
-    ui(new Ui::LibrarySearchWidget),
-    m_searcher(0)
+    m_filterManager(0)
 {
-    ui->setupUi(this);
-
-    m_filterManager = new SearchFilterManager;
-    m_filterManager->setTreeView(ui->treeViewBooks);
-    m_filterManager->setLineEdit(ui->lineFilter);
-
-    ui->treeViewBooks->setModel(m_filterManager->filterModel());
-    ui->treeViewBooks->setColumnWidth(0, 300);
-
-    m_resultWidget = new ResultWidget(this);
-    ui->stackedWidget->insertWidget(1, m_resultWidget);
-
-    connect(ui->lineFilter, SIGNAL(textChanged(QString)),
-            ui->treeViewBooks, SLOT(expandAll()));
-
-    connect(ui->lineQueryMust, SIGNAL(returnPressed()), SLOT(search()));
-    connect(ui->lineQueryShould, SIGNAL(returnPressed()), SLOT(search()));
-    connect(ui->lineQueryShouldNot, SIGNAL(returnPressed()), SLOT(search()));
-    connect(ui->pushSearch, SIGNAL(clicked()), SLOT(search()));
-    connect(ui->labelTools, SIGNAL(linkActivated(QString)),
-            SLOT(showFilterTools()));
-
-    setupCleanMenu();
-
-    setCurrentWidget(Search);
     ui->lineQueryMust->setText(tr("الله اعلم"));
 }
 
 LibrarySearchWidget::~LibrarySearchWidget()
 {
-    if(!m_searcher) {
-        delete m_searcher;
-        m_searcher = 0;
-    }
-
-    delete m_resultWidget;
-    delete m_filterManager;
-    delete ui;
+    if(m_filterManager)
+        delete m_filterManager;
 }
 
-void LibrarySearchWidget::setCurrentWidget(LibrarySearchWidget::CurrentWidget index)
+void LibrarySearchWidget::init()
 {
-    ui->stackedWidget->setCurrentIndex(index);
+    m_filterManager = new SearchFilterManager;
+    m_filterManager->setTreeView(ui->treeView);
+    m_filterManager->setLineEdit(ui->lineFilter);
+
+    m_resultWidget = new ResultWidget(this);
+    ui->stackedWidget->insertWidget(1, m_resultWidget);
+
+    ui->treeView->setModel(m_filterManager->filterModel());
+    ui->treeView->setColumnWidth(0, 300);
 }
 
-void LibrarySearchWidget::toggleWidget()
+void LibrarySearchWidget::selectAll()
 {
-    if(m_searcher) // Do we have any search result?
-        setCurrentWidget(ui->stackedWidget->currentIndex()==Search ? Result : Search);
+    m_filterManager->selectAllBooks();
 }
 
-void LibrarySearchWidget::setupCleanMenu()
+void LibrarySearchWidget::unSelectAll()
 {
-    QList<FancyLineEdit*> lines;
-    lines << ui->lineQueryMust;
-    lines << ui->lineQueryShould;
-    lines << ui->lineQueryShouldNot;
-
-    foreach(FancyLineEdit *line, lines) {
-        QMenu *menu = new QMenu(line);
-        QAction *clearTextAct = new QAction(tr("مسح النص"), line);
-        QAction *clearSpecialCharAct = new QAction(tr("ابطال مفعول الاقواس وغيرها"), line);
-
-        menu->addAction(clearTextAct);
-        menu->addAction(clearSpecialCharAct);
-
-        connect(clearTextAct, SIGNAL(triggered()), SLOT(clearLineText()));
-        connect(clearSpecialCharAct, SIGNAL(triggered()), SLOT(clearSpecialChar()));
-
-        line->setMenu(menu);
-    }
+    m_filterManager->unSelectAllBooks();
 }
 
-void LibrarySearchWidget::clearLineText()
+void LibrarySearchWidget::selectVisible()
 {
-    FancyLineEdit *edit = qobject_cast<FancyLineEdit*>(sender()->parent());
-
-    if(edit) {
-        edit->clear();
-    }
+    m_filterManager->selectVisibleBooks();
 }
 
-void LibrarySearchWidget::showFilterTools()
+void LibrarySearchWidget::unSelectVisible()
 {
-    QMenu menu(this);
-    QAction *selectAllAct = new QAction(tr("اختيار الكل"), &menu);
-    QAction *unSelectAllAct = new QAction(tr("الغاء الكل"), &menu);
-
-    QAction *selectVisisbleAct = new QAction(tr("اختيار الكتب الظاهرة فقط"), &menu);
-    QAction *unSelectVisisbleAct = new QAction(tr("الغاء الكتب الظاهرة فقط"), &menu);
-
-    QAction *expandTreeAct = new QAction(tr("عرض الشجرة"), &menu);
-    QAction *collapseTreeAct = new QAction(tr("ضغط الشجرة"), &menu);
-
-    menu.addAction(selectAllAct);
-    menu.addAction(unSelectAllAct);
-    menu.addSeparator();
-    menu.addAction(selectVisisbleAct);
-    menu.addAction(unSelectVisisbleAct);
-    menu.addSeparator();
-    menu.addAction(expandTreeAct);
-    menu.addAction(collapseTreeAct);
-
-    QAction *ret = menu.exec(QCursor::pos());
-    if(ret) {
-        if(ret == selectAllAct) {
-            m_filterManager->selectAllBooks();
-        } else if(ret == unSelectAllAct) {
-            m_filterManager->unSelectAllBooks();
-        } else if(ret == selectVisisbleAct) {
-            m_filterManager->selectVisibleBooks();
-        } else if(ret == unSelectVisisbleAct) {
-            m_filterManager->unSelectVisibleBooks();
-        } else if(ret == expandTreeAct) {
-             m_filterManager->expandFilterView();
-        } else if(ret == collapseTreeAct) {
-            m_filterManager->collapseFilterView();
-        }
-    }
+    m_filterManager->unSelectVisibleBooks();
 }
 
-void LibrarySearchWidget::clearSpecialChar()
+void LibrarySearchWidget::expandFilterView()
 {
-    FancyLineEdit *edit = qobject_cast<FancyLineEdit*>(sender()->parent());
+    m_filterManager->expandFilterView();
+}
 
-    if(edit) {
-        wchar_t *lineText = Utils::QStringToWChar(edit->text());
-        wchar_t *cleanText = QueryParser::escape(lineText);
-
-        edit->setText(QString::fromWCharArray(cleanText));
-
-        free(lineText);
-        free(cleanText);
-    }
+void LibrarySearchWidget::collapseFilterView()
+{
+    m_filterManager->collapseFilterView();
 }
 
 Query *LibrarySearchWidget::getSearchQuery()
@@ -249,22 +165,7 @@ Query *LibrarySearchWidget::getSearchQuery()
     }
 }
 
-void LibrarySearchWidget::search()
+SearchFilter *LibrarySearchWidget::getSearchFilterQuery()
 {
-    SearchFilter *searchFilter = m_filterManager->getFilterQuery();
-    Query *searchQuery = getSearchQuery();
-
-    if(!searchQuery)
-        return;
-
-    if(!m_searcher) {
-        delete m_searcher;
-        m_searcher = 0;
-    }
-
-    m_searcher = new LibrarySearcher(this);
-    m_searcher->setQuery(searchQuery, searchFilter->filterQuery, searchFilter->clause);
-
-    m_resultWidget->search(m_searcher);
-    setCurrentWidget(Result);
+    return m_filterManager->getFilterQuery();
 }

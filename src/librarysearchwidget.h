@@ -2,19 +2,6 @@
 #define LIBRARYSEARCHWIDGET_H
 
 #include "searchwidget.h"
-#include "resultwidget.h"
-
-namespace Ui {
-    class LibrarySearchWidget;
-}
-
-namespace lucene {
-    namespace search {
-        class Query;
-    }
-}
-
-class SearchFilterManager;
 
 class LibrarySearchWidget : public SearchWidget
 {
@@ -24,25 +11,22 @@ public:
     LibrarySearchWidget(QWidget *parent = 0);
     ~LibrarySearchWidget();
 
-    void setCurrentWidget(CurrentWidget index);
-    void toggleWidget();
+    void init();
+
+public slots:
+    void selectAll();
+    void unSelectAll();
+    void selectVisible();
+    void unSelectVisible();
+    void expandFilterView();
+    void collapseFilterView();
 
 protected:
-    void setupCleanMenu();
     lucene::search::Query *getSearchQuery();
-    void initWebView();
+    SearchFilter *getSearchFilterQuery();
 
-protected slots:
-    void clearSpecialChar();
-    void clearLineText();
-    void showFilterTools();
-    void search();
-
-private:
-    Ui::LibrarySearchWidget *ui;
+protected:
     SearchFilterManager *m_filterManager;
-    ResultWidget *m_resultWidget;
-    LibrarySearcher *m_searcher;
 };
 
 #endif // LIBRARYSEARCHWIDGET_H
