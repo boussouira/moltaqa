@@ -29,6 +29,7 @@ public slots:
     BookWidget *openBook(int bookID, int pageID = -1, lucene::search::Query *query=0);
     void updateActions();
     void showIndexWidget();
+    void searchInBook();
     void openTafessir();
     void openShareeh();
     void tabChanged(int newIndex);
@@ -45,7 +46,7 @@ private:
     BookWidgetManager *m_viewManager;
     QAction *m_actionNewTab;
     QAction *m_actionIndexDock;
-    QAction *m_actionSearchDock;
+    QAction *m_actionSearchInBook;
     QAction *m_actionNextAYA;
     QAction *m_actionNextPage;
     QAction *m_actionPrevAYA;

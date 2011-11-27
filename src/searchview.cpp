@@ -1,6 +1,7 @@
 #include "searchview.h"
 #include "tabwidget.h"
 #include "librarysearchwidget.h"
+#include "booksearchwidget.h"
 #include "mainwindow.h"
 #include "indexmanager.h"
 
@@ -20,7 +21,7 @@ SearchView::SearchView(QWidget *parent) : AbstarctView(parent)
 
     bar->addAction(QIcon(":/menu/images/tab-new.png"),
                    tr("تبويب بحث جديد"),
-                   this, SLOT(newTab()));
+                   this, SLOT(openNewTab()));
 
     bar->addAction(QIcon(":/menu/images/switch.png"),
                    tr("تنقل بين نافذة البحث والنتائج"),
@@ -50,11 +51,13 @@ bool SearchView::ensureTabIsOpen()
 
     if(m_tabWidget->count() <= 0)
         newTab(SearchWidget::LibrarySearch);
+    else
+        emit showMe();
 
     return true;
 }
 
-void SearchView::newTab(SearchWidget::SearchType searchType)
+void SearchView::newTab(SearchWidget::SearchType searchType, int bookID)
 {
     SearchWidget *searchWidget = 0;
     if(searchType == SearchWidget::LibrarySearch) {
@@ -72,6 +75,8 @@ void SearchView::newTab(SearchWidget::SearchType searchType)
                                        tr("بحث"));
 
     m_tabWidget->setCurrentIndex(tabIndex);
+
+    emit showMe();
 }
 
 void SearchView::closeTab(int index)
@@ -92,4 +97,9 @@ void SearchView::switchSearchWidget()
     if(w) {
         w->toggleWidget();
     }
+}
+
+void SearchView::openNewTab()
+{
+    newTab(SearchWidget::LibrarySearch);
 }

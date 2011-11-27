@@ -18,9 +18,12 @@ public:
     bool ensureTabIsOpen();
 
 public slots:
-    void newTab(SearchWidget::SearchType searchType);
+    void newTab(SearchWidget::SearchType searchType, int bookID=0);
     void closeTab(int index);
     void switchSearchWidget();
+
+protected slots:
+    void openNewTab();
 
 signals:
     void lastTabClosed();

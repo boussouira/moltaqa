@@ -2,7 +2,7 @@
 #define VIEWMANAGER_H
 
 #include <qstackedwidget.h>
-#include <qstack.h>
+#include <qset.h>
 
 class MainWindow;
 class AbstarctView;
@@ -32,11 +32,12 @@ protected slots:
 
 public slots:
     void hideView();
+    void showView();
 
 protected:
     MainWindow *m_mainWindow;
     QMenu *m_menu;
-    QStack<AbstarctView*> m_viewDisplay;
+    QSet<AbstarctView*> m_viewDisplay;
     AbstarctView *m_defautView;
 };
 

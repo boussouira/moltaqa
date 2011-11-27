@@ -6,11 +6,8 @@
 #include "clconstants.h"
 #include "arabicanalyzer.h"
 #include "searchfiltermanager.h"
-#include <qmenu.h>
-#include <qmessagebox.h>
-#include <qdebug.h>
-#include "mainwindow.h"
 #include "librarysearcher.h"
+#include <qmessagebox.h>
 
 LibrarySearchWidget::LibrarySearchWidget(QWidget *parent) :
     SearchWidget(parent),

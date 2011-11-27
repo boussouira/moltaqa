@@ -27,6 +27,7 @@ public:
 
 signals:
     void hideMe();
+    void showMe();
 
 protected:
     QList<QToolBar *> m_toolBars;

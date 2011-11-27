@@ -67,10 +67,9 @@ void BooksViewer::createMenus(QMainWindow *parent)
                                            tr("نافذة الفهرس"),
                                            this);
 
-    m_actionSearchDock = new QAction(QIcon(":/menu/images/find.png"),
-                                            tr("نافذة البحث"),
+    m_actionSearchInBook = new QAction(QIcon(":/menu/images/find.png"),
+                                            tr("بحث متقدم في هذا الكتاب"),
                                             this);
-    m_actionSearchDock->setEnabled(false);
 
     // Navigation actions
     m_actionNextAYA = new QAction(QIcon(":/menu/images/go-down.png"),
@@ -109,7 +108,7 @@ void BooksViewer::createMenus(QMainWindow *parent)
     m_toolBarGeneral->addAction(m_actionNewTab);
     m_toolBarGeneral->addSeparator();
     m_toolBarGeneral->addAction(m_actionIndexDock);
-    m_toolBarGeneral->addAction(m_actionSearchDock);
+    m_toolBarGeneral->addAction(m_actionSearchInBook);
 
     m_toolBarNavigation = new QToolBar(tr("التصفح"), this);
     m_toolBarNavigation->addAction(m_actionPrevPage);
@@ -157,9 +156,10 @@ void BooksViewer::createMenus(QMainWindow *parent)
     connect(m_actionLastPage, SIGNAL(triggered()), m_viewManager, SLOT(lastPage()));
     connect(m_actionGotToPage, SIGNAL(triggered()), m_viewManager, SLOT(goToPage()));
 
-    // Index widget
+    // Generale actions
     connect(m_actionIndexDock, SIGNAL(triggered()), SLOT(showIndexWidget()));
-    connect(m_actionNewTab, SIGNAL(triggered()), MainWindow::mainWindow(), SLOT(showBooksList()));
+    connect(m_actionNewTab, SIGNAL(triggered()), MW, SLOT(showBooksList()));
+    connect(m_actionSearchInBook, SIGNAL(triggered()), this, SLOT(searchInBook()));
 
     // Tafessir actions
     connect(m_openSelectedTafsir, SIGNAL(triggered()), SLOT(openTafessir()));
@@ -329,6 +329,11 @@ void BooksViewer::showIndexWidget()
 
     if(book)
         book->hideIndexWidget();
+}
+
+void BooksViewer::searchInBook()
+{
+    MW->searchView()->newTab(SearchWidget::BookSearch, m_viewManager->activeBook()->bookID);
 }
 
 void BooksViewer::tabChanged(int newIndex)

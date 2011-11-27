@@ -260,10 +260,7 @@ void MainWindow::showBooksList()
 
 void MainWindow::showSearchView()
 {
-    if(m_searchView->ensureTabIsOpen()){
-        m_searchView->setSelectable(true);
-        m_viewManager->setCurrentView(m_searchView);
-    }
+    m_searchView->ensureTabIsOpen();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -359,6 +356,13 @@ BookReaderHelper *MainWindow::readerHelper()
     Q_ASSERT(m_readerHelper);
 
     return m_readerHelper;
+}
+
+SearchView *MainWindow::searchView()
+{
+    Q_ASSERT(m_searchView);
+
+    return m_searchView;
 }
 
 void MainWindow::controlCenter()

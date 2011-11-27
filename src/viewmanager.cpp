@@ -17,9 +17,10 @@ void ViewManager::addView(AbstarctView *view, bool selectable)
     addWidget(view);
     setupActions();
 
-    m_viewDisplay.push(view);
+    m_viewDisplay.insert(view);
 
     connect(view, SIGNAL(hideMe()), SLOT(hideView()));
+    connect(view, SIGNAL(showMe()), SLOT(showView()));
 }
 
 void ViewManager::removeView(AbstarctView *view)
@@ -89,17 +90,13 @@ void ViewManager::setupActions()
 
 void ViewManager::removeViewFromStack(AbstarctView *view)
 {
-    for(int i=0; i<m_viewDisplay.size(); i++) {
-        if(m_viewDisplay[i] == view) {
-            m_viewDisplay.remove(i);
-        }
-    }
+    m_viewDisplay.remove(view);
 }
 
 void ViewManager::addViewToStack(AbstarctView *view)
 {
     removeViewFromStack(view);
-    m_viewDisplay.push(view);
+    m_viewDisplay.insert(view);
 }
 
 void ViewManager::changeWindow()
@@ -127,9 +124,9 @@ void ViewManager::hideView()
     if(w) {
         w->setSelectable(false);
         bool useDefautView = true;
-        while(!m_viewDisplay.isEmpty()) {
-            AbstarctView *prevView = m_viewDisplay.pop();
-            if(prevView && prevView != w && prevView->isSelectable()) {
+
+        foreach(AbstarctView* prevView, m_viewDisplay) {
+            if(prevView && prevView != w && prevView->isSelectable() && prevView != m_defautView) {
                 setCurrentView(prevView);
                 useDefautView = false;
             }
@@ -137,5 +134,14 @@ void ViewManager::hideView()
 
         if(useDefautView)
             setCurrentView(m_defautView);
+    }
+}
+
+void ViewManager::showView()
+{
+    AbstarctView *w = qobject_cast<AbstarctView*>(sender());
+    if(w) {
+        w->setSelectable(true);
+        setCurrentView(w);
     }
 }

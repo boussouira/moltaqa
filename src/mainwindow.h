@@ -41,6 +41,7 @@ public:
     IndexTracker *indexTracker();
     IndexManager *indexManager();
     BookReaderHelper *readerHelper();
+    SearchView *searchView();
 
 protected:
     void closeEvent(QCloseEvent *event);
