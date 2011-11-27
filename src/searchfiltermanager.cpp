@@ -330,7 +330,7 @@ void SearchFilterManager::selectVisibleBooks()
     QItemSelection selection(topLeft, bottomRight);
 
     foreach (QModelIndex index, selection.indexes()) {
-        if(index.data(ItemRole::typeRole).toInt() == ItemType::CategorieItem) {
+        if(hasChilds(index)) {
             checkIndex(m_filterModel, index, Qt::Checked);
         } else {
             m_filterModel->setData(index, Qt::Checked, Qt::CheckStateRole);
@@ -346,7 +346,7 @@ void SearchFilterManager::unSelectVisibleBooks()
     QItemSelection selection(topLeft, bottomRight);
 
     foreach (QModelIndex index, selection.indexes()) {
-        if(index.data(ItemRole::typeRole).toInt() == ItemType::CategorieItem) {
+        if(hasChilds(index)) {
             checkIndex(m_filterModel, index, Qt::Unchecked);
         } else {
             m_filterModel->setData(index, Qt::Unchecked, Qt::CheckStateRole);
@@ -359,13 +359,18 @@ void SearchFilterManager::checkIndex(QAbstractItemModel *model, const QModelInde
     QModelIndex child = parent.child(0, 0);
 
     while(child.isValid()) {
-        if(child.data(ItemRole::typeRole).toInt() == ItemType::BookItem)
-            model->setData(child, checkStat, Qt::CheckStateRole);
-        else
+        if(hasChilds(child))
             checkIndex(model, child, checkStat);
+        else
+            model->setData(child, checkStat, Qt::CheckStateRole);
 
         child = parent.child(child.row()+1, 0);
     }
+}
+
+bool SearchFilterManager::hasChilds(const QModelIndex &index)
+{
+    return index.child(0, 0).isValid();
 }
 
 void SearchFilterManager::expandFilterView()

@@ -72,6 +72,7 @@ protected slots:
     void setCatCheckable(QStandardItem *parent, bool checkable);
     void checkChilds(QStandardItem *parent, Qt::CheckState checkStat);
     void checkIndex(QAbstractItemModel *model, const QModelIndex &parent, Qt::CheckState checkStat);
+    bool hasChilds(const QModelIndex &index);
 
 protected:
     SortFilterProxyModel *m_filterModel;
