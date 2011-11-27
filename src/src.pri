@@ -96,7 +96,8 @@ SOURCES += mainwindow.cpp \
     textquranreader.cpp \
     bookreaderhelper.cpp \
     sqlutils.cpp \
-    edittaffasirlistwidget.cpp
+    edittaffasirlistwidget.cpp \
+    searchwidget.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -180,7 +181,8 @@ HEADERS += mainwindow.h \
     bookreaderhelper.h \
     sqlutils.h \
     libraryenums.h \
-    edittaffasirlistwidget.h
+    edittaffasirlistwidget.h \
+    searchwidget.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

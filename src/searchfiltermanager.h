@@ -53,21 +53,23 @@ protected:
     int unSelectBooksCount();
 
 public slots:
-    void setFilterText(QString text);
-    void changeFilterAction();
-    void showSelected();
-    void showUnSelected();
-    void clearFilter();
-    void enableCatSelection();
-    void setCatCheckable(QStandardItem *parent, bool checkable);
-
     void selectAllBooks();
     void unSelectAllBooks();
     void selectVisibleBooks();
     void unSelectVisibleBooks();
     void expandFilterView();
     void collapseFilterView();
+
+protected slots:
+    void setFilterText(QString text);
+    void clearFilter();
+    void changeFilterAction();
+    void showSelected();
+    void showUnSelected();
+
     void itemChanged(QStandardItem *item);
+    void enableCatSelection();
+    void setCatCheckable(QStandardItem *parent, bool checkable);
     void checkChilds(QStandardItem *parent, Qt::CheckState checkStat);
     void checkIndex(QAbstractItemModel *model, const QModelIndex &parent, Qt::CheckState checkStat);
 

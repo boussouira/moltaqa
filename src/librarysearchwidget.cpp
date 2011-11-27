@@ -12,13 +12,14 @@
 #include "librarysearcher.h"
 
 LibrarySearchWidget::LibrarySearchWidget(QWidget *parent) :
-    QWidget(parent),
+    SearchWidget(parent),
     ui(new Ui::LibrarySearchWidget),
     m_searcher(0)
 {
     ui->setupUi(this);
 
     m_filterManager = new SearchFilterManager;
+    m_filterManager->setTreeView(ui->treeViewBooks);
     m_filterManager->setLineEdit(ui->lineFilter);
 
     ui->treeViewBooks->setModel(m_filterManager->filterModel());
@@ -129,9 +130,9 @@ void LibrarySearchWidget::showFilterTools()
         } else if(ret == unSelectVisisbleAct) {
             m_filterManager->unSelectVisibleBooks();
         } else if(ret == expandTreeAct) {
-            ui->treeViewBooks->expandAll();
+             m_filterManager->expandFilterView();
         } else if(ret == collapseTreeAct) {
-            ui->treeViewBooks->collapseAll();
+            m_filterManager->collapseFilterView();
         }
     }
 }

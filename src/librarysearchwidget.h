@@ -1,7 +1,7 @@
 #ifndef LIBRARYSEARCHWIDGET_H
 #define LIBRARYSEARCHWIDGET_H
 
-#include <QWidget>
+#include "searchwidget.h"
 #include "resultwidget.h"
 
 namespace Ui {
@@ -16,18 +16,13 @@ namespace lucene {
 
 class SearchFilterManager;
 
-class LibrarySearchWidget : public QWidget
+class LibrarySearchWidget : public SearchWidget
 {
     Q_OBJECT
 
 public:
     LibrarySearchWidget(QWidget *parent = 0);
     ~LibrarySearchWidget();
-
-    enum CurrentWidget {
-        Search,
-        Result
-    };
 
     void setCurrentWidget(CurrentWidget index);
     void toggleWidget();
