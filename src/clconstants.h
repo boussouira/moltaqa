@@ -14,6 +14,8 @@
 #define PAGE_ID_FIELD _T("page")
 #define BOOK_ID_FIELD _T("book")
 #define PAGE_TEXT_FIELD _T("text")
+#define TITLE_TEXT_FIELD _T("title")
+#define TITLE_ID_FIELD _T("tid")
 #define FOOT_NOTE_FIELD _T("fn")
 #define QURAN_SORA_FIELD _T("sora")
 #define AUTHOR_DEATH_FIELD _T("death")

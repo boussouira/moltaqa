@@ -5,6 +5,7 @@
 #include "clutils.h"
 #include "textsimplebookreader.h"
 #include "textquranreader.h"
+#include "texttafessirreader.h"
 #include <exception>
 
 BookIndexer::BookIndexer(QObject *parent) :
@@ -61,50 +62,143 @@ void BookIndexer::startIndexing()
 
 void BookIndexer::indexBook(IndexTask *task)
 {
-    TextBookReader *reader = 0;
-    if(task->book->isNormal() || task->book->isTafessir()) {
-        reader = new TextSimpleBookReader();
+    if(task->book->isNormal()) {
+        indexSimpleBook(task);
+    } else if (task->book->isTafessir()) {
+        indexTaffesirBook(task);
     } else if (task->book->isQuran()) {
-        reader = new TextQuranReader();
+        indexQuran(task);
     } else {
         qWarning("indexBook: Unknow book type");
         return;
     }
 
-    BookPage *page = reader->page();
+    emit taskDone(task);
+}
+
+void BookIndexer::indexQuran(IndexTask *task)
+{
+    TextQuranReader reader;
 
     Document doc;
     int tokenAndNoStore = Field::STORE_NO | Field::INDEX_TOKENIZED;
     int storeAndNoToken = Field::STORE_YES | Field::INDEX_UNTOKENIZED;
     wchar_t *bookID;
     wchar_t *pageID;
+    wchar_t *soraNumber;
     wchar_t *text = NULL;
 
-    reader->setBookInfo(task->book->clone()); // The reader will delete this clone
-    reader->setLibraryManager(MW->libraryManager());
+    reader.setBookInfo(task->book->clone()); // The reader will delete this clone
+    reader.setLibraryManager(MW->libraryManager());
 
-    reader->openBook(true);
-    reader->goFirst();
+    reader.openBook(true);
+    reader.goFirst();
+
+    BookPage *page = reader.page();
 
     bookID = Utils::intToWChar(task->bookID);
 
-    while (reader->hasNext()) {
-        reader->nextPage();
+    while (reader.hasNext()) {
+        reader.nextPage();
 
         pageID = Utils::intToWChar(page->pageID);
-        text = Utils::QStringToWChar(reader->text());
+        text = Utils::QStringToWChar(reader.text());
+        soraNumber = Utils::intToWChar(page->sora);
 
         doc.add( *_CLNEW Field(BOOK_ID_FIELD, bookID, storeAndNoToken));
         doc.add( *_CLNEW Field(PAGE_ID_FIELD, pageID, storeAndNoToken, false));
+        doc.add( *_CLNEW Field(PAGE_TEXT_FIELD, text, tokenAndNoStore, false));
+        doc.add( *_CLNEW Field(QURAN_SORA_FIELD, soraNumber, tokenAndNoStore, false));
+
+        m_writer->addDocument(&doc);
+        doc.clear();
+    }
+
+    free(bookID);
+}
+
+void BookIndexer::indexSimpleBook(IndexTask *task)
+{
+    TextSimpleBookReader reader;
+
+    Document doc;
+    int tokenAndNoStore = Field::STORE_NO | Field::INDEX_TOKENIZED;
+    int storeAndNoToken = Field::STORE_YES | Field::INDEX_UNTOKENIZED;
+    wchar_t *bookID;
+    wchar_t *pageID;
+    wchar_t *titleID;
+    wchar_t *text;
+    //wchar_t *title;
+
+    reader.setBookInfo(task->book->clone()); // The reader will delete this clone
+    reader.setLibraryManager(MW->libraryManager());
+
+    reader.openBook(true);
+    reader.getTitles();
+    reader.goFirst();
+
+    BookPage *page = reader.page();
+
+    bookID = Utils::intToWChar(task->bookID);
+
+    while (reader.hasNext()) {
+        reader.nextPage();
+
+        pageID = Utils::intToWChar(page->pageID);
+        text = Utils::QStringToWChar(reader.text());
+        titleID = Utils::intToWChar(page->titleID);
+
+        doc.add( *_CLNEW Field(BOOK_ID_FIELD, bookID, storeAndNoToken));
+        doc.add( *_CLNEW Field(PAGE_ID_FIELD, pageID, storeAndNoToken, false));
+        doc.add( *_CLNEW Field(TITLE_ID_FIELD, titleID, storeAndNoToken, false));
         doc.add( *_CLNEW Field(PAGE_TEXT_FIELD, text, tokenAndNoStore, false));
 
         m_writer->addDocument(&doc);
         doc.clear();
     }
 
-    emit taskDone(task);
+    free(bookID);
+}
+
+void BookIndexer::indexTaffesirBook(IndexTask *task)
+{
+    TextTafessirReader reader;
+
+    Document doc;
+    int tokenAndNoStore = Field::STORE_NO | Field::INDEX_TOKENIZED;
+    int storeAndNoToken = Field::STORE_YES | Field::INDEX_UNTOKENIZED;
+    wchar_t *bookID;
+    wchar_t *pageID;
+    wchar_t *titleID;
+    wchar_t *text;
+    //wchar_t *title;
+
+    reader.setBookInfo(task->book->clone()); // The reader will delete this clone
+    reader.setLibraryManager(MW->libraryManager());
+
+    reader.openBook(true);
+    reader.getTitles();
+    reader.goFirst();
+
+    BookPage *page = reader.page();
+
+    bookID = Utils::intToWChar(task->bookID);
+
+    while (reader.hasNext()) {
+        reader.nextPage();
+
+        pageID = Utils::intToWChar(page->pageID);
+        text = Utils::QStringToWChar(reader.text());
+        titleID = Utils::intToWChar(page->titleID);
+
+        doc.add( *_CLNEW Field(BOOK_ID_FIELD, bookID, storeAndNoToken));
+        doc.add( *_CLNEW Field(PAGE_ID_FIELD, pageID, storeAndNoToken, false));
+        doc.add( *_CLNEW Field(TITLE_ID_FIELD, titleID, storeAndNoToken, false));
+        doc.add( *_CLNEW Field(PAGE_TEXT_FIELD, text, tokenAndNoStore, false));
+
+        m_writer->addDocument(&doc);
+        doc.clear();
+    }
 
     free(bookID);
-    if(reader)
-        delete reader;
 }

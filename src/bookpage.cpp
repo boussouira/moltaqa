@@ -9,4 +9,5 @@ BookPage::BookPage()
     pageID = 0;
     part = 0;
     haddit = 0;
+    titleID = 0;
 }

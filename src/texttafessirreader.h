@@ -1,14 +1,15 @@
-#ifndef TEXTSIMPLEBOOKREADER_H
-#define TEXTSIMPLEBOOKREADER_H
+#ifndef TEXTTAFESSIRREADER_H
+#define TEXTTAFESSIRREADER_H
 
 #include "textbookreader.h"
 
-class TextSimpleBookReader : public TextBookReader
+class TextTafessirReader : public TextBookReader
 {
+    Q_OBJECT
 public:
-    TextSimpleBookReader(QObject *parent=0);
-    ~TextSimpleBookReader();
-
+    TextTafessirReader(QObject *parent = 0);
+    ~TextTafessirReader();
+    
     void getTitles();
     void goFirst();
 
@@ -26,4 +27,4 @@ protected:
     QHash<int, int> m_titles;
 };
 
-#endif // TEXTSIMPLEBOOKREADER_H
+#endif // TEXTTAFESSIRREADER_H

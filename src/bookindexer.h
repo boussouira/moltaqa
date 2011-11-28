@@ -20,6 +20,9 @@ public:
 protected:
     void startIndexing();
     void indexBook(IndexTask *task);
+    void indexQuran(IndexTask *task);
+    void indexSimpleBook(IndexTask *task);
+    void indexTaffesirBook(IndexTask *task);
 
 signals:
     void doneIndexing();

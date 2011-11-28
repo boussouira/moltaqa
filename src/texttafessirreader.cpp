@@ -1,18 +1,18 @@
-#include "textsimplebookreader.h"
+#include "texttafessirreader.h"
 #include "librarybook.h"
 #include "utils.h"
 
-TextSimpleBookReader::TextSimpleBookReader(QObject *parent) :
+TextTafessirReader::TextTafessirReader(QObject *parent) :
     TextBookReader(parent)
 {
 }
 
-TextSimpleBookReader::~TextSimpleBookReader()
+TextTafessirReader::~TextTafessirReader()
 {
     m_titles.clear();
 }
 
-void TextSimpleBookReader::getTitles()
+void TextTafessirReader::getTitles()
 {
     QSqlQuery query(m_bookDB);
 
@@ -29,7 +29,7 @@ void TextSimpleBookReader::getTitles()
     }
 }
 
-void TextSimpleBookReader::goFirst()
+void TextTafessirReader::goFirst()
 {
     QString sql = "SELECT id, pageText, partNum, pageNum "
             "FROM bookPages "
@@ -39,33 +39,33 @@ void TextSimpleBookReader::goFirst()
         LOG_SQL_ERROR(m_bookQuery);
 }
 
-void TextSimpleBookReader::goToPage(int pid)
+void TextTafessirReader::goToPage(int pid)
 {
     Q_UNUSED(pid);
 }
 
-void TextSimpleBookReader::goToPage(int page, int part)
+void TextTafessirReader::goToPage(int page, int part)
 {
     Q_UNUSED(page);
     Q_UNUSED(part);
 }
 
-QString TextSimpleBookReader::text()
+QString TextTafessirReader::text()
 {
     return m_text;
 }
 
-bool TextSimpleBookReader::hasPrev()
+bool TextTafessirReader::hasPrev()
 {
     return false;
 }
 
-bool TextSimpleBookReader::hasNext()
+bool TextTafessirReader::hasNext()
 {
     return m_bookQuery.next();
 }
 
-void TextSimpleBookReader::nextPage()
+void TextTafessirReader::nextPage()
 {
     m_text = QString::fromUtf8(qUncompress(m_bookQuery.value(1).toByteArray()));
     m_currentPage->pageID = m_bookQuery.value(0).toInt();
