@@ -163,7 +163,7 @@ void LibrarySearcher::fetech()
 
 void LibrarySearcher::setQuery(Query *searchQuery, Query *filterQuery, BooleanClause::Occur filterClause)
 {
-    Q_ASSERT(searchQuery);
+    Q_CHECK_PTR(searchQuery);
 
     m_searchQuery = searchQuery;
     m_filterQuery = filterQuery;

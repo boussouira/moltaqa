@@ -79,7 +79,7 @@ void ShamelaImportDialog::closeEvent(QCloseEvent *event)
 
 ShamelaImportDialog *ShamelaImportDialog::importDialog()
 {
-    Q_ASSERT(m_importDialog);
+    Q_CHECK_PTR(m_importDialog);
 
     return m_importDialog;
 }

@@ -341,14 +341,14 @@ bool SearchFilterManager::hasChilds(const QModelIndex &index)
 
 void SearchFilterManager::expandFilterView()
 {
-    Q_ASSERT(m_treeView);
+    Q_CHECK_PTR(m_treeView);
 
     m_treeView->expandAll();
 }
 
 void SearchFilterManager::collapseFilterView()
 {
-    Q_ASSERT(m_treeView);
+    Q_CHECK_PTR(m_treeView);
 
     m_treeView->collapseAll();
 }

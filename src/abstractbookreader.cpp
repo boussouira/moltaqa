@@ -36,7 +36,7 @@ AbstractBookReader::~AbstractBookReader()
 
 void AbstractBookReader::openBook(bool fastOpen)
 {
-    Q_ASSERT(m_bookInfo);
+    Q_CHECK_PTR(m_bookInfo);
 
     m_connectionName = QString("book_i%1_").arg(m_bookInfo->bookID);
     while(QSqlDatabase::contains(m_connectionName))

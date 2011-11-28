@@ -4,8 +4,8 @@ SearchResult::SearchResult(LibraryBook *_book, BookPage *_page) :
     book(_book),
     page(_page)
 {
-    Q_ASSERT(_book);
-    Q_ASSERT(_page);
+    Q_CHECK_PTR(_book);
+    Q_CHECK_PTR(_page);
 }
 
 SearchResult::~SearchResult()

@@ -188,7 +188,7 @@ MainWindow::~MainWindow()
 
 MainWindow *MainWindow::mainWindow()
 {
-    Q_ASSERT(m_mainWindow);
+    Q_CHECK_PTR(m_mainWindow);
 
     return m_mainWindow;
 }
@@ -315,14 +315,14 @@ void MainWindow::on_actionShamelaImport_triggered()
 
 LibraryInfo *MainWindow::libraryInfo()
 {
-    Q_ASSERT(m_libraryInfo);
+    Q_CHECK_PTR(m_libraryInfo);
 
     return m_libraryInfo;
 }
 
 LibraryManager *MainWindow::libraryManager()
 {
-    Q_ASSERT(m_libraryInfo);
+    Q_CHECK_PTR(m_libraryInfo);
 
     return m_libraryManager;
 }
@@ -339,28 +339,28 @@ BooksListBrowser *MainWindow::booksListBrowser()
 
 IndexTracker *MainWindow::indexTracker()
 {
-    Q_ASSERT(m_indexTracker);
+    Q_CHECK_PTR(m_indexTracker);
 
     return m_indexTracker;
 }
 
 IndexManager * MainWindow::indexManager()
 {
-    Q_ASSERT(m_indexManager);
+    Q_CHECK_PTR(m_indexManager);
 
     return m_indexManager;
 }
 
 BookReaderHelper *MainWindow::readerHelper()
 {
-    Q_ASSERT(m_readerHelper);
+    Q_CHECK_PTR(m_readerHelper);
 
     return m_readerHelper;
 }
 
 SearchView *MainWindow::searchView()
 {
-    Q_ASSERT(m_searchView);
+    Q_CHECK_PTR(m_searchView);
 
     return m_searchView;
 }

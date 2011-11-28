@@ -34,7 +34,7 @@ bool RichBookReader::needFastIndexLoad()
 
 QString RichBookReader::text()
 {
-    Q_ASSERT(m_textFormat);
+    Q_CHECK_PTR(m_textFormat);
 
     return m_textFormat->getText();
 }
