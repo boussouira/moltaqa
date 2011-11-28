@@ -9,24 +9,23 @@
 
 #include <qsqlquery.h>
 #include <qitemselectionmodel.h>
-#include <qdatetime.h>
+#include <qdebug.h>
 
 SearchFilterManager::SearchFilterManager(QObject *parent)
     : QObject(parent),
       m_model(0),
       m_treeView(0),
+      m_lineEdit(0),
       m_role(Qt::DisplayRole),
       m_filterColumn(0),
-      m_proccessItemChange(true)
+      m_proccessItemChange(true),
+      m_autoSelectParent(true),
+      m_changeFilterColumn(true)
 {
     m_libraryInfo = MW->libraryInfo();
     m_filterModel = new SortFilterProxyModel(this);
 
     setupMenu();
-    QTime time;
-    time.start();
-    loadModel();
-    qDebug("Load search model take %d ms", time.elapsed());
 }
 
 SearchFilterManager::~SearchFilterManager()
@@ -34,9 +33,33 @@ SearchFilterManager::~SearchFilterManager()
     delete m_filterModel;
 }
 
+void SearchFilterManager::setSourceModel(QStandardItemModel *model)
+{
+    if(m_model)
+        delete m_model;
+
+    m_model = model;
+    m_filterModel->setSourceModel(m_model);
+
+    connect(m_model, SIGNAL(itemChanged(QStandardItem*)),
+            SLOT(itemChanged(QStandardItem*)));
+}
+
 void SearchFilterManager::setTreeView(QTreeView *view)
 {
     m_treeView = view;
+
+    if(!m_autoSelectParent) {
+        QAction *selectChildAct = new QAction(tr("اختيار العناوين الفرعية"), this);
+        QAction *unSelectChildAct = new QAction(tr("الغاء العناوين الفرعية"), this);
+        m_treeView->addAction(selectChildAct);
+        m_treeView->addAction(unSelectChildAct);
+
+        m_treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
+
+        connect(selectChildAct, SIGNAL(triggered()), SLOT(selectChilds()));
+        connect(unSelectChildAct, SIGNAL(triggered()), SLOT(unSelectChilds()));
+    }
 }
 
 void SearchFilterManager::setLineEdit(FancyLineEdit *edit)
@@ -48,146 +71,52 @@ void SearchFilterManager::setLineEdit(FancyLineEdit *edit)
             SLOT(setFilterText(QString)));
 }
 
-void SearchFilterManager::open()
-{
-    if(!m_indexDB.isOpen()) {
-        m_indexDB = QSqlDatabase::addDatabase("QSQLITE", "SearchFilterManager_");
-        m_indexDB.setDatabaseName(m_libraryInfo->booksIndexPath());
-
-        if (!m_indexDB.open())
-            LOG_DB_ERROR(m_indexDB);
-    }
-}
-
-void SearchFilterManager::close()
-{
-    // TODO: remove this database properly
-    QString conn = m_indexDB.connectionName();
-    m_indexDB.close();
-    m_indexDB = QSqlDatabase();
-
-    QSqlDatabase::removeDatabase(conn);
-}
-
 void SearchFilterManager::setupMenu()
 {
     m_menu = new QMenu(0);
 
-    QAction *actionClearText = new QAction(tr("مسح النص"), this);
-    m_menu->addAction(actionClearText);
-
-    QAction *actionSelected = new QAction(tr("عرض ما تم اختياره"), this);
-    m_menu->addAction(actionSelected);
-
+    m_menu->addAction(tr("مسح النص"), this, SLOT(clearFilter()));
+    m_menu->addAction(tr("عرض ما تم اختياره"), this, SLOT(showSelected()));
     m_menu->addSeparator();
 
-    QMenu *menu2 =  m_menu->addMenu(tr("بحث في"));
-    m_actFilterByBooks = menu2->addAction(tr("اسماء الكتب"));
-    m_actFilterByBetaka = menu2->addAction(tr("بطاقة الكتاب"));
-    m_actFilterByAuthors = menu2->addAction(tr("اسماء المؤلفين"));
+    if(m_changeFilterColumn) {
+        QMenu *menu2 =  m_menu->addMenu(tr("بحث في"));
+        m_actFilterByBooks = menu2->addAction(tr("اسماء الكتب"));
+        m_actFilterByBetaka = menu2->addAction(tr("بطاقة الكتاب"));
+        m_actFilterByAuthors = menu2->addAction(tr("اسماء المؤلفين"));
 
-    m_actFilterByBooks->setCheckable(true);
-    m_actFilterByBooks->setChecked(true);
-    m_actFilterByBetaka->setCheckable(true);
-    m_actFilterByAuthors->setCheckable(true);
+        m_actFilterByBooks->setCheckable(true);
+        m_actFilterByBooks->setChecked(true);
+        m_actFilterByBetaka->setCheckable(true);
+        m_actFilterByAuthors->setCheckable(true);
 
-    m_filterColumn = 0;
-    m_role = Qt::DisplayRole;
-
-    connect(m_actFilterByBooks, SIGNAL(triggered()), SLOT(changeFilterAction()));
-    connect(m_actFilterByBetaka, SIGNAL(triggered()), SLOT(changeFilterAction()));
-    connect(m_actFilterByAuthors, SIGNAL(triggered()), SLOT(changeFilterAction()));
-    connect(actionSelected, SIGNAL(triggered()), SLOT(showSelected()));
-    connect(actionClearText, SIGNAL(triggered()), SLOT(clearFilter()));
-}
-
-void SearchFilterManager::loadModel()
-{
-    if(m_model)
-        delete m_model;
-
-    m_model = new QStandardItemModel();
-    m_model->setHorizontalHeaderLabels(QStringList()
-                                       << tr("الكتاب")
-                                       << tr("المؤلف"));
-
-
-    open();
-
-    QStandardItem *catIem = new QStandardItem();
-    catIem->setText(tr("[غير مصنف]"));
-    catIem->setData(ItemType::CategorieItem, ItemRole::typeRole);;
-    catIem->setCheckable(true);
-
-    getBookItems(0, catIem);
-
-    if(catIem->rowCount())
-        m_model->appendRow(catIem);
-
-    QSqlQuery query(m_indexDB);
-    query.prepare("SELECT id, title, description FROM catList ORDER BY id");
-    if(query.exec()) {
-        while(query.next()) {
-            QStandardItem *catIem = new QStandardItem();
-            catIem->setText(query.value(1).toString());
-            catIem->setToolTip(query.value(2).toString());
-            catIem->setData(ItemType::CategorieItem, ItemRole::typeRole);;
-            catIem->setCheckable(true);
-
-            getBookItems(query.value(0).toInt(), catIem);
-
-            m_model->appendRow(catIem);
-        }
-    } else {
-        LOG_SQL_ERROR(query);
+        connect(m_actFilterByBooks, SIGNAL(triggered()), SLOT(changeFilterAction()));
+        connect(m_actFilterByBetaka, SIGNAL(triggered()), SLOT(changeFilterAction()));
+        connect(m_actFilterByAuthors, SIGNAL(triggered()), SLOT(changeFilterAction()));
     }
 
-    m_filterModel->setSourceModel(m_model);
-    connect(m_model, SIGNAL(itemChanged(QStandardItem*)),
-            SLOT(itemChanged(QStandardItem*)));
-
-    close();
-}
-
-void SearchFilterManager::getBookItems(int catID, QStandardItem *catItem)
-{
-    QSqlQuery query(m_indexDB);
-
-    query.prepare("SELECT booksList.id, booksList.bookDisplayName, "
-                  "booksList.bookInfo, authorsList.name "
-                  "FROM booksList LEFT JOIN authorsList "
-                  "ON authorsList.id = booksList.authorID "
-                  "WHERE booksList.bookCat = ? AND booksList.indexFlags = ?");
-
-    query.bindValue(0, catID);
-    query.bindValue(1, Enums::Indexed);
-
-    if(query.exec()) {
-        while(query.next()) {
-            QStandardItem *bookItem = new QStandardItem();
-            bookItem->setText(query.value(1).toString());
-            bookItem->setToolTip(query.value(2).toString());
-            bookItem->setData(ItemType::BookItem, ItemRole::typeRole);
-            bookItem->setData(query.value(0).toInt(), ItemRole::idRole);
-            bookItem->setCheckable(true);
-
-            QStandardItem *authItem = new QStandardItem();
-            authItem->setText(query.value(3).toString());
-
-            QList<QStandardItem *> items;
-            items << bookItem;
-            items << authItem;
-
-            catItem->appendRow(items);
-        }
-    } else {
-        LOG_SQL_ERROR(query);
-    }
+    if(m_lineEdit)
+        m_lineEdit->setMenu(m_menu);
 }
 
 SortFilterProxyModel *SearchFilterManager::filterModel()
 {
     return m_filterModel;
+}
+
+void SearchFilterManager::setChangeFilterColumn(bool changeFilter)
+{
+    if(m_changeFilterColumn != changeFilter) {
+        m_changeFilterColumn = changeFilter;
+
+        delete m_menu;
+        setupMenu();
+    }
+}
+
+void SearchFilterManager::setAutoSelectParent(bool autoSelect)
+{
+    m_autoSelectParent = autoSelect;
 }
 
 void SearchFilterManager::setFilterText(QString text)
@@ -258,6 +187,26 @@ void SearchFilterManager::showUnSelected()
     m_filterModel->setFilterFixedString(unChecked.toString());
 }
 
+void SearchFilterManager::selectChilds()
+{
+    if(m_treeView->selectionModel()->selectedIndexes().isEmpty())
+        return;
+
+    QModelIndex index = m_treeView->selectionModel()->selectedIndexes().first();
+    if(index.isValid())
+        checkIndex(m_filterModel, index, Qt::Checked, true);
+}
+
+void SearchFilterManager::unSelectChilds()
+{
+    if(m_treeView->selectionModel()->selectedIndexes().isEmpty())
+        return;
+
+    QModelIndex index = m_treeView->selectionModel()->selectedIndexes().first();
+    if(index.isValid())
+        checkIndex(m_filterModel, index, Qt::Unchecked, true);
+}
+
 void SearchFilterManager::clearFilter()
 {
     m_lineEdit->clear();
@@ -265,6 +214,9 @@ void SearchFilterManager::clearFilter()
 
 void SearchFilterManager::enableCatSelection()
 {
+    if(!m_autoSelectParent)
+        return;
+
     bool catCheckable = m_filterModel->filterRegExp().isEmpty();
 
     int rowCount = m_filterModel->rowCount();
@@ -298,31 +250,41 @@ void SearchFilterManager::setCatCheckable(QStandardItem *parent, bool checkable)
     }
 }
 
-void SearchFilterManager::selectAllBooks()
+void SearchFilterManager::selectAll()
 {
     int rowCount = m_model->rowCount();
     QModelIndex topLeft = m_model->index(0, 0);
     QModelIndex bottomRight = m_model->index(rowCount-1, 0);
     QItemSelection selection(topLeft, bottomRight);
+
+    m_proccessItemChange = false;
 
     foreach (QModelIndex index, selection.indexes()) {
         m_model->setData(index, Qt::Checked, Qt::CheckStateRole);
+        checkIndex(m_model, index, Qt::Checked, true);
     }
+
+    m_proccessItemChange = true;
 }
 
-void SearchFilterManager::unSelectAllBooks()
+void SearchFilterManager::unSelectAll()
 {
     int rowCount = m_model->rowCount();
     QModelIndex topLeft = m_model->index(0, 0);
     QModelIndex bottomRight = m_model->index(rowCount-1, 0);
     QItemSelection selection(topLeft, bottomRight);
 
+    m_proccessItemChange = false;
+
     foreach (QModelIndex index, selection.indexes()) {
         m_model->setData(index, Qt::Unchecked, Qt::CheckStateRole);
+        checkIndex(m_model, index, Qt::Unchecked, true);
     }
+
+    m_proccessItemChange = true;
 }
 
-void SearchFilterManager::selectVisibleBooks()
+void SearchFilterManager::selectVisible()
 {
     int rowCount = m_filterModel->rowCount();
     QModelIndex topLeft = m_filterModel->index(0, 0);
@@ -331,14 +293,14 @@ void SearchFilterManager::selectVisibleBooks()
 
     foreach (QModelIndex index, selection.indexes()) {
         if(hasChilds(index)) {
-            checkIndex(m_filterModel, index, Qt::Checked);
+            checkIndex(m_filterModel, index, Qt::Checked, false);
         } else {
             m_filterModel->setData(index, Qt::Checked, Qt::CheckStateRole);
         }
     }
 }
 
-void SearchFilterManager::unSelectVisibleBooks()
+void SearchFilterManager::unSelectVisible()
 {
     int rowCount = m_filterModel->rowCount();
     QModelIndex topLeft = m_filterModel->index(0, 0);
@@ -347,22 +309,26 @@ void SearchFilterManager::unSelectVisibleBooks()
 
     foreach (QModelIndex index, selection.indexes()) {
         if(hasChilds(index)) {
-            checkIndex(m_filterModel, index, Qt::Unchecked);
+            checkIndex(m_filterModel, index, Qt::Unchecked, false);
         } else {
             m_filterModel->setData(index, Qt::Unchecked, Qt::CheckStateRole);
         }
     }
 }
 
-void SearchFilterManager::checkIndex(QAbstractItemModel *model, const QModelIndex &parent, Qt::CheckState checkStat)
+void SearchFilterManager::checkIndex(QAbstractItemModel *model, const QModelIndex &parent, Qt::CheckState checkStat, bool checkParent)
 {
     QModelIndex child = parent.child(0, 0);
 
     while(child.isValid()) {
-        if(hasChilds(child))
-            checkIndex(model, child, checkStat);
-        else
+        if(hasChilds(child)) {
+            if(checkParent)
+                model->setData(child, checkStat, Qt::CheckStateRole);
+
+            checkIndex(model, child, checkStat, checkParent);
+        } else {
             model->setData(child, checkStat, Qt::CheckStateRole);
+        }
 
         child = parent.child(child.row()+1, 0);
     }
@@ -389,7 +355,7 @@ void SearchFilterManager::collapseFilterView()
 
 void SearchFilterManager::itemChanged(QStandardItem *item)
 {
-    if(m_proccessItemChange){
+    if(m_autoSelectParent && m_proccessItemChange){
         m_proccessItemChange = false;
 
         if(item->checkState() != Qt::PartiallyChecked) {
@@ -434,96 +400,4 @@ void SearchFilterManager::checkChilds(QStandardItem *parent, Qt::CheckState chec
 
         child = parent->child(++row);
     }
-}
-
-void SearchFilterManager::generateLists()
-{
-    m_selectedBooks.clear();
-    m_unSelectedBooks.clear();
-
-    QModelIndex index = m_model->index(0, 0);
-    while(index.isValid()) {
-        getBooks(index, ItemType::BookItem);
-
-        index = index.sibling(index.row()+1, 0);
-    }
-}
-
-void SearchFilterManager::getBooks(const QModelIndex &index, int role)
-{
-    if(index.isValid()) {
-        QModelIndex child = index.child(0, 0);
-        while(child.isValid()) {
-            if(child.data(ItemRole::typeRole).toInt() == role) {
-                if(child.data(Qt::CheckStateRole).toInt() ==  Qt::Checked) {
-                    m_selectedBooks.append(child.data(ItemRole::idRole).toInt());
-                } else {
-                    m_unSelectedBooks.append(child.data(ItemRole::idRole).toInt());
-                }
-            } else {
-                getBooks(child, role);
-            }
-
-            child = index.child(child.row()+1, 0);
-        }
-    }
-}
-
-QList<int> SearchFilterManager::selectedBooks()
-{
-    return m_selectedBooks;
-}
-
-QList<int> SearchFilterManager::unSelectedBooks()
-{
-    return m_unSelectedBooks;
-}
-
-int SearchFilterManager::selectedBooksCount()
-{
-    return m_selectedBooks.count();
-}
-
-int SearchFilterManager::unSelectBooksCount()
-{
-    return m_unSelectedBooks.count();
-}
-
-SearchFilter *SearchFilterManager::getFilterQuery()
-{
-    generateLists();
-
-    SearchFilter *filter = new SearchFilter();
-    int count = 0;
-
-    // Every thing is selected we don't need a filter
-    if(unSelectBooksCount()==0 || selectedBooksCount()==0 ) {
-        filter->filterQuery = 0;
-        return filter;
-    }
-
-    QList<int> books;
-    BooleanQuery *q = new BooleanQuery();
-    q->setMaxClauseCount(0x7FFFFFFFL);
-
-    if(selectedBooksCount() <= unSelectBooksCount()) {
-        books = selectedBooks();
-        filter->clause = BooleanClause::MUST;
-    } else {
-        books = unSelectedBooks();
-        filter->clause = BooleanClause::MUST_NOT;
-    }
-
-    foreach(int id, books) {
-        wchar_t *idStr = Utils::intToWChar(id);
-        Term *term = new Term(BOOK_ID_FIELD, idStr);
-        TermQuery *termQuery = new TermQuery(term);
-
-        q->add(termQuery, BooleanClause::SHOULD);
-        count++;
-    }
-
-    filter->filterQuery = count ? q : 0;
-
-    return filter;
 }

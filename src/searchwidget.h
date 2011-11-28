@@ -35,24 +35,17 @@ public:
         BookSearch
     };
 
-    virtual void init()=0;
+    virtual void init(int bookID=0)=0;
 
     void setCurrentWidget(CurrentWidget index);
     void toggleWidget();
 
 protected:
-    virtual lucene::search::Query *getSearchQuery()=0;
+    virtual lucene::search::Query *getSearchQuery();
     virtual SearchFilter *getSearchFilterQuery()=0;
 
 public slots:
     void search();
-
-    virtual void selectAll() {}
-    virtual void unSelectAll() {}
-    virtual void selectVisible() {}
-    virtual void unSelectVisible() {}
-    virtual void expandFilterView() {}
-    virtual void collapseFilterView() {}
 
 protected slots:
     void setupCleanMenu();
@@ -63,6 +56,7 @@ protected slots:
 protected:
     ResultWidget *m_resultWidget;
     LibrarySearcher *m_searcher;
+    SearchFilterManager *m_filterManager;
     Ui::SearchWidget *ui;
 };
 

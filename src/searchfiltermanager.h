@@ -32,31 +32,27 @@ class SearchFilterManager : public QObject
 public:
     SearchFilterManager(QObject *parent=0);
     ~SearchFilterManager();
+
+    virtual void loadModel()=0;
+
+    void setSourceModel(QStandardItemModel *model);
     void setTreeView(QTreeView *view);
     void setLineEdit(FancyLineEdit *edit);
     SortFilterProxyModel *filterModel();
 
-    SearchFilter *getFilterQuery();
+    void setChangeFilterColumn(bool changeFilter);
+    void setAutoSelectParent(bool autoSelect);
+
+    virtual SearchFilter *getFilterQuery()=0;
 
 protected:
-    void open();
-    void close();
     void setupMenu();
-    void loadModel();
-    void getBookItems(int catID, QStandardItem *catItem);
-
-    void generateLists();
-    void getBooks(const QModelIndex &index, int role);
-    QList<int> selectedBooks();
-    QList<int> unSelectedBooks();
-    int selectedBooksCount();
-    int unSelectBooksCount();
 
 public slots:
-    void selectAllBooks();
-    void unSelectAllBooks();
-    void selectVisibleBooks();
-    void unSelectVisibleBooks();
+    void selectAll();
+    void unSelectAll();
+    void selectVisible();
+    void unSelectVisible();
     void expandFilterView();
     void collapseFilterView();
 
@@ -67,11 +63,14 @@ protected slots:
     void showSelected();
     void showUnSelected();
 
+    void selectChilds();
+    void unSelectChilds();
+
     void itemChanged(QStandardItem *item);
     void enableCatSelection();
     void setCatCheckable(QStandardItem *parent, bool checkable);
     void checkChilds(QStandardItem *parent, Qt::CheckState checkStat);
-    void checkIndex(QAbstractItemModel *model, const QModelIndex &parent, Qt::CheckState checkStat);
+    void checkIndex(QAbstractItemModel *model, const QModelIndex &parent, Qt::CheckState checkStat, bool checkParent);
     bool hasChilds(const QModelIndex &index);
 
 protected:
@@ -86,11 +85,11 @@ protected:
     QAction *m_actFilterByAuthors;
     QAction *m_actFilterByBetaka;
     QString m_filterText;
-    QList<int> m_selectedBooks;
-    QList<int> m_unSelectedBooks;
     Qt::ItemDataRole m_role;
     int m_filterColumn;
     bool m_proccessItemChange;
+    bool m_autoSelectParent;
+    bool m_changeFilterColumn;
 };
 
 #endif // SEARCHFILTERMANAGER_H

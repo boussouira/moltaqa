@@ -62,12 +62,14 @@ void SearchView::newTab(SearchWidget::SearchType searchType, int bookID)
     SearchWidget *searchWidget = 0;
     if(searchType == SearchWidget::LibrarySearch) {
         searchWidget = new LibrarySearchWidget(this);
+    } else if(searchType == SearchWidget::BookSearch) {
+        searchWidget = new BookSearchWidget(this);
     } else {
         qCritical("SearchView: Unknow search type: %d", searchType);
         return;
     }
 
-    searchWidget->init();
+    searchWidget->init(bookID);
     searchWidget->setAutoFillBackground(true);
 
     int tabIndex = m_tabWidget->addTab(searchWidget,
@@ -92,7 +94,7 @@ void SearchView::closeTab(int index)
 
 void SearchView::switchSearchWidget()
 {
-    SearchWidget *w = qobject_cast<LibrarySearchWidget*>(m_tabWidget->currentWidget());
+    SearchWidget *w = qobject_cast<SearchWidget*>(m_tabWidget->currentWidget());
 
     if(w) {
         w->toggleWidget();

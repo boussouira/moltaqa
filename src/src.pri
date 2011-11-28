@@ -98,6 +98,9 @@ SOURCES += mainwindow.cpp \
     sqlutils.cpp \
     edittaffasirlistwidget.cpp \
     searchwidget.cpp \
+    booksearchwidget.cpp \
+    librarysearchfilter.cpp \
+    booksearchfilter.cpp \
     texttafessirreader.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
@@ -184,6 +187,9 @@ HEADERS += mainwindow.h \
     libraryenums.h \
     edittaffasirlistwidget.h \
     searchwidget.h \
+    booksearchwidget.h \
+    librarysearchfilter.h \
+    booksearchfilter.h \
     texttafessirreader.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
