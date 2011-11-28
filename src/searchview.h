@@ -15,7 +15,8 @@ public:
     SearchView(QWidget *parent=0);
 
     QString title();
-    bool ensureTabIsOpen();
+    void ensureTabIsOpen();
+    bool canSearch(bool showMessage=true);
 
 public slots:
     void newTab(SearchWidget::SearchType searchType, int bookID=0);

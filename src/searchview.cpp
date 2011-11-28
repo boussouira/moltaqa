@@ -39,26 +39,35 @@ QString SearchView::title()
     return tr("نافذة البحث");
 }
 
-bool SearchView::ensureTabIsOpen()
+void SearchView::ensureTabIsOpen()
 {
-    if(MW->indexManager()->isIndexing()) {
-        QMessageBox::warning(this,
-                             tr("بحث متقدم"),
-                             tr("البرنامج يقوم بفهرسة الكتب" "\n"
-                                "من فضلك انتظر حتى تنتهي الفهرسة"));
-        return false;
-    }
-
     if(m_tabWidget->count() <= 0)
         newTab(SearchWidget::LibrarySearch);
     else
         emit showMe();
+}
+
+bool SearchView::canSearch(bool showMessage)
+{
+    if(MW->indexManager()->isIndexing()) {
+        if(showMessage) {
+            QMessageBox::warning(this,
+                                 tr("بحث متقدم"),
+                                 tr("البرنامج يقوم بفهرسة الكتب" "\n"
+                                    "من فضلك انتظر حتى تنتهي الفهرسة"));
+        }
+
+        return false;
+    }
 
     return true;
 }
 
 void SearchView::newTab(SearchWidget::SearchType searchType, int bookID)
 {
+    if(!canSearch())
+        return;
+
     SearchWidget *searchWidget = 0;
     if(searchType == SearchWidget::LibrarySearch) {
         searchWidget = new LibrarySearchWidget(this);
