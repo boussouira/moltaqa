@@ -20,4 +20,5 @@ void BookIndexNode::appendChild(BookIndexNode *pNode)
 BookIndexNode::~BookIndexNode()
 {
     qDeleteAll(childs);
+    childs.clear();
 }

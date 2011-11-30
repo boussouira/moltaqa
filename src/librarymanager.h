@@ -156,6 +156,7 @@ protected:
     QFutureWatcher<void> m_watcher;
     QString m_connName;
     QTime m_modelTime;
+    QHash<int, LibraryBook*> m_savedBook;
 };
 
 #endif // LIBRARYMANAGER_H

@@ -27,9 +27,6 @@ AbstractBookReader::~AbstractBookReader()
     if(m_indexModel)
         m_remover.removeModel = m_bookInfo->bookID;
 
-    if(m_bookInfo)
-        delete m_bookInfo;
-
     if(m_currentPage)
         delete m_currentPage;
 }

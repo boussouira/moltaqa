@@ -160,9 +160,10 @@ void EditBooksListWidget::saveCurrentBookInfo()
 LibraryBook *EditBooksListWidget::getBookInfo(int bookID)
 {
     LibraryBook *info = m_editedBookInfo.value(bookID, 0);
-    if(!info) {
+    if(info) {
+        return info;
+    } else {
         info = m_libraryManager->getBookInfo(bookID);
+        return info->clone();
     }
-
-    return info;
 }

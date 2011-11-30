@@ -29,6 +29,9 @@ LibraryManager::~LibraryManager()
 {
     if(m_future.isRunning())
         m_future.waitForFinished();
+
+    qDeleteAll(m_savedBook);
+    m_savedBook.clear();
 }
 
 void LibraryManager::setConnectionInfo(LibraryInfo *info)
@@ -261,6 +264,11 @@ QPair<int, QString> LibraryManager::findAuthor(const QString &name)
 
 LibraryBook *LibraryManager::getBookInfo(int bookID)
 {
+    LibraryBook *savedBook = m_savedBook.value(bookID, 0);
+
+    if(savedBook)
+        return savedBook;
+
     QSqlQuery bookQuery(m_indexDB);
 
     bookQuery.prepare("SELECT booksList.bookDisplayName, booksList.bookType, booksList.fileName, "
@@ -302,8 +310,9 @@ LibraryBook *LibraryManager::getBookInfo(int bookID)
             bookInfo->authorName = bookQuery.value(11).toString();
 
             bookInfo->hasShareeh = hasShareeh(bookID);
-
             bookInfo->fromString(bookQuery.value(10).toString());
+
+            m_savedBook.insert(bookID, bookInfo);
 
             return bookInfo;
         }
@@ -337,21 +346,17 @@ LibraryBook *LibraryManager::getQuranBook()
 {
     QSqlQuery bookQuery(m_indexDB);
 
-    bookQuery.exec(QString("SELECT booksList.bookDisplayName, booksList.bookType, booksList.fileName, bookMeta.book_info, booksList.id "
-                           "FROM booksList LEFT JOIN bookMeta "
-                           "ON bookMeta.id = booksList.id "
-                           "WHERE booksList.bookType = %1 LIMIT 1").arg(LibraryBook::QuranBook));
+    bookQuery.prepare("SELECT id FROM booksList "
+                      "WHERE bookType = ? "
+                      "LIMIT 1");
 
-    if(bookQuery.next()) {
-        LibraryBook *bookInfo = new LibraryBook();
-        bookInfo->bookDisplayName = bookQuery.value(0).toString();
-        bookInfo->bookType = LibraryBook::QuranBook;
-        bookInfo->bookID = bookQuery.value(4).toInt();
-        bookInfo->bookPath = m_libraryInfo->bookPath(bookQuery.value(2).toString());
-
-        bookInfo->fromString(bookQuery.value(3).toString());
-
-        return bookInfo;
+    bookQuery.bindValue(0, LibraryBook::QuranBook);
+    if(bookQuery.exec()) {
+        if(bookQuery.next()) {
+            return getBookInfo(bookQuery.value(0).toInt());
+        }
+    } else {
+        LOG_SQL_ERROR(bookQuery);
     }
 
     return 0;

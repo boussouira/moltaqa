@@ -131,6 +131,10 @@ LibraryBook *LibraryBook::clone()
     book->authorID = authorID;
     book->hasShareeh = hasShareeh;
 
+    book->m_firstPages = m_firstPages;
+    book->m_lastPages = m_lastPages;
+    book->m_hasInfo = m_hasInfo;
+
     return book;
 }
 

@@ -88,7 +88,7 @@ void BookIndexer::indexQuran(IndexTask *task)
     wchar_t *soraNumber;
     wchar_t *text = NULL;
 
-    reader.setBookInfo(task->book->clone()); // The reader will delete this clone
+    reader.setBookInfo(task->book);
     reader.setLibraryManager(MW->libraryManager());
 
     reader.openBook(true);
@@ -130,7 +130,7 @@ void BookIndexer::indexSimpleBook(IndexTask *task)
     wchar_t *text;
     //wchar_t *title;
 
-    reader.setBookInfo(task->book->clone()); // The reader will delete this clone
+    reader.setBookInfo(task->book);
     reader.setLibraryManager(MW->libraryManager());
 
     reader.openBook(true);
@@ -173,7 +173,7 @@ void BookIndexer::indexTaffesirBook(IndexTask *task)
     wchar_t *text;
     //wchar_t *title;
 
-    reader.setBookInfo(task->book->clone()); // The reader will delete this clone
+    reader.setBookInfo(task->book);
     reader.setLibraryManager(MW->libraryManager());
 
     reader.openBook(true);

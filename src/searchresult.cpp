@@ -10,9 +10,6 @@ SearchResult::SearchResult(LibraryBook *_book, BookPage *_page) :
 
 SearchResult::~SearchResult()
 {
-    if(book)
-        delete book;
-
     if(page)
         delete page;
 }

@@ -10,12 +10,6 @@ public:
     IndexTask() : bookID(0), book(0), reader(0), task(Unknow)
     {}
 
-    ~IndexTask()
-    {
-        if(book)
-            delete book;
-    }
-
     enum Task {
         Unknow,
         Add,
