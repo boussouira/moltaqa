@@ -81,10 +81,25 @@ void SearchView::newTab(SearchWidget::SearchType searchType, int bookID)
     searchWidget->init(bookID);
     searchWidget->setAutoFillBackground(true);
 
+    QString tabLabel = tr("بحث في المكتبة");
+    QString tabTooltip = tabLabel;
+
+    if(searchType == SearchWidget::BookSearch) {
+        LibraryBook *book = MW->libraryManager()->getBookInfo(bookID);
+        if(book) {
+            QString bookName = book->bookDisplayName;
+            QString shortBookName = Utils::abbreviate(bookName, 20);
+
+            tabLabel = tr("بحث في %1").arg(shortBookName);
+            tabTooltip = tr("بحث في %1").arg(bookName);
+        }
+    }
+
     int tabIndex = m_tabWidget->addTab(searchWidget,
                                        QIcon(":/menu/images/find.png"),
-                                       tr("بحث"));
+                                       tabLabel);
 
+    m_tabWidget->setTabToolTip(tabIndex, tabTooltip);
     m_tabWidget->setCurrentIndex(tabIndex);
 
     emit showMe();
