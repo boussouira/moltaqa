@@ -121,17 +121,23 @@ void SearchFilterManager::setAutoSelectParent(bool autoSelect)
 
 void SearchFilterManager::setFilterText(QString text)
 {
-    m_filterText = text;
+    if(text.size() > 1) {
+        m_filterText = text;
 
-    text.replace(QRegExp("[\\x0627\\x0622\\x0623\\x0625]"), "[\\x0627\\x0622\\x0623\\x0625]");//ALEFs
-    text.replace(QRegExp("[\\x0647\\x0629]"), "[\\x0647\\x0629]"); //TAH_MARBUTA, HEH
-    text.replace(QRegExp("[\\x064A\\x0649]"), "[\\x064A\\x0649]"); //YAH, ALEF MAKSOURA
+        text.replace(QRegExp("[\\x0627\\x0622\\x0623\\x0625]"), "[\\x0627\\x0622\\x0623\\x0625]");//ALEFs
+        text.replace(QRegExp("[\\x0647\\x0629]"), "[\\x0647\\x0629]"); //TAH_MARBUTA, HEH
+        text.replace(QRegExp("[\\x064A\\x0649]"), "[\\x064A\\x0649]"); //YAH, ALEF MAKSOURA
+
+        m_filterModel->setFilterRegExp(text);
+        m_treeView->expandAll();
+
+        enableCatSelection();
+    } else {
+        m_filterModel->setFilterRegExp("");
+    }
 
     m_filterModel->setFilterKeyColumn(m_filterColumn);
     m_filterModel->setFilterRole(m_role);
-    m_filterModel->setFilterRegExp(text);
-
-    enableCatSelection();
 }
 
 void SearchFilterManager::changeFilterAction()

@@ -19,9 +19,6 @@ SearchWidget::SearchWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    connect(ui->lineFilter, SIGNAL(textChanged(QString)),
-            ui->treeView, SLOT(expandAll()));
-
     ui->lineQueryMust->setText(tr("الله"));
 
     connect(ui->lineQueryMust, SIGNAL(returnPressed()), SLOT(search()));
