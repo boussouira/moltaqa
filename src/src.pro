@@ -70,17 +70,12 @@ unix {
     DATADIR = $$PREFIX/share
 
 
-    INSTALLS += target script lib data styles js locale fonts
+    INSTALLS += target script data styles js locale fonts
 
     target.path = $$BINDIR
 
     script.path = $$BINDIR
     script.files += ../bin/moltaqa-lib
-
-    lib.path = $$LIBDIR/$$APPNAME
-    lib.files += $$CLUCENE_LIBS_PATH/libclucene-core.*
-    lib.files += $$CLUCENE_LIBS_PATH/libclucene-shared.*
-    lib.files += $$CLUCENE_LIBS_PATH/libclucene-contribs-lib.*
 
     data.path = $$DATADIR/$$APPNAME/data
     data.files += ../share/$$APPNAME/data/quran-meta.db
