@@ -1,6 +1,7 @@
 #include "arabicanalyzer.h"
 #include "arabicfilter.h"
 #include "arabictokenizer.h"
+#include "wordtypefilter.h"
 
 class SavedStreams : public TokenStream {
 public:
@@ -33,6 +34,7 @@ TokenStream* ArabicAnalyzer::tokenStream(const TCHAR* /*fieldName*/, Reader* rea
     TokenStream* ret;
     ret = _CLNEW ArabicTokenizer(reader);
     ret = _CLNEW ArabicFilter(ret, true);
+    ret = _CLNEW WordTypeFilter(ret, true);
 
     return ret;
 }
@@ -46,6 +48,7 @@ TokenStream* ArabicAnalyzer::reusableTokenStream(const TCHAR* /*fieldName*/, CL_
 
         streams->tokenStream = _CLNEW ArabicTokenizer(reader);
         streams->filteredTokenStream = _CLNEW ArabicFilter(streams->tokenStream, true);
+        streams->filteredTokenStream = _CLNEW WordTypeFilter(streams->filteredTokenStream, true);
     } else {
         streams->tokenStream->reset(reader);
     }

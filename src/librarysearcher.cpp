@@ -84,13 +84,14 @@ void LibrarySearcher::buildQuery()
     if(m_filterQuery)
         booleanQuery->add(m_filterQuery, m_filterClause);
 
+//    m_query = m_searcher->rewrite(booleanQuery);
     m_query = m_searcher->rewrite(booleanQuery);
 
     wchar_t *queryText = m_query->toString(PAGE_TEXT_FIELD);
     qDebug() << "Search query:" << Utils::WCharToString(queryText);
 
     free(queryText);
-    delete booleanQuery;
+//    delete booleanQuery;
 }
 
 void LibrarySearcher::search()
