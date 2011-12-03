@@ -22,36 +22,33 @@ Token* WordTypeFilter::next(Token* token)
         return token;
     }
 
-    if ( input->next(token) != NULL ){
+    if(input->next(token) != NULL) {
         int32_t termLen = token->termLength();
         const TCHAR* chars = token->termBuffer();
         bool doProcess = false;
 
         CharType prevChartype = ArabicChar;
 
-        for (int32_t i = 0; i < termLen; ++i) {
+        for(int32_t i = 0; i < termLen; ++i) {
+            CharType chartype = getCharType(chars[i]);
+
             if(i>0) {
-                CharType chartype = getCharType(chars[i]);
-                if(chartype == prevChartype) {
-                    prevChartype = chartype;
-                } else {
+                if(chartype != prevChartype) {
                     doProcess = true;
                     break;
                 }
-
-            } else {
-                prevChartype = getCharType(chars[i]);
             }
+
+            prevChartype = chartype;
         }
 
-        if ( !doProcess ) {
+        if(!doProcess)
             return token;
-        }
 
         bool doneFromToken = false;
         StringBuffer *output = new StringBuffer(termLen*2);
 
-        for (int32_t j = 0; j < termLen; j++) {
+        for(int32_t j = 0; j < termLen; j++) {
             TCHAR c = chars[j];
             CharType chartype = getCharType(c);
 
