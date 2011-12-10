@@ -18,11 +18,12 @@
 #include <qdebug.h>
 #include <qdatetime.h>
 
-RichTafessirReader::RichTafessirReader(QObject *parent) : RichBookReader(parent)
+RichTafessirReader::RichTafessirReader(QObject *parent, bool showQuran) : RichBookReader(parent)
 {
     m_formatter = new TafessirTextFormat();
     m_textFormat = m_formatter;
     m_quranInfo = 0;
+    m_showQuran = showQuran;
 }
 
 RichTafessirReader::~RichTafessirReader()
@@ -38,7 +39,7 @@ RichTafessirReader::~RichTafessirReader()
 void RichTafessirReader::connected()
 {
     m_quranInfo = m_libraryManager->getQuranBook();
-    if(m_quranInfo)
+    if(m_quranInfo && m_showQuran)
         openQuranBook();
 
     RichBookReader::connected();
@@ -76,7 +77,7 @@ void RichTafessirReader::goToPage(int pid)
     m_currentPage->titleID = getPageTitleID(m_currentPage->pageID);
 
     // TODO: don't show quran text when browsing tafessir book directly?
-    if(m_quranInfo) {
+    if(m_quranInfo && m_showQuran) {
         readQuranText(m_currentPage->sora,
                       m_currentPage->aya,
                       tafessirQuery.getAyatCount(m_currentPage->sora, m_currentPage->aya));

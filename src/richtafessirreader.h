@@ -11,7 +11,7 @@ class TafessirTextFormat;
 class RichTafessirReader : public RichBookReader
 {
 public:
-    RichTafessirReader(QObject *parent=0);
+    RichTafessirReader(QObject *parent=0, bool showQuran=true);
     ~RichTafessirReader();
 
     void goToPage(int pid = -1);
@@ -32,6 +32,7 @@ protected:
     TafessirTextFormat *m_formatter;
     QSqlDatabase m_quranDB;
     LibraryBook *m_quranInfo;
+    bool m_showQuran;
 };
 
 #endif // RICHTAFESSIRREADER_H

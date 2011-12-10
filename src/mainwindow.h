@@ -12,6 +12,7 @@ class SettingsDialog;
 class BooksViewer;
 class BooksListBrowser;
 class WelcomeWidget;
+class BookEditorView;
 class LibraryInfo;
 class IndexTracker;
 class IndexManager;
@@ -60,6 +61,7 @@ protected slots:
     void startIndexing();
     void stopIndexing();
     void indexProgress(int value, int max);
+    void editCurrentBook();
 
 private slots:
     void on_actionImport_triggered();
@@ -78,6 +80,7 @@ private:
     QProgressBar *m_indexBar;
     SearchView *m_searchView;
     BookReaderHelper *m_readerHelper;
+    BookEditorView *m_editorView;
     int defaultQuran;
 };
 

@@ -16,6 +16,7 @@
 #include "indextracker.h"
 #include "indexmanager.h"
 #include "viewmanager.h"
+#include "bookeditorview.h"
 #include "bookreaderhelper.h"
 
 #include <qmessagebox.h>
@@ -140,7 +141,9 @@ bool MainWindow::init()
 
         m_searchView = new SearchView(this);
         m_viewManager->addView(m_searchView, false);
-//        showSearchView();
+
+        m_editorView = new BookEditorView(this);
+        m_viewManager->addView(m_editorView, false);
 
         setupActions();
 
@@ -208,6 +211,7 @@ void MainWindow::setupActions()
     connect(m_booksList, SIGNAL(bookSelected(int)), SLOT(openBook(int)));
     connect(ui->actionBooksList, SIGNAL(triggered()), SLOT(showBooksList()));
     connect(ui->actionSearchView, SIGNAL(triggered()), SLOT(showSearchView()));
+    connect(ui->actionEditBook, SIGNAL(triggered()), SLOT(editCurrentBook()));
 
     connect(m_indexManager, SIGNAL(progress(int,int)), SLOT(indexProgress(int,int)));
     connect(m_indexManager, SIGNAL(started()), SLOT(startIndexing()));
@@ -385,4 +389,21 @@ void MainWindow::indexProgress(int value, int max)
 {
     m_indexBar->setMaximum(max);
     m_indexBar->setValue(value);
+}
+
+void MainWindow::editCurrentBook()
+{
+    LibraryBook *book = m_bookView->currentBook();
+    BookPage *page = m_bookView->currentPage();
+
+    if(book && page) {
+        try {
+            m_editorView->editBook(book, page);
+        } catch (BookException &e) {
+            QMessageBox::information(this,
+                                     App::name(),
+                                     tr("حدث خطأ أثناء محاولة تحرير الكتاب الحالي:"
+                                        "<br>%1").arg(e.what()));
+        }
+    }
 }

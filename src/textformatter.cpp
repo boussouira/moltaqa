@@ -85,6 +85,9 @@ QString TextFormatter::getHtmlView(QString text)
     addJS(m_jqueryFile);
     addJS(m_scriptFile);
 
+    if(m_book->isTafessir())
+        addJSCode("toggleQuran();");
+
     closeAllTags();
 
     QString html = m_html;
@@ -209,6 +212,8 @@ void TextFormatter::addJS(QString jsFile)
 void TextFormatter::addJSCode(QString jsCode)
 {
     m_html.append("<script type=\"text/javascript\">");
+    m_html.append("//<![CDATA[\n");
     m_html.append(jsCode);
+    m_html.append("\n//]]>");
     m_html.append("</script>");
 }

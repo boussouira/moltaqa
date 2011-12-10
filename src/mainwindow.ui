@@ -51,6 +51,7 @@
     <addaction name="actionImport"/>
     <addaction name="actionShamelaImport"/>
     <addaction name="separator"/>
+    <addaction name="actionEditBook"/>
     <addaction name="actionControlCenter"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
@@ -143,6 +144,14 @@
    </property>
    <property name="toolTip">
     <string>بحث متقدم</string>
+   </property>
+  </action>
+  <action name="actionEditBook">
+   <property name="text">
+    <string>تحرير الكتاب</string>
+   </property>
+   <property name="toolTip">
+    <string>تحرير الكتاب الحالي</string>
    </property>
   </action>
  </widget>

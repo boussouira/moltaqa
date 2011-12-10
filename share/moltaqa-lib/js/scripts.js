@@ -108,6 +108,7 @@ function setPageText(text, page, part)
                                $('#pageText > .part').text(part);
                                $(this).fadeIn('fast', function() {
                                                   webView.pageTextChanged();
+                                                  toggleQuran();
                                               });
                            });
 }
@@ -123,13 +124,16 @@ function getEditorText()
     return editor.getData();
 }
 
-$('.toggale_quran > img').click(function() {
-    if($('.quran_text').css('display')!="none") {
-        // Hide the quran text
-        $(this).attr('src', 'qrc:/menu/images/add.png');
-        $('.quran_text').slideUp('slow');
-    } else {
-        $(this).attr('src', 'qrc:/menu/images/remove.png');
-        $('.quran_text').slideDown('slow');
-    }
-});
+function toggleQuran()
+{
+    $('.toggale_quran > img').click(function() {
+        if($('.quran_text').css('display')!="none") {
+            // Hide the quran text
+            $(this).attr('src', 'qrc:/menu/images/add.png');
+            $('.quran_text').slideUp('slow');
+        } else {
+            $(this).attr('src', 'qrc:/menu/images/remove.png');
+            $('.quran_text').slideDown('slow');
+        }
+    });
+}
