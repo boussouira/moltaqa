@@ -17,12 +17,12 @@ WebView::WebView(QWidget *parent) :
 
 void WebView::scrollToAya(int pSoraNumber, int pAyaNumber)
 {
-    // First we unhighlight the highlighted AYA
-    m_frame->findFirstElement("span.highlighted").removeClass("highlighted");
-
     QWebElement aya = m_frame->findFirstElement(QString("span#s%1a%2")
                                                 .arg(pSoraNumber).arg(pAyaNumber));
     if(!aya.isNull()) {
+        // First we unhighlight the highlighted AYA
+        m_frame->findFirstElement("span.highlighted").removeClass("highlighted");
+
         aya.addClass("highlighted");
 
         // Get the postion of the selected AYA

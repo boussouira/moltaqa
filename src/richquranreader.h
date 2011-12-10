@@ -2,8 +2,8 @@
 #define RICHQURANREADER_H
 
 #include "richbookreader.h"
+#include "quranquery.h"
 
-class QuranQuery;
 class QuranTextFormat;
 
 class RichQuranReader : public RichBookReader
@@ -39,7 +39,6 @@ protected:
     BookPage firstSoraAndAya(int page);
 
 protected:
-    QuranQuery *m_quranQuery;
     QuranTextFormat *m_formatter;
 };
 

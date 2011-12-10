@@ -68,7 +68,7 @@ int RichBookReader::getPageTitleID(int pageID)
     return 0;
 }
 
-void RichBookReader::saveBookPage(QList<BookPage*> pages)
+bool RichBookReader::saveBookPages(QList<BookPage*> pages)
 {
     QSqlQuery query(m_bookDB);
 
@@ -91,12 +91,12 @@ void RichBookReader::saveBookPage(QList<BookPage*> pages)
             LOG_SQL_ERROR(query);
     }
 
-    if(m_bookDB.commit()) {
-        qDebug("Committed");
-    } else {
-        qDebug("Not committed");
+    if(!m_bookDB.commit()) {
         LOG_DB_ERROR(m_bookDB);
+        return false;
     }
+
+    return true;
 }
 
 BookIndexModel *RichBookReader::topIndexModel()

@@ -168,7 +168,8 @@ LibraryBook *BookWidgetManager::activeBook()
 
 RichBookReader *BookWidgetManager::activeBookReader()
 {
-    return activeBookWidget()->bookReader();
+    BookWidget *bookWidget = activeBookWidget();
+    return bookWidget ? bookWidget->bookReader() : 0;
 }
 
 TabWidget *BookWidgetManager::activeTab()

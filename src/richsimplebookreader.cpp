@@ -16,23 +16,21 @@
 RichSimpleBookReader::RichSimpleBookReader(QObject *parent) : RichBookReader(parent)
 {
     m_textFormat = new SimpleTextFormat();
-    m_simpleQuery = 0;
 }
 
 RichSimpleBookReader::~RichSimpleBookReader()
 {
-    if(m_simpleQuery)
-        delete m_simpleQuery;
 }
 
 void RichSimpleBookReader::connected()
 {
-    m_simpleQuery = new SimpleQuery(m_bookDB, m_bookInfo);
     RichBookReader::connected();
 }
 
 void RichSimpleBookReader::goToPage(int pid)
 {
+    SimpleQuery simpleQuery(m_bookDB, m_bookInfo);
+
     m_textFormat->start();
 
     int id;
@@ -44,16 +42,16 @@ void RichSimpleBookReader::goToPage(int pid)
         id = pid;
 
     if(id >= m_currentPage->pageID)
-        m_simpleQuery->nextPage(id);
+        simpleQuery.nextPage(id);
     else
-        m_simpleQuery->prevPage(id);
+        simpleQuery.prevPage(id);
 
-    if(m_simpleQuery->next()) {
-        QString pageText = QString::fromUtf8(qUncompress(m_simpleQuery->value(1).toByteArray()));
+    if(simpleQuery.next()) {
+        QString pageText = QString::fromUtf8(qUncompress(simpleQuery.value(1).toByteArray()));
 
-        m_currentPage->pageID = m_simpleQuery->value(0).toInt();
-        m_currentPage->part = m_simpleQuery->value(2).toInt();
-        m_currentPage->page = m_simpleQuery->value(3).toInt();
+        m_currentPage->pageID = simpleQuery.value(0).toInt();
+        m_currentPage->part = simpleQuery.value(2).toInt();
+        m_currentPage->page = simpleQuery.value(3).toInt();
 
         if(m_query && m_highlightPageID == m_currentPage->pageID)
             m_textFormat->insertText(Utils::highlightText(pageText, m_query, false));
@@ -72,15 +70,18 @@ void RichSimpleBookReader::goToPage(int pid)
 
 void RichSimpleBookReader::goToPage(int page, int part)
 {
-    m_simpleQuery->page(page, part);
-    if(m_simpleQuery->next())
-        goToPage(m_simpleQuery->value(0).toInt());
+    SimpleQuery simpleQuery(m_bookDB, m_bookInfo);
+
+    simpleQuery.page(page, part);
+    if(simpleQuery.next())
+        goToPage(simpleQuery.value(0).toInt());
 }
 
 void RichSimpleBookReader::goToHaddit(int hadditNum)
 {
-    int page = m_simpleQuery->getHaddithPage(hadditNum);
+    SimpleQuery simpleQuery(m_bookDB, m_bookInfo);
 
+    int page = simpleQuery.getHaddithPage(hadditNum);
     if(page)
         goToPage(page);
 }

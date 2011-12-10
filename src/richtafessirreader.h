@@ -2,6 +2,7 @@
 #define RICHTAFESSIRREADER_H
 
 #include "richbookreader.h"
+#include "tafessirquery.h"
 
 class TafessirQuery;
 class BookIndexNode;
@@ -30,9 +31,7 @@ protected:
 protected:
     TafessirTextFormat *m_formatter;
     QSqlDatabase m_quranDB;
-    QSqlQuery *m_quranQuery;
     LibraryBook *m_quranInfo;
-    TafessirQuery *m_tafessirQuery;
 };
 
 #endif // RICHTAFESSIRREADER_H

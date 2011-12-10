@@ -47,12 +47,11 @@ void AbstractBookReader::openBook(bool fastOpen)
         throw BookException(tr("لم يمكن فتح قاعدة البيانات")+ ": " +m_bookInfo->bookPath,
                             m_bookDB.lastError().text());
 
-    m_bookQuery = QSqlQuery(m_bookDB);
-
     m_remover.connectionName = m_connectionName;
 
+    connected();
+
     if(!fastOpen) {
-        connected();
         getBookInfo();
     }
 }
@@ -311,17 +310,18 @@ BookPage *AbstractBookReader::getQuranPage(LibraryBook *book, int pageID)
 
 void AbstractBookReader::getBookInfo()
 {
+    QSqlQuery bookQuery(m_bookDB);
     if(!m_bookInfo->haveInfo()) {
-        m_bookQuery.exec(QString("SELECT MAX(partNum), MIN(id), MAX(id) from %1 ").arg(m_bookInfo->textTable));
-        if(m_bookQuery.next()) {
+        bookQuery.exec(QString("SELECT MAX(partNum), MIN(id), MAX(id) from %1 ").arg(m_bookInfo->textTable));
+        if(bookQuery.next()) {
             bool ok;
-            int parts = m_bookQuery.value(0).toInt(&ok);
+            int parts = bookQuery.value(0).toInt(&ok);
             if(!ok)
                 qWarning("Can't get parts count");
 
             m_bookInfo->partsCount = parts;
-            m_bookInfo->firstID = m_bookQuery.value(1).toInt();
-            m_bookInfo->lastID = m_bookQuery.value(2).toInt();
+            m_bookInfo->firstID = bookQuery.value(1).toInt();
+            m_bookInfo->lastID = bookQuery.value(2).toInt();
         }
 
         m_libraryManager->updateBookMeta(m_bookInfo, false);

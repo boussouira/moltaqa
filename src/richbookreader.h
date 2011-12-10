@@ -39,7 +39,7 @@ public:
 
     virtual int getPageTitleID(int pageID);
 
-    void saveBookPage(QList<BookPage *> pages);
+    bool saveBookPages(QList<BookPage *> pages);
 
 protected:
     virtual void connected();

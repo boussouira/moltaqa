@@ -4,7 +4,6 @@
 #include "richbookreader.h"
 
 class BookIndexNode;
-class SimpleQuery;
 
 class RichSimpleBookReader : public RichBookReader
 {
@@ -22,9 +21,6 @@ public:
 protected:
     void childTitles(BookIndexNode *parentNode, int tid);
     void connected();
-
-protected:
-    SimpleQuery *m_simpleQuery;
 };
 
 #endif // RICHSIMPLEBOOKREADER_H

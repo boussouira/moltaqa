@@ -19,7 +19,11 @@ public:
     virtual QString text() = 0;
 
 protected:
-    QString m_text;
+     void connected();
+
+protected:
+     QSqlQuery m_bookQuery;
+     QString m_text;
 };
 
 #endif // TEXTBOOKREADER_H

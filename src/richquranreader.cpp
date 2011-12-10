@@ -13,18 +13,14 @@ RichQuranReader::RichQuranReader(QObject *parent) : RichBookReader(parent)
 {
     m_formatter = new QuranTextFormat();
     m_textFormat = m_formatter;
-    m_quranQuery = 0;
 }
 
 RichQuranReader::~RichQuranReader()
 {
-    if(m_quranQuery)
-        delete m_quranQuery;
 }
 
 void RichQuranReader::connected()
 {
-    m_quranQuery = new QuranQuery(m_bookDB, m_bookInfo);
     RichBookReader::connected();
 }
 
@@ -52,28 +48,29 @@ void RichQuranReader::goToPage(int page, int part)
     m_currentPage->aya = info.aya;
     m_currentPage->ayatCount = info.ayatCount;
 
-    m_quranQuery->page(page);
+    QuranQuery quranQuery(m_bookDB, m_bookInfo);
+    quranQuery.page(page);
 
-    while(m_quranQuery->next()) {
+    while(quranQuery.next()) {
         // at the first vers we insert the sora name and bassemala
-        if(m_quranQuery->value(2).toInt() == 1) {
-            m_formatter->insertSoraName(m_quranQuery->value(5).toString());
+        if(quranQuery.value(2).toInt() == 1) {
+            m_formatter->insertSoraName(quranQuery.value(5).toString());
 
             // we escape putting bassemala before Fateha and Tawba
-            if(m_quranQuery->value(4).toInt() != 1 && m_quranQuery->value(4).toInt() != 9)
+            if(quranQuery.value(4).toInt() != 1 && quranQuery.value(4).toInt() != 9)
                 m_formatter->insertBassemala();
         }
 
         QString text;
-        if(m_query && m_highlightPageID == m_quranQuery->value(0).toInt())
-            text = Utils::highlightText(m_quranQuery->value(1).toString(),
+        if(m_query && m_highlightPageID == quranQuery.value(0).toInt())
+            text = Utils::highlightText(quranQuery.value(1).toString(),
                                         m_query, false);
         else
-            text = m_quranQuery->value(1).toString();
+            text = quranQuery.value(1).toString();
 
         m_formatter->insertAyaText(text,
-                                   m_quranQuery->value(2).toInt(),
-                                   m_quranQuery->value(4).toInt());
+                                   quranQuery.value(2).toInt(),
+                                   quranQuery.value(4).toInt());
     }
 
     m_currentPage->titleID = getPageTitleID(m_currentPage->pageID);
@@ -105,10 +102,12 @@ BookIndexModel *RichQuranReader::indexModel()
     m_indexModel = new BookIndexModel();
     BookIndexNode *rootNode = new BookIndexNode();
 
-    m_quranQuery->index();
-    while(m_quranQuery->next()) {
-        BookIndexNode *firstChild = new BookIndexNode(m_quranQuery->value(1).toString(),
-                                                      m_quranQuery->value(0).toInt());
+    QuranQuery quranQuery(m_bookDB, m_bookInfo);
+
+    quranQuery.index();
+    while(quranQuery.next()) {
+        BookIndexNode *firstChild = new BookIndexNode(quranQuery.value(1).toString(),
+                                                      quranQuery.value(0).toInt());
         rootNode->appendChild(firstChild);
     }
 
@@ -124,29 +123,31 @@ int RichQuranReader::getPageTitleID(int pageID)
 
 void RichQuranReader::getBookInfo()
 {
-    m_quranQuery->prepare("SELECT  MIN(pageNumber), MAX(pageNumber), MIN(id), MAX(id) "
+    QuranQuery quranQuery(m_bookDB, m_bookInfo);
+    quranQuery.prepare("SELECT  MIN(pageNumber), MAX(pageNumber), MIN(id), MAX(id) "
                           "FROM quranText");
-    if(!m_quranQuery->exec()) {
-        LOG_SQL_P_ERROR(m_quranQuery);
+    if(!quranQuery.exec()) {
+        LOG_SQL_ERROR(quranQuery);
     }
 
-    if(m_quranQuery->next()) {
+    if(quranQuery.next()) {
         m_bookInfo->partsCount = 1;
-        m_bookInfo->setFirstPage(m_quranQuery->value(0).toInt());
-        m_bookInfo->setLastPage(m_quranQuery->value(1).toInt());
+        m_bookInfo->setFirstPage(quranQuery.value(0).toInt());
+        m_bookInfo->setLastPage(quranQuery.value(1).toInt());
 
-        m_bookInfo->firstID = m_quranQuery->value(2).toInt();
-        m_bookInfo->lastID = m_quranQuery->value(3).toInt();
+        m_bookInfo->firstID = quranQuery.value(2).toInt();
+        m_bookInfo->lastID = quranQuery.value(3).toInt();
     }
 }
 
 int RichQuranReader::getPageNumber(int soraNumber, int ayaNumber)
 {
-    int page = 1;
-    m_quranQuery->pageNumber(ayaNumber, soraNumber);
+    QuranQuery quranQuery(m_bookDB, m_bookInfo);
+    quranQuery.pageNumber(ayaNumber, soraNumber);
 
-    if(m_quranQuery->next()) {
-        page = m_quranQuery->value(0).toInt();
+    int page = 1;
+    if(quranQuery.next()) {
+        page = quranQuery.value(0).toInt();
     }
 
     return page;
@@ -223,22 +224,24 @@ void RichQuranReader::prevAya()
 
 int RichQuranReader::getSoraAyatCount(int sora)
 {
-    m_quranQuery->soraAyatCount(sora);
+    QuranQuery quranQuery(m_bookDB, m_bookInfo);
+    quranQuery.soraAyatCount(sora);
 
-    return m_quranQuery->next() ? m_quranQuery->value(0).toInt() : 0;
+    return quranQuery.next() ? quranQuery.value(0).toInt() : 0;
 }
 
 BookPage RichQuranReader::firstSoraAndAya(int page)
 {
     BookPage info;
 
-    m_quranQuery->firstSoraAndAya(page);
-    if(m_quranQuery->next()) {
+    QuranQuery quranQuery(m_bookDB, m_bookInfo);
+    quranQuery.firstSoraAndAya(page);
+    if(quranQuery.next()) {
         // The first SORA number in page
-        info.sora = m_quranQuery->value(0).toInt();
+        info.sora = quranQuery.value(0).toInt();
         // First aya number in page
-        info.aya = m_quranQuery->value(1).toInt();
-        info.ayatCount = getSoraAyatCount(m_quranQuery->value(0).toInt());
+        info.aya = quranQuery.value(1).toInt();
+        info.ayatCount = getSoraAyatCount(quranQuery.value(0).toInt());
     }
 
     return info;

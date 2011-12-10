@@ -22,20 +22,12 @@ RichTafessirReader::RichTafessirReader(QObject *parent) : RichBookReader(parent)
 {
     m_formatter = new TafessirTextFormat();
     m_textFormat = m_formatter;
-    m_tafessirQuery = 0;
     m_quranInfo = 0;
-    m_quranQuery = 0;
 }
 
 RichTafessirReader::~RichTafessirReader()
 {
-    if(m_tafessirQuery)
-        delete m_tafessirQuery;
-
     if(m_quranDB.isOpen()) {
-        if(m_quranQuery)
-            delete m_quranQuery;
-
         QString conn = m_quranDB.connectionName();
         m_quranDB.close();
         m_quranDB = QSqlDatabase();
@@ -45,8 +37,6 @@ RichTafessirReader::~RichTafessirReader()
 
 void RichTafessirReader::connected()
 {
-    m_tafessirQuery = new TafessirQuery(m_bookDB, m_bookInfo);
-
     m_quranInfo = m_libraryManager->getQuranBook();
     if(m_quranInfo)
         openQuranBook();
@@ -66,20 +56,21 @@ void RichTafessirReader::goToPage(int pid)
     else // The given page id
         id = pid;
 
+    TafessirQuery tafessirQuery(m_bookDB, m_bookInfo);
     if(id >= m_currentPage->pageID)
-        m_tafessirQuery->nextPage(id);
+        tafessirQuery.nextPage(id);
     else
-        m_tafessirQuery->prevPage(id);
+        tafessirQuery.prevPage(id);
 
     QString text;
-    if(m_tafessirQuery->next()) {
-        m_currentPage->pageID = m_tafessirQuery->value(0).toInt();
-        m_currentPage->part = m_tafessirQuery->value(2).toInt();
-        m_currentPage->page = m_tafessirQuery->value(3).toInt();
-        m_currentPage->aya =  m_tafessirQuery->value(4).toInt();
-        m_currentPage->sora =  m_tafessirQuery->value(5).toInt();
+    if(tafessirQuery.next()) {
+        m_currentPage->pageID = tafessirQuery.value(0).toInt();
+        m_currentPage->part = tafessirQuery.value(2).toInt();
+        m_currentPage->page = tafessirQuery.value(3).toInt();
+        m_currentPage->aya =  tafessirQuery.value(4).toInt();
+        m_currentPage->sora =  tafessirQuery.value(5).toInt();
 
-        text = QString::fromUtf8(qUncompress(m_tafessirQuery->value(1).toByteArray()));
+        text = QString::fromUtf8(qUncompress(tafessirQuery.value(1).toByteArray()));
     }
 
     m_currentPage->titleID = getPageTitleID(m_currentPage->pageID);
@@ -88,7 +79,7 @@ void RichTafessirReader::goToPage(int pid)
     if(m_quranInfo) {
         readQuranText(m_currentPage->sora,
                       m_currentPage->aya,
-                      m_tafessirQuery->getAyatCount(m_currentPage->sora, m_currentPage->aya));
+                      tafessirQuery.getAyatCount(m_currentPage->sora, m_currentPage->aya));
     }
 
     if(m_query && m_highlightPageID == m_currentPage->pageID)
@@ -103,9 +94,11 @@ void RichTafessirReader::goToPage(int pid)
 
 void RichTafessirReader::goToPage(int page, int part)
 {
-    m_tafessirQuery->page(page, part);
-    if(m_tafessirQuery->next())
-        goToPage(m_tafessirQuery->value(0).toInt());
+    TafessirQuery tafessirQuery(m_bookDB, m_bookInfo);
+
+    tafessirQuery.page(page, part);
+    if(tafessirQuery.next())
+        goToPage(tafessirQuery.value(0).toInt());
 }
 
 BookIndexModel * RichTafessirReader::indexModel()
@@ -166,26 +159,25 @@ void RichTafessirReader::openQuranBook()
 
     if (!m_quranDB.open())
         throw BookException(tr("لم يمكن فتح قاعدة البيانات"), m_quranInfo->bookPath);
-
-    m_quranQuery = new QSqlQuery(m_quranDB);
 }
 
 void RichTafessirReader::readQuranText(int sora, int aya, int count)
 {
     if(count>0) {
+        QSqlQuery quranQuery(m_quranDB);
         QuranSora *soraInfo = MW->readerHelper()->getQuranSora(sora);
 
         m_formatter->beginQuran(soraInfo->name, aya, aya+count-1);
 
-        m_quranQuery->exec(QString("SELECT quranText.ayaText, quranText.ayaNumber, "
+        quranQuery.exec(QString("SELECT quranText.ayaText, quranText.ayaNumber, "
                                    "quranText.soraNumber "
                                    "FROM quranText "
                                    "WHERE quranText.ayaNumber >= %1 AND quranText.soraNumber = %2 "
                                    "ORDER BY quranText.id LIMIT %3").arg(aya).arg(sora).arg(count));
-        while(m_quranQuery->next()) {
-            m_formatter->insertAyaText(m_quranQuery->value(0).toString(),
-                                       m_quranQuery->value(1).toInt(),
-                                       m_quranQuery->value(2).toInt());
+        while(quranQuery.next()) {
+            m_formatter->insertAyaText(quranQuery.value(0).toString(),
+                                       quranQuery.value(1).toInt(),
+                                       quranQuery.value(2).toInt());
         }
 
         m_formatter->endQuran();
@@ -194,7 +186,9 @@ void RichTafessirReader::readQuranText(int sora, int aya, int count)
 
 void RichTafessirReader::goToSora(int sora, int aya)
 {
-    int pageID = m_tafessirQuery->getPageID(sora, aya);
+    TafessirQuery tafessirQuery(m_bookDB, m_bookInfo);
+
+    int pageID = tafessirQuery.getPageID(sora, aya);
 
     if(pageID > 0)
         goToPage(pageID);
@@ -202,8 +196,9 @@ void RichTafessirReader::goToSora(int sora, int aya)
 
 void RichTafessirReader::goToHaddit(int hadditNum)
 {
-    int pageID = m_tafessirQuery->getHaddithPage(hadditNum);
+    TafessirQuery tafessirQuery(m_bookDB, m_bookInfo);
 
+    int pageID = tafessirQuery.getHaddithPage(hadditNum);
     if(pageID > 0)
         goToPage(pageID);
 }
