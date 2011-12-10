@@ -13,6 +13,11 @@ public:
 
     virtual void goFirst()=0;
 
+    /**
+      Get current page text
+      */
+    virtual QString text() = 0;
+
 protected:
     QString m_text;
 };

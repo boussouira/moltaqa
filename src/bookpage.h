@@ -18,6 +18,8 @@ public:
     int haddit; ///< Haddit number
     QString text; ///< Page Text
     QString title; ///< Page title
+
+    BookPage *clone();
 };
 
 #endif // PAGEINFO_H

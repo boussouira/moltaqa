@@ -86,11 +86,6 @@ public:
       */
     virtual bool hasPrev();
 
-    /**
-      Get current page text
-      */
-    virtual QString text() = 0;
-
     static BookPage *getBookPage(LibraryBook *book, int pageID);
 
 protected:

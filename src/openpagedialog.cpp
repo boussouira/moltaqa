@@ -55,8 +55,8 @@ void OpenPageDialog::setInfo(LibraryBook *info, BookPage *page)
     }
 
     if(info->isQuran() || info->isTafessir()) {
-        ui->spinAya->setValue(page->aya);
         ui->comboSora->setCurrentIndex(qMax(0, page->sora-1));
+        ui->spinAya->setValue(page->aya);
     } else {
         ui->tab_2->setEnabled(false);
     }

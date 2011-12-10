@@ -45,6 +45,54 @@ void TextFormatter::insertText(QString text)
     m_html.append(text);
 }
 
+QString TextFormatter::getHtmlView(QString text)
+{
+    Q_CHECK_PTR(m_book);
+    Q_CHECK_PTR(m_page);
+
+    m_html.clear();
+
+    openHtmlTag("html");
+    openHtmlTag("head");
+    m_html.append("<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />");
+    addCSS(m_styleFile);
+
+    addJSCode(QString("var PAGE_ID = '%1';").arg(m_cssID));
+    addJSCode(QString("var BOOK_NAME = '%1';").arg(m_book->bookDisplayName));
+
+    closeHtmlTag();
+
+    openHtmlTag("body");
+    openHtmlTag("div", QString(), m_cssID);
+
+    if(!m_book->isQuran()) {
+        openHtmlTag("div", QString(), "pageHeader");
+        insertSpanTag(m_book->bookDisplayName, "bookName");
+        insertSpanTag(QString::number(m_page->part), "part");
+        closeHtmlTag(); // div#pageHeader
+    }
+
+    insertDivTag(text, QString(), "pageText");
+
+    if(!m_book->isQuran()) {
+        openHtmlTag("div", QString(), "pageFooter");
+        insertSpanTag(QString::number(m_page->page), "page");
+        closeHtmlTag(); // div#pageFooter
+    }
+
+    closeHtmlTag(); // div#m_cssID
+
+    addJS(m_jqueryFile);
+    addJS(m_scriptFile);
+
+    closeAllTags();
+
+    QString html = m_html;
+    m_html.clear();
+
+    return html;
+}
+
 void TextFormatter::clearText()
 {
     m_html.clear();
@@ -53,15 +101,17 @@ void TextFormatter::clearText()
 void TextFormatter::genHeaderAndFooter()
 {
     if(m_book && m_page) {
-        m_headerText = QString("<span class=\"bookName\">%1</span>"
-                               "<span class=\"part\">%2</span>")
-                .arg(m_book->bookDisplayName)
-                .arg(m_page->part);
+        if(!m_book->isQuran()) {
+            m_headerText = QString("<span class=\"bookName\">%1</span>"
+                                   "<span class=\"part\">%2</span>")
+                    .arg(m_book->bookDisplayName)
+                    .arg(m_page->part);
 
-        m_footerText = QString("<span class=\"page\">%1</span>").arg(m_page->page);
+            m_footerText = QString("<span class=\"page\">%1</span>").arg(m_page->page);
 
-        m_html.replace("<!--HEADER-->", m_headerText);
-        m_html.replace("<!--FOOTER-->", m_footerText);
+            m_html.replace("<!--HEADER-->", m_headerText);
+            m_html.replace("<!--FOOTER-->", m_footerText);
+        }
     }
 }
 
@@ -100,36 +150,17 @@ void TextFormatter::start()
 {
     clearText();
 
-    openHtmlTag("html");
-    openHtmlTag("head");
-    m_html.append("<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />");
-    addCSS(m_styleFile);
-    closeHtmlTag();
-
-    openHtmlTag("body");
-    openHtmlTag("div", QString(), m_cssID);
-
-    insertDivTag("<!--HEADER-->", QString(), "pageHeader");
-
-    openHtmlTag("div", QString(), "pageText");
-
     emit startReading();
 }
 
 void TextFormatter::done()
 {
-    closeHtmlTag(); // div.pageText
-
-    insertDivTag("<!--FOOTER-->", QString(), "pageFooter");
-
-    closeHtmlTag(); // div#m_cssID
-
-    addJS(m_jqueryFile);
-    addJS(m_scriptFile);
-
     closeAllTags();
 
-    genHeaderAndFooter();
+    if(m_page)
+        m_page->text = m_html;
+    else
+        qDebug("TextFormatter: no page to save text");
 
     emit doneReading();
 }
@@ -173,4 +204,11 @@ void TextFormatter::addCSS(QString cssFile)
 void TextFormatter::addJS(QString jsFile)
 {
     m_html.append(QString("<script type=\"text/javascript\" src=\"%1\"></script>").arg(jsFile));
+}
+
+void TextFormatter::addJSCode(QString jsCode)
+{
+    m_html.append("<script type=\"text/javascript\">");
+    m_html.append(jsCode);
+    m_html.append("</script>");
 }

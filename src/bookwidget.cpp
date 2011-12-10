@@ -40,6 +40,9 @@ BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_
 
     loadSettings();
     displayInfo();
+
+    m_viewInitialized = false;
+
     connect(m_indexWidget, SIGNAL(openPage(int)), this, SLOT(openPage(int)));
     connect(m_indexWidget, SIGNAL(openSora(int,int)), SLOT(openSora(int,int)));
     connect(m_db, SIGNAL(textChanged()), SLOT(readerTextChanged()));
@@ -107,15 +110,6 @@ void BookWidget::focusInEvent(QFocusEvent *event)
 {
     if(event->gotFocus())
         emit gotFocus();
-}
-
-void BookWidget::setBookReader(RichBookReader *db)
-{
-    m_db = db;
-    m_indexWidget->setBookInfo(db->bookInfo());
-    m_indexWidget->setCurrentPage(db->page());
-
-    connect(db, SIGNAL(textChanged()), SLOT(readerTextChanged()));
 }
 
 void BookWidget::displayInfo()
@@ -268,13 +262,15 @@ void BookWidget::indexModelReady()
 
 void BookWidget::readerTextChanged()
 {
-//    static QPlainTextEdit *plain = new QPlainTextEdit();
-//    plain->setPlainText(m_db->text());
-//    plain->setWindowTitle("HTML Source");
-//    plain->resize(600, 400);
-//    plain->show();
-
-    m_view->setHtml(m_db->text());
+    if(m_viewInitialized) {
+        m_view->execJS(QString("setPageText('%1', %2, %3)")
+                       .arg(m_db->page()->text)
+                       .arg(m_db->page()->page)
+                       .arg(m_db->page()->part));
+    } else {
+        m_view->setHtml(m_db->textFormat()->getHtmlView(m_db->page()->text));
+        m_viewInitialized = true;
+    }
 
     if(m_db->scrollToHighlight()){
         m_view->scrollToElement(".resultHL");

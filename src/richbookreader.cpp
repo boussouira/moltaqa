@@ -21,8 +21,7 @@ RichBookReader::~RichBookReader()
 
 void RichBookReader::connected()
 {
-    if(!m_bookInfo->isQuran())
-        m_textFormat->setData(m_bookInfo, m_currentPage);
+    m_textFormat->setData(m_bookInfo, m_currentPage);
 
     AbstractBookReader::connected();
 }
@@ -30,13 +29,6 @@ void RichBookReader::connected()
 bool RichBookReader::needFastIndexLoad()
 {
     return true;
-}
-
-QString RichBookReader::text()
-{
-    Q_CHECK_PTR(m_textFormat);
-
-    return m_textFormat->getText();
 }
 
 void RichBookReader::highlightPage(int pageID, lucene::search::Query *query)
@@ -76,7 +68,43 @@ int RichBookReader::getPageTitleID(int pageID)
     return 0;
 }
 
+void RichBookReader::saveBookPage(QList<BookPage*> pages)
+{
+    QSqlQuery query(m_bookDB);
+
+    m_bookDB.transaction();
+
+    foreach(BookPage *page, pages) {
+        qDebug("Save %d", page->pageID);
+        //qDebug() << page->text;
+        query.prepare("UPDATE bookPages SET "
+                      "pageNum = ?, "
+                      "partNum = ?, "
+                      "pageText = ? "
+                      "WHERE id = ?");
+        query.bindValue(0, page->page);
+        query.bindValue(1, page->part);
+        query.bindValue(2, qCompress(page->text.toUtf8()));
+        query.bindValue(3, page->pageID);
+
+        if(!query.exec())
+            LOG_SQL_ERROR(query);
+    }
+
+    if(m_bookDB.commit()) {
+        qDebug("Committed");
+    } else {
+        qDebug("Not committed");
+        LOG_DB_ERROR(m_bookDB);
+    }
+}
+
 BookIndexModel *RichBookReader::topIndexModel()
 {
     return new BookIndexModel();
+}
+
+TextFormatter *RichBookReader::textFormat()
+{
+    return m_textFormat;
 }

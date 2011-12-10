@@ -4,6 +4,7 @@
 #include "abstarctview.h"
 #include "bookwidgetmanager.h"
 #include "clutils.h"
+#include "bookpage.h"
 
 class BookWidget;
 class LibraryManager;
@@ -24,6 +25,10 @@ public:
     void showToolBars();
     void showMenu();
     void hideMenu();
+
+    int currentBookID();
+    LibraryBook *currentBook();
+    BookPage *currentPage();
 
 public slots:
     BookWidget *openBook(int bookID, int pageID = -1, lucene::search::Query *query=0);

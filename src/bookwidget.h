@@ -24,7 +24,7 @@ public:
         Loading,
         Ready
     };
-    void setBookReader(RichBookReader *db);
+
     void displayInfo();
     RichBookReader *bookReader() { return m_db; }
     IndexWidget *indexWidget() { return m_indexWidget; }
@@ -66,6 +66,7 @@ protected:
     QFuture<BookIndexModel*> m_retModel;
     QFutureWatcher<BookIndexModel*> *m_watcher;
     QIcon m_icon;
+    bool m_viewInitialized;
 };
 
 #endif // BOOKWIDGET_H

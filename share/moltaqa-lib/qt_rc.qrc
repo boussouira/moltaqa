@@ -28,5 +28,6 @@
         <file>images/go-next2.png</file>
         <file>images/go-previous2.png</file>
         <file>images/growlclose.png</file>
+        <file>images/page-preview.png</file>
     </qresource>
 </RCC>

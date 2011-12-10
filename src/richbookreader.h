@@ -29,7 +29,7 @@ public:
       */
     virtual BookIndexModel *topIndexModel();
 
-    QString text();
+    TextFormatter *textFormat();
 
     void highlightPage(int pageID, lucene::search::Query *query);
 
@@ -38,6 +38,8 @@ public:
     void stopModelLoad();
 
     virtual int getPageTitleID(int pageID);
+
+    void saveBookPage(QList<BookPage *> pages);
 
 protected:
     virtual void connected();

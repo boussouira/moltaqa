@@ -67,30 +67,30 @@ void BooksViewer::createMenus(QMainWindow *parent)
                                            tr("نافذة الفهرس"),
                                            this);
 
-    m_actionSearchInBook = new QAction(QIcon(":/menu/images/find.png"),
+    m_actionSearchInBook = new QAction(QIcon::fromTheme("edit-find", QIcon(":/menu/images/find.png")),
                                             tr("بحث متقدم في هذا الكتاب"),
                                             this);
 
     // Navigation actions
-    m_actionNextAYA = new QAction(QIcon(":/menu/images/go-down.png"),
+    m_actionNextAYA = new QAction(QIcon::fromTheme("go-down", QIcon(":/menu/images/go-down.png")),
                                 tr("الآية التالية"),
                                 this);
-    m_actionNextPage = new QAction(QIcon(":/menu/images/go-previous.png"),
+    m_actionNextPage = new QAction(QIcon::fromTheme("go-previous", QIcon(":/menu/images/go-previous.png")),
                                  tr("الصفحة التالية"),
                                  this);
-    m_actionPrevAYA = new QAction(QIcon(":/menu/images/go-up.png"),
+    m_actionPrevAYA = new QAction(QIcon::fromTheme("go-up", QIcon(":/menu/images/go-up.png")),
                                 tr("الآية السابقة"),
                                 this);
-    m_actionPrevPage = new QAction(QIcon(":/menu/images/go-next.png"),
+    m_actionPrevPage = new QAction(QIcon::fromTheme("go-next", QIcon(":/menu/images/go-next.png")),
                                  tr("الصفحة السابقة"),
                                  this);
-    m_actionFirstPage = new QAction(QIcon(":/menu/images/go-last.png"),
+    m_actionFirstPage = new QAction(QIcon::fromTheme("go-last", QIcon(":/menu/images/go-last.png")),
                                 tr("الصفحة الاولى"),
                                 this);
-    m_actionLastPage = new QAction(QIcon(":/menu/images/go-first.png"),
+    m_actionLastPage = new QAction(QIcon::fromTheme("go-first", QIcon(":/menu/images/go-first.png")),
                                  tr("الصفحة الاخيرة"),
                                  this);
-    m_actionGotToPage = new QAction(tr("انتقل الى..."),
+    m_actionGotToPage = new QAction(QIcon::fromTheme("go-jump"), tr("انتقل الى..."),
                                   this);
 
     // Tafressir actions
@@ -202,6 +202,25 @@ void BooksViewer::hideMenu()
     }
 }
 
+int BooksViewer::currentBookID()
+{
+    LibraryBook *book = m_viewManager->activeBook();
+
+    return book ? book->bookID : 0;
+}
+
+LibraryBook *BooksViewer::currentBook()
+{
+    return m_viewManager->activeBook();
+}
+
+BookPage *BooksViewer::currentPage()
+{
+    RichBookReader *bookdb = m_viewManager->activeBookReader();
+
+   return bookdb ? bookdb->page() : 0;
+}
+
 BookWidget *BooksViewer::openBook(int bookID, int pageID, lucene::search::Query *query)
 {
     int tabIndex = -1;
@@ -210,30 +229,30 @@ BookWidget *BooksViewer::openBook(int bookID, int pageID, lucene::search::Query 
     if(!bookInfo || !bookInfo->exists())
         throw BookException(tr("لم يتم العثور على ملف"), bookInfo->bookPath);
 
-    RichBookReader *bookdb;
+    RichBookReader *bookReader;
     if(bookInfo->isQuran())
-        bookdb = new RichQuranReader();
+        bookReader = new RichQuranReader();
     else if(bookInfo->isNormal())
-        bookdb = new RichSimpleBookReader();
+        bookReader = new RichSimpleBookReader();
     else if(bookInfo->isTafessir())
-        bookdb = new RichTafessirReader();
+        bookReader = new RichTafessirReader();
     else
         throw BookException(tr("لم يتم التعرف على نوع الكتاب"), QString("Book Type: %1").arg(bookInfo->bookPath));
 
-    bookdb->setBookInfo(bookInfo);
-    bookdb->setLibraryManager(m_libraryManager);
+    bookReader->setBookInfo(bookInfo);
+    bookReader->setLibraryManager(m_libraryManager);
 
     try {
-        bookdb->openBook();
+        bookReader->openBook();
     } catch (BookException &) {
-        delete bookdb;
+        delete bookReader;
         throw;
     }
 
     if(query && pageID != -1)
-        bookdb->highlightPage(pageID, query);
+        bookReader->highlightPage(pageID, query);
 
-    BookWidget *bookWidget = new BookWidget(bookdb, this);
+    BookWidget *bookWidget = new BookWidget(bookReader, this);
     tabIndex = m_viewManager->addBook(bookWidget);
 
     if(pageID == -1)

@@ -100,6 +100,29 @@ function setPagination(currentPage, resultCount, resultPeerPage)
     });
 }
 
+function setPageText(text, page, part)
+{
+    $('#pageText').fadeOut('fast', function() {
+                               $(this).html(text);
+                               $('#pageFooter > .page').text(page);
+                               $('#pageText > .part').text(part);
+                               $(this).fadeIn('fast', function() {
+                                                  webView.pageTextChanged();
+                                              });
+                           });
+}
+
+function setEditorText(text)
+{
+    editor.setData(text);
+    editor.resetUndo();
+}
+
+function getEditorText()
+{
+    return editor.getData();
+}
+
 $('.toggale_quran > img').click(function() {
     if($('.quran_text').css('display')!="none") {
         // Hide the quran text

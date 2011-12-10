@@ -6,12 +6,12 @@
 #include <qwebelement.h>
 #include <qpropertyanimation.h>
 
-
 class WebView : public QWebView
 {
     Q_OBJECT
 public:
     WebView(QWidget* parent = 0);
+
     void scrollToAya(int pSoraNumber, int pAyaNumber);
     void scrollToSora(int soraNumber);
     void pageDown();
@@ -29,6 +29,10 @@ public:
 public slots:
     void setText(const QString &text);
     void scrollToElement(QString elementQuery);
+    void pageTextChanged();
+
+protected slots:
+    void populateJavaScriptWindowObject();
 
 signals:
     void textChanged();
@@ -37,6 +41,9 @@ protected:
     QWebFrame *m_frame;
     QPropertyAnimation *m_animation;
     bool m_stopScrolling;
+    QString m_scrollElement;
+    int m_scrollAya;
+    int m_scrollSora;
 };
 
 #endif // KWEBVIEW_H

@@ -6,9 +6,13 @@ WebView::WebView(QWidget *parent) :
     m_frame = page()->mainFrame();
 
     m_stopScrolling = false;
+    m_scrollAya = -1;
+    m_scrollSora = -1;
 
     m_animation = new QPropertyAnimation(m_frame, "scrollPosition", this);
     connect(m_frame, SIGNAL(contentsSizeChanged(QSize)), m_animation, SLOT(stop()));
+    connect(m_frame, SIGNAL(javaScriptWindowObjectCleared()),
+            SLOT(populateJavaScriptWindowObject()));
 }
 
 void WebView::scrollToAya(int pSoraNumber, int pAyaNumber)
@@ -16,25 +20,29 @@ void WebView::scrollToAya(int pSoraNumber, int pAyaNumber)
     // First we unhighlight the highlighted AYA
     m_frame->findFirstElement("span.highlighted").removeClass("highlighted");
 
-    // Since each AYA has it own uniq id, we can highlight
-    // any AYA in the current page by adding the class "highlighted"
-    m_frame->findFirstElement(QString("span#s%1a%2")
-                            .arg(pSoraNumber).arg(pAyaNumber)).addClass("highlighted");
+    QWebElement aya = m_frame->findFirstElement(QString("span#s%1a%2")
+                                                .arg(pSoraNumber).arg(pAyaNumber));
+    if(!aya.isNull()) {
+        aya.addClass("highlighted");
 
-    // Get the postion of the selected AYA
-    QRect highElement = m_frame->findFirstElement("span.highlighted").geometry();
-    // m_frame heihgt
-    int frameHeihgt = m_frame->geometry().height() / 2;
-    // The height that should be added to center the selected aya
-    int addHeight = highElement.height() / 2 ;
-    // it must be less than frameHeight
-    while (frameHeihgt < addHeight )
-        addHeight = addHeight / 2;
-    // The aya position equal ((ayaHeight - frameHeight) + addHeight)
-    int ayaPosition = (highElement.y() - frameHeihgt) + addHeight;
+        // Get the postion of the selected AYA
+        QRect highElement = aya.geometry();
+        // m_frame heihgt
+        int frameHeihgt = m_frame->geometry().height() / 2;
+        // The height that should be added to center the selected aya
+        int addHeight = highElement.height() / 2 ;
+        // it must be less than frameHeight
+        while (frameHeihgt < addHeight )
+            addHeight = addHeight / 2;
+        // The aya position equal ((ayaHeight - frameHeight) + addHeight)
+        int ayaPosition = (highElement.y() - frameHeihgt) + addHeight;
 
-    // Animation the scrolling to the selected AYA
-    scrollToPosition(QPoint(0, ayaPosition));
+        // Animation the scrolling to the selected AYA
+        scrollToPosition(QPoint(0, ayaPosition));
+    } else {
+        m_scrollSora = pSoraNumber;
+        m_scrollAya = pAyaNumber;
+    }
 }
 
 void WebView::scrollToSora(int soraNumber)
@@ -136,5 +144,24 @@ void WebView::scrollToElement(QString elementQuery)
 
         // Animation the scrolling to the selected AYA
         scrollToPosition(QPoint(0, ayaPosition));
+    } else {
+        m_scrollElement = elementQuery;
     }
+}
+
+void WebView::pageTextChanged()
+{
+    if(m_scrollSora != -1 && m_scrollAya != -1) {
+        scrollToAya(m_scrollSora, m_scrollAya);
+        m_scrollSora = -1;
+        m_scrollAya = -1;
+    } else if(!m_scrollElement.isEmpty()) {
+        scrollToElement(m_scrollElement);
+        m_scrollElement.clear();
+    }
+}
+
+void WebView::populateJavaScriptWindowObject()
+{
+    addObject("webView", this);
 }

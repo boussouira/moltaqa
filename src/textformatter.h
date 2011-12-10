@@ -22,6 +22,8 @@ public:
     QString getText();
     void insertText(QString text);
 
+    QString getHtmlView(QString text=QString());
+
 protected:
     void insertHtmlTag(QString tag, QString text, QString className="", QString idName="");
     void insertDivTag(QString text, QString className="", QString idName="");
@@ -32,6 +34,7 @@ protected:
     void closeAllTags();
     void addCSS(QString cssFile);
     void addJS(QString jsFile);
+    void addJSCode(QString jsCode);
 
 protected:
     void laodSettings();
