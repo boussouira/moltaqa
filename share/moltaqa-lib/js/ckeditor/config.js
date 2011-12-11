@@ -5,7 +5,7 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 
 CKEDITOR.editorConfig = function( config )
 {
-	config.toolbar = 'Custom';
+    config.toolbar = 'Custom';
  
 	config.toolbar_Custom =
 	[

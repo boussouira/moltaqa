@@ -18,20 +18,20 @@ public:
     
     QString title();
     void editBook(LibraryBook *book, BookPage *page=0);
+    bool maySave(bool canCancel=true);
     
 protected:
     void setupToolBar();
     void updateActions();
     void saveCurrentPage();
     void clearChanges();
-    bool maySave();
     void closeBook();
 
 protected slots:
     void save();
     void cancel();
     void preview();
-    void closeTab(int index);
+    void closeTab(int);
 
     void nextPage();
     void prevPage();

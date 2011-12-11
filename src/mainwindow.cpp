@@ -277,6 +277,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     settings.endGroup();
 
     m_booksList->close();
+    m_editorView->maySave(false);
 
     if(m_indexManager->isIndexing())
         m_indexManager->stop();

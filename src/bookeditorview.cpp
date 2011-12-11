@@ -98,10 +98,12 @@ void BookEditorView::setupToolBar()
     QIcon prevIcon  = QIcon::fromTheme("go-next", QIcon(":/menu/images/go-next.png"));
     QIcon firstIcon = QIcon::fromTheme("go-last", QIcon(":/menu/images/go-last.png"));
     QIcon lastIcon  = QIcon::fromTheme("go-first", QIcon(":/menu/images/go-first.png"));
-    QIcon gotoIcon  = QIcon::fromTheme("go-jump"); // TODO: add this icon (for windows)
+    QIcon gotoIcon  = QIcon::fromTheme("go-jump", QIcon(":/menu/images/go-jump.png"));
 
-    m_actionSave = bar->addAction(QIcon::fromTheme("document-save"), tr("حفظ التغييرات"), this, SLOT(save()));
-    m_actionCancel = bar->addAction(QIcon::fromTheme("document-revert"), tr("الغاء التغييرات"), this, SLOT(cancel()));
+    m_actionSave = bar->addAction(QIcon::fromTheme("document-save", QIcon(":/menu/images/document-save.png")),
+                                  tr("حفظ التغييرات"), this, SLOT(save()));
+    m_actionCancel = bar->addAction(QIcon::fromTheme("document-revert", QIcon(":/menu/images/document-revert.png")),
+                                    tr("الغاء التغييرات"), this, SLOT(cancel()));
     bar->addSeparator();
     m_actionFirstPage = bar->addAction(firstIcon, tr("الصفحة الاولى"), this, SLOT(firstPage()));
     m_actionPrevPage = bar->addAction(prevIcon, tr("الصفحة السابقة"), this, SLOT(prevPage()));
@@ -125,6 +127,7 @@ void BookEditorView::updateActions()
     }
 
     m_actionSave->setEnabled(!m_pages.isEmpty());
+    m_actionCancel->setEnabled(!m_pages.isEmpty());
 }
 
 void BookEditorView::saveCurrentPage()
@@ -149,7 +152,7 @@ void BookEditorView::clearChanges()
     m_currentPage = 0;
 }
 
-bool BookEditorView::maySave()
+bool BookEditorView::maySave(bool canCancel)
 {
     saveCurrentPage();
     updateActions();
@@ -157,9 +160,9 @@ bool BookEditorView::maySave()
     if(!m_pages.isEmpty()) {
         int rep = QMessageBox::question(this,
                                         tr("حفظ التعديلات"),
-                                        tr("هل تريد حفظ التعديلات التي اجريتها على كتاب %1?").arg(m_bookReader->bookInfo()->bookDisplayName),
-                                        QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel,
-                                        QMessageBox::Cancel);
+                                        tr("هل تريد حفظ التعديلات التي اجريتها على كتاب:\n%1؟").arg(m_bookReader->bookInfo()->bookDisplayName),
+                                        QMessageBox::Yes|(canCancel ? QMessageBox::No|QMessageBox::Cancel : QMessageBox::No),
+                                        canCancel ? QMessageBox::Cancel : QMessageBox::No);
         if(rep == QMessageBox::No) {
             clearChanges();
         } else if(rep == QMessageBox::Yes) {
@@ -228,7 +231,7 @@ void BookEditorView::preview()
 {
 }
 
-void BookEditorView::closeTab(int index)
+void BookEditorView::closeTab(int)
 {
     if(maySave()) {
         closeBook();

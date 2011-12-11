@@ -29,5 +29,8 @@
         <file>images/go-previous2.png</file>
         <file>images/growlclose.png</file>
         <file>images/page-preview.png</file>
+        <file>images/document-save.png</file>
+        <file>images/document-revert.png</file>
+        <file>images/go-jump.png</file>
     </qresource>
 </RCC>

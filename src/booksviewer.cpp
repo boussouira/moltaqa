@@ -59,7 +59,7 @@ void BooksViewer::createMenus(QMainWindow *parent)
 {
 
     // General Actions
-    m_actionNewTab = new QAction(QIcon(":/menu/images/bookmark-new.png"),
+    m_actionNewTab = new QAction(QIcon::fromTheme("tab-new", QIcon(":/menu/images/bookmark-new.png")),
                                         tr("تبويب جديد"),
                                         this);
 
