@@ -211,6 +211,7 @@ void MainWindow::setupActions()
     connect(m_booksList, SIGNAL(bookSelected(int)), SLOT(openBook(int)));
     connect(ui->actionBooksList, SIGNAL(triggered()), SLOT(showBooksList()));
     connect(ui->actionSearchView, SIGNAL(triggered()), SLOT(showSearchView()));
+    connect(ui->actionSearchInBook, SIGNAL(triggered()), m_bookView, SLOT(searchInBook()));
     connect(ui->actionEditBook, SIGNAL(triggered()), SLOT(editCurrentBook()));
 
     connect(m_indexManager, SIGNAL(progress(int,int)), SLOT(indexProgress(int,int)));

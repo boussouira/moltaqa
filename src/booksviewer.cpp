@@ -352,7 +352,10 @@ void BooksViewer::showIndexWidget()
 
 void BooksViewer::searchInBook()
 {
-    MW->searchView()->newTab(SearchWidget::BookSearch, m_viewManager->activeBook()->bookID);
+    LibraryBook *book = m_viewManager->activeBook();
+
+    if(book)
+        MW->searchView()->newTab(SearchWidget::BookSearch, book->bookID);
 }
 
 void BooksViewer::tabChanged(int newIndex)

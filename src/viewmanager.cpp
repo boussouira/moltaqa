@@ -73,6 +73,7 @@ void ViewManager::setupActions()
 {
     m_menu->clear();
 
+    int selectableCount = 0;
     for(int i=0; i < count(); i++) {
         QAction *act = new QAction(m_menu);
         AbstarctView *view = qobject_cast<AbstarctView*>(widget(i));
@@ -81,6 +82,7 @@ void ViewManager::setupActions()
             act->setData(i);
             act->setCheckable(true);
             act->setChecked(i == currentIndex());
+            act->setShortcut(QKeySequence(QString("ALT+%1").arg(++selectableCount)));
 
             connect(act, SIGNAL(triggered(bool)), SLOT(changeWindow()));
             m_menu->addAction(act);
@@ -129,6 +131,7 @@ void ViewManager::hideView()
             if(prevView && prevView != w && prevView->isSelectable() && prevView != m_defautView) {
                 setCurrentView(prevView);
                 useDefautView = false;
+                break;
             }
         }
 
