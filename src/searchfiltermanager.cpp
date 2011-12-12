@@ -81,18 +81,20 @@ void SearchFilterManager::setupMenu()
 
     if(m_changeFilterColumn) {
         QMenu *menu2 =  m_menu->addMenu(tr("بحث في"));
-        m_actFilterByBooks = menu2->addAction(tr("اسماء الكتب"));
-        m_actFilterByBetaka = menu2->addAction(tr("بطاقة الكتاب"));
-        m_actFilterByAuthors = menu2->addAction(tr("اسماء المؤلفين"));
+        QActionGroup *actGroup = new QActionGroup(this);
+        m_actFilterByBooks = actGroup->addAction(tr("اسماء الكتب"));
+        m_actFilterByBetaka = actGroup->addAction(tr("بطاقة الكتاب"));
+        m_actFilterByAuthors = actGroup->addAction(tr("اسماء المؤلفين"));
 
         m_actFilterByBooks->setCheckable(true);
         m_actFilterByBooks->setChecked(true);
         m_actFilterByBetaka->setCheckable(true);
         m_actFilterByAuthors->setCheckable(true);
+        actGroup->setExclusive(true);
 
-        connect(m_actFilterByBooks, SIGNAL(triggered()), SLOT(changeFilterAction()));
-        connect(m_actFilterByBetaka, SIGNAL(triggered()), SLOT(changeFilterAction()));
-        connect(m_actFilterByAuthors, SIGNAL(triggered()), SLOT(changeFilterAction()));
+        menu2->addActions(actGroup->actions());
+
+        connect(actGroup, SIGNAL(triggered(QAction*)), SLOT(changeFilterAction(QAction*)));
     }
 
     if(m_lineEdit)
@@ -140,40 +142,21 @@ void SearchFilterManager::setFilterText(QString text)
     m_filterModel->setFilterRole(m_role);
 }
 
-void SearchFilterManager::changeFilterAction()
+void SearchFilterManager::changeFilterAction(QAction* act)
 {
-    QAction *act = qobject_cast<QAction*>(sender());
-    QList<QAction*> actList;
-
-    if(act) {
-        if(!act->isChecked()) {
-            act->setChecked(true);
-            return;
-        }
-
-        actList << m_actFilterByBooks;
-        actList << m_actFilterByBetaka;
-        actList << m_actFilterByAuthors;
-
-        foreach (QAction *a, actList) {
-            if(act != a)
-                a->setChecked(false);
-        }
-
-        if(act == m_actFilterByBooks) {
-            m_filterColumn = 0;
-            m_role = Qt::DisplayRole;
-        } else if(act == m_actFilterByAuthors) {
-            m_filterColumn = 1;
-            m_role = Qt::DisplayRole;
-        } else if(act == m_actFilterByBetaka) {
-            m_filterColumn = 0;
-            m_role = Qt::ToolTipRole;
-        }
-
-        m_filterModel->setFilterKeyColumn(m_filterColumn);
-        m_filterModel->setFilterRole(m_role);
+    if(act == m_actFilterByBooks) {
+        m_filterColumn = 0;
+        m_role = Qt::DisplayRole;
+    } else if(act == m_actFilterByAuthors) {
+        m_filterColumn = 1;
+        m_role = Qt::DisplayRole;
+    } else if(act == m_actFilterByBetaka) {
+        m_filterColumn = 0;
+        m_role = Qt::ToolTipRole;
     }
+
+    m_filterModel->setFilterKeyColumn(m_filterColumn);
+    m_filterModel->setFilterRole(m_role);
 }
 
 void SearchFilterManager::showSelected()

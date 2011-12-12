@@ -94,8 +94,6 @@ SearchFilter *BookSearchFilter::getSimpleBookFilterQuery()
     SearchFilter *filter = new SearchFilter();
     filter->clause = BooleanClause::MUST;
 
-    qDebug("Selected books: %d", titles.size());
-
     BooleanQuery *q = new BooleanQuery();
     q->setMaxClauseCount(0x7FFFFFFFL);
 

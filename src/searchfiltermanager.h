@@ -59,7 +59,7 @@ public slots:
 protected slots:
     void setFilterText(QString text);
     void clearFilter();
-    void changeFilterAction();
+    void changeFilterAction(QAction *act);
     void showSelected();
     void showUnSelected();
 
