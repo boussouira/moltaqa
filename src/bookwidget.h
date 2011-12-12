@@ -56,6 +56,7 @@ public slots:
 signals:
     void setIcon(QIcon icon);
     void gotFocus();
+    void textChanged();
 
 protected:
     QSplitter *m_splitter;

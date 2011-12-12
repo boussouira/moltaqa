@@ -145,7 +145,7 @@ int BookWidgetManager::addBook(BookWidget *book)
     m_activeTab->setTabIcon(tabIndex, book->icon());
 
     connect(book, SIGNAL(setIcon(QIcon)), SLOT(changeTabIcon(QIcon)));
-    connect(book->indexWidget(), SIGNAL(bookInfoChanged()), SIGNAL(pageChanged()));
+    connect(book, SIGNAL(textChanged()), SIGNAL(pageChanged()));
 
     return tabIndex;
 }
