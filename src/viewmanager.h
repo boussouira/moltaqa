@@ -20,12 +20,9 @@ public:
     void setCurrentView(AbstarctView *view);
     void setDefautView(AbstarctView *view);
 
-    void setMenu(QMenu *menu);
-    void setupActions();
-
-protected:
-    void removeViewFromStack(AbstarctView *view);
-    void addViewToStack(AbstarctView *view);
+    void setWindowsMenu(QMenu *menu);
+    void setNavigationMenu(QMenu *menu);
+    void setupWindowsActions();
 
 protected slots:
     void changeWindow();
@@ -36,9 +33,11 @@ public slots:
 
 protected:
     MainWindow *m_mainWindow;
-    QMenu *m_menu;
+    QMenu *m_windowsMenu;
+    QMenu *m_navigationsMenu;
     QSet<AbstarctView*> m_viewDisplay;
     AbstarctView *m_defautView;
+    AbstarctView *m_currentView;
 };
 
 #endif // VIEWMANAGER_H

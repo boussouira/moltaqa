@@ -17,20 +17,24 @@ public:
     AbstarctView(QWidget *parent = 0);
 
     virtual QList<QToolBar*> toolBars();
-    virtual void showToolBars();
-    virtual void hideToolBars();
-    virtual void hideMenu();
-    virtual void showMenu();
+    virtual QList<QAction*> navigationActions();
+    virtual void updateToolBars();
+    virtual void updateActions();
+
     virtual QString title()=0;
+
     bool isSelectable();
     void setSelectable(bool selectebale);
+
+    static QAction *actionSeparator(QObject *parent=0);
 
 signals:
     void hideMe();
     void showMe();
 
 protected:
-    QList<QToolBar *> m_toolBars;
+    QList<QToolBar*> m_toolBars;
+    QList<QAction*> m_navActions;
     bool m_selectable;
 };
 

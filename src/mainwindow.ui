@@ -38,20 +38,24 @@
    <property name="locale">
     <locale language="Arabic" country="Morocco"/>
    </property>
-   <widget class="QMenu" name="menuFile">
+   <widget class="QMenu" name="menuLibrary">
     <property name="locale">
      <locale language="Arabic" country="Morocco"/>
     </property>
     <property name="title">
-     <string>ملف</string>
+     <string>المكتبة</string>
     </property>
+    <widget class="QMenu" name="menu_4">
+     <property name="title">
+      <string>استيراد</string>
+     </property>
+     <addaction name="actionImport"/>
+     <addaction name="actionShamelaImport"/>
+    </widget>
     <addaction name="actionBooksList"/>
-    <addaction name="actionSearchView"/>
     <addaction name="separator"/>
-    <addaction name="actionImport"/>
-    <addaction name="actionShamelaImport"/>
+    <addaction name="menu_4"/>
     <addaction name="separator"/>
-    <addaction name="actionEditBook"/>
     <addaction name="actionControlCenter"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
@@ -71,14 +75,29 @@
     </property>
     <addaction name="actionSettings"/>
    </widget>
-   <widget class="QMenu" name="menuWindow">
+   <widget class="QMenu" name="menuWindows">
     <property name="title">
      <string>نوافذ</string>
     </property>
    </widget>
-   <addaction name="menuFile"/>
+   <widget class="QMenu" name="menuNavigation">
+    <property name="title">
+     <string>التصفح</string>
+    </property>
+    <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="menuSearch">
+    <property name="title">
+     <string>بحث</string>
+    </property>
+    <addaction name="actionSearchInBook"/>
+    <addaction name="actionSearchView"/>
+   </widget>
+   <addaction name="menuLibrary"/>
+   <addaction name="menuNavigation"/>
+   <addaction name="menuSearch"/>
    <addaction name="menu"/>
-   <addaction name="menuWindow"/>
+   <addaction name="menuWindows"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -140,18 +159,15 @@
   </action>
   <action name="actionSearchView">
    <property name="text">
-    <string>بحث متقدم...</string>
+    <string> في المكتبة</string>
    </property>
    <property name="toolTip">
     <string>بحث متقدم</string>
    </property>
   </action>
-  <action name="actionEditBook">
+  <action name="actionSearchInBook">
    <property name="text">
-    <string>تحرير الكتاب</string>
-   </property>
-   <property name="toolTip">
-    <string>تحرير الكتاب الحالي</string>
+    <string> في الكتاب الحالي</string>
    </property>
   </action>
  </widget>

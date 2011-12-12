@@ -1,4 +1,5 @@
 #include "abstarctview.h"
+#include <qaction.h>
 
 AbstarctView::AbstarctView(QWidget *parent) :
     QWidget(parent),
@@ -11,25 +12,16 @@ QList<QToolBar*> AbstarctView::toolBars()
     return m_toolBars;
 }
 
-void AbstarctView::showToolBars()
+QList<QAction *> AbstarctView::navigationActions()
 {
-    foreach(QToolBar *bar, m_toolBars) {
-        bar->show();
-    }
+    return m_navActions;
 }
 
-void AbstarctView::hideToolBars()
-{
-    foreach(QToolBar *bar, m_toolBars) {
-        bar->hide();
-    }
-}
-
-void AbstarctView::hideMenu()
+void AbstarctView::updateToolBars()
 {
 }
 
-void AbstarctView::showMenu()
+void AbstarctView::updateActions()
 {
 }
 
@@ -41,4 +33,12 @@ bool AbstarctView::isSelectable()
 void AbstarctView::setSelectable(bool selectebale)
 {
     m_selectable = selectebale;
+}
+
+QAction *AbstarctView::actionSeparator(QObject *parent)
+{
+    QAction *act = new QAction(parent);
+    act->setSeparator(true);
+
+    return act;
 }

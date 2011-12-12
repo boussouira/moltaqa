@@ -11,6 +11,8 @@
 #include "openpagedialog.h"
 #include "mainwindow.h"
 #include "bookwidgetmanager.h"
+#include "utils.h"
+#include "bookeditorview.h"
 
 #include <qmainwindow.h>
 #include <qmenubar.h>
@@ -27,7 +29,7 @@
 
 typedef QPair<int, QString> Pair;
 
-BooksViewer::BooksViewer(LibraryManager *libraryManager, QMainWindow *parent): AbstarctView(parent)
+BooksViewer::BooksViewer(LibraryManager *libraryManager, QWidget *parent): AbstarctView(parent)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
     m_viewManager = new BookWidgetManager(this);
@@ -36,7 +38,7 @@ BooksViewer::BooksViewer(LibraryManager *libraryManager, QMainWindow *parent): A
     layout->addWidget(m_viewManager);
     layout->setContentsMargins(0,6,0,0);
 
-    createMenus(parent);
+    createMenus();
     loadTafessirList();
 
     connect(m_viewManager, SIGNAL(currentTabChanged(int)), SLOT(updateActions()));
@@ -55,9 +57,12 @@ QString BooksViewer::title()
     return tr("تصفح الكتب");
 }
 
-void BooksViewer::createMenus(QMainWindow *parent)
+void BooksViewer::createMenus()
 {
 
+    // Edit book action
+    m_actionEditBook = new QAction(QIcon::fromTheme("document-edit"),
+                                 tr("تحرير الكتاب"), this);
     // General Actions
     m_actionNewTab = new QAction(QIcon::fromTheme("tab-new", QIcon(":/menu/images/bookmark-new.png")),
                                         tr("تبويب جديد"),
@@ -123,29 +128,22 @@ void BooksViewer::createMenus(QMainWindow *parent)
     m_toolBarShorooh = new QToolBar(tr("الشروح"), this);
     m_toolBarShorooh->addAction(m_actionOpenShareeh);
 
-    QMenu *navMenu = new QMenu(tr("التنقل"), this);
-    navMenu->addAction(m_actionFirstPage);
-    navMenu->addAction(m_actionPrevPage);
-    navMenu->addAction(m_actionNextPage);
-    navMenu->addAction(m_actionLastPage);
-    navMenu->addSeparator();
-    navMenu->addAction(m_actionGotToPage);
+    m_navActions << m_actionEditBook;
+    m_navActions << actionSeparator(this);
+    m_navActions << m_actionFirstPage;
+    m_navActions << m_actionPrevPage;
+    m_navActions << m_actionNextPage;
+    m_navActions << m_actionLastPage;
+    m_navActions << actionSeparator(this);
+    m_navActions << m_actionGotToPage;
 
     m_toolBars << m_toolBarGeneral;
     m_toolBars << m_toolBarNavigation;
     m_toolBars << m_toolBarTafesir;
     m_toolBars << m_toolBarShorooh;
 
-    if(parent) {
-        QAction *act = parent->menuBar()->actions().at(1);
-        m_navMenu = parent->menuBar()->insertMenu(act, navMenu);
-        m_navMenu->setEnabled(false);
-    } else {
-        m_navMenu = 0;
-    }
-
-    // Setup connections
     connect(m_viewManager, SIGNAL(pageChanged()), SLOT(updateActions()));
+    connect(m_actionEditBook, SIGNAL(triggered()), SLOT(editCurrentBook()));
 
     // Navigation actions
     connect(m_actionNextPage, SIGNAL(triggered()), m_viewManager, SLOT(nextPage()));
@@ -168,7 +166,7 @@ void BooksViewer::createMenus(QMainWindow *parent)
     connect(m_actionOpenShareeh, SIGNAL(triggered()), SLOT(openShareeh()));
 }
 
-void BooksViewer::showToolBars()
+void BooksViewer::updateToolBars()
 {
     LibraryBook *book = m_viewManager->activeBook();
 
@@ -184,21 +182,6 @@ void BooksViewer::showToolBars()
 
         m_toolBarGeneral->show();
         m_toolBarNavigation->show();
-    }
-}
-
-void BooksViewer::showMenu()
-{
-    if(m_navMenu) {
-        m_navMenu->setVisible(true);
-        m_navMenu->setEnabled(true);
-    }
-}
-
-void BooksViewer::hideMenu()
-{
-    if(m_navMenu) {
-        m_navMenu->setEnabled(false);
     }
 }
 
@@ -362,7 +345,7 @@ void BooksViewer::tabChanged(int newIndex)
 {
     if(newIndex != -1) {
         updateActions();
-        showToolBars();
+        updateToolBars();
 
         if(m_viewManager->activeBook()->isQuran()) {
             m_actionNextAYA->setText(tr("الآية التالية"));
@@ -382,5 +365,22 @@ void BooksViewer::loadTafessirList()
     m_comboTafasir->setEditable(true);
     m_comboTafasir->completer()->setCompletionMode(QCompleter::PopupCompletion);
 
-    showToolBars();
+    updateToolBars();
+}
+
+void BooksViewer::editCurrentBook()
+{
+    LibraryBook *book = currentBook();
+    BookPage *page = currentPage();
+
+    if(book && page) {
+        try {
+            MW->editorView()->editBook(book, page);
+        } catch (BookException &e) {
+            QMessageBox::information(this,
+                                     App::name(),
+                                     tr("حدث خطأ أثناء محاولة تحرير الكتاب الحالي:"
+                                        "<br>%1").arg(e.what()));
+        }
+    }
 }

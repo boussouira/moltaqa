@@ -43,6 +43,7 @@ public:
     IndexManager *indexManager();
     BookReaderHelper *readerHelper();
     SearchView *searchView();
+    BookEditorView *editorView();
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -61,7 +62,6 @@ protected slots:
     void startIndexing();
     void stopIndexing();
     void indexProgress(int value, int max);
-    void editCurrentBook();
 
 private slots:
     void on_actionImport_triggered();

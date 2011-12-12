@@ -8,6 +8,7 @@ ViewManager::ViewManager(QWidget *parent) :
 {
     m_mainWindow = MW;
     m_defautView = 0;
+    m_currentView = 0;
 }
 
 void ViewManager::addView(AbstarctView *view, bool selectable)
@@ -15,7 +16,7 @@ void ViewManager::addView(AbstarctView *view, bool selectable)
     view->setSelectable(selectable);
 
     addWidget(view);
-    setupActions();
+    setupWindowsActions();
 
     m_viewDisplay.insert(view);
 
@@ -25,31 +26,37 @@ void ViewManager::addView(AbstarctView *view, bool selectable)
 
 void ViewManager::removeView(AbstarctView *view)
 {
-    removeViewFromStack(view);
+    m_viewDisplay.remove(view);
 
     removeWidget(view);
-    setupActions();
+    setupWindowsActions();
 }
 
 void ViewManager::setCurrentView(AbstarctView *view)
 {
     AbstarctView *currentView = qobject_cast<AbstarctView*>(currentWidget());
+
     foreach (QToolBar *bar, currentView->toolBars()) {
         m_mainWindow->removeToolBar(bar);
     }
 
-    currentView->hideMenu();
+    foreach (QAction*act, currentView->navigationActions())
+        m_navigationsMenu->removeAction(act);
 
     setCurrentWidget(view);
 
     foreach (QToolBar *bar, view->toolBars()) {
         m_mainWindow->addToolBar(bar);
+        bar->show();
     }
 
-    view->showToolBars();
-    view->showMenu();
+    foreach (QAction*act, view->navigationActions())
+        m_navigationsMenu->addAction(act);
 
-    setupActions();
+    view->updateToolBars();
+    m_currentView = view;
+
+    setupWindowsActions();
 }
 
 void ViewManager::setDefautView(AbstarctView *view)
@@ -64,18 +71,23 @@ void ViewManager::setCurrentView(int index)
         setCurrentView(view);
 }
 
-void ViewManager::setMenu(QMenu *menu)
+void ViewManager::setWindowsMenu(QMenu *menu)
 {
-    m_menu = menu;
+    m_windowsMenu = menu;
 }
 
-void ViewManager::setupActions()
+void ViewManager::setNavigationMenu(QMenu *menu)
 {
-    m_menu->clear();
+    m_navigationsMenu = menu;
+}
+
+void ViewManager::setupWindowsActions()
+{
+    m_windowsMenu->clear();
 
     int selectableCount = 0;
     for(int i=0; i < count(); i++) {
-        QAction *act = new QAction(m_menu);
+        QAction *act = new QAction(m_windowsMenu);
         AbstarctView *view = qobject_cast<AbstarctView*>(widget(i));
         if(view && view->isSelectable()) {
             act->setText(view->title());
@@ -85,20 +97,9 @@ void ViewManager::setupActions()
             act->setShortcut(QKeySequence(QString("ALT+%1").arg(++selectableCount)));
 
             connect(act, SIGNAL(triggered(bool)), SLOT(changeWindow()));
-            m_menu->addAction(act);
+            m_windowsMenu->addAction(act);
         }
     }
-}
-
-void ViewManager::removeViewFromStack(AbstarctView *view)
-{
-    m_viewDisplay.remove(view);
-}
-
-void ViewManager::addViewToStack(AbstarctView *view)
-{
-    removeViewFromStack(view);
-    m_viewDisplay.insert(view);
 }
 
 void ViewManager::changeWindow()
@@ -110,7 +111,7 @@ void ViewManager::changeWindow()
             return;
         }
 
-        foreach(QAction *a, m_menu->actions()) {
+        foreach(QAction *a, m_windowsMenu->actions()) {
             if(act != a) {
                 a->setChecked(false);
             }
@@ -144,7 +145,9 @@ void ViewManager::showView()
 {
     AbstarctView *w = qobject_cast<AbstarctView*>(sender());
     if(w) {
-        w->setSelectable(true);
-        setCurrentView(w);
+        if(m_currentView != w) {
+            w->setSelectable(true);
+            setCurrentView(w);
+        }
     }
 }

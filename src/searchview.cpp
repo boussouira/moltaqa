@@ -7,6 +7,7 @@
 
 #include <qboxlayout.h>
 #include <qmessagebox.h>
+#include <qaction.h>
 
 SearchView::SearchView(QWidget *parent) : AbstarctView(parent)
 {
@@ -19,17 +20,18 @@ SearchView::SearchView(QWidget *parent) : AbstarctView(parent)
 
     QToolBar *bar = new QToolBar(this);
 
-    bar->addAction(QIcon(":/menu/images/tab-new.png"),
-                   tr("تبويب بحث جديد"),
-                   this, SLOT(openNewTab()));
-
-    bar->addAction(QIcon(":/menu/images/switch.png"),
-                   tr("تنقل بين نافذة البحث والنتائج"),
-                   this, SLOT(switchSearchWidget()));
+    QAction *actNewTab = new QAction(QIcon(":/menu/images/tab-new.png"),
+                               tr("تبويب بحث جديد"), this);
+    QAction *actSwitchTab = new QAction(QIcon(":/menu/images/switch.png"),
+                                     tr("تنقل بين نافذة البحث والنتائج"), this);
+    bar->addAction(actNewTab);
+    bar->addAction(actSwitchTab);
 
     m_toolBars << bar;
     setLayout(m_layout);
 
+    connect(actNewTab, SIGNAL(triggered()), SLOT(openNewTab()));
+    connect(actSwitchTab, SIGNAL(triggered()), SLOT(switchSearchWidget()));
     connect(m_tabWidget, SIGNAL(tabCloseRequested(int)), SLOT(closeTab(int)));
     connect(this, SIGNAL(lastTabClosed()), SIGNAL(hideMe()));
 }

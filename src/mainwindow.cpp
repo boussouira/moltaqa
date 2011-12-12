@@ -107,7 +107,8 @@ bool MainWindow::init()
     }
 
     m_viewManager = new ViewManager(this);
-    m_viewManager->setMenu(ui->menuWindow);
+    m_viewManager->setWindowsMenu(ui->menuWindows);
+    m_viewManager->setNavigationMenu(ui->menuNavigation);
     setCentralWidget(m_viewManager);
 
     m_welcomeWidget = new WelcomeWidget(this);
@@ -212,7 +213,6 @@ void MainWindow::setupActions()
     connect(ui->actionBooksList, SIGNAL(triggered()), SLOT(showBooksList()));
     connect(ui->actionSearchView, SIGNAL(triggered()), SLOT(showSearchView()));
     connect(ui->actionSearchInBook, SIGNAL(triggered()), m_bookView, SLOT(searchInBook()));
-    connect(ui->actionEditBook, SIGNAL(triggered()), SLOT(editCurrentBook()));
 
     connect(m_indexManager, SIGNAL(progress(int,int)), SLOT(indexProgress(int,int)));
     connect(m_indexManager, SIGNAL(started()), SLOT(startIndexing()));
@@ -371,6 +371,13 @@ SearchView *MainWindow::searchView()
     return m_searchView;
 }
 
+BookEditorView *MainWindow::editorView()
+{
+    Q_CHECK_PTR(m_editorView);
+
+    return m_editorView;
+}
+
 void MainWindow::controlCenter()
 {
     ControlCenterDialog dialog(this);
@@ -391,21 +398,4 @@ void MainWindow::indexProgress(int value, int max)
 {
     m_indexBar->setMaximum(max);
     m_indexBar->setValue(value);
-}
-
-void MainWindow::editCurrentBook()
-{
-    LibraryBook *book = m_bookView->currentBook();
-    BookPage *page = m_bookView->currentPage();
-
-    if(book && page) {
-        try {
-            m_editorView->editBook(book, page);
-        } catch (BookException &e) {
-            QMessageBox::information(this,
-                                     App::name(),
-                                     tr("حدث خطأ أثناء محاولة تحرير الكتاب الحالي:"
-                                        "<br>%1").arg(e.what()));
-        }
-    }
 }

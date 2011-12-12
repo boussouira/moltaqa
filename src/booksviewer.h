@@ -18,13 +18,11 @@ class BooksViewer : public AbstarctView
 {
     Q_OBJECT
 public:
-    BooksViewer(LibraryManager *libraryManager, QMainWindow *parent=0);
+    BooksViewer(LibraryManager *libraryManager, QWidget *parent=0);
     ~BooksViewer();
     void setLibraryManager(LibraryManager *libraryManager) { m_libraryManager = libraryManager;}
     QString title();
-    void showToolBars();
-    void showMenu();
-    void hideMenu();
+    void updateToolBars();
 
     int currentBookID();
     LibraryBook *currentBook();
@@ -40,8 +38,11 @@ public slots:
     void tabChanged(int newIndex);
     void loadTafessirList();
 
+protected slots:
+    void editCurrentBook();
+
 protected:
-    void createMenus(QMainWindow *parent);
+    void createMenus();
 
 signals:
     void lastTabClosed();
@@ -49,6 +50,7 @@ signals:
 private:
     LibraryManager *m_libraryManager;
     BookWidgetManager *m_viewManager;
+    QAction *m_actionEditBook;
     QAction *m_actionNewTab;
     QAction *m_actionIndexDock;
     QAction *m_actionSearchInBook;
@@ -61,7 +63,6 @@ private:
     QAction *m_actionGotToPage;
     QAction *m_actionOpenShareeh;
     QAction *m_openSelectedTafsir;
-    QAction *m_navMenu;
     QToolBar *m_toolBarGeneral;
     QToolBar *m_toolBarNavigation;
     QToolBar *m_toolBarTafesir;
