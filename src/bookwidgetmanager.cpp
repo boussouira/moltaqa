@@ -44,41 +44,10 @@ BookWidgetManager::BookWidgetManager(QWidget *parent) :
 
     connectTab(m_topTab);
     connectTab(m_bottomTab);
-
-    setupActions();
 }
 
 BookWidgetManager::~BookWidgetManager()
 {
-}
-
-void BookWidgetManager::setupActions()
-{
-    QAction *actNextPage = new QAction(this);
-    QAction *actPrevPage = new QAction(this);
-    QAction *actNextAya = new QAction(this);
-    QAction *actPrevAya = new QAction(this);
-    QAction *actGotoPage = new QAction(this);
-
-    actNextAya->setShortcut(QKeySequence(Qt::Key_J));
-    actPrevAya->setShortcut(QKeySequence(Qt::Key_K));
-    actNextPage->setShortcut(QKeySequence(Qt::Key_N));
-    actPrevPage->setShortcut(QKeySequence(Qt::Key_P));
-    actGotoPage->setShortcut(QKeySequence(Qt::Key_G));
-
-
-    connect(actNextPage, SIGNAL(triggered()), SLOT(nextPage()));
-    connect(actPrevPage, SIGNAL(triggered()), SLOT(previousPage()));
-    connect(actNextAya, SIGNAL(triggered()), SLOT(nextAya()));
-    connect(actPrevAya, SIGNAL(triggered()), SLOT(previousAya()));
-    connect(actGotoPage, SIGNAL(triggered()), SLOT(goToPage()));
-
-
-    addAction(actNextPage);
-    addAction(actPrevPage);
-    addAction(actNextAya);
-    addAction(actPrevAya);
-    addAction(actGotoPage);
 }
 
 void BookWidgetManager::connectTab(TabWidget *tab)

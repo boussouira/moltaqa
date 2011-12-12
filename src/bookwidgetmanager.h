@@ -28,7 +28,6 @@ public:
     void setActiveTab(QObject *obj);
 
 protected:
-    void setupActions();
     void connectTab(TabWidget *tab);
     void reverseActiveTab();
 
