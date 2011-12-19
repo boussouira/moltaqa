@@ -57,6 +57,8 @@ void WebView::pageDown()
     ypos += m_frame->geometry().height();
     ypos -= m_frame->geometry().height()/10;
 
+    ypos = qMin(m_frame->scrollBarMaximum(Qt::Vertical), ypos);
+
     scrollToPosition(QPoint(xpos, ypos));
 }
 
@@ -66,6 +68,8 @@ void WebView::pageUp()
     int xpos = m_frame->scrollPosition().x();
     ypos -= m_frame->geometry().height();
     ypos += m_frame->geometry().height()/10;
+
+    ypos = qMax(m_frame->scrollBarMinimum(Qt::Vertical), ypos);
 
     scrollToPosition(QPoint(xpos, ypos));
 }
@@ -91,14 +95,12 @@ void WebView::scrollToPosition(const QPoint &pos, int duration)
 
 bool WebView::maxDown()
 {
-    return (m_frame->scrollBarMaximum(Qt::Vertical)==
-            m_frame->scrollPosition().y());
+    return m_frame->scrollBarMaximum(Qt::Vertical) <= m_frame->scrollPosition().y()+10;
 }
 
 bool WebView::maxUp()
 {
-    return (m_frame->scrollBarMinimum(Qt::Vertical)==
-            m_frame->scrollPosition().y());
+    return m_frame->scrollBarMinimum(Qt::Vertical) >= m_frame->scrollPosition().y()-10;
 }
 
 void WebView::setStopScroll(bool stopScroll)
