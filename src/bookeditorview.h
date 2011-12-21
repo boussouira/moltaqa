@@ -5,6 +5,10 @@
 #include "librarybook.h"
 #include "bookpage.h"
 
+namespace Ui {
+    class BookEditorView;
+}
+
 class EditWebView;
 class RichBookReader;
 class QTabWidget;
@@ -21,6 +25,7 @@ public:
     bool maySave(bool canCancel=true);
     
 protected:
+    void setupView();
     void setupToolBar();
     void updateActions();
     void saveCurrentPage();
@@ -42,6 +47,7 @@ protected slots:
     void readerTextChange();
 
 protected:
+    Ui::BookEditorView *ui;
     QTabWidget *m_tabWidget;
     QAction *m_actionSave;
     QAction *m_actionCancel;

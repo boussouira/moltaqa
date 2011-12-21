@@ -1,4 +1,5 @@
 #include "bookeditorview.h"
+#include "ui_bookeditorview.h"
 #include <qicon.h>
 #include <qaction.h>
 #include <QHBoxLayout>
@@ -19,26 +20,13 @@
 
 BookEditorView::BookEditorView(QWidget *parent) :
     AbstarctView(parent),
+    ui(new Ui::BookEditorView),
     m_bookReader(0),
     m_currentPage(0)
 {
-    m_tabWidget = new QTabWidget(this);
-    m_tabWidget->setTabsClosable(true);
+    ui->setupUi(this);
 
-
-    QVBoxLayout *webLayout = new QVBoxLayout(this);
-    QWidget *w = new QWidget(this);
-    m_webView = new EditWebView(this);
-    webLayout->addWidget(m_webView);
-    w->setLayout(webLayout);
-
-    m_tabWidget->addTab(w, QString());
-
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->addWidget(m_tabWidget);
-    setLayout(layout);
-
-    connect(m_tabWidget, SIGNAL(tabCloseRequested(int)), SLOT(closeTab(int)));
+    setupView();
     setupToolBar();
 }
 
@@ -51,6 +39,21 @@ BookEditorView::~BookEditorView()
 QString BookEditorView::title()
 {
     return tr("تحرير الكتب");
+}
+
+void BookEditorView::setupView()
+{
+    ui->tabWidget->setTabsClosable(true);
+
+    QWidget *w = new QWidget(this);
+    QVBoxLayout *webLayout = new QVBoxLayout(w);
+    m_webView = new EditWebView(this);
+    webLayout->addWidget(m_webView);
+    w->setLayout(webLayout);
+
+    ui->tabWidget->addTab(w, QString());
+
+    connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)), SLOT(closeTab(int)));
 }
 
 void BookEditorView::editBook(LibraryBook *book, BookPage *page)
@@ -84,8 +87,8 @@ void BookEditorView::editBook(LibraryBook *book, BookPage *page)
 
     m_bookReader->goToPage(page->pageID);
 
-    m_tabWidget->setTabText(0, Utils::abbreviate(book->bookDisplayName, 40));
-    m_tabWidget->setTabToolTip(0, book->bookDisplayName);
+    ui->tabWidget->setTabText(0, Utils::abbreviate(book->bookDisplayName, 40));
+    ui->tabWidget->setTabToolTip(0, book->bookDisplayName);
 
     emit showMe();
 }
@@ -184,8 +187,8 @@ void BookEditorView::closeBook()
         m_bookReader = 0;
     }
 
-    m_tabWidget->setTabText(0, QString());
-    m_tabWidget->setTabToolTip(0, QString());
+    ui->tabWidget->setTabText(0, QString());
+    ui->tabWidget->setTabToolTip(0, QString());
 
     emit hideMe();
 }
