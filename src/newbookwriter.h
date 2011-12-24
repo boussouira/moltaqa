@@ -1,11 +1,14 @@
 #ifndef NEWBOOKWRITER_H
 #define NEWBOOKWRITER_H
 
-#include <qsqldatabase.h>
-#include <qsqlquery.h>
-#include <qsqlerror.h>
 #include <qhash.h>
-#include <QTime>
+#include <qdatetime.h>
+#include <qfile.h>
+#include <qdom.h>
+
+#include <quazip/quazip.h>
+#include <quazip/quazipfile.h>
+
 #include "sqlutils.h"
 
 class NewBookWriter
@@ -22,20 +25,22 @@ public:
 
     /// Commits a transaction to the database
     void endReading();
-    int addPage(const QString &text, int pageID, int pageNum, int partNum);
-    int addPage(const QString &text, int pageID, int pageNum, int partNum, int ayaNum, int soraNum);
-    void addHaddithNumber(int page_id, int hno);
+    int addPage(const QString &text, int pageID, int pageNum, int partNum,
+                int hadditNum=-1, int ayaNum=-1, int soraNum=-1);
     void addTitle(const QString &title, int tid, int level);
 
 protected:
-    void createBookTables();
-
-protected:
-    Utils::DatabaseRemover m_remover;
     QString m_tempFolder;
     QString m_bookPath;
-    QSqlDatabase m_bookDB;
-    QSqlQuery m_bookQuery;
+
+    QFile m_file;
+    QuaZip m_zip;
+    QDomDocument m_pagesDoc;
+    QDomElement m_pagesElemnent;
+    QDomDocument m_titlesDoc;
+    QDomElement m_titlesElement;
+    QDomElement m_lastTitlesElement;
+
     int m_pageId;
     int m_prevID;
     int m_lastLevel;
@@ -48,7 +53,6 @@ protected:
     QHash<int, int> m_levels;
     QTime m_time;
     int m_threadID;
-    bool m_isTafessir;
 };
 
 #endif // NEWBOOKWRITER_H

@@ -15,13 +15,10 @@ NewBookWriter::NewBookWriter()
     m_tempFolder = MW->libraryInfo()->tempDir();
     m_pageId = 0;
     m_threadID = 0;
-    m_isTafessir = false;
 }
 
 NewBookWriter::~NewBookWriter()
 {
-    if(m_bookDB.isOpen())
-        m_remover.connectionName = m_bookDB.connectionName();
 }
 
 QString NewBookWriter::bookPath()
@@ -44,52 +41,17 @@ void NewBookWriter::createNewBook(QString bookPath)
             qWarning("Can't delete it!");
     }
 
-    m_bookDB = QSqlDatabase::addDatabase("QSQLITE", QString("newBookDB_%1").arg(m_threadID));
-    m_bookDB.setDatabaseName(m_bookPath);
-    if(!m_bookDB.open()) {
-        throw BookException(QObject::tr("لم يمكن فتح قاعدة البيانات"), m_bookPath);
+    m_file.setFileName(m_bookPath);
+    m_zip.setIoDevice(&m_file);
+    if(!m_zip.open(QuaZip::mdCreate)) {
+        throw BookException(QObject::tr("لا يمكن انشاء كتاب جديد"), m_bookPath, m_zip.getZipError());
     }
 
-    m_bookQuery = QSqlQuery(m_bookDB);
-
-    createBookTables();
+//    createBookTables();
 }
 
-void NewBookWriter::createBookTables()
-{
-    m_bookQuery.exec("DROP TABLE IF EXISTS bookPages");
-    m_bookQuery.exec("DROP TABLE IF EXISTS bookIndex");
-    m_bookQuery.exec("DROP TABLE IF EXISTS bookMeta");
-    m_bookQuery.exec("DROP TABLE IF EXISTS tafessirMeta");
-
-
-    m_bookQuery.exec("CREATE TABLE IF NOT EXISTS bookPages ("
-                     "id INTEGER PRIMARY KEY, "
-                     "pageNum INTEGER, "
-                     "partNum INTEGER, "
-                     "pageText BLOB)");
-
-    // TODO: categorie order
-    m_bookQuery.exec("CREATE TABLE IF NOT EXISTS bookIndex ("
-                     "id INTEGER PRIMARY KEY,"
-                     "pageID INTEGER,"
-                     "parentID INTEGER,"
-                     "title TEXT)");
-
-    // This table will store book's comments and haddith number
-    m_bookQuery.exec("CREATE TABLE IF NOT EXISTS bookMeta ("
-                     "id INTEGER PRIMARY KEY,"
-                     "page_id INTEGER,"
-                     "haddit_number INTEGER,"
-                     "comment TEXT)");
-
-    m_bookQuery.exec("CREATE TABLE IF NOT EXISTS tafessirMeta ("
-                     "page_id INTEGER UNIQUE,"
-                     "aya_number INTEGER,"
-                     "sora_number INTEGER)");
-}
-
-int NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int partNum)
+int NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int partNum,
+                           int hadditNum, int ayaNum, int soraNum)
 {
     if(partNum<1)
         partNum = 1;
@@ -97,53 +59,34 @@ int NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int par
     if(pageNum<1)
         pageNum = 1;
 
-    m_bookQuery.prepare("INSERT INTO bookPages (id, pageText, pageNum, partNum) VALUES (NULL, ?, ?, ?)");
-    m_bookQuery.bindValue(0, qCompress(text.toUtf8()));
-    m_bookQuery.bindValue(1, pageNum);
-    m_bookQuery.bindValue(2, partNum);
+    m_pageId++; // Last inserted id
 
-    if(m_bookQuery.exec()){
-        m_pageId++; // Last inserted id
-        m_idsHash.insert(pageID, m_pageId);
-    } else {
-        LOG_SQL_ERROR(m_bookQuery);
+    QDomElement page = m_pagesDoc.createElement("item");
+    page.setAttribute("id", m_pageId);
+    page.setAttribute("page", pageNum);
+    page.setAttribute("part", partNum);
+
+    if(hadditNum != -1)
+        page.setAttribute("haddit", ayaNum);
+
+    if(soraNum != -1 && ayaNum != -1) {
+        page.setAttribute("aya", ayaNum);
+        page.setAttribute("sora", soraNum);
     }
+
+    QuaZipFile outFile(&m_zip);
+    if(outFile.open(QIODevice::WriteOnly,
+                     QuaZipNewInfo(QString("pages/p%1.html").arg(m_pageId)))) {
+        QTextStream out(&outFile);
+        out << text;
+    } else {
+        qCritical("Can't write to pages/p%d.html - Error: %d", m_pageId, outFile.getZipError());
+    }
+
+    m_pagesElemnent.appendChild(page);
+    m_idsHash.insert(pageID, m_pageId);
 
     return m_pageId;
-}
-
-int NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int partNum, int ayaNum, int soraNum)
-{
-    int ret;
-    ret = addPage(text, pageID, pageNum, partNum);
-
-    m_bookQuery.prepare("INSERT INTO tafessirMeta (page_id, aya_number, sora_number) VALUES (?, ?, ?)");
-    m_bookQuery.bindValue(0, ret);
-    m_bookQuery.bindValue(1, ayaNum);
-    m_bookQuery.bindValue(2, soraNum);
-
-    if(!m_bookQuery.exec()){
-        LOG_SQL_ERROR(m_bookQuery);
-    }
-
-    if(!m_isTafessir)
-        m_isTafessir = true;
-
-    return ret;
-}
-
-void NewBookWriter::addHaddithNumber(int page_id, int hno)
-{
-    if(hno == 0)
-        return;
-
-    m_bookQuery.prepare("INSERT INTO bookMeta (id, page_id, haddit_number) VALUES (NULL, ?, ?)");
-    m_bookQuery.bindValue(0, page_id);
-    m_bookQuery.bindValue(1, hno);
-
-    if(!m_bookQuery.exec()){
-        LOG_SQL_ERROR(m_bookQuery);
-    }
 }
 
 void NewBookWriter::addTitle(const QString &title, int tid, int level)
@@ -154,44 +97,87 @@ void NewBookWriter::addTitle(const QString &title, int tid, int level)
     else
         m_prevID = id;
 
-    m_bookQuery.prepare("INSERT INTO bookIndex (id, pageID, parentID, title) VALUES (NULL, ?, ?, ?)");
-    m_bookQuery.bindValue(0, id);
-    m_bookQuery.bindValue(1, m_levels.value(level-1, 0));
-    m_bookQuery.bindValue(2, title);
+    m_titleID++;
 
-    if(m_bookQuery.exec()){
-        m_titleID++;
+    QDomElement titleElement = m_titlesDoc.createElement("item");
+    titleElement.setAttribute("id", m_titleID);
+    titleElement.setAttribute("pageID", id);
+    titleElement.setAttribute("text", title);
+
+    if(level != m_lastLevel) {
+        if(level > m_lastLevel) { //Up
+            if(level - m_lastLevel != 1)
+                qDebug("WARNING: level - m_lastLevel = %d", level-m_lastLevel);
+
+             QDomNode node = m_lastTitlesElement.appendChild(titleElement);
+             if(!node.isNull())
+                 m_lastTitlesElement = node.toElement();
+        } else { //Down
+            int levelCount = m_lastLevel - level;
+            while(levelCount>0) {
+                QDomNode node = m_lastTitlesElement.parentNode();
+                if(!node.isNull())
+                    m_lastTitlesElement = node.toElement();
+
+                levelCount--;
+            }
+
+            QDomNode parentNode = m_lastTitlesElement.parentNode();
+            if(!parentNode.isNull()) {
+                QDomNode node = parentNode.appendChild(titleElement);
+                if(!node.isNull())
+                    m_lastTitlesElement = node.toElement();
+            }
+        }
     } else {
-        LOG_SQL_ERROR(m_bookQuery);
+        QDomNode parentNode = (m_titleID == 1) ? m_lastTitlesElement : m_lastTitlesElement.parentNode();
+        if(!parentNode.isNull()) {
+            QDomNode node = parentNode.appendChild(titleElement);
+            if(!node.isNull())
+                m_lastTitlesElement = node.toElement();
+        }
     }
 
-    int levelParent = m_levels.value(level, -1);
-    if(levelParent == -1) {
-        m_levels.insert(level, m_titleID);
-    } else {
-            m_levels[level] = m_titleID;
-    }
     m_lastLevel = level;
 }
 
 void NewBookWriter::startReading()
 {
-    m_bookDB.transaction();
     m_pageId = 0;
     m_prevID = 1;
-    m_lastLevel = -1;
+    m_lastLevel = 1;
     m_titleID = 0;
+
+    m_pagesDoc.setContent(QString("<?xml version='1.0' encoding='UTF-8'?><pages></pages>"));
+    m_titlesDoc.setContent(QString("<?xml version='1.0' encoding='UTF-8'?><titles></titles>"));
+
+    m_pagesElemnent = m_pagesDoc.documentElement();
+    m_titlesElement = m_titlesDoc.documentElement();
+    m_lastTitlesElement = m_titlesElement;
 
     //m_time.start();
 }
 
 void NewBookWriter::endReading()
 {
-    if(!m_isTafessir)
-        m_bookQuery.exec("DROP TABLE IF EXISTS tafessirMeta");
+    QuaZipFile titlesFile(&m_zip);
+    if(titlesFile.open(QIODevice::WriteOnly, QuaZipNewInfo("titles.xml"))) {
+        QTextStream out(&titlesFile);
+        out << m_titlesDoc.toString(2);
+    } else {
+        qCritical("Can't write to titles.xml - Error: %d", titlesFile.getZipError());
+    }
 
-    // TODO: check if the commit success
-    m_bookDB.commit();
+    QuaZipFile pagesFile(&m_zip);
+    if(pagesFile.open(QIODevice::WriteOnly, QuaZipNewInfo("pages.xml"))) {
+        QTextStream out(&pagesFile);
+        out << m_pagesDoc.toString(2);
+    } else {
+        qCritical("Can't write to pages.xml - Error: %d", pagesFile.getZipError());
+    }
+
+    m_zip.close();
+    // TODO: check if the close success
     //qDebug("[*] Writting take %d ms", m_time.elapsed());
 }
 
