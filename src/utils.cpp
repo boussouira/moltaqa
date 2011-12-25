@@ -211,7 +211,7 @@ void createIndexDB(QSqlQuery &query)
                "book_id INTEGER, "
                "tafessir_name TEXT, "
                "tafessir_order INTEGER, "
-               "show_tafessir INTEGER");
+               "show_tafessir INTEGER)");
 
     query.exec("CREATE TABLE ShareehMeta("
                      "mateen_book INTEGER, "
