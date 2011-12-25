@@ -105,7 +105,7 @@ function setPageText(text, page, part)
     $('#pageText').fadeOut('fast', function() {
                                $(this).html(text);
                                $('#pageFooter > .page').text(page);
-                               $('#pageText > .part').text(part);
+                               $('#pageHeader > .part').text(part);
                                $(this).fadeIn('fast', function() {
                                                   webView.pageTextChanged();
                                                   toggleQuran();
