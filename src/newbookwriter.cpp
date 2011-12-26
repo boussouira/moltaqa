@@ -105,11 +105,13 @@ void NewBookWriter::addTitle(const QString &title, int tid, int level)
     if(level != m_lastLevel) {
         if(level > m_lastLevel) { //Up
             if(level - m_lastLevel != 1)
-                qDebug("WARNING: level - m_lastLevel = %d", level-m_lastLevel);
+                qDebug("WARNING: level up by %d at id %d", level-m_lastLevel, tid);
 
-             QDomNode node = m_lastTitlesElement.appendChild(titleElement);
-             if(!node.isNull())
-                 m_lastTitlesElement = node.toElement();
+            if(!m_lastTitlesElement.isNull()) {
+                QDomNode node = m_lastTitlesElement.appendChild(titleElement);
+                if(!node.isNull())
+                    m_lastTitlesElement = node.toElement();
+            }
         } else { //Down
             int levelCount = m_lastLevel - level;
             while(levelCount>0) {

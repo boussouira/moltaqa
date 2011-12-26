@@ -218,7 +218,7 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
         readSimpleBook(book, query, bookWrite, hnoCol!=-1);
     }
 
-    query.prepare(QString("SELECT id, tit, lvl, sub FROM %1 ORDER BY id").arg(book->tocTable));
+    query.prepare(QString("SELECT id, tit, lvl, sub FROM %1 ORDER BY id, sub").arg(book->tocTable));
     if(query.exec()) {
         while(query.next()) {
             bookWrite.addTitle(query.value(1).toString(),

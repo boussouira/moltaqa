@@ -31,8 +31,6 @@ void ConvertThread::run()
 
     m_convertedFiles = 0;
 
-    qsrand(QDateTime::currentDateTime().toTime_t() + (int)currentThreadId());
-
     foreach(QString file, m_files){
         try {
             QFileInfo info(file);
@@ -218,7 +216,7 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
         }
     }
 
-    if(query.exec(QString("SELECT id, tit, lvl, sub FROM t%1 ORDER BY id").arg(bookID))) {
+    if(query.exec(QString("SELECT id, tit, lvl, sub FROM t%1 ORDER BY id, sub").arg(bookID))) {
         while(query.next()) {
             writer.addTitle(query.value(1).toString(),
                             query.value(0).toInt(),

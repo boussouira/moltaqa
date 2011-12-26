@@ -8,6 +8,7 @@
 #include <qapplication.h>
 #include <qdebug.h>
 #include <qmessagebox.h>
+#include <QDateTime>
 
 static QString appRootPath;
 
@@ -21,6 +22,8 @@ int randInt(int smin, int smax)
 
 QString genBookName(QString path, bool fullPath, QString ext, QString namePrefix)
 {
+    qsrand(uint(QDateTime::currentDateTime().toMSecsSinceEpoch() & 0xFFFFFF));
+
     QDir dir(path);
     QString fileName(namePrefix);
     QString chars("abcdefghijklmnpqrstuvwxyz0123456789");

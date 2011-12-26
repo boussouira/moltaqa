@@ -6,12 +6,18 @@
 #include <qtextcodec.h>
 #include <qsettings.h>
 #include <qdatetime.h>
+#include <qdebug.h>
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     app.setLayoutDirection(Qt::RightToLeft);
     QTextCodec::setCodecForTr(QTextCodec::codecForName("utf-8"));
+
+#ifdef Q_OS_WIN
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf-8"));
+#endif
+
     QSettings::setDefaultFormat(QSettings::IniFormat);
 
     QTranslator translator;
@@ -22,8 +28,6 @@ int main(int argc, char *argv[])
     app.setOrganizationDomain("ahlalhdeeth.com");
     app.setApplicationName("Moltaqa-Library");
     app.setApplicationVersion("0.5");
-
-    qsrand(QDateTime::currentDateTime().toTime_t());
 
     int ret = -1;
 

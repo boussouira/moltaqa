@@ -36,14 +36,14 @@ void AbstractBookReader::openBook(bool fastOpen)
     Q_CHECK_PTR(m_bookInfo);
 
     if(!QFile::exists(m_bookInfo->bookPath)) {
-        throw BookException("لم يتم العثور على ملف الكتاب", bookInfo()->bookPath);
+        throw BookException(tr("لم يتم العثور على ملف الكتاب"), bookInfo()->bookPath);
     }
 
     m_zipFile.setFileName(m_bookInfo->bookPath);
     m_zip.setIoDevice(&m_zipFile);
 
     if(!m_zip.open(QuaZip::mdUnzip)) {
-        throw BookException("لا يمكن فتح ملف الكتاب", bookInfo()->bookPath, m_zip.getZipError());
+        throw BookException(tr("لا يمكن فتح ملف الكتاب"), bookInfo()->bookPath, m_zip.getZipError());
     }
 
     connected();
