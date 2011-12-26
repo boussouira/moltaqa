@@ -147,7 +147,6 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
     int soraCol = query.record().indexOf("sora");
 
     NewBookWriter writer;
-    writer.setThreadID((int)currentThreadId());
     writer.createNewBook();
     writer.startReading();
 

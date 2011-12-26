@@ -18,11 +18,6 @@ void TextQuranReader::goToPage(int page, int part)
     Q_UNUSED(part);
 }
 
-QString TextQuranReader::text()
-{
-    return m_text;
-}
-
 bool TextQuranReader::hasPrev()
 {
     return false;
@@ -30,12 +25,13 @@ bool TextQuranReader::hasPrev()
 
 bool TextQuranReader::hasNext()
 {
+    return 0;
     return m_bookQuery.next();
 }
 
 void TextQuranReader::nextPage()
 {
-    m_text = m_bookQuery.value(1).toString();
+    m_currentPage->text = m_bookQuery.value(1).toString();
     m_currentPage->pageID = m_bookQuery.value(0).toInt();
     m_currentPage->aya = m_bookQuery.value(2).toInt();
     m_currentPage->sora = m_bookQuery.value(3).toInt();

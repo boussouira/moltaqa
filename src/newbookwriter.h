@@ -16,7 +16,6 @@ class NewBookWriter
 public:
     NewBookWriter();
     ~NewBookWriter();
-    void setThreadID(int id) { m_threadID = id; }
     void createNewBook(QString bookPath=QString());
     QString bookPath();
 
@@ -45,14 +44,9 @@ protected:
     int m_prevID;
     int m_lastLevel;
     int m_titleID;
-    // Book information
-    QHash<int, int> m_firstPage;
-    QHash<int, int> m_lastPage;
 
     QHash<int, int> m_idsHash; ///< For mapping between shamela ids and our ids
-    QHash<int, int> m_levels;
     QTime m_time;
-    int m_threadID;
 };
 
 #endif // NEWBOOKWRITER_H

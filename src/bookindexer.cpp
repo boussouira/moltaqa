@@ -102,7 +102,7 @@ void BookIndexer::indexQuran(IndexTask *task)
         reader.nextPage();
 
         pageID = Utils::intToWChar(page->pageID);
-        text = Utils::QStringToWChar(reader.text());
+        text = Utils::QStringToWChar(page->text);
         soraNumber = Utils::intToWChar(page->sora);
 
         doc.add( *_CLNEW Field(BOOK_ID_FIELD, bookID, storeAndNoToken));
@@ -145,7 +145,7 @@ void BookIndexer::indexSimpleBook(IndexTask *task)
         reader.nextPage();
 
         pageID = Utils::intToWChar(page->pageID);
-        text = Utils::QStringToWChar(reader.text());
+        text = Utils::QStringToWChar(page->text);
         titleID = Utils::intToWChar(page->titleID);
 
         doc.add( *_CLNEW Field(BOOK_ID_FIELD, bookID, storeAndNoToken));
@@ -188,7 +188,7 @@ void BookIndexer::indexTaffesirBook(IndexTask *task)
         reader.nextPage();
 
         pageID = Utils::intToWChar(page->pageID);
-        text = Utils::QStringToWChar(reader.text());
+        text = Utils::QStringToWChar(page->text);
         titleID = Utils::intToWChar(page->titleID);
 
         doc.add( *_CLNEW Field(BOOK_ID_FIELD, bookID, storeAndNoToken));

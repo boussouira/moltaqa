@@ -1,4 +1,5 @@
 #include "textbookreader.h"
+#include "bookpage.h"
 
 TextBookReader::TextBookReader(QObject *parent) :
     AbstractBookReader(parent)
@@ -7,6 +8,13 @@ TextBookReader::TextBookReader(QObject *parent) :
 
 TextBookReader::~TextBookReader()
 {
+}
+
+void TextBookReader::firstPage()
+{
+    AbstractBookReader::firstPage();
+
+    m_currentPage->titleID = m_titles.first();
 }
 
 void TextBookReader::getTitles()

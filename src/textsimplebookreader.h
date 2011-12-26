@@ -9,10 +9,7 @@ public:
     TextSimpleBookReader(QObject *parent=0);
     ~TextSimpleBookReader();
 
-    void firstPage();
     void setCurrentPage(QDomElement pageNode);
-
-    QString text();
 };
 
 #endif // TEXTSIMPLEBOOKREADER_H

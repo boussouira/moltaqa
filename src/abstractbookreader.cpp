@@ -47,10 +47,7 @@ void AbstractBookReader::openBook(bool fastOpen)
     }
 
     connected();
-
-    if(!fastOpen) {
-        getBookInfo();
-    }
+    getBookInfo();
 }
 
 void AbstractBookReader::setBookInfo(LibraryBook *bi)

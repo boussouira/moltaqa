@@ -16,7 +16,6 @@ public:
     bool hasNext();
     bool hasPrev();
 
-    QString text();
     void setCurrentPage(QDomElement pageNode) {}
 };
 

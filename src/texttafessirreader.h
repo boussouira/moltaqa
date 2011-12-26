@@ -10,10 +10,7 @@ public:
     TextTafessirReader(QObject *parent = 0);
     ~TextTafessirReader();
 
-    void firstPage();
     void setCurrentPage(QDomElement pageNode);
-
-    QString text();
 };
 
 #endif // TEXTTAFESSIRREADER_H

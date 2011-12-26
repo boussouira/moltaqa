@@ -162,7 +162,6 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
     QString path = Utils::genBookName(m_library->booksDir(), true);
 
     NewBookWriter bookWrite;
-    bookWrite.setThreadID(m_threadID);
     bookWrite.createNewBook(path);
 
     QSqlDatabase bookDB;
@@ -253,7 +252,6 @@ void LibraryCreator::addQuran()
 
     {
         newQuranWriter quranWrite;
-        quranWrite.setThreadID(m_threadID);
         quranWrite.createNewBook(path);
 #ifdef USE_MDBTOOLS
         MdbConverter mdb(true);
@@ -286,7 +284,6 @@ void LibraryCreator::addQuran()
             LOG_SQL_ERROR(query);
         }
 
-        quranWrite.addSowarInfo();
         quranWrite.endReading();
     }
 

@@ -7,13 +7,16 @@
 #include <qhash.h>
 #include <qapplication.h>
 
+#include <qfile.h>
+#include <qdom.h>
+
+#include <quazip/quazip.h>
+#include <quazip/quazipfile.h>
+
 class newQuranWriter
 {
-    Q_DECLARE_TR_FUNCTIONS(newQuranWriter)
-
 public:
     newQuranWriter();
-    void setThreadID(int id) { m_threadID = id; }
     void createNewBook(QString bookPath=QString());
     QString bookPath();
 
@@ -23,18 +26,15 @@ public:
     /// Commits a transaction to the database
     void endReading();
     void addPage(const QString &text, int soraNum, int ayaNum, int pageNum);
-    void addSoraInfo(const QString &name, const QString &SoraDescent, int ayatCount);
-    void addSowarInfo();
-
-protected:
-    void createBookTables();
 
 protected:
     QString m_tempFolder;
     QString m_bookPath;
-    QSqlDatabase m_bookDB;
-    QSqlQuery m_bookQuery;
-    int m_threadID;
+    QFile m_file;
+    QuaZip m_zip;
+    QDomDocument m_pagesDoc;
+    QDomElement m_pagesElemnent;
+    int m_pageId;
 };
 
 #endif // NEWQURANWRITER_H
