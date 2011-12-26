@@ -11,12 +11,12 @@ public:
     TextBookReader(QObject *parent = 0);
     ~TextBookReader();
 
-    virtual void goFirst()=0;
-
     /**
       Get current page text
       */
-    virtual QString text() = 0;
+    virtual QString text()=0;
+
+    virtual void getTitles();
 
 protected:
      void connected();
@@ -24,6 +24,7 @@ protected:
 protected:
      QSqlQuery m_bookQuery;
      QString m_text;
+     QList<int> m_titles;
 };
 
 #endif // TEXTBOOKREADER_H

@@ -385,8 +385,8 @@ void LibraryCreator::readSimpleBook(ShamelaBookInfo *book, QSqlQuery &query, New
                 lastID = writer.addPage(query.value(1).toString(),
                                         query.value(0).toInt(),
                                         query.value(2).toInt(),
-                                        query.value(3).toInt());
-                writer.addHaddithNumber(lastID, query.value(4).toInt());
+                                        query.value(3).toInt(),
+                                        query.value(4).toInt());
                 if(mapPages)
                     m_mapper->addPageMap(book->id, query.value(0).toInt(), lastID);
             }
@@ -422,9 +422,9 @@ void LibraryCreator::readTafessirBook(ShamelaBookInfo *book, QSqlQuery &query, N
                                         query.value(0).toInt(),
                                         query.value(2).toInt(),
                                         query.value(3).toInt(),
+                                        query.value(6).toInt(),
                                         query.value(4).toInt(),
                                         query.value(5).toInt());
-                writer.addHaddithNumber(lastID, query.value(6).toInt());
             }
         } else {
             LOG_SQL_ERROR(query);
@@ -437,6 +437,7 @@ void LibraryCreator::readTafessirBook(ShamelaBookInfo *book, QSqlQuery &query, N
                                query.value(0).toInt(),
                                query.value(2).toInt(),
                                query.value(3).toInt(),
+                               -1,
                                query.value(4).toInt(),
                                query.value(5).toInt());
             }

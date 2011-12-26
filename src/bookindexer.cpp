@@ -92,7 +92,7 @@ void BookIndexer::indexQuran(IndexTask *task)
     reader.setLibraryManager(MW->libraryManager());
 
     reader.openBook(true);
-    reader.goFirst();
+    reader.firstPage();
 
     BookPage *page = reader.page();
 
@@ -135,7 +135,7 @@ void BookIndexer::indexSimpleBook(IndexTask *task)
 
     reader.openBook(true);
     reader.getTitles();
-    reader.goFirst();
+    reader.firstPage();
 
     BookPage *page = reader.page();
 
@@ -178,7 +178,7 @@ void BookIndexer::indexTaffesirBook(IndexTask *task)
 
     reader.openBook(true);
     reader.getTitles();
-    reader.goFirst();
+    reader.firstPage();
 
     BookPage *page = reader.page();
 

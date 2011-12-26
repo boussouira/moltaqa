@@ -48,7 +48,7 @@ void OpenPageDialog::setInfo(LibraryBook *info, BookPage *page)
     ui->spinPage->setValue(page->page);
     ui->spinPart->setValue(page->part);
 
-    ui->spinPart->setMaximum(info->partsCount);
+//    ui->spinPart->setMaximum(info->partsCount);
 
     if(info->isQuran()) {
         ui->spinPage->setMaximum(info->lastPage());

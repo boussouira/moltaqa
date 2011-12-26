@@ -7,16 +7,6 @@ TextQuranReader::TextQuranReader(QObject *parent) :
 {
 }
 
-void TextQuranReader::goFirst()
-{
-    QString sql = "SELECT id, ayaText, ayaNumber, soraNumber, pageNumber "
-            "FROM quranText "
-            "ORDER BY id";
-
-    if(!m_bookQuery.exec(sql))
-        LOG_SQL_ERROR(m_bookQuery);
-}
-
 void TextQuranReader::goToPage(int pid)
 {
     Q_UNUSED(pid);

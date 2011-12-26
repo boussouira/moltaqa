@@ -45,106 +45,36 @@ void RichTafessirReader::connected()
     RichBookReader::connected();
 }
 
-void RichTafessirReader::goToPage(int pid)
+void RichTafessirReader::setCurrentPage(QDomElement pageNode)
 {
     m_formatter->start();
 
-    int id;
-    if(pid == -1) // First page
-        id = m_bookInfo->firstID;
-    else if(pid == -2) //Last page
-        id = m_bookInfo->lastID;
-    else // The given page id
-        id = pid;
+    m_currentElement = pageNode;
 
-    TafessirQuery tafessirQuery(m_bookDB, m_bookInfo);
-    if(id >= m_currentPage->pageID)
-        tafessirQuery.nextPage(id);
-    else
-        tafessirQuery.prevPage(id);
-
-    QString text;
-    if(tafessirQuery.next()) {
-        m_currentPage->pageID = tafessirQuery.value(0).toInt();
-        m_currentPage->part = tafessirQuery.value(2).toInt();
-        m_currentPage->page = tafessirQuery.value(3).toInt();
-        m_currentPage->aya =  tafessirQuery.value(4).toInt();
-        m_currentPage->sora =  tafessirQuery.value(5).toInt();
-
-        text = QString::fromUtf8(qUncompress(tafessirQuery.value(1).toByteArray()));
-    }
+    m_currentPage->pageID = m_currentElement.attribute("id").toInt();
+    m_currentPage->page = m_currentElement.attribute("page").toInt();
+    m_currentPage->part = m_currentElement.attribute("part").toInt();
+    m_currentPage->sora = m_currentElement.attribute("sora").toInt();
+    m_currentPage->aya = m_currentElement.attribute("aya").toInt();
 
     m_currentPage->titleID = getPageTitleID(m_currentPage->pageID);
 
     // TODO: don't show quran text when browsing tafessir book directly?
-    if(m_quranInfo && m_showQuran) {
-        readQuranText(m_currentPage->sora,
-                      m_currentPage->aya,
-                      tafessirQuery.getAyatCount(m_currentPage->sora, m_currentPage->aya));
-    }
+//    if(m_quranInfo && m_showQuran) {
+//        readQuranText(m_currentPage->sora,
+//                      m_currentPage->aya,
+//                      tafessirQuery.getAyatCount(m_currentPage->sora, m_currentPage->aya));
+//    }
 
+    QString pageText = getFileContent(QString("pages/p%1.html").arg(m_currentPage->pageID));
     if(m_query && m_highlightPageID == m_currentPage->pageID)
-        m_formatter->insertText(Utils::highlightText(text, m_query, false));
+        m_textFormat->insertText(Utils::highlightText(pageText, m_query, false));
     else
-        m_formatter->insertText(text);
+        m_textFormat->insertText(pageText);
 
     m_formatter->done();
 
     emit textChanged();
-}
-
-void RichTafessirReader::goToPage(int page, int part)
-{
-    TafessirQuery tafessirQuery(m_bookDB, m_bookInfo);
-
-    tafessirQuery.page(page, part);
-    if(tafessirQuery.next())
-        goToPage(tafessirQuery.value(0).toInt());
-}
-
-BookIndexModel * RichTafessirReader::indexModel()
-{
-    m_indexModel= new BookIndexModel();
-    BookIndexNode *rootNode = new BookIndexNode();
-
-    childTitles(rootNode, 0);
-
-    m_indexModel->setRootNode(rootNode);
-
-    return m_indexModel;
-}
-
-BookIndexModel *RichTafessirReader::topIndexModel()
-{
-    BookIndexModel *indexModel = new BookIndexModel();
-    BookIndexNode *rootNode = new BookIndexNode();
-
-    QSqlQuery query(m_bookDB);
-    query.exec(QString("SELECT id, parentID, pageID, title FROM bookIndex "
-                       "WHERE parentID = %1 ORDER BY id").arg(0));
-    while(query.next())
-    {
-        BookIndexNode *catNode = new BookIndexNode(query.value(3).toString(),
-                                                   query.value(2).toInt());
-        rootNode->appendChild(catNode);
-    }
-
-    indexModel->setRootNode(rootNode);
-
-    return indexModel;
-}
-
-void RichTafessirReader::childTitles(BookIndexNode *parentNode, int tid)
-{
-    QSqlQuery query(m_bookDB);
-    query.exec(QString("SELECT id, parentID, pageID, title FROM bookIndex "
-                       "WHERE parentID = %1 ORDER BY id").arg(tid));
-    while(!m_stopModelLoad && query.next()) {
-        BookIndexNode *catNode = new BookIndexNode(query.value(3).toString(),
-                                                   query.value(2).toInt());
-        childTitles(catNode, query.value(0).toInt());
-        parentNode->appendChild(catNode);
-    }
 }
 
 void RichTafessirReader::openQuranBook()
@@ -183,23 +113,4 @@ void RichTafessirReader::readQuranText(int sora, int aya, int count)
 
         m_formatter->endQuran();
     }
-}
-
-void RichTafessirReader::goToSora(int sora, int aya)
-{
-    TafessirQuery tafessirQuery(m_bookDB, m_bookInfo);
-
-    int pageID = tafessirQuery.getPageID(sora, aya);
-
-    if(pageID > 0)
-        goToPage(pageID);
-}
-
-void RichTafessirReader::goToHaddit(int hadditNum)
-{
-    TafessirQuery tafessirQuery(m_bookDB, m_bookInfo);
-
-    int pageID = tafessirQuery.getHaddithPage(hadditNum);
-    if(pageID > 0)
-        goToPage(pageID);
 }

@@ -68,7 +68,7 @@ void ImportDialog::on_pushAddFile_clicked()
 {
     QStringList files = QFileDialog::getOpenFileNames(this,
                                                       tr("اختر الكتب التي تريد استيرادها:"),
-                                                      QString(),
+                                                      "/media/win-c/Users/Naruto/Desktop/shamelaBooks/",
                                                       "Shamela books (*.bok)");
     foreach(QString file, files) {
         addFile(file);

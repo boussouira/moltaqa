@@ -4,6 +4,8 @@
 #include "abstractbookreader.h"
 #include "clutils.h"
 
+class BookIndexNode;
+
 class RichBookReader : public AbstractBookReader
 {
     Q_OBJECT
@@ -23,7 +25,7 @@ public:
     /**
       Get the full index model of the curren book
       */
-    virtual BookIndexModel *indexModel() = 0;
+    virtual BookIndexModel *indexModel();
     /**
       Get only a top level index model
       */
@@ -43,6 +45,7 @@ public:
 
 protected:
     virtual void connected();
+    void readItem(QDomNode &itemNode, BookIndexNode *parent);
 
 signals:
     void textChanged();
@@ -50,6 +53,7 @@ signals:
 protected:
     TextFormatter *m_textFormat;
     lucene::search::Query *m_query;
+    QList<int> m_pageTitles;
     int m_highlightPageID;
     bool m_stopModelLoad;
 };

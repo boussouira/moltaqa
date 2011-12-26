@@ -35,19 +35,16 @@ void AbstractBookReader::openBook(bool fastOpen)
 {
     Q_CHECK_PTR(m_bookInfo);
 
-    m_connectionName = QString("book_i%1_").arg(m_bookInfo->bookID);
-    while(QSqlDatabase::contains(m_connectionName))
-        m_connectionName.append("_");
+    if(!QFile::exists(m_bookInfo->bookPath)) {
+        throw BookException("لم يتم العثور على ملف الكتاب", bookInfo()->bookPath);
+    }
 
-    m_bookDB = QSqlDatabase::addDatabase("QSQLITE", m_connectionName);
-    m_bookDB.setDatabaseName(m_bookInfo->bookPath);
+    m_zipFile.setFileName(m_bookInfo->bookPath);
+    m_zip.setIoDevice(&m_zipFile);
 
-
-    if (!m_bookDB.open())
-        throw BookException(tr("لم يمكن فتح قاعدة البيانات")+ ": " +m_bookInfo->bookPath,
-                            m_bookDB.lastError().text());
-
-    m_remover.connectionName = m_connectionName;
+    if(!m_zip.open(QuaZip::mdUnzip)) {
+        throw BookException("لا يمكن فتح ملف الكتاب", bookInfo()->bookPath, m_zip.getZipError());
+    }
 
     connected();
 
@@ -73,6 +70,76 @@ void AbstractBookReader::connected()
 {
 }
 
+QDomElement AbstractBookReader::getPage(int pid)
+{
+    QDomElement e = m_rootElement.firstChildElement();
+
+    while(!e.isNull()) {
+        int pageID = e.attribute("id").toInt();
+
+        if(pageID == pid) {
+            return e;
+        }
+
+        e = e.nextSiblingElement();
+    }
+
+    return QDomElement();
+}
+
+QDomElement AbstractBookReader::getPageId(int page, int part)
+{
+    QDomElement e = m_rootElement.firstChildElement();
+
+    while(!e.isNull()) {
+        int pageNum = e.attribute("page").toInt();
+        int partNum = e.attribute("part").toInt();
+
+        if(pageNum == page && partNum == part) {
+            return e;
+        }
+
+        e = e.nextSiblingElement();
+    }
+
+    return QDomElement();
+}
+
+QDomElement AbstractBookReader::getPageId(int haddit)
+{
+    QDomElement e = m_rootElement.firstChildElement();
+
+    while(!e.isNull()) {
+        int hadditNum = e.attribute("haddit").toInt();
+
+        if(hadditNum == haddit) {
+            return e;
+        }
+
+        e = e.nextSiblingElement();
+    }
+
+    return QDomElement();
+}
+
+QDomElement AbstractBookReader::getQuranPageId(int sora, int aya)
+{
+    QDomElement e = m_rootElement.firstChildElement();
+
+    while(!e.isNull()) {
+        int soraNum = e.attribute("sora").toInt();
+        int ayaNum = e.attribute("aya").toInt();
+
+        if(soraNum == sora && ayaNum == aya) {
+            return e;
+        }
+
+        e = e.nextSiblingElement();
+    }
+
+    return QDomElement();
+}
+
 void AbstractBookReader::setLibraryManager(LibraryManager *db)
 {
     m_libraryManager = db;
@@ -93,37 +160,78 @@ BookPage * AbstractBookReader::page()
     return m_currentPage;
 }
 
+void AbstractBookReader::goToPage(int pid)
+{
+    QDomElement e = getPage(pid);
+
+    if(!e.isNull())
+        setCurrentPage(e);
+}
+
+void AbstractBookReader::goToPage(int page, int part)
+{
+    QDomElement e = getPageId(page, part);
+
+    if(!e.isNull())
+        setCurrentPage(e);
+}
+
 void AbstractBookReader::goToSora(int sora, int aya)
 {
-    Q_UNUSED(sora);
-    Q_UNUSED(aya);
+    QDomElement e = getQuranPageId(sora, aya);
+
+    if(!e.isNull())
+        setCurrentPage(e);
 }
 
 void AbstractBookReader::goToHaddit(int hadditNum)
 {
-    Q_UNUSED(hadditNum);
+    QDomElement e = getPageId(hadditNum);
+
+    if(!e.isNull())
+        setCurrentPage(e);
+}
+
+void AbstractBookReader::firstPage()
+{
+    QDomElement e = m_rootElement.firstChildElement();
+
+    if(!e.isNull())
+        setCurrentPage(e);
+}
+
+void AbstractBookReader::lastPage()
+{
+    QDomElement e = m_rootElement.lastChildElement();
+
+    if(!e.isNull())
+        setCurrentPage(e);
 }
 
 void AbstractBookReader::nextPage()
 {
-    if(hasNext())
-        goToPage(m_currentPage->pageID+1);
+    QDomElement e = m_currentElement.nextSiblingElement();
+
+    if(!e.isNull())
+        setCurrentPage(e);
 }
 
 void AbstractBookReader::prevPage()
 {
-    if(hasPrev())
-        goToPage(m_currentPage->pageID-1);
+    QDomElement e = m_currentElement.previousSiblingElement();
+
+    if(!e.isNull())
+        setCurrentPage(e);
 }
 
 bool AbstractBookReader::hasNext()
 {
-    return (m_currentPage->pageID < m_bookInfo->lastID);
+    return !m_currentElement.nextSibling().isNull();
 }
 
 bool AbstractBookReader::hasPrev()
 {
-    return (m_currentPage->pageID > m_bookInfo->firstID);
+    return !m_currentElement.previousSibling().isNull();
 }
 
 BookPage *AbstractBookReader::getBookPage(LibraryBook *book, int pageID)
@@ -135,19 +243,33 @@ BookPage *AbstractBookReader::getBookPage(LibraryBook *book, int pageID)
         return page;
     }
 
+    if(!QFile::exists(book->bookPath)) {
+        qWarning() << "File doesn't exists:" << book->bookPath;
+        return 0;
+    }
+
+    QFile zipFile(book->bookPath);
+    QuaZip zip(&zipFile);
+
+    if(!zip.open(QuaZip::mdUnzip)) {
+        qWarning() << "Can't open zip file:" << book->bookPath << "- Error:" << zip.getZipError();
+    }
+
     if(book->isNormal())
-        page = getSimpleBookPage(book, pageID);
+        page = getSimpleBookPage(book, &zip, pageID);
     else if(book->isTafessir())
-        page = getTafessirPage(book, pageID);
+        page = getTafessirPage(book, &zip, pageID);
     else if(book->isQuran())
-        page = getQuranPage(book, pageID);
+        page = getQuranPage(book, &zip, pageID);
     else
         qWarning("getBookPage: Unknow book type");
+
+    zip.close();
 
     return page;
 }
 
-BookPage *AbstractBookReader::getSimpleBookPage(LibraryBook *book, int pageID)
+BookPage *AbstractBookReader::getSimpleBookPage(LibraryBook *book, QuaZip *zip, int pageID)
 {
     BookPage *page = 0;
     QString connName = QString("getSimpleBookPage_b%1_p%2").arg(book->bookID).arg(pageID);
@@ -195,7 +317,7 @@ BookPage *AbstractBookReader::getSimpleBookPage(LibraryBook *book, int pageID)
     return page;
 }
 
-BookPage *AbstractBookReader::getTafessirPage(LibraryBook *book, int pageID)
+BookPage *AbstractBookReader::getTafessirPage(LibraryBook *book, QuaZip *zip, int pageID)
 {
     BookPage *page = 0;
     QString connName = QString("getTafessirPage_b%1_p%2").arg(book->bookID).arg(pageID);
@@ -257,7 +379,7 @@ BookPage *AbstractBookReader::getTafessirPage(LibraryBook *book, int pageID)
     return page;
 }
 
-BookPage *AbstractBookReader::getQuranPage(LibraryBook *book, int pageID)
+BookPage *AbstractBookReader::getQuranPage(LibraryBook *book, QuaZip *zip, int pageID)
 {
     BookPage *page = 0;
     QString connName = QString("getQuranPage_b%1_p%2").arg(book->bookID).arg(pageID);
@@ -308,22 +430,39 @@ BookPage *AbstractBookReader::getQuranPage(LibraryBook *book, int pageID)
     return page;
 }
 
+QString AbstractBookReader::getFileContent(QuaZip *zip, QString fileName)
+{
+    QuaZipFile file(zip);
+
+    if(zip->setCurrentFile(fileName)) {
+        if(file.open(QIODevice::ReadOnly)) {
+            return QString::fromUtf8(file.readAll());
+        } else {
+            qWarning("testRead(): file.open(): %d", file.getZipError());
+        }
+    } else {
+        qWarning("setCurrentFile: %d", zip->getZipError());
+    }
+
+    return QString();
+}
+
 void AbstractBookReader::getBookInfo()
 {
-    QSqlQuery bookQuery(m_bookDB);
-    if(!m_bookInfo->haveInfo()) {
-        bookQuery.exec(QString("SELECT MAX(partNum), MIN(id), MAX(id) from %1 ").arg(m_bookInfo->textTable));
-        if(bookQuery.next()) {
-            bool ok;
-            int parts = bookQuery.value(0).toInt(&ok);
-            if(!ok)
-                qWarning("Can't get parts count");
+   m_pagesMetaFile.setZip(&m_zip);
 
-            m_bookInfo->partsCount = parts;
-            m_bookInfo->firstID = bookQuery.value(1).toInt();
-            m_bookInfo->lastID = bookQuery.value(2).toInt();
-        }
+   if(m_zip.setCurrentFile("pages.xml")) {
+       if(!m_pagesMetaFile.open(QIODevice::ReadOnly)) {
+           qWarning("testRead(): file.open(): %d", m_pagesMetaFile.getZipError());
+           return;
+       }
+   }
 
-        m_libraryManager->updateBookMeta(m_bookInfo, false);
-    }
+   if(!m_bookDoc.setContent(&m_pagesMetaFile)) {
+       qDebug("Error");
+       m_pagesMetaFile.close();
+       return;
+   }
+
+   m_rootElement = m_bookDoc.documentElement();
 }

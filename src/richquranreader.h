@@ -31,6 +31,7 @@ public:
 
     int getPageTitleID(int pageID);
 
+    void setCurrentPage(QDomElement pageNode) {}
 protected:
     void connected();
     void getBookInfo();

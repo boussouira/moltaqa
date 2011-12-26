@@ -9,45 +9,6 @@ TextTafessirReader::TextTafessirReader(QObject *parent) :
 
 TextTafessirReader::~TextTafessirReader()
 {
-    m_titles.clear();
-}
-
-void TextTafessirReader::getTitles()
-{
-    QSqlQuery query(m_bookDB);
-
-    query.prepare("SELECT pageID, id "
-                  "FROM bookIndex "
-                  "ORDER BY id");
-
-    if(query.exec()) {
-        while(query.next()) {
-            m_titles.insert(query.value(0).toInt(), query.value(1).toInt());
-        }
-    } else {
-        LOG_SQL_ERROR(query);
-    }
-}
-
-void TextTafessirReader::goFirst()
-{
-    QString sql = "SELECT id, pageText, partNum, pageNum "
-            "FROM bookPages "
-            "ORDER BY id";
-
-    if(!m_bookQuery.exec(sql))
-        LOG_SQL_ERROR(m_bookQuery);
-}
-
-void TextTafessirReader::goToPage(int pid)
-{
-    Q_UNUSED(pid);
-}
-
-void TextTafessirReader::goToPage(int page, int part)
-{
-    Q_UNUSED(page);
-    Q_UNUSED(part);
 }
 
 QString TextTafessirReader::text()
@@ -55,23 +16,22 @@ QString TextTafessirReader::text()
     return m_text;
 }
 
-bool TextTafessirReader::hasPrev()
+void TextTafessirReader::firstPage()
 {
-    return false;
+    TextBookReader::firstPage();
+
+    m_currentPage->titleID = m_titles.first();
 }
 
-bool TextTafessirReader::hasNext()
+void TextTafessirReader::setCurrentPage(QDomElement pageNode)
 {
-    return m_bookQuery.next();
-}
+    m_currentElement = pageNode;
+    m_currentPage->pageID = pageNode.attribute("id").toInt();
+    m_currentPage->part = pageNode.attribute("part").toInt();
+    m_currentPage->page = pageNode.attribute("page").toInt();
 
-void TextTafessirReader::nextPage()
-{
-    m_text = QString::fromUtf8(qUncompress(m_bookQuery.value(1).toByteArray()));
-    m_currentPage->pageID = m_bookQuery.value(0).toInt();
-    m_currentPage->part = m_bookQuery.value(2).toInt();
-    m_currentPage->page = m_bookQuery.value(3).toInt();
+    m_text = getFileContent(QString("pages/p%1.html").arg(m_currentPage->pageID));
 
-    m_currentPage->titleID = m_titles.value(m_currentPage->pageID,
-                                            m_currentPage->titleID);
+    if(m_titles.contains(m_currentPage->pageID))
+        m_currentPage->titleID = m_currentPage->pageID;
 }

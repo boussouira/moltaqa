@@ -3,24 +3,17 @@
 
 #include "richbookreader.h"
 
-class BookIndexNode;
-
 class RichSimpleBookReader : public RichBookReader
 {
 public:
     RichSimpleBookReader(QObject *parent=0);
     ~RichSimpleBookReader();
 
-    void goToPage(int pid = -1);
-    void goToPage(int page, int part);
-    void goToHaddit(int hadditNum);
-
-    BookIndexModel *indexModel();
-    BookIndexModel *topIndexModel();
+    void setCurrentPage(QDomElement pageNode);
 
 protected:
-    void childTitles(BookIndexNode *parentNode, int tid);
     void connected();
+    void readItem(QDomNode &itemNode, BookIndexNode *parent);
 };
 
 #endif // RICHSIMPLEBOOKREADER_H

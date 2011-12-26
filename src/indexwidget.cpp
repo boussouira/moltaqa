@@ -157,6 +157,9 @@ void IndexWidget::hidePartSpin(bool visible)
 
 void IndexWidget::selectTitle(int tid)
 {
+    if(!m_model)
+        return;
+
     QModelIndexList selected = ui->treeView->selectionModel()->selectedIndexes();
 
     if(!selected.isEmpty()) {

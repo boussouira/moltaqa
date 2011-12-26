@@ -9,21 +9,10 @@ public:
     TextSimpleBookReader(QObject *parent=0);
     ~TextSimpleBookReader();
 
-    void getTitles();
-    void goFirst();
-
-    void goToPage(int pid);
-    void goToPage(int page, int part);
-
-    bool hasPrev();
-    bool hasNext();
-
-    void nextPage();
+    void firstPage();
+    void setCurrentPage(QDomElement pageNode);
 
     QString text();
-
-protected:
-    QHash<int, int> m_titles;
 };
 
 #endif // TEXTSIMPLEBOOKREADER_H

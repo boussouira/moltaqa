@@ -46,8 +46,6 @@ void NewBookWriter::createNewBook(QString bookPath)
     if(!m_zip.open(QuaZip::mdCreate)) {
         throw BookException(QObject::tr("لا يمكن انشاء كتاب جديد"), m_bookPath, m_zip.getZipError());
     }
-
-//    createBookTables();
 }
 
 int NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int partNum,
@@ -67,7 +65,7 @@ int NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int par
     page.setAttribute("part", partNum);
 
     if(hadditNum != -1)
-        page.setAttribute("haddit", ayaNum);
+        page.setAttribute("haddit", hadditNum);
 
     if(soraNum != -1 && ayaNum != -1) {
         page.setAttribute("aya", ayaNum);
@@ -163,7 +161,7 @@ void NewBookWriter::endReading()
     QuaZipFile titlesFile(&m_zip);
     if(titlesFile.open(QIODevice::WriteOnly, QuaZipNewInfo("titles.xml"))) {
         QTextStream out(&titlesFile);
-        out << m_titlesDoc.toString(2);
+        out << m_titlesDoc.toString(-1);
     } else {
         qCritical("Can't write to titles.xml - Error: %d", titlesFile.getZipError());
     }
@@ -171,7 +169,7 @@ void NewBookWriter::endReading()
     QuaZipFile pagesFile(&m_zip);
     if(pagesFile.open(QIODevice::WriteOnly, QuaZipNewInfo("pages.xml"))) {
         QTextStream out(&pagesFile);
-        out << m_pagesDoc.toString(2);
+        out << m_pagesDoc.toString(-1);
     } else {
         qCritical("Can't write to pages.xml - Error: %d", pagesFile.getZipError());
     }

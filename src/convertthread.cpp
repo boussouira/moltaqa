@@ -31,7 +31,7 @@ void ConvertThread::run()
 
     m_convertedFiles = 0;
 
-    qsrand(QDateTime::currentDateTime().toTime_t());
+    qsrand(QDateTime::currentDateTime().toTime_t() + (int)currentThreadId());
 
     foreach(QString file, m_files){
         try {
@@ -165,9 +165,9 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
                                             query.value(0).toInt(),
                                             query.value(2).toInt(),
                                             query.value(3).toInt(),
+                                            query.value(6).toInt(),
                                             query.value(4).toInt(),
                                             query.value(5).toInt());
-                    writer.addHaddithNumber(lastID, query.value(6).toInt());
                 }
             } else {
                 LOG_SQL_ERROR(query);
@@ -180,6 +180,7 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
                                    query.value(0).toInt(),
                                    query.value(2).toInt(),
                                    query.value(3).toInt(),
+                                   -1,
                                    query.value(4).toInt(),
                                    query.value(5).toInt());
                 }
@@ -196,8 +197,8 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
                     lastID = writer.addPage(query.value(1).toString(),
                                             query.value(0).toInt(),
                                             query.value(2).toInt(),
-                                            query.value(3).toInt());
-                    writer.addHaddithNumber(lastID, query.value(4).toInt());
+                                            query.value(3).toInt(),
+                                            query.value(4).toInt());
                 }
             } else {
                 LOG_SQL_ERROR(query);

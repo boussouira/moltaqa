@@ -5,8 +5,14 @@
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
 #include <qcoreapplication.h>
+#include <qfile.h>
+#include <qdom.h>
+
 #include "librarymanager.h"
 #include "sqlutils.h"
+
+#include <quazip/quazip.h>
+#include <quazip/quazipfile.h>
 
 class LibraryInfo;
 class LibraryBook;
@@ -35,12 +41,12 @@ public:
 
       @param pid page id, if pid == -1 then open the first page, if pid == -2 the open last page
       */
-    virtual void goToPage(int pid = -1)=0;
+    virtual void goToPage(int pid = -1);
 
     /**
       Open page at the given page and part number
       */
-    virtual void goToPage(int page, int part)=0;
+    virtual void goToPage(int page, int part);
 
     /**
       Open first page with given sora and aya number
@@ -51,6 +57,9 @@ public:
       Open page with the given haddit number
       */
     virtual void goToHaddit(int hadditNum);
+
+    virtual void firstPage();
+    virtual void lastPage();
 
     /**
       Open next page
@@ -87,6 +96,12 @@ public:
     virtual bool hasPrev();
 
     static BookPage *getBookPage(LibraryBook *book, int pageID);
+    static QString getFileContent(QuaZip *zip, QString fileName);
+
+    inline QString getFileContent(QString fileName)
+    {
+        return getFileContent(&m_zip, fileName);
+    }
 
 protected:
     /**
@@ -96,10 +111,17 @@ protected:
 
     virtual void connected();
 
+    virtual void setCurrentPage(QDomElement pageNode)=0;
+
+    QDomElement getPage(int pid);
+    QDomElement getPageId(int page, int part);
+    QDomElement getPageId(int haddit);
+    QDomElement getQuranPageId(int sora, int aya);
+
 private:
-    static BookPage *getSimpleBookPage(LibraryBook *book, int pageID);
-    static BookPage *getTafessirPage(LibraryBook *book, int pageID);
-    static BookPage *getQuranPage(LibraryBook *book, int pageID);
+    static BookPage *getSimpleBookPage(LibraryBook *book, QuaZip *zip, int pageID);
+    static BookPage *getTafessirPage(LibraryBook *book, QuaZip *zip, int pageID);
+    static BookPage *getQuranPage(LibraryBook *book, QuaZip *zip, int pageID);
 
 protected:
     Utils::DatabaseRemover m_remover;
@@ -110,6 +132,12 @@ protected:
     QSqlDatabase m_bookDB;
     QString m_bookDBPath;
     QString m_connectionName;
+    QFile m_zipFile;
+    QuaZip m_zip;
+    QuaZipFile m_pagesMetaFile;
+    QDomDocument m_bookDoc;
+    QDomElement m_rootElement;
+    QDomElement m_currentElement;
 };
 
 #endif // ABSTRACTBOOKREADER_H

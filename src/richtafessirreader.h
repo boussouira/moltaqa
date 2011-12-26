@@ -14,13 +14,7 @@ public:
     RichTafessirReader(QObject *parent=0, bool showQuran=true);
     ~RichTafessirReader();
 
-    void goToPage(int pid = -1);
-    void goToPage(int page, int part);
-    void goToSora(int sora, int aya);
-    void goToHaddit(int hadditNum);
-
-    BookIndexModel *indexModel();
-    BookIndexModel *topIndexModel();
+    void setCurrentPage(QDomElement pageNode);
 
 protected:
     void childTitles(BookIndexNode *parentNode, int tid);

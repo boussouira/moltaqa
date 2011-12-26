@@ -28,7 +28,7 @@ void RichBookReader::connected()
 
 bool RichBookReader::needFastIndexLoad()
 {
-    return true;
+    return false;
 }
 
 void RichBookReader::highlightPage(int pageID, lucene::search::Query *query)
@@ -49,23 +49,24 @@ void RichBookReader::stopModelLoad()
 
 int RichBookReader::getPageTitleID(int pageID)
 {
-    QSqlQuery query(m_bookDB);
+    int id = pageID;
+    if(!m_pageTitles.contains(pageID)) {
+        for(int i=0; i<m_pageTitles.size(); i++) {
+            id = m_pageTitles.at(i);
+            int nextId = m_pageTitles.at((i<m_pageTitles.size()-1) ? i+1 : i);
 
-    query.prepare(QString("SELECT pageID FROM %1 "
-                          "WHERE pageID <= ? "
-                          "ORDER BY pageID DESC LIMIT 1")
-                  .arg(m_bookInfo->indexTable));
-
-    query.bindValue(0, pageID);
-    if(query.exec()) {
-        if(query.next()) {
-            return query.value(0).toInt();
+            if(id <= pageID && pageID <= nextId)
+                return id;
         }
-    } else {
-        LOG_SQL_ERROR(query);
+
+        if(pageID <= m_pageTitles.first())
+            return m_pageTitles.first();
+
+        if(pageID >= m_pageTitles.last())
+            return m_pageTitles.last();
     }
 
-    return 0;
+    return id;
 }
 
 bool RichBookReader::saveBookPages(QList<BookPage*> pages)
@@ -97,6 +98,65 @@ bool RichBookReader::saveBookPages(QList<BookPage*> pages)
     }
 
     return true;
+}
+
+BookIndexModel *RichBookReader::indexModel()
+{
+    m_pageTitles.clear();
+
+
+    QuaZipFile titleFile(&m_zip);
+
+    if(m_zip.setCurrentFile("titles.xml")) {
+        if(!titleFile.open(QIODevice::ReadOnly)) {
+            qWarning("testRead(): file.open(): %d", titleFile.getZipError());
+            return 0;
+        }
+    }
+
+    QDomDocument doc;
+    if(!doc.setContent(&titleFile)) {
+        qDebug("Error");
+        titleFile.close();
+        return 0;
+    }
+
+    BookIndexNode *rootNode = new BookIndexNode();
+    QDomElement root = doc.documentElement();
+    QDomNode itemNode = root.firstChild();
+
+    while(!itemNode.isNull()) {
+        readItem(itemNode, rootNode);
+
+        itemNode = itemNode.nextSibling();
+    }
+
+    m_indexModel = new BookIndexModel();
+    m_indexModel->setRootNode(rootNode);
+
+    qSort(m_pageTitles);
+
+    return m_indexModel;
+}
+
+void RichBookReader::readItem(QDomNode &itemNode, BookIndexNode *parent)
+{
+    QDomNamedNodeMap attr = itemNode.attributes();
+    BookIndexNode *item = new BookIndexNode(attr.namedItem("text").nodeValue(),
+                                            attr.namedItem("pageID").nodeValue().toInt());
+
+    if(itemNode.hasChildNodes()) {
+        QDomNode childNode = itemNode.firstChild();
+
+        while(!childNode.isNull()) {
+            readItem(childNode, item);
+
+            childNode = childNode.nextSibling();
+        }
+    }
+
+    parent->appendChild(item);
+    m_pageTitles.append(item->id);
 }
 
 BookIndexModel *RichBookReader::topIndexModel()
