@@ -6,6 +6,8 @@
 #include "libraryinfo.h"
 #include "quranquery.h"
 #include "utils.h"
+#include "mainwindow.h"
+#include "bookreaderhelper.h"
 
 #include <qsqldatabase.h>
 
@@ -19,230 +21,134 @@ RichQuranReader::~RichQuranReader()
 {
 }
 
-void RichQuranReader::connected()
-{
-    RichBookReader::connected();
-}
-
-void RichQuranReader::goToPage(int pid)
-{
-    int page;
-    if(pid == -1)       // First page number
-        page = m_bookInfo->firstPage();
-    else if(pid == -2)  // Last page number
-        page = m_bookInfo->lastPage();
-    else                // The given page number
-        page = pid;
-
-    goToPage(page, 1);
-
-}
-void RichQuranReader::goToPage(int page, int part)
+void RichQuranReader::setCurrentPage(QDomElement pageNode)
 {
     m_formatter->start();
-    m_currentPage->page = page;
-    m_currentPage->part = part;
 
-    BookPage info = firstSoraAndAya(page);
-    m_currentPage->sora = info.sora;
-    m_currentPage->aya = info.aya;
-    m_currentPage->ayatCount = info.ayatCount;
+    m_currentPage->sora = pageNode.attribute("sora").toInt();
+    m_currentPage->aya = pageNode.attribute("aya").toInt();
+    m_currentPage->ayatCount = MW->readerHelper()->getQuranSora(m_currentPage->sora)->ayatCount;
+    m_currentPage->titleID = m_currentPage->sora;
 
-    QuranQuery quranQuery(m_bookDB, m_bookInfo);
-    quranQuery.page(page);
+    m_currentElement = pageNode;
 
-    while(quranQuery.next()) {
+    if(pageNode.attribute("page").toInt() == m_currentPage->page) {
+        return;
+    }
+
+    QDomElement prevNode = pageNode.previousSiblingElement();
+    while(!prevNode.isNull()) {
+        if(prevNode.attribute("page") == pageNode.attribute("page")) {
+            pageNode = prevNode;
+        } else {
+            break;
+        }
+
+        prevNode = prevNode.previousSiblingElement();
+    }
+
+    m_currentPage->page = pageNode.attribute("page").toInt();
+    m_currentPage->part = pageNode.attribute("part").toInt();
+
+    QDomElement ayaNode = pageNode;
+
+    while(!ayaNode.isNull() && ayaNode.attribute("page").toInt() == m_currentPage->page) {
+        int id = ayaNode.attribute("id").toInt();
+        int sora = ayaNode.attribute("sora").toInt();
+        int aya = ayaNode.attribute("aya").toInt();
+        QString text = ayaNode.text();
+
         // at the first vers we insert the sora name and bassemala
-        if(quranQuery.value(2).toInt() == 1) {
-            m_formatter->insertSoraName(quranQuery.value(5).toString());
+        if(aya == 1) {
+            m_formatter->insertSoraName(MW->readerHelper()->getQuranSora(sora)->name);
 
             // we escape putting bassemala before Fateha and Tawba
-            if(quranQuery.value(4).toInt() != 1 && quranQuery.value(4).toInt() != 9)
+            if(sora != 1 && sora != 9)
                 m_formatter->insertBassemala();
         }
 
-        QString text;
-        if(m_query && m_highlightPageID == quranQuery.value(0).toInt())
-            text = Utils::highlightText(quranQuery.value(1).toString(),
-                                        m_query, false);
-        else
-            text = quranQuery.value(1).toString();
+        if(m_query && m_highlightPageID == id)
+            text = Utils::highlightText(text, m_query, false);
 
-        m_formatter->insertAyaText(text,
-                                   quranQuery.value(2).toInt(),
-                                   quranQuery.value(4).toInt());
+        m_formatter->insertAyaText(text, aya, sora);
+
+        ayaNode = ayaNode.nextSiblingElement();
     }
-
-    m_currentPage->titleID = getPageTitleID(m_currentPage->pageID);
 
     m_formatter->done();
 
     emit textChanged();
 }
 
-void RichQuranReader::goToSora(int sora, int aya)
-{
-    int page = getPageNumber(sora, aya);
-
-    if(page != m_currentPage->page)
-        goToPage(page, 1);
-
-    m_currentPage->sora = sora;
-    m_currentPage->aya = aya;
-    m_currentPage->ayatCount = getSoraAyatCount(sora);
-}
-
-bool RichQuranReader::needFastIndexLoad()
-{
-    return false;
-}
-
 BookIndexModel *RichQuranReader::indexModel()
 {
-    m_indexModel = new BookIndexModel();
     BookIndexNode *rootNode = new BookIndexNode();
 
-    QuranQuery quranQuery(m_bookDB, m_bookInfo);
-
-    quranQuery.index();
-    while(quranQuery.next()) {
-        BookIndexNode *firstChild = new BookIndexNode(quranQuery.value(1).toString(),
-                                                      quranQuery.value(0).toInt());
-        rootNode->appendChild(firstChild);
+    for(int i=1; i<=114; i++) {
+        QuranSora *sora = MW->readerHelper()->getQuranSora(i);
+        if(sora) {
+            BookIndexNode *soraNode = new BookIndexNode(sora->name, i);
+            rootNode->appendChild(soraNode);
+        }
     }
 
+    m_indexModel = new BookIndexModel();
     m_indexModel->setRootNode(rootNode);
+
     return m_indexModel;
-}
-
-int RichQuranReader::getPageTitleID(int pageID)
-{
-    Q_UNUSED(pageID);
-    return m_currentPage->sora;
-}
-
-void RichQuranReader::getBookInfo()
-{
-    QuranQuery quranQuery(m_bookDB, m_bookInfo);
-    quranQuery.prepare("SELECT  MIN(pageNumber), MAX(pageNumber), MIN(id), MAX(id) "
-                          "FROM quranText");
-    if(!quranQuery.exec()) {
-        LOG_SQL_ERROR(quranQuery);
-    }
-
-    if(quranQuery.next()) {
-        m_bookInfo->partsCount = 1;
-        m_bookInfo->setFirstPage(quranQuery.value(0).toInt());
-        m_bookInfo->setLastPage(quranQuery.value(1).toInt());
-
-        m_bookInfo->firstID = quranQuery.value(2).toInt();
-        m_bookInfo->lastID = quranQuery.value(3).toInt();
-    }
-}
-
-int RichQuranReader::getPageNumber(int soraNumber, int ayaNumber)
-{
-    QuranQuery quranQuery(m_bookDB, m_bookInfo);
-    quranQuery.pageNumber(ayaNumber, soraNumber);
-
-    int page = 1;
-    if(quranQuery.next()) {
-        page = quranQuery.value(0).toInt();
-    }
-
-    return page;
 }
 
 void RichQuranReader::nextPage()
 {
-    if(hasNext()) {
-        int page = m_currentPage->page+1;
+    QDomElement e = m_currentElement.nextSiblingElement();
 
-        goToPage(page, 1);
+    while(!e.isNull()) {
+        if(e.attribute("page") != m_currentElement.attribute("page")) {
+            setCurrentPage(e);
+            break;
+        }
+
+        e = e.nextSiblingElement();
     }
 }
 
 void RichQuranReader::prevPage()
 {
-    if(hasPrev()) {
-        int page = m_currentPage->page-1;
+    QDomElement e = m_currentElement.previousSiblingElement();
 
-        goToPage(page, 1);
+    while(!e.isNull()) {
+        if(e.attribute("page") != m_currentElement.attribute("page")) {
+            QDomElement t = e;
+            while(!t.isNull()) {
+                if(t.attribute("page") == e.attribute("page"))
+                    e = t;
+                else
+                    break;
+
+
+                t = t.previousSiblingElement();
+            }
+
+            setCurrentPage(e);
+            break;
+        }
+
+        e = e.previousSiblingElement();
     }
-}
-
-bool RichQuranReader::hasNext()
-{
-    return m_currentPage->page < m_bookInfo->lastPage();
-}
-
-bool RichQuranReader::hasPrev()
-{
-    return m_currentPage->page > m_bookInfo->firstPage();
 }
 
 void RichQuranReader::nextAya()
 {
-    int aya = m_currentPage->aya+1;
-    int sora = m_currentPage->sora;
-    if(aya > m_currentPage->ayatCount) {
-        aya = 1;
-        sora++;
-    }
-    if(sora > 114)
-        sora = 1;
-    int page = getPageNumber(sora, aya);
+    QDomElement e = m_currentElement.nextSiblingElement();
 
-    if(page != m_currentPage->page)
-        goToPage(page, 1);
-
-    m_currentPage->sora = sora;
-    m_currentPage->aya = aya;
-    m_currentPage->ayatCount = getSoraAyatCount(sora);
+    if(!e.isNull())
+        setCurrentPage(e);
 }
 
 void RichQuranReader::prevAya()
 {
-    int aya = m_currentPage->aya-1;
-    int sora = m_currentPage->sora;
-    if(aya < 1) {
-        if(--sora < 1)
-            sora = 114;
+    QDomElement e = m_currentElement.previousSiblingElement();
 
-        aya = getSoraAyatCount(sora);
-    }
-
-    int page = getPageNumber(sora, aya);
-
-    if(page != m_currentPage->page)
-        goToPage(page, 1);
-
-    m_currentPage->sora = sora;
-    m_currentPage->aya = aya;
-    m_currentPage->ayatCount = getSoraAyatCount(sora);
-}
-
-int RichQuranReader::getSoraAyatCount(int sora)
-{
-    QuranQuery quranQuery(m_bookDB, m_bookInfo);
-    quranQuery.soraAyatCount(sora);
-
-    return quranQuery.next() ? quranQuery.value(0).toInt() : 0;
-}
-
-BookPage RichQuranReader::firstSoraAndAya(int page)
-{
-    BookPage info;
-
-    QuranQuery quranQuery(m_bookDB, m_bookInfo);
-    quranQuery.firstSoraAndAya(page);
-    if(quranQuery.next()) {
-        // The first SORA number in page
-        info.sora = quranQuery.value(0).toInt();
-        // First aya number in page
-        info.aya = quranQuery.value(1).toInt();
-        info.ayatCount = getSoraAyatCount(quranQuery.value(0).toInt());
-    }
-
-    return info;
+    if(!e.isNull())
+        setCurrentPage(e);
 }

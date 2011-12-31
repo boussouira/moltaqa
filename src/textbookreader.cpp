@@ -8,6 +8,7 @@ TextBookReader::TextBookReader(QObject *parent) :
 
 TextBookReader::~TextBookReader()
 {
+    m_zip.close();
 }
 
 void TextBookReader::firstPage()
@@ -45,6 +46,8 @@ void TextBookReader::getTitles()
     }
 
     qSort(m_titles);
+
+    titleFile.close();
 }
 
 void TextBookReader::connected()

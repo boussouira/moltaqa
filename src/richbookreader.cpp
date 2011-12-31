@@ -50,7 +50,7 @@ void RichBookReader::stopModelLoad()
 int RichBookReader::getPageTitleID(int pageID)
 {
     int id = pageID;
-    if(!m_pageTitles.contains(pageID)) {
+    if(!m_pageTitles.isEmpty() && !m_pageTitles.contains(pageID)) {
         for(int i=0; i<m_pageTitles.size(); i++) {
             id = m_pageTitles.at(i);
             int nextId = m_pageTitles.at((i<m_pageTitles.size()-1) ? i+1 : i);

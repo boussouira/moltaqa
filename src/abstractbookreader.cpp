@@ -86,13 +86,13 @@ QDomElement AbstractBookReader::getPage(int pid)
 
 QDomElement AbstractBookReader::getPageId(int page, int part)
 {
+    QString pageNum = QString::number(page);
+    QString partNum = QString::number(part);
+
     QDomElement e = m_rootElement.firstChildElement();
-
     while(!e.isNull()) {
-        int pageNum = e.attribute("page").toInt();
-        int partNum = e.attribute("part").toInt();
 
-        if(pageNum == page && partNum == part) {
+        if(pageNum == e.attribute("page") && partNum == e.attribute("part")) {
             return e;
         }
 
@@ -104,12 +104,12 @@ QDomElement AbstractBookReader::getPageId(int page, int part)
 
 QDomElement AbstractBookReader::getPageId(int haddit)
 {
+    QString hadditNum = QString::number(haddit);
+
     QDomElement e = m_rootElement.firstChildElement();
-
     while(!e.isNull()) {
-        int hadditNum = e.attribute("haddit").toInt();
 
-        if(hadditNum == haddit) {
+        if(hadditNum == e.attribute("haddit")) {
             return e;
         }
 
@@ -121,13 +121,13 @@ QDomElement AbstractBookReader::getPageId(int haddit)
 
 QDomElement AbstractBookReader::getQuranPageId(int sora, int aya)
 {
+    QString soraNum = QString::number(sora);
+    QString ayaNum = QString::number(aya);
+
     QDomElement e = m_rootElement.firstChildElement();
-
     while(!e.isNull()) {
-        int soraNum = e.attribute("sora").toInt();
-        int ayaNum = e.attribute("aya").toInt();
 
-        if(soraNum == sora && ayaNum == aya) {
+        if(soraNum == e.attribute("sora") && ayaNum == e.attribute("aya")) {
             return e;
         }
 

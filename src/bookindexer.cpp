@@ -62,6 +62,7 @@ void BookIndexer::startIndexing()
 
 void BookIndexer::indexBook(IndexTask *task)
 {
+    qDebug() << "index:" << task->book->bookDisplayName;
     if(task->book->isNormal()) {
         indexSimpleBook(task);
     } else if (task->book->isTafessir()) {

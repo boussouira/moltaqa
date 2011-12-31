@@ -55,7 +55,7 @@ void newQuranWriter::endReading()
     QuaZipFile pagesFile(&m_zip);
     if(pagesFile.open(QIODevice::WriteOnly, QuaZipNewInfo("pages.xml"))) {
         QTextStream out(&pagesFile);
-        out << m_pagesDoc.toString(2);
+        out << m_pagesDoc.toString(-1);
     } else {
         qCritical("Can't write to pages.xml - Error: %d", pagesFile.getZipError());
     }
@@ -67,20 +67,14 @@ void newQuranWriter::addPage(const QString &text, int soraNum, int ayaNum, int p
 {
     m_pageId++;
 
-    QuaZipFile outFile(&m_zip);
-    if(outFile.open(QIODevice::WriteOnly,
-                     QuaZipNewInfo(QString("pages/p%1.html").arg(m_pageId)))) {
-        QTextStream out(&outFile);
-        out << text;
-    } else {
-        qCritical("Can't write to pages/p%d.html - Error: %d", m_pageId, outFile.getZipError());
-    }
-
     QDomElement page = m_pagesDoc.createElement("item");
     page.setAttribute("id", m_pageId);
     page.setAttribute("sora", soraNum);
     page.setAttribute("aya", ayaNum);
     page.setAttribute("page", pageNum);
+
+    QDomText textNode = m_pagesDoc.createTextNode(text);
+    page.appendChild(textNode);
 
     m_pagesElemnent.appendChild(page);
 }
