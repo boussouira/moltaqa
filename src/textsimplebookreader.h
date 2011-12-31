@@ -7,7 +7,6 @@ class TextSimpleBookReader : public TextBookReader
 {
 public:
     TextSimpleBookReader(QObject *parent=0);
-    ~TextSimpleBookReader();
 
     void setCurrentPage(QDomElement pageNode);
 };

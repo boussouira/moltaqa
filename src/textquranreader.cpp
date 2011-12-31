@@ -7,34 +7,25 @@ TextQuranReader::TextQuranReader(QObject *parent) :
 {
 }
 
-void TextQuranReader::goToPage(int pid)
+void TextQuranReader::setCurrentPage(QDomElement pageNode)
 {
-    Q_UNUSED(pid);
+    m_currentElement = pageNode;
+    m_currentPage->pageID = pageNode.attribute("id").toInt();
+    m_currentPage->part = pageNode.attribute("part").toInt();
+    m_currentPage->page = pageNode.attribute("page").toInt();
+    m_currentPage->aya = pageNode.attribute("aya").toInt();
+    m_currentPage->sora = pageNode.attribute("sora").toInt();
+
+    m_currentPage->text = pageNode.text();
+
+    m_currentPage->titleID = m_currentPage->sora;
 }
 
-void TextQuranReader::goToPage(int page, int part)
+void TextQuranReader::getTitles()
 {
-    Q_UNUSED(page);
-    Q_UNUSED(part);
 }
 
-bool TextQuranReader::hasPrev()
+void TextQuranReader::getPages()
 {
-    return false;
 }
 
-bool TextQuranReader::hasNext()
-{
-    return 0;
-    return m_bookQuery.next();
-}
-
-void TextQuranReader::nextPage()
-{
-    m_currentPage->text = m_bookQuery.value(1).toString();
-    m_currentPage->pageID = m_bookQuery.value(0).toInt();
-    m_currentPage->aya = m_bookQuery.value(2).toInt();
-    m_currentPage->sora = m_bookQuery.value(3).toInt();
-    m_currentPage->page = m_bookQuery.value(4).toInt();
-    m_currentPage->part = 1;
-}

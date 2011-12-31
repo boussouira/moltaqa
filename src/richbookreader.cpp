@@ -115,8 +115,16 @@ BookIndexModel *RichBookReader::indexModel()
     }
 
     QDomDocument doc;
-    if(!doc.setContent(&titleFile)) {
-        qDebug("Error");
+    QString errorStr;
+    int errorLine=0;
+    int errorColumn=0;
+
+    if(!doc.setContent(&titleFile, 0, &errorStr, &errorLine, &errorColumn)) {
+        qDebug("indexModel: Parse error at line %d, column %d: %s\nFile: %s",
+               errorLine, errorColumn,
+               qPrintable(errorStr),
+               qPrintable(m_bookInfo->bookPath));
+
         titleFile.close();
         return 0;
     }

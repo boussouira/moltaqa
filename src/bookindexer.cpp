@@ -62,7 +62,6 @@ void BookIndexer::startIndexing()
 
 void BookIndexer::indexBook(IndexTask *task)
 {
-    qDebug() << "index:" << task->book->bookDisplayName;
     if(task->book->isNormal()) {
         indexSimpleBook(task);
     } else if (task->book->isTafessir()) {
@@ -135,7 +134,7 @@ void BookIndexer::indexSimpleBook(IndexTask *task)
     reader.setLibraryManager(MW->libraryManager());
 
     reader.openBook(true);
-    reader.getTitles();
+    reader.load();
     reader.firstPage();
 
     BookPage *page = reader.page();
@@ -178,7 +177,7 @@ void BookIndexer::indexTaffesirBook(IndexTask *task)
     reader.setLibraryManager(MW->libraryManager());
 
     reader.openBook(true);
-    reader.getTitles();
+    reader.load();
     reader.firstPage();
 
     BookPage *page = reader.page();

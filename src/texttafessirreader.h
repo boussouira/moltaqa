@@ -8,7 +8,6 @@ class TextTafessirReader : public TextBookReader
     Q_OBJECT
 public:
     TextTafessirReader(QObject *parent = 0);
-    ~TextTafessirReader();
 
     void setCurrentPage(QDomElement pageNode);
 };

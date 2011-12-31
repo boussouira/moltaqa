@@ -29,6 +29,12 @@ AbstractBookReader::~AbstractBookReader()
 
     if(m_currentPage)
         delete m_currentPage;
+
+    if(m_pagesMetaFile.isOpen())
+        m_pagesMetaFile.close();
+
+    if(m_zip.isOpen())
+        m_zip.close();
 }
 
 void AbstractBookReader::openBook(bool fastOpen)
@@ -450,13 +456,21 @@ void AbstractBookReader::getBookInfo()
 
    if(m_zip.setCurrentFile("pages.xml")) {
        if(!m_pagesMetaFile.open(QIODevice::ReadOnly)) {
-           qWarning("testRead(): file.open(): %d", m_pagesMetaFile.getZipError());
+           qWarning("getBookInfo: open error %d", m_pagesMetaFile.getZipError());
            return;
        }
    }
 
-   if(!m_bookDoc.setContent(&m_pagesMetaFile)) {
-       qDebug("Error");
+   QString errorStr;
+   int errorLine=0;
+   int errorColumn=0;
+
+   if(!m_bookDoc.setContent(&m_pagesMetaFile, 0, &errorStr, &errorLine, &errorColumn)) {
+       qDebug("getBookInfo: Parse error at line %d, column %d: %s\nFile: %s",
+              errorLine, errorColumn,
+              qPrintable(errorStr),
+              qPrintable(m_bookInfo->bookPath));
+
        m_pagesMetaFile.close();
        return;
    }

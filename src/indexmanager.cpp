@@ -7,6 +7,7 @@
 #include "mainwindow.h"
 #include "arabicanalyzer.h"
 #include "bookindexer.h"
+#include "utils.h"
 
 IndexManager::IndexManager(QObject *parent) :
     QObject(parent)
@@ -118,7 +119,7 @@ void IndexManager::threadDoneIndexing()
             m_analyzer = 0;
         }
 
-        qDebug("Done indexing %d ms", m_indexingTime.elapsed());
+        qDebug() << tr("تمت الفهرسة خلال %1").arg(Utils::secondsToString(m_indexingTime.elapsed()));
 
         if(m_taskIter) {
             delete m_taskIter;

@@ -8,15 +8,11 @@ class TextQuranReader : public TextBookReader
 public:
     TextQuranReader(QObject *parent=0);
 
-    void goToPage(int pid);
-    void goToPage(int page, int part);
+    void setCurrentPage(QDomElement pageNode);
 
-    void nextPage();
-
-    bool hasNext();
-    bool hasPrev();
-
-    void setCurrentPage(QDomElement pageNode) {}
+protected:
+    void getTitles();
+    void getPages();
 };
 
 #endif // TEXTQURANREADER_H

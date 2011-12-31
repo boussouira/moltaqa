@@ -12,14 +12,17 @@ public:
     ~TextBookReader();
 
     void firstPage();
+
+    virtual void load();
+
+protected:
+    void connected();
     virtual void getTitles();
+    virtual void getPages();
 
 protected:
-     void connected();
-
-protected:
-     QSqlQuery m_bookQuery;
      QList<int> m_titles;
+     QHash<int, QString> m_pages;
 };
 
 #endif // TEXTBOOKREADER_H
