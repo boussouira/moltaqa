@@ -16,7 +16,8 @@ LibrarySearcher::LibrarySearcher(QObject *parent)
       m_hits(0),
       m_searchQuery(0),
       m_filterQuery(0),
-      m_query(0)
+      m_query(0),
+      m_stop(false)
 {
     m_libraryInfo = MW->libraryInfo();
     m_libraryManager = MW->libraryManager();
@@ -67,6 +68,11 @@ void LibrarySearcher::run()
                   qPrintable(m_libraryInfo->indexDataDir()));
         emit gotException("UNKNOW", -1);
     }
+}
+
+void LibrarySearcher::stop()
+{
+    m_stop = true;
 }
 
 void LibrarySearcher::open()
@@ -160,7 +166,12 @@ void LibrarySearcher::fetech()
 
             m_resultsHash.insert(i, result);
 
-            emit gotResult(result);
+            if(m_stop) {
+                m_stop = false;
+                return;
+            } else {
+                emit gotResult(result);
+            }
         } else {
             qWarning("No result found for id %d book %d", entryID, bookID);
         }

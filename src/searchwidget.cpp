@@ -163,8 +163,13 @@ void SearchWidget::search()
         return;
 
     if(m_searcher) {
-        delete m_searcher;
-        m_searcher = 0;
+        if(m_searcher->isRunning()) {
+            m_searcher->stop();
+            m_searcher->wait();
+
+            delete m_searcher;
+            m_searcher = 0;
+        }
     }
 
     m_searcher = new LibrarySearcher(this);
