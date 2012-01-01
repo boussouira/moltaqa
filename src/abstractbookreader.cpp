@@ -488,10 +488,10 @@ QString AbstractBookReader::getFileContent(QuaZip *zip, QString fileName)
         if(file.open(QIODevice::ReadOnly)) {
             return QString::fromUtf8(file.readAll());
         } else {
-            qWarning("testRead(): file.open(): %d", file.getZipError());
+            qWarning("getFileContent: open error %d", file.getZipError());
         }
     } else {
-        qWarning("setCurrentFile: %d", zip->getZipError());
+        qWarning("getFileContent: setCurrentFile error %d", zip->getZipError());
     }
 
     return QString();
