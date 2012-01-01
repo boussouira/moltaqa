@@ -143,9 +143,16 @@ void LibrarySearcher::fetech()
             continue;
         }
 
-        BookPage *page = AbstractBookReader::getBookPage(book, entryID);
+        BookPage *page = new BookPage();
+        page->pageID = entryID;
 
-        if(page) {
+        if(!book->isQuran()) {
+            page->titleID = Utils::WCharToInt(doc.get(TITLE_ID_FIELD));
+        }
+
+        bool gotPage = AbstractBookReader::getBookPage(book, page);
+
+        if(gotPage) {
             SearchResult *result = new SearchResult(book, page);
             result->snippet = Utils::highlightText(page->text, m_searchQuery, true);
             result->resultID = i;

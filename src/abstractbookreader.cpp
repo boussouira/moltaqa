@@ -12,6 +12,7 @@
 #include <qsqlquery.h>
 #include <qsqlerror.h>
 #include <qstringlistmodel.h>
+#include <qxmlstream.h>
 #include <QTime>
 #include <QDebug>
 
@@ -37,7 +38,7 @@ AbstractBookReader::~AbstractBookReader()
         m_zip.close();
 }
 
-void AbstractBookReader::openBook(bool fastOpen)
+void AbstractBookReader::openBook()
 {
     Q_CHECK_PTR(m_bookInfo);
 
@@ -237,18 +238,16 @@ bool AbstractBookReader::hasPrev()
     return !m_currentElement.previousSibling().isNull();
 }
 
-BookPage *AbstractBookReader::getBookPage(LibraryBook *book, int pageID)
+bool AbstractBookReader::getBookPage(LibraryBook *book, BookPage *page)
 {
-    BookPage *page = 0;
-
     if(!book) {
         qWarning("getBookPage: No book with given id");
-        return page;
+        return false;
     }
 
     if(!QFile::exists(book->bookPath)) {
         qWarning() << "File doesn't exists:" << book->bookPath;
-        return 0;
+        return false;
     }
 
     QFile zipFile(book->bookPath);
@@ -259,178 +258,226 @@ BookPage *AbstractBookReader::getBookPage(LibraryBook *book, int pageID)
     }
 
     if(book->isNormal())
-        page = getSimpleBookPage(book, &zip, pageID);
+        return getSimpleBookPage(&zip, book, page);
     else if(book->isTafessir())
-        page = getTafessirPage(book, &zip, pageID);
+        return getTafessirPage(&zip, book, page);
     else if(book->isQuran())
-        page = getQuranPage(book, &zip, pageID);
+        return getQuranPage(&zip, book, page);
     else
         qWarning("getBookPage: Unknow book type");
 
     zip.close();
 
-    return page;
+    return false;
 }
 
-BookPage *AbstractBookReader::getSimpleBookPage(LibraryBook *book, QuaZip *zip, int pageID)
+bool AbstractBookReader::getSimpleBookPage(QuaZip *zip, LibraryBook *book, BookPage *page)
 {
-    BookPage *page = 0;
-    QString connName = QString("getSimpleBookPage_b%1_p%2").arg(book->bookID).arg(pageID);
-    Utils::DatabaseRemover remover;
-    QSqlDatabase bookDB;
+    Q_UNUSED(book);
 
-    while(QSqlDatabase::contains(connName))
-        connName.append('_');
-
-    bookDB = QSqlDatabase::addDatabase("QSQLITE", connName);
-    bookDB.setDatabaseName(book->bookPath);
-
-    if (!bookDB.open()) {
-        LOG_DB_ERROR(bookDB);
-        return 0;
-    }
-
-    QSqlQuery bookQuery(bookDB);
-
-    bookQuery.prepare(QString("SELECT %1.id, %1.pageText, %1.partNum, %1.pageNum, %2.title "
-                              "FROM %1 "
-                              "LEFT JOIN %2 "
-                              "ON %2.pageID <= %1.id "
-                              "WHERE %1.id = ? "
-                              "ORDER BY %2.pageID DESC "
-                              "LIMIT 1").arg(book->textTable, book->indexTable));
-    bookQuery.bindValue(0, pageID);
-    if(bookQuery.exec()) {
-        if(bookQuery.first()){
-            page = new BookPage();
-            page->pageID = bookQuery.value(0).toInt();
-            page->part = bookQuery.value(2).toInt();
-            page->page = bookQuery.value(3).toInt();
-            page->text = QString::fromUtf8(qUncompress(bookQuery.value(1).toByteArray()));
-            page->title = bookQuery.value(4).toString();
-        } else {
-            qWarning("No result found for id %d book %d", pageID, book->bookID);
+    // Get the page
+    QuaZipFile pagesFile(zip);
+    if(zip->setCurrentFile("pages.xml")) {
+        if(!pagesFile.open(QIODevice::ReadOnly)) {
+            qWarning("getSimpleBookPage: open error %d", pagesFile.getZipError());
+            return false;
         }
-    } else {
-        LOG_SQL_ERROR(bookQuery);
     }
 
-    remover.connectionName = connName;
+    QString pid = QString::number(page->pageID);
 
-    return page;
-}
+    QXmlStreamReader bookReader(&pagesFile);
+    while(!bookReader.atEnd()) {
+        bookReader.readNext();
 
-BookPage *AbstractBookReader::getTafessirPage(LibraryBook *book, QuaZip *zip, int pageID)
-{
-    BookPage *page = 0;
-    QString connName = QString("getTafessirPage_b%1_p%2").arg(book->bookID).arg(pageID);
-    Utils::DatabaseRemover remover;
-    QSqlDatabase bookDB;
+        if(bookReader.tokenType() == QXmlStreamReader::StartElement) {
+            if(bookReader.name() == "item") {
+                if(pid == bookReader.attributes().value("id")) {
+                    page->part = bookReader.attributes().value("part").toString().toInt();
+                    page->page = bookReader.attributes().value("page").toString().toInt();
 
-    while(QSqlDatabase::contains(connName))
-        connName.append('_');
+                    page->text = getFileContent(zip, QString("pages/p%1.html").arg(pid));
 
-    bookDB = QSqlDatabase::addDatabase("QSQLITE", connName);
-    bookDB.setDatabaseName(book->bookPath);
-
-    if (!bookDB.open()) {
-        LOG_DB_ERROR(bookDB);
-        return 0;
-    }
-
-    QSqlQuery bookQuery(bookDB);
-
-    bookQuery.prepare(QString("SELECT bookPages.id, bookPages.pageText, "
-                              "bookPages.partNum, bookPages.pageNum, bookIndex.title, "
-                              "tafessirMeta.aya_number , tafessirMeta.sora_number "
-                              "FROM bookPages "
-                              "LEFT JOIN bookIndex "
-                              "ON bookIndex.pageID <= bookPages.id "
-                              "LEFT JOIN tafessirMeta "
-                              "ON tafessirMeta.page_id = bookPages.id "
-                              "WHERE bookPages.id = ? "
-                              "ORDER BY bookIndex.pageID DESC "
-                              "LIMIT 1"));
-
-    bookQuery.bindValue(0, pageID);
-
-    if(bookQuery.exec()) {
-        if(bookQuery.first()){
-            page = new BookPage();
-            page->pageID = bookQuery.value(0).toInt();
-            page->part = bookQuery.value(2).toInt();
-            page->page = bookQuery.value(3).toInt();
-            page->sora = bookQuery.value(6).toInt();
-            page->aya = bookQuery.value(5).toInt();
-            page->text = QString::fromUtf8(qUncompress(bookQuery.value(1).toByteArray()));
-            page->title = bookQuery.value(4).toString();
-            if(page->title.size() < 9) {
-                QuranSora *quranSora = MW->readerHelper()->getQuranSora(page->sora);
-                if(quranSora)
-                    page->title = tr("تفسير سورة %1، الاية %2").arg(quranSora->name).arg(page->aya);
+                    break;
+                }
             }
-
-        } else {
-            qWarning("No result found for id %d book %d", pageID, book->bookID);
         }
-    } else {
-        LOG_SQL_ERROR(bookQuery);
+
+        if(bookReader.hasError()) {
+            qWarning() << "getSimpleBookPage: bookReader error:" << bookReader.errorString();
+            break;
+        }
     }
 
-    remover.connectionName = connName;
+    pagesFile.close();
 
-    return page;
+    // Get the title
+    QuaZipFile titleFile(zip);
+
+    if(zip->setCurrentFile("titles.xml")) {
+        if(!titleFile.open(QIODevice::ReadOnly)) {
+            qWarning("getSimpleBookPage: open error: %d", titleFile.getZipError());
+            return false;
+        }
+    }
+
+    QString tid = QString::number(page->titleID);
+    QXmlStreamReader titleReader(&titleFile);
+    while(!titleReader.atEnd()) {
+        titleReader.readNext();
+
+        if(titleReader.tokenType() == QXmlStreamReader::StartElement) {
+            if(titleReader.name() == "item") {
+                if(tid == titleReader.attributes().value("pageID")) {
+                    page->title = titleReader.attributes().value("text").toString();
+                    break;
+                }
+            }
+        }
+
+        if(titleReader.hasError()) {
+            qWarning() << "getSimpleBookPage: QXmlStreamReader error:" << titleReader.errorString();
+            break;
+        }
+    }
+
+    titleFile.close();
+
+    return true;
 }
 
-BookPage *AbstractBookReader::getQuranPage(LibraryBook *book, QuaZip *zip, int pageID)
+bool AbstractBookReader::getTafessirPage(QuaZip *zip, LibraryBook *book, BookPage *page)
 {
-    BookPage *page = 0;
-    QString connName = QString("getQuranPage_b%1_p%2").arg(book->bookID).arg(pageID);
-    Utils::DatabaseRemover remover;
-    QSqlDatabase bookDB;
+    Q_UNUSED(book);
 
-    while(QSqlDatabase::contains(connName))
-        connName.append('_');
-
-    bookDB = QSqlDatabase::addDatabase("QSQLITE", connName);
-    bookDB.setDatabaseName(book->bookPath);
-
-    if (!bookDB.open()) {
-        LOG_DB_ERROR(bookDB);
-        return 0;
-    }
-
-    QSqlQuery bookQuery(bookDB);
-
-    bookQuery.prepare("SELECT quranText.id, quranText.ayaText, quranText.ayaNumber, "
-                      "quranText.pageNumber, quranText.soraNumber, quranSowar.SoraName "
-                      "FROM quranText "
-                      "LEFT JOIN quranSowar "
-                      "ON quranSowar.id = quranText.soraNumber "
-                      "WHERE quranText.id = ?");
-
-    bookQuery.bindValue(0, pageID);
-
-    if(bookQuery.exec()) {
-        if(bookQuery.first()){
-            page = new BookPage();
-            page->pageID = bookQuery.value(0).toInt();
-            page->text = bookQuery.value(1).toString();
-            page->page = bookQuery.value(3).toInt();
-            page->aya = bookQuery.value(2).toInt();
-            page->sora = bookQuery.value(4).toInt();
-            page->title = tr("سورة %1، الاية %2").arg(bookQuery.value(5).toString()).arg(page->aya);
-            page->part = 1;
-        } else {
-            qWarning("No result found for id %d book %d", pageID, book->bookID);
+    // Get the page
+    QuaZipFile pagesFile(zip);
+    if(zip->setCurrentFile("pages.xml")) {
+        if(!pagesFile.open(QIODevice::ReadOnly)) {
+            qWarning("getTafessirPage: open error %d", pagesFile.getZipError());
+            return false;
         }
-    } else {
-        LOG_SQL_ERROR(bookQuery);
     }
 
-    remover.connectionName = connName;
+    QString pid = QString::number(page->pageID);
 
-    return page;
+    QXmlStreamReader bookReader(&pagesFile);
+    while(!bookReader.atEnd()) {
+        bookReader.readNext();
+
+        if(bookReader.tokenType() == QXmlStreamReader::StartElement) {
+            if(bookReader.name() == "item") {
+                if(pid == bookReader.attributes().value("id")) {
+                    page->part = bookReader.attributes().value("part").toString().toInt();
+                    page->page = bookReader.attributes().value("page").toString().toInt();
+                    page->sora = bookReader.attributes().value("sora").toString().toInt();
+                    page->aya = bookReader.attributes().value("aya").toString().toInt();
+
+                    page->text = getFileContent(zip, QString("pages/p%1.html").arg(pid));
+
+                    break;
+                }
+            }
+        }
+
+        if(bookReader.hasError()) {
+            qWarning() << "getTafessirPage: bookReader error:" << bookReader.errorString();
+            break;
+        }
+    }
+
+    pagesFile.close();
+
+    // Get the title
+    QuaZipFile titleFile(zip);
+
+    if(zip->setCurrentFile("titles.xml")) {
+        if(!titleFile.open(QIODevice::ReadOnly)) {
+            qWarning("getTafessirPage: open error: %d", titleFile.getZipError());
+            return false;
+        }
+    }
+
+    QString tid = QString::number(page->titleID);
+    QXmlStreamReader titleReader(&titleFile);
+    while(!titleReader.atEnd()) {
+        titleReader.readNext();
+
+        if(titleReader.tokenType() == QXmlStreamReader::StartElement) {
+            if(titleReader.name() == "item") {
+                if(tid == titleReader.attributes().value("pageID")) {
+                    page->title = titleReader.attributes().value("text").toString();
+
+                    if(page->title.size() < 9) {
+                        QuranSora *quranSora = MW->readerHelper()->getQuranSora(page->sora);
+                        if(quranSora)
+                            page->title = tr("تفسير سورة %1، الاية %2").arg(quranSora->name).arg(page->aya);
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        if(titleReader.hasError()) {
+            qWarning() << "getTafessirPage: QXmlStreamReader error:" << titleReader.errorString();
+            break;
+        }
+    }
+
+    titleFile.close();
+
+    return true;
+}
+
+bool AbstractBookReader::getQuranPage(QuaZip *zip, LibraryBook *book, BookPage *page)
+{
+    Q_UNUSED(book);
+
+    // Get the page
+    QuaZipFile pagesFile(zip);
+    if(zip->setCurrentFile("pages.xml")) {
+        if(!pagesFile.open(QIODevice::ReadOnly)) {
+            qWarning("getQuranPage: open error %d", pagesFile.getZipError());
+            return false;
+        }
+    }
+
+    QString pid = QString::number(page->pageID);
+
+    QXmlStreamReader bookReader(&pagesFile);
+    while(!bookReader.atEnd()) {
+        bookReader.readNext();
+
+        if(bookReader.tokenType() == QXmlStreamReader::StartElement) {
+            if(bookReader.name() == "item") {
+                if(pid == bookReader.attributes().value("id")) {
+                    page->part = bookReader.attributes().value("part").toString().toInt();
+                    page->page = bookReader.attributes().value("page").toString().toInt();
+                    page->sora = bookReader.attributes().value("sora").toString().toInt();
+                    page->aya = bookReader.attributes().value("aya").toString().toInt();
+
+                    QuranSora *quranSora = MW->readerHelper()->getQuranSora(page->sora);
+                    if(quranSora)
+                        page->title = tr("سورة %1، الاية %2").arg(quranSora->name).arg(page->aya);
+
+                    if(bookReader.readNext() == QXmlStreamReader::Characters)
+                        page->text = bookReader.text().toString();
+
+                    break;
+                }
+            }
+        }
+
+        if(bookReader.hasError()) {
+            qWarning() << "getQuranPage: bookReader error:" << bookReader.errorString();
+            break;
+        }
+    }
+
+    pagesFile.close();
+
+    return true;
 }
 
 QString AbstractBookReader::getFileContent(QuaZip *zip, QString fileName)

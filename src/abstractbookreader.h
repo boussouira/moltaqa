@@ -27,7 +27,7 @@ class AbstractBookReader : public QObject
 public:
     AbstractBookReader(QObject *parent=0);
     ~AbstractBookReader();
-    void openBook(bool fastOpen=false);
+    void openBook();
     void setBookInfo(LibraryBook *bi);
     void setLibraryManager(LibraryManager *db);
     void setBookIndexModel(BookIndexModel *model);
@@ -95,7 +95,7 @@ public:
       */
     virtual bool hasPrev();
 
-    static BookPage *getBookPage(LibraryBook *book, int pageID);
+    static bool getBookPage(LibraryBook *book, BookPage *page);
     static QString getFileContent(QuaZip *zip, QString fileName);
 
     inline QString getFileContent(QString fileName)
@@ -119,9 +119,9 @@ protected:
     QDomElement getQuranPageId(int sora, int aya);
 
 private:
-    static BookPage *getSimpleBookPage(LibraryBook *book, QuaZip *zip, int pageID);
-    static BookPage *getTafessirPage(LibraryBook *book, QuaZip *zip, int pageID);
-    static BookPage *getQuranPage(LibraryBook *book, QuaZip *zip, int pageID);
+    static bool getSimpleBookPage(QuaZip *zip, LibraryBook *book, BookPage *page);
+    static bool getTafessirPage(QuaZip *zip, LibraryBook *book, BookPage *page);
+    static bool getQuranPage(QuaZip *zip, LibraryBook *book, BookPage *page);
 
 protected:
     Utils::DatabaseRemover m_remover;

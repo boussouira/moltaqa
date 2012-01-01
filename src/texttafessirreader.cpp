@@ -19,6 +19,8 @@ void TextTafessirReader::setCurrentPage(QDomElement pageNode)
 //    if(!m_pages.contains(m_currentPage->pageID))
 //        qWarning("Can't find page %d", m_currentPage->pageID);
 
-    if(m_titles.contains(m_currentPage->pageID))
-        m_currentPage->titleID = m_currentPage->pageID;
+    m_currentPage->titleID = getPageTitleID(m_currentPage->pageID);
+
+//    if(m_titles.contains(m_currentPage->pageID))
+//        m_currentPage->titleID = m_currentPage->pageID;
 }

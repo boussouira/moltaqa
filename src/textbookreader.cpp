@@ -1,6 +1,7 @@
 #include "textbookreader.h"
 #include "librarybook.h"
 #include "bookpage.h"
+#include <qxmlstream.h>
 
 TextBookReader::TextBookReader(QObject *parent) :
     AbstractBookReader(parent)
@@ -39,34 +40,27 @@ void TextBookReader::getTitles()
 
     if(m_zip.setCurrentFile("titles.xml")) {
         if(!titleFile.open(QIODevice::ReadOnly)) {
-            qWarning("testRead(): file.open(): %d", titleFile.getZipError());
+            qWarning("getTitles: open error %d", titleFile.getZipError());
             return;
+        }
+    } else {
+        qDebug("ERRR");
+    }
+
+    QXmlStreamReader reader(&titleFile);
+    while(!reader.atEnd()) {
+        reader.readNext();
+
+        if(reader.tokenType() == QXmlStreamReader::StartElement && reader.name() == "item") {
+            m_titles.append(reader.attributes().value("pageID").toString().toInt());
+        }
+
+        if(reader.hasError()) {
+            qDebug() << "getTitles: QXmlStreamReader error:" << reader.errorString();
+            break;
         }
     }
 
-    QDomDocument doc;
-    QString errorStr;
-    int errorLine=0;
-    int errorColumn=0;
-
-    if(!doc.setContent(&titleFile, 0, &errorStr, &errorLine, &errorColumn)) {
-        qDebug("getTitles: Parse error at line %d, column %d: %s\nFile: %s",
-               errorLine, errorColumn,
-               qPrintable(errorStr),
-               qPrintable(m_bookInfo->bookPath));
-
-        titleFile.close();
-        return;
-    }
-
-    QDomElement root = doc.documentElement();
-    QDomNode itemNode = root.firstChild();
-
-    while(!itemNode.isNull()) {
-        m_titles.append(itemNode.attributes().namedItem("pageID").nodeValue().toInt());
-
-        itemNode = itemNode.nextSibling();
-    }
 
     qSort(m_titles);
 
@@ -114,7 +108,17 @@ void TextBookReader::getPages()
     }
 }
 
-void TextBookReader::connected()
+int TextBookReader::getPageTitleID(int pageID)
 {
-    AbstractBookReader::connected();
+    int id = pageID;
+    if(!m_titles.isEmpty() && !m_titles.contains(pageID)) {
+        for(int i=0; i<m_titles.size(); i++) {
+            id = m_titles.at(i);
+
+            if(pageID <= id)
+                return id;
+        }
+    }
+
+    return id;
 }
