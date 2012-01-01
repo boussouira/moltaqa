@@ -53,17 +53,10 @@ int RichBookReader::getPageTitleID(int pageID)
     if(!m_pageTitles.isEmpty() && !m_pageTitles.contains(pageID)) {
         for(int i=0; i<m_pageTitles.size(); i++) {
             id = m_pageTitles.at(i);
-            int nextId = m_pageTitles.at((i<m_pageTitles.size()-1) ? i+1 : i);
 
-            if(id <= pageID && pageID <= nextId)
+            if(pageID <= id)
                 return id;
         }
-
-        if(pageID <= m_pageTitles.first())
-            return m_pageTitles.first();
-
-        if(pageID >= m_pageTitles.last())
-            return m_pageTitles.last();
     }
 
     return id;
