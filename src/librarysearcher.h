@@ -23,6 +23,7 @@ public:
     ~LibrarySearcher();
 
     void run();
+    void stop();
 
     void setQuery(Query *searchQuery, Query *filterQuery, BooleanClause::Occur filterClause);
 
@@ -70,6 +71,7 @@ protected:
     int m_timeSearch;
     int m_resultParPage;
     QHash<int, SearchResult*> m_resultsHash;
+    bool m_stop;
 };
 
 #endif // LIBRARYSEARCHER_H
