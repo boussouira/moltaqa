@@ -6,13 +6,16 @@
 #include "clconstants.h"
 #include "clutils.h"
 #include "libraryenums.h"
+#include "mainwindow.h"
+#include "bookreaderhelper.h"
 
 #include <qsqlquery.h>
 #include <qitemselectionmodel.h>
 #include <qdatetime.h>
 
 BookSearchFilter::BookSearchFilter(QObject *parent) :
-    SearchFilterManager(parent)
+    SearchFilterManager(parent),
+    m_book(0)
 {
     setChangeFilterColumn(false);
     setAutoSelectParent(false);
@@ -174,34 +177,36 @@ void BookSearchFilter::getChildTitles(const QModelIndex &index, QList<int> &titl
 
 void BookSearchFilter::open()
 {
-    if(!m_indexDB.isOpen()) {
-        m_indexDB = QSqlDatabase::addDatabase("QSQLITE", "BookSearchFilter_");
-        m_indexDB.setDatabaseName(m_book->bookPath);
+    Q_CHECK_PTR(m_book);
 
-        if (!m_indexDB.open())
-            LOG_DB_ERROR(m_indexDB);
+    if(!QFile::exists(m_book->bookPath)) {
+        qDebug() << tr("لم يتم العثور على ملف الكتاب") << m_book->bookPath;
+        return;
+    }
+
+    m_zipFile.setFileName(m_book->bookPath);
+    m_zip.setIoDevice(&m_zipFile);
+
+    if(!m_zip.open(QuaZip::mdUnzip)) {
+        qDebug() << tr("لا يمكن فتح ملف الكتاب") << m_book->bookPath << "\nError:" << m_zip.getZipError();
+        return;
     }
 }
 
 void BookSearchFilter::close()
 {
-    // TODO: remove this database properly
-    QString conn = m_indexDB.connectionName();
-    m_indexDB.close();
-    m_indexDB = QSqlDatabase();
-
-    QSqlDatabase::removeDatabase(conn);
+    m_zip.close();
+    m_zipFile.close();
 }
 
 void BookSearchFilter::loadQuranModel(QStandardItemModel *model)
 {
-    QSqlQuery query(m_indexDB);
-
-    if(query.exec("SELECT id, soraName FROM quranSowar ORDER BY id")) {
-        while(query.next()) {
+    for(int i=1; i<=114; i++) {
+        QuranSora *sora = MW->readerHelper()->getQuranSora(i);
+        if(sora) {
             QStandardItem *soraItem = new QStandardItem();
-            soraItem->setText(query.value(1).toString());
-            soraItem->setData(query.value(0).toInt(), ItemRole::soraRole);
+            soraItem->setText(sora->name);
+            soraItem->setData(i, ItemRole::soraRole);
             soraItem->setCheckable(true);
 
             model->appendRow(soraItem);
@@ -211,26 +216,59 @@ void BookSearchFilter::loadQuranModel(QStandardItemModel *model)
 
 void BookSearchFilter::loadSimpleBookModel(QStandardItemModel *model)
 {
-    childTitles(model, 0, 0);
+    QuaZipFile titleFile(&m_zip);
+
+    if(m_zip.setCurrentFile("titles.xml")) {
+        if(!titleFile.open(QIODevice::ReadOnly)) {
+            qWarning("loadSimpleBookModel: open error %d", titleFile.getZipError());
+            return;
+        }
+    }
+
+    QDomDocument doc;
+    QString errorStr;
+    int errorLine=0;
+    int errorColumn=0;
+
+    if(!doc.setContent(&titleFile, 0, &errorStr, &errorLine, &errorColumn)) {
+        qDebug("loadSimpleBookModel: Parse error at line %d, column %d: %s\nFile: %s",
+               errorLine, errorColumn,
+               qPrintable(errorStr),
+               qPrintable(m_book->bookPath));
+
+        titleFile.close();
+        return ;
+    }
+
+    QDomElement root = doc.documentElement();
+    QDomElement element = root.firstChildElement();
+
+    while(!element.isNull()) {
+        readItem(element, model, 0);
+
+        element = element.nextSiblingElement();
+    }
 }
 
-void BookSearchFilter::childTitles(QStandardItemModel *model, QStandardItem *parentItem, int tid)
+void BookSearchFilter::readItem(QDomElement &element, QStandardItemModel *model, QStandardItem *parent)
 {
-    QSqlQuery query(m_indexDB);
-    query.exec(QString("SELECT id, parentID, pageID, title FROM bookIndex "
-                          "WHERE parentID = %1 ORDER BY id").arg(tid));
+    QStandardItem *item = new QStandardItem();
+    item->setText(element.attribute("text"));
+    item->setData(element.attribute("pageID").toInt(), ItemRole::idRole);
+    item->setCheckable(true);
 
-    while(query.next()){
-        QStandardItem *titleItem = new QStandardItem();
-        titleItem->setText(query.value(3).toString());
-        titleItem->setData(query.value(0).toInt(), ItemRole::idRole);
-        titleItem->setCheckable(true);
+    if(element.hasChildNodes()) {
+        QDomElement child = element.firstChildElement();
 
-        childTitles(model, titleItem, query.value(0).toInt());
+        while(!child.isNull()) {
+            readItem(child, model, item);
 
-        if(parentItem)
-            parentItem->appendRow(titleItem);
-        else
-            model->appendRow(titleItem);
+            child = child.nextSiblingElement();
+        }
     }
+
+    if(parent)
+        parent->appendRow(item);
+    else
+        model->appendRow(item);
 }

@@ -50,7 +50,7 @@ void AbstractBookReader::openBook()
     m_zip.setIoDevice(&m_zipFile);
 
     if(!m_zip.open(QuaZip::mdUnzip)) {
-        throw BookException(tr("لا يمكن فتح ملف الكتاب"), bookInfo()->bookPath, m_zip.getZipError());
+        throw BookException(tr("لا يمكن فتح ملف الكتاب"), m_bookInfo->bookPath, m_zip.getZipError());
     }
 
     connected();

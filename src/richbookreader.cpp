@@ -124,12 +124,12 @@ BookIndexModel *RichBookReader::indexModel()
 
     BookIndexNode *rootNode = new BookIndexNode();
     QDomElement root = doc.documentElement();
-    QDomNode itemNode = root.firstChild();
+    QDomElement element = root.firstChildElement();
 
-    while(!itemNode.isNull()) {
-        readItem(itemNode, rootNode);
+    while(!element.isNull()) {
+        readItem(element, rootNode);
 
-        itemNode = itemNode.nextSibling();
+        element = element.nextSiblingElement();
     }
 
     m_indexModel = new BookIndexModel();
@@ -140,19 +140,18 @@ BookIndexModel *RichBookReader::indexModel()
     return m_indexModel;
 }
 
-void RichBookReader::readItem(QDomNode &itemNode, BookIndexNode *parent)
+void RichBookReader::readItem(QDomElement &element, BookIndexNode *parent)
 {
-    QDomNamedNodeMap attr = itemNode.attributes();
-    BookIndexNode *item = new BookIndexNode(attr.namedItem("text").nodeValue(),
-                                            attr.namedItem("pageID").nodeValue().toInt());
+    BookIndexNode *item = new BookIndexNode(element.attribute("text"),
+                                            element.attribute("pageID").toInt());
 
-    if(itemNode.hasChildNodes()) {
-        QDomNode childNode = itemNode.firstChild();
+    if(element.hasChildNodes()) {
+        QDomElement child = element.firstChildElement();
 
-        while(!childNode.isNull()) {
-            readItem(childNode, item);
+        while(!child.isNull()) {
+            readItem(child, item);
 
-            childNode = childNode.nextSibling();
+            child = child.nextSiblingElement();
         }
     }
 

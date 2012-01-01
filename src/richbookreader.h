@@ -45,7 +45,7 @@ public:
 
 protected:
     virtual void connected();
-    void readItem(QDomNode &itemNode, BookIndexNode *parent);
+    void readItem(QDomElement &element, BookIndexNode *parent);
 
 signals:
     void textChanged();

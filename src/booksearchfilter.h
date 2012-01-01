@@ -4,6 +4,12 @@
 #include "searchfiltermanager.h"
 #include "librarybook.h"
 
+#include <qdom.h>
+#include <qfile.h>
+
+#include <quazip/quazip.h>
+#include <quazip/quazipfile.h>
+
 class BookSearchFilter : public SearchFilterManager
 {
     Q_OBJECT
@@ -20,7 +26,7 @@ protected:
     void close();
     void loadQuranModel(QStandardItemModel *model);
     void loadSimpleBookModel(QStandardItemModel *model);
-    void childTitles(QStandardItemModel *model, QStandardItem *parentItem, int tid);
+    void readItem(QDomElement &element, QStandardItemModel *model, QStandardItem *parent);
 
     SearchFilter *getQuranFilterQuery();
     SearchFilter *getSimpleBookFilterQuery();
@@ -30,6 +36,8 @@ protected:
 
 protected:
     LibraryBook *m_book;
+    QFile m_zipFile;
+    QuaZip m_zip;
 };
 
 #endif // BOOKSEARCHFILTER_H
