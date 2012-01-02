@@ -15,29 +15,15 @@ public:
     ~RichBookReader();
 
     /**
-      Check if this reader can have some books that need some time to load thier index model
-
-      A fast index load mean that we should call first \ref topIndexModel and use
-      threading to get the full index by calling \ref indexModel.
-      @return True if it can take some time to load the full index model
-      */
-    virtual bool needFastIndexLoad();
-    /**
       Get the full index model of the curren book
       */
     virtual BookIndexModel *indexModel();
-    /**
-      Get only a top level index model
-      */
-    virtual BookIndexModel *topIndexModel();
 
     TextFormatter *textFormat();
 
     void highlightPage(int pageID, lucene::search::Query *query);
 
     bool scrollToHighlight();
-
-    void stopModelLoad();
 
     virtual int getPageTitleID(int pageID);
 
@@ -55,7 +41,6 @@ protected:
     lucene::search::Query *m_query;
     QList<int> m_pageTitles;
     int m_highlightPageID;
-    bool m_stopModelLoad;
 };
 
 #endif // RICHBOOKREADER_H

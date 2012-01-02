@@ -12,7 +12,6 @@ public:
     ~DatabaseRemover();
 
     QString connectionName;
-    int removeModel;
 };
 
 }

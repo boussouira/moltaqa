@@ -18,9 +18,6 @@ BookReaderHelper::~BookReaderHelper()
 
     qDeleteAll(m_sowar);
     m_sowar.clear();
-
-    qDeleteAll(m_models);
-    m_models.clear();
 }
 
 QuranSora *BookReaderHelper::getQuranSora(int sora)
@@ -52,61 +49,6 @@ QuranSora *BookReaderHelper::getQuranSora(int sora)
     }
 
     return quranSora;
-}
-
-BookIndexModel *BookReaderHelper::getBookModel(int bookID)
-{
-    return m_models.value(bookID, 0);
-}
-
-void BookReaderHelper::addBookModel(int bookID, BookIndexModel *model)
-{
-    m_models.insert(bookID, model);
-
-    if(m_models.size() > 20)
-        removeUnusedModel();
-}
-
-void BookReaderHelper::removeModel(int bookID)
-{
-    m_modelToDelete.insert(bookID);
-
-    if(m_modelToDelete.size() > 20)
-        removeUnusedModel();
-}
-
-void BookReaderHelper::removeUnusedModel()
-{
-    int removedModels = 0;
-    int totalModels = m_models.size();
-
-    foreach(int bookID, m_modelToDelete) {
-        bool delModel = true;
-        QAbstractItemModel *model = m_models.value(bookID, 0);
-
-        if(model) {
-            QString bookConn(QString("book_i%1_").arg(bookID));
-
-            foreach(QString conn, QSqlDatabase::connectionNames()) {
-                if(conn.startsWith(bookConn)) {
-                    delModel = false;
-                    break;
-                }
-            }
-
-            if(delModel) {
-                m_models.remove(bookID);
-                m_modelToDelete.remove(bookID);
-
-                delete model;
-                removedModels++;
-            }
-        } else {
-            m_modelToDelete.remove(bookID);
-        }
-    }
-
-    qDebug("Remove %d/%d Unused Model", removedModels, totalModels);
 }
 
 void BookReaderHelper::open()

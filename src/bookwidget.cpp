@@ -27,9 +27,6 @@ BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_
     m_indexWidget->setBookInfo(db->bookInfo());
     m_indexWidget->setCurrentPage(db->page());
 
-    m_watcher = new QFutureWatcher<BookIndexModel*>(this);
-    connect(m_watcher, SIGNAL(finished()), SLOT(indexModelReady()));
-
     m_splitter->addWidget(m_indexWidget);
     m_splitter->addWidget(m_view);
     m_layout->addWidget(m_splitter);
@@ -48,7 +45,6 @@ BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_
     connect(m_db, SIGNAL(textChanged()), SLOT(readerTextChanged()));
     connect(m_db, SIGNAL(textChanged()), SIGNAL(textChanged()));
     connect(m_db, SIGNAL(textChanged()), m_indexWidget, SLOT(displayBookInfo()));
-    connect(m_watcher, SIGNAL(finished()), m_indexWidget, SLOT(displayBookInfo()));
 
     setFocusPolicy(Qt::StrongFocus);
 
@@ -58,13 +54,6 @@ BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_
 
 BookWidget::~BookWidget()
 {
-    if(m_watcher->isRunning()) {
-        m_db->stopModelLoad();
-        qDebug("Waiting for model...");
-        m_watcher->waitForFinished();
-        qDebug("Done");
-    }
-
     delete m_db;
 }
 
@@ -104,20 +93,7 @@ void BookWidget::focusInEvent(QFocusEvent *event)
 
 void BookWidget::displayInfo()
 {
-    if(m_db->needFastIndexLoad()) {
-        BookIndexModel *savedModel = MW->readerHelper()->getBookModel(m_db->bookInfo()->bookID);
-        if(savedModel) {
-            m_indexWidget->setIndex(savedModel);
-            m_db->setBookIndexModel(savedModel);
-        } else {
-            m_retModel = QtConcurrent::run(m_db, &RichBookReader::indexModel);
-            m_watcher->setFuture(m_retModel);
-
-            m_indexWidget->setIndex(m_db->topIndexModel());
-        }
-    } else {
-        m_indexWidget->setIndex(m_db->indexModel());
-    }
+    m_indexWidget->setIndex(m_db->indexModel());
 
     m_indexWidget->hideAyaSpin(m_db->bookInfo()->isQuran() || m_db->bookInfo()->isTafessir());
     m_indexWidget->hidePartSpin(m_db->bookInfo()->partsCount > 1);
@@ -235,14 +211,6 @@ void BookWidget::hideIndexWidget()
         sizes << 0 << 10;
         m_splitter->setSizes(sizes);
     }
-}
-
-void BookWidget::indexModelReady()
-{
-    BookIndexModel *model = m_retModel.result();
-    m_indexWidget->setIndex(model);
-
-    MW->readerHelper()->addBookModel(m_db->bookInfo()->bookID, model);
 }
 
 void BookWidget::readerTextChanged()

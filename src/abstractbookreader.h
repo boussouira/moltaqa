@@ -124,7 +124,6 @@ private:
     static bool getQuranPage(QuaZip *zip, LibraryBook *book, BookPage *page);
 
 protected:
-    Utils::DatabaseRemover m_remover;
     LibraryBook *m_bookInfo;
     BookPage *m_currentPage;
     LibraryManager *m_libraryManager;

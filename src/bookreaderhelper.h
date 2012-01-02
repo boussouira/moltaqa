@@ -25,20 +25,14 @@ public:
     ~BookReaderHelper();
 
     QuranSora *getQuranSora(int sora);
-    BookIndexModel *getBookModel(int bookID);
-    void addBookModel(int bookID, BookIndexModel *model);
-    void removeModel(int bookID);
 
 protected:
     void open();
-    void removeUnusedModel();
 
 protected:
     Utils::DatabaseRemover m_remover;
     QSqlDatabase m_quranDB;
     QHash<int, QuranSora*> m_sowar;
-    QHash<int, BookIndexModel*> m_models;
-    QSet<int> m_modelToDelete;
 };
 
 #endif // BOOKREADERHELPER_H

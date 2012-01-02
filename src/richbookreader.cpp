@@ -10,7 +10,6 @@ RichBookReader::RichBookReader(QObject *parent) : AbstractBookReader(parent)
     m_textFormat = 0;
     m_query = 0;
     m_highlightPageID = -1;
-    m_stopModelLoad = false;
 }
 
 RichBookReader::~RichBookReader()
@@ -26,11 +25,6 @@ void RichBookReader::connected()
     AbstractBookReader::connected();
 }
 
-bool RichBookReader::needFastIndexLoad()
-{
-    return false;
-}
-
 void RichBookReader::highlightPage(int pageID, lucene::search::Query *query)
 {
     m_query = query;
@@ -40,11 +34,6 @@ void RichBookReader::highlightPage(int pageID, lucene::search::Query *query)
 bool RichBookReader::scrollToHighlight()
 {
     return (!m_bookInfo->isQuran() && m_query && m_highlightPageID == m_currentPage->pageID);
-}
-
-void RichBookReader::stopModelLoad()
-{
-    m_stopModelLoad = true;
 }
 
 int RichBookReader::getPageTitleID(int pageID)
@@ -157,11 +146,6 @@ void RichBookReader::readItem(QDomElement &element, BookIndexNode *parent)
 
     parent->appendChild(item);
     m_pageTitles.append(item->id);
-}
-
-BookIndexModel *RichBookReader::topIndexModel()
-{
-    return new BookIndexModel();
 }
 
 TextFormatter *RichBookReader::textFormat()

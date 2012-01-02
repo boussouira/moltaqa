@@ -26,7 +26,7 @@ AbstractBookReader::AbstractBookReader(QObject *parent) : QObject(parent)
 AbstractBookReader::~AbstractBookReader()
 {
     if(m_indexModel)
-        m_remover.removeModel = m_bookInfo->bookID;
+        delete m_indexModel;
 
     if(m_currentPage)
         delete m_currentPage;

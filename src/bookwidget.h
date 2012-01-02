@@ -42,7 +42,6 @@ public slots:
     void openSora(int sora, int aya);
     void openHaddit(int hadditNum);
 
-    void indexModelReady();
     void readerTextChanged();
 
 signals:
@@ -55,8 +54,6 @@ protected:
     WebView *m_view;
     IndexWidget *m_indexWidget;
     RichBookReader *m_db;
-    QFuture<BookIndexModel*> m_retModel;
-    QFutureWatcher<BookIndexModel*> *m_watcher;
     bool m_viewInitialized;
 };
 

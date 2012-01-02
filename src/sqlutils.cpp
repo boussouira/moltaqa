@@ -5,8 +5,7 @@
 
 namespace Utils {
 
-DatabaseRemover::DatabaseRemover() :
-    removeModel(-1)
+DatabaseRemover::DatabaseRemover()
 {
 }
 
@@ -16,9 +15,6 @@ DatabaseRemover::~DatabaseRemover()
         //qDebug("Remove database: %s", qPrintable(connectionName));
         QSqlDatabase::removeDatabase(connectionName);
     }
-
-    if(removeModel != -1)
-        MW->readerHelper()->removeModel(removeModel);
 }
 
 }
