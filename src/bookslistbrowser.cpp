@@ -90,6 +90,10 @@ void BooksListBrowser::setModel(BooksListModel *model)
 void BooksListBrowser::setFilterText(QString text)
 {
     if(text.size() > 2) {
+        text.replace(QRegExp("[\\x0627\\x0622\\x0623\\x0625]"), "[\\x0627\\x0622\\x0623\\x0625]");//ALEFs
+        text.replace(QRegExp("[\\x0647\\x0629]"), "[\\x0647\\x0629]"); //TAH_MARBUTA, HEH
+        text.replace(QRegExp("[\\x064A\\x0649]"), "[\\x064A\\x0649]"); //YAH, ALEF MAKSOURA
+
         m_filterModel->setFilterRegExp(text);
         ui->treeView->expandAll();
     } else {
