@@ -24,11 +24,8 @@ BooksListBrowser::BooksListBrowser(LibraryManager *libraryManager, QWidget *pare
     m_model = 0;
     m_filterModel = new SortFilterProxyModel(this);
 
-    connect(ui->lineSearch, SIGNAL(textChanged(QString)), m_filterModel,
-            SLOT(setFilterRegExp(QString)));// TODO: serach in book info...
-
     connect(ui->lineSearch, SIGNAL(textChanged(QString)),
-            ui->treeView, SLOT(expandAll()));
+            SLOT(setFilterText(QString)));// TODO: serach in book info...
 
     connect(m_libraryManager, SIGNAL(booksListModelLoaded(BooksListModel*)),
             SLOT(setModel(BooksListModel*)));
@@ -88,6 +85,17 @@ void BooksListBrowser::setModel(BooksListModel *model)
 
     ui->treeView->setColumnWidth(BooksListModel::AuthorNameCol,
                                  settings.value("col_2", 200).toInt());
+}
+
+void BooksListBrowser::setFilterText(QString text)
+{
+    if(text.size() > 2) {
+        m_filterModel->setFilterRegExp(text);
+        ui->treeView->expandAll();
+    } else {
+        m_filterModel->setFilterFixedString("");
+        ui->treeView->collapseAll();
+    }
 }
 
 void BooksListBrowser::sortChanged(int logicalIndex, Qt::SortOrder)
