@@ -78,17 +78,6 @@ void BookWidget::loadSettings()
     settings.endGroup();
 }
 
-void BookWidget::changeIcon(TabIcon iconType)
-{
-    if(iconType == Loading)
-        m_icon = QIcon(":/menu/images/process.png");
-    else if(iconType == Ready)
-        m_icon = QIcon(":/menu/images/book.png");
-
-    emit setIcon(m_icon);
-
-}
-
 void BookWidget::saveSettings()
 {
     QSettings settings;
@@ -120,17 +109,14 @@ void BookWidget::displayInfo()
         if(savedModel) {
             m_indexWidget->setIndex(savedModel);
             m_db->setBookIndexModel(savedModel);
-            changeIcon(Ready);
         } else {
             m_retModel = QtConcurrent::run(m_db, &RichBookReader::indexModel);
             m_watcher->setFuture(m_retModel);
 
             m_indexWidget->setIndex(m_db->topIndexModel());
-            changeIcon(Loading);
         }
     } else {
         m_indexWidget->setIndex(m_db->indexModel());
-        changeIcon(Ready);
     }
 
     m_indexWidget->hideAyaSpin(m_db->bookInfo()->isQuran() || m_db->bookInfo()->isTafessir());
@@ -255,8 +241,6 @@ void BookWidget::indexModelReady()
 {
     BookIndexModel *model = m_retModel.result();
     m_indexWidget->setIndex(model);
-
-    changeIcon(Ready);
 
     MW->readerHelper()->addBookModel(m_db->bookInfo()->bookID, model);
 }

@@ -2,7 +2,6 @@
 #define BOOKWIDGETMANAGER_H
 
 #include <qwidget.h>
-#include <qicon.h>
 
 class BookWidget;
 class LibraryManager;
@@ -45,9 +44,6 @@ public slots:
     void firstPage();
     void lastPage();
     void goToPage();
-
-protected slots:
-    void changeTabIcon(QIcon tabIcon);
 
 signals:
     void lastTabClosed();

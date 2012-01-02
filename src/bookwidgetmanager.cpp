@@ -111,9 +111,8 @@ int BookWidgetManager::addBook(BookWidget *book)
 {
     int tabIndex = m_activeTab->addBookWidget(book);
     m_activeTab->setCurrentIndex(tabIndex);
-    m_activeTab->setTabIcon(tabIndex, book->icon());
+    m_activeTab->setTabIcon(tabIndex, QIcon(":/menu/images/book.png"));
 
-    connect(book, SIGNAL(setIcon(QIcon)), SLOT(changeTabIcon(QIcon)));
     connect(book, SIGNAL(textChanged()), SIGNAL(pageChanged()));
 
     return tabIndex;
@@ -166,7 +165,6 @@ void BookWidgetManager::moveToOtherTab(int index)
         active->removeTab(index);
         int i = otherTab->addBookWidget(book);
         otherTab->setCurrentIndex(i);
-        otherTab->setTabIcon(i, book->icon());
         m_showOtherTab = true;
         tabChanged(0);
 
@@ -245,24 +243,3 @@ void BookWidgetManager::goToPage()
             qDebug("What to do?");
     }
 }
-
-void BookWidgetManager::changeTabIcon(QIcon tabIcon)
-{
-    QWidget *tab = qobject_cast<QWidget*>(sender());
-    if(tab) {
-        for(int i=0; i<m_topTab->count(); i++) {
-            if(m_topTab->widget(i) == tab) {
-                m_topTab->setTabIcon(i, tabIcon);
-                return;
-            }
-        }
-
-        for(int i=0; i<m_bottomTab->count(); i++) {
-            if(m_bottomTab->widget(i) == tab) {
-                m_bottomTab->setTabIcon(i, tabIcon);
-                return;
-            }
-        }
-    }
-}
-
