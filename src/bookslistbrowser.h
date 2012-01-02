@@ -27,8 +27,9 @@ public slots:
     void setModel(BooksListModel *model);
 
 private slots:
+    void setFilterText(QString text);
+    void sortChanged(int logicalIndex, Qt::SortOrder);
     void on_treeView_doubleClicked(QModelIndex index);
-    void on_comboBox_currentIndexChanged(int index);
 
 signals:
     void bookSelected(int bookID);

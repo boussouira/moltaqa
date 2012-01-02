@@ -24,14 +24,15 @@ BooksListBrowser::BooksListBrowser(LibraryManager *libraryManager, QWidget *pare
     m_model = 0;
     m_filterModel = new SortFilterProxyModel(this);
 
-    connect(ui->lineSearch, SIGNAL(textChanged(QString)), m_filterModel,
-            SLOT(setFilterRegExp(QString)));// TODO: serach in book info...
-
     connect(ui->lineSearch, SIGNAL(textChanged(QString)),
-            ui->treeView, SLOT(expandAll()));
+            SLOT(setFilterText(QString)));// TODO: serach in book info...
 
     connect(m_libraryManager, SIGNAL(booksListModelLoaded(BooksListModel*)),
             SLOT(setModel(BooksListModel*)));
+
+    connect(ui->treeView->header(),
+            SIGNAL(sortIndicatorChanged(int,Qt::SortOrder)),
+            SLOT(sortChanged(int,Qt::SortOrder)));
 }
 
 BooksListBrowser::~BooksListBrowser()
@@ -76,11 +77,38 @@ void BooksListBrowser::setModel(BooksListModel *model)
 
     ui->treeView->setModel(m_filterModel);
 
+    ui->treeView->sortByColumn(0, Qt::AscendingOrder);
+    m_filterModel->setSortRole(ItemRole::orderRole);
+
     ui->treeView->setColumnWidth(BooksListModel::BookNameCol,
                                  settings.value("col_1", 350).toInt());
 
     ui->treeView->setColumnWidth(BooksListModel::AuthorNameCol,
                                  settings.value("col_2", 200).toInt());
+}
+
+void BooksListBrowser::setFilterText(QString text)
+{
+    if(text.size() > 2) {
+        text.replace(QRegExp("[\\x0627\\x0622\\x0623\\x0625]"), "[\\x0627\\x0622\\x0623\\x0625]");//ALEFs
+        text.replace(QRegExp("[\\x0647\\x0629]"), "[\\x0647\\x0629]"); //TAH_MARBUTA, HEH
+        text.replace(QRegExp("[\\x064A\\x0649]"), "[\\x064A\\x0649]"); //YAH, ALEF MAKSOURA
+
+        m_filterModel->setFilterRegExp(text);
+        ui->treeView->expandAll();
+    } else {
+        m_filterModel->setFilterFixedString("");
+        ui->treeView->collapseAll();
+    }
+}
+
+void BooksListBrowser::sortChanged(int logicalIndex, Qt::SortOrder)
+{
+
+    if(logicalIndex != BooksListModel::AuthorDeathCol)
+        m_filterModel->setSortRole(Qt::DisplayRole);
+    else
+        m_filterModel->setSortRole(ItemRole::authorDeathRole);
 }
 
 void BooksListBrowser::on_treeView_doubleClicked(QModelIndex index)
@@ -89,20 +117,5 @@ void BooksListBrowser::on_treeView_doubleClicked(QModelIndex index)
     BooksListNode *node = model->nodeFromIndex(m_filterModel->mapToSource(index));
     if(node->type == BooksListNode::Book) {
         emit bookSelected(node->id);
-    }
-}
-
-void BooksListBrowser::on_comboBox_currentIndexChanged(int index)
-{
-    int sortCol = qMax(0, index-1);
-    ui->treeView->sortByColumn(sortCol, Qt::AscendingOrder);
-
-    if(index) {
-        if(sortCol != BooksListModel::AuthorDeathCol)
-            m_filterModel->setSortRole(Qt::DisplayRole);
-        else
-            m_filterModel->setSortRole(ItemRole::authorDeathRole);
-    } else {
-        m_filterModel->setSortRole(ItemRole::orderRole);
     }
 }

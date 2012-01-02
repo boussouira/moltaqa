@@ -84,12 +84,15 @@ void LibraryCreator::importAuthors()
 
 void LibraryCreator::addTafessir(ShamelaBookInfo *tafessir)
 {
-    m_bookQuery.prepare("INSERT INTO tafassirList (id, book_id, tafessir_name) VALUES (NULL, ?, ?)");
+    m_bookQuery.prepare("INSERT INTO tafassirList (id, book_id, tafessir_name, show_tafessir, tafessir_order) "
+                        "VALUES (NULL, ?, ?, ?, ?)");
     m_bookQuery.bindValue(0,  m_mapper->mapFromShamelaBook(tafessir->id));
     m_bookQuery.bindValue(1, tafessir->tafessirName);
+    m_bookQuery.bindValue(2, Qt::Checked);
+    m_bookQuery.bindValue(3, 0);
 
     if(m_bookQuery.exec()) {
-//        qDebug() << "Add tafessir:" << tafessir->tafessirName;
+        qDebug() << "Add tafessir:" << tafessir->tafessirName;
     } else {
         LOG_SQL_ERROR(m_bookQuery);
     }
