@@ -2,9 +2,7 @@
 #define RICHTAFESSIRREADER_H
 
 #include "richbookreader.h"
-#include "tafessirquery.h"
 
-class TafessirQuery;
 class BookIndexNode;
 class TafessirTextFormat;
 

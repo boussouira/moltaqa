@@ -6,7 +6,6 @@
 #include "bookexception.h"
 #include "simpletextformat.h"
 #include "libraryinfo.h"
-#include "simplequery.h"
 
 #include <qsqlquery.h>
 #include <qstringlist.h>

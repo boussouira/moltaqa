@@ -2,7 +2,6 @@
 #define TEXTBOOKREADER_H
 
 #include "abstractbookreader.h"
-#include "simplequery.h"
 
 class TextBookReader : public AbstractBookReader
 {

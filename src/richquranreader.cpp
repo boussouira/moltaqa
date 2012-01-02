@@ -4,7 +4,6 @@
 #include "bookexception.h"
 #include "qurantextformat.h"
 #include "libraryinfo.h"
-#include "quranquery.h"
 #include "utils.h"
 #include "mainwindow.h"
 #include "bookreaderhelper.h"

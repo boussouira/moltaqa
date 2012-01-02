@@ -44,8 +44,6 @@ SOURCES += mainwindow.cpp \
     bookexception.cpp \
     libraryinfo.cpp \
     librarymanager.cpp \
-    simplequery.cpp \
-    quranquery.cpp \
     welcomewidget.cpp \
     newbookwriter.cpp \
     utils.cpp \
@@ -61,7 +59,6 @@ SOURCES += mainwindow.cpp \
     newlibrarydialog.cpp \
     richtafessirreader.cpp \
     tafessirtextformat.cpp \
-    tafessirquery.cpp \
     shamelamapper.cpp \
     controlcenterdialog.cpp \
     editablebookslistmodel.cpp \
@@ -132,8 +129,6 @@ HEADERS += mainwindow.h \
     bookexception.h \
     libraryinfo.h \
     librarymanager.h \
-    simplequery.h \
-    quranquery.h \
     welcomewidget.h \
     newbookwriter.h \
     utils.h \
@@ -149,7 +144,6 @@ HEADERS += mainwindow.h \
     newlibrarydialog.h \
     richtafessirreader.h \
     tafessirtextformat.h \
-    tafessirquery.h \
     shamelamapper.h \
     controlcenterdialog.h \
     editablebookslistmodel.h \

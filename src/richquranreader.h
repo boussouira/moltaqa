@@ -2,7 +2,6 @@
 #define RICHQURANREADER_H
 
 #include "richbookreader.h"
-#include "quranquery.h"
 
 class QuranTextFormat;
 
