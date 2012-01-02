@@ -53,6 +53,8 @@ void ViewManager::setCurrentView(AbstarctView *view)
     foreach (QAction*act, view->navigationActions())
         m_navigationsMenu->addAction(act);
 
+    m_navigationsMenu->setEnabled(!view->navigationActions().isEmpty());
+
     view->updateToolBars();
     m_currentView = view;
 
