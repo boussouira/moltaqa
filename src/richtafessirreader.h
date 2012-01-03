@@ -13,6 +13,7 @@ public:
     ~RichTafessirReader();
 
     void setCurrentPage(QDomElement pageNode);
+    QDomElement getQuranPageId(int sora, int aya);
 
 protected:
     void childTitles(BookIndexNode *parentNode, int tid);

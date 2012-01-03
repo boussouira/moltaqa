@@ -76,6 +76,36 @@ void RichTafessirReader::setCurrentPage(QDomElement pageNode)
     emit textChanged();
 }
 
+QDomElement RichTafessirReader::getQuranPageId(int sora, int aya)
+{
+    QString soraNum = QString::number(sora);
+
+    QDomElement e = m_rootElement.lastChildElement();
+    while(!e.isNull()) {
+
+        if(soraNum == e.attribute("sora")) {
+            if(aya >= e.attribute("aya").toInt()) {
+                break;
+            }
+        }
+
+        e = e.previousSiblingElement();
+    }
+
+    if(!e.isNull()) {
+        QString current = e.attribute("aya");
+
+        while(!e.isNull()) {
+            if(e.attribute("aya") != current)
+                return e.nextSiblingElement();
+
+            e = e.previousSiblingElement();
+        }
+    }
+
+    return QDomElement();
+}
+
 void RichTafessirReader::openQuranBook()
 {
     QString connName = QString("quran_tafessir_%1").arg(m_bookInfo->bookID);

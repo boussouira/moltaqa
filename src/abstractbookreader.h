@@ -116,7 +116,7 @@ protected:
     QDomElement getPage(int pid);
     QDomElement getPageId(int page, int part);
     QDomElement getPageId(int haddit);
-    QDomElement getQuranPageId(int sora, int aya);
+    virtual QDomElement getQuranPageId(int sora, int aya);
 
 private:
     static bool getSimpleBookPage(QuaZip *zip, LibraryBook *book, BookPage *page);
