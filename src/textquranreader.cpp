@@ -1,6 +1,5 @@
 #include "textquranreader.h"
 #include "bookpage.h"
-#include "utils.h"
 
 TextQuranReader::TextQuranReader(QObject *parent) :
     TextBookReader(parent)

@@ -1,17 +1,13 @@
 #include "richsimplebookreader.h"
 #include "abstractbookreader.h"
 #include "librarybook.h"
-#include "bookindexmodel.h"
-#include "bookindexnode.h"
 #include "bookexception.h"
 #include "simpletextformat.h"
 #include "libraryinfo.h"
 
-#include <qsqlquery.h>
 #include <qstringlist.h>
 #include <qdebug.h>
 #include <qdatetime.h>
-
 
 RichSimpleBookReader::RichSimpleBookReader(QObject *parent) : RichBookReader(parent)
 {

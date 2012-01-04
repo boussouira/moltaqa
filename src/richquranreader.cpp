@@ -1,14 +1,10 @@
 #include "richquranreader.h"
 #include "librarybook.h"
-#include "bookindexmodel.h"
 #include "bookexception.h"
 #include "qurantextformat.h"
 #include "libraryinfo.h"
-#include "utils.h"
 #include "mainwindow.h"
 #include "bookreaderhelper.h"
-
-#include <qsqldatabase.h>
 
 RichQuranReader::RichQuranReader(QObject *parent) : RichBookReader(parent)
 {

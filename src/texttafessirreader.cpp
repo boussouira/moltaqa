@@ -1,6 +1,5 @@
 #include "texttafessirreader.h"
 #include "librarybook.h"
-#include "utils.h"
 
 TextTafessirReader::TextTafessirReader(QObject *parent) :
     TextBookReader(parent)

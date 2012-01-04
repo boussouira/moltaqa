@@ -1,19 +1,12 @@
 #include "richtafessirreader.h"
 #include "tafessirtextformat.h"
 #include "librarybook.h"
-#include "bookindexmodel.h"
-#include "bookindexnode.h"
 #include "libraryinfo.h"
-#include "bookindexmodel.h"
-#include "bookindexnode.h"
 #include "bookexception.h"
-#include "utils.h"
 #include "mainwindow.h"
 #include "bookreaderhelper.h"
 
-#include <qsqlquery.h>
 #include <qstringlist.h>
-#include <qsqlerror.h>
 #include <qdebug.h>
 #include <qdatetime.h>
 

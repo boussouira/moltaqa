@@ -1,6 +1,5 @@
 #include "textsimplebookreader.h"
 #include "librarybook.h"
-#include "utils.h"
 
 TextSimpleBookReader::TextSimpleBookReader(QObject *parent) :
     TextBookReader(parent)
