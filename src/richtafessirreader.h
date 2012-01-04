@@ -20,11 +20,16 @@ protected:
     void connected();
     void openQuranBook();
     void readQuranText(int sora, int aya, int count);
+    int nextAyaNumber(QDomElement e);
 
 protected:
     TafessirTextFormat *m_formatter;
-    QSqlDatabase m_quranDB;
+    QFile m_quranZipFile;
+    QuaZip m_quranZip;
     LibraryBook *m_quranInfo;
+    QuaZipFile m_quranPages;
+    QDomDocument m_qurankDoc;
+    QDomElement m_quranRootElement;
     bool m_showQuran;
 };
 

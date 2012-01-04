@@ -27,12 +27,8 @@ RichTafessirReader::RichTafessirReader(QObject *parent, bool showQuran) : RichBo
 
 RichTafessirReader::~RichTafessirReader()
 {
-    if(m_quranDB.isOpen()) {
-        QString conn = m_quranDB.connectionName();
-        m_quranDB.close();
-        m_quranDB = QSqlDatabase();
-        QSqlDatabase::removeDatabase(conn);
-    }
+    if(m_quranZip.isOpen())
+        m_quranZip.close();
 }
 
 void RichTafessirReader::connected()
@@ -59,11 +55,12 @@ void RichTafessirReader::setCurrentPage(QDomElement pageNode)
     getPageTitleID();
 
     // TODO: don't show quran text when browsing tafessir book directly?
-//    if(m_quranInfo && m_showQuran) {
-//        readQuranText(m_currentPage->sora,
-//                      m_currentPage->aya,
-//                      tafessirQuery.getAyatCount(m_currentPage->sora, m_currentPage->aya));
-//    }
+    if(m_quranInfo && m_showQuran) {
+        int nextAya = nextAyaNumber(pageNode);
+        readQuranText(m_currentPage->sora,
+                      m_currentPage->aya,
+                      nextAya-m_currentPage->aya);
+    }
 
     QString pageText = getFileContent(QString("pages/p%1.html").arg(m_currentPage->pageID));
     if(m_query && m_highlightPageID == m_currentPage->pageID)
@@ -108,38 +105,91 @@ QDomElement RichTafessirReader::getQuranPageId(int sora, int aya)
 
 void RichTafessirReader::openQuranBook()
 {
-    QString connName = QString("quran_tafessir_%1").arg(m_bookInfo->bookID);
+    Q_CHECK_PTR(m_quranInfo);
 
-    while(QSqlDatabase::contains(connName)) {
-        connName.append("_");
+    if(!QFile::exists(m_quranInfo->bookPath)) {
+        throw BookException(tr("لم يتم العثور على ملف الكتاب"), bookInfo()->bookPath);
     }
 
-    m_quranDB = QSqlDatabase::addDatabase("QSQLITE", connName);
-    m_quranDB.setDatabaseName(m_quranInfo->bookPath);
+    m_quranZipFile.setFileName(m_quranInfo->bookPath);
+    m_quranZip.setIoDevice(&m_quranZipFile);
 
-    if (!m_quranDB.open())
-        throw BookException(tr("لم يمكن فتح قاعدة البيانات"), m_quranInfo->bookPath);
+    if(!m_quranZip.open(QuaZip::mdUnzip)) {
+        throw BookException(tr("لا يمكن فتح ملف الكتاب"), m_quranInfo->bookPath, m_quranZip.getZipError());
+    }
+
+    QString errorStr;
+    int errorLine=0;
+    int errorColumn=0;
+
+    m_quranPages.setZip(&m_quranZip);
+
+    if(m_quranZip.setCurrentFile("pages.xml")) {
+        if(!m_quranPages.open(QIODevice::ReadOnly)) {
+            qWarning("getBookInfo: open error %d", m_quranPages.getZipError());
+            return;
+        }
+    }
+
+    if(!m_qurankDoc.setContent(&m_quranPages, 0, &errorStr, &errorLine, &errorColumn)) {
+        qDebug("openQuranBook: Parse error at line %d, column %d: %s\nFile: %s",
+               errorLine, errorColumn,
+               qPrintable(errorStr),
+               qPrintable(m_quranInfo->bookPath));
+
+        return;
+    }
+
+    m_quranRootElement = m_qurankDoc.documentElement();
 }
 
 void RichTafessirReader::readQuranText(int sora, int aya, int count)
 {
-    if(count>0) {
-        QSqlQuery quranQuery(m_quranDB);
-        QuranSora *soraInfo = MW->readerHelper()->getQuranSora(sora);
+    count = qMax(count, 1);
 
-        m_formatter->beginQuran(soraInfo->name, aya, aya+count-1);
+    QString soraStr = QString::number(sora);
+    QString ayaStr = QString::number(aya);
 
-        quranQuery.exec(QString("SELECT quranText.ayaText, quranText.ayaNumber, "
-                                   "quranText.soraNumber "
-                                   "FROM quranText "
-                                   "WHERE quranText.ayaNumber >= %1 AND quranText.soraNumber = %2 "
-                                   "ORDER BY quranText.id LIMIT %3").arg(aya).arg(sora).arg(count));
-        while(quranQuery.next()) {
-            m_formatter->insertAyaText(quranQuery.value(0).toString(),
-                                       quranQuery.value(1).toInt(),
-                                       quranQuery.value(2).toInt());
+    QDomElement e = m_quranRootElement.firstChildElement();
+    while(!e.isNull()) {
+        // find the aya
+        if(e.attribute("aya")==ayaStr && e.attribute("sora") == soraStr) {
+            QuranSora *soraInfo = MW->readerHelper()->getQuranSora(sora);
+
+            m_formatter->beginQuran(soraInfo->name, aya, aya+count-1);
+
+            for(int i=0; i<count; i++) {
+                m_formatter->insertAyaText(e.text(),
+                                           e.attribute("aya").toInt(),
+                                           e.attribute("sora").toInt());
+
+                e = e.nextSiblingElement();
+            }
+
+            m_formatter->endQuran();
+            break;
         }
 
-        m_formatter->endQuran();
+        e = e.nextSiblingElement();
     }
+}
+
+int RichTafessirReader::nextAyaNumber(QDomElement e)
+{
+    QString aya = e.attribute("aya");
+    QString sora = e.attribute("sora");
+
+    while(!e.isNull()) {
+        if(e.attribute("sora")==sora) {
+            if(e.attribute("aya")!=aya) {
+                return e.attribute("aya").toInt();
+            }
+        } else {
+            break;
+        }
+
+        e = e.nextSiblingElement();
+    }
+
+    return 0;
 }
