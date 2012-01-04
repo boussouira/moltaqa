@@ -296,7 +296,7 @@ bool AbstractBookReader::getSimpleBookPage(QuaZip *zip, LibraryBook *book, BookP
                     page->part = bookReader.attributes().value("part").toString().toInt();
                     page->page = bookReader.attributes().value("page").toString().toInt();
 
-                    page->text = getFileContent(zip, QString("pages/p%1.html").arg(pid));
+                    page->text = getPageText(zip, page->pageID);
 
                     break;
                 }
@@ -373,7 +373,7 @@ bool AbstractBookReader::getTafessirPage(QuaZip *zip, LibraryBook *book, BookPag
                     page->sora = bookReader.attributes().value("sora").toString().toInt();
                     page->aya = bookReader.attributes().value("aya").toString().toInt();
 
-                    page->text = getFileContent(zip, QString("pages/p%1.html").arg(pid));
+                    page->text = getPageText(zip, page->pageID);
 
                     break;
                 }

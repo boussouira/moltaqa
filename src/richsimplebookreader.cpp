@@ -36,7 +36,7 @@ void RichSimpleBookReader::setCurrentPage(QDomElement pageNode)
     getPageTitleID();
     m_libraryManager->getShoroohPages(m_bookInfo, m_currentPage);
 
-    QString pageText = getFileContent(QString("pages/p%1.html").arg(m_currentPage->pageID));
+    QString pageText = getPageText(m_currentPage->pageID);
     if(m_query && m_highlightPageID == m_currentPage->pageID)
         m_textFormat->insertText(Utils::highlightText(pageText, m_query, false));
     else

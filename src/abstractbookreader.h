@@ -103,6 +103,17 @@ public:
         return getFileContent(&m_zip, fileName);
     }
 
+    inline QString getPageText(int pageID)
+    {
+        return getFileContent(&m_zip, QString("pages/p%1.html").arg(pageID));
+    }
+
+    static QString getPageText(QuaZip *zip, int pageID)
+    {
+        return getFileContent(zip, QString("pages/p%1.html").arg(pageID));
+    }
+
+
 protected:
     /**
       Generate book info

@@ -55,7 +55,7 @@ void RichTafessirReader::setCurrentPage(QDomElement pageNode)
                       nextAya-m_currentPage->aya);
     }
 
-    QString pageText = getFileContent(QString("pages/p%1.html").arg(m_currentPage->pageID));
+    QString pageText = getPageText(m_currentPage->pageID);
     if(m_query && m_highlightPageID == m_currentPage->pageID)
         m_textFormat->insertText(Utils::highlightText(pageText, m_query, false));
     else
