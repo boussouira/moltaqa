@@ -36,19 +36,21 @@ bool RichBookReader::scrollToHighlight()
     return (!m_bookInfo->isQuran() && m_query && m_highlightPageID == m_currentPage->pageID);
 }
 
-int RichBookReader::getPageTitleID(int pageID)
+void RichBookReader::getPageTitleID()
 {
-    int id = pageID;
-    if(!m_pageTitles.isEmpty() && !m_pageTitles.contains(pageID)) {
-        for(int i=0; i<m_pageTitles.size(); i++) {
-            id = m_pageTitles.at(i);
+    if(!m_pageTitles.isEmpty()) {
 
-            if(pageID <= id)
-                return id;
+        if(m_pageTitles.contains(m_currentPage->pageID)) {
+            m_currentPage->titleID = m_currentPage->pageID;
+        } else {
+            for(int i=0; i<m_pageTitles.size(); i++) {
+                if(m_currentPage->pageID <= m_pageTitles.at(i)) {
+                    m_currentPage->titleID = m_pageTitles.at(i);
+                    break;
+                }
+            }
         }
     }
-
-    return id;
 }
 
 bool RichBookReader::saveBookPages(QList<BookPage*> pages)

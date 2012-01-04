@@ -25,7 +25,7 @@ public:
 
     bool scrollToHighlight();
 
-    virtual int getPageTitleID(int pageID);
+    virtual void getPageTitleID();
 
     bool saveBookPages(QList<BookPage *> pages);
 
