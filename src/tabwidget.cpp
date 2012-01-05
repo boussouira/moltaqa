@@ -75,9 +75,9 @@ void TabWidget::showTabBarMenu(QPoint point)
     QAction *revAct = 0;
 
     if(tabsClosable()) {
-        QAction *closeAct = new QAction(tr("اغلاق التبويب"), &menu);
-        QAction *closeOtherAct = new QAction(tr("اغلاق كل التبويبات الاخرى"), &menu);
-        QAction *closeAllAct = new QAction(tr("اغلاق كل التبويبات"), &menu);
+        closeAct = new QAction(tr("اغلاق التبويب"), &menu);
+        closeOtherAct = new QAction(tr("اغلاق كل التبويبات الاخرى"), &menu);
+        closeAllAct = new QAction(tr("اغلاق كل التبويبات"), &menu);
 
         menu.addAction(closeAct);
         menu.addAction(closeOtherAct);
