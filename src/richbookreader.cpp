@@ -43,8 +43,9 @@ void RichBookReader::getPageTitleID()
         if(m_pageTitles.contains(m_currentPage->pageID)) {
             m_currentPage->titleID = m_currentPage->pageID;
         } else {
-            for(int i=0; i<m_pageTitles.size(); i++) {
-                if(m_currentPage->pageID <= m_pageTitles.at(i)) {
+            for(int i=0; i<m_pageTitles.size()-1; i++) {
+                if(m_pageTitles.at(i) <= m_currentPage->pageID
+                        && m_currentPage->pageID < m_pageTitles.at(i+1)) {
                     m_currentPage->titleID = m_pageTitles.at(i);
                     break;
                 }
