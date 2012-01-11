@@ -36,6 +36,7 @@ public slots:
     void changeActiveTab();
     void moveToOtherTab(int index);
     void reverseSplitter();
+    void closeBook(int bookID);
 
     void nextAya();
     void previousAya();

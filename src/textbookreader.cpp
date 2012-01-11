@@ -98,7 +98,16 @@ void TextBookReader::getPages()
             continue;
         }
 
-        m_pages.insert(id, QString::fromUtf8(file.readAll()));
+        QByteArray out;
+        char buf[4096];
+        int len = 0;
+
+        while (!file.atEnd()) {
+            len = file.read(buf, 4096);
+            out.append(buf, len);
+        }
+
+        m_pages.insert(id, out);
 
         file.close();
         if(file.getZipError()!=UNZ_OK) {

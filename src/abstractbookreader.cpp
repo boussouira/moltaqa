@@ -36,6 +36,9 @@ AbstractBookReader::~AbstractBookReader()
 
     if(m_zip.isOpen())
         m_zip.close();
+
+    if(m_zipFile.isOpen())
+        m_zipFile.close();
 }
 
 void AbstractBookReader::openBook()

@@ -4,6 +4,8 @@
 #include "bookpage.h"
 #include "bookindexmodel.h"
 #include "utils.h"
+#include "mainwindow.h"
+#include "libraryinfo.h"
 
 RichBookReader::RichBookReader(QObject *parent) : AbstractBookReader(parent)
 {
@@ -52,37 +54,6 @@ void RichBookReader::getPageTitleID()
             }
         }
     }
-}
-
-bool RichBookReader::saveBookPages(QList<BookPage*> pages)
-{
-    QSqlQuery query(m_bookDB);
-
-    m_bookDB.transaction();
-
-    foreach(BookPage *page, pages) {
-        qDebug("Save %d", page->pageID);
-        //qDebug() << page->text;
-        query.prepare("UPDATE bookPages SET "
-                      "pageNum = ?, "
-                      "partNum = ?, "
-                      "pageText = ? "
-                      "WHERE id = ?");
-        query.bindValue(0, page->page);
-        query.bindValue(1, page->part);
-        query.bindValue(2, qCompress(page->text.toUtf8()));
-        query.bindValue(3, page->pageID);
-
-        if(!query.exec())
-            LOG_SQL_ERROR(query);
-    }
-
-    if(!m_bookDB.commit()) {
-        LOG_DB_ERROR(m_bookDB);
-        return false;
-    }
-
-    return true;
 }
 
 BookIndexModel *RichBookReader::indexModel()

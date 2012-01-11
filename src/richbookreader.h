@@ -27,8 +27,6 @@ public:
 
     virtual void getPageTitleID();
 
-    bool saveBookPages(QList<BookPage *> pages);
-
 protected:
     virtual void connected();
     void readItem(QDomElement &element, BookIndexNode *parent);

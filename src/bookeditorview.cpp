@@ -17,6 +17,7 @@
 #include <qstatusbar.h>
 #include <qtabwidget.h>
 #include <qmessagebox.h>
+#include <qprogressdialog.h>
 
 BookEditorView::BookEditorView(QWidget *parent) :
     AbstarctView(parent),
@@ -25,6 +26,8 @@ BookEditorView::BookEditorView(QWidget *parent) :
     m_currentPage(0)
 {
     ui->setupUi(this);
+
+    m_bookEditor = new BookEditor(this);
 
     setupView();
     setupToolBar();
@@ -56,10 +59,9 @@ void BookEditorView::setupView()
     connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)), SLOT(closeTab(int)));
 }
 
-void BookEditorView::editBook(LibraryBook *book, BookPage *page)
+void BookEditorView::editBook(LibraryBook *book, int pageID)
 {
     Q_CHECK_PTR(book);
-    Q_CHECK_PTR(page);
 
     if(!maySave())
         return;
@@ -76,8 +78,10 @@ void BookEditorView::editBook(LibraryBook *book, BookPage *page)
         m_bookReader = new RichSimpleBookReader();
     else if(book->isTafessir())
         m_bookReader = new RichTafessirReader(0, false);
-    else
-        qCritical("editBook: Unknow book type %d", book->bookType);
+     else
+        throw BookException(QString("Unknow book type %1").arg(book->bookType), book->bookPath);
+
+    ui->widgetQuran->setVisible(!book->isNormal());
 
     m_bookReader->setBookInfo(book);
     m_bookReader->setLibraryManager(MW->libraryManager());
@@ -85,10 +89,12 @@ void BookEditorView::editBook(LibraryBook *book, BookPage *page)
 
     connect(m_bookReader, SIGNAL(textChanged()), SLOT(readerTextChange()));
 
-    m_bookReader->goToPage(page->pageID);
+    m_bookReader->goToPage(pageID);
 
     ui->tabWidget->setTabText(0, Utils::abbreviate(book->bookDisplayName, 40));
     ui->tabWidget->setTabToolTip(0, book->bookDisplayName);
+
+    m_bookEditor->setBookReader(m_bookReader);
 
     emit showMe();
 }
@@ -133,17 +139,33 @@ void BookEditorView::updateActions()
     m_actionCancel->setEnabled(!m_pages.isEmpty());
 }
 
+bool BookEditorView::pageEdited()
+{
+    return m_currentPage
+            ? (m_webView->editorText() != m_currentPage->text
+            || ui->spinPage->value() != m_currentPage->page
+            || ui->spinPart->value() != m_currentPage->part
+            || ui->spinHaddit->value() != m_currentPage->haddit
+            || ui->spinSora->value() != m_currentPage->sora
+            || ui->spinAya->value() != m_currentPage->aya)
+            : false;
+}
+
 void BookEditorView::saveCurrentPage()
 {
-    if(m_currentPage) {
-        QString pageText = m_webView->editorText();
+    if(pageEdited()) {
+        m_currentPage->page = ui->spinPage->value();
+        m_currentPage->part = ui->spinPart->value();
 
-        if(pageText != m_currentPage->text) {
-            m_currentPage->text = m_webView->editorText();
+        m_currentPage->haddit = ui->spinHaddit->value();
 
-            if(!m_pages.value(m_currentPage->pageID, 0))
-                m_pages.insert(m_currentPage->pageID, m_currentPage);
-        }
+        m_currentPage->sora = ui->spinSora->value();
+        m_currentPage->aya = ui->spinAya->value();
+
+        m_currentPage->text = m_webView->editorText();
+
+        if(!m_pages.value(m_currentPage->pageID, 0))
+            m_pages.insert(m_currentPage->pageID, m_currentPage);
     }
 }
 
@@ -178,7 +200,7 @@ bool BookEditorView::maySave(bool canCancel)
     return true;
 }
 
-void BookEditorView::closeBook()
+void BookEditorView::closeBook(bool hide)
 {
     clearChanges();
 
@@ -187,10 +209,26 @@ void BookEditorView::closeBook()
         m_bookReader = 0;
     }
 
-    ui->tabWidget->setTabText(0, QString());
-    ui->tabWidget->setTabToolTip(0, QString());
+    if(hide) {
+        ui->tabWidget->setTabText(0, QString());
+        ui->tabWidget->setTabToolTip(0, QString());
 
-    emit hideMe();
+        emit hideMe();
+    }
+}
+
+void BookEditorView::setCurrentPage(BookPage *page)
+{
+    ui->spinPage->setValue(page->page);
+    ui->spinPart->setValue(page->part);
+
+    ui->spinAya->setValue(page->aya);
+    ui->spinSora->setValue(page->sora);
+
+    if(page->haddit)
+        ui->spinHaddit->setValue(page->haddit);
+
+    m_webView->setEditorText(page->text);
 }
 
 void BookEditorView::readerTextChange()
@@ -200,7 +238,7 @@ void BookEditorView::readerTextChange()
     BookPage *saved = m_pages.value(m_bookReader->page()->pageID, 0);
     m_currentPage = saved ? saved : m_bookReader->page()->clone();
 
-    m_webView->setEditorText(m_currentPage->text);
+    setCurrentPage(m_currentPage);
     updateActions();
 }
 
@@ -209,9 +247,34 @@ void BookEditorView::save()
     saveCurrentPage();
 
     if(!m_pages.isEmpty()) {
-        if(m_bookReader->saveBookPages(m_pages.values())) {
+        QProgressDialog dialog(this);
+        dialog.setWindowTitle(tr("حفظ التغييرات"));
+        dialog.setLabelText(tr("جاري حفظ التغييرات..."));
+        dialog.setMaximum(4);
+        dialog.setMinimumDuration(0);
+        dialog.setValue(0);
+        //dialog.show();
+
+        m_bookEditor->unZip();
+        dialog.setValue(dialog.value()+1);
+
+        if(m_bookEditor->saveBookPages(m_pages.values()))
             clearChanges();
-        }
+
+        dialog.setValue(dialog.value()+1);
+
+        m_bookEditor->zip();
+        dialog.setValue(dialog.value()+1);
+
+        int pageID = m_bookReader->page()->pageID;
+        LibraryBook *book = m_bookReader->bookInfo();
+
+        closeBook(false);
+
+        m_bookEditor->save();
+        dialog.setValue(dialog.value()+1);
+
+        editBook(book, pageID);
     }
 
     updateActions();
@@ -256,13 +319,13 @@ void BookEditorView::prevPage()
 void BookEditorView::firstPage()
 {
     if(m_bookReader)
-        m_bookReader->goToPage(-1);
+        m_bookReader->firstPage();
 }
 
 void BookEditorView::lastPage()
 {
     if(m_bookReader)
-        m_bookReader->goToPage(-2);
+        m_bookReader->lastPage();
 }
 
 void BookEditorView::gotoPage()

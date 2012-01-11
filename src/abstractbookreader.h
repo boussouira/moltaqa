@@ -20,6 +20,7 @@ class BookPage;
 class BookIndexModel;
 class TextFormatter;
 class QSqlQuery;
+class BookEditor;
 
 class AbstractBookReader : public QObject
 {
@@ -27,6 +28,7 @@ class AbstractBookReader : public QObject
 public:
     AbstractBookReader(QObject *parent=0);
     ~AbstractBookReader();
+
     void openBook();
     void setBookInfo(LibraryBook *bi);
     void setLibraryManager(LibraryManager *db);
@@ -135,11 +137,11 @@ private:
     static bool getQuranPage(QuaZip *zip, LibraryBook *book, BookPage *page);
 
 protected:
+    friend class BookEditor;
     LibraryBook *m_bookInfo;
     BookPage *m_currentPage;
     LibraryManager *m_libraryManager;
     BookIndexModel *m_indexModel;
-    QSqlDatabase m_bookDB;
     QString m_bookDBPath;
     QString m_connectionName;
     QFile m_zipFile;

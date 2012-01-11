@@ -197,6 +197,27 @@ void BookWidgetManager::reverseSplitter()
                                    Qt::Vertical : Qt::Horizontal);
 }
 
+void BookWidgetManager::closeBook(int bookID)
+{
+    for(int i=m_topTab->count()-1; i>=0; i--) {
+        BookWidget *bookWidget = qobject_cast<BookWidget*>(m_topTab->widget(i));
+        if(bookWidget) {
+            if(bookWidget->bookReader()->bookInfo()->bookID == bookID) {
+                m_topTab->removeTab(i);
+            }
+        }
+    }
+
+    for(int i=m_bottomTab->count()-1; i>=0; i--) {
+        BookWidget *bookWidget = qobject_cast<BookWidget*>(m_bottomTab->widget(i));
+        if(bookWidget) {
+            if(bookWidget->bookReader()->bookInfo()->bookID == bookID) {
+                m_bottomTab->removeTab(i);
+            }
+        }
+    }
+}
+
 void BookWidgetManager::nextAya()
 {
     activeBookWidget()->scrollDown();

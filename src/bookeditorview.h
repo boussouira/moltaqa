@@ -4,6 +4,7 @@
 #include "abstarctview.h"
 #include "librarybook.h"
 #include "bookpage.h"
+#include "bookeditor.h"
 
 namespace Ui {
     class BookEditorView;
@@ -21,16 +22,19 @@ public:
     ~BookEditorView();
     
     QString title();
-    void editBook(LibraryBook *book, BookPage *page=0);
+    void editBook(LibraryBook *book, int pageID=0);
     bool maySave(bool canCancel=true);
     
 protected:
     void setupView();
     void setupToolBar();
     void updateActions();
+    bool pageEdited();
     void saveCurrentPage();
     void clearChanges();
-    void closeBook();
+    void closeBook(bool hide=true);
+
+    void setCurrentPage(BookPage *page);
 
 protected slots:
     void save();
@@ -59,6 +63,7 @@ protected:
     QAction *m_actionGotToPage;
     EditWebView *m_webView;
     RichBookReader *m_bookReader;
+    BookEditor *m_bookEditor;
     QHash<int, BookPage*> m_pages;
     BookPage *m_currentPage;
 };

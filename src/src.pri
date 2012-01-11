@@ -101,7 +101,8 @@ SOURCES += mainwindow.cpp \
     texttafessirreader.cpp \
     wordtypefilter.cpp \
     bookeditorview.cpp \
-    editwebview.cpp
+    editwebview.cpp \
+    bookeditor.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -190,7 +191,8 @@ HEADERS += mainwindow.h \
     texttafessirreader.h \
     wordtypefilter.h \
     bookeditorview.h \
-    editwebview.h
+    editwebview.h \
+    bookeditor.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \
