@@ -95,8 +95,7 @@ void BookWidget::displayInfo()
 {
     m_indexWidget->setIndex(m_db->indexModel());
 
-    m_indexWidget->hideAyaSpin(m_db->bookInfo()->isQuran() || m_db->bookInfo()->isTafessir());
-    m_indexWidget->hidePartSpin(m_db->bookInfo()->partsCount > 1);
+    m_indexWidget->hideAyaSpin(!m_db->bookInfo()->isNormal());
 }
 
 void BookWidget::openPage(int id)

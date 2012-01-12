@@ -55,15 +55,9 @@ void IndexWidget::setIndex(BookIndexModel *indexModel)
 void IndexWidget::displayBookInfo()
 {
     sendSignals = false;
-    int part = qMax(1, m_page->part);
-    ui->spinPage->setValue(qMax(1, m_page->page));
 
-    if(m_bookInfo->partsCount > 1) {
-        ui->spinPart->setMaximum(m_bookInfo->partsCount);
-        ui->spinPart->setMinimum(1);
-        ui->spinPart->setSuffix(QString(" / %1").arg(m_bookInfo->partsCount));
-        ui->spinPart->setValue(part);
-    }
+    ui->spinPage->setValue(qMax(1, m_page->page));
+    ui->spinPart->setValue(qMax(1, m_page->part));
 
     if(m_bookInfo->isQuran()) {
         ui->spinAya->setMaximum(m_page->ayatCount);
