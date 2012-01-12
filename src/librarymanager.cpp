@@ -274,9 +274,8 @@ LibraryBook *LibraryManager::getBookInfo(int bookID)
     bookQuery.prepare("SELECT booksList.bookDisplayName, booksList.bookType, booksList.fileName, "
                       "booksList.bookFullName, booksList.bookOtherNames, booksList.bookInfo, "
                       "booksList.bookEdition, booksList.bookPublisher, booksList.bookMohaqeq, "
-                      "booksList.authorID, bookMeta.book_info, authorsList.name "
+                      "booksList.authorID, authorsList.name "
                       "FROM booksList "
-                      "LEFT JOIN bookMeta ON bookMeta.id = booksList.id "
                       "LEFT JOIN authorsList ON authorsList.id = booksList.authorID "
                       "WHERE booksList.id = ? LIMIT 1");
     bookQuery.bindValue(0, bookID);
@@ -307,10 +306,9 @@ LibraryBook *LibraryManager::getBookInfo(int bookID)
             bookInfo->bookPublisher = bookQuery.value(7).toString();
             bookInfo->bookMohaqeq = bookQuery.value(8).toString();
             bookInfo->authorID = bookQuery.value(9).toInt();
-            bookInfo->authorName = bookQuery.value(11).toString();
+            bookInfo->authorName = bookQuery.value(10).toString();
 
             bookInfo->hasShareeh = hasShareeh(bookID);
-            bookInfo->fromString(bookQuery.value(10).toString());
 
             m_savedBook.insert(bookID, bookInfo);
 
