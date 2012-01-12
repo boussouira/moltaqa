@@ -151,7 +151,16 @@ bool BookEditor::save()
 bool BookEditor::saveBookPages(QList<BookPage*> pages)
 {
     foreach(BookPage *page, pages) {
-        QFile file(QString("%1/pages/p%2.html").arg(m_bookTmpDir).arg(page->pageID));
+        QString pagePath = QString("%1/pages/p%2.html").arg(m_bookTmpDir).arg(page->pageID);
+        if(m_removedPages.contains(page->pageID)) {
+            if(QFile::exists(pagePath))
+                QFile::remove(pagePath);
+
+            m_removedPages.removeAll(page->pageID);
+            continue;
+        }
+
+        QFile file(pagePath);
         if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
             qWarning() << "saveBookPages: Can't write page" << page->pageID << "to:" << file.fileName();
             continue;
@@ -191,6 +200,40 @@ bool BookEditor::saveBookPages(QList<BookPage*> pages)
     m_bookReader->m_bookDoc.save(out, 1);
 
     return true;
+}
+
+void BookEditor::addPage(int pageID)
+{
+    QDomElement e = m_bookReader->m_currentElement;
+    QDomElement page = m_bookReader->m_bookDoc.createElement("item");
+
+    page.setAttribute("id", pageID);
+    page.setAttribute("page", e.attribute("page"));
+    page.setAttribute("part", e.attribute("part"));
+
+    if(m_book->isTafessir()) {
+        page.setAttribute("aya", e.attribute("aya"));
+        page.setAttribute("sora", e.attribute("sora"));
+    }
+
+    QDomElement newPage = m_bookReader->m_rootElement.insertAfter(page, e).toElement();
+
+    if(!newPage.isNull())
+        m_bookReader->setCurrentPage(newPage);
+}
+
+void BookEditor::removePage()
+{
+    QDomElement page = m_bookReader->m_currentElement;
+
+    if(m_bookReader->hasNext())
+        m_bookReader->nextPage();
+    else
+        m_bookReader->prevPage();
+
+    QDomElement removedPage = m_bookReader->m_rootElement.removeChild(page).toElement();
+    if(!removedPage.isNull())
+        m_removedPages.append(removedPage.attribute("id").toInt());
 }
 
 bool BookEditor::zipDir(QString path, QuaZipFile *outFile)
@@ -264,4 +307,20 @@ bool BookEditor::zipDir(QString path, QuaZipFile *outFile)
     }
 
     return true;
+}
+
+int BookEditor::maxPageID()
+{
+    int pageID = 0;
+    QDomElement e = m_bookReader->m_rootElement.firstChildElement();
+    while(!e.isNull()) {
+        int pid = e.attribute("id").toInt();
+
+        if(pid > pageID)
+            pageID = pid;
+
+        e = e.nextSiblingElement();
+    }
+
+    return pageID;
 }

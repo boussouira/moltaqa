@@ -39,8 +39,10 @@ protected:
 protected slots:
     void save();
     void cancel();
-    void preview();
     void closeTab(int);
+
+    void addPage();
+    void removePage();
 
     void nextPage();
     void prevPage();
@@ -55,7 +57,8 @@ protected:
     QTabWidget *m_tabWidget;
     QAction *m_actionSave;
     QAction *m_actionCancel;
-    QAction *m_actionPreview;
+    QAction *m_actionAddPage;
+    QAction *m_actionRemovePage;
     QAction *m_actionNextPage;
     QAction *m_actionPrevPage;
     QAction *m_actionFirstPage;

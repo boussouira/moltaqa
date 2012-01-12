@@ -19,6 +19,10 @@ public:
     bool save();
     
     bool saveBookPages(QList<BookPage *> pages);
+    void addPage(int pageID);
+    void removePage();
+
+    int maxPageID();
 
 protected:
     bool zipDir(QString path, QuaZipFile *outFile);
@@ -29,6 +33,7 @@ protected:
     QString m_bookTmpDir;
     QString m_newBookPath;
     int m_lastBookID;
+    QList<int> m_removedPages;
 };
 
 #endif // BOOKEDITOR_H

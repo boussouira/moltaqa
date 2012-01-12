@@ -119,8 +119,9 @@ void BookEditorView::setupToolBar()
     m_actionNextPage = bar->addAction(nextIcon, tr("الصفحة التالية"), this, SLOT(nextPage()));
     m_actionLastPage = bar->addAction(lastIcon, tr("الصفحة الاخيرة"), this, SLOT(lastPage()));
     m_actionGotToPage = bar->addAction(gotoIcon, tr("انتقل الى..."), this, SLOT(gotoPage()));
-//    bar->addSeparator();
-//    m_actionPreview = bar->addAction(QIcon(":/menu/images/page-preview.png"), tr("استعراض الصفحة"), this, SLOT(preview()));
+    bar->addSeparator();
+    m_actionAddPage = bar->addAction(QIcon(":/menu/images/add.png"), tr("اضافة صفحة"), this, SLOT(addPage()));
+    m_actionRemovePage = bar->addAction(QIcon(":/menu/images/remove.png"), tr("حذف الصفحة"), this, SLOT(removePage()));
 
     m_toolBars << bar;
 }
@@ -293,8 +294,24 @@ void BookEditorView::cancel()
     }
 }
 
-void BookEditorView::preview()
+void BookEditorView::addPage()
 {
+    int pageID = m_bookEditor->maxPageID();
+    BookPage *page = m_currentPage->clone();
+    page->pageID = pageID;
+    page->text.clear();
+
+    m_pages.insert(pageID, page);
+
+    m_bookEditor->addPage(pageID);
+}
+
+void BookEditorView::removePage()
+{
+    BookPage *page = m_currentPage->clone();
+    m_pages.insert(page->pageID, page);
+
+    m_bookEditor->removePage();
 }
 
 void BookEditorView::closeTab(int)
