@@ -11,6 +11,7 @@ CODECFORSRC = UTF-8
 CODECFORTR  = UTF-8
 
 include(src.pri)
+include(quazip/quazip.pri)
 
 SOURCES += main.cpp
 DESTDIR = ../bin
@@ -58,8 +59,6 @@ LIBS += -lclucene-core$$CLUCENE_LIB_SUFFIX \
         -lclucene-shared$$CLUCENE_LIB_SUFFIX \
         -lclucene-contribs-lib$$CLUCENE_LIB_SUFFIX \
         -L$$CLUCENE_LIBS_PATH
-
-LIBS += -lquazip
 
 unix {
 
