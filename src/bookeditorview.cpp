@@ -272,10 +272,10 @@ void BookEditorView::save()
 
         closeBook(false);
 
-        m_bookEditor->save();
-        dialog.setValue(dialog.value()+1);
+        if(m_bookEditor->save())
+            editBook(book, pageID);
 
-        editBook(book, pageID);
+        dialog.setValue(dialog.value()+1);
     }
 
     updateActions();
