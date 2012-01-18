@@ -3,6 +3,14 @@ DEPENDPATH += $$PWD
 
 DEFINES += QUAZIP_STATIC
 
+exists(../../../zlib) {
+    ZLIB_INCLUDE_PATH = ../../zlib/include
+} else {
+    ZLIB_INCLUDE_PATH = $$(ZLIB_INCLUDE)
+}
+
+INCLUDEPATH += $$ZLIB_INCLUDE_PATH
+
 HEADERS += crypt.h \
            ioapi.h \
            JlCompress.h \
