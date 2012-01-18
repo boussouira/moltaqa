@@ -146,7 +146,6 @@ protected:
     QString m_connectionName;
     QFile m_zipFile;
     QuaZip m_zip;
-    QuaZipFile m_pagesMetaFile;
     QDomDocument m_bookDoc;
     QDomElement m_rootElement;
     QDomElement m_currentElement;

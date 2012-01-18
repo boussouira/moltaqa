@@ -31,9 +31,6 @@ AbstractBookReader::~AbstractBookReader()
     if(m_currentPage)
         delete m_currentPage;
 
-    if(m_pagesMetaFile.isOpen())
-        m_pagesMetaFile.close();
-
     if(m_zip.isOpen())
         m_zip.close();
 
@@ -502,11 +499,11 @@ QString AbstractBookReader::getFileContent(QuaZip *zip, QString fileName)
 
 void AbstractBookReader::getBookInfo()
 {
-   m_pagesMetaFile.setZip(&m_zip);
+   QuaZipFile pagesFile(&m_zip);
 
    if(m_zip.setCurrentFile("pages.xml")) {
-       if(!m_pagesMetaFile.open(QIODevice::ReadOnly)) {
-           qWarning("getBookInfo: open error %d", m_pagesMetaFile.getZipError());
+       if(!pagesFile.open(QIODevice::ReadOnly)) {
+           qWarning("getBookInfo: open error %d", pagesFile.getZipError());
            return;
        }
    }
@@ -515,13 +512,12 @@ void AbstractBookReader::getBookInfo()
    int errorLine=0;
    int errorColumn=0;
 
-   if(!m_bookDoc.setContent(&m_pagesMetaFile, 0, &errorStr, &errorLine, &errorColumn)) {
+   if(!m_bookDoc.setContent(&pagesFile, 0, &errorStr, &errorLine, &errorColumn)) {
        qDebug("getBookInfo: Parse error at line %d, column %d: %s\nFile: %s",
               errorLine, errorColumn,
               qPrintable(errorStr),
               qPrintable(m_bookInfo->bookPath));
 
-       m_pagesMetaFile.close();
        return;
    }
 
