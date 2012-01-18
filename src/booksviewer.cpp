@@ -380,6 +380,8 @@ void BooksViewer::editCurrentBook()
     BookPage *page = currentPage();
 
     if(book && page) {
+        int pageID = page->pageID;
+
         int rep = QMessageBox::question(this,
                                         tr("تعديل كتاب"),
                                         tr("يجب اغلاق الكتاب قبل تعديله" "\n"
@@ -391,7 +393,7 @@ void BooksViewer::editCurrentBook()
             m_viewManager->closeBook(book->bookID);
 
             try {
-                MW->editorView()->editBook(book, page->pageID);
+                MW->editorView()->editBook(book, pageID);
             } catch (BookException &e) {
                 QMessageBox::information(this,
                                          App::name(),

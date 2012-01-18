@@ -72,7 +72,7 @@ void BookWidgetManager::tabCloseRequest(int tabIndex)
     QWidget *w = m_activeTab->widget(tabIndex);
     m_activeTab->removeTab(tabIndex);
 
-    if(m_activeTab->count() <= 0)
+    if(!m_activeTab->count() && unActiveTab()->count())
         reverseActiveTab();
 
     delete w;
@@ -203,7 +203,8 @@ void BookWidgetManager::closeBook(int bookID)
         BookWidget *bookWidget = qobject_cast<BookWidget*>(m_topTab->widget(i));
         if(bookWidget) {
             if(bookWidget->bookReader()->bookInfo()->bookID == bookID) {
-                m_topTab->removeTab(i);
+                QObject::metaObject()->invokeMethod(m_topTab, "tabCloseRequested",
+                                                    Q_ARG(int, i));
             }
         }
     }
@@ -212,7 +213,8 @@ void BookWidgetManager::closeBook(int bookID)
         BookWidget *bookWidget = qobject_cast<BookWidget*>(m_bottomTab->widget(i));
         if(bookWidget) {
             if(bookWidget->bookReader()->bookInfo()->bookID == bookID) {
-                m_bottomTab->removeTab(i);
+                QObject::metaObject()->invokeMethod(m_bottomTab, "tabCloseRequested",
+                                                    Q_ARG(int, i));
             }
         }
     }
