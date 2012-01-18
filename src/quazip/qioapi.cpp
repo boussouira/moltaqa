@@ -33,7 +33,7 @@
 #endif
 
 voidpf ZCALLBACK qiodevice_open_file_func (
-   voidpf opaque UNUSED,
+   voidpf /*opaque*/,
    voidpf file,
    int mode)
 {
@@ -57,7 +57,7 @@ voidpf ZCALLBACK qiodevice_open_file_func (
 
 
 uLong ZCALLBACK qiodevice_read_file_func (
-   voidpf opaque UNUSED,
+   voidpf /*opaque*/,
    voidpf stream,
    void* buf,
    uLong size)
@@ -69,7 +69,7 @@ uLong ZCALLBACK qiodevice_read_file_func (
 
 
 uLong ZCALLBACK qiodevice_write_file_func (
-   voidpf opaque UNUSED,
+   voidpf /*opaque*/,
    voidpf stream,
    const void* buf,
    uLong size)
@@ -80,7 +80,7 @@ uLong ZCALLBACK qiodevice_write_file_func (
 }
 
 uLong ZCALLBACK qiodevice_tell_file_func (
-   voidpf opaque UNUSED,
+   voidpf /*opaque*/,
    voidpf stream)
 {
     uLong ret;
@@ -89,7 +89,7 @@ uLong ZCALLBACK qiodevice_tell_file_func (
 }
 
 int ZCALLBACK qiodevice_seek_file_func (
-   voidpf opaque UNUSED,
+   voidpf /*opaque*/,
    voidpf stream,
    uLong offset,
    int origin)
@@ -114,7 +114,7 @@ int ZCALLBACK qiodevice_seek_file_func (
 }
 
 int ZCALLBACK qiodevice_close_file_func (
-   voidpf opaque UNUSED,
+   voidpf /*opaque*/,
    voidpf stream)
 {
     ((QIODevice*)stream)->close();
@@ -122,7 +122,7 @@ int ZCALLBACK qiodevice_close_file_func (
 }
 
 int ZCALLBACK qiodevice_error_file_func (
-   voidpf opaque UNUSED,
+   voidpf /*opaque*/,
    voidpf stream)
 {
     return !((QIODevice*)stream)->errorString().isEmpty();
