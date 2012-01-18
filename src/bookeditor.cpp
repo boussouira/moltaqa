@@ -216,10 +216,12 @@ void BookEditor::addPage(int pageID)
         page.setAttribute("sora", e.attribute("sora"));
     }
 
+    page.setAttribute("tid", m_bookReader->getPageTitleID(e.attribute("id").toInt()));
+
     QDomElement newPage = m_bookReader->m_rootElement.insertAfter(page, e).toElement();
 
     if(!newPage.isNull())
-        m_bookReader->setCurrentPage(newPage);
+        m_bookReader->goToPage(pageID);
 }
 
 void BookEditor::removePage()

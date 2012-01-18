@@ -34,7 +34,13 @@ void RichSimpleBookReader::setCurrentPage(QDomElement pageNode)
     m_currentPage->part = m_currentElement.attribute("part").toInt();
     m_currentPage->haddit = m_currentElement.attribute("haddit").toInt();
 
-    getPageTitleID();
+    if(m_currentElement.hasAttribute("tid")) {
+        m_currentPage->titleID = m_currentElement.attribute("tid").toInt();
+        qDebug("TID: %d", m_currentPage->titleID);
+    }
+    else
+        getPageTitleID();
+
     m_libraryManager->getShoroohPages(m_bookInfo, m_currentPage);
 
     QString pageText = getPageText(m_currentPage->pageID);

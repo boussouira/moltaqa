@@ -40,20 +40,19 @@ bool RichBookReader::scrollToHighlight()
 
 void RichBookReader::getPageTitleID()
 {
-    if(!m_pageTitles.isEmpty()) {
+    m_currentPage->titleID = getPageTitleID(m_currentPage->pageID);
+}
 
-        if(m_pageTitles.contains(m_currentPage->pageID)) {
-            m_currentPage->titleID = m_currentPage->pageID;
-        } else {
-            for(int i=0; i<m_pageTitles.size()-1; i++) {
-                if(m_pageTitles.at(i) <= m_currentPage->pageID
-                        && m_currentPage->pageID < m_pageTitles.at(i+1)) {
-                    m_currentPage->titleID = m_pageTitles.at(i);
-                    break;
-                }
-            }
+int RichBookReader::getPageTitleID(int pageID)
+{
+    if(!m_pageTitles.contains(pageID)) {
+        for(int i=0; i<m_pageTitles.size()-1; i++) {
+            if(m_pageTitles.at(i) <= pageID && pageID < m_pageTitles.at(i+1))
+                return m_pageTitles.at(i);
         }
     }
+
+    return pageID;
 }
 
 BookIndexModel *RichBookReader::indexModel()

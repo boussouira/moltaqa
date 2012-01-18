@@ -25,7 +25,8 @@ public:
 
     bool scrollToHighlight();
 
-    virtual void getPageTitleID();
+    void getPageTitleID();
+    int getPageTitleID(int pageID);
 
 protected:
     virtual void connected();
