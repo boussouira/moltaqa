@@ -10,21 +10,17 @@ IndexWidget::IndexWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     sendSignals = true;
-    QAction *actionOpenSora = new QAction(tr("فتح السورة"), ui->treeView);
+
     QAction *actionOpenSoraInNewTab = new QAction(tr("فتح في تبويب جديد"), this);
 
-    ui->treeView->addAction(actionOpenSora);
     ui->treeView->addAction(actionOpenSoraInNewTab);
     ui->treeView->setExpandsOnDoubleClick(false);
+    ui->treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
 
-    connect(ui->spinAya, SIGNAL(valueChanged(int)),
-            this, SLOT(ayaNumChange(int)));
     connect(ui->treeView, SIGNAL(doubleClicked(QModelIndex)),
             this, SLOT(listDoubleClicked(QModelIndex)));
-    connect(actionOpenSora, SIGNAL(triggered()),
-            this, SLOT(openSoraInCurrentTab()));
     connect(actionOpenSoraInNewTab, SIGNAL(triggered()),
-            this, SLOT(openSoraInNewTab()));
+            this, SLOT(openPageInNewTab()));
 
 }
 
@@ -33,16 +29,28 @@ IndexWidget::~IndexWidget()
     delete ui;
 }
 
-void IndexWidget::changeEvent(QEvent *e)
+QModelIndex IndexWidget::findTitle(int tid)
 {
-    QWidget::changeEvent(e);
-    switch (e->type()) {
-    case QEvent::LanguageChange:
-        ui->retranslateUi(this);
-        break;
-    default:
-        break;
+    QModelIndex nodeIndex = m_model->index(0, 0, QModelIndex());
+    while(nodeIndex.isValid()) {
+        int pid = nodeIndex.data(ItemRole::idRole).toInt();
+
+        if(pid == tid) {
+            return nodeIndex;
+        } else {
+            QModelIndex nextIndex = m_model->index(nodeIndex.row()+1, 0, nodeIndex.parent());
+            if(!nextIndex.isValid() ||
+                    nextIndex.data(ItemRole::idRole).toInt() > tid) {
+                QModelIndex index = fitchChild(nodeIndex, tid);
+                if(index.isValid())
+                    return index;
+            }
+        }
+
+        nodeIndex = nodeIndex.sibling(nodeIndex.row()+1, 0);
     }
+
+    return QModelIndex();
 }
 
 void IndexWidget::setIndex(BookIndexModel *indexModel)
@@ -86,25 +94,6 @@ void IndexWidget::setSelectedSora(int pSoraNumber)
     ui->treeView->scrollTo(itemToSelect);
 }
 
-void IndexWidget::updatePageAndAyaNum(int pPageNumber, int pAyaNumber)
-{
-    sendSignals = false;
-    ui->spinPage->setValue(pPageNumber);
-    ui->spinAya->setValue(pAyaNumber);
-    sendSignals = true;
-}
-
-int IndexWidget::currentPageNmber()
-{
-    return ui->spinPage->value();
-}
-
-void IndexWidget::ayaNumChange(int pAyaNum)
-{
-    if(sendSignals)
-        emit ayaNumberChange(pAyaNum);
-}
-
 void IndexWidget::listDoubleClicked(QModelIndex index)
 {
     if(sendSignals) {
@@ -116,19 +105,17 @@ void IndexWidget::listDoubleClicked(QModelIndex index)
     }
 }
 
-void IndexWidget::openSoraInCurrentTab()
+void IndexWidget::openPageInNewTab()
 {
-    emit openSora(ui->treeView->currentIndex().row()+1, 1);
-}
+    QModelIndex index = ui->treeView->currentIndex();
 
-void IndexWidget::openSoraInNewTab()
-{
-    emit openSoraInNewTab(ui->treeView->currentIndex().row()+1);
-}
-
-void IndexWidget::updateAyaNumber(int pAyaNumber)
-{
-    ui->spinAya->setValue(pAyaNumber);
+    if(sendSignals && index.isValid()) {
+        if(m_bookInfo->isQuran()) {
+            emit openSoraInNewTab(index.row()+1, 1);
+        } else {
+            emit openPageInNewTab(index.data(ItemRole::idRole).toInt());
+        }
+    }
 }
 
 void IndexWidget::hideAyaSpin(bool visible)
@@ -137,50 +124,33 @@ void IndexWidget::hideAyaSpin(bool visible)
     ui->labelAya->setVisible(visible);
 }
 
-void IndexWidget::hidePageSpin(bool visible)
+void IndexWidget::setBookInfo(LibraryBook *book)
 {
-    ui->spinPage->setVisible(visible);
-    ui->labelPage->setVisible(visible);
+    m_bookInfo = book;
 }
 
-void IndexWidget::hidePartSpin(bool visible)
+void IndexWidget::setCurrentPage(BookPage *page)
 {
-    ui->spinPart->setVisible(visible);
-    ui->labelPart->setVisible(visible);
+    m_page = page;
 }
 
 void IndexWidget::selectTitle(int tid)
 {
-    if(!m_model)
-        return;
+    if(m_model) {
+        QModelIndexList selected = ui->treeView->selectionModel()->selectedIndexes();
 
-    QModelIndexList selected = ui->treeView->selectionModel()->selectedIndexes();
-
-    if(!selected.isEmpty()) {
-        if(selected.at(0).data(ItemRole::idRole).toInt() == tid) {
-            return;
-        }
-    }
-
-    QModelIndex nodeIndex = m_model->index(0, 0, QModelIndex());
-    while(nodeIndex.isValid()) {
-        int pid = nodeIndex.data(ItemRole::idRole).toInt();
-
-        if(pid == tid) {
-            ui->treeView->scrollTo(nodeIndex);
-            ui->treeView->selectionModel()->setCurrentIndex(nodeIndex, QItemSelectionModel::SelectCurrent);
-            break;
-        } else {
-            QModelIndex nextIndex = m_model->index(nodeIndex.row()+1, 0, nodeIndex.parent());
-            if(!nextIndex.isValid() ||
-                    nextIndex.data(ItemRole::idRole).toInt() > tid) {
-                if(fitchChild(nodeIndex, tid)) {
-                    break;
-                }
+        // Check if the title is already selected
+        if(!selected.isEmpty()) {
+            if(selected.at(0).data(ItemRole::idRole).toInt() == tid) {
+                return;
             }
         }
 
-        nodeIndex = nodeIndex.sibling(nodeIndex.row()+1, 0);
+        QModelIndex index = findTitle(tid);
+        if(index.isValid()) {
+            ui->treeView->scrollTo(index);
+            ui->treeView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::SelectCurrent);
+        }
     }
 }
 
@@ -189,24 +159,27 @@ QTreeView *IndexWidget::treeView()
     return ui->treeView;
 }
 
-bool IndexWidget::fitchChild(QModelIndex parent, int tid)
+BookIndexModel *IndexWidget::indexModel()
+{
+    return m_model;
+}
+
+QModelIndex IndexWidget::fitchChild(QModelIndex parent, int tid)
 {
     QModelIndex nodeIndex = parent.child(0, 0);
     while(nodeIndex.isValid()) {
         int pid = nodeIndex.data(ItemRole::idRole).toInt();
 
         if(pid == tid) {
-            ui->treeView->scrollTo(nodeIndex);
-            ui->treeView->selectionModel()->setCurrentIndex(nodeIndex, QItemSelectionModel::SelectCurrent);
-            return true;
+            return nodeIndex;
         } else {
-            if(fitchChild(nodeIndex, tid)) {
-                return true;
-            }
+            QModelIndex index = fitchChild(nodeIndex, tid);
+            if(index.isValid())
+                return index;
         }
 
         nodeIndex = nodeIndex.sibling(nodeIndex.row()+1, 0);
     }
 
-    return false;
+    return QModelIndex();
 }
