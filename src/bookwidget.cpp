@@ -204,10 +204,17 @@ void BookWidget::hideIndexWidget()
     QList<int> sizes;
 
     if(m_splitter->sizes().at(0) == 0){
-        sizes << 300 << 1000;
-        m_splitter->setSizes(sizes);
+        if(m_splitterState.isEmpty()) {
+            sizes << 300 << 1000;
+
+            m_splitter->setSizes(sizes);
+        } else {
+            m_splitter->restoreState(m_splitterState);
+        }
     } else {
         sizes << 0 << 10;
+
+        m_splitterState = m_splitter->saveState();
         m_splitter->setSizes(sizes);
     }
 }

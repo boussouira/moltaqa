@@ -50,6 +50,7 @@ signals:
 
 protected:
     QSplitter *m_splitter;
+    QByteArray m_splitterState;
     QVBoxLayout *m_layout;
     WebView *m_view;
     IndexWidget *m_indexWidget;
