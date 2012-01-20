@@ -68,7 +68,10 @@ QString TextFormatter::getHtmlView(QString text)
     if(!m_book->isQuran()) {
         openHtmlTag("div", QString(), "pageHeader");
         insertSpanTag(m_book->bookDisplayName, "bookName");
-        insertSpanTag(QString::number(m_page->part), "part");
+        openHtmlTag("span", QString(), "partInfo");
+        insertSpanTag(tr("الجزء"), "partText");
+        insertSpanTag(QString::number(m_page->part), "partNum");
+        closeHtmlTag(); // span#partInfo
         closeHtmlTag(); // div#pageHeader
     }
 

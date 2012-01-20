@@ -60,9 +60,12 @@ a {
   cursor: pointer;
 }
 
-#simpleBook #pageHeader .part {
+#simpleBook #pageHeader #partInfo {
   float: left;
   font-size: 0.7em;
+}
+#simpleBook #pageHeader #partInfo .partText {
+    margin: 0 5px;
 }
 
 #simpleBook #pageFooter {
