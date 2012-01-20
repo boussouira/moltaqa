@@ -57,6 +57,7 @@ a {
 #simpleBook #pageHeader .bookName {
   color: #AA0000;
   font-size: 0.7em;
+  cursor: pointer;
 }
 
 #simpleBook #pageHeader .part {
@@ -73,6 +74,19 @@ a {
 #simpleBook #pageFooter .page {
   color: #333333;
   font-size: 0.9em;
+}
+
+#simpleBook ul.bookIndex {
+    padding: 5px 10px;
+}
+
+#simpleBook ul.bookIndex li {
+    cursor: pointer;
+    list-style: none;
+}
+
+#simpleBook ul.bookIndex li:hover {
+    text-decoration: underline;
 }
 
 footnote {

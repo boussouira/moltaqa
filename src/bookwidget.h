@@ -10,6 +10,7 @@ class RichBookReader;
 class QSplitter;
 class QVBoxLayout;
 class BookIndexModel;
+class QModelIndex;
 
 class BookWidget: public QWidget
 {
@@ -43,6 +44,12 @@ public slots:
     void openHaddit(int hadditNum);
 
     void readerTextChanged();
+
+    void showIndex();
+    void showIndex(int tid);
+
+protected slots:
+    void viewObjectCleared();
 
 signals:
     void gotFocus();

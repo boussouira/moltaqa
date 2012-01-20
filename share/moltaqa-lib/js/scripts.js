@@ -109,8 +109,22 @@ function setPageText(text, page, part)
                                $(this).fadeIn('fast', function() {
                                                   webView.pageTextChanged();
                                                   toggleQuran();
+                                                  indexReading();
                                               });
                            });
+}
+
+$('#simpleBook #pageHeader .bookName').click(function(){
+    bookWidget.showIndex();
+});
+
+function indexReading()
+{
+    $('ul.bookIndex > li').click(function(){
+        tid = $(this).attr('id');
+        //alert("ID: " + tid);
+        bookWidget.showIndex(tid);
+    });
 }
 
 function setEditorText(text)

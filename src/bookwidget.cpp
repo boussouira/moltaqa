@@ -6,6 +6,7 @@
 #include "richsimplebookreader.h"
 #include "mainwindow.h"
 #include "bookreaderhelper.h"
+#include "modelenums.h"
 
 #include <qsplitter.h>
 #include <qboxlayout.h>
@@ -42,10 +43,10 @@ BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_
 
     connect(m_indexWidget, SIGNAL(openPage(int)), this, SLOT(openPage(int)));
     connect(m_indexWidget, SIGNAL(openSora(int,int)), SLOT(openSora(int,int)));
+    connect(m_view->page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()), SLOT(viewObjectCleared()));
     connect(m_db, SIGNAL(textChanged()), SLOT(readerTextChanged()));
     connect(m_db, SIGNAL(textChanged()), SIGNAL(textChanged()));
     connect(m_db, SIGNAL(textChanged()), m_indexWidget, SLOT(displayBookInfo()));
-
     setFocusPolicy(Qt::StrongFocus);
 
     m_view->installEventFilter(this);
@@ -234,4 +235,58 @@ void BookWidget::readerTextChanged()
     if(m_db->scrollToHighlight()){
         m_view->scrollToElement(".resultHL");
     }
+}
+
+void BookWidget::showIndex()
+{
+    BookIndexModel *model = m_indexWidget->indexModel();
+
+    QString text("<ul class=\"bookIndex\">");
+
+    BookIndexNode *rootNode = model->nodeFromIndex(QModelIndex());
+    if(!rootNode)
+        return;
+
+    foreach(BookIndexNode *node, rootNode->childs) {
+        text.append(QString("<li id=\"%1\">").arg(node->id));
+        text.append(node->title);
+        text.append("</li>");
+    }
+
+    text.append("</ul>");
+
+    m_view->execJS(QString("setPageText('%1', '', '')").arg(text));
+}
+
+void BookWidget::showIndex(int tid)
+{
+    QModelIndex index = m_indexWidget->findTitle(tid);
+    if(!index.isValid())
+        return;
+
+    QModelIndex child = index.child(0, 0);
+
+    if(child.isValid()) {
+        QString text("<ul class=\"bookIndex\">");
+
+        while(child.isValid()) {
+            text.append(QString("<li id=\"%1\">").arg(child.data(ItemRole::idRole).toInt()));
+            text.append(child.data(Qt::DisplayRole).toString());
+            text.append("</li>");
+
+            child = child.sibling(child.row()+1, 0);
+        }
+
+        text.append("</ul>");
+
+        m_view->execJS(QString("setPageText('%1', '', '')").arg(text));
+        m_indexWidget->selectTitle(tid);
+    } else {
+        m_db->goToPage(tid);
+    }
+}
+
+void BookWidget::viewObjectCleared()
+{
+    m_view->addObject("bookWidget", this);
 }
