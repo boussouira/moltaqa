@@ -63,23 +63,23 @@ QString TextFormatter::getHtmlView(QString text)
     closeHtmlTag();
 
     openHtmlTag("body");
-    openHtmlTag("div", QString(), m_cssID);
+    openHtmlTag("div", "#" + m_cssID);
 
     if(!m_book->isQuran()) {
-        openHtmlTag("div", QString(), "pageHeader");
-        insertSpanTag(m_book->bookDisplayName, "bookName");
-        openHtmlTag("span", QString(), "partInfo");
-        insertSpanTag(tr("الجزء"), "partText");
-        insertSpanTag(QString::number(m_page->part), "partNum");
+        openHtmlTag("div", "#pageHeader");
+        insertSpanTag(m_book->bookDisplayName, ".bookName");
+        openHtmlTag("span", "#partInfo");
+        insertSpanTag(tr("الجزء"), ".partText");
+        insertSpanTag(QString::number(m_page->part), ".partNum");
         closeHtmlTag(); // span#partInfo
         closeHtmlTag(); // div#pageHeader
     }
 
-    insertDivTag(text, QString(), "pageText");
+    insertDivTag(text, "#pageText");
 
     if(!m_book->isQuran()) {
-        openHtmlTag("div", QString(), "pageFooter");
-        insertSpanTag(QString::number(m_page->page), "page");
+        openHtmlTag("div", "#pageFooter");
+        insertSpanTag(QString::number(m_page->page), ".page");
         closeHtmlTag(); // div#pageFooter
     }
 
@@ -121,28 +121,23 @@ void TextFormatter::genHeaderAndFooter()
     }
 }
 
-void TextFormatter::insertHtmlTag(QString tag, QString text, QString className, QString idName)
+void TextFormatter::insertHtmlTag(QString tag, QString text, QString selector)
 {
     m_html.append(QString("<%1").arg(tag));
 
-    if(!className.isEmpty())
-        m_html.append(QString(" class=\"%1\"").arg(className));
-
-    if(!idName.isEmpty())
-        m_html.append(QString(" id=\"%1\"").arg(idName));
+    addSelector(selector);
 
     m_html.append(QString(">%1</%2>").arg(text).arg(tag));
-
 }
 
-void TextFormatter::insertDivTag(QString text, QString className, QString idName)
+void TextFormatter::insertDivTag(QString text, QString selector)
 {
-    insertHtmlTag("div", text, className, idName);
+    insertHtmlTag("div", text, selector);
 }
 
-void TextFormatter::insertSpanTag(QString text, QString className, QString idName)
+void TextFormatter::insertSpanTag(QString text, QString selector)
 {
-    insertHtmlTag("span", text, className, idName);
+    insertHtmlTag("span", text, selector);
 }
 
 void TextFormatter::insertImage(QString src)
@@ -171,16 +166,10 @@ void TextFormatter::done()
     emit doneReading();
 }
 
-void TextFormatter::openHtmlTag(QString tag, QString className, QString idName)
+void TextFormatter::openHtmlTag(QString tag, QString selector)
 {
     m_html.append(QString("<%1").arg(tag));
-
-    if(!className.isEmpty())
-        m_html.append(QString(" class=\"%1\"").arg(className));
-
-    if(!idName.isEmpty())
-        m_html.append(QString(" id=\"%1\"").arg(idName));
-
+    addSelector(selector);
     m_html.append(">");
 
     m_openTags.push(tag);
@@ -219,4 +208,23 @@ void TextFormatter::addJSCode(QString jsCode)
     m_html.append(jsCode);
     m_html.append("\n//]]>");
     m_html.append("</script>");
+}
+
+void TextFormatter::addSelector(QString selector)
+{
+    if(selector.isEmpty())
+        return;
+
+    if(!selector.contains('|')) {
+        if(selector.startsWith('#'))
+            m_html.append(QString(" id=\"%1\"").arg(selector.remove(0, 1)));
+        else if(selector.startsWith('.'))
+            m_html.append(QString(" class=\"%1\"").arg(selector.remove(0, 1)));
+        else
+            qDebug("Unknow selector: %s", qPrintable(selector));
+    } else {
+        foreach (QString sel, selector.split('|', QString::SkipEmptyParts)) {
+            addSelector(sel);
+        }
+    }
 }

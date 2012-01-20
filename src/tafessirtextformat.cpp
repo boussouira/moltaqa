@@ -13,14 +13,14 @@ void TafessirTextFormat::insertSoraName(const QString &pSoraName)
 
 void TafessirTextFormat::insertBassemala()
 {
-    insertDivTag(tr("بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ"), "bassemala");
+    insertDivTag(tr("بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ"), ".bassemala");
 }
 
 void TafessirTextFormat::insertAyaText(const QString &pAyaText, int pAyaNumber, int pSoraNumber)
 {
-    openHtmlTag("div", "ayaDiv");
-    insertSpanTag(pAyaText, "ayatxt", QString("s%1a%2").arg(pSoraNumber).arg(pAyaNumber));
-    insertSpanTag(QString("(%1)").arg(pAyaNumber), "ayanumber");
+    openHtmlTag("div", ".ayaDiv");
+    insertSpanTag(pAyaText, QString(".ayatxt|#s%1a%2").arg(pSoraNumber).arg(pAyaNumber));
+    insertSpanTag(QString("(%1)").arg(pAyaNumber), ".ayanumber");
     closeHtmlTag();
 }
 
@@ -34,14 +34,14 @@ void TafessirTextFormat::beginQuran(QString soraName, int firstAya, int lastAya)
         quranTextInfo = tr("سورة %1، الاية %2").arg(soraName).arg(firstAya);
     }
 
-    openHtmlTag("div", "tafessir_quran");
+    openHtmlTag("div", ".tafessir_quran");
 
-    openHtmlTag("div", "toggale_quran");
-    insertSpanTag(quranTextInfo, "quran_info");
+    openHtmlTag("div", ".toggale_quran");
+    insertSpanTag(quranTextInfo, ".quran_info");
     insertImage("qrc:/menu/images/add.png");
     closeHtmlTag();
 
-    openHtmlTag("div", "quran_text");
+    openHtmlTag("div", ".quran_text");
 }
 
 void TafessirTextFormat::endQuran()

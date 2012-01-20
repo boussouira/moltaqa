@@ -25,11 +25,11 @@ public:
     QString getHtmlView(QString text=QString());
 
 protected:
-    void insertHtmlTag(QString tag, QString text, QString className="", QString idName="");
-    void insertDivTag(QString text, QString className="", QString idName="");
-    void insertSpanTag(QString text, QString className="", QString idName="");
+    void insertHtmlTag(QString tag, QString text, QString selector);
+    void insertDivTag(QString text, QString selector);
+    void insertSpanTag(QString text, QString selector);
     void insertImage(QString src);
-    void openHtmlTag(QString tag, QString className="", QString idName="");
+    void openHtmlTag(QString tag, QString selector="");
     void closeHtmlTag(QString tag=QString());
     void closeAllTags();
     void addCSS(QString cssFile);
@@ -40,6 +40,7 @@ protected:
     void laodSettings();
     void clearText();
     void genHeaderAndFooter();
+    void addSelector(QString selector);
 
 public slots:
     void start();

@@ -9,18 +9,18 @@ QuranTextFormat::QuranTextFormat()
 void QuranTextFormat::insertSoraName(const QString &pSoraName)
 {
     QString soraName = tr("سورة %1").arg(pSoraName);
-    insertDivTag(soraName, "soraname");
+    insertDivTag(soraName, ".soraname");
 }
 
 void QuranTextFormat::insertBassemala()
 {
-    insertDivTag(tr("بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ"), "bassemala");
+    insertDivTag(tr("بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ"), ".bassemala");
 }
 
 void QuranTextFormat::insertAyaText(const QString &pAyaText, int pAyaNumber, int pSoraNumber)
 {
-    openHtmlTag("div", "ayaDiv");
-    insertSpanTag(pAyaText, "ayatxt", QString("s%1a%2").arg(pSoraNumber).arg(pAyaNumber));
-    insertSpanTag(QString("(%1)").arg(pAyaNumber), "ayanumber");
+    openHtmlTag("div", ".ayaDiv");
+    insertSpanTag(pAyaText, QString(".ayatxt|#s%1a%2").arg(pSoraNumber).arg(pAyaNumber));
+    insertSpanTag(QString("(%1)").arg(pAyaNumber), ".ayanumber");
     closeHtmlTag();
 }
