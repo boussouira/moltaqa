@@ -1,4 +1,5 @@
 #include "searchresult.h"
+#include "htmlhelper.h"
 
 SearchResult::SearchResult(LibraryBook *_book, BookPage *_page) :
     book(_book),
@@ -16,54 +17,44 @@ SearchResult::~SearchResult()
 
 void SearchResult::generateHTML()
 {
-    m_html = QObject::tr
-            (
-            "<div class=\"result\">"
-                "<div class=\"resultHead\">"
-                    "<h3>%1</h3>"
-                    "<span class=\"progSpan\" style=\"width: %2px;\">"
-                        "<span class=\"progSpanContainre\"></span>"
-                    "</span>"
-                "</div>"
-                "<div class=\"resultText\" bookid=\"%3\" rid=\"%4\">%5</div>"
-                "<div class=\"resultInfo\" bookid=\"b%3\">"
-                    "<div class=\"bookInfo\">"
-                        "<span class=\"book\">كتاب:</span>"
-                        "<span class=\"bookName\">%6</span>"
-                    "</div>"
-                    "<div class=\"pageInfo\">"
-                        "<span class=\"page\">الصفحة:</span><span class=\"pageVal\">%7</span>"
-                        "<span class=\"part\">الجزء:</span><span class=\"partVal\">%8</span>"
-                    "</div>"
-                    "<div class=\"clear\">"
-                    "</div>"
-                "</div>"
-            "</div>"
-             ) // Nice formating :)
-            .arg(page->title)           // bab (%1)
-            .arg(score)                 // score (%2)
-            .arg(book->bookID)          // Book id (%3)
-            .arg(resultID)              // Result id (%4)
-            .arg(snippet.simplified())  // text snippet (%5)
-            .arg(book->bookDisplayName) // book name (%6)
-            .arg(page->page)            // page (%7)
-            .arg(page->part);           // part (%8)
+    HtmlHelper helper;
+    helper.beginDivTag(".result");
 
+    helper.beginDivTag(".resultHead");
+    helper.insertHtmlTag("h3", page->title);
+
+    helper.beginSpanTag(".progSpan", QString("style=\"width: %1px;\"").arg(score));
+    helper.insertSpanTag("", ".progSpanContainre");
+    helper.endSpanTag();
+
+    helper.endDivTag(); //div.resultHead
+
+    helper.beginDivTag(".resultText", QString("bookid='%1' rid='%2'").arg(book->bookID).arg(resultID));
+    helper.append(snippet.simplified());
+    helper.endDivTag();
+
+    helper.beginDivTag(".resultInfo", QString("bookid='b%1'").arg(book->bookID));
+
+    helper.beginDivTag(".bookInfo");
+    helper.insertSpanTag(QObject::tr("كتاب:"), ".book");
+    helper.insertSpanTag(book->bookDisplayName, ".bookName");
+    helper.endDivTag();
+
+    helper.beginDivTag(".pageInfo");
+    helper.insertSpanTag(QObject::tr("الصفحة:"), ".page");
+    helper.insertSpanTag(QString::number(page->page), ".pageVal");
+    helper.insertSpanTag(QObject::tr("الجزء:"), ".part");
+    helper.insertSpanTag(QString::number(page->part), ".partVal");
+    helper.endDivTag();
+
+    helper.insertDivTag("", ".clear");
+
+    helper.endAllTags();
+
+    m_html = helper.html();
 }
 
 QString SearchResult::toHtml()
 {
     return m_html;
-}
-
-QDebug& operator <<(QDebug &dbg, const SearchResult &result)
-{
-    dbg.nospace() << "{\n    Book: " << result.book->bookDisplayName << ",\n    "
-             << "Page: " << result.page->page << ",\n    "
-             << "Part: " << result.page->part << ",\n    "
-             << "Score: " << result.score << ",\n    "
-             << "Text size: " << result.snippet.size()
-             << "\n}";
-
-    return dbg.space();
 }

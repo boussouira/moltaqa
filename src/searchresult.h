@@ -24,6 +24,4 @@ protected:
     QString m_html;
 };
 
-QDebug& operator <<(QDebug &dbg, const SearchResult &result);
-
 #endif // SEARCHRESULT_H

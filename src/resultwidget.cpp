@@ -5,6 +5,7 @@
 #include "booksviewer.h"
 #include "mainwindow.h"
 #include "bookwidget.h"
+#include "htmlhelper.h"
 #include <qdir.h>
 #include <qplaintextedit.h>
 #include <qboxlayout.h>
@@ -117,24 +118,24 @@ void ResultWidget::setupWebView()
     QString  m_jqueryFile = QUrl::fromLocalFile(jsDir.filePath("jquery.js")).toString();
     QString  m_scriptFile = QUrl::fromLocalFile(jsDir.filePath("scripts.js")).toString();
 
-    QString html = QString("<html>"
-                           "<head>"
-                           "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />"
-                           "<link href= \"%1\" rel=\"stylesheet\" type=\"text/css\" />"
-                           "</head>"
-                           "<body>"
-                           "<div id=\"searchResult\">.</div>"
-                           "<div id=\"pagination\"></div>"
-                           "<script type=\"text/javascript\" src=\"%2\"></script>"
-                           "<script type=\"text/javascript\" src=\"%3\"></script>"
-                           "<script type=\"text/javascript\" src=\"%4\"></script>"
-                           "<script type=\"text/javascript\" src=\"%5\"></script>"
-                           "</body></html>").arg(m_styleFile,
-                                                 m_jqueryFile,
-                                                 m_jqueryGrowlFile,
-                                                 m_jPagination,
-                                                 m_scriptFile);
-    m_view->setHtml(html);
+    HtmlHelper helper;
+    helper.beginHtml();
+    helper.beginHead();
+    helper.setCharset("utf-8");
+    helper.addCSS(m_styleFile);
+    helper.endHead();
+
+    helper.beginBody();
+    helper.insertDivTag(".", "#searchResult");
+    helper.insertDivTag("", "#pagination");
+    helper.addJS(m_jqueryFile);
+    helper.addJS(m_jqueryGrowlFile);
+    helper.addJS(m_jPagination);
+    helper.addJS(m_scriptFile);
+
+    helper.endAllTags();
+
+    m_view->setHtml(helper.html());
 }
 
 void ResultWidget::showProgressBar(bool show)

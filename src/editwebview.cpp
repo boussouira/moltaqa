@@ -2,6 +2,7 @@
 #include "utils.h"
 #include "bookpage.h"
 #include "bookeditorview.h"
+#include "htmlhelper.h"
 #include <QDebug>
 
 EditWebView::EditWebView(QWidget *parent) : WebView(parent)
@@ -17,39 +18,29 @@ void EditWebView::setupEditor(const QString &text)
     QUrl style(QUrl::fromLocalFile(App::stylesDir() + "/default/default.css"));
     QUrl script(QUrl::fromLocalFile(App::jsDir() + "/scripts.js"));
 
-    QString html(QString(
-"<html> \
-    <head> \
-        <title>Editor</title> \
-        <script type=\"text/javascript\" src=\"%1\"></script>\
-        <script type=\"text/javascript\" src=\"%2\"></script>\
-    </head>  \
-<body>  \
-        <form method=\"post\"> \
-        <textarea cols=\"80\" id=\"editor1\" name=\"editor1\" rows=\"10\">%4</textarea>  \
-        <script type=\"text/javascript\">  \
-            var editor; \
-            editor = CKEDITOR.replace('editor1',  \
-            { \
-                contentsCss: '%3', \
-                on: \
-                { \
-                    instanceReady : function() \
-                    { \
-                        editor.execCommand('maximize');  \
-                    } \
-                } \
-            }); \
-        </script>  \
-    </form> \
-</body>  \
-</html>")
-.arg(ckeditor.toString())
-.arg(script.toString())
-.arg(style.toString())
-.arg(text));
+    HtmlHelper helper;
 
-setHtml(html);
+    helper.beginHtml();
+
+    helper.beginHead();
+    helper.setTitle("Editor");
+    helper.addJS(ckeditor.toString());
+    helper.addJS(script.toString());
+    helper.endHead();
+
+    helper.beginBody();
+    helper.beginHtmlTag("form", "", "method='post'");
+    helper.insertHtmlTag("textarea", text, "#editor1", "cols='80' rows='10' name='editor1'");
+    helper.addJSCode(QString("var editor; "
+                "editor = CKEDITOR.replace('editor1', {"
+                "contentsCss: '%3', "
+                "on: {"
+                "instanceReady : function()"
+                "{ editor.execCommand('maximize'); }}});").arg(style.toString()));
+
+    helper.endAllTags();
+
+    setHtml(helper.html());
 }
 
 void EditWebView::setEditorText(QString text)
