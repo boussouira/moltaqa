@@ -7,6 +7,8 @@
 #include <qsettings.h>
 #include <qstack.h>
 
+#include "htmlhelper.h"
+
 class LibraryBook;
 class BookPage;
 
@@ -25,22 +27,8 @@ public:
     QString getHtmlView(QString text=QString());
 
 protected:
-    void insertHtmlTag(QString tag, QString text, QString selector);
-    void insertDivTag(QString text, QString selector);
-    void insertSpanTag(QString text, QString selector);
-    void insertImage(QString src);
-    void openHtmlTag(QString tag, QString selector="");
-    void closeHtmlTag(QString tag=QString());
-    void closeAllTags();
-    void addCSS(QString cssFile);
-    void addJS(QString jsFile);
-    void addJSCode(QString jsCode);
-
-protected:
     void laodSettings();
     void clearText();
-    void genHeaderAndFooter();
-    void addSelector(QString selector);
 
 public slots:
     void start();
@@ -60,6 +48,7 @@ protected:
     QString m_headerText;
     QString m_footerText;
     QString m_html;
+    HtmlHelper m_htmlHelper;
     QStack<QString> m_openTags;
 };
 

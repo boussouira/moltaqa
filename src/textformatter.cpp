@@ -36,13 +36,13 @@ void TextFormatter::laodSettings()
 
 QString TextFormatter::getText()
 {
-    return m_html;
+    return m_htmlHelper.html();
 }
 
 void TextFormatter::insertText(QString text)
 {
     text.replace(QRegExp("[\\r\\n]"), "<br/>");
-    m_html.append(text);
+    m_htmlHelper.append(text);
 }
 
 QString TextFormatter::getHtmlView(QString text)
@@ -50,101 +50,57 @@ QString TextFormatter::getHtmlView(QString text)
     Q_CHECK_PTR(m_book);
     Q_CHECK_PTR(m_page);
 
-    m_html.clear();
+    HtmlHelper helper;
+    helper.beginHtml();
 
-    openHtmlTag("html");
-    openHtmlTag("head");
-    m_html.append("<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />");
-    addCSS(m_styleFile);
+    helper.beginHead();
+    helper.setCharset("utf-8");
+    helper.addCSS(m_styleFile);
 
-    addJSCode(QString("var PAGE_ID = '%1';").arg(m_cssID));
-    addJSCode(QString("var BOOK_NAME = '%1';").arg(m_book->bookDisplayName));
+    helper.addJSCode(QString("var PAGE_ID = '%1';").arg(m_cssID));
+    helper.addJSCode(QString("var BOOK_NAME = '%1';").arg(m_book->bookDisplayName));
 
-    closeHtmlTag();
+    helper.endHead();
 
-    openHtmlTag("body");
-    openHtmlTag("div", "#" + m_cssID);
-
-    if(!m_book->isQuran()) {
-        openHtmlTag("div", "#pageHeader");
-        insertSpanTag(m_book->bookDisplayName, ".bookName");
-        openHtmlTag("span", "#partInfo");
-        insertSpanTag(tr("الجزء"), ".partText");
-        insertSpanTag(QString::number(m_page->part), ".partNum");
-        closeHtmlTag(); // span#partInfo
-        closeHtmlTag(); // div#pageHeader
-    }
-
-    insertDivTag(text, "#pageText");
+    helper.beginBody();
+    helper.beginDivTag("#" + m_cssID);
 
     if(!m_book->isQuran()) {
-        openHtmlTag("div", "#pageFooter");
-        insertSpanTag(QString::number(m_page->page), ".page");
-        closeHtmlTag(); // div#pageFooter
+        helper.beginDivTag("#pageHeader");
+        helper.insertSpanTag(m_book->bookDisplayName, ".bookName");
+
+        helper.beginSpanTag("#partInfo");
+        helper.insertSpanTag(tr("الجزء"), ".partText");
+        helper.insertSpanTag(QString::number(m_page->part), ".partNum");
+        helper.endSpanTag(); // span#partInfo
+
+        helper.endDivTag(); // div#pageHeader
     }
 
-    closeHtmlTag(); // div#m_cssID
+    helper.insertDivTag(text, "#pageText");
 
-    addJS(m_jqueryFile);
-    addJS(m_scriptFile);
+    if(!m_book->isQuran()) {
+        helper.beginDivTag("#pageFooter");
+        helper.insertSpanTag(QString::number(m_page->page), ".page");
+        helper.endDivTag(); // div#pageFooter
+    }
+
+    helper.endDivTag(); // div#m_cssID
+
+    helper.addJS(m_jqueryFile);
+    helper.addJS(m_scriptFile);
 
     if(m_book->isTafessir())
-        addJSCode("toggleQuran();");
+        helper.addJSCode("toggleQuran();");
 
-    closeAllTags();
+    helper.endAllTags();
 
-    QString html = m_html;
-    m_html.clear();
-
-    return html;
+    return helper.html();
 }
 
 void TextFormatter::clearText()
 {
-    m_html.clear();
-}
-
-void TextFormatter::genHeaderAndFooter()
-{
-    if(m_book && m_page) {
-        if(!m_book->isQuran()) {
-            m_headerText = QString("<span class=\"bookName\">%1</span>"
-                                   "<span class=\"part\">%2</span>")
-                    .arg(m_book->bookDisplayName)
-                    .arg(m_page->part);
-
-            m_footerText = QString("<span class=\"page\">%1</span>").arg(m_page->page);
-
-            m_html.replace("<!--HEADER-->", m_headerText);
-            m_html.replace("<!--FOOTER-->", m_footerText);
-        }
-    }
-}
-
-void TextFormatter::insertHtmlTag(QString tag, QString text, QString selector)
-{
-    m_html.append(QString("<%1").arg(tag));
-
-    addSelector(selector);
-
-    m_html.append(QString(">%1</%2>").arg(text).arg(tag));
-}
-
-void TextFormatter::insertDivTag(QString text, QString selector)
-{
-    insertHtmlTag("div", text, selector);
-}
-
-void TextFormatter::insertSpanTag(QString text, QString selector)
-{
-    insertHtmlTag("span", text, selector);
-}
-
-void TextFormatter::insertImage(QString src)
-{
-    m_html.append("<img src=\"");
-    m_html.append(src);
-    m_html.append("\" />");
+    m_htmlHelper.clear();
 }
 
 void TextFormatter::start()
@@ -156,75 +112,12 @@ void TextFormatter::start()
 
 void TextFormatter::done()
 {
-    closeAllTags();
+    m_htmlHelper.endAllTags();
 
     if(m_page)
-        m_page->text = m_html;
+        m_page->text = m_htmlHelper.html();
     else
         qDebug("TextFormatter: no page to save text");
 
     emit doneReading();
-}
-
-void TextFormatter::openHtmlTag(QString tag, QString selector)
-{
-    m_html.append(QString("<%1").arg(tag));
-    addSelector(selector);
-    m_html.append(">");
-
-    m_openTags.push(tag);
-}
-
-void TextFormatter::closeHtmlTag(QString tag)
-{
-    if(tag.isEmpty()) {
-        if(!m_openTags.isEmpty())
-            m_html.append(QString("</%1>").arg(m_openTags.pop()));
-    } else {
-        m_html.append(QString("</%1>").arg(tag));
-    }
-}
-
-void TextFormatter::closeAllTags()
-{
-    while(!m_openTags.isEmpty())
-        m_html.append(QString("</%1>").arg(m_openTags.pop()));
-}
-
-void TextFormatter::addCSS(QString cssFile)
-{
-    m_html.append(QString("<link href= \"%1\" rel=\"stylesheet\" type=\"text/css\" />").arg(cssFile));
-}
-
-void TextFormatter::addJS(QString jsFile)
-{
-    m_html.append(QString("<script type=\"text/javascript\" src=\"%1\"></script>").arg(jsFile));
-}
-
-void TextFormatter::addJSCode(QString jsCode)
-{
-    m_html.append("<script type=\"text/javascript\">");
-    m_html.append("//<![CDATA[\n");
-    m_html.append(jsCode);
-    m_html.append("\n//]]>");
-    m_html.append("</script>");
-}
-
-void TextFormatter::addSelector(QString selector)
-{
-    if(selector.isEmpty())
-        return;
-
-    if(!selector.contains('|')) {
-        if(selector.startsWith('#'))
-            m_html.append(QString(" id=\"%1\"").arg(selector.remove(0, 1)));
-        else if(selector.startsWith('.'))
-            m_html.append(QString(" class=\"%1\"").arg(selector.remove(0, 1)));
-        else
-            qDebug("Unknow selector: %s", qPrintable(selector));
-    } else {
-        foreach (QString sel, selector.split('|', QString::SkipEmptyParts)) {
-            addSelector(sel);
-        }
-    }
 }
