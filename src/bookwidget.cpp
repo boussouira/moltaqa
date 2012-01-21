@@ -241,21 +241,21 @@ void BookWidget::showIndex()
 {
     BookIndexModel *model = m_indexWidget->indexModel();
 
-    QString text("<ul class=\"bookIndex\">");
+    HtmlHelper helper;
+    helper.beginHtmlTag("ul", ".bookIndex");
 
     BookIndexNode *rootNode = model->nodeFromIndex(QModelIndex());
     if(!rootNode)
         return;
 
     foreach(BookIndexNode *node, rootNode->childs) {
-        text.append(QString("<li id=\"%1\">").arg(node->id));
-        text.append(node->title);
-        text.append("</li>");
+        helper.insertHtmlTag("li", node->title, "",
+                             QString("tid='%1'").arg(node->id));
     }
 
-    text.append("</ul>");
+    helper.endHtmlTag();
 
-    m_view->execJS(QString("setPageText('%1', '', '')").arg(text));
+    m_view->execJS(QString("setPageText('%1', '', '')").arg(helper.html()));
 }
 
 void BookWidget::showIndex(int tid)
@@ -267,23 +267,47 @@ void BookWidget::showIndex(int tid)
     QModelIndex child = index.child(0, 0);
 
     if(child.isValid()) {
-        QString text("<ul class=\"bookIndex\">");
+        HtmlHelper helper;
+        helper.beginHtmlTag("ul", ".bookIndex");
 
         while(child.isValid()) {
-            text.append(QString("<li id=\"%1\">").arg(child.data(ItemRole::idRole).toInt()));
-            text.append(child.data(Qt::DisplayRole).toString());
-            text.append("</li>");
+            helper.insertHtmlTag("li", child.data(Qt::DisplayRole).toString(), "",
+                                 QString("tid='%1'").arg(child.data(ItemRole::idRole).toInt()));
 
             child = child.sibling(child.row()+1, 0);
         }
 
-        text.append("</ul>");
+        helper.endHtmlTag();
 
-        m_view->execJS(QString("setPageText('%1', '', '')").arg(text));
+        m_db->page()->titleID = tid;
+
+        m_view->execJS(QString("setPageText('%1', '', '')").arg(helper.html()));
         m_indexWidget->selectTitle(tid);
     } else {
         m_db->goToPage(tid);
     }
+}
+
+QString BookWidget::getBreadcrumbs()
+{
+    QList<QPair<int, QString> > list;
+    QModelIndex index = m_indexWidget->findTitle(m_db->page()->titleID, true);
+
+    while (index.isValid()) {
+        list.append(qMakePair(index.data(ItemRole::idRole).toInt(), index.data().toString()));
+
+        index = index.parent();
+    }
+
+    HtmlHelper h;
+    for(int i=list.size()-1; i>=0; i--) {
+        h.insertHtmlTag("span", list.at(i).second, "", QString("tid='%1'").arg(list.at(i).first));
+
+        if(i)
+            h.append(" > ");
+    }
+
+    return h.html();
 }
 
 void BookWidget::viewObjectCleared()

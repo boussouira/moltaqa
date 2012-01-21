@@ -29,8 +29,19 @@ IndexWidget::~IndexWidget()
     delete ui;
 }
 
-QModelIndex IndexWidget::findTitle(int tid)
+QModelIndex IndexWidget::findTitle(int tid, bool checkSelected)
 {
+    if(checkSelected) {
+        QModelIndexList selected = ui->treeView->selectionModel()->selectedIndexes();
+
+        // Check if the title is already selected
+        if(!selected.isEmpty()) {
+            if(selected.at(0).data(ItemRole::idRole).toInt() == tid) {
+                return selected.at(0);
+            }
+        }
+    }
+
     QModelIndex nodeIndex = m_model->index(0, 0, QModelIndex());
     while(nodeIndex.isValid()) {
         int pid = nodeIndex.data(ItemRole::idRole).toInt();
@@ -134,24 +145,18 @@ void IndexWidget::setCurrentPage(BookPage *page)
     m_page = page;
 }
 
-void IndexWidget::selectTitle(int tid)
+QModelIndex IndexWidget::selectTitle(int tid)
 {
     if(m_model) {
-        QModelIndexList selected = ui->treeView->selectionModel()->selectedIndexes();
-
-        // Check if the title is already selected
-        if(!selected.isEmpty()) {
-            if(selected.at(0).data(ItemRole::idRole).toInt() == tid) {
-                return;
-            }
-        }
-
-        QModelIndex index = findTitle(tid);
+        QModelIndex index = findTitle(tid, true);
         if(index.isValid()) {
             ui->treeView->scrollTo(index);
             ui->treeView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::SelectCurrent);
+            return index;
         }
     }
+
+    return QModelIndex();
 }
 
 QTreeView *IndexWidget::treeView()

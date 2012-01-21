@@ -47,6 +47,7 @@ public slots:
 
     void showIndex();
     void showIndex(int tid);
+    QString getBreadcrumbs();
 
 protected slots:
     void viewObjectCleared();

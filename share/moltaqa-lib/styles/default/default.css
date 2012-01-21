@@ -1,7 +1,7 @@
 body {
     direction: rtl;
     font-family: 'Lotus Linotype';
-    font-size: 18px;
+    font-size: 23px;
 }
 a {
     text-decoration: none;
@@ -33,7 +33,6 @@ a {
     margin-right: 4px;
 }
 .ayatxt {
-    /*font-size: 30px;*/
     text-align: justify;
 }
 .bassemala {
@@ -50,25 +49,41 @@ a {
 }
 
 #simpleBook #pageHeader {
+  font-family: 'Tahoma';
+  font-size: 13px;
   border-bottom: 1px solid #CCCCCC;
   margin-bottom: 15px;
+  padding-bottom: 5px;
 }
 
 #simpleBook #pageHeader .bookName {
   color: #AA0000;
-  font-size: 0.7em;
   cursor: pointer;
 }
 
-#simpleBook #pageHeader #partInfo {
+#simpleBook #pageHeader .bookInfo #partInfo {
   float: left;
-  font-size: 0.7em;
 }
-#simpleBook #pageHeader #partInfo .partText {
+
+#simpleBook #pageHeader .bookInfo #partInfo .partText {
     margin: 0 5px;
 }
 
+#simpleBook #pageHeader .breadcrumbs {
+    font-family: cursive;
+}
+
+#simpleBook #pageHeader .breadcrumbs span {
+    cursor: pointer;
+    margin: 0px 5px;
+}
+
+#simpleBook #pageHeader .breadcrumbs span:hover {
+    color: #184388;
+}
+
 #simpleBook #pageFooter {
+  font-size: 17px;
   border-top: 1px solid #CCCCCC;
   margin-top: 15px;
   text-align: center;
@@ -76,7 +91,6 @@ a {
 
 #simpleBook #pageFooter .page {
   color: #333333;
-  font-size: 0.9em;
 }
 
 #simpleBook ul.bookIndex {
@@ -89,7 +103,7 @@ a {
 }
 
 #simpleBook ul.bookIndex li:hover {
-    text-decoration: underline;
+    color: #184388;
 }
 
 footnote {

@@ -100,6 +100,15 @@ function setPagination(currentPage, resultCount, resultPeerPage)
     });
 }
 
+function pageTextChanged()
+{
+    $('.breadcrumbs').html(bookWidget.getBreadcrumbs());
+    webView.pageTextChanged();
+
+    toggleQuran();
+    indexReading();
+}
+
 function setPageText(text, page, part)
 {
     $('#pageText').fadeOut('fast', function() {
@@ -107,9 +116,7 @@ function setPageText(text, page, part)
                                $('#pageHeader > #partInfo > .partNum').text(part);
                                $('#pageFooter > .page').text(page);
                                $(this).fadeIn('fast', function() {
-                                                  webView.pageTextChanged();
-                                                  toggleQuran();
-                                                  indexReading();
+                                                  pageTextChanged();
                                               });
                            });
 }
@@ -120,8 +127,8 @@ $('#simpleBook #pageHeader .bookName').click(function(){
 
 function indexReading()
 {
-    $('ul.bookIndex > li').click(function(){
-        tid = $(this).attr('id');
+    $('ul.bookIndex > li, .breadcrumbs > span').click(function(){
+        tid = $(this).attr('tid');
         //alert("ID: " + tid);
         bookWidget.showIndex(tid);
     });

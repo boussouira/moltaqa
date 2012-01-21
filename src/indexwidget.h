@@ -22,12 +22,12 @@ public:
     void setBookInfo(LibraryBook *book);
     void setCurrentPage(BookPage *page);
     void hideAyaSpin(bool visible);
-    void selectTitle(int tid);
+    QModelIndex selectTitle(int tid);
 
     QTreeView *treeView();
     BookIndexModel *indexModel();
 
-    QModelIndex findTitle(int tid);
+    QModelIndex findTitle(int tid, bool checkSelected=false);
 
 protected:
     QModelIndex fitchChild(QModelIndex parent, int tid);
