@@ -73,7 +73,6 @@ void HtmlHelper::insertHtmlTag(QString tag, QString text, QString selector, QStr
     addSelector(selector);
     addExtraAttr(attr);
 
-    m_html.append(attr);
     m_html.append(QString(">%1</%2>").arg(text).arg(tag));
 }
 
