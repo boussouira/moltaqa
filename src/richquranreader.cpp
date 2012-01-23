@@ -5,6 +5,7 @@
 #include "libraryinfo.h"
 #include "mainwindow.h"
 #include "bookreaderhelper.h"
+#include "modelenums.h"
 
 RichQuranReader::RichQuranReader(QObject *parent) : RichBookReader(parent)
 {
@@ -75,20 +76,18 @@ void RichQuranReader::setCurrentPage(QDomElement pageNode)
     emit textChanged();
 }
 
-BookIndexModel *RichQuranReader::indexModel()
+QStandardItemModel *RichQuranReader::indexModel()
 {
-    BookIndexNode *rootNode = new BookIndexNode();
+    m_indexModel = new QStandardItemModel();
 
     for(int i=1; i<=114; i++) {
         QuranSora *sora = MW->readerHelper()->getQuranSora(i);
         if(sora) {
-            BookIndexNode *soraNode = new BookIndexNode(sora->name, i);
-            rootNode->appendChild(soraNode);
+            QStandardItem *soraNode = new QStandardItem(sora->name);
+            soraNode->setData(i, ItemRole::idRole);
+            m_indexModel->appendRow(soraNode);
         }
     }
-
-    m_indexModel = new BookIndexModel();
-    m_indexModel->setRootNode(rootNode);
 
     return m_indexModel;
 }

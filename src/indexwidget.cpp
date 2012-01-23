@@ -2,7 +2,8 @@
 #include "ui_indexwidget.h"
 #include "modelenums.h"
 #include "bookpage.h"
-#include "bookindexmodel.h"
+
+#include <qstandarditemmodel.h>
 
 IndexWidget::IndexWidget(QWidget *parent) :
     QWidget(parent),
@@ -64,7 +65,7 @@ QModelIndex IndexWidget::findTitle(int tid, bool checkSelected)
     return QModelIndex();
 }
 
-void IndexWidget::setIndex(BookIndexModel *indexModel)
+void IndexWidget::setIndex(QStandardItemModel *indexModel)
 {
     m_model = indexModel;
     ui->treeView->setModel(indexModel);
@@ -164,7 +165,7 @@ QTreeView *IndexWidget::treeView()
     return ui->treeView;
 }
 
-BookIndexModel *IndexWidget::indexModel()
+QStandardItemModel *IndexWidget::indexModel()
 {
     return m_model;
 }

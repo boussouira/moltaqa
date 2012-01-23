@@ -2,8 +2,6 @@
 #define ABSTRACTBOOKREADER_H
 
 #include <qobject.h>
-#include <qsqldatabase.h>
-#include <qsqlquery.h>
 #include <qcoreapplication.h>
 #include <qfile.h>
 #include <qdom.h>
@@ -17,7 +15,7 @@
 class LibraryInfo;
 class LibraryBook;
 class BookPage;
-class BookIndexModel;
+class QStandardItemModel;
 class TextFormatter;
 class QSqlQuery;
 class BookEditor;
@@ -32,7 +30,7 @@ public:
     void openBook();
     void setBookInfo(LibraryBook *bi);
     void setLibraryManager(LibraryManager *db);
-    void setBookIndexModel(BookIndexModel *model);
+    void setBookIndexModel(QStandardItemModel *model);
 
     LibraryBook *bookInfo() { return m_bookInfo; }
     LibraryManager *libraryManager();
@@ -141,7 +139,7 @@ protected:
     LibraryBook *m_bookInfo;
     BookPage *m_currentPage;
     LibraryManager *m_libraryManager;
-    BookIndexModel *m_indexModel;
+    QStandardItemModel *m_indexModel;
     QString m_bookDBPath;
     QString m_connectionName;
     QFile m_zipFile;

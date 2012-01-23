@@ -2,8 +2,8 @@
 #define INDEXWIDGET_H
 
 #include "librarybook.h"
-#include "bookindexmodel.h"
 #include <qdockwidget.h>
+#include <qstandarditemmodel.h>
 
 namespace Ui {
     class IndexWidget;
@@ -25,7 +25,7 @@ public:
     QModelIndex selectTitle(int tid);
 
     QTreeView *treeView();
-    BookIndexModel *indexModel();
+    QStandardItemModel *indexModel();
 
     QModelIndex findTitle(int tid, bool checkSelected=false);
 
@@ -33,7 +33,7 @@ protected:
     QModelIndex fitchChild(QModelIndex parent, int tid);
 
 public slots:
-    void setIndex(BookIndexModel *indexModel);
+    void setIndex(QStandardItemModel *indexModel);
     void displayBookInfo();
     void setSelectedSora(int pSoraNumber);
 
@@ -51,7 +51,7 @@ signals:
     void bookInfoChanged();
 
 private:
-    BookIndexModel *m_model;
+    QStandardItemModel *m_model;
     LibraryBook *m_bookInfo;
     BookPage *m_page;
     Ui::IndexWidget *ui;

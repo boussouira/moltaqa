@@ -12,7 +12,7 @@ public:
     ~RichQuranReader();
 
     void setCurrentPage(QDomElement pageNode);
-    BookIndexModel *indexModel();
+    QStandardItemModel *indexModel();
 
     void nextPage();
     void prevPage();

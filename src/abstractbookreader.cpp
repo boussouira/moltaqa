@@ -1,16 +1,13 @@
 #include "abstractbookreader.h"
 #include "libraryinfo.h"
 #include "librarybook.h"
-#include "bookindexmodel.h"
 #include "bookexception.h"
 #include "textformatter.h"
 #include "utils.h"
 #include "mainwindow.h"
 #include "bookreaderhelper.h"
 
-#include <qsqldatabase.h>
-#include <qsqlquery.h>
-#include <qsqlerror.h>
+#include <qstandarditemmodel.h>
 #include <qstringlistmodel.h>
 #include <qxmlstream.h>
 #include <QTime>
@@ -149,7 +146,7 @@ void AbstractBookReader::setLibraryManager(LibraryManager *db)
     m_libraryManager = db;
 }
 
-void AbstractBookReader::setBookIndexModel(BookIndexModel *model)
+void AbstractBookReader::setBookIndexModel(QStandardItemModel *model)
 {
     m_indexModel = model;
 }

@@ -239,18 +239,16 @@ void BookWidget::readerTextChanged()
 
 void BookWidget::showIndex()
 {
-    BookIndexModel *model = m_indexWidget->indexModel();
+    QStandardItemModel *model = m_indexWidget->indexModel();
 
     HtmlHelper helper;
     helper.beginHtmlTag("ul", ".bookIndex");
 
-    BookIndexNode *rootNode = model->nodeFromIndex(QModelIndex());
-    if(!rootNode)
-        return;
+    for(int i=0; i<model->rowCount(); i++) {
+        QStandardItem *item = model->item(i);
 
-    foreach(BookIndexNode *node, rootNode->childs) {
-        helper.insertHtmlTag("li", node->title, "",
-                             QString("tid='%1'").arg(node->id));
+        helper.insertHtmlTag("li", item->text(), "",
+                             QString("tid='%1'").arg(item->data(ItemRole::idRole).toInt()));
     }
 
     helper.endHtmlTag();
