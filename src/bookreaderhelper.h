@@ -3,7 +3,6 @@
 
 #include <qsqldatabase.h>
 #include <qhash.h>
-#include <bookindexmodel.h>
 #include <qset.h>
 #include "sqlutils.h"
 

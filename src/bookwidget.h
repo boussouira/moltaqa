@@ -9,7 +9,6 @@ class IndexWidget;
 class RichBookReader;
 class QSplitter;
 class QVBoxLayout;
-class BookIndexModel;
 class QModelIndex;
 
 class BookWidget: public QWidget

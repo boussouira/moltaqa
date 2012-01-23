@@ -13,7 +13,6 @@ public:
 
 protected:
     void connected();
-    void readItem(QDomNode &itemNode, BookIndexNode *parent);
 };
 
 #endif // RICHSIMPLEBOOKREADER_H

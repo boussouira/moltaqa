@@ -2,10 +2,11 @@
 #include "textformatter.h"
 #include "librarybook.h"
 #include "bookpage.h"
-#include "bookindexmodel.h"
 #include "utils.h"
 #include "mainwindow.h"
 #include "libraryinfo.h"
+#include "modelenums.h"
+#include <qstandarditemmodel.h>
 
 RichBookReader::RichBookReader(QObject *parent) : AbstractBookReader(parent)
 {
@@ -55,7 +56,7 @@ int RichBookReader::getPageTitleID(int pageID)
     return pageID;
 }
 
-BookIndexModel *RichBookReader::indexModel()
+QStandardItemModel *RichBookReader::indexModel()
 {
     m_pageTitles.clear();
 
@@ -84,41 +85,45 @@ BookIndexModel *RichBookReader::indexModel()
         return 0;
     }
 
-    BookIndexNode *rootNode = new BookIndexNode();
     QDomElement root = doc.documentElement();
     QDomElement element = root.firstChildElement();
 
+    m_indexModel = new QStandardItemModel();
+
     while(!element.isNull()) {
-        readItem(element, rootNode);
+        readItem(element, m_indexModel, 0);
 
         element = element.nextSiblingElement();
     }
-
-    m_indexModel = new BookIndexModel();
-    m_indexModel->setRootNode(rootNode);
 
     qSort(m_pageTitles);
 
     return m_indexModel;
 }
 
-void RichBookReader::readItem(QDomElement &element, BookIndexNode *parent)
+void RichBookReader::readItem(QDomElement &element, QStandardItemModel *model, QStandardItem *parent)
 {
-    BookIndexNode *item = new BookIndexNode(element.attribute("text"),
-                                            element.attribute("pageID").toInt());
+    int pageID = element.attribute("pageID").toInt();
+
+    QStandardItem *item = new QStandardItem(element.attribute("text"));
+    item->setData(pageID, ItemRole::idRole);
 
     if(element.hasChildNodes()) {
         QDomElement child = element.firstChildElement();
 
         while(!child.isNull()) {
-            readItem(child, item);
+            readItem(child, model, item);
 
             child = child.nextSiblingElement();
         }
     }
 
-    parent->appendChild(item);
-    m_pageTitles.append(item->id);
+    if(parent)
+        parent->appendRow(item);
+    else
+        model->appendRow(item);
+
+    m_pageTitles.append(pageID);
 }
 
 TextFormatter *RichBookReader::textFormat()

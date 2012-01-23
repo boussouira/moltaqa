@@ -30,8 +30,6 @@ SOURCES += mainwindow.cpp \
     abstractbookreader.cpp \
     richquranreader.cpp \
     richsimplebookreader.cpp \
-    bookindexmodel.cpp \
-    bookindexnode.cpp \
     librarybook.cpp \
     simpletextformat.cpp \
     bookwidget.cpp \
@@ -118,8 +116,6 @@ HEADERS += mainwindow.h \
     abstractbookreader.h \
     richquranreader.h \
     richsimplebookreader.h \
-    bookindexmodel.h \
-    bookindexnode.h \
     librarybook.h \
     simpletextformat.h \
     bookwidget.h \

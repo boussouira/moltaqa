@@ -3,7 +3,6 @@
 
 #include "richbookreader.h"
 
-class BookIndexNode;
 class TafessirTextFormat;
 
 class RichTafessirReader : public RichBookReader
@@ -16,7 +15,6 @@ public:
     QDomElement getQuranPageId(int sora, int aya);
 
 protected:
-    void childTitles(BookIndexNode *parentNode, int tid);
     void connected();
     void openQuranBook();
     void readQuranText(int sora, int aya, int count);

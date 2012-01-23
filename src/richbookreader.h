@@ -4,8 +4,6 @@
 #include "abstractbookreader.h"
 #include "clutils.h"
 
-class BookIndexNode;
-
 class RichBookReader : public AbstractBookReader
 {
     Q_OBJECT
@@ -17,7 +15,7 @@ public:
     /**
       Get the full index model of the curren book
       */
-    virtual BookIndexModel *indexModel();
+    virtual QStandardItemModel *indexModel();
 
     TextFormatter *textFormat();
 
@@ -30,7 +28,7 @@ public:
 
 protected:
     virtual void connected();
-    void readItem(QDomElement &element, BookIndexNode *parent);
+    void readItem(QDomElement &element, QStandardItemModel *model, QStandardItem *parent);
 
 signals:
     void textChanged();
