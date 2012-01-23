@@ -173,7 +173,6 @@ div.clear {
     color: #333333;
     cursor: pointer;
     display: block;
-    font-size: 1.2em;
     margin: 0;
     padding: 10px 5px;
 }
@@ -381,8 +380,8 @@ div.info {
 
 .pagination a {
     text-decoration: none;
-        border: solid 1px #AAE;
-        color: #15B;
+    border: solid 1px #AAE;
+    color: #15B;
 }
 
 .pagination a:hover, .pagination span:hover {
@@ -392,9 +391,9 @@ div.info {
     box-shadow: 0 0 5px #AEAEAE ;
     padding: 0.3em 0.5em;
     margin-right: 5px;
-        margin-bottom: 5px;
-        min-width:1em;
-        text-align:center;
+    margin-bottom: 5px;
+    min-width:1em;
+    text-align:center;
 }
 
 .pagination span.ellipse {
