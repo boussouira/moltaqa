@@ -97,8 +97,7 @@ QString TextFormatter::getHtmlView(QString text)
     helper.addJS(m_jqueryFile);
     helper.addJS(m_scriptFile);
 
-    if(m_book->isTafessir())
-        helper.addJSCode("toggleQuran();");
+    helper.addJSCode("pageTextChanged();");
 
     helper.endAllTags();
 
