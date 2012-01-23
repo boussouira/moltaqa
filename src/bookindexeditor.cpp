@@ -1,6 +1,7 @@
 #include "bookindexeditor.h"
 #include "ui_bookindexeditor.h"
-#include "bookindexmodel.h"
+#include "modelenums.h"
+#include <qstandarditemmodel.h>
 #include <qfile.h>
 
 BookIndexEditor::BookIndexEditor(QWidget *parent) :
@@ -15,7 +16,7 @@ BookIndexEditor::~BookIndexEditor()
     delete ui;
 }
 
-void BookIndexEditor::setModel(BookIndexModel *model)
+void BookIndexEditor::setModel(QStandardItemModel *model)
 {
     m_model = model;
     ui->treeView->setModel(model);
@@ -25,32 +26,28 @@ void BookIndexEditor::saveModel(QXmlStreamWriter *writer)
 {
     Q_CHECK_PTR(m_model);
 
-    BookIndexNode *root = m_model->nodeFromIndex(QModelIndex());
+    writer->writeStartDocument();
+    writer->writeStartElement("titles");
 
-    if(root) {
-        writer->writeStartDocument();
-        writer->writeStartElement("titles");
-
-        if(!root->childs.isEmpty()) {
-            foreach(BookIndexNode *child, root->childs) {
-                writeNode(child, writer);
-            }
-        }
-
-        writer->writeEndElement();
-        writer->writeEndDocument();
+    for(int i=0; i<m_model->rowCount(); i++) {
+        QStandardItem *item = m_model->item(i);
+        writeItem(item, writer);
     }
+
+    writer->writeEndElement();
+    writer->writeEndDocument();
 }
 
-void BookIndexEditor::writeNode(BookIndexNode *node, QXmlStreamWriter *writer)
+void BookIndexEditor::writeItem(QStandardItem *item, QXmlStreamWriter *writer)
 {
     writer->writeStartElement("item");
-    writer->writeAttribute("pageID", QString::number(node->id));
-    writer->writeAttribute("text", node->title);
+    writer->writeAttribute("pageID", item->data(ItemRole::idRole).toString());
+    writer->writeAttribute("text", item->text());
 
-    if(!node->childs.isEmpty()) {
-        foreach(BookIndexNode *child, node->childs) {
-            writeNode(child, writer);
+    if(item->hasChildren()) {
+        for(int i=0; i<item->rowCount(); i++) {
+            QStandardItem *child = m_model->item(i);
+            writeItem(child, writer);
         }
     }
 

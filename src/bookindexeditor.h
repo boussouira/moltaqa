@@ -8,8 +8,8 @@ namespace Ui {
 class BookIndexEditor;
 }
 
-class BookIndexModel;
-class BookIndexNode;
+class QStandardItemModel;
+class QStandardItem;
 
 class BookIndexEditor : public QWidget
 {
@@ -19,17 +19,17 @@ public:
      BookIndexEditor(QWidget *parent = 0);
     ~BookIndexEditor();
     
-     void setModel(BookIndexModel *model);
+     void setModel(QStandardItemModel *model);
      void saveModel(QXmlStreamWriter *writer);
 
      bool save(QString path);
 
 protected:
-     void writeNode(BookIndexNode *node, QXmlStreamWriter *writer);
+     void writeItem(QStandardItem *item, QXmlStreamWriter *writer);
 
 private:
     Ui::BookIndexEditor *ui;
-    BookIndexModel *m_model;
+    QStandardItemModel *m_model;
 };
 
 #endif // BOOKINDEXEDITOR_H
