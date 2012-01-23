@@ -13,6 +13,7 @@ namespace Ui {
 class EditWebView;
 class RichBookReader;
 class QTabWidget;
+class BookIndexEditor;
 
 class BookEditorView : public AbstarctView
 {
@@ -55,6 +56,7 @@ protected slots:
 protected:
     Ui::BookEditorView *ui;
     QTabWidget *m_tabWidget;
+    BookIndexEditor *m_indexEditor;
     QAction *m_actionSave;
     QAction *m_actionCancel;
     QAction *m_actionAddPage;

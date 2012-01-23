@@ -14,10 +14,13 @@
 #include "bookpage.h"
 #include "openpagedialog.h"
 #include "bookexception.h"
+#include "bookindexeditor.h"
+
 #include <qstatusbar.h>
 #include <qtabwidget.h>
 #include <qmessagebox.h>
 #include <qprogressdialog.h>
+#include <qsplitter.h>
 
 BookEditorView::BookEditorView(QWidget *parent) :
     AbstarctView(parent),
@@ -54,7 +57,13 @@ void BookEditorView::setupView()
     webLayout->addWidget(m_webView);
     w->setLayout(webLayout);
 
-    ui->tabWidget->addTab(w, QString());
+    m_indexEditor = new BookIndexEditor(this);
+
+    QSplitter *splitter = new QSplitter(this);
+    splitter->addWidget(m_indexEditor);
+    splitter->addWidget(w);
+
+    ui->tabWidget->addTab(splitter, QString());
 
     connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)), SLOT(closeTab(int)));
 }
@@ -86,6 +95,8 @@ void BookEditorView::editBook(LibraryBook *book, int pageID)
     m_bookReader->setBookInfo(book);
     m_bookReader->setLibraryManager(MW->libraryManager());
     m_bookReader->openBook();
+
+    m_indexEditor->setModel(m_bookReader->indexModel());
 
     connect(m_bookReader, SIGNAL(textChanged()), SLOT(readerTextChange()));
 
