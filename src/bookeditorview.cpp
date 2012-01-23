@@ -296,7 +296,7 @@ void BookEditorView::cancel()
 
 void BookEditorView::addPage()
 {
-    int pageID = m_bookEditor->maxPageID();
+    int pageID = m_bookEditor->maxPageID()+1;
     BookPage *page = m_currentPage->clone();
     page->pageID = pageID;
     page->text.clear();
