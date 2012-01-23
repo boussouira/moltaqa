@@ -26,7 +26,7 @@ protected:
     void close();
     void loadQuranModel(QStandardItemModel *model);
     void loadSimpleBookModel(QStandardItemModel *model);
-    void readItem(QDomElement &element, QStandardItemModel *model, QStandardItem *parent);
+    void readItem(QDomElement &element, QStandardItem *parent);
 
     SearchFilter *getQuranFilterQuery();
     SearchFilter *getSimpleBookFilterQuery();

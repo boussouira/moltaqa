@@ -244,13 +244,13 @@ void BookSearchFilter::loadSimpleBookModel(QStandardItemModel *model)
     QDomElement element = root.firstChildElement();
 
     while(!element.isNull()) {
-        readItem(element, model, 0);
+        readItem(element, model->invisibleRootItem());
 
         element = element.nextSiblingElement();
     }
 }
 
-void BookSearchFilter::readItem(QDomElement &element, QStandardItemModel *model, QStandardItem *parent)
+void BookSearchFilter::readItem(QDomElement &element, QStandardItem *parent)
 {
     QStandardItem *item = new QStandardItem();
     item->setText(element.attribute("text"));
@@ -261,7 +261,7 @@ void BookSearchFilter::readItem(QDomElement &element, QStandardItemModel *model,
         QDomElement child = element.firstChildElement();
 
         while(!child.isNull()) {
-            readItem(child, model, item);
+            readItem(child, item);
 
             child = child.nextSiblingElement();
         }
@@ -269,6 +269,4 @@ void BookSearchFilter::readItem(QDomElement &element, QStandardItemModel *model,
 
     if(parent)
         parent->appendRow(item);
-    else
-        model->appendRow(item);
 }

@@ -28,7 +28,7 @@ public:
 
 protected:
     virtual void connected();
-    void readItem(QDomElement &element, QStandardItemModel *model, QStandardItem *parent);
+    void readItem(QDomElement &element, QStandardItem *parent);
 
 signals:
     void textChanged();

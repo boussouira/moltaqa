@@ -91,7 +91,7 @@ QStandardItemModel *RichBookReader::indexModel()
     m_indexModel = new QStandardItemModel();
 
     while(!element.isNull()) {
-        readItem(element, m_indexModel, 0);
+        readItem(element, m_indexModel->invisibleRootItem());
 
         element = element.nextSiblingElement();
     }
@@ -101,7 +101,7 @@ QStandardItemModel *RichBookReader::indexModel()
     return m_indexModel;
 }
 
-void RichBookReader::readItem(QDomElement &element, QStandardItemModel *model, QStandardItem *parent)
+void RichBookReader::readItem(QDomElement &element, QStandardItem *parent)
 {
     int pageID = element.attribute("pageID").toInt();
 
@@ -112,7 +112,7 @@ void RichBookReader::readItem(QDomElement &element, QStandardItemModel *model, Q
         QDomElement child = element.firstChildElement();
 
         while(!child.isNull()) {
-            readItem(child, model, item);
+            readItem(child, item);
 
             child = child.nextSiblingElement();
         }
@@ -120,8 +120,6 @@ void RichBookReader::readItem(QDomElement &element, QStandardItemModel *model, Q
 
     if(parent)
         parent->appendRow(item);
-    else
-        model->appendRow(item);
 
     m_pageTitles.append(pageID);
 }
