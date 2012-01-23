@@ -91,9 +91,9 @@ QVariant BooksListModel::data(const QModelIndex &index, int role) const
 
     } else if (role == Qt::DecorationRole && index.column() == BookNameCol) {
         if(node->type == BooksListNode::Categorie)
-            return QIcon(":/menu/images/book-cat.png");
+            return QIcon(":/images/book-cat.png");
         else if (node->type == BooksListNode::Book)
-            return QIcon(":/menu/images/book.png");
+            return QIcon(":/images/book.png");
     } else if (role == ItemRole::idRole) {
         return node->id;
     } else if (role == ItemRole::orderRole) {

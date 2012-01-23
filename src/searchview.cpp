@@ -20,9 +20,9 @@ SearchView::SearchView(QWidget *parent) : AbstarctView(parent)
 
     QToolBar *bar = new QToolBar(this);
 
-    QAction *actNewTab = new QAction(QIcon(":/menu/images/tab-new.png"),
+    QAction *actNewTab = new QAction(QIcon(":/images/tab-new.png"),
                                tr("تبويب بحث جديد"), this);
-    QAction *actSwitchTab = new QAction(QIcon(":/menu/images/switch.png"),
+    QAction *actSwitchTab = new QAction(QIcon(":/images/switch.png"),
                                      tr("تنقل بين نافذة البحث والنتائج"), this);
     bar->addAction(actNewTab);
     bar->addAction(actSwitchTab);
@@ -98,7 +98,7 @@ void SearchView::newTab(SearchWidget::SearchType searchType, int bookID)
     }
 
     int tabIndex = m_tabWidget->addTab(searchWidget,
-                                       QIcon(":/menu/images/find.png"),
+                                       QIcon(":/images/find.png"),
                                        tabLabel);
 
     m_tabWidget->setTabToolTip(tabIndex, tabTooltip);

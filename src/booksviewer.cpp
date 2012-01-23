@@ -64,35 +64,35 @@ void BooksViewer::createMenus()
     m_actionEditBook = new QAction(QIcon::fromTheme("document-edit"),
                                  tr("تحرير الكتاب"), this);
     // General Actions
-    m_actionNewTab = new QAction(QIcon::fromTheme("tab-new", QIcon(":/menu/images/bookmark-new.png")),
+    m_actionNewTab = new QAction(QIcon::fromTheme("tab-new", QIcon(":/images/bookmark-new.png")),
                                         tr("تبويب جديد"),
                                         this);
 
-    m_actionIndexDock = new QAction(QIcon(":/menu/images/edit_fahrass.png"),
+    m_actionIndexDock = new QAction(QIcon(":/images/edit_fahrass.png"),
                                            tr("نافذة الفهرس"),
                                            this);
 
-    m_actionSearchInBook = new QAction(QIcon::fromTheme("edit-find", QIcon(":/menu/images/find.png")),
+    m_actionSearchInBook = new QAction(QIcon::fromTheme("edit-find", QIcon(":/images/find.png")),
                                             tr("بحث متقدم في هذا الكتاب"),
                                             this);
 
     // Navigation actions
-    m_actionNextAYA = new QAction(QIcon::fromTheme("go-down", QIcon(":/menu/images/go-down.png")),
+    m_actionNextAYA = new QAction(QIcon::fromTheme("go-down", QIcon(":/images/go-down.png")),
                                 tr("الآية التالية"),
                                 this);
-    m_actionNextPage = new QAction(QIcon::fromTheme("go-previous", QIcon(":/menu/images/go-previous.png")),
+    m_actionNextPage = new QAction(QIcon::fromTheme("go-previous", QIcon(":/images/go-previous.png")),
                                  tr("الصفحة التالية"),
                                  this);
-    m_actionPrevAYA = new QAction(QIcon::fromTheme("go-up", QIcon(":/menu/images/go-up.png")),
+    m_actionPrevAYA = new QAction(QIcon::fromTheme("go-up", QIcon(":/images/go-up.png")),
                                 tr("الآية السابقة"),
                                 this);
-    m_actionPrevPage = new QAction(QIcon::fromTheme("go-next", QIcon(":/menu/images/go-next.png")),
+    m_actionPrevPage = new QAction(QIcon::fromTheme("go-next", QIcon(":/images/go-next.png")),
                                  tr("الصفحة السابقة"),
                                  this);
-    m_actionFirstPage = new QAction(QIcon::fromTheme("go-last", QIcon(":/menu/images/go-last.png")),
+    m_actionFirstPage = new QAction(QIcon::fromTheme("go-last", QIcon(":/images/go-last.png")),
                                 tr("الصفحة الاولى"),
                                 this);
-    m_actionLastPage = new QAction(QIcon::fromTheme("go-first", QIcon(":/menu/images/go-first.png")),
+    m_actionLastPage = new QAction(QIcon::fromTheme("go-first", QIcon(":/images/go-first.png")),
                                  tr("الصفحة الاخيرة"),
                                  this);
     m_actionGotToPage = new QAction(QIcon::fromTheme("go-jump"), tr("انتقل الى..."),
@@ -105,13 +105,13 @@ void BooksViewer::createMenus()
     m_actionGotToPage->setShortcut(QKeySequence("G"));
 
     // Tafressir actions
-    m_openSelectedTafsir =  new QAction(QIcon(":/menu/images/arrow-left.png"),
+    m_openSelectedTafsir =  new QAction(QIcon(":/images/arrow-left.png"),
                                                tr("فتح تفسير الاية"),
                                                this);
     m_comboTafasir = new QComboBox(this);
 
     // Shorooh action
-    m_actionOpenShareeh = new QAction(QIcon(":/menu/images/arrow-left.png"),
+    m_actionOpenShareeh = new QAction(QIcon(":/images/arrow-left.png"),
                                      tr("فتح الشرح"),
                                      this);
     // Add action to their toolbars

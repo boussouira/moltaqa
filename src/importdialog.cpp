@@ -217,7 +217,7 @@ void ImportDialog::doneImporting()
         i.next();
         QToolButton *button = new QToolButton;
         button->setMaximumSize(40,40);
-        button->setIcon(QIcon(":/menu/images/go-previous.png"));
+        button->setIcon(QIcon(":/images/go-previous.png"));
         button->setStyleSheet("padding:5px;");
         button->setToolTip(tr("فتح كتاب %1").arg(i.value()));
 

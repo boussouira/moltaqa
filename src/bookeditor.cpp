@@ -248,6 +248,8 @@ bool BookEditor::zipDir(QString path, QuaZipFile *outFile)
         qWarning("Ziping an empty directory");
     }
 
+    QDir bookTempDir(m_bookTmpDir);
+
     foreach(QFileInfo file, files) {
         if(file.isDir()) {
             if(zipDir(file.filePath(), outFile))
@@ -261,8 +263,7 @@ bool BookEditor::zipDir(QString path, QuaZipFile *outFile)
             continue;
         }
 
-        QString inFilePath = file.filePath();
-        inFilePath.remove(m_bookTmpDir + "/");
+        QString inFilePath = bookTempDir.relativeFilePath(file.filePath());
 
         inFile.setFileName(file.filePath());
 

@@ -103,15 +103,15 @@ void BookEditorView::setupToolBar()
 {
     QToolBar *bar = new QToolBar(this);
 
-    QIcon nextIcon  = QIcon::fromTheme("go-previous", QIcon(":/menu/images/go-previous.png"));
-    QIcon prevIcon  = QIcon::fromTheme("go-next", QIcon(":/menu/images/go-next.png"));
-    QIcon firstIcon = QIcon::fromTheme("go-last", QIcon(":/menu/images/go-last.png"));
-    QIcon lastIcon  = QIcon::fromTheme("go-first", QIcon(":/menu/images/go-first.png"));
-    QIcon gotoIcon  = QIcon::fromTheme("go-jump", QIcon(":/menu/images/go-jump.png"));
+    QIcon nextIcon  = QIcon::fromTheme("go-previous", QIcon(":/images/go-previous.png"));
+    QIcon prevIcon  = QIcon::fromTheme("go-next", QIcon(":/images/go-next.png"));
+    QIcon firstIcon = QIcon::fromTheme("go-last", QIcon(":/images/go-last.png"));
+    QIcon lastIcon  = QIcon::fromTheme("go-first", QIcon(":/images/go-first.png"));
+    QIcon gotoIcon  = QIcon::fromTheme("go-jump", QIcon(":/images/go-jump.png"));
 
-    m_actionSave = bar->addAction(QIcon::fromTheme("document-save", QIcon(":/menu/images/document-save.png")),
+    m_actionSave = bar->addAction(QIcon::fromTheme("document-save", QIcon(":/images/document-save.png")),
                                   tr("حفظ التغييرات"), this, SLOT(save()));
-    m_actionCancel = bar->addAction(QIcon::fromTheme("document-revert", QIcon(":/menu/images/document-revert.png")),
+    m_actionCancel = bar->addAction(QIcon::fromTheme("document-revert", QIcon(":/images/document-revert.png")),
                                     tr("الغاء التغييرات"), this, SLOT(cancel()));
     bar->addSeparator();
     m_actionFirstPage = bar->addAction(firstIcon, tr("الصفحة الاولى"), this, SLOT(firstPage()));
@@ -120,8 +120,8 @@ void BookEditorView::setupToolBar()
     m_actionLastPage = bar->addAction(lastIcon, tr("الصفحة الاخيرة"), this, SLOT(lastPage()));
     m_actionGotToPage = bar->addAction(gotoIcon, tr("انتقل الى..."), this, SLOT(gotoPage()));
     bar->addSeparator();
-    m_actionAddPage = bar->addAction(QIcon(":/menu/images/add.png"), tr("اضافة صفحة"), this, SLOT(addPage()));
-    m_actionRemovePage = bar->addAction(QIcon(":/menu/images/remove.png"), tr("حذف الصفحة"), this, SLOT(removePage()));
+    m_actionAddPage = bar->addAction(QIcon(":/images/add.png"), tr("اضافة صفحة"), this, SLOT(addPage()));
+    m_actionRemovePage = bar->addAction(QIcon(":/images/remove.png"), tr("حذف الصفحة"), this, SLOT(removePage()));
 
     m_toolBars << bar;
 }

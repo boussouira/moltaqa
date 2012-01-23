@@ -35,7 +35,7 @@
        </property>
        <property name="icon">
         <iconset resource="../share/moltaqa-lib/qt_rc.qrc">
-         <normaloff>:/menu/images/add.png</normaloff>:/menu/images/add.png</iconset>
+         <normaloff>:/images/add.png</normaloff>:/images/add.png</iconset>
        </property>
        <property name="autoRaise">
         <bool>true</bool>
@@ -55,7 +55,7 @@
        </property>
        <property name="icon">
         <iconset resource="../share/moltaqa-lib/qt_rc.qrc">
-         <normaloff>:/menu/images/remove.png</normaloff>:/menu/images/remove.png</iconset>
+         <normaloff>:/images/remove.png</normaloff>:/images/remove.png</iconset>
        </property>
        <property name="shortcut">
         <string>Del</string>
@@ -82,7 +82,7 @@
        </property>
        <property name="icon">
         <iconset resource="../share/moltaqa-lib/qt_rc.qrc">
-         <normaloff>:/menu/images/go-up2.png</normaloff>:/menu/images/go-up2.png</iconset>
+         <normaloff>:/images/go-up2.png</normaloff>:/images/go-up2.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -111,7 +111,7 @@
        </property>
        <property name="icon">
         <iconset resource="../share/moltaqa-lib/qt_rc.qrc">
-         <normaloff>:/menu/images/go-down2.png</normaloff>:/menu/images/go-down2.png</iconset>
+         <normaloff>:/images/go-down2.png</normaloff>:/images/go-down2.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -140,7 +140,7 @@
        </property>
        <property name="icon">
         <iconset resource="../share/moltaqa-lib/qt_rc.qrc">
-         <normaloff>:/menu/images/go-next2.png</normaloff>:/menu/images/go-next2.png</iconset>
+         <normaloff>:/images/go-next2.png</normaloff>:/images/go-next2.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -166,7 +166,7 @@
        </property>
        <property name="icon">
         <iconset resource="../share/moltaqa-lib/qt_rc.qrc">
-         <normaloff>:/menu/images/go-previous2.png</normaloff>:/menu/images/go-previous2.png</iconset>
+         <normaloff>:/images/go-previous2.png</normaloff>:/images/go-previous2.png</iconset>
        </property>
        <property name="iconSize">
         <size>

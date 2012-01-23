@@ -46,10 +46,8 @@ void RichTafessirReader::setCurrentPage(QDomElement pageNode)
     m_currentPage->sora = m_currentElement.attribute("sora").toInt();
     m_currentPage->aya = m_currentElement.attribute("aya").toInt();
 
-    if(m_currentElement.hasAttribute("tid")) {
+    if(m_currentElement.hasAttribute("tid"))
         m_currentPage->titleID = m_currentElement.attribute("tid").toInt();
-        qDebug("TID: %d", m_currentPage->titleID);
-    }
     else
         getPageTitleID();
 

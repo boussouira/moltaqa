@@ -1,8 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>images/main.ico</file>
-    </qresource>
-    <qresource prefix="/menu">
         <file>images/bookmark-new.png</file>
         <file>images/find.png</file>
         <file>images/edit_fahrass.png</file>

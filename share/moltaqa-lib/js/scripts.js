@@ -150,10 +150,10 @@ function toggleQuran()
     $('.toggale_quran > img').click(function() {
         if($('.quran_text').css('display')!="none") {
             // Hide the quran text
-            $(this).attr('src', 'qrc:/menu/images/add.png');
+            $(this).attr('src', 'qrc:/images/add.png');
             $('.quran_text').slideUp('slow');
         } else {
-            $(this).attr('src', 'qrc:/menu/images/remove.png');
+            $(this).attr('src', 'qrc:/images/remove.png');
             $('.quran_text').slideDown('slow');
         }
     });

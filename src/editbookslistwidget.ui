@@ -214,7 +214,7 @@
        </property>
        <property name="icon">
         <iconset resource="../share/moltaqa-lib/qt_rc.qrc">
-         <normaloff>:/menu/images/go-up2.png</normaloff>:/menu/images/go-up2.png</iconset>
+         <normaloff>:/images/go-up2.png</normaloff>:/images/go-up2.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -240,7 +240,7 @@
        </property>
        <property name="icon">
         <iconset resource="../share/moltaqa-lib/qt_rc.qrc">
-         <normaloff>:/menu/images/go-down2.png</normaloff>:/menu/images/go-down2.png</iconset>
+         <normaloff>:/images/go-down2.png</normaloff>:/images/go-down2.png</iconset>
        </property>
        <property name="iconSize">
         <size>

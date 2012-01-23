@@ -81,7 +81,7 @@ void ResultWidget::setupBookReaderView()
     toolBarLayout->addWidget(buttonMaxBookView);
 
     QToolButton * buttonHideBookView = new QToolButton(this);
-    buttonHideBookView->setIcon(QIcon(":/menu/images/delete.png"));
+    buttonHideBookView->setIcon(QIcon(":/images/delete.png"));
     buttonHideBookView->setAutoRaise(true);
 
     toolBarLayout->addWidget(buttonHideBookView);

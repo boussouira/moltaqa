@@ -111,7 +111,7 @@ int BookWidgetManager::addBook(BookWidget *book)
 {
     int tabIndex = m_activeTab->addBookWidget(book);
     m_activeTab->setCurrentIndex(tabIndex);
-    m_activeTab->setTabIcon(tabIndex, QIcon(":/menu/images/book.png"));
+    m_activeTab->setTabIcon(tabIndex, QIcon(":/images/book.png"));
 
     connect(book, SIGNAL(textChanged()), SIGNAL(pageChanged()));
 
