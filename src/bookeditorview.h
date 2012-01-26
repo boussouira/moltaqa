@@ -54,6 +54,8 @@ protected slots:
     void readerTextChange();
 
 protected:
+    friend class BookIndexEditor;
+
     Ui::BookEditorView *ui;
     QTabWidget *m_tabWidget;
     BookIndexEditor *m_indexEditor;

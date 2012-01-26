@@ -23,6 +23,7 @@ public:
     void removePage();
 
     int maxPageID();
+    QString titlesFile();
 
 protected:
     bool zipDir(QString path, QuaZipFile *outFile);

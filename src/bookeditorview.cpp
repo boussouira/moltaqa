@@ -96,7 +96,7 @@ void BookEditorView::editBook(LibraryBook *book, int pageID)
     m_bookReader->setLibraryManager(MW->libraryManager());
     m_bookReader->openBook();
 
-    m_indexEditor->setModel(m_bookReader->indexModel());
+    m_indexEditor->setup();
 
     connect(m_bookReader, SIGNAL(textChanged()), SLOT(readerTextChange()));
 
@@ -272,6 +272,8 @@ void BookEditorView::save()
 
         if(m_bookEditor->saveBookPages(m_pages.values()))
             clearChanges();
+
+        m_indexEditor->save(m_bookEditor->titlesFile());
 
         dialog.setValue(dialog.value()+1);
 

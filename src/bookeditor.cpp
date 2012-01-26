@@ -327,3 +327,10 @@ int BookEditor::maxPageID()
 
     return pageID;
 }
+
+QString BookEditor::titlesFile()
+{
+    QDir dir(m_bookTmpDir);
+
+    return dir.absoluteFilePath("titles.xml");
+}
