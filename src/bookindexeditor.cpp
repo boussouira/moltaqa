@@ -23,6 +23,7 @@ BookIndexEditor::BookIndexEditor(BookEditorView *parent) :
     connect(ui->toolMoveDown, SIGNAL(clicked()), SLOT(moveDown()));
     connect(ui->toolMoveRight, SIGNAL(clicked()), SLOT(moveRight()));
     connect(ui->toolMoveLeft, SIGNAL(clicked()), SLOT(moveLeft()));
+    connect(ui->toolLinkTitle, SIGNAL(clicked()), SLOT(linkTitle()));
 }
 
 BookIndexEditor::~BookIndexEditor()
@@ -267,26 +268,26 @@ void BookIndexEditor::moveLeft()
     selectIndex(changedIndex);
 }
 
-void BookIndexEditor::updateActions()
+void BookIndexEditor::linkTitle()
 {
-    if(!m_model)
+    QModelIndex index = selectedIndex();
+    if(!index.isValid())
         return;
 
-    QModelIndex index = selectedIndex();
-    if(index.isValid()) {
-        QModelIndex prevIndex = index.sibling(index.row()+1, index.column());
-        QModelIndex nextIndex = index.sibling(index.row()-1, index.column());
+    m_editView->m_currentPage->titleID = m_editView->m_currentPage->pageID;
+    ui->treeView->model()->setData(index, m_editView->m_currentPage->pageID, ItemRole::idRole);
+}
 
-        ui->toolMoveUp->setEnabled(nextIndex.isValid());
-        ui->toolMoveDown->setEnabled(prevIndex.isValid());
-        ui->toolRemoveTitle->setEnabled(index.isValid());
-        ui->toolMoveRight->setEnabled(index.parent().isValid());
-        ui->toolMoveLeft->setEnabled(index.sibling(index.row()-1, 0).isValid());
-    } else {
-        ui->toolMoveDown->setEnabled(false);
-        ui->toolMoveUp->setEnabled(false);
-        ui->toolMoveLeft->setEnabled(false);
-        ui->toolMoveRight->setEnabled(false);
-        ui->toolRemoveTitle->setEnabled(false);
-    }
+void BookIndexEditor::updateActions()
+{
+    QModelIndex index = selectedIndex();
+    QModelIndex prevIndex = index.sibling(index.row()+1, index.column());
+    QModelIndex nextIndex = index.sibling(index.row()-1, index.column());
+
+    ui->toolMoveUp->setEnabled(nextIndex.isValid());
+    ui->toolMoveDown->setEnabled(prevIndex.isValid());
+    ui->toolRemoveTitle->setEnabled(index.isValid());
+    ui->toolLinkTitle->setEnabled(index.isValid());
+    ui->toolMoveRight->setEnabled(index.parent().isValid());
+    ui->toolMoveLeft->setEnabled(index.sibling(index.row()-1, 0).isValid());
 }

@@ -30,5 +30,6 @@
         <file>images/document-save.png</file>
         <file>images/document-revert.png</file>
         <file>images/go-jump.png</file>
+        <file>images/insert-link.png</file>
     </qresource>
 </RCC>

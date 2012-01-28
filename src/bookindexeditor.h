@@ -32,6 +32,7 @@ public slots:
      void moveDown();
      void moveRight();
      void moveLeft();
+     void linkTitle();
      void updateActions();
 
 protected:
