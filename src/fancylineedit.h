@@ -75,9 +75,6 @@ public:
     // Set whether tabbing in will trigger the menu.
     bool hasMenuTabFocusTrigger() const;
     void setMenuTabFocusTrigger(bool v);
-
-    void setPlaceholderText(const QString &text);
-    QString placeholderText();
     
     void setExtraPadding(bool extra);
     bool extraPadding();
@@ -90,8 +87,6 @@ public slots:
 
 protected:
     virtual void resizeEvent(QResizeEvent *e);
-    void focusInEvent(QFocusEvent *e);
-    void focusOutEvent(QFocusEvent *e);
     void changeEvent(QEvent *e);
 
 private:
@@ -102,7 +97,6 @@ private:
     void updateStyleSheet(Side side);
 
     FancyLineEditPrivate *m_d;
-    QString m_placeText;
     bool m_extraPadding;
 };
 

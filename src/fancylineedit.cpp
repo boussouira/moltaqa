@@ -207,30 +207,6 @@ void FancyLineEdit::resizeEvent(QResizeEvent *)
     positionMenuLabel();
 }
 
-void FancyLineEdit::focusInEvent(QFocusEvent *e)
-{
-    if(e->reason() == Qt::MouseFocusReason) {
-        if(text() == m_placeText && styleSheet() == "color:gray;") {
-            setStyleSheet("color:black;");
-            setText("");
-        }
-    }
-
-    QLineEdit::focusInEvent(e);
-}
-
-void FancyLineEdit::focusOutEvent(QFocusEvent *e)
-{
-    if(e->reason() == Qt::MouseFocusReason) {
-        if(text().isEmpty()) {
-            setStyleSheet("color:gray;");
-            setText(m_placeText);
-        }
-    }
-
-    QLineEdit::focusOutEvent(e);
-}
-
 void FancyLineEdit::changeEvent(QEvent *e)
 {
     if(e->type() == QEvent::LayoutDirectionChange)
@@ -258,15 +234,6 @@ void FancyLineEdit::setMenu(QMenu *menu)
 QMenu *FancyLineEdit::menu() const
 {
     return  m_d->m_menu;
-}
-void FancyLineEdit::setPlaceholderText(const QString &text)
-{
-    m_placeText = text;
-}
-
-QString FancyLineEdit::placeholderText()
-{
-    return m_placeText;
 }
 
 bool FancyLineEdit::useLayoutDirection() const
