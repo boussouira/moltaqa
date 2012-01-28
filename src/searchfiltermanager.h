@@ -84,7 +84,6 @@ protected:
     QAction *m_actFilterByBooks;
     QAction *m_actFilterByAuthors;
     QAction *m_actFilterByBetaka;
-    QString m_filterText;
     Qt::ItemDataRole m_role;
     int m_filterColumn;
     bool m_proccessItemChange;

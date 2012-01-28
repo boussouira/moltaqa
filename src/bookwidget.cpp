@@ -7,6 +7,7 @@
 #include "mainwindow.h"
 #include "bookreaderhelper.h"
 #include "modelenums.h"
+#include "modelutils.h"
 
 #include <qsplitter.h>
 #include <qboxlayout.h>
@@ -258,7 +259,7 @@ void BookWidget::showIndex()
 
 void BookWidget::showIndex(int tid)
 {
-    QModelIndex index = m_indexWidget->findTitle(tid);
+    QModelIndex index = Utils::findModelIndex(m_indexWidget->indexModel(), tid);
     if(!index.isValid())
         return;
 
@@ -289,7 +290,7 @@ void BookWidget::showIndex(int tid)
 QString BookWidget::getBreadcrumbs()
 {
     QList<QPair<int, QString> > list;
-    QModelIndex index = m_indexWidget->findTitle(m_db->page()->titleID, true);
+    QModelIndex index = Utils::findModelIndex(m_indexWidget->indexModel(), m_db->page()->titleID);
 
     while (index.isValid()) {
         list.append(qMakePair(index.data(ItemRole::idRole).toInt(), index.data().toString()));

@@ -11,6 +11,7 @@ namespace Ui {
 
 class BookPage;
 class QTreeView;
+class ModelViewFilter;
 
 class IndexWidget : public QWidget
 {
@@ -22,15 +23,10 @@ public:
     void setBookInfo(LibraryBook *book);
     void setCurrentPage(BookPage *page);
     void hideAyaSpin(bool visible);
-    QModelIndex selectTitle(int tid);
+    void selectTitle(int tid);
 
     QTreeView *treeView();
     QStandardItemModel *indexModel();
-
-    QModelIndex findTitle(int tid, bool checkSelected=false);
-
-protected:
-    QModelIndex fitchChild(QModelIndex parent, int tid);
 
 public slots:
     void setIndex(QStandardItemModel *indexModel);
@@ -51,6 +47,7 @@ signals:
     void bookInfoChanged();
 
 private:
+    ModelViewFilter *m_filter;
     QStandardItemModel *m_model;
     LibraryBook *m_bookInfo;
     BookPage *m_page;

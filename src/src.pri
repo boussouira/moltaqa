@@ -102,7 +102,9 @@ SOURCES += mainwindow.cpp \
     editwebview.cpp \
     bookeditor.cpp \
     htmlhelper.cpp \
-    bookindexeditor.cpp
+    bookindexeditor.cpp \
+    modelviewfilter.cpp \
+    modelutils.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -192,7 +194,9 @@ HEADERS += mainwindow.h \
     editwebview.h \
     bookeditor.h \
     htmlhelper.h \
-    bookindexeditor.h
+    bookindexeditor.h \
+    modelviewfilter.h \
+    modelutils.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

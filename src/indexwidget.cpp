@@ -2,8 +2,10 @@
 #include "ui_indexwidget.h"
 #include "modelenums.h"
 #include "bookpage.h"
+#include "modelutils.h"
 
 #include <qstandarditemmodel.h>
+#include "modelviewfilter.h"
 
 IndexWidget::IndexWidget(QWidget *parent) :
     QWidget(parent),
@@ -11,6 +13,8 @@ IndexWidget::IndexWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     sendSignals = true;
+
+    m_filter = new ModelViewFilter(this);
 
     QAction *actionOpenSoraInNewTab = new QAction(tr("فتح في تبويب جديد"), this);
 
@@ -30,46 +34,16 @@ IndexWidget::~IndexWidget()
     delete ui;
 }
 
-QModelIndex IndexWidget::findTitle(int tid, bool checkSelected)
-{
-    if(checkSelected) {
-        QModelIndexList selected = ui->treeView->selectionModel()->selectedIndexes();
-
-        // Check if the title is already selected
-        if(!selected.isEmpty()) {
-            if(selected.at(0).data(ItemRole::idRole).toInt() == tid) {
-                return selected.at(0);
-            }
-        }
-    }
-
-    QModelIndex nodeIndex = m_model->index(0, 0, QModelIndex());
-    while(nodeIndex.isValid()) {
-        int pid = nodeIndex.data(ItemRole::idRole).toInt();
-
-        if(pid == tid) {
-            return nodeIndex;
-        } else {
-            QModelIndex nextIndex = m_model->index(nodeIndex.row()+1, 0, nodeIndex.parent());
-            if(!nextIndex.isValid() ||
-                    nextIndex.data(ItemRole::idRole).toInt() > tid) {
-                QModelIndex index = fitchChild(nodeIndex, tid);
-                if(index.isValid())
-                    return index;
-            }
-        }
-
-        nodeIndex = nodeIndex.sibling(nodeIndex.row()+1, 0);
-    }
-
-    return QModelIndex();
-}
-
 void IndexWidget::setIndex(QStandardItemModel *indexModel)
 {
     m_model = indexModel;
-    ui->treeView->setModel(indexModel);
     ui->treeView->setHeaderHidden(true);
+
+    m_filter->setSourceModel(indexModel);
+    m_filter->setTreeView(ui->treeView);
+    m_filter->setLineEdit(ui->lineEdit);
+
+    m_filter->setup();
 }
 
 void IndexWidget::displayBookInfo()
@@ -146,18 +120,29 @@ void IndexWidget::setCurrentPage(BookPage *page)
     m_page = page;
 }
 
-QModelIndex IndexWidget::selectTitle(int tid)
+void IndexWidget::selectTitle(int tid)
 {
-    if(m_model) {
-        QModelIndex index = findTitle(tid, true);
-        if(index.isValid()) {
-            ui->treeView->scrollTo(index);
-            ui->treeView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::SelectCurrent);
-            return index;
-        }
+    Q_CHECK_PTR(m_model);
+
+    QModelIndex index;
+    QModelIndexList selected = ui->treeView->selectionModel()->selectedIndexes();
+
+    // Check if the title is already selected
+    if(!selected.isEmpty()) {
+        if(selected.at(0).data(ItemRole::idRole).toInt() == tid)
+            index = selected.at(0);
     }
 
-    return QModelIndex();
+    if(!index.isValid())
+        index = Utils::findModelIndex(ui->treeView->model(), tid);
+
+    if(index.isValid()) {
+        ui->treeView->clearSelection();
+        ui->treeView->scrollTo(index);
+        ui->treeView->selectionModel()->setCurrentIndex(index,
+                                                        QItemSelectionModel::Clear |
+                                                        QItemSelectionModel::SelectCurrent);
+    }
 }
 
 QTreeView *IndexWidget::treeView()
@@ -168,24 +153,4 @@ QTreeView *IndexWidget::treeView()
 QStandardItemModel *IndexWidget::indexModel()
 {
     return m_model;
-}
-
-QModelIndex IndexWidget::fitchChild(QModelIndex parent, int tid)
-{
-    QModelIndex nodeIndex = parent.child(0, 0);
-    while(nodeIndex.isValid()) {
-        int pid = nodeIndex.data(ItemRole::idRole).toInt();
-
-        if(pid == tid) {
-            return nodeIndex;
-        } else {
-            QModelIndex index = fitchChild(nodeIndex, tid);
-            if(index.isValid())
-                return index;
-        }
-
-        nodeIndex = nodeIndex.sibling(nodeIndex.row()+1, 0);
-    }
-
-    return QModelIndex();
 }
