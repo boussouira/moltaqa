@@ -24,6 +24,7 @@ BookIndexEditor::BookIndexEditor(BookEditorView *parent) :
     connect(ui->toolMoveRight, SIGNAL(clicked()), SLOT(moveRight()));
     connect(ui->toolMoveLeft, SIGNAL(clicked()), SLOT(moveLeft()));
     connect(ui->toolLinkTitle, SIGNAL(clicked()), SLOT(linkTitle()));
+    connect(ui->treeView, SIGNAL(doubleClicked(QModelIndex)), SLOT(openPage(QModelIndex)));
 }
 
 BookIndexEditor::~BookIndexEditor()
@@ -290,4 +291,9 @@ void BookIndexEditor::updateActions()
     ui->toolLinkTitle->setEnabled(index.isValid());
     ui->toolMoveRight->setEnabled(index.parent().isValid());
     ui->toolMoveLeft->setEnabled(index.sibling(index.row()-1, 0).isValid());
+}
+
+void BookIndexEditor::openPage(QModelIndex index)
+{
+    m_editView->m_bookReader->goToPage(index.data(ItemRole::idRole).toInt());
 }

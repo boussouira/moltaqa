@@ -34,6 +34,7 @@ public slots:
      void moveLeft();
      void linkTitle();
      void updateActions();
+     void openPage(QModelIndex index);
 
 protected:
      void setModel(QStandardItemModel *model);
