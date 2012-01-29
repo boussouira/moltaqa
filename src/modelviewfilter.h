@@ -24,6 +24,8 @@ public:
 
 protected slots:
     void setFilterText(QString text);
+    void filterTextChanged();
+    void lineReturnPressed();
     void clearFilter();
 
 protected:
