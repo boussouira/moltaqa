@@ -30,7 +30,6 @@ public:
 protected:
     QString m_tempFolder;
     QString m_bookPath;
-    QFile m_file;
     QuaZip m_zip;
     QDomDocument m_pagesDoc;
     QDomElement m_pagesElemnent;

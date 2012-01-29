@@ -108,8 +108,7 @@ void RichTafessirReader::openQuranBook()
         throw BookException(tr("لم يتم العثور على ملف الكتاب"), bookInfo()->bookPath);
     }
 
-    m_quranZipFile.setFileName(m_quranInfo->bookPath);
-    m_quranZip.setIoDevice(&m_quranZipFile);
+    m_quranZip.setZipName(m_quranInfo->bookPath);
 
     if(!m_quranZip.open(QuaZip::mdUnzip)) {
         throw BookException(tr("لا يمكن فتح ملف الكتاب"), m_quranInfo->bookPath, m_quranZip.getZipError());

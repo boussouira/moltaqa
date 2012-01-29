@@ -142,7 +142,6 @@ protected:
     QStandardItemModel *m_indexModel;
     QString m_bookDBPath;
     QString m_connectionName;
-    QFile m_zipFile;
     QuaZip m_zip;
     QDomDocument m_bookDoc;
     QDomElement m_rootElement;

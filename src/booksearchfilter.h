@@ -36,7 +36,6 @@ protected:
 
 protected:
     LibraryBook *m_book;
-    QFile m_zipFile;
     QuaZip m_zip;
 };
 

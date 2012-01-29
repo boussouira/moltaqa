@@ -184,8 +184,7 @@ void BookSearchFilter::open()
         return;
     }
 
-    m_zipFile.setFileName(m_book->bookPath);
-    m_zip.setIoDevice(&m_zipFile);
+    m_zip.setZipName(m_book->bookPath);
 
     if(!m_zip.open(QuaZip::mdUnzip)) {
         qDebug() << tr("لا يمكن فتح ملف الكتاب") << m_book->bookPath << "\nError:" << m_zip.getZipError();
@@ -196,7 +195,6 @@ void BookSearchFilter::open()
 void BookSearchFilter::close()
 {
     m_zip.close();
-    m_zipFile.close();
 }
 
 void BookSearchFilter::loadQuranModel(QStandardItemModel *model)

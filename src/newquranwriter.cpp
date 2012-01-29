@@ -30,8 +30,7 @@ void newQuranWriter::createNewBook(QString bookPath)
             qWarning("Can't delete it!");
     }
 
-    m_file.setFileName(m_bookPath);
-    m_zip.setIoDevice(&m_file);
+    m_zip.setZipName(m_bookPath);
     if(!m_zip.open(QuaZip::mdCreate)) {
         throw BookException(QObject::tr("لا يمكن انشاء كتاب جديد"), m_bookPath, m_zip.getZipError());
     }

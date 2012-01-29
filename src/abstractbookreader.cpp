@@ -30,9 +30,6 @@ AbstractBookReader::~AbstractBookReader()
 
     if(m_zip.isOpen())
         m_zip.close();
-
-    if(m_zipFile.isOpen())
-        m_zipFile.close();
 }
 
 void AbstractBookReader::openBook()
@@ -43,8 +40,7 @@ void AbstractBookReader::openBook()
         throw BookException(tr("لم يتم العثور على ملف الكتاب"), bookInfo()->bookPath);
     }
 
-    m_zipFile.setFileName(m_bookInfo->bookPath);
-    m_zip.setIoDevice(&m_zipFile);
+    m_zip.setZipName(m_bookInfo->bookPath);
 
     if(!m_zip.open(QuaZip::mdUnzip)) {
         throw BookException(tr("لا يمكن فتح ملف الكتاب"), m_bookInfo->bookPath, m_zip.getZipError());

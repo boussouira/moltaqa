@@ -22,7 +22,6 @@ protected:
 
 protected:
     TafessirTextFormat *m_formatter;
-    QFile m_quranZipFile;
     QuaZip m_quranZip;
     LibraryBook *m_quranInfo;
     QuaZipFile m_quranPages;
