@@ -25,7 +25,7 @@ public:
      void saveModel(QXmlStreamWriter *writer);
      bool save(QString path);
 
-public slots:
+protected slots:
      void addTitle();
      void removeTitle();
      void moveUp();

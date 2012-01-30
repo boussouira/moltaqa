@@ -16,8 +16,9 @@
 AbstractBookReader::AbstractBookReader(QObject *parent) : QObject(parent)
 {
     m_indexModel = 0;
-    m_currentPage = new BookPage();
     m_bookInfo = 0;
+    m_currentPage = new BookPage();
+    m_libraryManager = MW->libraryManager();
 }
 
 AbstractBookReader::~AbstractBookReader()
@@ -137,19 +138,9 @@ QDomElement AbstractBookReader::getQuranPageId(int sora, int aya)
     return QDomElement();
 }
 
-void AbstractBookReader::setLibraryManager(LibraryManager *db)
+LibraryBook *AbstractBookReader::bookInfo()
 {
-    m_libraryManager = db;
-}
-
-void AbstractBookReader::setBookIndexModel(QStandardItemModel *model)
-{
-    m_indexModel = model;
-}
-
-LibraryManager* AbstractBookReader::libraryManager()
-{
-    return m_libraryManager;
+    return m_bookInfo;
 }
 
 BookPage * AbstractBookReader::page()

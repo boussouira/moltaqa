@@ -29,11 +29,8 @@ public:
 
     void openBook();
     void setBookInfo(LibraryBook *bi);
-    void setLibraryManager(LibraryManager *db);
-    void setBookIndexModel(QStandardItemModel *model);
 
-    LibraryBook *bookInfo() { return m_bookInfo; }
-    LibraryManager *libraryManager();
+    LibraryBook *bookInfo();
     BookPage *page();
 
     /**

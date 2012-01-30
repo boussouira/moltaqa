@@ -229,7 +229,6 @@ BookWidget *BooksViewer::openBook(int bookID, int pageID, lucene::search::Query 
         throw BookException(tr("لم يتم التعرف على نوع الكتاب"), QString("Book Type: %1").arg(bookInfo->bookPath));
 
     bookReader->setBookInfo(bookInfo);
-    bookReader->setLibraryManager(m_libraryManager);
 
     try {
         bookReader->openBook();
@@ -267,7 +266,6 @@ void BooksViewer::openTafessir()
 
     RichTafessirReader *bookdb = new RichTafessirReader();
     bookdb->setBookInfo(bookInfo);
-    bookdb->setLibraryManager(m_libraryManager);
 
     try {
         bookdb->openBook();

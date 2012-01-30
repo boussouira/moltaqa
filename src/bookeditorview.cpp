@@ -93,7 +93,6 @@ void BookEditorView::editBook(LibraryBook *book, int pageID)
     ui->widgetQuran->setVisible(!book->isNormal());
 
     m_bookReader->setBookInfo(book);
-    m_bookReader->setLibraryManager(MW->libraryManager());
     m_bookReader->openBook();
 
     m_indexEditor->setup();
