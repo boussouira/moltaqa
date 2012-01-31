@@ -5,6 +5,7 @@
 #include "bookexception.h"
 #include "mainwindow.h"
 #include "bookreaderhelper.h"
+#include "xmlutils.h"
 
 #include <qstringlist.h>
 #include <qdebug.h>
@@ -114,10 +115,6 @@ void RichTafessirReader::openQuranBook()
         throw BookException(tr("لا يمكن فتح ملف الكتاب"), m_quranInfo->bookPath, m_quranZip.getZipError());
     }
 
-    QString errorStr;
-    int errorLine=0;
-    int errorColumn=0;
-
     m_quranPages.setZip(&m_quranZip);
 
     if(m_quranZip.setCurrentFile("pages.xml")) {
@@ -127,15 +124,7 @@ void RichTafessirReader::openQuranBook()
         }
     }
 
-    if(!m_qurankDoc.setContent(&m_quranPages, 0, &errorStr, &errorLine, &errorColumn)) {
-        qDebug("openQuranBook: Parse error at line %d, column %d: %s\nFile: %s",
-               errorLine, errorColumn,
-               qPrintable(errorStr),
-               qPrintable(m_quranInfo->bookPath));
-
-        return;
-    }
-
+    m_qurankDoc = Utils::getDomDocument(&m_quranPages);
     m_quranRootElement = m_qurankDoc.documentElement();
 }
 

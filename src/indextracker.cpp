@@ -1,6 +1,7 @@
 #include "indextracker.h"
 #include "mainwindow.h"
 #include "bookexception.h"
+#include "xmlutils.h"
 
 #include <qfile.h>
 #include <qtextstream.h>
@@ -41,21 +42,10 @@ void IndexTracker::open()
 {
     m_trackerFile = m_libraryInfo->trackerFile();
 
-    QString errorStr;
-    int errorLine;
-    int errorColumn;
-
     if(!QFile::exists(m_trackerFile))
         throw BookException(tr("لم يتم العثور على الملف:"), m_trackerFile);
 
-    QFile file(m_trackerFile);
-    if (!file.open(QIODevice::ReadOnly))
-        throw BookException(tr("حدث خطأ أثناء فتح الملف:"), m_trackerFile);
-
-    if (!m_doc.setContent(&file, 0, &errorStr, &errorLine, &errorColumn))
-        throw BookException(tr("Parse error at line %1, column %2: %3")
-                            .arg(errorLine).arg(errorColumn).arg(errorStr), m_trackerFile);
-
+    m_doc = Utils::getDomDocument(m_trackerFile);
     m_rootElement = m_doc.documentElement();
 }
 

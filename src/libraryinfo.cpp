@@ -1,5 +1,6 @@
 #include "libraryinfo.h"
 #include "bookexception.h"
+#include "xmlutils.h"
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qdir.h>
@@ -42,29 +43,17 @@ void LibraryInfo::setName(QString name)
 
 void LibraryInfo::loafInfo(QString path)
 {
-    QDomDocument doc;
     QDir dir(path);
     QString infoFile = dir.filePath("info.xml");
-
-    QString errorStr;
-    int errorLine;
-    int errorColumn;
 
     if(!QFile::exists(infoFile))
         throw BookException(tr("لم يتم العثور على الملف:"), infoFile);
 
-    QFile file(infoFile);
-    if (!file.open(QIODevice::ReadOnly)) {
-        throw BookException(tr("حدث خطأ أثناء فتح الملف:"), infoFile);
-    }
-
-    if (!doc.setContent(&file, 0, &errorStr, &errorLine, &errorColumn)) {
-        throw BookException(tr("Parse error at line %1, column %2: %3").arg(errorLine).arg(errorColumn).arg(errorStr),
-                            infoFile);
-    }
+    QDomDocument doc = Utils::getDomDocument(infoFile);
 
     m_name = "Library";
     m_path = dir.absolutePath();
+    m_dataDir = "data";
     m_booksDir = "books";
     m_tempsDir = "temp";
     m_indexDir = "index";
@@ -77,7 +66,9 @@ void LibraryInfo::loafInfo(QString path)
         if(e.tagName() == "name")
             m_name = e.text();
         else if(e.tagName() == "path")
-            m_path = e.text();
+            m_path = QDir::cleanPath(dir.absoluteFilePath(e.text()));
+        else if(e.tagName() == "data-dir")
+            m_dataDir = e.text();
         else if(e.tagName() == "books-dir")
             m_booksDir = e.text();
         else if(e.tagName() == "temps-dir")
@@ -91,6 +82,14 @@ void LibraryInfo::loafInfo(QString path)
 
         e = e.nextSiblingElement();
     }
+
+    QDir dataDir(m_path);
+    if(!dataDir.exists(m_dataDir))
+        dataDir.mkdir(m_dataDir);
+
+    dataDir.cd(m_dataDir);
+    m_dataDir = dataDir.absolutePath();
+    m_booksListFile = dataDir.absoluteFilePath("bookslist.xml");
 
     QDir booksDir(m_path);
     if(!booksDir.exists(m_booksDir))
@@ -146,6 +145,11 @@ QString LibraryInfo::bookPath(QString bookName)
     dir.cd(m_booksDir);
 
     return dir.filePath(bookName);
+}
+
+QString LibraryInfo::booksListFile()
+{
+    return m_booksListFile;
 }
 
 QString LibraryInfo::tempDir()

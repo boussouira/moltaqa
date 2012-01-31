@@ -8,6 +8,7 @@
 #include "libraryenums.h"
 #include "mainwindow.h"
 #include "bookreaderhelper.h"
+#include "xmlutils.h"
 
 #include <qsqlquery.h>
 #include <qitemselectionmodel.h>
@@ -223,21 +224,7 @@ void BookSearchFilter::loadSimpleBookModel(QStandardItemModel *model)
         }
     }
 
-    QDomDocument doc;
-    QString errorStr;
-    int errorLine=0;
-    int errorColumn=0;
-
-    if(!doc.setContent(&titleFile, 0, &errorStr, &errorLine, &errorColumn)) {
-        qDebug("loadSimpleBookModel: Parse error at line %d, column %d: %s\nFile: %s",
-               errorLine, errorColumn,
-               qPrintable(errorStr),
-               qPrintable(m_book->bookPath));
-
-        titleFile.close();
-        return ;
-    }
-
+    QDomDocument doc = Utils::getDomDocument(&titleFile);
     QDomElement root = doc.documentElement();
     QDomElement element = root.firstChildElement();
 

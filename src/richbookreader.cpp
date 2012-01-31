@@ -6,6 +6,8 @@
 #include "mainwindow.h"
 #include "libraryinfo.h"
 #include "modelenums.h"
+#include "xmlutils.h"
+
 #include <qstandarditemmodel.h>
 
 RichBookReader::RichBookReader(QObject *parent) : AbstractBookReader(parent)
@@ -70,20 +72,9 @@ QStandardItemModel *RichBookReader::indexModel()
         }
     }
 
-    QDomDocument doc;
-    QString errorStr;
-    int errorLine=0;
-    int errorColumn=0;
-
-    if(!doc.setContent(&titleFile, 0, &errorStr, &errorLine, &errorColumn)) {
-        qDebug("indexModel: Parse error at line %d, column %d: %s\nFile: %s",
-               errorLine, errorColumn,
-               qPrintable(errorStr),
-               qPrintable(m_bookInfo->bookPath));
-
-        titleFile.close();
+    QDomDocument doc = Utils::getDomDocument(&titleFile);
+    if(doc.isNull())
         return 0;
-    }
 
     QDomElement root = doc.documentElement();
     QDomElement element = root.firstChildElement();

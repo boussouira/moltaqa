@@ -58,17 +58,24 @@ public:
       */
     QString bookPath(QString bookName);
 
+    /**
+     Get books list file
+     */
+    QString booksListFile();
+
 protected:
     void loafInfo(QString path);
 
 protected:
     QString m_name;         ///< Library name
     QString m_path;         ///< Library path
+    QString m_dataDir;
     QString m_booksDir;     ///< Absolute Books path
     QString m_tempsDir;     ///< Absolute temp path
     QString m_indexDir;
     QString m_indexDataDir;
     QString m_trackerFile;
+    QString m_booksListFile;
 };
 
 #endif // CONNECTIONINFO_H

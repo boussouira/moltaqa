@@ -6,6 +6,7 @@
 #include "utils.h"
 #include "mainwindow.h"
 #include "bookreaderhelper.h"
+#include "xmlutils.h"
 
 #include <qstandarditemmodel.h>
 #include <qstringlistmodel.h>
@@ -492,18 +493,6 @@ void AbstractBookReader::getBookInfo()
        }
    }
 
-   QString errorStr;
-   int errorLine=0;
-   int errorColumn=0;
-
-   if(!m_bookDoc.setContent(&pagesFile, 0, &errorStr, &errorLine, &errorColumn)) {
-       qDebug("getBookInfo: Parse error at line %d, column %d: %s\nFile: %s",
-              errorLine, errorColumn,
-              qPrintable(errorStr),
-              qPrintable(m_bookInfo->bookPath));
-
-       return;
-   }
-
+   m_bookDoc = Utils::getDomDocument(&pagesFile);
    m_rootElement = m_bookDoc.documentElement();
 }
