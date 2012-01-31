@@ -146,8 +146,8 @@ void NewBookWriter::startReading()
     m_lastLevel = 1;
     m_titleID = 0;
 
-    m_pagesDoc.setContent(QString("<?xml version='1.0' encoding='UTF-8'?><pages></pages>"));
-    m_titlesDoc.setContent(QString("<?xml version='1.0' encoding='UTF-8'?><titles></titles>"));
+    m_pagesDoc.setContent(QString("<?xml version=\"1.0\" encoding=\"utf-8\" ?><pages></pages>"));
+    m_titlesDoc.setContent(QString("<?xml version=\"1.0\" encoding=\"utf-8\" ?><titles></titles>"));
 
     m_pagesElemnent = m_pagesDoc.documentElement();
     m_titlesElement = m_titlesDoc.documentElement();

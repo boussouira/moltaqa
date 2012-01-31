@@ -63,45 +63,34 @@ void LibraryInfo::loafInfo(QString path)
                             infoFile);
     }
 
+    m_name = "Library";
+    m_path = dir.absolutePath();
+    m_booksDir = "books";
+    m_tempsDir = "temp";
+    m_indexDir = "index";
+    m_indexDataDir = "data";
+    m_trackerFile = "tracker.xml";
+
     QDomElement root = doc.documentElement();
-    QDomElement nameElement = root.firstChildElement("name");
-    QDomElement pathElement = root.firstChildElement("path");
-    QDomElement booksDirElement = root.firstChildElement("books-dir");
-    QDomElement tempsDirElement = root.firstChildElement("temps-dir");
-    QDomElement indexDirElement = root.firstChildElement("index-dir");
-    QDomElement indexTrackerElement = root.firstChildElement("tracker-file");
-    QDomElement indexDataDirElement = root.firstChildElement("index-datat-dir");
+    QDomElement e = root.firstChildElement();
+    while(!e.isNull()) {
+        if(e.tagName() == "name")
+            m_name = e.text();
+        else if(e.tagName() == "path")
+            m_path = e.text();
+        else if(e.tagName() == "books-dir")
+            m_booksDir = e.text();
+        else if(e.tagName() == "temps-dir")
+            m_tempsDir = e.text();
+        else if(e.tagName() == "index-dir")
+            m_indexDir = e.text();
+        else if(e.tagName() == "tracker-file")
+            m_trackerFile = e.text();
+        else if(e.tagName() == "index-datat-dir")
+            m_indexDataDir = e.text();
 
-    m_name = nameElement.firstChild().nodeValue();
-    if(!pathElement.isNull())
-        m_path = pathElement.firstChild().nodeValue();
-    else
-        m_path = dir.absolutePath();
-
-    if(!booksDirElement.isNull())
-        m_booksDir = booksDirElement.firstChild().nodeValue();
-    else
-        m_booksDir = "books";
-
-    if(!tempsDirElement.isNull())
-        m_tempsDir = tempsDirElement.firstChild().nodeValue();
-    else
-        m_tempsDir = "temp";
-
-    if(!indexDirElement.isNull())
-        m_indexDir = indexDirElement.firstChild().nodeValue();
-    else
-        m_indexDir = "index";
-
-    if(!indexDataDirElement.isNull())
-        m_indexDataDir = indexDataDirElement.firstChild().nodeValue();
-    else
-        m_indexDataDir = "data";
-
-    if(!indexTrackerElement.isNull())
-        m_trackerFile = indexTrackerElement.firstChild().nodeValue();
-    else
-        m_trackerFile = "tracker.xml";
+        e = e.nextSiblingElement();
+    }
 
     QDir booksDir(m_path);
     if(!booksDir.exists(m_booksDir))
@@ -131,9 +120,9 @@ void LibraryInfo::loafInfo(QString path)
             QTextStream out(&file);
             out.setCodec("utf-8");
 
-            out << "<?xml version='1.0' encoding='UTF-8'?>" << "\n";
-            out << "<task-list>" << "\n";
-            out << "</task-list>" << "\n";
+            out << "<?xml version=\"1.0\" encoding=\"utf-8\" ?>";
+            out << "<task-list>";
+            out << "</task-list>";
         }
     }
 

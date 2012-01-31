@@ -45,7 +45,7 @@ void newQuranWriter::startReading()
 {
     m_pageId = 0;
 
-    m_pagesDoc.setContent(QString("<?xml version='1.0' encoding='UTF-8'?><pages></pages>"));
+    m_pagesDoc.setContent(QString("<?xml version=\"1.0\" encoding=\"utf-8\" ?><pages></pages>"));
     m_pagesElemnent = m_pagesDoc.documentElement();
 }
 

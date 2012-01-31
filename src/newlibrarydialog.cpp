@@ -90,7 +90,7 @@ void NewLibraryDialog::createLibrary(QString name, QString path, QString descrip
     QTextStream out(&info);
     out.setCodec("utf-8");
 
-    out << "<?xml version='1.0' encoding='UTF-8'?>" << "\n";
+    out << "<?xml version=\"1.0\" encoding=\"utf-8\" ?>" << "\n";
     out << "<library-info>" << "\n";
     out << "    <name>" << name << "</name>" << "\n";
     out << "    <books-dir>" << "books" << "</books-dir>" << "\n";
