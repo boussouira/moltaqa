@@ -6,7 +6,9 @@
 #include <stdlib.h>
 #include <qregexp.h>
 
-wchar_t* Utils::QStringToWChar(const QString &str)
+namespace Utils {
+
+wchar_t* QStringToWChar(const QString &str)
 {
     wchar_t *string = (wchar_t*) malloc((str.length()+1) * sizeof(wchar_t));
     str.toWCharArray(string);
@@ -15,13 +17,13 @@ wchar_t* Utils::QStringToWChar(const QString &str)
     return string;
 }
 
-wchar_t* Utils::intToWChar(int num, int radix)
+wchar_t* intToWChar(int num, int radix)
 {
     wchar_t *str = (wchar_t*) malloc(128 * sizeof(wchar_t));
-    return Utils::intToWChar(num, str, radix);
+    return intToWChar(num, str, radix);
 }
 
-QString Utils::highlightText(QString orignalText, lucene::search::Query *query, bool fragment)
+QString highlightText(QString orignalText, lucene::search::Query *query, bool fragment)
 {
     // Highlight the text
     ArabicAnalyzer analyzer;
@@ -56,4 +58,6 @@ QString Utils::highlightText(QString orignalText, lucene::search::Query *query, 
     _CLDELETE_CARRAY(text);
 
     return highlightedText;
+}
+
 }
