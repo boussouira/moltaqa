@@ -39,10 +39,6 @@ protected slots:
 protected:
      void setModel(QStandardItemModel *model);
 
-     QModelIndex selectedIndex();
-     QModelIndex changeParent(QModelIndex child, QModelIndex newParent, int row=-1);
-     void swap(QModelIndex fromIndex, QModelIndex toIndex);
-     void selectIndex(QModelIndex index);
      void writeItem(QStandardItem *item, QXmlStreamWriter *writer);
 
 private:

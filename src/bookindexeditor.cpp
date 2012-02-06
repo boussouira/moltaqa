@@ -1,6 +1,7 @@
 #include "bookindexeditor.h"
 #include "ui_bookindexeditor.h"
 #include "modelenums.h"
+#include "modelutils.h"
 #include "editwebview.h"
 #include "richbookreader.h"
 #include "bookeditorview.h"
@@ -81,81 +82,6 @@ void BookIndexEditor::writeItem(QStandardItem *item, QXmlStreamWriter *writer)
     writer->writeEndElement();
 }
 
-QModelIndex BookIndexEditor::selectedIndex()
-{
-    QModelIndexList selection = ui->treeView->selectionModel()->selectedIndexes();
-
-    return selection.isEmpty() ? QModelIndex() : selection.first();
-}
-
-void BookIndexEditor::swap(QModelIndex fromIndex, QModelIndex toIndex)
-{
-    if(fromIndex.parent() != toIndex.parent())
-        return;
-
-    QModelIndex parent = fromIndex.parent();
-
-    QStandardItem *parentItem = 0;
-    if(parent.isValid())
-        parentItem = m_model->itemFromIndex(parent);
-    else
-        parentItem = m_model->invisibleRootItem();
-
-    if(!parentItem)
-        return;
-
-    QStandardItem *fromItem = m_model->itemFromIndex(fromIndex);
-
-    if(!fromItem)
-        return;
-
-    parentItem->takeRow(fromIndex.row());
-    parentItem->insertRow(toIndex.row(), fromItem);
-}
-
-QModelIndex BookIndexEditor::changeParent(QModelIndex child, QModelIndex newParent, int row)
-{
-    QModelIndex currentParent = child.parent();
-
-    QStandardItem *currentParentItem = 0;
-    if(currentParent.isValid())
-        currentParentItem = m_model->itemFromIndex(currentParent);
-    else
-        currentParentItem = m_model->invisibleRootItem();
-
-    QStandardItem *childItem = currentParentItem->takeChild(child.row(), child.column());
-    currentParentItem->takeRow(child.row());
-
-    QStandardItem *newParentItem = 0;
-    if(newParent.isValid())
-        newParentItem = m_model->itemFromIndex(newParent);
-    else
-        newParentItem = m_model->invisibleRootItem();
-
-    if(!newParentItem)
-        return QModelIndex();
-
-    if(row == -1)
-        row = newParentItem->rowCount();
-
-    newParentItem->insertRow(row, childItem);
-
-    QModelIndex insertedIndex = newParent.child(row, 0);
-    if(!insertedIndex.isValid())
-        insertedIndex = m_model->index(row, 0);
-
-    return insertedIndex;
-}
-
-void BookIndexEditor::selectIndex(QModelIndex index)
-{
-    if(index.isValid()) {
-        ui->treeView->scrollTo(index, QAbstractItemView::EnsureVisible);
-        ui->treeView->selectionModel()->setCurrentIndex(index,
-                                                        QItemSelectionModel::ClearAndSelect);
-    }
-}
-
 bool BookIndexEditor::save(QString path)
 {
     qDebug() << "Save title:" << path;
@@ -181,26 +107,21 @@ void BookIndexEditor::addTitle()
                                          tr("العنوان الجديد:"), QLineEdit::Normal,
                                          m_editView->m_webView->selectedText(), &ok);
     if(ok && !text.isEmpty()) {
-        QModelIndex index = selectedIndex();
+        QModelIndex index = Utils::selectedIndex(ui->treeView);
         QStandardItem *title = new QStandardItem(text);
         title->setData(m_editView->m_currentPage->pageID, ItemRole::idRole);
 
-        QStandardItem *parentItem = 0;
-        if(index.isValid() && index.parent().isValid())
-            parentItem = m_model->itemFromIndex(index.parent());
-        else
-            parentItem = m_model->invisibleRootItem();
-
+        QStandardItem *parentItem = Utils::itemFromIndex(m_model, index.parent());
         int row = index.isValid() ? index.row()+1 : parentItem->rowCount();
 
         parentItem->insertRow(row, title);
-        selectIndex(m_model->index(row, 0, index.parent()));
+        Utils::selectIndex(ui->treeView, m_model->index(row, 0, index.parent()));
     }
 }
 
 void BookIndexEditor::removeTitle()
 {
-    QModelIndex index = selectedIndex();
+    QModelIndex index = Utils::selectedIndex(ui->treeView);
     if(!index.isValid())
         return;
 
@@ -210,68 +131,27 @@ void BookIndexEditor::removeTitle()
 
 void BookIndexEditor::moveUp()
 {
-    QModelIndex index = selectedIndex();
-    if(!index.isValid())
-        return;
-
-    QModelIndex toIndex = index.sibling(index.row()-1, index.column());
-    if(!toIndex.isValid())
-        return;
-
-    ui->treeView->collapse(index);
-    ui->treeView->collapse(toIndex);
-    ui->treeView->scrollTo(toIndex, QAbstractItemView::EnsureVisible);
-
-    swap(index, toIndex);
-    selectIndex(toIndex);
+    Utils::moveUp(m_model, ui->treeView);
 }
 
 void BookIndexEditor::moveDown()
 {
-    QModelIndex index = selectedIndex();
-    if(!index.isValid())
-        return;
-
-    QModelIndex toIndex = index.sibling(index.row()+1, index.column());
-    if(!toIndex.isValid())
-        return;
-
-    ui->treeView->collapse(index);
-    ui->treeView->collapse(toIndex);
-    ui->treeView->scrollTo(toIndex, QAbstractItemView::EnsureVisible);
-
-    swap(index, toIndex);
-    selectIndex(toIndex);
+    Utils::moveDown(m_model, ui->treeView);
 }
 
 void BookIndexEditor::moveRight()
 {
-    QModelIndex index = selectedIndex();
-    QModelIndex parent = index.parent();
-    if(!index.isValid() || !parent.isValid())
-        return;
-
-    QModelIndex newParent = parent.parent();
-
-    QModelIndex changedIndex = changeParent(index, newParent, parent.row()+1);
-    selectIndex(changedIndex);
+    Utils::moveRight(m_model, ui->treeView);
 }
 
 void BookIndexEditor::moveLeft()
 {
-    QModelIndex index = selectedIndex();
-    if(!index.isValid())
-        return;
-
-    QModelIndex parent = index.sibling(index.row()-1, index.column());
-
-    QModelIndex changedIndex = changeParent(index, parent);
-    selectIndex(changedIndex);
+    Utils::moveLeft(m_model, ui->treeView);
 }
 
 void BookIndexEditor::linkTitle()
 {
-    QModelIndex index = selectedIndex();
+    QModelIndex index = Utils::selectedIndex(ui->treeView);
     if(!index.isValid())
         return;
 
@@ -281,7 +161,7 @@ void BookIndexEditor::linkTitle()
 
 void BookIndexEditor::updateActions()
 {
-    QModelIndex index = selectedIndex();
+    QModelIndex index = Utils::selectedIndex(ui->treeView);
     QModelIndex prevIndex = index.sibling(index.row()+1, index.column());
     QModelIndex nextIndex = index.sibling(index.row()-1, index.column());
 
