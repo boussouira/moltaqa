@@ -62,7 +62,6 @@ protected:
     LibraryManager *m_libraryManager;
     int m_prevArchive;
     int m_threadID;
-    QHash<int, int> m_catMap;
     QHash<int, int> m_levels;
     bool m_importAuthor; ///< If true, import author's information when adding a book of him
     QMutex m_mutex;
