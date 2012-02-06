@@ -141,7 +141,7 @@ void FancyLineEdit::positionMenuLabel()
         (side() == Right && layoutDirection() == Qt::RightToLeft))
         m_d->m_menuLabel->setGeometry(0, 0, m_d->m_pixmap.width()+margin, height());
     else
-        m_d->m_menuLabel->setGeometry(width() - m_d->m_pixmap.width() - margin, 0,
+        m_d->m_menuLabel->setGeometry(width() - m_d->m_pixmap.width() - margin*2, 0,
                                       m_d->m_pixmap.width()+margin, height());
 }
 
