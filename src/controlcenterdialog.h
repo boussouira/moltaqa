@@ -24,6 +24,7 @@ protected:
 
 private slots:
     void rowChanged(int row);
+    void setCurrentRow(int row);
     void save();
     void beginEdit();
     void enableSave(bool enable);

@@ -11,17 +11,12 @@ ControlCenterDialog::ControlCenterDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    EditCatWidget *catWidget = new EditCatWidget(this);
-    addEditWidget(0, catWidget);
+    addEditWidget(0, new EditCatWidget(this));
+    addEditWidget(1, new EditBooksListWidget(this));
+    addEditWidget(2, new EditTaffasirListWidget(this));
 
-    EditBooksListWidget *bookWidget = new EditBooksListWidget(this);
-    addEditWidget(1, bookWidget);
-
-    EditTaffasirListWidget *taffessirWidget = new EditTaffasirListWidget(this);
-    addEditWidget(2, taffessirWidget);
-
-    rowChanged(0);
-    enableSave(false);
+    ui->listWidget->setCurrentRow(0);
+    setCurrentRow(0);
 
     connect(ui->listWidget, SIGNAL(currentRowChanged(int)), SLOT(rowChanged(int)));
 }
@@ -35,8 +30,6 @@ void ControlCenterDialog::addEditWidget(int index, AbstractEditWidget *w)
 {
     ui->stackedWidget->insertWidget(index, w);
     ui->listWidget->insertItem(index, w->windowTitle());
-
-    connect(w, SIGNAL(edited(bool)), SLOT(enableSave(bool)));
 }
 
 void ControlCenterDialog::closeEvent(QCloseEvent *event)
@@ -49,11 +42,15 @@ void ControlCenterDialog::rowChanged(int row)
 {
     save();
 
+    setCurrentRow(row);
+}
+
+void ControlCenterDialog::setCurrentRow(int row)
+{
     ui->stackedWidget->setCurrentIndex(row);
     ui->labelControlName->setText(ui->stackedWidget->currentWidget()->windowTitle());
 
     beginEdit();
-    enableSave(false);
 }
 
 void ControlCenterDialog::save()
