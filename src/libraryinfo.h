@@ -17,6 +17,13 @@ public:
 
     QString name();
     QString path();
+
+    /**
+     Get data directory
+     */
+
+    QString dataDir();
+
     /**
       Get full path to books directory
       */

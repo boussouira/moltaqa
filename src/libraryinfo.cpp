@@ -21,6 +21,11 @@ QString LibraryInfo::path()
     return m_path;
 }
 
+QString LibraryInfo::dataDir()
+{
+    return m_dataDir;
+}
+
 QString LibraryInfo::booksDir()
 {
     return m_booksDir;
