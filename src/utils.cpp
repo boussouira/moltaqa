@@ -151,6 +151,40 @@ QString hijriYear(int hYear)
         return QObject::tr("%1 هـ").arg(hYear);
 }
 
+QString arClean(QString text)
+{
+    text.replace(QRegExp("[\\x0622\\x0623\\x0625]"), QString::fromUtf8("\u0627"));//ALEFs
+    text.replace(QString::fromUtf8("\u0629"), QString::fromUtf8("\u0647")); //TAH_MARBUTA -> HEH
+    text.replace(QString::fromUtf8("\u0649"), QString::fromUtf8("\u064A")); //YAH -> ALEF MAKSOURA
+    text.remove(QRegExp("[\\x064B-\\x0653]"));
+
+    return text;
+}
+
+bool arCompare(QString first, QString second)
+{
+    return arClean(first) == arClean(second);
+}
+
+bool arContains(QString src, QString text)
+{
+    QString cleanSrc = arClean(src);
+    QString cleanText = arClean(text);
+
+    return cleanSrc.contains(cleanText);
+}
+
+bool arFuzzyContains(QString first, QString second)
+{
+    QString cleanFirst= arClean(first);
+    QString cleanSecond = arClean(second);
+
+    if(cleanFirst.size() < cleanSecond.size())
+        return cleanSecond.contains(cleanFirst);
+    else
+        return cleanFirst.contains(cleanSecond);
+}
+
 int hijriToGregorian(int hYear)
 {
     return (hYear + 622) - (hYear / 33);

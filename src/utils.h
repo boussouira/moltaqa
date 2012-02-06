@@ -38,6 +38,10 @@ QString arPlural(int count, int word, bool html=false);
 QString secondsToString(int milsec, bool html=false);
 QString abbreviate(QString str, int size);
 QString hijriYear(int hYear);
+QString arClean(QString text);
+bool arCompare(QString first, QString second);
+bool arContains(QString src, QString text);
+bool arFuzzyContains(QString first, QString second);
 
 int hijriToGregorian(int hYear);
 int gregorianToHijri(int gYear);

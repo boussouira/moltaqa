@@ -12,6 +12,10 @@ public:
 private slots:
     void randInt();
     void generateFileName();
+    void arClean();
+    void arCompare();
+    void arContains();
+    void arFuzzyContains();
 };
 
 #endif // UTILSTEST_H
