@@ -40,6 +40,8 @@ BookEditorView::~BookEditorView()
 {
     if(m_bookReader)
         delete m_bookReader;
+
+    delete ui;
 }
 
 QString BookEditorView::title()
