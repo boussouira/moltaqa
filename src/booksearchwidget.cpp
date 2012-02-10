@@ -3,7 +3,7 @@
 #include "resultwidget.h"
 #include "mainwindow.h"
 #include "booksearchfilter.h"
-
+#include "librarybookmanager.h"
 
 BookSearchWidget::BookSearchWidget(QWidget *parent) :
     SearchWidget(parent)
@@ -16,7 +16,7 @@ BookSearchWidget::~BookSearchWidget()
 
 void BookSearchWidget::init(int bookID)
 {
-    m_bookInfo = MW->libraryManager()->getBookInfo(bookID);
+    m_bookInfo = MW->libraryManager()->bookManager()->getLibraryBook(bookID);
 
     if(!m_bookInfo)
         return;

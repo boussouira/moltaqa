@@ -47,11 +47,9 @@ public:
 public:
     LibraryBook::Type bookType;
     QString bookPath;
+    QString fileName;
     QString bookDisplayName;
-    QString bookFullName;
     QString bookOtherNames;
-    QString textTable;
-    QString indexTable;
     QString metaTable;
     QString tafessirTable;
     QString authorName;
@@ -64,6 +62,7 @@ public:
     int lastID;
     int bookID;
     int authorID;
+    int flags;
     bool hasShareeh;
 
 protected:

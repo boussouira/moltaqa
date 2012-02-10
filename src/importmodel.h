@@ -22,6 +22,8 @@ public:
     void setCategories(int cid, const QString &name=QString());
     void setAuthor(int aid, const QString &name=QString());
 
+    LibraryBook *toLibraryBook();
+
 public:
     LibraryBook::Type type;
     QString bookName;

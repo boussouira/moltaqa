@@ -3,11 +3,12 @@
 #include "importmodel.h"
 #include "importdelegates.h"
 #include "librarymanager.h"
+#include "librarybookmanager.h"
 #include "convertthread.h"
-#include "bookslistmodel.h"
 #include "utils.h"
 #include "mainwindow.h"
 #include "indextracker.h"
+#include "booklistmanager.h"
 
 #ifdef USE_MDBTOOLS
     #include "mdbconverter.h"
@@ -197,7 +198,8 @@ void ImportDialog::startImporting()
                                    Q_ARG(int, i+1));
     }
 
-    if(metaObject()->invokeMethod(m_libraryManager, "bookAdded"))
+    m_libraryManager->bookManager()->reloadLibraryBooks();
+    metaObject()->invokeMethod(m_libraryManager, "bookAdded");
 
     qDebug() << "Importing" << imported << "books take" << time.elapsed() << "ms";
 }
@@ -243,7 +245,7 @@ void ImportDialog::doneImporting()
 
     ui->stackedWidget->setCurrentIndex(2);
 
-    m_libraryManager->loadBooksListModel();
+    MW->libraryManager()->bookListManager()->reloadModels();
 }
 
 bool ImportDialog::checkNodes(QList<ImportModelNode *> nodesList)

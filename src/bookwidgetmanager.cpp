@@ -220,6 +220,29 @@ void BookWidgetManager::closeBook(int bookID)
     }
 }
 
+BookWidget *BookWidgetManager::getBookWidget(int bookID)
+{
+    for(int i=0; i<m_topTab->count(); i++) {
+        BookWidget *bookWidget = qobject_cast<BookWidget*>(m_topTab->widget(i));
+        if(bookWidget) {
+            if(bookWidget->bookReader()->bookInfo()->bookID == bookID) {
+                return bookWidget;
+            }
+        }
+    }
+
+    for(int i=0; i<m_bottomTab->count(); i++) {
+        BookWidget *bookWidget = qobject_cast<BookWidget*>(m_bottomTab->widget(i));
+        if(bookWidget) {
+            if(bookWidget->bookReader()->bookInfo()->bookID == bookID) {
+                return bookWidget;
+            }
+        }
+    }
+
+    return 0;
+}
+
 void BookWidgetManager::nextAya()
 {
     activeBookWidget()->scrollDown();

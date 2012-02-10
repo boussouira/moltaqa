@@ -64,6 +64,18 @@ void ImportModelNode::setAuthor(int aid, const QString &name)
     authorName = name;
 }
 
+LibraryBook *ImportModelNode::toLibraryBook()
+{
+    LibraryBook *book = new LibraryBook();
+    book->bookType = type;
+    book->bookDisplayName = bookName;
+    book->bookInfo = bookInfo;
+    book->authorID = authorID;
+    book->authorName = authorName;
+
+    return book;
+}
+
 // The model
 ImportModel::ImportModel(QObject *parent)
     : QAbstractItemModel(parent)

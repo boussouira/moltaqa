@@ -9,6 +9,7 @@ class EditTaffasirListWidget;
 }
 
 class LibraryManager;
+class TaffesirListManager;
 
 class EditTaffasirListWidget : public AbstractEditWidget
 {
@@ -20,7 +21,6 @@ public:
 
 protected:
     void loadModel();
-    void swap(QModelIndex fromIndex, QModelIndex toIndex);
 
 public slots:
     void save();
@@ -28,12 +28,10 @@ public slots:
     void updateActions();
     void moveUp();
     void moveDown();
-    void itemChanged(QStandardItem *item);
 
 private:
-    bool m_saveChange;
     QStandardItemModel *m_model;
-    LibraryManager *m_libraryManager;
+    TaffesirListManager *m_taffesirManager;
     Ui::EditTaffasirListWidget *ui;
 };
 

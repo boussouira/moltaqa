@@ -2,10 +2,12 @@
 #include "ui_selectcatdialog.h"
 #include "mainwindow.h"
 #include "librarymanager.h"
-#include "bookslistmodel.h"
-#include "bookslistnode.h"
 #include "sortfilterproxymodel.h"
+#include "booklistmanager.h"
+#include "modelenums.h"
+#include "modelutils.h"
 
+#include <qstandarditemmodel.h>
 #include <qmessagebox.h>
 
 selectCatDialog::selectCatDialog(QWidget *parent) :
@@ -14,12 +16,12 @@ selectCatDialog::selectCatDialog(QWidget *parent) :
     ui->setupUi(this);
 
     m_libraryManager = MW->libraryManager();
-    m_model = m_libraryManager->catsListModel();
+    m_model = Utils::cloneModel(MW->libraryManager()->bookListManager()->catListModel());
 
     m_filter = new SortFilterProxyModel(this);
     m_filter->setSourceModel(m_model);
 
-    m_selectedNode = 0;
+    m_selectedItem = 0;
 
     ui->treeView->setModel(m_filter);
     ui->treeView->setColumnHidden(1, true);
@@ -40,14 +42,16 @@ selectCatDialog::~selectCatDialog()
 
 void selectCatDialog::selectCat()
 {
-    if(ui->treeView->selectionModel()->selectedIndexes().isEmpty()) {
+    QModelIndex index = Utils::selectedIndex(ui->treeView);
+
+    if(!index.isValid()) {
         QMessageBox::warning(this,
                              tr("اختيار قسم"),
                              tr("لم تقم باختيار اي قسم"));
         return;
     }
 
-    m_selectedNode = m_model->nodeFromIndex(m_filter->mapToSource(ui->treeView->selectionModel()->selectedIndexes().first()));
+    m_selectedItem = m_model->itemFromIndex(m_filter->mapToSource(index));
 
     emit catSelected();
     accept();
@@ -58,17 +62,17 @@ void selectCatDialog::cancel()
     reject();
 }
 
-BooksListNode *selectCatDialog::selectedNode()
+QStandardItem *selectCatDialog::selectedNode()
 {
-    return m_selectedNode;
+    return m_selectedItem;
 }
 
 QString selectCatDialog::selectedCatName()
 {
-    return m_selectedNode->title;
+    return m_selectedItem->text();
 }
 
 int selectCatDialog::selectedCatID()
 {
-    return m_selectedNode->id;
+    return m_selectedItem->data(ItemRole::idRole).toInt();
 }

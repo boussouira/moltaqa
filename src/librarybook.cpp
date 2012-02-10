@@ -8,6 +8,8 @@ LibraryBook::LibraryBook()
     firstID = -1;
     lastID = -1;
     bookID = -1;
+    authorID = 0;
+    flags = 0;
     m_hasInfo = false;
 }
 
@@ -113,10 +115,7 @@ LibraryBook *LibraryBook::clone()
     book->bookType = bookType;
     book->bookPath = bookPath;
     book->bookDisplayName = bookDisplayName;
-    book->bookFullName = bookFullName;
     book->bookOtherNames = bookOtherNames;
-    book->textTable = textTable;
-    book->indexTable = indexTable;
     book->metaTable = metaTable;
     book->tafessirTable = tafessirTable;
     book->authorName = authorName;
@@ -142,13 +141,13 @@ QDebug operator<<(QDebug dbg, LibraryBook *info)
 {
     dbg.nospace() << "BookInfo(\n\t"
                   << "Type: " << info->bookType << "\n\t"
-                  << "Display name: " << info->bookDisplayName << "\n\t"
-                  << "Full name: " << info->bookFullName << "\n\t"
+                  << "Book name: " << info->bookDisplayName << "\n\t"
                   << "Path: " << info->bookPath << "\n\t"
                   << "Author: " << info->authorName << "\n\t"
                   << "Edition: " << info->bookEdition << "\n\t"
                   << "Publisher: " << info->bookPublisher << "\n\t"
-                  << "Mohaqeq: " << info->bookMohaqeq<< "\n"
+                  << "Mohaqeq: " << info->bookMohaqeq<< "\n\t"
+                  << "Info: " << info->bookInfo << "\n"
                   << ")";
 
     return dbg.space();

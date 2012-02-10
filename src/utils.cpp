@@ -223,18 +223,6 @@ void createIndexDB(QSqlQuery &query)
                      "bookFolder TEXT, "
                      "indexFlags INTEGER)");
 
-    query.exec("CREATE TABLE catList ("
-                     "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
-                     "title TEXT , "
-                     "description TEXT , "
-                     "catOrder INTEGER , "
-                     "parentID INTEGER)");
-
-    query.exec("CREATE TABLE bookMeta("
-                     "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
-                     "book_info TEXT, "
-                     "add_time INTEGER, "
-                     "update_time INTEGER)");
 
     query.exec("CREATE TABLE authorsList("
                      "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
@@ -242,13 +230,6 @@ void createIndexDB(QSqlQuery &query)
                      "full_name TEXT, "
                      "die_year INTEGER, "
                      "info BLOB)");
-
-    query.exec("CREATE TABLE tafassirList("
-               "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
-               "book_id INTEGER, "
-               "tafessir_name TEXT, "
-               "tafessir_order INTEGER, "
-               "show_tafessir INTEGER)");
 
     query.exec("CREATE TABLE ShareehMeta("
                      "mateen_book INTEGER, "

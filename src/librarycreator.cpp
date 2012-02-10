@@ -6,6 +6,9 @@
 #include "newquranwriter.h"
 #include "mainwindow.h"
 #include "libraryenums.h"
+#include "taffesirlistmanager.h"
+#include "booklistmanager.h"
+#include "librarybookmanager.h"
 
 #ifdef USE_MDBTOOLS
 #include "mdbconverter.h"
@@ -84,36 +87,18 @@ void LibraryCreator::importAuthors()
 
 void LibraryCreator::addTafessir(ShamelaBookInfo *tafessir)
 {
-    m_bookQuery.prepare("INSERT INTO tafassirList (id, book_id, tafessir_name, show_tafessir, tafessir_order) "
-                        "VALUES (NULL, ?, ?, ?, ?)");
-    m_bookQuery.bindValue(0,  m_mapper->mapFromShamelaBook(tafessir->id));
-    m_bookQuery.bindValue(1, tafessir->tafessirName);
-    m_bookQuery.bindValue(2, Qt::Checked);
-    m_bookQuery.bindValue(3, 0);
+    m_libraryManager->taffesirListManager()->addTafessir(m_mapper->mapFromShamelaBook(tafessir->id),
+                                                         tafessir->tafessirName);
 
-    if(m_bookQuery.exec()) {
-        qDebug() << "Add tafessir:" << tafessir->tafessirName;
-    } else {
-        LOG_SQL_ERROR(m_bookQuery);
-    }
+    qDebug() << "Add tafessir:" << tafessir->tafessirName;
 }
 
 void LibraryCreator::addCat(ShamelaCategorieInfo *cat)
 {
-    int lastId = 0;
+    int lastId = m_libraryManager->bookListManager()->addCategorie(cat->name,
+                                                                   m_levels.value(cat->level-1, 0) );
 
-    m_bookQuery.prepare("INSERT INTO catList (id, title, parentID, catOrder) VALUES (NULL, ?, ?, ?)");
-    m_bookQuery.bindValue(0, cat->name);
-    m_bookQuery.bindValue(1, m_levels.value(cat->level-1, 0));
-    m_bookQuery.bindValue(2, 999);
-
-    if(m_bookQuery.exec()) {
-        lastId = m_bookQuery.lastInsertId().toInt();
-        m_mapper->addCatMap(cat->id, lastId);
-        m_catMap.insert(cat->id, lastId);
-    } else {
-        LOG_SQL_ERROR(m_bookQuery);
-    }
+    m_mapper->addCatMap(cat->id, lastId);
 
     int levelParent = m_levels.value(cat->level, -1);
     if(levelParent == -1) {
@@ -313,64 +298,42 @@ void LibraryCreator::done()
         qFatal("Error when committing");
 }
 
-void LibraryCreator::importBook(ShamelaBookInfo *book, QString path)
+void LibraryCreator::importBook(ShamelaBookInfo *shamelBook, QString path)
 {
     QFileInfo fileInfo(path);
 
-    ShamelaAuthorInfo *auth = m_shamelaManager->getAuthorInfo(book->authorID);
+    ShamelaAuthorInfo *auth = m_shamelaManager->getAuthorInfo(shamelBook->authorID);
     if(auth) {
         addAuthor(auth, true);
         delete auth;
     }
 
-    m_bookQuery.prepare("INSERT INTO booksList (id, bookID, bookType, bookFlags, bookCat, "
-                       "bookDisplayName, bookInfo, authorName, authorID, fileName, bookFolder, indexFlags) "
-                       "VALUES(NULL, :book_id, :book_type, :book_flags, :cat_id, :book_name, "
-                       ":book_info, :author_name, :author_id, :file_name, :book_folder, :index_flags)");
+    LibraryBook book;
+    book.bookID = m_libraryManager->bookManager()->getNewBookID();
+    book.bookType = shamelBook->tafessirName.isEmpty() ? LibraryBook::NormalBook : LibraryBook::TafessirBook;
+    book.bookDisplayName = shamelBook->name;
+    book.bookInfo = shamelBook->info;
+    book.authorID = m_mapper->mapFromShamelaAuthor(shamelBook->authorID);
+    book.authorName = shamelBook->authName;
+    book.fileName = fileInfo.fileName();
 
-    m_bookQuery.bindValue(":book_id", 0);
-    m_bookQuery.bindValue(":book_type", book->tafessirName.isEmpty() ? LibraryBook::NormalBook : LibraryBook::TafessirBook);
-    m_bookQuery.bindValue(":book_flags", 0);
-    m_bookQuery.bindValue(":cat_id", m_mapper->mapFromShamelaCat(book->cat));
-    m_bookQuery.bindValue(":book_name", book->name);
-    m_bookQuery.bindValue(":book_info", book->info);
-    m_bookQuery.bindValue(":author_name", book->authName);
-    m_bookQuery.bindValue(":author_id", m_mapper->mapFromShamelaAuthor(book->authorID));
-    m_bookQuery.bindValue(":file_name", fileInfo.fileName()); // Add file name
-    m_bookQuery.bindValue(":book_folder", QVariant(QVariant::String));
-    m_bookQuery.bindValue(":index_flags", Enums::NotIndexed);
+    m_libraryManager->addBook(&book, m_mapper->mapFromShamelaCat(shamelBook->cat));
 
-    if(m_bookQuery.exec()) {
-        m_mapper->addBookMap(book->id, m_bookQuery.lastInsertId().toInt());
-    } else {
-        LOG_SQL_ERROR(m_bookQuery);
-    }
+    m_mapper->addBookMap(shamelBook->id, book.bookID);
 }
 
 void LibraryCreator::importQuran(QString path)
 {
     QFileInfo fileInfo(path);
 
-    m_bookQuery.prepare("INSERT INTO booksList (id, bookID, bookType, bookFlags, bookCat, "
-                        "bookDisplayName, bookInfo, authorName, authorID, fileName, bookFolder, indexFlags) "
-                        "VALUES(NULL, :book_id, :book_type, :book_flags, :cat_id, :book_name, "
-                        ":book_info, :author_name, :author_id, :file_name, :book_folder, :index_flags)");
+    LibraryBook book;
+    book.bookID = m_libraryManager->bookManager()->getNewBookID();
+    book.bookType = LibraryBook::QuranBook;
+    book.bookDisplayName = tr("القرآن الكريم");
+    book.bookInfo = tr("القرآن الكريم");
+    book.fileName = fileInfo.fileName();
 
-    m_bookQuery.bindValue(":book_id", 0);
-    m_bookQuery.bindValue(":book_type", LibraryBook::QuranBook);
-    m_bookQuery.bindValue(":book_flags", 0);
-    m_bookQuery.bindValue(":cat_id", 0);
-    m_bookQuery.bindValue(":book_name", tr("القرآن الكريم"));
-    m_bookQuery.bindValue(":book_info", QVariant(QVariant::String));
-    m_bookQuery.bindValue(":author_name", QVariant(QVariant::String));
-    m_bookQuery.bindValue(":author_id", 0);
-    m_bookQuery.bindValue(":file_name", fileInfo.fileName()); // Add file name
-    m_bookQuery.bindValue(":book_folder", QVariant(QVariant::String));
-    m_bookQuery.bindValue(":index_flags", Enums::NotIndexed);
-
-    if(!m_bookQuery.exec()) {
-        LOG_SQL_ERROR(m_bookQuery);
-    }
+    m_libraryManager->addBook(&book, 0);
 }
 
 void LibraryCreator::readSimpleBook(ShamelaBookInfo *book, QSqlQuery &query, NewBookWriter &writer, bool hno)

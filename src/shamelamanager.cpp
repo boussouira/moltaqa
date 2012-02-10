@@ -1,6 +1,6 @@
 #include "shamelamanager.h"
 #include "utils.h"
-#include "bookslistnode.h"
+#include "modelenums.h"
 
 #ifdef USE_MDBTOOLS
 #include"mdbconverter.h"
@@ -135,7 +135,7 @@ QStandardItemModel *ShamelaManager::getBooksListModel()
         QStandardItem *item = new QStandardItem();
         item->setText(query.value(1).toString());
         item->setData(query.value(0).toInt(), idRole);
-        item->setData(BooksListNode::Categorie, typeRole);
+        item->setData(ItemType::CategorieItem, typeRole);
 
         item->setCheckable(true);
         item->setCheckState(Qt::Unchecked);
@@ -163,7 +163,7 @@ void ShamelaManager::booksCat(QStandardItem *parentNode, int catID)
         QStandardItem *item = new QStandardItem();
         item->setText(query.value(1).toString());
         item->setData(query.value(0).toInt(), idRole);
-        item->setData(BooksListNode::Book, typeRole);
+        item->setData(ItemType::BookItem, typeRole);
 
         item->setCheckable(true);
         item->setCheckState(Qt::Unchecked);

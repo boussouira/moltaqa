@@ -43,7 +43,7 @@ public:
     void addShareh(int mateenID, int mateenPage, int shareehID, int shareehPage);
 
 protected:
-    void importBook(ShamelaBookInfo *book, QString path);
+    void importBook(ShamelaBookInfo *shamelBook, QString path);
     void importQuran(QString path);
 
     void readSimpleBook(ShamelaBookInfo *book, QSqlQuery &query, NewBookWriter &writer, bool hno);

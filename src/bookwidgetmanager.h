@@ -26,6 +26,9 @@ public:
     TabWidget *unActiveTab();
     void setActiveTab(QObject *obj);
 
+    void closeBook(int bookID);
+    BookWidget *getBookWidget(int bookID);
+
 protected:
     void connectTab(TabWidget *tab);
     void reverseActiveTab();
@@ -36,7 +39,6 @@ public slots:
     void changeActiveTab();
     void moveToOtherTab(int index);
     void reverseSplitter();
-    void closeBook(int bookID);
 
     void nextAya();
     void previousAya();

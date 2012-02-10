@@ -3,6 +3,7 @@
 
 #include <qdir.h>
 #include <qfile.h>
+#include <qdatetime.h>
 
 #define APP_VERSION_STR "0.9.0"
 #define APP_VERSION 0x000900
@@ -77,6 +78,9 @@ namespace Log {
 void QueryError(const QSqlQuery &query, const char *file, int line);
 void DatabaseError(const QSqlDatabase &db, const char *file, int line);
 }
+
+
+#define BENCHMARK(desc, code) do {QTime t;t.start();code;qDebug(desc " take %d ms", t.elapsed());} while(false)
 
 #define LOG_DB_ERROR(db) Log::DatabaseError(db, __FILE__, __LINE__);
 #define LOG_SQL_ERROR(query) Log::QueryError(query, __FILE__, __LINE__);

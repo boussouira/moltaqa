@@ -13,14 +13,13 @@ public:
     SearchFilter *getFilterQuery();
 
 protected:
-    void open();
-    void close();
-    void getBookItems(int catID, QStandardItem *catItem);
-
     void generateLists();
-    void getBooks(const QModelIndex &index, int role);
+    void getBooks(const QModelIndex &index);
+    void addBook(const QModelIndex &index);
+
     QList<int> selectedID();
     QList<int> unSelectedID();
+
     int selectedCount();
     int unSelecCount();
 

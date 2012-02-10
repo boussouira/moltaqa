@@ -6,6 +6,7 @@
 #include "mainwindow.h"
 #include "bookreaderhelper.h"
 #include "xmlutils.h"
+#include "librarybookmanager.h"
 
 #include <qstringlist.h>
 #include <qdebug.h>
@@ -27,7 +28,7 @@ RichTafessirReader::~RichTafessirReader()
 
 void RichTafessirReader::connected()
 {
-    m_quranInfo = m_libraryManager->getQuranBook();
+    m_quranInfo = m_libraryManager->bookManager()->getQuranBook();
     if(m_quranInfo && m_showQuran)
         openQuranBook();
 

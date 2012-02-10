@@ -3,7 +3,6 @@
 
 #include <qstandarditemmodel.h>
 
-
 namespace ItemRole {
     enum {
         idRole = Qt::UserRole + 2,
@@ -11,15 +10,16 @@ namespace ItemRole {
         soraRole,
         ayaRole,
         orderRole,
-        authorDeathRole
+        authorDeathRole,
+        authorIdRole,
+        itemTypeRole
     };
 }
 
 namespace ItemType {
     enum {
         BookItem = 1,
-        CategorieItem,
-        AuthorItem
+        CategorieItem
     };
 }
 

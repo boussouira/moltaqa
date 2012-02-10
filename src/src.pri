@@ -25,8 +25,6 @@ SOURCES += mainwindow.cpp \
     indexwidget.cpp \
     booksviewer.cpp \
     bookslistbrowser.cpp \
-    bookslistmodel.cpp \
-    bookslistnode.cpp \
     abstractbookreader.cpp \
     richquranreader.cpp \
     richsimplebookreader.cpp \
@@ -59,11 +57,9 @@ SOURCES += mainwindow.cpp \
     tafessirtextformat.cpp \
     shamelamapper.cpp \
     controlcenterdialog.cpp \
-    editablebookslistmodel.cpp \
     editcatwidget.cpp \
     selectcatdialog.cpp \
     editbookslistwidget.cpp \
-    editablecatslistmodel.cpp \
     selectauthordialog.cpp \
     abstracteditwidget.cpp \
     bookwidgetmanager.cpp \
@@ -105,7 +101,11 @@ SOURCES += mainwindow.cpp \
     bookindexeditor.cpp \
     modelviewfilter.cpp \
     modelutils.cpp \
-    xmlutils.cpp
+    xmlutils.cpp \
+    taffesirlistmanager.cpp \
+    listmanager.cpp \
+    booklistmanager.cpp \
+    librarybookmanager.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -114,8 +114,6 @@ HEADERS += mainwindow.h \
     indexwidget.h \
     booksviewer.h \
     bookslistbrowser.h \
-    bookslistmodel.h \
-    bookslistnode.h \
     abstractbookreader.h \
     richquranreader.h \
     richsimplebookreader.h \
@@ -148,11 +146,9 @@ HEADERS += mainwindow.h \
     tafessirtextformat.h \
     shamelamapper.h \
     controlcenterdialog.h \
-    editablebookslistmodel.h \
     editcatwidget.h \
     selectcatdialog.h \
     editbookslistwidget.h \
-    editablecatslistmodel.h \
     selectauthordialog.h \
     abstracteditwidget.h \
     bookwidgetmanager.h \
@@ -198,7 +194,11 @@ HEADERS += mainwindow.h \
     bookindexeditor.h \
     modelviewfilter.h \
     modelutils.h \
-    xmlutils.h
+    xmlutils.h \
+    taffesirlistmanager.h \
+    listmanager.h \
+    booklistmanager.h \
+    librarybookmanager.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

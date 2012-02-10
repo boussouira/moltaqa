@@ -8,8 +8,8 @@ namespace Ui {
 }
 
 class LibraryManager;
-class BooksListModel;
-class BooksListNode;
+class QStandardItemModel;
+class QStandardItem;
 class SortFilterProxyModel;
 
 class selectCatDialog : public QDialog
@@ -20,7 +20,7 @@ public:
     selectCatDialog(QWidget *parent = 0);
     ~selectCatDialog();
 
-    BooksListNode *selectedNode();
+    QStandardItem *selectedNode();
     QString selectedCatName();
     int selectedCatID();
 
@@ -30,9 +30,9 @@ protected slots:
 
 protected:
     LibraryManager *m_libraryManager;
-    BooksListModel *m_model;
+    QStandardItemModel *m_model;
     SortFilterProxyModel *m_filter;
-    BooksListNode *m_selectedNode;
+    QStandardItem *m_selectedItem;
 
 signals:
     void catSelected();

@@ -29,6 +29,8 @@ int main(int argc, char *argv[])
     app.setApplicationName("Moltaqa-Library");
     app.setApplicationVersion("0.5");
 
+    qsrand(uint(QDateTime::currentDateTime().toMSecsSinceEpoch() & 0xFFFFFF));
+
     int ret = -1;
 
     MainWindow w;

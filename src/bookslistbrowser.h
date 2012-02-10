@@ -3,8 +3,9 @@
 
 #include <qdialog.h>
 #include <qsqldatabase.h>
-#include "bookslistmodel.h"
+#include <qstandarditemmodel.h>
 
+class BookListManager;
 class LibraryManager;
 class SortFilterProxyModel;
 
@@ -14,17 +15,19 @@ namespace Ui {
 
 class BooksListBrowser : public QDialog {
     Q_OBJECT
+
 public:
     BooksListBrowser(LibraryManager *libraryManager, QWidget *parent = 0);
     ~BooksListBrowser();
-    void setLibraryManager(LibraryManager *libraryManager) { m_libraryManager = libraryManager;}
 
 protected:
     void closeEvent(QCloseEvent *event);
     void loadSettings();
+    void saveSettings();
 
 public slots:
-    void setModel(BooksListModel *model);
+    void readBookListModel();
+    void setModel(QStandardItemModel *model);
 
 private slots:
     void setFilterText(QString text);
@@ -35,8 +38,8 @@ signals:
     void bookSelected(int bookID);
 
 private:
-    LibraryManager *m_libraryManager;
-    BooksListModel *m_model;
+    BookListManager *m_bookListManager;
+    QStandardItemModel *m_model;
     SortFilterProxyModel *m_filterModel;
     Ui::BooksListBrowser *ui;
 };

@@ -3,7 +3,6 @@
 
 #include "abstracteditwidget.h"
 #include "librarymanager.h"
-#include "editablecatslistmodel.h"
 
 namespace Ui {
     class EditCatWidget;
@@ -34,7 +33,6 @@ protected slots:
     void moveLeft();
     void addCat();
     void removeCat();
-    void moveCatBooks();
     void modelEdited();
 
     void menuRequested(QPoint);
@@ -42,8 +40,8 @@ protected slots:
 
 private:
     LibraryManager *m_libraryManager;
-    EditableCatsListModel *m_catsModel;
-    BooksListNode *m_copiedNode;
+    QStandardItemModel *m_model;
+    QList<QStandardItem*> m_copiedItems;
     Ui::EditCatWidget *ui;
 };
 

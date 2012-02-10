@@ -11,7 +11,7 @@ namespace Ui {
 
 class LibraryManager;
 class LibraryBook;
-class EditableBooksListModel;
+class QStandardItemModel;
 
 class EditBooksListWidget : public AbstractEditWidget
 {
@@ -42,8 +42,8 @@ private slots:
 protected:
     Ui::EditBooksListWidget *ui;
     LibraryManager *m_libraryManager;
-    LibraryBook *m_bookInfo;
-    EditableBooksListModel *m_booksModel;
+    LibraryBook *m_currentBook;
+    QStandardItemModel *m_model;
     QHash<int, LibraryBook *> m_editedBookInfo;
 };
 

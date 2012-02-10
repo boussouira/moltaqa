@@ -6,6 +6,7 @@
 #include "textsimplebookreader.h"
 #include "textquranreader.h"
 #include "texttafessirreader.h"
+#include "librarybookmanager.h"
 #include <exception>
 
 BookIndexer::BookIndexer(QObject *parent) :
@@ -43,7 +44,7 @@ void BookIndexer::startIndexing()
 
     while(task && !m_stop) {
         try {
-            task->book = MW->libraryManager()->getBookInfo(task->bookID);
+            task->book = MW->libraryManager()->bookManager()->getLibraryBook(task->bookID);
 
             if(task->book) {
                 indexBook(task);

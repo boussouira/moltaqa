@@ -5,6 +5,8 @@
 #include "librarybook.h"
 #include "utils.h"
 #include "abstractbookreader.h"
+#include "librarybookmanager.h"
+
 #include <qdatetime.h>
 #include <qsqlquery.h>
 #include <qsettings.h>
@@ -142,7 +144,7 @@ void LibrarySearcher::fetech()
         int bookID = Utils::WCharToInt(doc.get(BOOK_ID_FIELD));
         int score = (int) (m_hits->score(i) * 100.0);
 
-        LibraryBook *book = m_libraryManager->getBookInfo(bookID);
+        LibraryBook *book = m_libraryManager->bookManager()->getLibraryBook(bookID);
 
         if(!book) {
             qCritical("LibrarySearcher::fetech: No book with id %d where found", bookID);

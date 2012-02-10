@@ -121,7 +121,6 @@ bool MainWindow::init()
 
         m_libraryManager = new LibraryManager(m_libraryInfo);
         m_libraryManager->open();
-        m_libraryManager->loadBooksListModel();
 
         m_bookView = new BooksViewer(m_libraryManager, this);
         m_viewManager->addView(m_bookView, false);

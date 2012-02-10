@@ -8,8 +8,11 @@
 #include "librarymanager.h"
 #include "librarybook.h"
 #include "sortfilterproxymodel.h"
-#include "bookslistnode.h"
 #include "importdelegates.h"
+#include "taffesirlistmanager.h"
+#include "booklistmanager.h"
+#include "librarybookmanager.h"
+#include "modelenums.h"
 
 #ifdef USE_MDBTOOLS
 #include "mdbconverter.h"
@@ -41,7 +44,7 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
     m_importedBooksCount = 0;
     m_proccessItemChange = true;
 
-    ui->radioUseShamelaCat->setChecked(!m_libraryManager->categoriesCount());
+    ui->radioUseShamelaCat->setChecked(!m_libraryManager->bookListManager()->categoriesCount());
     ui->groupImportOptions->setEnabled(false);
     ui->stackedWidget->setCurrentIndex(0);
     ui->pushDone->hide();
@@ -202,14 +205,14 @@ void ShamelaImportDialog::showBooks()
 
     m_booksModel->setHeaderData(0, Qt::Horizontal, tr("لائحة الكتب"), Qt::DisplayRole);
 
-    LibraryBook *quranBook = m_libraryManager->getQuranBook();
+    LibraryBook *quranBook = m_libraryManager->bookManager()->getQuranBook();
     ui->checkImportQuran->setChecked(!quranBook || quranBook->bookID == -1);
 
     connect(ui->lineBookSearch, SIGNAL(textChanged(QString)), filterModel, SLOT(setFilterRegExp(QString)));
     connect(ui->lineBookSearch, SIGNAL(textChanged(QString)), ui->treeView, SLOT(expandAll()));
     connect(m_booksModel, SIGNAL(itemChanged(QStandardItem*)), SLOT(itemChanged(QStandardItem*)));
 
-    if(MW->libraryManager()->booksCount() < m_manager->getBooksCount())
+    if(MW->libraryManager()->bookListManager()->booksCount() < m_manager->getBooksCount())
         selectAllBooks();
 }
 
@@ -219,14 +222,14 @@ bool ShamelaImportDialog::createFilter()
 
         for(int i=0; i<m_booksModel->rowCount(); i++) {
             QStandardItem *item = m_booksModel->item(i);
-            if(item->data(ShamelaManager::typeRole).toInt() == BooksListNode::Categorie) {
+            if(item->data(ShamelaManager::typeRole).toInt() == ItemType::CategorieItem) {
                 for(int j=0; j < item->rowCount(); j++) {
                     QStandardItem *child = item->child(j);
                     if(child->checkState() == Qt::Checked){
                         selectedIDs.append(child->data(ShamelaManager::idRole).toInt());
                     }
                 }
-            } else if(item->data(ShamelaManager::typeRole).toInt() == BooksListNode::Book) {
+            } else if(item->data(ShamelaManager::typeRole).toInt() == ItemType::BookItem) {
                 if(item->checkState() == Qt::Checked){
                     selectedIDs.append(item->data(ShamelaManager::idRole).toInt());
                 }
@@ -291,7 +294,7 @@ void ShamelaImportDialog::setupCategories()
         shamelaItem->setEditable(false);
 
         // Try to find this cat in our library
-        QPair<int, QString> libCat = m_libraryManager->findCategorie(cat->name);
+        QPair<int, QString> libCat = m_libraryManager->bookListManager()->findCategorie(cat->name);
         if(libCat.first) {
             libraryItem = new QStandardItem;
             libraryItem->setText(libCat.second);
@@ -380,7 +383,8 @@ void ShamelaImportDialog::doneImporting()
                      .arg(Utils::secondsToString(m_importTime.elapsed())));
 
         if(m_importedBooksCount > 0) {
-            MW->libraryManager()->loadBooksListModel();
+            MW->libraryManager()->taffesirListManager()->saveXmlDom(); // TODO: auto save dom model
+            MW->libraryManager()->bookListManager()->reloadModels();
         }
 
         qDeleteAll(m_importThreads);
@@ -443,11 +447,11 @@ void ShamelaImportDialog::itemChanged(QStandardItem *item)
     if(item && m_proccessItemChange) {
         m_proccessItemChange = false;
 
-        if(item->data(ShamelaManager::typeRole).toInt() == BooksListNode::Categorie) {
+        if(item->data(ShamelaManager::typeRole).toInt() == ItemType::CategorieItem) {
             for(int i=0; i<item->rowCount(); i++) {
                 item->child(i)->setCheckState(item->checkState());
             }
-        } else if(item->data(ShamelaManager::typeRole).toInt() == BooksListNode::Book) {
+        } else if(item->data(ShamelaManager::typeRole).toInt() == ItemType::BookItem) {
             QStandardItem *parentItem = item->parent();
             int checkItems = 0;
 
