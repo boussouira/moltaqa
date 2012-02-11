@@ -51,7 +51,7 @@ void TaffesirListManager::addTafessir(int bookID, QString taffesirName)
     taffesirElement.setAttribute("show", "true");
 
     QDomElement titleElement = m_doc.createElement("title");
-    titleElement.setNodeValue(taffesirName);
+    titleElement.appendChild(m_doc.createTextNode(taffesirName));
 
     taffesirElement.appendChild(titleElement);
     m_rootElement.appendChild(taffesirElement);
