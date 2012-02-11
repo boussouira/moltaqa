@@ -1,25 +1,25 @@
 #ifndef EDITBOOKSLISTWIDGET_H
 #define EDITBOOKSLISTWIDGET_H
 
-#include "abstracteditwidget.h"
+#include "controlcenterwidget.h"
 #include <qhash.h>
 #include <QModelIndex>
 
 namespace Ui {
-    class EditBooksListWidget;
+    class LibraryBookManagerWidget;
 }
 
 class LibraryManager;
 class LibraryBook;
 class QStandardItemModel;
 
-class EditBooksListWidget : public AbstractEditWidget
+class LibraryBookManagerWidget : public ControlCenterWidget
 {
     Q_OBJECT
 
 public:
-    EditBooksListWidget(QWidget *parent = 0);
-    ~EditBooksListWidget();
+    LibraryBookManagerWidget(QWidget *parent = 0);
+    ~LibraryBookManagerWidget();
 
     void enableEditWidgets(bool enable);
 
@@ -40,7 +40,7 @@ private slots:
     void editted();
 
 protected:
-    Ui::EditBooksListWidget *ui;
+    Ui::LibraryBookManagerWidget *ui;
     LibraryManager *m_libraryManager;
     LibraryBook *m_currentBook;
     QStandardItemModel *m_model;

@@ -1,20 +1,20 @@
 #ifndef EDITCATWIDGET_H
 #define EDITCATWIDGET_H
 
-#include "abstracteditwidget.h"
+#include "controlcenterwidget.h"
 #include "librarymanager.h"
 
 namespace Ui {
-    class EditCatWidget;
+    class BookListManagerWidget;
 }
 
-class EditCatWidget : public AbstractEditWidget
+class BookListManagerWidget : public ControlCenterWidget
 {
     Q_OBJECT
 
 public:
-    EditCatWidget(QWidget *parent = 0);
-    ~EditCatWidget();
+    BookListManagerWidget(QWidget *parent = 0);
+    ~BookListManagerWidget();
 
 protected:
     void loadModel();
@@ -42,7 +42,7 @@ private:
     LibraryManager *m_libraryManager;
     QStandardItemModel *m_model;
     QList<QStandardItem*> m_copiedItems;
-    Ui::EditCatWidget *ui;
+    Ui::BookListManagerWidget *ui;
 };
 
 #endif // EDITCATWIDGET_H

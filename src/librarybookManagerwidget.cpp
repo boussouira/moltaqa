@@ -1,5 +1,5 @@
-#include "editbookslistwidget.h"
-#include "ui_editbookslistwidget.h"
+#include "librarybookManagerwidget.h"
+#include "ui_librarybookManagerwidget.h"
 #include "mainwindow.h"
 #include "librarymanager.h"
 #include "librarybook.h"
@@ -11,9 +11,9 @@
 #include <qlineedit.h>
 #include <qtextedit.h>
 
-EditBooksListWidget::EditBooksListWidget(QWidget *parent) :
-    AbstractEditWidget(parent),
-    ui(new Ui::EditBooksListWidget),
+LibraryBookManagerWidget::LibraryBookManagerWidget(QWidget *parent) :
+    ControlCenterWidget(parent),
+    ui(new Ui::LibraryBookManagerWidget),
     m_libraryManager(MW->libraryManager()),
     m_currentBook(0),
     m_model(0)
@@ -25,7 +25,7 @@ EditBooksListWidget::EditBooksListWidget(QWidget *parent) :
     setupActions();
 }
 
-EditBooksListWidget::~EditBooksListWidget()
+LibraryBookManagerWidget::~LibraryBookManagerWidget()
 {
     if(m_model)
         delete m_model;
@@ -33,7 +33,7 @@ EditBooksListWidget::~EditBooksListWidget()
     delete ui;
 }
 
-void EditBooksListWidget::setupActions()
+void LibraryBookManagerWidget::setupActions()
 {
      foreach(QLineEdit *edit, findChildren<QLineEdit *>()) {
          connect(edit, SIGNAL(textChanged(QString)), SLOT(editted()));
@@ -43,14 +43,14 @@ void EditBooksListWidget::setupActions()
          connect(edit, SIGNAL(textChanged()), SLOT(editted()));
      }
 }
-void EditBooksListWidget::enableEditWidgets(bool enable)
+void LibraryBookManagerWidget::enableEditWidgets(bool enable)
 {
     ui->groupBox->setEnabled(enable);
     ui->tabWidget->setEnabled(enable);
     ui->plainBookNames->setEnabled(enable);
 }
 
-void EditBooksListWidget::loadModel()
+void LibraryBookManagerWidget::loadModel()
 {
     m_model = m_libraryManager->bookManager()->getModel();
 
@@ -58,7 +58,7 @@ void EditBooksListWidget::loadModel()
     ui->treeView->resizeColumnToContents(0);
 }
 
-void EditBooksListWidget::editted()
+void LibraryBookManagerWidget::editted()
 {
     if(m_currentBook) {
         m_editedBookInfo[m_currentBook->bookID] = m_currentBook;
@@ -67,7 +67,7 @@ void EditBooksListWidget::editted()
     }
 }
 
-void EditBooksListWidget::save()
+void LibraryBookManagerWidget::save()
 {
     saveCurrentBookInfo();
 
@@ -89,11 +89,11 @@ void EditBooksListWidget::save()
     }
 }
 
-void EditBooksListWidget::beginEdit()
+void LibraryBookManagerWidget::beginEdit()
 {
 }
 
-void EditBooksListWidget::on_treeView_doubleClicked(const QModelIndex &index)
+void LibraryBookManagerWidget::on_treeView_doubleClicked(const QModelIndex &index)
 {
     int bookID = index.data(ItemRole::idRole).toInt();
     LibraryBook *info = getBookInfo(bookID);
@@ -116,7 +116,7 @@ void EditBooksListWidget::on_treeView_doubleClicked(const QModelIndex &index)
     }
 }
 
-void EditBooksListWidget::on_toolChangeAuthor_clicked()
+void LibraryBookManagerWidget::on_toolChangeAuthor_clicked()
 {
     selectAuthorDialog dialog(this);
 
@@ -129,7 +129,7 @@ void EditBooksListWidget::on_toolChangeAuthor_clicked()
     }
 }
 
-void EditBooksListWidget::setupEdit(LibraryBook *info)
+void LibraryBookManagerWidget::setupEdit(LibraryBook *info)
 {
     ui->lineAuthorName->setEnabled(!info->isQuran());
     ui->toolChangeAuthor->setEnabled(!info->isQuran());
@@ -139,7 +139,7 @@ void EditBooksListWidget::setupEdit(LibraryBook *info)
     ui->linePublisher->setEnabled(!info->isQuran());
 }
 
-void EditBooksListWidget::saveCurrentBookInfo()
+void LibraryBookManagerWidget::saveCurrentBookInfo()
 {
     if(m_currentBook) {
         m_currentBook->bookDisplayName = ui->lineDisplayName->text().simplified();
@@ -152,7 +152,7 @@ void EditBooksListWidget::saveCurrentBookInfo()
     }
 }
 
-LibraryBook *EditBooksListWidget::getBookInfo(int bookID)
+LibraryBook *LibraryBookManagerWidget::getBookInfo(int bookID)
 {
     LibraryBook *info = m_editedBookInfo.value(bookID, 0);
     if(info) {

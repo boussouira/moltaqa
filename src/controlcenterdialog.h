@@ -7,7 +7,7 @@ namespace Ui {
     class ControlCenterDialog;
 }
 
-class AbstractEditWidget;
+class ControlCenterWidget;
 
 class ControlCenterDialog : public QDialog
 {
@@ -17,7 +17,7 @@ public:
     ControlCenterDialog(QWidget *parent = 0);
     ~ControlCenterDialog();
 
-    void addEditWidget(int index, AbstractEditWidget *w);
+    void addControlWidget(int index, ControlCenterWidget *w);
 
 protected:
     void closeEvent(QCloseEvent *event);

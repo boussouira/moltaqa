@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>EditCatWidget</class>
- <widget class="QWidget" name="EditCatWidget">
+ <class>BookListManagerWidget</class>
+ <widget class="QWidget" name="BookListManagerWidget">
   <property name="geometry">
    <rect>
     <x>0</x>

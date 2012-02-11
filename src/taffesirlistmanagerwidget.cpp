@@ -1,14 +1,14 @@
-#include "edittaffasirlistwidget.h"
-#include "ui_edittaffasirlistwidget.h"
+#include "taffesirlistmanagerwidget.h"
+#include "ui_taffesirlistmanagerwidget.h"
 #include "modelenums.h"
 #include "modelutils.h"
 #include "mainwindow.h"
 #include "librarymanager.h"
 #include "taffesirlistmanager.h"
 
-EditTaffasirListWidget::EditTaffasirListWidget(QWidget *parent) :
-    AbstractEditWidget(parent),
-    ui(new Ui::EditTaffasirListWidget)
+TaffesirListManagerWidget::TaffesirListManagerWidget(QWidget *parent) :
+    ControlCenterWidget(parent),
+    ui(new Ui::TaffesirListManagerWidget)
 {
     ui->setupUi(this);
 
@@ -22,7 +22,7 @@ EditTaffasirListWidget::EditTaffasirListWidget(QWidget *parent) :
     connect(ui->toolMoveDown, SIGNAL(clicked()), SLOT(moveDown()));
 }
 
-EditTaffasirListWidget::~EditTaffasirListWidget()
+TaffesirListManagerWidget::~TaffesirListManagerWidget()
 {
     if(m_model)
         delete m_model;
@@ -30,7 +30,7 @@ EditTaffasirListWidget::~EditTaffasirListWidget()
     delete ui;
 }
 
-void EditTaffasirListWidget::loadModel()
+void TaffesirListManagerWidget::loadModel()
 {
     m_model = m_taffesirManager->taffesirListModel(true);
 
@@ -43,26 +43,26 @@ void EditTaffasirListWidget::loadModel()
     connect(m_model, SIGNAL(layoutChanged()), SLOT(updateActions()));
 }
 
-void EditTaffasirListWidget::save()
+void TaffesirListManagerWidget::save()
 {
     m_taffesirManager->save(m_model);
 }
 
-void EditTaffasirListWidget::beginEdit()
+void TaffesirListManagerWidget::beginEdit()
 {
 }
 
-void EditTaffasirListWidget::moveUp()
+void TaffesirListManagerWidget::moveUp()
 {
     Utils::moveUp(m_model, ui->treeView);
 }
 
-void EditTaffasirListWidget::moveDown()
+void TaffesirListManagerWidget::moveDown()
 {
     Utils::moveDown(m_model, ui->treeView);
 }
 
-void EditTaffasirListWidget::updateActions()
+void TaffesirListManagerWidget::updateActions()
 {
     if(!m_model || ui->treeView->selectionModel()->selectedIndexes().isEmpty()) {
         ui->toolMoveDown->setEnabled(false);

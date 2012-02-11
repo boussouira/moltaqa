@@ -1,8 +1,8 @@
 #include "controlcenterdialog.h"
 #include "ui_controlcenterdialog.h"
-#include "editcatwidget.h"
-#include "editbookslistwidget.h"
-#include "edittaffasirlistwidget.h"
+#include "booklistmanagerwidget.h"
+#include "librarybookManagerwidget.h"
+#include "taffesirlistmanagerwidget.h"
 #include <qevent.h>
 
 ControlCenterDialog::ControlCenterDialog(QWidget *parent) :
@@ -11,9 +11,9 @@ ControlCenterDialog::ControlCenterDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    addEditWidget(0, new EditCatWidget(this));
-    addEditWidget(1, new EditBooksListWidget(this));
-    addEditWidget(2, new EditTaffasirListWidget(this));
+    addControlWidget(0, new BookListManagerWidget(this));
+    addControlWidget(1, new LibraryBookManagerWidget(this));
+    addControlWidget(2, new TaffesirListManagerWidget(this));
 
     ui->listWidget->setCurrentRow(0);
     setCurrentRow(0);
@@ -26,7 +26,7 @@ ControlCenterDialog::~ControlCenterDialog()
     delete ui;
 }
 
-void ControlCenterDialog::addEditWidget(int index, AbstractEditWidget *w)
+void ControlCenterDialog::addControlWidget(int index, ControlCenterWidget *w)
 {
     ui->stackedWidget->insertWidget(index, w);
     ui->listWidget->insertItem(index, w->windowTitle());
@@ -55,7 +55,7 @@ void ControlCenterDialog::setCurrentRow(int row)
 
 void ControlCenterDialog::save()
 {
-    AbstractEditWidget *w = qobject_cast<AbstractEditWidget *>(ui->stackedWidget->currentWidget());
+    ControlCenterWidget *w = qobject_cast<ControlCenterWidget *>(ui->stackedWidget->currentWidget());
 
     if(w) {
         w->save();
@@ -64,7 +64,7 @@ void ControlCenterDialog::save()
 
 void ControlCenterDialog::beginEdit()
 {
-    AbstractEditWidget *w = qobject_cast<AbstractEditWidget *>(ui->stackedWidget->currentWidget());
+    ControlCenterWidget *w = qobject_cast<ControlCenterWidget *>(ui->stackedWidget->currentWidget());
 
     if(w) {
         w->beginEdit();

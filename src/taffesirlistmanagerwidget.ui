@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>EditTaffasirListWidget</class>
- <widget class="QWidget" name="EditTaffasirListWidget">
+ <class>TaffesirListManagerWidget</class>
+ <widget class="QWidget" name="TaffesirListManagerWidget">
   <property name="geometry">
    <rect>
     <x>0</x>

@@ -1,23 +1,23 @@
 #ifndef EDITTAFFASIRLISTWIDGET_H
 #define EDITTAFFASIRLISTWIDGET_H
 
-#include "abstracteditwidget.h"
+#include "controlcenterwidget.h"
 #include <qstandarditemmodel.h>
 
 namespace Ui {
-class EditTaffasirListWidget;
+class TaffesirListManagerWidget;
 }
 
 class LibraryManager;
 class TaffesirListManager;
 
-class EditTaffasirListWidget : public AbstractEditWidget
+class TaffesirListManagerWidget : public ControlCenterWidget
 {
     Q_OBJECT
 
 public:
-    EditTaffasirListWidget(QWidget *parent = 0);
-    ~EditTaffasirListWidget();
+    TaffesirListManagerWidget(QWidget *parent = 0);
+    ~TaffesirListManagerWidget();
 
 protected:
     void loadModel();
@@ -32,7 +32,7 @@ public slots:
 private:
     QStandardItemModel *m_model;
     TaffesirListManager *m_taffesirManager;
-    Ui::EditTaffasirListWidget *ui;
+    Ui::TaffesirListManagerWidget *ui;
 };
 
 #endif // EDITTAFFASIRLISTWIDGET_H

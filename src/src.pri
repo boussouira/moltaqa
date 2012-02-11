@@ -57,11 +57,11 @@ SOURCES += mainwindow.cpp \
     tafessirtextformat.cpp \
     shamelamapper.cpp \
     controlcenterdialog.cpp \
-    editcatwidget.cpp \
+    booklistmanagerwidget.cpp \
     selectcatdialog.cpp \
-    editbookslistwidget.cpp \
+    librarybookManagerwidget.cpp \
     selectauthordialog.cpp \
-    abstracteditwidget.cpp \
+    controlcenterwidget.cpp \
     bookwidgetmanager.cpp \
     richbookreader.cpp \
     indextracker.cpp \
@@ -87,7 +87,7 @@ SOURCES += mainwindow.cpp \
     textquranreader.cpp \
     bookreaderhelper.cpp \
     sqlutils.cpp \
-    edittaffasirlistwidget.cpp \
+    taffesirlistmanagerwidget.cpp \
     searchwidget.cpp \
     booksearchwidget.cpp \
     librarysearchfilter.cpp \
@@ -146,11 +146,11 @@ HEADERS += mainwindow.h \
     tafessirtextformat.h \
     shamelamapper.h \
     controlcenterdialog.h \
-    editcatwidget.h \
+    booklistmanagerwidget.h \
     selectcatdialog.h \
-    editbookslistwidget.h \
+    librarybookManagerwidget.h \
     selectauthordialog.h \
-    abstracteditwidget.h \
+    controlcenterwidget.h \
     bookwidgetmanager.h \
     richbookreader.h \
     indextracker.h \
@@ -180,7 +180,7 @@ HEADERS += mainwindow.h \
     bookreaderhelper.h \
     sqlutils.h \
     libraryenums.h \
-    edittaffasirlistwidget.h \
+    taffesirlistmanagerwidget.h \
     searchwidget.h \
     booksearchwidget.h \
     librarysearchfilter.h \
@@ -208,13 +208,13 @@ FORMS += mainwindow.ui settingsdialog.ui \
     openpagedialog.ui \
     newlibrarydialog.ui \
     controlcenterdialog.ui \
-    editcatwidget.ui \
+    booklistmanagerwidget.ui \
     selectcatdialog.ui \
-    editbookslistwidget.ui \
+    librarybookManagerwidget.ui \
     selectauthordialog.ui \
     searchwidget.ui \
     resultwidget.ui \
-    edittaffasirlistwidget.ui \
+    taffesirlistmanagerwidget.ui \
     bookeditorview.ui \
     bookindexeditor.ui
 

@@ -4,12 +4,12 @@
 #include <qwidget.h>
 #include <libraryinfo.h>
 
-class AbstractEditWidget : public QWidget
+class ControlCenterWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    AbstractEditWidget(QWidget* parent = 0);
+    ControlCenterWidget(QWidget* parent = 0);
 
 protected:
     virtual void loadModel()=0;

@@ -1,5 +1,5 @@
-#include "editcatwidget.h"
-#include "ui_editcatwidget.h"
+#include "booklistmanagerwidget.h"
+#include "ui_booklistmanagerwidget.h"
 #include "mainwindow.h"
 #include "selectcatdialog.h"
 #include "booklistmanager.h"
@@ -13,9 +13,9 @@
 #include <qaction.h>
 #include <qinputdialog.h>
 
-EditCatWidget::EditCatWidget(QWidget *parent) :
-    AbstractEditWidget(parent),
-    ui(new Ui::EditCatWidget)
+BookListManagerWidget::BookListManagerWidget(QWidget *parent) :
+    ControlCenterWidget(parent),
+    ui(new Ui::BookListManagerWidget)
 {
     ui->setupUi(this);
 
@@ -39,7 +39,7 @@ EditCatWidget::EditCatWidget(QWidget *parent) :
             SLOT(updateActions()));
 }
 
-EditCatWidget::~EditCatWidget()
+BookListManagerWidget::~BookListManagerWidget()
 {
     if(m_model)
         delete m_model;
@@ -47,7 +47,7 @@ EditCatWidget::~EditCatWidget()
     delete ui;
 }
 
-void EditCatWidget::loadModel()
+void BookListManagerWidget::loadModel()
 {
     m_model = Utils::cloneModel(m_libraryManager->bookListManager()->bookListModel());
 
@@ -58,16 +58,16 @@ void EditCatWidget::loadModel()
     connect(m_model, SIGNAL(layoutChanged()), SLOT(modelEdited()));
 }
 
-void EditCatWidget::save()
+void BookListManagerWidget::save()
 {
     m_libraryManager->bookListManager()->save(m_model);
 }
 
-void EditCatWidget::beginEdit()
+void BookListManagerWidget::beginEdit()
 {
 }
 
-void EditCatWidget::cutNode()
+void BookListManagerWidget::cutNode()
 {
     QModelIndex index = Utils::selectedIndex(ui->treeView);
     if(!index.isValid())
@@ -83,7 +83,7 @@ void EditCatWidget::cutNode()
     }
 }
 
-void EditCatWidget::pastNode()
+void BookListManagerWidget::pastNode()
 {
     QModelIndex index = Utils::selectedIndex(ui->treeView);
     if(!index.isValid())
@@ -100,7 +100,7 @@ void EditCatWidget::pastNode()
     }
 }
 
-void EditCatWidget::pastSublingNode()
+void BookListManagerWidget::pastSublingNode()
 {
     QModelIndex index = Utils::selectedIndex(ui->treeView);
     if(!index.isValid())
@@ -116,27 +116,27 @@ void EditCatWidget::pastSublingNode()
     }
 }
 
-void EditCatWidget::moveUp()
+void BookListManagerWidget::moveUp()
 {
     Utils::moveUp(m_model, ui->treeView);
 }
 
-void EditCatWidget::moveDown()
+void BookListManagerWidget::moveDown()
 {
     Utils::moveDown(m_model, ui->treeView);
 }
 
-void EditCatWidget::moveRight()
+void BookListManagerWidget::moveRight()
 {
     Utils::moveRight(m_model, ui->treeView);
 }
 
-void EditCatWidget::moveLeft()
+void BookListManagerWidget::moveLeft()
 {
     Utils::moveLeft(m_model, ui->treeView);
 }
 
-void EditCatWidget::addCat()
+void BookListManagerWidget::addCat()
 {
     QModelIndex index = Utils::selectedIndex(ui->treeView);
     QStandardItem *parentItem = Utils::itemFromIndex(m_model, index.parent());
@@ -159,7 +159,7 @@ void EditCatWidget::addCat()
     }
 }
 
-void EditCatWidget::removeCat()
+void BookListManagerWidget::removeCat()
 {
     QModelIndex index = Utils::selectedIndex(ui->treeView);
     if(!index.isValid())
@@ -188,7 +188,7 @@ void EditCatWidget::removeCat()
     }
 }
 
-void EditCatWidget::menuRequested(QPoint)
+void BookListManagerWidget::menuRequested(QPoint)
 {
     QMenu menu(this);
     QAction *cutAct = new QAction(tr("قص"), &menu);
@@ -214,7 +214,7 @@ void EditCatWidget::menuRequested(QPoint)
     }
 }
 
-void EditCatWidget::updateActions()
+void BookListManagerWidget::updateActions()
 {
     if(!m_model)
         return;
@@ -230,7 +230,7 @@ void EditCatWidget::updateActions()
     ui->toolMoveLeft->setEnabled(index.sibling(index.row()-1, 0).isValid());
 }
 
-void EditCatWidget::modelEdited()
+void BookListManagerWidget::modelEdited()
 {
     emit edited(true);
 }
