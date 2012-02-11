@@ -204,10 +204,9 @@ void BookListManager::addBook(LibraryBook *book, int parentCat)
     titleElement.appendChild(m_doc.createTextNode(book->bookDisplayName));
     bookElement.appendChild(titleElement);
 
-    // TODO: add author name
-    //QDomElement authorElement = m_doc.createElement("author");
-    //authorElement.appendChild(m_doc.createTextNode(book->fileName));
-    //bookElement.appendChild(authorElement);
+    QDomElement authorElement = m_doc.createElement("author");
+    authorElement.appendChild(m_doc.createTextNode(book->authorName));
+    bookElement.appendChild(authorElement);
 
     QDomElement bookInfoElement = m_doc.createElement("info");
     bookInfoElement.appendChild(m_doc.createCDATASection(book->bookInfo));
@@ -288,11 +287,15 @@ QList<QStandardItem*> BookListManager::readBookNode(QDomElement &element)
         authItem->setText(authorNameElement.text());
         authItem->setData(authorID, ItemRole::authorIdRole);
 
-        QStandardItem *authDeathItem = new QStandardItem();
-        authDeathItem->setText(Utils::hijriYear(authorDeath));
-        authDeathItem->setData(authorDeath, ItemRole::authorDeathRole);
+        rows << authItem;
 
-        rows << authItem << authDeathItem;
+        if(element.hasAttribute("authordeath")) {
+            QStandardItem *authDeathItem = new QStandardItem();
+            authDeathItem->setText(Utils::hijriYear(authorDeath));
+            authDeathItem->setData(authorDeath, ItemRole::authorDeathRole);
+
+            rows << authDeathItem;
+        }
     }
 
     m_booksCount++;
