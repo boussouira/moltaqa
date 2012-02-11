@@ -1,5 +1,5 @@
-#include "librarybookManagerwidget.h"
-#include "ui_librarybookManagerwidget.h"
+#include "librarybookmanagerwidget.h"
+#include "ui_librarybookmanagerwidget.h"
 #include "mainwindow.h"
 #include "librarymanager.h"
 #include "librarybook.h"

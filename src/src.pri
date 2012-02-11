@@ -59,7 +59,7 @@ SOURCES += mainwindow.cpp \
     controlcenterdialog.cpp \
     booklistmanagerwidget.cpp \
     selectcatdialog.cpp \
-    librarybookManagerwidget.cpp \
+    librarybookmanagerwidget.cpp \
     selectauthordialog.cpp \
     controlcenterwidget.cpp \
     bookwidgetmanager.cpp \
@@ -148,7 +148,7 @@ HEADERS += mainwindow.h \
     controlcenterdialog.h \
     booklistmanagerwidget.h \
     selectcatdialog.h \
-    librarybookManagerwidget.h \
+    librarybookmanagerwidget.h \
     selectauthordialog.h \
     controlcenterwidget.h \
     bookwidgetmanager.h \
@@ -210,7 +210,7 @@ FORMS += mainwindow.ui settingsdialog.ui \
     controlcenterdialog.ui \
     booklistmanagerwidget.ui \
     selectcatdialog.ui \
-    librarybookManagerwidget.ui \
+    librarybookmanagerwidget.ui \
     selectauthordialog.ui \
     searchwidget.ui \
     resultwidget.ui \

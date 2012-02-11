@@ -1,7 +1,7 @@
 #include "controlcenterdialog.h"
 #include "ui_controlcenterdialog.h"
 #include "booklistmanagerwidget.h"
-#include "librarybookManagerwidget.h"
+#include "librarybookmanagerwidget.h"
 #include "taffesirlistmanagerwidget.h"
 #include <qevent.h>
 
