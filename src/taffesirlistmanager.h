@@ -10,11 +10,25 @@ class TaffesirListManager : public ListManager
 
 public:
     TaffesirListManager(QObject *parent=0);
+    ~TaffesirListManager();
 
-    QStandardItemModel* taffesirListModel(bool allTaffasir=false);
+    void reloadModel();
+    void clear();
+
+    QStandardItemModel* taffesirListModel();
+    QStandardItemModel* allTaffesirModel();
     void addTafessir(int bookID, QString taffesirName);
 
     void save(QStandardItemModel *taffesirModel);
+
+protected:
+    QStandardItemModel* getModel(bool allTaffasir=false);
+
+signals:
+    void taffesirModelReady();
+
+protected:
+    QStandardItemModel *m_model;
 };
 
 #endif // TAFFESIRLISTMANAGER_H

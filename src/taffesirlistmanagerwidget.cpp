@@ -32,7 +32,7 @@ TaffesirListManagerWidget::~TaffesirListManagerWidget()
 
 void TaffesirListManagerWidget::loadModel()
 {
-    m_model = m_taffesirManager->taffesirListModel(true);
+    m_model = m_taffesirManager->allTaffesirModel();
 
     ui->treeView->setModel(m_model);
     ui->treeView->resizeColumnToContents(0);

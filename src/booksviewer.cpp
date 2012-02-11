@@ -168,6 +168,7 @@ void BooksViewer::createMenus()
 
     // Tafessir actions
     connect(m_openSelectedTafsir, SIGNAL(triggered()), SLOT(openTafessir()));
+    connect(m_libraryManager->taffesirListManager(), SIGNAL(taffesirModelReady()), SLOT(loadTafessirList()));
 
     // Shareeh action
     connect(m_actionOpenShareeh, SIGNAL(triggered()), SLOT(openShareeh()));

@@ -13,13 +13,49 @@ TaffesirListManager::TaffesirListManager(QObject *parent) : ListManager(parent)
 {
     QDir dataDir(MW->libraryInfo()->dataDir());
     m_filePath = dataDir.filePath("taffesirlist.xml");
+    m_model = 0;
 
-    loadXmlDom();
+    reloadModel();
 }
 
-QStandardItemModel *TaffesirListManager::taffesirListModel(bool allTaffasir)
+TaffesirListManager::~TaffesirListManager()
+{
+    clear();
+}
+
+void TaffesirListManager::reloadModel()
+{
+    reloadXmlDom();
+    clear();
+
+    m_model = getModel(false);
+}
+
+void TaffesirListManager::clear()
+{
+    if(m_model)
+        delete m_model;
+}
+
+QStandardItemModel *TaffesirListManager::taffesirListModel()
+{
+    if(!m_model)
+        m_model = getModel(false);
+
+    return m_model;
+}
+
+QStandardItemModel *TaffesirListManager::allTaffesirModel()
+{
+    return getModel(true);
+}
+
+QStandardItemModel *TaffesirListManager::getModel(bool allTaffasir)
 {
     QStandardItemModel *model = new QStandardItemModel();
+
+    model->setHorizontalHeaderLabels(QStringList() << tr("التفسير")
+                                     << tr("عرض عند تصفح القرآن الكريم"));
 
     QDomElement e = m_rootElement.firstChildElement();
     while(!e.isNull()) {
@@ -38,6 +74,9 @@ QStandardItemModel *TaffesirListManager::taffesirListModel(bool allTaffasir)
 
         e = e.nextSiblingElement();
     }
+
+    if(!allTaffasir)
+        emit taffesirModelReady();
 
     return model;
 }
@@ -92,5 +131,5 @@ void TaffesirListManager::save(QStandardItemModel *taffesirModel)
 
     taffesirFile.close();
 
-    reloadXmlDom();
+    reloadModel();
 }
