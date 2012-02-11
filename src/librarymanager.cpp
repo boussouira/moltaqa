@@ -164,7 +164,8 @@ int LibraryManager::addBook(ImportModelNode *node)
 
 void LibraryManager::addBook(LibraryBook *book, int catID)
 {
-    // TODO: handle multi-threading
+    QMutexLocker locker(&m_mutex);
+
     m_bookmanager->addBook(book);
     m_bookListManager->addBook(book, catID);
 }

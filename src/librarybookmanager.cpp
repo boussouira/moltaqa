@@ -91,6 +91,8 @@ LibraryBook *LibraryBookManager::getQuranBook()
 
 void LibraryBookManager::addBook(LibraryBook *book)
 {
+    QMutexLocker locker(&m_mutex);
+
     QDomElement bookElement = m_doc.createElement("book");
     bookElement.setAttribute("id", book->bookID);
     bookElement.setAttribute("type", book->bookType);

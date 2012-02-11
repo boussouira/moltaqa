@@ -59,6 +59,7 @@ protected:
     LibraryInfo *m_libraryInfo;
     QSqlDatabase m_indexDB;
     QString m_connName;
+    QMutex m_mutex;
     LibraryBookManager *m_bookmanager;
     TaffesirListManager *m_taffesirManager;
     BookListManager *m_bookListManager;

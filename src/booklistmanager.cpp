@@ -192,6 +192,8 @@ int BookListManager::addCategorie(const QString &title, int parentCat)
 
 void BookListManager::addBook(LibraryBook *book, int parentCat)
 {
+    QMutexLocker locker(&m_mutex);
+
     QDomElement bookElement = m_doc.createElement("book");
     bookElement.setAttribute("id", book->bookID);
     bookElement.setAttribute("type", book->bookType);
