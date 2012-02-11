@@ -44,7 +44,6 @@ public:
     void getShoroohPages(LibraryBook *info, BookPage *page);
 
     QStandardItemModel *getAuthorsListModel();
-    void updateBookInfo(LibraryBook *info);
 
     void setBookIndexStat(int bookID, Enums::indexFlags indexFlag);
     QList<int> getNonIndexedBooks();
@@ -60,7 +59,6 @@ protected:
     LibraryInfo *m_libraryInfo;
     QSqlDatabase m_indexDB;
     QString m_connName;
-    QHash<int, LibraryBook*> m_savedBook;
     LibraryBookManager *m_bookmanager;
     TaffesirListManager *m_taffesirManager;
     BookListManager *m_bookListManager;

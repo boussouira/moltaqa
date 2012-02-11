@@ -95,6 +95,7 @@ void LibraryInfo::loafInfo(QString path)
     dataDir.cd(m_dataDir);
     m_dataDir = dataDir.absolutePath();
     m_booksListFile = dataDir.absoluteFilePath("bookslist.xml");
+    checkDataFiles(m_dataDir);
 
     QDir booksDir(m_path);
     if(!booksDir.exists(m_booksDir))
@@ -136,6 +137,31 @@ void LibraryInfo::loafInfo(QString path)
     indexDir.cd(m_indexDataDir);
 
     m_indexDataDir = indexDir.absolutePath();
+}
+
+void LibraryInfo::checkDataFiles(QString dataDirPath)
+{
+    QDir dataDir(dataDirPath);
+
+    QStringList files;
+    QStringList docName;
+
+    files << "booksinfo.xml" << "bookslist.xml" << "taffesirlist.xml";
+    docName << "books-info" << "books-list" << "taffesir-list";
+
+    for(int i=0; i<files.size(); i++) {
+        if(!dataDir.exists(files.at(i))) {
+            QFile file(dataDir.filePath(files.at(i)));
+            if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+                QTextStream out(&file);
+                out.setCodec("utf-8");
+
+                out << "<?xml version=\"1.0\" encoding=\"utf-8\" ?>" << "\n";
+                out << "<" << docName.at(i) << ">";
+                out << "</" << docName.at(i) << ">";
+            }
+        }
+    }
 }
 
 QString LibraryInfo::booksIndexPath()

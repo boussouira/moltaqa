@@ -72,6 +72,7 @@ public:
 
 protected:
     void loafInfo(QString path);
+    void checkDataFiles(QString dataDirPath);
 
 protected:
     QString m_name;         ///< Library name

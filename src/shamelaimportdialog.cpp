@@ -383,8 +383,9 @@ void ShamelaImportDialog::doneImporting()
                      .arg(Utils::secondsToString(m_importTime.elapsed())));
 
         if(m_importedBooksCount > 0) {
-            MW->libraryManager()->taffesirListManager()->saveXmlDom(); // TODO: auto save dom model
+            MW->libraryManager()->bookManager()->reloadLibraryBooks();
             MW->libraryManager()->bookListManager()->reloadModels();
+            MW->libraryManager()->taffesirListManager()->saveXmlDom(); // TODO: auto save dom model
         }
 
         qDeleteAll(m_importThreads);

@@ -175,7 +175,7 @@ int BookListManager::addCategorie(const QString &title, int parentCat)
     catElement.attribute("id", QString::number(catID));
 
     QDomElement titleElement = m_doc.createElement("title");
-    titleElement.setNodeValue(title);
+    titleElement.appendChild(m_doc.createTextNode(title));
 
     catElement.appendChild(titleElement);
 

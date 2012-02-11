@@ -12,7 +12,7 @@
 TaffesirListManager::TaffesirListManager(QObject *parent) : ListManager(parent)
 {
     QDir dataDir(MW->libraryInfo()->dataDir());
-    m_filePath = dataDir.filePath("taffesirlsit.xml");
+    m_filePath = dataDir.filePath("taffesirlist.xml");
 
     loadXmlDom();
 }

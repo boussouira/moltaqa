@@ -27,9 +27,6 @@ LibraryManager::LibraryManager(LibraryInfo *info, QObject *parent) : QObject(par
 
 LibraryManager::~LibraryManager()
 {
-    qDeleteAll(m_savedBook);
-    m_savedBook.clear();
-
     if(m_bookmanager)
         delete m_bookmanager;
 
@@ -167,7 +164,6 @@ int LibraryManager::addBook(ImportModelNode *node)
 
 void LibraryManager::addBook(LibraryBook *book, int catID)
 {
-    // TODO: add this book to the books list
     // TODO: handle multi-threading
     m_bookmanager->addBook(book);
     m_bookListManager->addBook(book, catID);
@@ -217,34 +213,6 @@ QStandardItemModel *LibraryManager::getAuthorsListModel()
     }
 
     return model;
-}
-
-void LibraryManager::updateBookInfo(LibraryBook *info)
-{
-    QSqlQuery bookQuery(m_indexDB);
-    bookQuery.prepare("UPDATE booksList SET "
-                          "bookDisplayName = ?, "
-                          "bookFullName = ?, "
-                          "bookOtherNames = ?, "
-                          "bookInfo = ?, "
-                          "bookEdition = ?, "
-                          "bookPublisher = ?, "
-                          "bookMohaqeq = ?, "
-                          "authorID = ? "
-                      "WHERE id = ?");
-    bookQuery.bindValue(0, info->bookDisplayName);
-    bookQuery.bindValue(1, "");
-    bookQuery.bindValue(2, info->bookOtherNames);
-    bookQuery.bindValue(3, info->bookInfo);
-    bookQuery.bindValue(4, info->bookEdition);
-    bookQuery.bindValue(5, info->bookPublisher);
-    bookQuery.bindValue(6, info->bookMohaqeq);
-    bookQuery.bindValue(7, info->authorID);
-    bookQuery.bindValue(8, info->bookID);
-
-    if(!bookQuery.exec()) {
-        LOG_SQL_ERROR(bookQuery);
-    }
 }
 
 void LibraryManager::setBookIndexStat(int bookID, Enums::indexFlags indexFlag)
