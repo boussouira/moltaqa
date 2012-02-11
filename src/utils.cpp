@@ -16,13 +16,13 @@ namespace Utils {
 
 int randInt(int smin, int smax)
 {
-    int rVal = (smin + (qrand() % (smax-smin+1)));
+    int rVal = (smin + (rand() % (smax-smin+1)));
     return qBound(smin, rVal, smax);
 }
 
 QString genBookName(QString path, bool fullPath, QString ext, QString namePrefix)
 {
-    qsrand(uint(QDateTime::currentDateTime().toMSecsSinceEpoch() & 0xFFFFFF));
+    srand(uint(QDateTime::currentDateTime().toMSecsSinceEpoch() & 0xFFFFFF));
 
     QDir dir(path);
     QString fileName(namePrefix);
