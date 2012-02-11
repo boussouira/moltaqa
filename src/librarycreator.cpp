@@ -21,7 +21,7 @@
 
 LibraryCreator::LibraryCreator()
 {
-    ShamelaImportDialog *importDialog = ShamelaImportDialog::importDialog();
+    ShamelaImportDialog *importDialog = ShamelaImportDialog::instance();
 
     m_shamelaManager = importDialog->shamelaManager();
     m_shamelaInfo = importDialog->shamelaInfo();

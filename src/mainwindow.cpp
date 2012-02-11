@@ -27,7 +27,7 @@
 #include <qfiledialog.h>
 #include <qprogressbar.h>
 
-static MainWindow *m_mainWindow = 0;
+static MainWindow *m_instance = 0;
 
 MainWindow::MainWindow(QWidget *parent):
     QMainWindow(parent),
@@ -39,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent):
     m_readerHelper(0)
 {
     ui->setupUi(this);
-    m_mainWindow = this;
+    m_instance = this;
 
     m_welcomeWidget = 0;
     m_bookView = 0;
@@ -186,27 +186,28 @@ MainWindow::~MainWindow()
 
     delete ui;
 
-    m_mainWindow = 0;
+    m_instance = 0;
 }
 
-MainWindow *MainWindow::mainWindow()
+MainWindow *MainWindow::instance()
 {
-    Q_CHECK_PTR(m_mainWindow);
+    Q_CHECK_PTR(m_instance);
 
-    return m_mainWindow;
+    return m_instance;
 }
 
 void MainWindow::setupActions()
 {
 
     connect(ui->actionExit, SIGNAL(triggered()), SLOT(close()));
-    connect(ui->actionAbout, SIGNAL(triggered()), SLOT(aboutApp()));
+    connect(ui->actionAbout, SIGNAL(triggered()), SLOT(aboutdDialog()));
     connect(ui->actionSettings, SIGNAL(triggered()), SLOT(settingDialog()));
     connect(ui->actionControlCenter, SIGNAL(triggered()), SLOT(controlCenter()));
+    connect(ui->actionImport, SIGNAL(triggered()), SLOT(importBookDialog()));
+    connect(ui->actionShamelaImport, SIGNAL(triggered()), SLOT(importFromShamela()));
 
     //TODO: open Quran quickly
     connect(m_welcomeWidget, SIGNAL(showBooksList()), SLOT(showBooksList()));
-    connect(m_bookView, SIGNAL(lastTabClosed()), SLOT(lastTabClosed()));
     connect(m_libraryManager, SIGNAL(bookAdded()), m_bookView, SLOT(loadTafessirList()));
     connect(m_booksList, SIGNAL(bookSelected(int)), SLOT(openBook(int)));
     connect(ui->actionBooksList, SIGNAL(triggered()), SLOT(showBooksList()));
@@ -219,7 +220,7 @@ void MainWindow::setupActions()
     connect(m_indexTracker, SIGNAL(gotTask()), m_indexManager, SLOT(start()));
 }
 
-void MainWindow::aboutApp()
+void MainWindow::aboutdDialog()
 {
     QMessageBox::information(this,
                              App::name(),
@@ -230,11 +231,6 @@ void MainWindow::settingDialog()
 {
     SettingsDialog settingDialog(this);
     settingDialog.exec();
-}
-
-void MainWindow::quranWindow()
-{
-    openBook(defaultQuran);
 }
 
 void MainWindow::openBook(int pBookID)
@@ -296,26 +292,6 @@ void MainWindow::loadSettings()
         showMaximized();
 
     settings.endGroup();
-}
-
-void MainWindow::on_actionImport_triggered()
-{
-    ImportDialog *dialog = new ImportDialog(m_libraryManager, 0);
-    connect(dialog, SIGNAL(openBook(int)), this, SLOT(openBook(int)));
-
-    dialog->show();
-}
-
-void MainWindow::lastTabClosed()
-{
-}
-
-void MainWindow::on_actionShamelaImport_triggered()
-{
-    ShamelaImportDialog importDialog;
-    importDialog.setLibraryInfo(m_libraryManager->connectionInfo());
-
-    importDialog.exec();
 }
 
 LibraryInfo *MainWindow::libraryInfo()
@@ -381,6 +357,20 @@ void MainWindow::controlCenter()
 {
     ControlCenterDialog dialog(this);
     dialog.exec();
+}
+
+void MainWindow::importBookDialog()
+{
+    ImportDialog *dialog = new ImportDialog(m_libraryManager, 0);
+    connect(dialog, SIGNAL(openBook(int)), this, SLOT(openBook(int)));
+
+    dialog->show();
+}
+
+void MainWindow::importFromShamela()
+{
+    ShamelaImportDialog importDialog;
+    importDialog.exec();
 }
 
 void MainWindow::startIndexing()

@@ -23,7 +23,7 @@ class ShamelaImportDialog : public QDialog
 public:
     ShamelaImportDialog(QWidget *parent = 0);
     ~ShamelaImportDialog();
-    static ShamelaImportDialog *importDialog();
+    static ShamelaImportDialog *instance();
     ShamelaManager *shamelaManager();
     ShamelaInfo *shamelaInfo();
     LibraryInfo *libraryInfo();

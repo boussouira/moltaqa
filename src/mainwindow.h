@@ -4,7 +4,7 @@
 #include <qmainwindow.h>
 #include "searchview.h"
 
-#define MW MainWindow::mainWindow()
+#define MW MainWindow::instance()
 
 class ViewManager;
 class LibraryManager;
@@ -33,7 +33,7 @@ public:
     ~MainWindow();
 
     bool init();
-    static MainWindow *mainWindow();
+    static MainWindow *instance();
 
     LibraryInfo *libraryInfo();
     LibraryManager *libraryManager();
@@ -51,21 +51,21 @@ protected:
     void loadSettings();
 
 protected slots:
-    void aboutApp();
-    void settingDialog();
-    void quranWindow();
-    void showBooksList();
-    void showSearchView();
     void openBook(int pBookID);
-    void lastTabClosed();
+
+    void showSearchView();
+
+    void showBooksList();
+    void aboutdDialog();
+    void settingDialog();
     void controlCenter();
+
+    void importBookDialog();
+    void importFromShamela();
+
     void startIndexing();
     void stopIndexing();
     void indexProgress(int value, int max);
-
-private slots:
-    void on_actionImport_triggered();
-    void on_actionShamelaImport_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -81,7 +81,6 @@ private:
     SearchView *m_searchView;
     BookReaderHelper *m_readerHelper;
     BookEditorView *m_editorView;
-    int defaultQuran;
 };
 
 #endif // MAINWINDOW_H

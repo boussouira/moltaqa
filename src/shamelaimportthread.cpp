@@ -7,7 +7,7 @@
 ShamelaImportThread::ShamelaImportThread(QObject *parent) :
     QThread(parent)
 {
-    ShamelaImportDialog *importDialog = ShamelaImportDialog::importDialog();
+    ShamelaImportDialog *importDialog = ShamelaImportDialog::instance();
 
     m_shamelaManager = importDialog->shamelaManager();
     m_shamelaInfo = importDialog->shamelaInfo();

@@ -27,7 +27,7 @@
 #include <qmessagebox.h>
 #include <qevent.h>
 
-static ShamelaImportDialog* m_importDialog=0;
+static ShamelaImportDialog* m_instance=0;
 
 ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
     QDialog(parent),
@@ -35,11 +35,12 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    m_importDialog = this;
+    m_instance = this;
 
     m_shamela = new ShamelaInfo();
     m_manager = new ShamelaManager(m_shamela);
     m_libraryManager = MW->libraryManager();
+    m_library = MW->libraryInfo();
 
     m_importedBooksCount = 0;
     m_proccessItemChange = true;
@@ -64,7 +65,7 @@ ShamelaImportDialog::~ShamelaImportDialog()
     delete m_manager;
     delete ui;
 
-    m_importDialog = 0;
+    m_instance = 0;
 }
 
 void ShamelaImportDialog::closeEvent(QCloseEvent *event)
@@ -80,11 +81,11 @@ void ShamelaImportDialog::closeEvent(QCloseEvent *event)
     }
 }
 
-ShamelaImportDialog *ShamelaImportDialog::importDialog()
+ShamelaImportDialog *ShamelaImportDialog::instance()
 {
-    Q_CHECK_PTR(m_importDialog);
+    Q_CHECK_PTR(m_instance);
 
-    return m_importDialog;
+    return m_instance;
 }
 
 ShamelaManager *ShamelaImportDialog::shamelaManager()
