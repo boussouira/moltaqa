@@ -11,6 +11,9 @@ class ControlCenterWidget : public QWidget
 public:
     ControlCenterWidget(QWidget* parent = 0);
 
+    void setModified(bool m);
+    bool isModified();
+
 protected:
     virtual void loadModel()=0;
 
@@ -19,7 +22,10 @@ public slots:
     virtual void beginEdit()=0;
 
 signals:
-    void edited(bool e);
+    void modified(bool e);
+
+protected:
+    bool m_modified;
 };
 
 #endif // ABSTRACTEDITWIDGET_H

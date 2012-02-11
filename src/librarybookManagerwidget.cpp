@@ -63,7 +63,7 @@ void LibraryBookManagerWidget::editted()
     if(m_currentBook) {
         m_editedBookInfo[m_currentBook->bookID] = m_currentBook;
 
-        emit edited(true);
+        setModified(true);
     }
 }
 
@@ -85,7 +85,7 @@ void LibraryBookManagerWidget::save()
         m_editedBookInfo.clear();
         m_currentBook = 0;
 
-        emit edited(false);
+        setModified(false);
     }
 }
 

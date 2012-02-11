@@ -232,5 +232,5 @@ void BookListManagerWidget::updateActions()
 
 void BookListManagerWidget::modelEdited()
 {
-    emit edited(true);
+    setModified(true);
 }
