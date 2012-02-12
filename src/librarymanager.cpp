@@ -58,30 +58,11 @@ void LibraryManager::open()
     openManagers();
 }
 
-/*
-void test_bookManager(LibraryBookManager *bookManager)
-{
-    LibraryBook b;
-    b.bookID = Utils::randInt(9999, 999999);
-    b.bookType = b.NormalBook;
-    b.authorID = 10;
-    b.flags = 64;
-    b.bookDisplayName = "The great & book";
-    b.fileName = "test_64ssdf.alb";
-    b.bookInfo = "New Book <for> reading stuff";
-
-    bookManager->addBook(&b);
-    bookManager->saveXmlDom();
-}
-*/
-
 void LibraryManager::openManagers()
 {
     m_bookmanager = new LibraryBookManager(this);
     m_bookListManager = new BookListManager(this);
     m_taffesirManager = new TaffesirListManager(this);
-
-    m_bookListManager->loadModels();
 }
 
 QPair<int, QString> LibraryManager::findAuthor(const QString &name)
