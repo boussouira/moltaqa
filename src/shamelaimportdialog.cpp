@@ -223,16 +223,16 @@ bool ShamelaImportDialog::createFilter()
 
         for(int i=0; i<m_booksModel->rowCount(); i++) {
             QStandardItem *item = m_booksModel->item(i);
-            if(item->data(ShamelaManager::typeRole).toInt() == ItemType::CategorieItem) {
+            if(item->data(ItemRole::typeRole).toInt() == ItemType::CategorieItem) {
                 for(int j=0; j < item->rowCount(); j++) {
                     QStandardItem *child = item->child(j);
                     if(child->checkState() == Qt::Checked){
-                        selectedIDs.append(child->data(ShamelaManager::idRole).toInt());
+                        selectedIDs.append(child->data(ItemRole::idRole).toInt());
                     }
                 }
-            } else if(item->data(ShamelaManager::typeRole).toInt() == ItemType::BookItem) {
+            } else if(item->data(ItemRole::typeRole).toInt() == ItemType::BookItem) {
                 if(item->checkState() == Qt::Checked){
-                    selectedIDs.append(item->data(ShamelaManager::idRole).toInt());
+                    selectedIDs.append(item->data(ItemRole::idRole).toInt());
                 }
             }
         }
@@ -253,8 +253,8 @@ void ShamelaImportDialog::setupImporting()
             QStandardItem* libraryItem = rootItem->child(i, 1);
 
             if(libraryItem && shamelaItem)
-                m_manager->mapper()->addCatMap(shamelaItem->data(ShamelaManager::idRole).toInt(),
-                                               libraryItem->data(ShamelaManager::idRole).toInt());
+                m_manager->mapper()->addCatMap(shamelaItem->data(ItemRole::idRole).toInt(),
+                                               libraryItem->data(ItemRole::idRole).toInt());
         }
     } else {
         LibraryCreator creator;
@@ -291,7 +291,7 @@ void ShamelaImportDialog::setupCategories()
         QStandardItem* libraryItem = 0;
         QStandardItem *shamelaItem = new QStandardItem;
         shamelaItem->setText(cat->name);
-        shamelaItem->setData(cat->id, ShamelaManager::idRole);
+        shamelaItem->setData(cat->id, ItemRole::idRole);
         shamelaItem->setEditable(false);
 
         // Try to find this cat in our library
@@ -299,7 +299,7 @@ void ShamelaImportDialog::setupCategories()
         if(libCat.first) {
             libraryItem = new QStandardItem;
             libraryItem->setText(libCat.second);
-            libraryItem->setData(libCat.first, ShamelaManager::idRole);
+            libraryItem->setData(libCat.first, ItemRole::idRole);
         }
 
         model->setItem(model->rowCount(), 0, shamelaItem);
@@ -450,11 +450,11 @@ void ShamelaImportDialog::itemChanged(QStandardItem *item)
     if(item && m_proccessItemChange) {
         m_proccessItemChange = false;
 
-        if(item->data(ShamelaManager::typeRole).toInt() == ItemType::CategorieItem) {
+        if(item->data(ItemRole::typeRole).toInt() == ItemType::CategorieItem) {
             for(int i=0; i<item->rowCount(); i++) {
                 item->child(i)->setCheckState(item->checkState());
             }
-        } else if(item->data(ShamelaManager::typeRole).toInt() == ItemType::BookItem) {
+        } else if(item->data(ItemRole::typeRole).toInt() == ItemType::BookItem) {
             QStandardItem *parentItem = item->parent();
             int checkItems = 0;
 

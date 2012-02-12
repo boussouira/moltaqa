@@ -52,9 +52,6 @@ public:
 
     static QString mdbTable(QString table);
 
-    static const int idRole = Qt::UserRole + 2;
-    static const int typeRole = Qt::UserRole + 3;
-
 protected:
     void booksCat(QStandardItem *parentNode, int catID);
 

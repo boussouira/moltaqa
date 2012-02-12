@@ -3,6 +3,7 @@
 #include "selectcatdialog.h"
 #include "selectauthordialog.h"
 #include "shamelamanager.h"
+#include "modelenums.h"
 #include <qcombobox.h>
 
 /* Book type delegate */
@@ -86,7 +87,7 @@ void CategorieDelegate::setModelData(QWidget *editor,
         if(importModel)
             importModel->nodeFromIndex(index)->catID = catID;
         else
-            model->setData(index, catID, ShamelaManager::idRole);
+            model->setData(index, catID, ItemRole::idRole);
 
         model->setData(index, catName, Qt::EditRole);
     }

@@ -134,8 +134,8 @@ QStandardItemModel *ShamelaManager::getBooksListModel()
     while(query.next()) {
         QStandardItem *item = new QStandardItem();
         item->setText(query.value(1).toString());
-        item->setData(query.value(0).toInt(), idRole);
-        item->setData(ItemType::CategorieItem, typeRole);
+        item->setData(query.value(0).toInt(), ItemRole::idRole);
+        item->setData(ItemType::CategorieItem, ItemRole::typeRole);
 
         item->setCheckable(true);
         item->setCheckState(Qt::Unchecked);
@@ -162,8 +162,8 @@ void ShamelaManager::booksCat(QStandardItem *parentNode, int catID)
     while(query.next()) {
         QStandardItem *item = new QStandardItem();
         item->setText(query.value(1).toString());
-        item->setData(query.value(0).toInt(), idRole);
-        item->setData(ItemType::BookItem, typeRole);
+        item->setData(query.value(0).toInt(), ItemRole::idRole);
+        item->setData(ItemType::BookItem, ItemRole::typeRole);
 
         item->setCheckable(true);
         item->setCheckState(Qt::Unchecked);
