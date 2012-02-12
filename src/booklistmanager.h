@@ -22,7 +22,6 @@ public:
     QStandardItemModel *bookListModel();
     QStandardItemModel *catListModel();
 
-    void save(QStandardItemModel *model);
     void reloadModels();
 
     int categoriesCount();
@@ -35,6 +34,7 @@ public:
     void addBook(LibraryBook *book, int parentCat);
 
 protected:
+    void saveModel(QXmlStreamWriter &writer, QStandardItemModel *model);
     void readNode(QStandardItem *parentItem, QDomElement &element, bool withBooks=true);
     QList<QStandardItem*> readCatNode(QDomElement &element);
     QList<QStandardItem*> readBookNode(QDomElement &element);

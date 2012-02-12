@@ -5,6 +5,9 @@
 #include <qdom.h>
 #include <qmutex.h>
 
+class QStandardItemModel;
+class QXmlStreamWriter;
+
 class ListManager : public QObject
 {
     Q_OBJECT
@@ -18,6 +21,11 @@ public:
     void saveXmlDom();
 
     void reloadXmlDom();
+
+    void save(QStandardItemModel *model);
+
+protected:
+    virtual void saveModel(QXmlStreamWriter &writer, QStandardItemModel *model);
 
 protected:
     QMutex m_mutex;

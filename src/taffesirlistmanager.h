@@ -19,9 +19,8 @@ public:
     QStandardItemModel* allTaffesirModel();
     void addTafessir(int bookID, QString taffesirName);
 
-    void save(QStandardItemModel *taffesirModel);
-
 protected:
+    void saveModel(QXmlStreamWriter &writer, QStandardItemModel *model);
     QStandardItemModel* getModel(bool allTaffasir=false);
 
 signals:

@@ -98,38 +98,23 @@ void TaffesirListManager::addTafessir(int bookID, QString taffesirName)
     m_saveDom = true;
 }
 
-void TaffesirListManager::save(QStandardItemModel *taffesirModel)
+void TaffesirListManager::saveModel(QXmlStreamWriter &writer, QStandardItemModel *model)
 {
-    if(m_saveDom)
-        qCritical("TaffesirListManager: The XML need to be save before saving the model");
-
-    QFile taffesirFile(m_filePath);
-
-    if(!taffesirFile.open(QIODevice::WriteOnly)) {
-        qCritical("Can't open taffesirlist.xml");
-        return;
-    }
-
-    QXmlStreamWriter writer(&taffesirFile);
-    writer.setAutoFormatting(true);
-
     writer.writeStartDocument();
     writer.writeStartElement("taffesir-list");
 
-    for(int i=0; i<taffesirModel->rowCount(); i++) {
+    for(int i=0; i<model->rowCount(); i++) {
         writer.writeStartElement("taffesir");
-        writer.writeAttribute("bookID", taffesirModel->item(i, 0)->data(ItemRole::idRole).toString());
-        writer.writeAttribute("show", taffesirModel->item(i, 1)->checkState() == Qt::Unchecked ? "false" : "true");
+        writer.writeAttribute("bookID", model->item(i, 0)->data(ItemRole::idRole).toString());
+        writer.writeAttribute("show", model->item(i, 1)->checkState() == Qt::Unchecked ? "false" : "true");
 
-        writer.writeTextElement("title", taffesirModel->item(i, 0)->text());
+        writer.writeTextElement("title", model->item(i, 0)->text());
 
         writer.writeEndElement();
     }
 
     writer.writeEndElement();
     writer.writeEndDocument();
-
-    taffesirFile.close();
 
     reloadModel();
 }

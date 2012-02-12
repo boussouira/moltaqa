@@ -19,6 +19,8 @@ BookListManager::BookListManager(QObject *parent)
 {
     QDir dataDir(MW->libraryInfo()->dataDir());
     m_filePath = dataDir.filePath("bookslist.xml");
+
+    loadModels();
 }
 
 BookListManager::~BookListManager()
@@ -71,21 +73,8 @@ QStandardItemModel *BookListManager::catListModel()
     return m_catModel;
 }
 
-void BookListManager::save(QStandardItemModel *model)
+void BookListManager::saveModel(QXmlStreamWriter &writer, QStandardItemModel *model)
 {
-    if(m_saveDom)
-        qCritical("BookListManager: The XML need to be save before saving the model");
-
-    QFile taffesirFile(m_filePath);
-
-    if(!taffesirFile.open(QIODevice::WriteOnly)) {
-        qCritical("Can't open bookslist.xml");
-        return;
-    }
-
-    QXmlStreamWriter writer(&taffesirFile);
-    writer.setAutoFormatting(true);
-
     writer.writeStartDocument();
     writer.writeStartElement("books-list");
 
@@ -99,8 +88,6 @@ void BookListManager::save(QStandardItemModel *model)
 
     writer.writeEndElement();
     writer.writeEndDocument();
-
-    taffesirFile.close();
 
     reloadModels();
 }

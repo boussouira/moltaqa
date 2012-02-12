@@ -3,6 +3,7 @@
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qdebug.h>
+#include <qxmlstream.h>
 
 ListManager::ListManager(QObject *parent) :
     QObject(parent),
@@ -60,4 +61,30 @@ void ListManager::reloadXmlDom()
     m_doc.clear();
 
     loadXmlDom();
+}
+
+void ListManager::save(QStandardItemModel *model)
+{
+    if(m_saveDom)
+        qCritical("ListManager: The XML need to be save before saving the model");
+
+    QFile file(m_filePath);
+
+    if(!file.open(QIODevice::WriteOnly)) {
+        qCritical() << "Can't open file" << m_filePath;
+        return;
+    }
+
+    QXmlStreamWriter writer(&file);
+    writer.setAutoFormatting(true);
+
+    saveModel(writer, model);
+
+    file.close();
+}
+
+void ListManager::saveModel(QXmlStreamWriter &writer, QStandardItemModel *model)
+{
+    Q_UNUSED(writer);
+    Q_UNUSED(model);
 }
