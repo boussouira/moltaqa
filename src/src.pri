@@ -105,7 +105,8 @@ SOURCES += mainwindow.cpp \
     taffesirlistmanager.cpp \
     listmanager.cpp \
     booklistmanager.cpp \
-    librarybookmanager.cpp
+    librarybookmanager.cpp \
+    authorsmanager.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -198,7 +199,8 @@ HEADERS += mainwindow.h \
     taffesirlistmanager.h \
     listmanager.h \
     booklistmanager.h \
-    librarybookmanager.h
+    librarybookmanager.h \
+    authorsmanager.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

@@ -1,9 +1,10 @@
 #ifndef LISTMANAGER_H
 #define LISTMANAGER_H
 
-#include <QObject>
+#include <qobject.h>
 #include <qdom.h>
 #include <qmutex.h>
+#include <qset.h>
 
 class QStandardItemModel;
 class QXmlStreamWriter;
@@ -22,10 +23,17 @@ public:
 
     void reloadXmlDom();
 
+    virtual void loadModels()=0;
+    virtual void clear();
+    void reloadModels();
+
     void save(QStandardItemModel *model);
 
 protected:
     virtual void saveModel(QXmlStreamWriter &writer, QStandardItemModel *model);
+
+signals:
+    void ModelsReady();
 
 protected:
     QMutex m_mutex;

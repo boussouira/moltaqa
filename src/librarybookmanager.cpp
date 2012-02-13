@@ -1,9 +1,12 @@
 #include "librarybookmanager.h"
 #include "mainwindow.h"
+#include "librarymanager.h"
 #include "libraryinfo.h"
 #include "librarybook.h"
 #include "modelenums.h"
 #include "utils.h"
+#include "authorsmanager.h"
+
 #include <qdir.h>
 #include <qstandarditemmodel.h>
 
@@ -13,39 +16,43 @@ LibraryBookManager::LibraryBookManager(QObject *parent) :
 {
     QDir dataDir(MW->libraryInfo()->dataDir());
     m_filePath = dataDir.filePath("booksinfo.xml");
+    m_authorsManager = MW->libraryManager()->authorsManager();
 
-    loadLibraryBooks();
+    Q_CHECK_PTR(m_authorsManager);
+
+    loadModels();
 }
 
 LibraryBookManager::~LibraryBookManager()
 {
-    clear();
+    qDeleteAll(m_usedBooks);
+}
+
+void LibraryBookManager::loadModels()
+{
+    loadXmlDom();
+    loadLibraryBooks();
+}
+
+void LibraryBookManager::clear()
+{
+    // Delete only unused books
+    foreach(LibraryBook *book, m_books.values()) {
+        if(!m_usedBooks.contains(book))
+            delete book;
+    }
+
+    m_books.clear();
 }
 
 void LibraryBookManager::loadLibraryBooks()
 {
-    clear();
-    loadXmlDom();
-
     QDomElement e = m_rootElement.firstChildElement();
     while(!e.isNull()) {
         readBook(e);
 
         e = e.nextSiblingElement();
     }
-}
-
-void LibraryBookManager::clear()
-{
-    // TODO: what if an other object is using one of this books?
-    qDeleteAll(m_books);
-    m_books.clear();
-}
-
-void LibraryBookManager::reloadLibraryBooks()
-{
-    reloadXmlDom();
-    loadLibraryBooks();
 }
 
 QStandardItemModel *LibraryBookManager::getModel()
@@ -69,7 +76,9 @@ QStandardItemModel *LibraryBookManager::getModel()
 LibraryBook *LibraryBookManager::getLibraryBook(int bookID)
 {
     LibraryBook *book = m_books.value(bookID);
-    if(!book)
+    if(book)
+        m_usedBooks.insert(book);
+    else
         qWarning("No book with id %d", bookID);
 
     return book;
@@ -81,6 +90,7 @@ LibraryBook *LibraryBookManager::getQuranBook()
         foreach (LibraryBook *book, m_books.values()) {
             if(book->isQuran()) {
                 m_quranBook = book;
+                m_usedBooks.insert(book);
                 break;
             }
         }
@@ -130,7 +140,7 @@ void LibraryBookManager::beginUpdate()
 void LibraryBookManager::endUpdate()
 {
     m_bookElementHash.clear();
-    reloadLibraryBooks();
+    reloadModels();
 }
 
 void LibraryBookManager::updateBook(LibraryBook *book)
@@ -170,7 +180,14 @@ void LibraryBookManager::readBook(QDomElement &e)
 
     if(!book->isQuran()) {
         book->authorID = e.attribute("authorid").toInt();
-        book->authorName = e.firstChildElement("author").text();
+
+        if(book->authorID) {
+            book->authorName = m_authorsManager->getAuthorName(book->authorID);
+        } else {
+            QDomElement authorElement = e.firstChildElement("author");
+            if(!authorElement.isNull())
+                book->authorName = authorElement.text();
+        }
     }
 
     m_books.insert(book->bookID, book);

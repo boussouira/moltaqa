@@ -9,6 +9,7 @@
 #include "librarybookmanager.h"
 #include "taffesirlistmanager.h"
 #include "booklistmanager.h"
+#include "authorsmanager.h"
 
 #include <qdebug.h>
 #include <qsqlquery.h>
@@ -17,11 +18,14 @@
 #include <qsqlerror.h>
 #include <qdatetime.h>
 
-LibraryManager::LibraryManager(LibraryInfo *info, QObject *parent) : QObject(parent)
+LibraryManager::LibraryManager(LibraryInfo *info, QObject *parent) :
+    QObject(parent),
+    m_libraryInfo(info),
+    m_bookmanager(0),
+    m_taffesirManager(0),
+    m_bookListManager(0),
+    m_authorsManager(0)
 {
-    m_taffesirManager = 0;
-
-    m_libraryInfo = info;
     m_connName = "BooksIndexDB";
 }
 
@@ -35,11 +39,6 @@ LibraryManager::~LibraryManager()
 
     if(m_taffesirManager)
         delete m_taffesirManager;
-}
-
-LibraryInfo *LibraryManager::connectionInfo()
-{
-    return m_libraryInfo;
 }
 
 void LibraryManager::open()
@@ -60,6 +59,7 @@ void LibraryManager::open()
 
 void LibraryManager::openManagers()
 {
+    m_authorsManager = new AuthorsManager(this); // should be the first
     m_bookmanager = new LibraryBookManager(this);
     m_bookListManager = new BookListManager(this);
     m_taffesirManager = new TaffesirListManager(this);
@@ -121,7 +121,7 @@ bool LibraryManager::hasShareeh(int bookID)
 
 int LibraryManager::addBook(ImportModelNode *node)
 {
-    LibraryBook *book = node->toLibraryBook();
+    QScopedPointer<LibraryBook> book(node->toLibraryBook());
     QString newBookName = Utils::genBookName(m_libraryInfo->booksDir());
     QString newPath = m_libraryInfo->booksDir() + "/" + newBookName;
 
@@ -129,14 +129,12 @@ int LibraryManager::addBook(ImportModelNode *node)
         if(!QFile::remove(node->bookPath))
             qWarning() << "Can't remove:" << node->bookPath;
 
-        int bookID = m_bookmanager->getNewBookID();
-        book->bookID = bookID;
+        book->bookID = m_bookmanager->getNewBookID();
         book->fileName = newBookName;
 
-        addBook(book, node->catID);
+        addBook(book.data(), node->catID);
 
-        delete book;
-        return bookID;
+        return book->bookID;
     } else {
         qWarning() << "Can't copy" << node->bookPath << "to" << newPath;
         return -1;
@@ -245,4 +243,9 @@ BookListManager *LibraryManager::bookListManager()
 LibraryBookManager *LibraryManager::bookManager()
 {
     return m_bookmanager;
+}
+
+AuthorsManager *LibraryManager::authorsManager()
+{
+    return m_authorsManager;
 }

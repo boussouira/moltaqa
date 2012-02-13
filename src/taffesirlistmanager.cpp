@@ -15,26 +15,27 @@ TaffesirListManager::TaffesirListManager(QObject *parent) : ListManager(parent)
     m_filePath = dataDir.filePath("taffesirlist.xml");
     m_model = 0;
 
-    reloadModel();
+    loadModels();
 }
 
 TaffesirListManager::~TaffesirListManager()
 {
-    clear();
 }
 
-void TaffesirListManager::reloadModel()
+void TaffesirListManager::loadModels()
 {
-    reloadXmlDom();
-    clear();
+    loadXmlDom();
 
-    m_model = getModel(false);
+    taffesirListModel();
+    emit ModelsReady();
 }
 
 void TaffesirListManager::clear()
 {
-    if(m_model)
+    if(m_model) {
         delete m_model;
+        m_model = 0;
+    }
 }
 
 QStandardItemModel *TaffesirListManager::taffesirListModel()
@@ -75,9 +76,6 @@ QStandardItemModel *TaffesirListManager::getModel(bool allTaffasir)
         e = e.nextSiblingElement();
     }
 
-    if(!allTaffasir)
-        emit taffesirModelReady();
-
     return model;
 }
 
@@ -115,6 +113,4 @@ void TaffesirListManager::saveModel(QXmlStreamWriter &writer, QStandardItemModel
 
     writer.writeEndElement();
     writer.writeEndDocument();
-
-    reloadModel();
 }

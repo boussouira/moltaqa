@@ -20,6 +20,7 @@ class ImportModelNode;
 class LibraryBookManager;
 class TaffesirListManager;
 class BookListManager;
+class AuthorsManager;
 
 class LibraryManager : public QObject
 {
@@ -35,7 +36,6 @@ public:
     void open();
     void openManagers();
 
-    LibraryInfo *connectionInfo();
     QPair<int, QString> findAuthor(const QString &name);
     int addBook(ImportModelNode *node);
     void addBook(LibraryBook *book, int catID);
@@ -51,9 +51,7 @@ public:
     TaffesirListManager *taffesirListManager();
     BookListManager *bookListManager();
     LibraryBookManager *bookManager();
-
-signals:
-    void bookAdded();
+    AuthorsManager *authorsManager();
 
 protected:
     LibraryInfo *m_libraryInfo;
@@ -63,6 +61,7 @@ protected:
     LibraryBookManager *m_bookmanager;
     TaffesirListManager *m_taffesirManager;
     BookListManager *m_bookListManager;
+    AuthorsManager *m_authorsManager;
 };
 
 #endif // LIBRARYMANAGER_H

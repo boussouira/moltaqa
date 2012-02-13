@@ -36,7 +36,7 @@ BooksListBrowser::BooksListBrowser(LibraryManager *libraryManager, QWidget *pare
     connect(ui->lineSearch, SIGNAL(textChanged(QString)),
             SLOT(setFilterText(QString)));// TODO: serach in book info...
 
-    connect(m_bookListManager, SIGNAL(bookListModelReady()), SLOT(readBookListModel()));
+    connect(m_bookListManager, SIGNAL(ModelsReady()), SLOT(readBookListModel()));
 
     connect(ui->treeView->header(),
             SIGNAL(sortIndicatorChanged(int,Qt::SortOrder)),

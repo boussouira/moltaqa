@@ -9,6 +9,7 @@ class QStandardItem;
 class QXmlStreamWriter;
 class QModelIndex;
 class LibraryBook;
+class AuthorsManager;
 
 class BookListManager : public ListManager
 {
@@ -19,17 +20,17 @@ public:
     ~BookListManager();
 
     void loadModels();
+    void clear();
+
     QStandardItemModel *bookListModel();
     QStandardItemModel *catListModel();
-
-    void reloadModels();
 
     int categoriesCount();
     int booksCount();
 
     int maxCategorieID();
 
-    QPair<int, QString> findCategorie(const QString &cat);
+    QPair<int, QString> findCategorie(const QString &cat); // TODO: use a simple class instead of QPair (inherit it)
     int addCategorie(const QString &title, int parentCat);
     void addBook(LibraryBook *book, int parentCat);
 
@@ -41,10 +42,8 @@ protected:
 
     void writeItem(QXmlStreamWriter &writer, QModelIndex &index);
 
-signals:
-    void bookListModelReady();
-
 protected:
+    AuthorsManager *m_authorsManager;
     QStandardItemModel *m_bookModel;
     QStandardItemModel *m_catModel;
     QHash<int, QString> m_catHash;

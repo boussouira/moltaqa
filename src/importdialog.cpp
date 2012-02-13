@@ -9,6 +9,7 @@
 #include "mainwindow.h"
 #include "indextracker.h"
 #include "booklistmanager.h"
+#include "taffesirlistmanager.h"
 
 #ifdef USE_MDBTOOLS
     #include "mdbconverter.h"
@@ -198,8 +199,8 @@ void ImportDialog::startImporting()
                                    Q_ARG(int, i+1));
     }
 
-    m_libraryManager->bookManager()->reloadLibraryBooks();
-    metaObject()->invokeMethod(m_libraryManager, "bookAdded");
+    m_libraryManager->bookManager()->reloadModels();
+    m_libraryManager->taffesirListManager()->reloadModels();
 
     qDebug() << "Importing" << imported << "books take" << time.elapsed() << "ms";
 }

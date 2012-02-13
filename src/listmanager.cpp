@@ -16,6 +16,8 @@ ListManager::~ListManager()
 {
     if(m_saveDom)
         saveXmlDom();
+
+    clear();
 }
 
 void ListManager::setFilePath(QString path)
@@ -63,6 +65,10 @@ void ListManager::reloadXmlDom()
     loadXmlDom();
 }
 
+void ListManager::clear()
+{
+}
+
 void ListManager::save(QStandardItemModel *model)
 {
     if(m_saveDom)
@@ -81,10 +87,18 @@ void ListManager::save(QStandardItemModel *model)
     saveModel(writer, model);
 
     file.close();
+    reloadModels();
 }
 
 void ListManager::saveModel(QXmlStreamWriter &writer, QStandardItemModel *model)
 {
     Q_UNUSED(writer);
     Q_UNUSED(model);
+}
+
+void ListManager::reloadModels()
+{
+    reloadXmlDom();
+    clear();
+    loadModels();
 }

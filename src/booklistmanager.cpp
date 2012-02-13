@@ -1,10 +1,13 @@
 #include "booklistmanager.h"
 #include "mainwindow.h"
+#include "librarymanager.h"
 #include "libraryinfo.h"
 #include "librarybook.h"
 #include "utils.h"
 #include "xmlutils.h"
 #include "modelenums.h"
+#include "authorsmanager.h"
+
 #include <qdir.h>
 #include <qstandarditemmodel.h>
 #include <qxmlstream.h>
@@ -19,17 +22,15 @@ BookListManager::BookListManager(QObject *parent)
 {
     QDir dataDir(MW->libraryInfo()->dataDir());
     m_filePath = dataDir.filePath("bookslist.xml");
+    m_authorsManager = MW->libraryManager()->authorsManager();
+
+    Q_CHECK_PTR(m_authorsManager);
 
     loadModels();
 }
 
 BookListManager::~BookListManager()
 {
-    if(m_bookModel)
-        delete m_bookModel;
-
-    if(m_catModel)
-        delete m_catModel;
 }
 
 void BookListManager::loadModels()
@@ -38,6 +39,24 @@ void BookListManager::loadModels()
 
     bookListModel();
     catListModel();
+
+    emit ModelsReady();
+}
+
+void BookListManager::clear()
+{
+    if(m_bookModel) {
+        delete m_bookModel;
+        m_bookModel = 0;
+    }
+
+    if(m_catModel) {
+        delete m_catModel;
+        m_catModel = 0;
+    }
+
+    m_catHash.clear();
+    m_catElementHash.clear();
 }
 
 QStandardItemModel *BookListManager::bookListModel()
@@ -51,8 +70,6 @@ QStandardItemModel *BookListManager::bookListModel()
                                          << tr("وفاة المؤلف"));
 
         readNode(m_bookModel->invisibleRootItem(), m_rootElement);
-
-        emit bookListModelReady();
     }
 
     return m_bookModel;
@@ -88,28 +105,6 @@ void BookListManager::saveModel(QXmlStreamWriter &writer, QStandardItemModel *mo
 
     writer.writeEndElement();
     writer.writeEndDocument();
-
-    reloadModels();
-}
-
-void BookListManager::reloadModels()
-{
-    if(m_bookModel) {
-        delete m_bookModel;
-        m_bookModel = 0;
-    }
-
-    if(m_catModel) {
-        delete m_catModel;
-        m_catModel = 0;
-    }
-
-    m_catHash.clear();
-    m_catElementHash.clear();
-
-    reloadXmlDom();
-
-    loadModels();
 }
 
 int BookListManager::categoriesCount()
@@ -179,21 +174,17 @@ int BookListManager::addCategorie(const QString &title, int parentCat)
 
 void BookListManager::addBook(LibraryBook *book, int parentCat)
 {
+    // TODO: check if the author exist in the our authors list
     QMutexLocker locker(&m_mutex);
 
     QDomElement bookElement = m_doc.createElement("book");
     bookElement.setAttribute("id", book->bookID);
     bookElement.setAttribute("type", book->bookType);
     bookElement.setAttribute("authorid", book->authorID);
-    // TODO: add authordeath attribute
 
     QDomElement titleElement = m_doc.createElement("title");
     titleElement.appendChild(m_doc.createTextNode(book->bookDisplayName));
     bookElement.appendChild(titleElement);
-
-    QDomElement authorElement = m_doc.createElement("author");
-    authorElement.appendChild(m_doc.createTextNode(book->authorName));
-    bookElement.appendChild(authorElement);
 
     QDomElement bookInfoElement = m_doc.createElement("info");
     bookInfoElement.appendChild(m_doc.createCDATASection(book->bookInfo));
@@ -249,12 +240,10 @@ QList<QStandardItem*> BookListManager::readBookNode(QDomElement &element)
 {
     QList<QStandardItem*> rows;
     QDomElement bookNameElement = element.firstChildElement("title");
-    QDomElement authorNameElement = element.firstChildElement("author");
     QDomElement infoElement = element.firstChildElement("info");
 
     int bookID = element.attribute("id").toInt();
-    int authorID= element.attribute("authorid").toInt();
-    int authorDeath = element.attribute("authordeath").toInt();
+    int authorID = element.attribute("authorid").toInt();
 
     LibraryBook::Type type = static_cast<LibraryBook::Type>(element.attribute("type").toInt());
 
@@ -270,19 +259,20 @@ QList<QStandardItem*> BookListManager::readBookNode(QDomElement &element)
     rows << nameItem;
 
     if(type != LibraryBook::QuranBook) {
+        AuthorInfo *auth = m_authorsManager->getAuthorInfo(authorID);
+        QString authName = auth ? auth->name : element.firstChildElement("author").text();
+        int deathYear = auth ? auth->deathYear : element.firstChildElement("author").attribute("death").toInt();
+        QString deathStr = auth ? auth->deathStr : Utils::hijriYear(deathYear);
+
         QStandardItem *authItem = new QStandardItem();
-        authItem->setText(authorNameElement.text());
+        authItem->setText(authName);
         authItem->setData(authorID, ItemRole::authorIdRole);
 
-        rows << authItem;
+        QStandardItem *authDeathItem = new QStandardItem();
+        authDeathItem->setText(deathStr);
+        authDeathItem->setData(deathYear, ItemRole::authorDeathRole);
 
-        if(element.hasAttribute("authordeath")) {
-            QStandardItem *authDeathItem = new QStandardItem();
-            authDeathItem->setText(Utils::hijriYear(authorDeath));
-            authDeathItem->setData(authorDeath, ItemRole::authorDeathRole);
-
-            rows << authDeathItem;
-        }
+        rows << authItem << authDeathItem;
     }
 
     m_booksCount++;
@@ -296,6 +286,7 @@ void BookListManager::writeItem(QXmlStreamWriter &writer, QModelIndex &index)
         QModelIndex authorIndex = index.sibling(index.row(), 1);
         QModelIndex authorDeathIndex = index.sibling(index.row(), 2);
 
+        int authorID = authorIndex.data(ItemRole::authorIdRole).toInt();
         bool isQuran = index.data(ItemRole::typeRole).toInt() == LibraryBook::QuranBook;
 
         writer.writeStartElement("book");
@@ -304,13 +295,16 @@ void BookListManager::writeItem(QXmlStreamWriter &writer, QModelIndex &index)
 
         if(!isQuran) {
             writer.writeAttribute("authorid", authorIndex.data(ItemRole::authorIdRole).toString());
-            writer.writeAttribute("authordeath", authorDeathIndex.data(ItemRole::authorDeathRole).toString());
+
+            if(!m_authorsManager->hasAuthorInfo(authorID)) {
+                writer.writeStartElement("author");
+                writer.writeAttribute("death", authorDeathIndex.data(ItemRole::authorDeathRole).toString());
+                writer.writeCharacters(authorIndex.data(Qt::DisplayRole).toString());
+                writer.writeEndElement();
+            }
         }
 
         writer.writeTextElement("title", index.data(Qt::DisplayRole).toString());
-
-        if(!isQuran)
-            writer.writeTextElement("author", authorIndex.data(Qt::DisplayRole).toString());
 
     } else if(index.data(ItemRole::itemTypeRole) == ItemType::CategorieItem) {
         writer.writeStartElement("cat");

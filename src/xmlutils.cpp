@@ -26,6 +26,10 @@ QDomDocument Utils::getDomDocument(QIODevice *file)
         qCritical("loadModel: Parse error at line %d, column %d: %s",
                   errorLine, errorColumn, qPrintable(errorStr));
 
+        QFile *f = qobject_cast<QFile*>(file);
+        if(f)
+            qCritical("\tFile: %s", qPrintable(f->fileName()));
+
         return QDomDocument();
     }
 
