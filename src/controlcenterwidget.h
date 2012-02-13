@@ -2,7 +2,7 @@
 #define ABSTRACTEDITWIDGET_H
 
 #include <qwidget.h>
-#include <libraryinfo.h>
+#include "libraryinfo.h"
 
 class ControlCenterWidget : public QWidget
 {

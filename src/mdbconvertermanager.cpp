@@ -1,6 +1,6 @@
 #include "mdbconvertermanager.h"
-#include "qdebug.h"
-#include "qfile.h"
+#include <qdebug.h>
+#include <qfile.h>
 
 MdbConverterManager::MdbConverterManager()
 {

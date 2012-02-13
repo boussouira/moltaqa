@@ -1,7 +1,7 @@
 #ifndef XMLUTILS_H
 #define XMLUTILS_H
 
-#include "qdom.h"
+#include <qdom.h>
 
 namespace Utils {
 

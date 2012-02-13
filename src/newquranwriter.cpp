@@ -3,11 +3,11 @@
 #include "utils.h"
 #include "mainwindow.h"
 #include "libraryinfo.h"
+#include "librarybook.h"
 #include <qsettings.h>
 #include <qdir.h>
 #include <qdatetime.h>
 #include <qdebug.h>
-#include <librarybook.h>
 
 newQuranWriter::newQuranWriter()
 {
