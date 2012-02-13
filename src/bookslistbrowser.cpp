@@ -4,6 +4,7 @@
 #include "modelenums.h"
 #include "mainwindow.h"
 #include "booklistmanager.h"
+#include "utils.h"
 
 #include <qsqlquery.h>
 #include <qsqlerror.h>
@@ -57,26 +58,18 @@ void BooksListBrowser::closeEvent(QCloseEvent *event)
 
 void BooksListBrowser::loadSettings()
 {
-    QSettings settings;
-    settings.beginGroup("BooksListWidget");
-    move(settings.value("pos", pos()).toPoint());
-    resize(settings.value("size", QSize(680, 500)).toSize());
-    settings.endGroup();
+    Utils::restoreWidgetPosition(this, "BooksListWidget");
 }
 
 void BooksListBrowser::saveSettings()
 {
-    QSettings settings;
-    settings.beginGroup("BooksListWidget");
-    settings.setValue("pos", pos());
-    settings.setValue("size", size());
+    Utils::saveWidgetPosition(this, "BooksListWidget");
 
     if(m_model) {
-        settings.setValue("col_1", ui->treeView->columnWidth(0));
-        settings.setValue("col_2", ui->treeView->columnWidth(1));
+        QSettings settings;
+        settings.setValue("BooksListWidget/col_1", ui->treeView->columnWidth(0));
+        settings.setValue("BooksListWidget/col_2", ui->treeView->columnWidth(1));
     }
-
-    settings.endGroup();
 }
 
 void BooksListBrowser::readBookListModel()

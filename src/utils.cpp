@@ -9,6 +9,7 @@
 #include <qdebug.h>
 #include <qmessagebox.h>
 #include <QDateTime>
+#include <qsettings.h>
 
 static QString appRootPath;
 
@@ -258,6 +259,37 @@ void createIndexDB(QString path)
 
     QSqlDatabase::removeDatabase("createIndexDB");
 }
+void saveWidgetPosition(QWidget *w, QString section)
+{
+    QSettings settings;
+    settings.beginGroup(section);
+    settings.setValue("pos", w->pos());
+    settings.setValue("size", w->size());
+    settings.setValue("maximized", w->isMaximized());
+    settings.endGroup();
+}
+
+void restoreWidgetPosition(QWidget *w, QString section, bool showMaximized)
+{
+    QSettings settings;
+    settings.beginGroup(section);
+
+    QRect r(1337,1337,1337,1337);
+
+    QPoint pos = settings.value("pos", r.topLeft()).toPoint();
+    if(pos != r.topLeft())
+        w->move(pos);
+
+    QSize size = settings.value("size", r.size()).toSize();
+    if(size != r.size())
+        w->resize(size);
+
+    if(settings.value("maximized", showMaximized).toBool())
+        w->showMaximized();
+
+    settings.endGroup();
+}
+
 }
 
 namespace App {

@@ -4,7 +4,6 @@
 #include <qobject.h>
 #include <qdom.h>
 #include <qmutex.h>
-#include <qset.h>
 
 class QStandardItemModel;
 class QXmlStreamWriter;

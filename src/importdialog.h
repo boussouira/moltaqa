@@ -33,6 +33,7 @@ protected:
     bool fileExsistInList(const QString &);
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
+    void closeEvent(QCloseEvent *event);
 
 signals:
     void openBook(int id);

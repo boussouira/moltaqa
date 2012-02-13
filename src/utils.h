@@ -50,6 +50,9 @@ int gregorianToHijri(int gYear);
 bool isLibraryPath(QString path);
 void createIndexDB(QSqlQuery &query);
 void createIndexDB(QString path);
+
+void saveWidgetPosition(QWidget *w, QString section);
+void restoreWidgetPosition(QWidget *w, QString section, bool showMaximized=false);
 }
 
 namespace App {

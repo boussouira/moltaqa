@@ -54,6 +54,8 @@ ImportDialog::ImportDialog(LibraryManager *libraryManager, QWidget *parent) :
     ui->treeView->setItemDelegateForColumn(3, m_categorieDelegate);
     ui->treeView->setModel(m_model);
     ui->progressBar->hide();
+
+    Utils::restoreWidgetPosition(this, "ImportDialog");
 }
 
 ImportDialog::~ImportDialog()
@@ -289,6 +291,12 @@ void ImportDialog::dropEvent(QDropEvent *event)
     }
 
     event->acceptProposedAction();
+}
+
+void ImportDialog::closeEvent(QCloseEvent *event)
+{
+    Utils::saveWidgetPosition(this, "ImportDialog");
+    event->accept();
 }
 
 void ImportDialog::addFile(const QString &path)

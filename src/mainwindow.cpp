@@ -264,12 +264,7 @@ void MainWindow::showSearchView()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    QSettings settings;
-    settings.beginGroup("MainWindow");
-    settings.setValue("pos", pos());
-    settings.setValue("size", size());
-    settings.setValue("maximized", isMaximized());
-    settings.endGroup();
+    Utils::saveWidgetPosition(this, "MainWindow");
 
     m_booksList->close();
     m_editorView->maySave(false);
@@ -282,15 +277,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::loadSettings()
 {
-    QSettings settings;
-    settings.beginGroup("MainWindow");
-    move(settings.value("pos", pos()).toPoint());
-    resize(settings.value("size", size()).toSize());
-
-    if(settings.value("maximized", true).toBool())
-        showMaximized();
-
-    settings.endGroup();
+    Utils::restoreWidgetPosition(this, "MainWindow", true);
 }
 
 LibraryInfo *MainWindow::libraryInfo()

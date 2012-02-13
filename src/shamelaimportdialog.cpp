@@ -50,6 +50,8 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
     ui->stackedWidget->setCurrentIndex(0);
     ui->pushDone->hide();
 
+    Utils::restoreWidgetPosition(this, "ShamelaImportDialog");
+
     connect(ui->pushNext, SIGNAL(clicked()), SLOT(nextStep()));
     connect(ui->pushCancel, SIGNAL(clicked()), SLOT(cancel()));
     connect(ui->pushDone, SIGNAL(clicked()), SLOT(accept()));
@@ -75,6 +77,9 @@ void ShamelaImportDialog::closeEvent(QCloseEvent *event)
             if(m_importThreads.at(i)->isRunning())
                 m_importThreads.at(i)->wait();
         }
+
+        Utils::saveWidgetPosition(this, "ShamelaImportDialog");
+
         event->accept();
     } else {
         event->ignore();
