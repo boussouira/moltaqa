@@ -356,11 +356,11 @@ QString appDir()
 
         appRootPath = dir.absolutePath();
         if(!checkDir(false)) {
-            qWarning() << "Can't find some files at" << appRootPath;
-            qWarning() << "Check if we can use current working directory...";
+//            qWarning() << "Can't find some files at" << appRootPath;
+//            qWarning() << "Check if we can use current working directory...";
             appRootPath = QDir::currentPath();
             if(!checkDir(true)) {
-                QMessageBox::warning(0,
+                QMessageBox::critical(0,
                                      App::name(),
                                      QObject::tr("لم يتم العثور على بعض الملفات في مجلد البرنامج"
                                                  "\n"
@@ -368,10 +368,10 @@ QString appDir()
 
                 qFatal("Some files are messing");
             } else {
-                qDebug() << "Using current working directory:" << appRootPath;
+//                qDebug() << "Using current working directory:" << appRootPath;
             }
         } else {
-            qDebug() << "Using application directory:" << appRootPath;
+//            qDebug() << "Using application directory:" << appRootPath;
         }
     }
 
