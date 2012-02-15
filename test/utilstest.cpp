@@ -59,7 +59,7 @@ void UtilsTest::arClean()
 {
     QCOMPARE(Utils::arClean(u("احمد")), u("احمد"));
 
-    QCOMPARE(Utils::arClean(u("أحمد")), u("احمد"));
+    QCOMPARE(Utils::arClean(u("أحمد  ")), u("احمد"));
 
     QCOMPARE(Utils::arClean(u("إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ")),
              u("اياك نعبد واياك نستعين"));
@@ -73,7 +73,7 @@ void UtilsTest::arCompare()
     QVERIFY(Utils::arCompare(u("وَتَرَى الْفُلْكَ مَوَاخِرَ فِيهِ وَلِتَبْتَغُوا مِنْ فَضْلِهِ وَلَعَلَّكُمْ تَشْكُرُونَ"),
                               u("وتري الفلك مواخر فيه ولتبتغوا من فضله ولعلكم تشكرون")));
     QVERIFY(Utils::arCompare(u("قُلْ هُوَ اللَّهُ أَحَدٌ"),
-                             u("قل هُوَ الله احد")));
+                             u("قل هُوَ الله     احد")));
 }
 
 void UtilsTest::arContains()
