@@ -9,6 +9,7 @@
 #include "taffesirlistmanager.h"
 #include "booklistmanager.h"
 #include "librarybookmanager.h"
+#include "authorsmanager.h"
 
 #ifdef USE_MDBTOOLS
 #include "mdbconverter.h"
@@ -112,7 +113,6 @@ void LibraryCreator::addAuthor(ShamelaAuthorInfo *auth, bool checkExist)
 {
     QMutexLocker locker(&m_mutex);
 
-    QSqlQuery bookQuery(m_bookDB);
     if(checkExist) {
         int lid = m_mapper->mapFromShamelaAuthor(auth->id);
         if(lid) {
@@ -120,27 +120,19 @@ void LibraryCreator::addAuthor(ShamelaAuthorInfo *auth, bool checkExist)
             return;
         } else {
             // We look for this author in the index database
-            QPair<int, QString> foundAuthor = m_libraryManager->findAuthor(auth->name);
+            AuthorInfo* foundAuthor = m_libraryManager->authorsManager()->findAuthor(auth->name);
 
             // If found the author in our database so add it to the map and return
-            if(foundAuthor.first) {
-                m_mapper->addAuthorMap(auth->id, foundAuthor.first);
+            if(foundAuthor) {
+                m_mapper->addAuthorMap(auth->id, foundAuthor->id);
                 return;
             }
         }
     }
 
     // Add this author from shamela
-    bookQuery.prepare("INSERT INTO authorsList (id, name, full_name, die_year, info) VALUES (NULL, ?, ?, ?, ?)");
-    bookQuery.bindValue(0, auth->name);
-    bookQuery.bindValue(1, auth->fullName);
-    bookQuery.bindValue(2, auth->dieYear);
-    bookQuery.bindValue(3, qCompress(auth->info.toUtf8()));
-
-    if(bookQuery.exec())
-        m_mapper->addAuthorMap(auth->id, bookQuery.lastInsertId().toInt());
-    else
-        LOG_SQL_ERROR(bookQuery);
+    int insertAuthor = m_libraryManager->authorsManager()->addAuthor(auth->toAuthorInfo());
+    m_mapper->addAuthorMap(auth->id, insertAuthor);
 }
 
 void LibraryCreator::addBook(ShamelaBookInfo *book)

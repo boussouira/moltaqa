@@ -146,8 +146,8 @@ void LibraryInfo::checkDataFiles(QString dataDirPath)
     QStringList files;
     QStringList docName;
 
-    files << "booksinfo.xml" << "bookslist.xml" << "taffesirlist.xml";
-    docName << "books-info" << "books-list" << "taffesir-list";
+    files << "authors.xml" << "booksinfo.xml" << "bookslist.xml" << "taffesirlist.xml";
+    docName << "authors" << "books-info" << "books-list" << "taffesir-list";
 
     for(int i=0; i<files.size(); i++) {
         if(!dataDir.exists(files.at(i))) {

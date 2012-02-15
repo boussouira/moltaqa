@@ -225,14 +225,6 @@ void createIndexDB(QSqlQuery &query)
                      "bookFolder TEXT, "
                      "indexFlags INTEGER)");
 
-
-    query.exec("CREATE TABLE authorsList("
-                     "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
-                     "name TEXT, "
-                     "full_name TEXT, "
-                     "die_year INTEGER, "
-                     "info BLOB)");
-
     query.exec("CREATE TABLE ShareehMeta("
                      "mateen_book INTEGER, "
                      "mateen_id INTEGER, "

@@ -3,6 +3,7 @@
 
 #include <qobject.h>
 #include "shamelainfo.h"
+#include "authorsmanager.h"
 
 class ShamelaCategorieInfo
 {
@@ -34,6 +35,18 @@ public:
     QString name;
     QString fullName;
     QString info;
+
+    AuthorInfo *toAuthorInfo()
+    {
+        AuthorInfo *author = new AuthorInfo;
+        author->name = name;
+        author->fullName = fullName;
+        author->info = info;
+        author->deathYear = dieYear;
+        author->unknowBirth = true;
+
+        return author;
+    }
 };
 
 class ShamelaBookInfo

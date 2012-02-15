@@ -390,6 +390,7 @@ void ShamelaImportDialog::doneImporting()
 
         if(m_importedBooksCount > 0) {
             // TODO: auto save dom model
+            MW->libraryManager()->authorsManager()->reloadModels();
             MW->libraryManager()->bookManager()->reloadModels();
             MW->libraryManager()->bookListManager()->reloadModels();
             MW->libraryManager()->taffesirListManager()->reloadModels();

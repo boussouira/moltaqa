@@ -41,9 +41,14 @@ public:
 
     QStandardItemModel *authorsModel();
 
+    int addAuthor(AuthorInfo *auth);
+    int getNewAuthorID();
+
     AuthorInfo *getAuthorInfo(int authorID);
     bool hasAuthorInfo(int authorID);
     QString getAuthorName(int authorID);
+
+    AuthorInfo *findAuthor(QString name, bool fullName=false);
 
     void beginUpdate();
     void endUpdate();

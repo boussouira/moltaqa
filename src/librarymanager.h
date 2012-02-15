@@ -36,14 +36,11 @@ public:
     void open();
     void openManagers();
 
-    QPair<int, QString> findAuthor(const QString &name);
     int addBook(ImportModelNode *node);
     void addBook(LibraryBook *book, int catID);
 
     bool hasShareeh(int bookID);
     void getShoroohPages(LibraryBook *info, BookPage *page);
-
-    QStandardItemModel *getAuthorsListModel();
 
     void setBookIndexStat(int bookID, Enums::indexFlags indexFlag);
     QList<int> getNonIndexedBooks();

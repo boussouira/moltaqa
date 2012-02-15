@@ -51,6 +51,73 @@ QStandardItemModel *AuthorsManager::authorsModel()
     return model;
 }
 
+int AuthorsManager::addAuthor(AuthorInfo *auth)
+{
+    if(!auth->id)
+        auth->id = getNewAuthorID();
+
+    QDomElement authorElement = m_doc.createElement("author");
+    authorElement.setAttribute("id", auth->id);
+
+    QDomElement nameEelement = m_doc.createElement("name");
+    QDomElement fullNameEelement = m_doc.createElement("full-name");
+    QDomElement infoEelement = m_doc.createElement("info");
+
+    nameEelement.appendChild(m_doc.createTextNode(auth->name));
+    fullNameEelement.appendChild(m_doc.createTextNode(auth->fullName));
+    infoEelement.appendChild(m_doc.createCDATASection(auth->info));
+
+    QDomElement birthElement = m_doc.createElement("birth");
+    if(auth->unknowBirth) {
+        birthElement.setAttribute("unknow", "true");
+    } else {
+        birthElement.setAttribute("year", auth->birthYear);
+        if(auth->birthStr.isEmpty())
+            auth->birthStr = Utils::hijriYear(auth->birthYear);
+
+        birthElement.appendChild(m_doc.createTextNode(auth->birthStr));
+    }
+
+    QDomElement deathElement = m_doc.createElement("death");
+    deathElement.removeAttribute("aLive");
+    deathElement.removeAttribute("unknow");
+
+    if(auth->isALive) {
+        deathElement.setAttribute("aLive", "true");
+    } else if(auth->unknowDeath) {
+        deathElement.setAttribute("unknow", "true");
+    } else {
+        deathElement.setAttribute("year", auth->deathYear);
+        if(auth->deathStr.isEmpty())
+            auth->deathStr = Utils::hijriYear(auth->deathYear);
+
+        deathElement.appendChild(m_doc.createTextNode(auth->deathStr));
+    }
+
+    authorElement.appendChild(nameEelement);
+    authorElement.appendChild(fullNameEelement);
+    authorElement.appendChild(birthElement);
+    authorElement.appendChild(deathElement);
+    authorElement.appendChild(infoEelement);
+
+    m_rootElement.appendChild(authorElement);
+    m_authors.insert(auth->id, auth);
+
+    m_saveDom = true;
+
+    return auth->id;
+}
+
+int AuthorsManager::getNewAuthorID()
+{
+    int authorID = 0;
+    do {
+        authorID = Utils::randInt(11111, 99999);
+    } while(m_authors.contains(authorID));
+
+    return authorID;
+}
+
 AuthorInfo *AuthorsManager::getAuthorInfo(int authorID)
 {
     AuthorInfo *auth = m_authors.value(authorID);
@@ -70,6 +137,29 @@ QString AuthorsManager::getAuthorName(int authorID)
 {
     AuthorInfo *auth = m_authors.value(authorID);
     return auth ? auth->name : QString();
+}
+
+AuthorInfo *AuthorsManager::findAuthor(QString name, bool fullName)
+{
+    AuthorInfo *auth = 0;
+    QHash<int, AuthorInfo*>::const_iterator i = m_authors.constBegin();
+
+    while (i != m_authors.constEnd()) {
+        QString authorName = fullName ? i.value()->fullName : i.value()->name;
+        if(Utils::arContains(authorName, name)) {
+            auth = i.value();
+            break;
+        } else if(Utils::arFuzzyContains(authorName, name)) {
+            auth = i.value();
+        }
+
+        ++i;
+    }
+
+    if(auth)
+        return auth;
+    else
+        return fullName ? auth : findAuthor(name, true);
 }
 
 void AuthorsManager::beginUpdate()

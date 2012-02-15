@@ -6,6 +6,7 @@
 #include "bookexception.h"
 #include "sqlutils.h"
 #include "booklistmanager.h"
+#include "authorsmanager.h"
 
 #ifdef USE_MDBTOOLS
 #include "mdbconverter.h"
@@ -115,11 +116,11 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
              node->bookInfo = bookQuery.value(betakaCol).toString();
         }
 
-         QPair<int, QString> foundAuth = m_libraryManager->findAuthor(bookQuery.value(authCol).toString());
-         if(foundAuth.first)
-             node->setAuthor(foundAuth.first, foundAuth.second);
+         AuthorInfo* foundAuth = m_libraryManager->authorsManager()->findAuthor(bookQuery.value(authCol).toString());
+         if(foundAuth)
+             node->setAuthor(foundAuth->id, foundAuth->name);
          else
-             node->setAuthor(foundAuth.first, bookQuery.value(authCol).toString());
+             node->setAuthor(0, bookQuery.value(authCol).toString());
 
 
         qDebug() << "Importing:" << node->bookName;

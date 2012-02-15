@@ -65,41 +65,6 @@ void LibraryManager::openManagers()
     m_taffesirManager = new TaffesirListManager(this);
 }
 
-QPair<int, QString> LibraryManager::findAuthor(const QString &name)
-{
-    QPair<int, QString> foundAuth;
-    int count = 0;
-
-    if(name.isEmpty()) {
-        foundAuth.first = 0;
-        return foundAuth;
-    }
-
-    QSqlQuery bookQuery(m_indexDB);
-    if(bookQuery.exec(QString("SELECT id, name FROM authorsList WHERE %1").arg(Sql::buildLikeQuery(name, "name")))) {
-        while(bookQuery.next()) {
-            foundAuth.first = bookQuery.value(0).toInt();
-            foundAuth.second = bookQuery.value(1).toString();
-
-            if(name == bookQuery.value(1).toString()) {
-                count = 1;
-                break;
-            } else {
-                count++;
-            }
-        }
-    } else {
-        LOG_SQL_ERROR(bookQuery)
-    }
-
-    if(count != 1) {
-        foundAuth.first = 0;
-        foundAuth.second.clear();
-    }
-
-    return foundAuth;
-}
-
 bool LibraryManager::hasShareeh(int bookID)
 {
     QSqlQuery bookQuery(m_indexDB);
@@ -172,27 +137,6 @@ void LibraryManager::getShoroohPages(LibraryBook *info, BookPage *page)
                                              bookQuery.value(1).toInt(),
                                              bookQuery.value(2).toString()));
     }
-}
-
-QStandardItemModel *LibraryManager::getAuthorsListModel()
-{
-    QStandardItemModel *model = new QStandardItemModel();
-    QStandardItem *item;
-    QSqlQuery bookQuery(m_indexDB);
-    bookQuery.prepare("SELECT id, name, full_name FROM authorsList");
-    if(bookQuery.exec()) {
-        while(bookQuery.next()) {
-            item = new QStandardItem(bookQuery.value(1).toString());
-            item->setData(bookQuery.value(0).toInt(), Qt::UserRole);
-            item->setData(bookQuery.value(2).toString(), Qt::ToolTipRole);
-
-            model->appendRow(item);
-        }
-    } else {
-        LOG_SQL_ERROR(bookQuery);
-    }
-
-    return model;
 }
 
 void LibraryManager::setBookIndexStat(int bookID, Enums::indexFlags indexFlag)

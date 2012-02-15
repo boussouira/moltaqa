@@ -135,15 +135,18 @@ int BookListManager::maxCategorieID()
 QPair<int, QString> BookListManager::findCategorie(const QString &cat)
 {
     QPair<int, QString> result;
-    QList<QString> cats = m_catHash.values();
+    QHash<int, QString>::const_iterator i = m_catHash.constBegin();
 
-    for(int i=0; i<cats.size(); i++) {
-        if(Utils::arContains(cats.at(i), cat)) {
-            result = qMakePair(m_catHash.keys().at(i), cats.at(i));
+    while (i != m_catHash.constEnd()) {
+        QString title = i.value();
+        if(Utils::arContains(title, cat)) {
+            result = qMakePair(i.key(), i.value());
             break;
-        } else if(Utils::arFuzzyContains(cats.at(i), cat)) {
-            result = qMakePair(m_catHash.keys().at(i), cats.at(i));
+        } else if(Utils::arFuzzyContains(title, cat)) {
+            result = qMakePair(i.key(), i.value());
         }
+
+        ++i;
     }
 
     return result;

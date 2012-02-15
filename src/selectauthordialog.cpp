@@ -3,6 +3,9 @@
 #include "mainwindow.h"
 #include "librarymanager.h"
 #include "sortfilterproxymodel.h"
+#include "authorsmanager.h"
+#include "modelenums.h"
+#include "modelutils.h"
 
 #include <qstandarditemmodel.h>
 #include <qmessagebox.h>
@@ -13,8 +16,7 @@ selectAuthorDialog::selectAuthorDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    m_libraryManager = MW->libraryManager();
-    m_model = m_libraryManager->getAuthorsListModel();
+    m_model = MW->libraryManager()->authorsManager()->authorsModel();
 
     m_filter = new SortFilterProxyModel(this);
     m_filter->setSourceModel(m_model);
@@ -36,15 +38,15 @@ selectAuthorDialog::~selectAuthorDialog()
 
 void selectAuthorDialog::selectAuthor()
 {
-    if(ui->treeView->selectionModel()->selectedIndexes().isEmpty())
-        return;
+    QModelIndex index = Utils::selectedIndex(ui->treeView);
+    if(index.isValid()) {
+        m_authorName = index.data().toString();
+        m_authorID = index.data(ItemRole::authorIdRole).toInt();
 
-    QModelIndex index = ui->treeView->selectionModel()->selectedIndexes().first();
-    m_authorName = index.data().toString();
-    m_authorID = index.data(Qt::UserRole).toInt();
+        emit authorSelected();
 
-    emit authorSelected();
-    accept();
+        accept();
+    }
 }
 
 void selectAuthorDialog::cancel()
@@ -64,10 +66,6 @@ int selectAuthorDialog::selectedAuthorID()
 
 void selectAuthorDialog::on_treeView_doubleClicked(const QModelIndex &index)
 {
-    if(index.isValid()) {
-        m_authorName = index.data().toString();
-        m_authorID = index.data(Qt::UserRole).toInt();
-
-        accept();
-    }
+    if(index.isValid())
+        selectAuthor();
 }

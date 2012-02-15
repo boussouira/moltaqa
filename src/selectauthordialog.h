@@ -33,7 +33,6 @@ signals:
 
 protected:
     Ui::selectAuthorDialog *ui;
-    LibraryManager *m_libraryManager;
     QStandardItemModel *m_model;
     SortFilterProxyModel *m_filter;
     QString m_authorName;
