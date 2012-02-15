@@ -5,6 +5,7 @@
 #include "librarybook.h"
 #include "modelenums.h"
 #include "utils.h"
+#include "xmlutils.h"
 #include "authorsmanager.h"
 
 #include <qdir.h>
@@ -25,6 +26,7 @@ LibraryBookManager::LibraryBookManager(QObject *parent) :
 
 LibraryBookManager::~LibraryBookManager()
 {
+    clear();
     qDeleteAll(m_usedBooks);
 }
 
@@ -37,9 +39,12 @@ void LibraryBookManager::loadModels()
 void LibraryBookManager::clear()
 {
     // Delete only unused books
-    foreach(LibraryBook *book, m_books.values()) {
-        if(!m_usedBooks.contains(book))
-            delete book;
+    QList<int> keys = m_books.keys();
+    for(int i=0; i<keys.size(); i++) {
+        int k = keys.at(i);
+        LibraryBook *b = m_books.value(k);
+        if(!m_usedBooks.contains(b))
+            delete m_books.take(k);
     }
 
     m_books.clear();
@@ -151,8 +156,11 @@ void LibraryBookManager::updateBook(LibraryBook *book)
         e.setAttribute("id", book->bookID);
         e.setAttribute("authorid", book->authorID);
 
-        e.firstChildElement("title").firstChild().setNodeValue(book->bookDisplayName);
-        e.firstChildElement("info").firstChild().setNodeValue(book->bookInfo);
+        QDomElement titleEelement = Utils::findChildElement(e, m_doc, "title");
+        QDomElement infoEelement = Utils::findChildElement(e, m_doc, "info");
+
+        Utils::findChildText(titleEelement, m_doc).setNodeValue(book->bookDisplayName);
+        Utils::findChildText(infoEelement, m_doc, true).setNodeValue(book->bookInfo);
 
         m_saveDom = true;
     }

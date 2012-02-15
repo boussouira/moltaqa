@@ -19,6 +19,8 @@ public:
     TaffesirListManagerWidget(QWidget *parent = 0);
     ~TaffesirListManagerWidget();
 
+    QString title();
+
 protected:
     void loadModel();
 

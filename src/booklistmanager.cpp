@@ -31,6 +31,7 @@ BookListManager::BookListManager(QObject *parent)
 
 BookListManager::~BookListManager()
 {
+    clear();
 }
 
 void BookListManager::loadModels()

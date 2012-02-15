@@ -3,7 +3,9 @@
 #include <qfile.h>
 #include <qdebug.h>
 
-QDomDocument Utils::getDomDocument(QString filePath)
+namespace Utils {
+
+QDomDocument getDomDocument(const QString &filePath)
 {
 
     QFile file(filePath);
@@ -15,7 +17,7 @@ QDomDocument Utils::getDomDocument(QString filePath)
     return getDomDocument(&file);
 }
 
-QDomDocument Utils::getDomDocument(QIODevice *file)
+QDomDocument getDomDocument(QIODevice *file)
 {
     QString errorStr;
     int errorLine;
@@ -34,4 +36,28 @@ QDomDocument Utils::getDomDocument(QIODevice *file)
     }
 
     return doc;
+}
+
+QDomElement findChildElement(QDomElement &parent, QDomDocument &doc, const QString &tagName)
+{
+    QDomElement child = parent.firstChildElement(tagName);
+    if(child.isNull())
+            child = parent.appendChild(doc.createElement(tagName)).toElement();
+
+    return child;
+}
+
+QDomNode findChildText(QDomElement &parent, QDomDocument &doc, bool cdata)
+{
+    QDomNode child = parent.firstChild();
+    if(child.isNull()) {
+        if(cdata)
+            child = parent.appendChild(doc.createCDATASection(""));
+        else
+            child = parent.appendChild(doc.createTextNode(""));
+    }
+
+    return child;
+}
+
 }

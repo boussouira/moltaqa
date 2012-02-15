@@ -106,7 +106,8 @@ SOURCES += mainwindow.cpp \
     listmanager.cpp \
     booklistmanager.cpp \
     librarybookmanager.cpp \
-    authorsmanager.cpp
+    authorsmanager.cpp \
+    authorsmanagerwidget.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -200,7 +201,8 @@ HEADERS += mainwindow.h \
     listmanager.h \
     booklistmanager.h \
     librarybookmanager.h \
-    authorsmanager.h
+    authorsmanager.h \
+    authorsmanagerwidget.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \
@@ -218,7 +220,8 @@ FORMS += mainwindow.ui settingsdialog.ui \
     resultwidget.ui \
     taffesirlistmanagerwidget.ui \
     bookeditorview.ui \
-    bookindexeditor.ui
+    bookindexeditor.ui \
+    authorsmanagerwidget.ui
 
 RESOURCES += ../share/moltaqa-lib/qt_rc.qrc
 win32:RC_FILE = ../share/moltaqa-lib/win_rc.rc

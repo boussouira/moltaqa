@@ -20,6 +20,7 @@ TaffesirListManager::TaffesirListManager(QObject *parent) : ListManager(parent)
 
 TaffesirListManager::~TaffesirListManager()
 {
+    clear();
 }
 
 void TaffesirListManager::loadModels()
@@ -65,6 +66,7 @@ QStandardItemModel *TaffesirListManager::getModel(bool allTaffasir)
             QStandardItem *item = new QStandardItem();
             item->setText(e.firstChildElement("title").text());
             item->setData(e.attribute("bookID").toInt(), ItemRole::idRole);
+            item->setIcon(QIcon(":/images/book.png"));
 
             QStandardItem *item2 = new QStandardItem();
             item2->setCheckable(true);

@@ -4,12 +4,16 @@
 #include <qwidget.h>
 #include "libraryinfo.h"
 
+class LibraryManager;
+
 class ControlCenterWidget : public QWidget
 {
     Q_OBJECT
 
 public:
     ControlCenterWidget(QWidget* parent = 0);
+
+    virtual QString title()=0;
 
     void setModified(bool m);
     bool isModified();
@@ -25,6 +29,7 @@ signals:
     void modified(bool e);
 
 protected:
+    LibraryManager *m_libraryManager;
     bool m_modified;
 };
 

@@ -7,13 +7,25 @@
 class AuthorInfo
 {
 public:
-    AuthorInfo() : id(0), deathYear(0) {}
+    AuthorInfo() :
+        id(0), deathYear(0), birthYear(0),
+        isALive(false), unknowBirth(false), unknowDeath(false) {}
     int id;
     QString name;
     QString fullName;
     int deathYear;
+    int birthYear;
     QString deathStr;
+    QString birthStr;
     QString info;
+    bool isALive;
+    bool unknowBirth;
+    bool unknowDeath;
+
+    AuthorInfo *clone()
+    {
+        return new AuthorInfo(*this);
+    }
 };
 
 class AuthorsManager : public ListManager
@@ -22,13 +34,20 @@ class AuthorsManager : public ListManager
 
 public:
     AuthorsManager(QObject *parent = 0);
+    ~AuthorsManager();
 
     void loadModels();
     void clear();
 
+    QStandardItemModel *authorsModel();
+
     AuthorInfo *getAuthorInfo(int authorID);
     bool hasAuthorInfo(int authorID);
     QString getAuthorName(int authorID);
+
+    void beginUpdate();
+    void endUpdate();
+    void updateAuthor(AuthorInfo *auth);
 
 protected:
     void loadAuthorsInfo();
@@ -36,6 +55,7 @@ protected:
 
 protected:
     QHash<int, AuthorInfo*> m_authors;
+    QHash<int, QDomElement> m_elementHash;
 };
 
 #endif // AUTHORSMANAGER_H

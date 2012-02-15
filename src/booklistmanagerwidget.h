@@ -16,6 +16,8 @@ public:
     BookListManagerWidget(QWidget *parent = 0);
     ~BookListManagerWidget();
 
+    QString title();
+
 protected:
     void loadModel();
 
@@ -39,7 +41,6 @@ protected slots:
     void updateActions();
 
 private:
-    LibraryManager *m_libraryManager;
     QStandardItemModel *m_model;
     QList<QStandardItem*> m_copiedItems;
     Ui::BookListManagerWidget *ui;

@@ -2,7 +2,6 @@
 #include "ui_taffesirlistmanagerwidget.h"
 #include "modelenums.h"
 #include "modelutils.h"
-#include "mainwindow.h"
 #include "librarymanager.h"
 #include "taffesirlistmanager.h"
 
@@ -13,7 +12,7 @@ TaffesirListManagerWidget::TaffesirListManagerWidget(QWidget *parent) :
     ui->setupUi(this);
 
     m_model = 0;
-    m_taffesirManager = MW->libraryManager()->taffesirListManager();
+    m_taffesirManager = m_libraryManager->taffesirListManager();
 
     loadModel();
     updateActions();
@@ -28,6 +27,11 @@ TaffesirListManagerWidget::~TaffesirListManagerWidget()
         delete m_model;
 
     delete ui;
+}
+
+QString TaffesirListManagerWidget::title()
+{
+    return tr("التفاسير");
 }
 
 void TaffesirListManagerWidget::loadModel()

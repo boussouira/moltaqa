@@ -16,8 +16,6 @@ ListManager::~ListManager()
 {
     if(m_saveDom)
         saveXmlDom();
-
-    clear();
 }
 
 void ListManager::setFilePath(QString path)

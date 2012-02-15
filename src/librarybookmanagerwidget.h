@@ -21,6 +21,7 @@ public:
     LibraryBookManagerWidget(QWidget *parent = 0);
     ~LibraryBookManagerWidget();
 
+    QString title();
     void enableEditWidgets(bool enable);
 
 protected:
@@ -37,11 +38,10 @@ private slots:
     void on_treeView_doubleClicked(const QModelIndex &index);
     void on_toolChangeAuthor_clicked();
     void setupEdit(LibraryBook *info);
-    void editted();
+    void infoChanged();
 
 protected:
     Ui::LibraryBookManagerWidget *ui;
-    LibraryManager *m_libraryManager;
     LibraryBook *m_currentBook;
     QStandardItemModel *m_model;
     QHash<int, LibraryBook *> m_editedBookInfo;

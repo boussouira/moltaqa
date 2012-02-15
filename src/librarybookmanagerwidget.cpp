@@ -1,6 +1,5 @@
 #include "librarybookmanagerwidget.h"
 #include "ui_librarybookmanagerwidget.h"
-#include "mainwindow.h"
 #include "librarymanager.h"
 #include "librarybook.h"
 #include "selectauthordialog.h"
@@ -14,7 +13,6 @@
 LibraryBookManagerWidget::LibraryBookManagerWidget(QWidget *parent) :
     ControlCenterWidget(parent),
     ui(new Ui::LibraryBookManagerWidget),
-    m_libraryManager(MW->libraryManager()),
     m_currentBook(0),
     m_model(0)
 {
@@ -33,16 +31,22 @@ LibraryBookManagerWidget::~LibraryBookManagerWidget()
     delete ui;
 }
 
+QString LibraryBookManagerWidget::title()
+{
+    return tr("الكتب");
+}
+
 void LibraryBookManagerWidget::setupActions()
 {
      foreach(QLineEdit *edit, findChildren<QLineEdit *>()) {
-         connect(edit, SIGNAL(textChanged(QString)), SLOT(editted()));
+         connect(edit, SIGNAL(textChanged(QString)), SLOT(infoChanged()));
      }
 
      foreach(QTextEdit *edit, findChildren<QTextEdit *>()) {
-         connect(edit, SIGNAL(textChanged()), SLOT(editted()));
+         connect(edit, SIGNAL(textChanged()), SLOT(infoChanged()));
      }
 }
+
 void LibraryBookManagerWidget::enableEditWidgets(bool enable)
 {
     ui->groupBox->setEnabled(enable);
@@ -58,7 +62,7 @@ void LibraryBookManagerWidget::loadModel()
     ui->treeView->resizeColumnToContents(0);
 }
 
-void LibraryBookManagerWidget::editted()
+void LibraryBookManagerWidget::infoChanged()
 {
     if(m_currentBook) {
         m_editedBookInfo[m_currentBook->bookID] = m_currentBook;
@@ -99,7 +103,13 @@ void LibraryBookManagerWidget::on_treeView_doubleClicked(const QModelIndex &inde
     LibraryBook *info = getBookInfo(bookID);
     if(info) {
         saveCurrentBookInfo();
-        m_currentBook = 0; // Block from emit edited() signal
+
+        // delete current book if it's not in the edited books
+        if(m_currentBook && !m_editedBookInfo.contains(m_currentBook->bookID))
+            delete m_currentBook;
+
+        // this will cause infoChanged() to ignore changes that we will made next
+        m_currentBook = 0;
 
         ui->lineDisplayName->setText(info->bookDisplayName);
         ui->lineAuthorName->setText(info->authorName);
@@ -154,11 +164,12 @@ void LibraryBookManagerWidget::saveCurrentBookInfo()
 
 LibraryBook *LibraryBookManagerWidget::getBookInfo(int bookID)
 {
-    LibraryBook *info = m_editedBookInfo.value(bookID, 0);
-    if(info) {
-        return info;
-    } else {
+    LibraryBook *info = m_editedBookInfo.value(bookID);
+    if(!info) {
         info = m_libraryManager->bookManager()->getLibraryBook(bookID);
-        return info->clone();
+        if(info)
+            info = info->clone();
     }
+
+    return info;
 }

@@ -17,10 +17,11 @@ public:
     ControlCenterDialog(QWidget *parent = 0);
     ~ControlCenterDialog();
 
-    void addControlWidget(int index, ControlCenterWidget *w);
+    void addControlWidget(ControlCenterWidget *w);
 
 protected:
     void closeEvent(QCloseEvent *event);
+    ControlCenterWidget *currentControlWidget();
 
 private slots:
     void rowChanged(int row);

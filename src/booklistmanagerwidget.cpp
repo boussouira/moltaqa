@@ -19,7 +19,6 @@ BookListManagerWidget::BookListManagerWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    m_libraryManager = MW->libraryManager();
     ui->treeView->setContextMenuPolicy(Qt::CustomContextMenu);
     m_model = 0;
 
@@ -45,6 +44,11 @@ BookListManagerWidget::~BookListManagerWidget()
         delete m_model;
 
     delete ui;
+}
+
+QString BookListManagerWidget::title()
+{
+    return tr("لائحة الكتب");
 }
 
 void BookListManagerWidget::loadModel()
