@@ -106,8 +106,11 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
         node->authorName = bookQuery.value(authCol).toString();
 
         if(catCol != -1) { // Some old books doesn't have this column
-            QPair<int, QString> foundCat = m_libraryManager->bookListManager()->findCategorie(bookQuery.value(catCol).toString());
-            node->setCategories(foundCat.first, foundCat.second);
+            CategorieInfo *foundCat = m_libraryManager->bookListManager()->findCategorie(bookQuery.value(catCol).toString());
+            if(foundCat)
+                node->setCategories(foundCat->catID, foundCat->title);
+            else
+                node->setCategories(0);
         } else {
             node->setCategories(0);
         }

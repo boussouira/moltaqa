@@ -11,6 +11,15 @@ class QModelIndex;
 class LibraryBook;
 class AuthorsManager;
 
+class CategorieInfo {
+public:
+    CategorieInfo() : catID(0) {}
+    CategorieInfo(int cid, const QString &ctitle) : catID(cid), title(ctitle) {}
+
+    int catID;
+    QString title;
+};
+
 class BookListManager : public ListManager
 {
     Q_OBJECT
@@ -30,7 +39,7 @@ public:
 
     int maxCategorieID();
 
-    QPair<int, QString> findCategorie(const QString &cat); // TODO: use a simple class instead of QPair (inherit it)
+    CategorieInfo *findCategorie(const QString &cat); // TODO: use a simple class instead of QPair (inherit it)
     int addCategorie(const QString &title, int parentCat);
     void addBook(LibraryBook *book, int parentCat);
 

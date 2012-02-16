@@ -300,11 +300,11 @@ void ShamelaImportDialog::setupCategories()
         shamelaItem->setEditable(false);
 
         // Try to find this cat in our library
-        QPair<int, QString> libCat = m_libraryManager->bookListManager()->findCategorie(cat->name);
-        if(libCat.first) {
+        CategorieInfo *libCat = m_libraryManager->bookListManager()->findCategorie(cat->name);
+        if(libCat) {
             libraryItem = new QStandardItem;
-            libraryItem->setText(libCat.second);
-            libraryItem->setData(libCat.first, ItemRole::idRole);
+            libraryItem->setText(libCat->title);
+            libraryItem->setData(libCat->catID, ItemRole::idRole);
         }
 
         model->setItem(model->rowCount(), 0, shamelaItem);
