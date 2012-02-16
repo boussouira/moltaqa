@@ -155,9 +155,9 @@ QString hijriYear(int hYear)
 QString arClean(QString text)
 {
     text = text.simplified();
-    text.replace(QRegExp("[\\x0622\\x0623\\x0625]"), QString::fromUtf8("\u0627"));//ALEFs
-    text.replace(QString::fromUtf8("\u0629"), QString::fromUtf8("\u0647")); //TAH_MARBUTA -> HEH
-    text.replace(QString::fromUtf8("\u0649"), QString::fromUtf8("\u064A")); //YAH -> ALEF MAKSOURA
+    text.replace(QRegExp("[\\x0622\\x0623\\x0625]"), QChar(0x0627));//ALEFs
+    text.replace(QChar(0x0629), QChar(0x0647)); //TAH_MARBUTA -> HEH
+    text.replace(QChar(0x0649), QChar(0x064A)); //YAH -> ALEF MAKSOURA
     text.remove(QRegExp("[\\x064B-\\x0653]"));
 
     return text;
