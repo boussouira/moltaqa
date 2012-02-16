@@ -37,7 +37,7 @@ public:
     int categoriesCount();
     int booksCount();
 
-    int maxCategorieID();
+    int getNewCategorieID();
 
     CategorieInfo *findCategorie(const QString &cat); // TODO: use a simple class instead of QPair (inherit it)
     int addCategorie(const QString &title, int parentCat);

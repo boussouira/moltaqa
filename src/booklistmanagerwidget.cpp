@@ -153,7 +153,7 @@ void BookListManagerWidget::addCat()
         QStandardItem *catItem = new QStandardItem();
         catItem->setText(title);
         catItem->setIcon(QIcon(":/images/book-cat.png"));
-        catItem->setData(m_libraryManager->bookListManager()->maxCategorieID(),
+        catItem->setData(m_libraryManager->bookListManager()->getNewCategorieID(),
                          ItemRole::idRole);
         catItem->setData(ItemType::CategorieItem, ItemRole::itemTypeRole);
 

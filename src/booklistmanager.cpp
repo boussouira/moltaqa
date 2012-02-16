@@ -121,13 +121,13 @@ int BookListManager::booksCount()
     return m_booksCount;
 }
 
-int BookListManager::maxCategorieID()
+int BookListManager::getNewCategorieID()
 {
     int catID = 0;
 
-    foreach(int cid, m_catHash.keys()) {
-        catID = qMax(catID, cid);
-    }
+    do {
+        catID = Utils::randInt(11111, 99999);
+    } while(m_catHash.contains(catID));
 
     return catID;
 }
@@ -159,7 +159,8 @@ int BookListManager::addCategorie(const QString &title, int parentCat)
 {
     QMutexLocker locker(&m_mutex);
 
-    int catID = maxCategorieID() + 1;
+    int catID = getNewCategorieID();
+
     QDomElement catElement = m_doc.createElement("cat");
     catElement.setAttribute("id", catID);
 
