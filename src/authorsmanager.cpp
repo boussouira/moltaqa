@@ -53,6 +53,8 @@ QStandardItemModel *AuthorsManager::authorsModel()
 
 int AuthorsManager::addAuthor(AuthorInfo *auth)
 {
+    QMutexLocker locker(&m_mutex);
+
     if(!auth->id)
         auth->id = getNewAuthorID();
 
