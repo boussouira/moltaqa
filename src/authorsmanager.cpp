@@ -110,6 +110,18 @@ int AuthorsManager::addAuthor(AuthorInfo *auth)
     return auth->id;
 }
 
+void AuthorsManager::removeAuthor(int authorID)
+{
+    QDomElement e = m_elementHash.value(authorID);
+
+    if(!e.isNull()) {
+        if(m_rootElement.removeChild(e).isNull())
+            qWarning("Error occured when removing author %d", authorID);
+
+        m_saveDom = true;
+    }
+}
+
 int AuthorsManager::getNewAuthorID()
 {
     int authorID = 0;
@@ -122,12 +134,7 @@ int AuthorsManager::getNewAuthorID()
 
 AuthorInfo *AuthorsManager::getAuthorInfo(int authorID)
 {
-    AuthorInfo *auth = m_authors.value(authorID);
-
-    if(!auth)
-        qWarning("No author with id %d", authorID);
-
-    return auth;
+    return m_authors.value(authorID);
 }
 
 bool AuthorsManager::hasAuthorInfo(int authorID)

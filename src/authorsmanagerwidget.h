@@ -36,6 +36,8 @@ protected:
 private slots:
     void infoChanged();
     void birthDeathChanged();
+    void newAuthor();
+    void removeAuthor();
     void on_treeView_doubleClicked(const QModelIndex &index);
 
 private:
@@ -43,6 +45,7 @@ private:
     QStandardItemModel *m_model;
     AuthorsManager *m_authorsManager;
     QHash<int, AuthorInfo*> m_editedAuthInfo;
+    QList<int> m_deletedAuth;
     AuthorInfo* m_currentAuthor;
 };
 

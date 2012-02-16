@@ -4,7 +4,10 @@
 #include "librarymanager.h"
 #include "modelenums.h"
 #include "utils.h"
+#include "modelutils.h"
 #include <qstandarditemmodel.h>
+#include <qinputdialog.h>
+#include <qmessagebox.h>
 
 AuthorsManagerWidget::AuthorsManagerWidget(QWidget *parent) :
     ControlCenterWidget(parent),
@@ -53,6 +56,9 @@ void AuthorsManagerWidget::setupActions()
         connect(check, SIGNAL(stateChanged(int)), SLOT(infoChanged()));
         connect(check, SIGNAL(stateChanged(int)), SLOT(birthDeathChanged()));
     }
+
+    connect(ui->toolAdd, SIGNAL(clicked()), SLOT(newAuthor()));
+    connect(ui->toolRemove, SIGNAL(clicked()), SLOT(removeAuthor()));
 }
 
 void AuthorsManagerWidget::loadModel()
@@ -97,6 +103,54 @@ void AuthorsManagerWidget::birthDeathChanged()
         } else if(spin == ui->spinDeath) {
             ui->lineDeathText->setText(Utils::hijriYear(spin->value()));
         }
+    }
+}
+
+void AuthorsManagerWidget::newAuthor()
+{
+    QString name = QInputDialog::getText(this,
+                                         tr("اضافة مؤلف"),
+                                         tr("اسم المؤلف:"));
+    if(!name.isEmpty()) {
+        AuthorInfo *auth = new AuthorInfo();
+        auth->name = name;
+        auth->fullName = name;
+        auth->unknowBirth = true;
+        auth->unknowDeath = true;
+
+        m_authorsManager->addAuthor(auth);
+
+        QStandardItem *authItem = new QStandardItem();
+        authItem->setText(name);
+        authItem->setData(auth->id, ItemRole::authorIdRole);
+
+        m_model->appendRow(authItem);
+
+        QModelIndex index = m_model->indexFromItem(authItem);
+        Utils::selectIndex(ui->treeView, index);
+        on_treeView_doubleClicked(index);
+    }
+}
+
+void AuthorsManagerWidget::removeAuthor()
+{
+    QModelIndex index = Utils::selectedIndex(ui->treeView);
+    if(index.isValid()) {
+        if(QMessageBox::question(this,
+                                 tr("حذف مؤلف"),
+                                 tr("هل انت متأكد من انك تريد حذف '%1' من مجموعة المؤلفين؟")
+                                 .arg(index.data().toString()),
+                                 QMessageBox::Yes|QMessageBox::No,
+                                 QMessageBox::No)==QMessageBox::Yes) {
+            int autID = index.data(ItemRole::authorIdRole).toInt();
+            m_model->removeRow(index.row(), index.parent());
+
+            m_deletedAuth.append(autID);
+        }
+    } else {
+        QMessageBox::warning(this,
+                             tr("حذف مؤلف"),
+                             tr("لم تقم باختيار اي مؤلف"));
     }
 }
 
@@ -181,17 +235,22 @@ void AuthorsManagerWidget::save()
 {
     saveCurrentAuthor();
 
-    if(!m_editedAuthInfo.isEmpty()) {
+    if(!m_editedAuthInfo.isEmpty() || !m_deletedAuth.isEmpty()) {
         m_authorsManager->beginUpdate();
 
         foreach(AuthorInfo *auth, m_editedAuthInfo.values()) {
             m_authorsManager->updateAuthor(auth);
         }
 
+        foreach (int authorID, m_deletedAuth) {
+            m_authorsManager->removeAuthor(authorID);
+        }
+
         m_authorsManager->endUpdate();
 
         qDeleteAll(m_editedAuthInfo);
         m_editedAuthInfo.clear();
+        m_deletedAuth.clear();
         m_currentAuthor = 0;
 
         setModified(false);

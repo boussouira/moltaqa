@@ -41,8 +41,9 @@ public:
 
     QStandardItemModel *authorsModel();
 
-    int addAuthor(AuthorInfo *auth);
     int getNewAuthorID();
+    int addAuthor(AuthorInfo *auth);
+    void removeAuthor(int authorID);
 
     AuthorInfo *getAuthorInfo(int authorID);
     bool hasAuthorInfo(int authorID);
