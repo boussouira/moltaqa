@@ -100,50 +100,14 @@ void NewBookWriter::addTitle(const QString &title, int tid, int level)
     titleElement.setAttribute("pageID", id);
     titleElement.setAttribute("text", title);
 
-    if(level != m_lastLevel) {
-        if(level > m_lastLevel) { //Up
-            if(level - m_lastLevel != 1)
-                qDebug("WARNING: level up by %d at id %d", level-m_lastLevel, tid);
-
-            if(!m_lastTitlesElement.isNull()) {
-                QDomNode node = m_lastTitlesElement.appendChild(titleElement);
-                if(!node.isNull())
-                    m_lastTitlesElement = node.toElement();
-            }
-        } else { //Down
-            int levelCount = m_lastLevel - level;
-            while(levelCount>0) {
-                QDomNode node = m_lastTitlesElement.parentNode();
-                if(!node.isNull())
-                    m_lastTitlesElement = node.toElement();
-
-                levelCount--;
-            }
-
-            QDomNode parentNode = m_lastTitlesElement.parentNode();
-            if(!parentNode.isNull()) {
-                QDomNode node = parentNode.appendChild(titleElement);
-                if(!node.isNull())
-                    m_lastTitlesElement = node.toElement();
-            }
-        }
-    } else {
-        QDomNode parentNode = (m_titleID == 1) ? m_lastTitlesElement : m_lastTitlesElement.parentNode();
-        if(!parentNode.isNull()) {
-            QDomNode node = parentNode.appendChild(titleElement);
-            if(!node.isNull())
-                m_lastTitlesElement = node.toElement();
-        }
-    }
-
-    m_lastLevel = level;
+    QDomNode parentNode = m_levels.value(level-1, m_titlesElement);
+    m_levels[level] = parentNode.appendChild(titleElement);
 }
 
 void NewBookWriter::startReading()
 {
     m_pageId = 0;
     m_prevID = 1;
-    m_lastLevel = 1;
     m_titleID = 0;
 
     m_pagesDoc.setContent(QString("<?xml version=\"1.0\" encoding=\"utf-8\" ?><pages></pages>"));
