@@ -431,18 +431,3 @@ QList<ShamelaShareehInfo *> LibraryCreator::getShorooh()
 {
     return m_shorooh;
 }
-
-void LibraryCreator::addShareh(int mateenID, int mateenPage, int shareehID, int shareehPage)
-{
-    m_bookQuery.prepare("INSERT INTO ShareehMeta (mateen_book, mateen_id, shareeh_book, shareeh_id) "
-                        "VALUES (?, ?, ?, ?)");
-    m_bookQuery.bindValue(0, m_mapper->mapFromShamelaBook(mateenID));
-    m_bookQuery.bindValue(1, mateenPage);
-    m_bookQuery.bindValue(2, m_mapper->mapFromShamelaBook(shareehID));
-    m_bookQuery.bindValue(3, shareehPage);
-
-    if(!m_bookQuery.exec()) {
-        LOG_SQL_ERROR(m_bookQuery);
-    }
-}
-

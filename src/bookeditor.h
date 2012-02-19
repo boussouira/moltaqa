@@ -12,18 +12,27 @@ class BookEditor : public QObject
 
 public:
     BookEditor(QObject *parent = 0);
+    ~BookEditor();
+
+    bool open(int bookID);
+    bool open(LibraryBook *book);
     void setBookReader(RichBookReader *reader);
 
     void unZip();
     bool zip();
     bool save();
-    
+    void removeTemp();
+
     bool saveBookPages(QList<BookPage *> pages);
+    void saveDom();
     void addPage(int pageID);
     void removePage();
 
     int maxPageID();
     QString titlesFile();
+
+    void addPageLink(int sourcPage, int destBook, int destPage);
+    void removePageLink(int sourcPage, int destBook, int destPage);
 
 protected:
     bool zipDir(QString path, QuaZipFile *outFile);
@@ -31,6 +40,7 @@ protected:
 protected:
     RichBookReader *m_bookReader;
     LibraryBook *m_book;
+    bool m_removeReader;
     QString m_bookTmpDir;
     QString m_newBookPath;
     int m_lastBookID;

@@ -359,7 +359,8 @@ int ShamelaManager::getBookShareeh(int shamelaID)
         LOG_SQL_ERROR(specialQuery);
 
     if(specialQuery.next()) {
-        return specialQuery.value(0).toInt();
+        if(!m_haveBookFilter || m_accepted.contains(specialQuery.value(0).toInt()))
+            return specialQuery.value(0).toInt();
     }
 
     return 0;
@@ -376,7 +377,8 @@ int ShamelaManager::getBookMateen(int shamelaID)
         LOG_SQL_ERROR(specialQuery);
 
     if(specialQuery.next()) {
-        return specialQuery.value(0).toInt();
+        if(!m_haveBookFilter || m_accepted.contains(specialQuery.value(0).toInt()))
+            return specialQuery.value(0).toInt();
     }
 
     return 0;

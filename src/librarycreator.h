@@ -40,7 +40,6 @@ public:
     void addQuran();
 
     QList<ShamelaShareehInfo *> getShorooh();
-    void addShareh(int mateenID, int mateenPage, int shareehID, int shareehPage);
 
 protected:
     void importBook(ShamelaBookInfo *shamelBook, QString path);

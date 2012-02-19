@@ -5,14 +5,68 @@
 #include "utils.h"
 #include "mainwindow.h"
 #include "libraryinfo.h"
+#include "librarybookmanager.h"
 
 #include <quazip/quazip.h>
 #include <quazip/quazipfile.h>
+#include "richquranreader.h"
+#include "richsimplebookreader.h"
+#include "richtafessirreader.h"
+#include "bookexception.h"
 
 BookEditor::BookEditor(QObject *parent) :
     QObject(parent)
 {
     m_lastBookID = 0;
+    m_bookReader = 0;
+    m_removeReader = false;
+}
+
+BookEditor::~BookEditor()
+{
+    if(m_removeReader && m_bookReader)
+        delete m_bookReader;
+}
+
+bool BookEditor::open(int bookID)
+{
+    return open(MW->libraryManager()->bookManager()->getLibraryBook(bookID));
+}
+
+bool BookEditor::open(LibraryBook *book)
+{
+    if(book) {
+        RichBookReader *bookReader;
+        if(book->isNormal()) {
+            bookReader = new RichSimpleBookReader();
+        } else if(book->isTafessir()) {
+            bookReader = new RichTafessirReader();
+        } else {
+            qDebug() << "Can't edit book:" << book->bookPath;
+            return false;
+        }
+
+        bookReader->setBookInfo(book);
+
+        try {
+            bookReader->openBook();
+
+            m_bookReader = bookReader;
+            m_book = book;
+
+            if(m_book->bookID != m_lastBookID)
+                m_bookTmpDir.clear();
+
+            m_removeReader = true;
+            return true;
+
+        } catch (BookException &) {
+            delete bookReader;
+            return false;
+        }
+    } else {
+        return false;
+    }
 }
 
 void BookEditor::setBookReader(RichBookReader *reader)
@@ -22,6 +76,8 @@ void BookEditor::setBookReader(RichBookReader *reader)
 
     if(m_book->bookID != m_lastBookID)
         m_bookTmpDir.clear();
+
+    m_removeReader = false;
 }
 
 void BookEditor::unZip()
@@ -130,6 +186,11 @@ bool BookEditor::save()
     if(QFile::exists(backupFile))
         QFile::remove(backupFile);
 
+    if(m_removeReader) {
+        delete m_bookReader;
+        m_bookReader = 0;
+    }
+
     // Create a new backup
     if(QFile::copy(m_book->bookPath, backupFile)) {
         QFile::remove(m_book->bookPath);
@@ -146,6 +207,11 @@ bool BookEditor::save()
     }
 
     return true;
+}
+
+void BookEditor::removeTemp()
+{
+    Utils::removeDir(m_bookTmpDir);
 }
 
 bool BookEditor::saveBookPages(QList<BookPage*> pages)
@@ -200,6 +266,20 @@ bool BookEditor::saveBookPages(QList<BookPage*> pages)
     m_bookReader->m_bookDoc.save(out, 1);
 
     return true;
+}
+
+void BookEditor::saveDom()
+{
+    QFile file(QString("%1/pages.xml").arg(m_bookTmpDir));
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+        qWarning() << "saveBookPages: Can't write pages.xml to:" << file.fileName();
+        return;
+    }
+
+    QTextStream out(&file);
+    out.setCodec("utf-8");
+
+    m_bookReader->m_bookDoc.save(out, 1);
 }
 
 void BookEditor::addPage(int pageID)
@@ -333,4 +413,33 @@ QString BookEditor::titlesFile()
     QDir dir(m_bookTmpDir);
 
     return dir.absoluteFilePath("titles.xml");
+}
+
+void BookEditor::addPageLink(int sourcPage, int destBook, int destPage)
+{
+    QDomElement pageElement = m_bookReader->getPage(sourcPage);
+    if(!pageElement.isNull()) {
+        QDomElement linkElement = m_bookReader->m_bookDoc.createElement("link");
+        linkElement.setAttribute("book", destBook);
+        linkElement.setAttribute("page", destPage);
+
+        pageElement.appendChild(linkElement);
+    }
+}
+
+void BookEditor::removePageLink(int sourcPage, int destBook, int destPage)
+{
+    QDomElement pageElement = m_bookReader->getPage(sourcPage);
+    if(!pageElement.isNull()) {
+        QDomElement linkElement = pageElement.firstChildElement("link");
+        while(!pageElement.isNull()) {
+            if(linkElement.attribute("book").toInt() == destBook
+                    && linkElement.attribute("page").toInt() == destPage) {
+                pageElement.removeChild(linkElement);
+                break;
+            }
+
+            linkElement = linkElement.nextSiblingElement("link");
+        }
+    }
 }

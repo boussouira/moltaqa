@@ -53,6 +53,8 @@ void createIndexDB(QString path);
 
 void saveWidgetPosition(QWidget *w, QString section);
 void restoreWidgetPosition(QWidget *w, QString section, bool showMaximized=false);
+
+void removeDir(const QString &path);
 }
 
 namespace App {

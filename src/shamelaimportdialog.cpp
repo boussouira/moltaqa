@@ -13,6 +13,7 @@
 #include "booklistmanager.h"
 #include "librarybookmanager.h"
 #include "modelenums.h"
+#include "bookeditor.h"
 
 #ifdef USE_MDBTOOLS
 #include "mdbconverter.h"
@@ -28,6 +29,7 @@
 #include <qevent.h>
 
 static ShamelaImportDialog* m_instance=0;
+#define HASH_SHAREH(s, m) ((s << 15) | m)
 
 ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
     QDialog(parent),
@@ -382,12 +384,6 @@ void ShamelaImportDialog::doneImporting()
 
         ui->progressBar->setValue(ui->progressBar->maximum());
 
-        importShorooh();
-
-        addDebugInfo(tr("تم استيراد %1 بنجاح خلال %2")
-                     .arg(Utils::arPlural(m_importedBooksCount, Plural::BOOK))
-                     .arg(Utils::secondsToString(m_importTime.elapsed())));
-
         if(m_importedBooksCount > 0) {
             // TODO: auto save dom model
             MW->libraryManager()->authorsManager()->reloadModels();
@@ -395,6 +391,12 @@ void ShamelaImportDialog::doneImporting()
             MW->libraryManager()->bookListManager()->reloadModels();
             MW->libraryManager()->taffesirListManager()->reloadModels();
         }
+
+        importShorooh();
+
+        addDebugInfo(tr("تم استيراد %1 بنجاح خلال %2")
+                     .arg(Utils::arPlural(m_importedBooksCount, Plural::BOOK))
+                     .arg(Utils::secondsToString(m_importTime.elapsed())));
 
         qDeleteAll(m_importThreads);
         m_importThreads.clear();
@@ -432,23 +434,49 @@ void ShamelaImportDialog::importShorooh()
 {
     QList<uint> ad;
     addDebugInfo(tr("استيراد الشروح..."));
-    LibraryCreator creator;
-    creator.openDB();
-    creator.start();
 
-    foreach (ShamelaImportThread *thread, m_importThreads) {
-        foreach (ShamelaShareehInfo *info, thread->getShorooh()) {
-            // TODO: use a better way to check for added shorooh pages
-            if(!ad.contains((info->shareeh_id << 15) | info->shareeh_page)) {
-                creator.addShareh(info->mateen_id, info->mateen_page, info->shareeh_id, info->shareeh_page);
-                ad.append((info->shareeh_id << 15) | info->shareeh_page);
+    QHash<int, BookEditor*> editors;
+    BookEditor *editor=0;
+
+    QList<ShamelaShareehInfo *> shorooh;
+    foreach (ShamelaImportThread *thread, m_importThreads)
+        shorooh.append(thread->getShorooh());
+
+    foreach (ShamelaShareehInfo *info, shorooh) {
+        // TODO: use a better way to check for added shorooh pages
+        if(!ad.contains(HASH_SHAREH(info->shareeh_id, info->shareeh_page))) {
+            editor = editors.value(info->mateen_id);
+            if(!editor) {
+                editor = new BookEditor();
+                qDebug("Open shamela book %d", info->mateen_id);
+                if(!editor->open(m_manager->mapper()->mapFromShamelaBook(info->mateen_id))) {
+                    delete editor;
+                    continue;
+                }
+
+                editor->unZip();
+
+                editors.insert(info->mateen_id, editor);
             }
-        }
 
-        qDeleteAll(thread->getShorooh());
+            editor->addPageLink(info->mateen_page,
+                                m_manager->mapper()->mapFromShamelaBook(info->shareeh_id),
+                                info->shareeh_page);
+
+            ad.append(HASH_SHAREH(info->shareeh_id, info->shareeh_page));
+        }
     }
 
-    creator.done();
+    foreach(BookEditor *e, editors.values()) {
+        qDebug("Save book");
+        e->saveDom();
+        e->zip();
+        e->save();
+        e->removeTemp();
+    }
+
+    qDeleteAll(editors);
+    qDeleteAll(shorooh);
 }
 
 void ShamelaImportDialog::itemChanged(QStandardItem *item)

@@ -283,6 +283,21 @@ void restoreWidgetPosition(QWidget *w, QString section, bool showMaximized)
     settings.endGroup();
 }
 
+void removeDir(const QString &path)
+{
+    QFileInfo info(path);
+    if(info.isDir()) {
+        QDir dir(path);
+        foreach(QFileInfo file, dir.entryInfoList(QDir::Dirs|QDir::Files|QDir::NoDotAndDotDot)) {
+            removeDir(file.filePath());
+        }
+    }
+
+    QFile f(path);
+    if(!f.remove())
+        qDebug("Can't delete %s: %s", qPrintable(path), qPrintable(f.errorString()));
+}
+
 }
 
 namespace App {

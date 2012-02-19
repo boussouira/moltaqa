@@ -59,10 +59,10 @@ int NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int par
     page.setAttribute("page", pageNum);
     page.setAttribute("part", partNum);
 
-    if(hadditNum != -1)
+    if(hadditNum)
         page.setAttribute("haddit", hadditNum);
 
-    if(soraNum != -1 && ayaNum != -1) {
+    if(soraNum && ayaNum) {
         page.setAttribute("aya", ayaNum);
         page.setAttribute("sora", soraNum);
     }
@@ -111,7 +111,9 @@ void NewBookWriter::endReading()
     QuaZipFile titlesFile(&m_zip);
     if(titlesFile.open(QIODevice::WriteOnly, QuaZipNewInfo("titles.xml"))) {
         QTextStream out(&titlesFile);
-        out << m_titlesDoc.toString(-1);
+        out.setCodec("utf-8");
+
+        m_titlesDoc.save(out, 1);
     } else {
         qCritical("Can't write to titles.xml - Error: %d", titlesFile.getZipError());
     }
@@ -119,7 +121,9 @@ void NewBookWriter::endReading()
     QuaZipFile pagesFile(&m_zip);
     if(pagesFile.open(QIODevice::WriteOnly, QuaZipNewInfo("pages.xml"))) {
         QTextStream out(&pagesFile);
-        out << m_pagesDoc.toString(-1);
+        out.setCodec("utf-8");
+
+        m_pagesDoc.save(out, 1);
     } else {
         qCritical("Can't write to pages.xml - Error: %d", pagesFile.getZipError());
     }
