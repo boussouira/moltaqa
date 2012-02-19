@@ -39,7 +39,7 @@ public:
 
     int getNewCategorieID();
 
-    CategorieInfo *findCategorie(const QString &cat); // TODO: use a simple class instead of QPair (inherit it)
+    CategorieInfo *findCategorie(const QString &cat);
     int addCategorie(const QString &title, int parentCat);
     void addBook(LibraryBook *book, int parentCat);
 
