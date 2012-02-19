@@ -31,5 +31,6 @@
         <file>images/document-revert.png</file>
         <file>images/go-jump.png</file>
         <file>images/insert-link.png</file>
+        <file>images/add2.png</file>
     </qresource>
 </RCC>

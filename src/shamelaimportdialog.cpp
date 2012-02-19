@@ -367,7 +367,7 @@ void ShamelaImportDialog::bookImported(const QString &text)
         ui->listDebug->addItem(tr("جاري استيراد الكتب..."));
 
     ui->progressBar->setValue(ui->progressBar->value()+1);
-    ui->listDebug->addItem(" + "+text);
+    ui->listDebug->addItem(new QListWidgetItem(QIcon(":/images/add2.png"), text));
     ui->listDebug->scrollToBottom();
 
     m_importedBooksCount++;
