@@ -155,7 +155,6 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
     writer.createNewBook();
     writer.startReading();
 
-    int lastID=0;
 
     if(ayaCol != -1 && soraCol != -1) {
         // This is a tafessir book
@@ -163,7 +162,7 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
             // We have hno column
             if(query.exec(QString("SELECT id, nass, page, part, aya, sora, hno FROM b%1 ORDER BY id").arg(bookID))) {
                 while(query.next()) {
-                    lastID = writer.addPage(query.value(1).toString(),
+                    writer.addPage(query.value(1).toString(),
                                             query.value(0).toInt(),
                                             query.value(2).toInt(),
                                             query.value(3).toInt(),
@@ -196,7 +195,7 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
             // We have hno column
             if(query.exec(QString("SELECT id, nass, page, part, hno FROM b%1 ORDER BY id").arg(bookID))) {
                 while(query.next()) {
-                    lastID = writer.addPage(query.value(1).toString(),
+                    writer.addPage(query.value(1).toString(),
                                             query.value(0).toInt(),
                                             query.value(2).toInt(),
                                             query.value(3).toInt(),
@@ -209,7 +208,7 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
             // We don't have hno column
             if(query.exec(QString("SELECT id, nass, page, part FROM b%1 ORDER BY id").arg(bookID))) {
                 while(query.next()) {
-                    lastID = writer.addPage(query.value(1).toString(),
+                    writer.addPage(query.value(1).toString(),
                                             query.value(0).toInt(),
                                             query.value(2).toInt(),
                                             query.value(3).toInt());

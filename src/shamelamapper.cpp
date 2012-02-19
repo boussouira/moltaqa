@@ -21,13 +21,6 @@ void ShamelaMapper::addBookMap(int shamelaID, int libID)
     m_booksMap.insert(shamelaID, libID);
 }
 
-void ShamelaMapper::addPageMap(int shamelaBookID, int shamelaPageID, int libPageID)
-{
-    QMutexLocker locker(&m_mutex);
-
-    m_bookPages[shamelaBookID].insert(shamelaPageID, libPageID);
-}
-
 int ShamelaMapper::mapFromShamelaCat(int catID)
 {
     return m_catMap.value(catID, 0);
@@ -41,9 +34,4 @@ int ShamelaMapper::mapFromShamelaAuthor(int authID)
 int ShamelaMapper::mapFromShamelaBook(int bookID)
 {
     return m_booksMap.value(bookID, 0);
-}
-
-int ShamelaMapper::mapFromShamelaPage(int shamelaBook, int shamelaPage)
-{
-    return m_bookPages[shamelaBook][shamelaPage];
 }

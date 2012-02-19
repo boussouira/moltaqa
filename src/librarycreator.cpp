@@ -330,20 +330,15 @@ void LibraryCreator::importQuran(QString path)
 
 void LibraryCreator::readSimpleBook(ShamelaBookInfo *book, QSqlQuery &query, NewBookWriter &writer, bool hno)
 {
-    int lastID=0;
-    bool mapPages = m_shamelaManager->getBookMateen(book->id) || m_shamelaManager->getBookShareeh(book->id);
-
     if(hno) {
         query.prepare(QString("SELECT id, nass, page, part, hno FROM %1 ORDER BY id").arg(book->mainTable));
         if(query.exec()) {
             while(query.next()) {
-                lastID = writer.addPage(query.value(1).toString(),
+                writer.addPage(query.value(1).toString(),
                                         query.value(0).toInt(),
                                         query.value(2).toInt(),
                                         query.value(3).toInt(),
                                         query.value(4).toInt());
-                if(mapPages)
-                    m_mapper->addPageMap(book->id, query.value(0).toInt(), lastID);
             }
         } else {
             LOG_SQL_ERROR(query);
@@ -352,12 +347,10 @@ void LibraryCreator::readSimpleBook(ShamelaBookInfo *book, QSqlQuery &query, New
         query.prepare(QString("SELECT id, nass, page, part FROM %1 ORDER BY id").arg(book->mainTable));
         if(query.exec()) {
             while(query.next()) {
-                lastID = writer.addPage(query.value(1).toString(),
+                writer.addPage(query.value(1).toString(),
                                         query.value(0).toInt(),
                                         query.value(2).toInt(),
                                         query.value(3).toInt());
-                if(mapPages)
-                    m_mapper->addPageMap(book->id, query.value(0).toInt(), lastID);
             }
         } else {
             LOG_SQL_ERROR(query);
@@ -368,12 +361,11 @@ void LibraryCreator::readSimpleBook(ShamelaBookInfo *book, QSqlQuery &query, New
 
 void LibraryCreator::readTafessirBook(ShamelaBookInfo *book, QSqlQuery &query, NewBookWriter &writer, bool hno)
 {
-    int lastID=0;
     if(hno) {
         query.prepare(QString("SELECT id, nass, page, part, aya, sora, hno FROM %1 ORDER BY id").arg(book->mainTable));
         if(query.exec()) {
             while(query.next()) {
-                lastID = writer.addPage(query.value(1).toString(),
+                writer.addPage(query.value(1).toString(),
                                         query.value(0).toInt(),
                                         query.value(2).toInt(),
                                         query.value(3).toInt(),
@@ -445,9 +437,9 @@ void LibraryCreator::addShareh(int mateenID, int mateenPage, int shareehID, int 
     m_bookQuery.prepare("INSERT INTO ShareehMeta (mateen_book, mateen_id, shareeh_book, shareeh_id) "
                         "VALUES (?, ?, ?, ?)");
     m_bookQuery.bindValue(0, m_mapper->mapFromShamelaBook(mateenID));
-    m_bookQuery.bindValue(1, m_mapper->mapFromShamelaPage(mateenID, mateenPage));
+    m_bookQuery.bindValue(1, mateenPage);
     m_bookQuery.bindValue(2, m_mapper->mapFromShamelaBook(shareehID));
-    m_bookQuery.bindValue(3, m_mapper->mapFromShamelaPage(shareehID, shareehPage));
+    m_bookQuery.bindValue(3, shareehPage);
 
     if(!m_bookQuery.exec()) {
         LOG_SQL_ERROR(m_bookQuery);

@@ -39,12 +39,9 @@ protected:
     QDomElement m_titlesElement;
     QDomElement m_lastTitlesElement;
 
-    int m_pageId;
-    int m_prevID;
     int m_titleID;
 
     QHash<int, QDomNode> m_levels;
-    QHash<int, int> m_idsHash; ///< For mapping between shamela ids and our ids
     QTime m_time;
 };
 

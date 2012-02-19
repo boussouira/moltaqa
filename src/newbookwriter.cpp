@@ -13,7 +13,6 @@
 NewBookWriter::NewBookWriter()
 {
     m_tempFolder = MW->libraryInfo()->tempDir();
-    m_pageId = 0;
 }
 
 NewBookWriter::~NewBookWriter()
@@ -55,10 +54,8 @@ int NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int par
     if(pageNum<1)
         pageNum = 1;
 
-    m_pageId++; // Last inserted id
-
     QDomElement page = m_pagesDoc.createElement("item");
-    page.setAttribute("id", m_pageId);
+    page.setAttribute("id", pageID);
     page.setAttribute("page", pageNum);
     page.setAttribute("part", partNum);
 
@@ -72,32 +69,23 @@ int NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int par
 
     QuaZipFile outFile(&m_zip);
     if(outFile.open(QIODevice::WriteOnly,
-                     QuaZipNewInfo(QString("pages/p%1.html").arg(m_pageId)))) {
+                     QuaZipNewInfo(QString("pages/p%1.html").arg(pageID)))) {
         QTextStream out(&outFile);
         out << text;
     } else {
-        qCritical("Can't write to pages/p%d.html - Error: %d", m_pageId, outFile.getZipError());
+        qCritical("Can't write to pages/p%d.html - Error: %d", pageID, outFile.getZipError());
     }
 
     m_pagesElemnent.appendChild(page);
-    m_idsHash.insert(pageID, m_pageId);
 
-    return m_pageId;
+    return pageID;
 }
 
 void NewBookWriter::addTitle(const QString &title, int tid, int level)
 {
-    int id = m_idsHash.value(tid, -1);
-    if(id == -1)
-        id = m_prevID;
-    else
-        m_prevID = id;
-
-    m_titleID++;
-
     QDomElement titleElement = m_titlesDoc.createElement("item");
-    titleElement.setAttribute("id", m_titleID);
-    titleElement.setAttribute("pageID", id);
+    titleElement.setAttribute("id", ++m_titleID);
+    titleElement.setAttribute("pageID", tid);
     titleElement.setAttribute("text", title);
 
     QDomNode parentNode = m_levels.value(level-1, m_titlesElement);
@@ -106,8 +94,6 @@ void NewBookWriter::addTitle(const QString &title, int tid, int level)
 
 void NewBookWriter::startReading()
 {
-    m_pageId = 0;
-    m_prevID = 1;
     m_titleID = 0;
 
     m_pagesDoc.setContent(QString("<?xml version=\"1.0\" encoding=\"utf-8\" ?><pages></pages>"));

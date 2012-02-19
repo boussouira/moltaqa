@@ -12,7 +12,6 @@ public:
     void addCatMap(int shamelaID, int libID);
     void addAuthorMap(int shamelaID, int libID);
     void addBookMap(int shamelaID, int libID);
-    void addPageMap(int shamelaBookID, int shamelaPageID, int libPageID);
 
     /// Convert the given shamela categorie id to this library categorie
     int mapFromShamelaCat(int catID);
@@ -20,8 +19,6 @@ public:
     int mapFromShamelaAuthor(int authID);
     /// Convert the given shamela book id to this library book id
     int mapFromShamelaBook(int bookID);
-    /// Covert the given shamela page id to this library page id
-    int mapFromShamelaPage(int shamelaBook, int shamelaPage);
 
 protected:
     QHash<int, int> m_booksMap; ///< Map between shamela and our book's ids
