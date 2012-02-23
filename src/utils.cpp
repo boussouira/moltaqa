@@ -224,12 +224,6 @@ void createIndexDB(QSqlQuery &query)
                      "fileName TEXT , "
                      "bookFolder TEXT, "
                      "indexFlags INTEGER)");
-
-    query.exec("CREATE TABLE ShareehMeta("
-                     "mateen_book INTEGER, "
-                     "mateen_id INTEGER, "
-                     "shareeh_book INTEGER, "
-                     "shareeh_id INTEGER)");
 }
 
 void createIndexDB(QString path)
@@ -291,11 +285,12 @@ void removeDir(const QString &path)
         foreach(QFileInfo file, dir.entryInfoList(QDir::Dirs|QDir::Files|QDir::NoDotAndDotDot)) {
             removeDir(file.filePath());
         }
-    }
 
-    QFile f(path);
-    if(!f.remove())
-        qDebug("Can't delete %s: %s", qPrintable(path), qPrintable(f.errorString()));
+        dir.rmdir(path);
+    } else {
+        if(!QFile::remove(path))
+            qDebug() << "Can't delete:" << path;
+    }
 }
 
 }
