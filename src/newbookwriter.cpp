@@ -31,12 +31,9 @@ void NewBookWriter::createNewBook(QString bookPath)
     else
         m_bookPath = bookPath;
 
-    if(QFile::exists(m_bookPath)) {
+    while(QFile::exists(m_bookPath)) {
         qWarning() << "createNewBook: File at:" << m_bookPath << "already exists";
-        if(QFile::remove(m_bookPath))
-            qWarning() << "Delete it";
-        else
-            qWarning("Can't delete it!");
+        m_bookPath.replace(".alb", "_.alb");
     }
 
     m_zip.setZipName(m_bookPath);
