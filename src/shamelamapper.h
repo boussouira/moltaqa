@@ -20,11 +20,12 @@ public:
     /// Convert the given shamela book id to this library book id
     int mapFromShamelaBook(int bookID);
 
+    QHash<int, int> &booksMap() { return m_booksMap; }
+
 protected:
     QHash<int, int> m_booksMap; ///< Map between shamela and our book's ids
     QHash<int, int> m_catMap;  ///< Map between shamela and our categorie's ids
     QHash<int, int> m_authorsMap;
-    QHash<int, QHash<int, int> > m_bookPages;
     QMutex m_mutex;
 };
 

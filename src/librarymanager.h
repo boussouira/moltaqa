@@ -39,9 +39,6 @@ public:
     int addBook(ImportModelNode *node);
     void addBook(LibraryBook *book, int catID);
 
-    bool hasShareeh(int bookID);
-    void getShoroohPages(LibraryBook *info, BookPage *page);
-
     void setBookIndexStat(int bookID, Enums::indexFlags indexFlag);
     QList<int> getNonIndexedBooks();
 

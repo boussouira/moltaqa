@@ -4,6 +4,7 @@
 #include "bookexception.h"
 #include "simpletextformat.h"
 #include "libraryinfo.h"
+#include "librarybookmanager.h"
 
 #include <qstringlist.h>
 #include <qdebug.h>
@@ -39,7 +40,7 @@ void RichSimpleBookReader::setCurrentPage(QDomElement pageNode)
     else
         getPageTitleID();
 
-    m_libraryManager->getShoroohPages(m_bookInfo, m_currentPage);
+    getShorooh();
 
     QString pageText = getPageText(m_currentPage->pageID);
     if(m_query && m_highlightPageID == m_currentPage->pageID)
@@ -50,4 +51,21 @@ void RichSimpleBookReader::setCurrentPage(QDomElement pageNode)
     m_textFormat->done();
 
     emit textChanged();
+}
+
+void RichSimpleBookReader::getShorooh()
+{
+    m_bookInfo->shorooh.clear();
+
+    QDomElement linkElement = m_currentElement.firstChildElement("link");
+    while(!linkElement.isNull()) {
+        int bookID = linkElement.attribute("book").toInt();
+        int page = linkElement.attribute("page").toInt();
+
+        LibraryBook *book = m_libraryManager->bookManager()->getLibraryBook(bookID);
+        if(book)
+            m_bookInfo->shorooh.append(BookShorooh(bookID, page, book->bookDisplayName));
+
+        linkElement = linkElement.nextSiblingElement("link");
+    }
 }

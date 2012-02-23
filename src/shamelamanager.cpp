@@ -1,6 +1,7 @@
 #include "shamelamanager.h"
 #include "utils.h"
 #include "modelenums.h"
+#include "bookeditor.h"
 
 #ifdef USE_MDBTOOLS
 #include"mdbconverter.h"
@@ -348,69 +349,122 @@ void ShamelaManager::setAcceptedBooks(QList<int> accepted)
     m_accepted = accepted;
 }
 
-int ShamelaManager::getBookShareeh(int shamelaID)
+QList<int> ShamelaManager::getBookShorooh(int shamelaID)
 {
     openShamelaSpecialDB();
     QSqlQuery specialQuery(m_shamelaSpecialDB);
+    QSet<int> ret;
 
     specialQuery.prepare("SELECT Sharh FROM oShrooh WHERE Matn = ?");
     specialQuery.bindValue(0, shamelaID);
     if(!specialQuery.exec())
         LOG_SQL_ERROR(specialQuery);
 
-    if(specialQuery.next()) {
-        if(!m_haveBookFilter || m_accepted.contains(specialQuery.value(0).toInt()))
-            return specialQuery.value(0).toInt();
+    while(specialQuery.next()) {
+            ret << specialQuery.value(0).toInt();
     }
 
-    return 0;
+    return ret.toList();
 }
 
-int ShamelaManager::getBookMateen(int shamelaID)
+void ShamelaManager::importShorooh()
 {
-    openShamelaSpecialDB();
-    QSqlQuery specialQuery(m_shamelaSpecialDB);
+    QHash<int, int> booksMap = m_mapper->booksMap();
+    QHash<int, int>::const_iterator i = booksMap.constBegin();
+    QHash<int, int>::const_iterator end = booksMap.constEnd();
 
-    specialQuery.prepare("SELECT Matn FROM oShrooh WHERE Sharh = ?");
-    specialQuery.bindValue(0, shamelaID);
-    if(!specialQuery.exec())
-        LOG_SQL_ERROR(specialQuery);
+    QHash<int, int> bookToNum; // Convert bkid to oNum
+    QHash<int, int> numToBook; // Convert oNum to bkid
+    QSqlQuery query(m_shamelaDB);
+    query.exec("SELECT bkid, oNum FROM " + mdbTable("0bok"));
+    while(query.next()) {
+        int bid = query.value(0).toInt();
+        int oNum = query.value(1).toInt();
 
-    if(specialQuery.next()) {
-        if(!m_haveBookFilter || m_accepted.contains(specialQuery.value(0).toInt()))
-            return specialQuery.value(0).toInt();
+        if(!m_haveBookFilter || m_accepted.contains(bid)) {
+            bookToNum.insert(bid, oNum);
+            numToBook.insert(oNum, bid);
+        }
     }
 
-    return 0;
-}
+    while (i != end) {
+        BookEditor *editor=0;
+        int shaBookId = i.key();
+        int bookID = i.value();
 
-QList<ShamelaShareehInfo *> ShamelaManager::getShareehInfo(int mateen, int shareeh)
-{
-    openShamelaSpecialDB();
-    QSqlQuery specialQuery(m_shamelaSpecialDB);
-    QList<ShamelaShareehInfo *> list;
+        // Get linked shorooh
+        QList<int> shorooh = getBookShorooh(bookToNum[shaBookId]);
+        if(!shorooh.isEmpty()) {
+            qDebug("Book %d has %d shareeh", shaBookId, shorooh.size());
+            // Link with each shareeh
+            foreach(int bookNum, shorooh) {
+                // Convert oNum to bkid
+                int bkid = numToBook[bookNum];
+                if(!bkid) {
+                    qDebug("Can't find bkid for book with oNum %d", bookNum);
+                    continue;
+                }
 
-    if(!m_addedShorooh.contains(shareeh)) {
-        specialQuery.prepare("SELECT MatnId, SharhId FROM oShr WHERE Matn = ? AND Sharh = ?");
-        specialQuery.bindValue(0, mateen);
-        specialQuery.bindValue(1, shareeh);
-        if(!specialQuery.exec())
-            LOG_SQL_ERROR(specialQuery);
+                if(m_haveBookFilter && !m_accepted.contains(bkid)) {
+                    qDebug("Shareeh %d not imported from shamela", bkid);
+                    continue;
+                }
 
-        while(specialQuery.next()) {
-            list.append(new ShamelaShareehInfo(mateen,
-                                               specialQuery.value(0).toInt(),
-                                               shareeh,
-                                               specialQuery.value(1).toInt()));
+                // Convert bkid to this library book id
+                int shareehLibID = booksMap[bkid];
+                if(!shareehLibID) {
+                    qDebug("Can't map book %d", bkid);
+                    continue;
+                }
+
+                // Open editor in the first time
+                if(!editor) {
+                    editor = new BookEditor();
+                    if(!editor->open(bookID)) {
+                        delete editor;
+                        editor = 0;
+                        continue;
+                    }
+
+                    editor->unZip();
+                }
+
+                qDebug("Link %d with %d", bookID, shareehLibID);
+
+                // Start linking...
+                QSqlQuery specialQuery(m_shamelaSpecialDB);
+                specialQuery.prepare("SELECT MatnId, SharhId FROM oShr WHERE Matn = ? AND Sharh = ?");
+                specialQuery.bindValue(0, bookToNum[shaBookId]); // We should use oNum
+                specialQuery.bindValue(1, bookNum);
+                if(specialQuery.exec()) {
+                    QList<int> linked; // To remove duplicated entries
+                    while(specialQuery.next()) {
+                        if(!linked.contains(specialQuery.value(1).toInt())) {
+                            editor->addPageLink(specialQuery.value(0).toInt(),
+                                                shareehLibID,
+                                                specialQuery.value(1).toInt());
+                            linked<<specialQuery.value(1).toInt();
+                        }
+                    }
+                } else {
+                    LOG_SQL_ERROR(specialQuery);
+                    continue;
+                }
+            }
+
+            if(editor) {
+                editor->saveDom();
+                editor->zip();
+                editor->save();
+                editor->removeTemp();
+
+                delete editor;
+                editor = 0;
+            }
         }
 
-        m_addedShorooh.append(shareeh);
-        qDebug("New shareeh %d", shareeh);
-    } else {
-        qDebug("shareeh %d exist", shareeh);
+        ++i;
     }
-
-    return list;
 }
 
 QString ShamelaManager::mdbTable(QString table)

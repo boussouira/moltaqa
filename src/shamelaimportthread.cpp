@@ -57,8 +57,3 @@ void ShamelaImportThread::importQuran()
     m_creator.addQuran();
     emit bookImported(tr("القرآن الكريم"));
 }
-
-QList<ShamelaShareehInfo *> ShamelaImportThread::getShorooh()
-{
-    return m_creator.getShorooh();
-}

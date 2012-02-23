@@ -29,7 +29,6 @@
 #include <qevent.h>
 
 static ShamelaImportDialog* m_instance=0;
-#define HASH_SHAREH(s, m) ((s << 15) | m)
 
 ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
     QDialog(parent),
@@ -390,9 +389,11 @@ void ShamelaImportDialog::doneImporting()
             MW->libraryManager()->bookManager()->reloadModels();
             MW->libraryManager()->bookListManager()->reloadModels();
             MW->libraryManager()->taffesirListManager()->reloadModels();
-        }
 
-        importShorooh();
+            importShorooh();
+        } else {
+            qDebug("No book imported");
+        }
 
         addDebugInfo(tr("تم استيراد %1 بنجاح خلال %2")
                      .arg(Utils::arPlural(m_importedBooksCount, Plural::BOOK))
@@ -432,51 +433,9 @@ bool ShamelaImportDialog::cancel()
 
 void ShamelaImportDialog::importShorooh()
 {
-    QList<uint> ad;
     addDebugInfo(tr("استيراد الشروح..."));
 
-    QHash<int, BookEditor*> editors;
-    BookEditor *editor=0;
-
-    QList<ShamelaShareehInfo *> shorooh;
-    foreach (ShamelaImportThread *thread, m_importThreads)
-        shorooh.append(thread->getShorooh());
-
-    foreach (ShamelaShareehInfo *info, shorooh) {
-        // TODO: use a better way to check for added shorooh pages
-        if(!ad.contains(HASH_SHAREH(info->shareeh_id, info->shareeh_page))) {
-            editor = editors.value(info->mateen_id);
-            if(!editor) {
-                editor = new BookEditor();
-                qDebug("Open shamela book %d", info->mateen_id);
-                if(!editor->open(m_manager->mapper()->mapFromShamelaBook(info->mateen_id))) {
-                    delete editor;
-                    continue;
-                }
-
-                editor->unZip();
-
-                editors.insert(info->mateen_id, editor);
-            }
-
-            editor->addPageLink(info->mateen_page,
-                                m_manager->mapper()->mapFromShamelaBook(info->shareeh_id),
-                                info->shareeh_page);
-
-            ad.append(HASH_SHAREH(info->shareeh_id, info->shareeh_page));
-        }
-    }
-
-    foreach(BookEditor *e, editors.values()) {
-        qDebug("Save book");
-        e->saveDom();
-        e->zip();
-        e->save();
-        e->removeTemp();
-    }
-
-    qDeleteAll(editors);
-    qDeleteAll(shorooh);
+    m_manager->importShorooh();
 }
 
 void ShamelaImportDialog::itemChanged(QStandardItem *item)

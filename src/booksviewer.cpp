@@ -298,9 +298,9 @@ void BooksViewer::openShareeh()
 
     QMenu menu(this);
 
-    foreach(BookShorooh *shareeh, info->shorooh) {
-        QAction *act = new QAction(shareeh->bookName, &menu);
-        act->setData(QString("%1;%2").arg(shareeh->bookID).arg(shareeh->pageID));
+    foreach(BookShorooh shareeh, info->shorooh) {
+        QAction *act = new QAction(shareeh.bookName, &menu);
+        act->setData(QString("%1;%2").arg(shareeh.bookID).arg(shareeh.pageID));
 
         menu.addAction(act);
     }

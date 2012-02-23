@@ -215,10 +215,6 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
 
     importBook(book, path);
 
-    if(!getShorooh(book)) {
-        getMateen(book);
-    }
-
     if(!book->tafessirName.isEmpty()) {
         addTafessir(book);
     }
@@ -393,41 +389,4 @@ void LibraryCreator::readTafessirBook(ShamelaBookInfo *book, QSqlQuery &query, N
         }
 
     }
-}
-
-bool LibraryCreator::getShorooh(ShamelaBookInfo *mateen)
-{
-    int s_mateenID = mateen->id;
-    int s_shareehID = m_shamelaManager->getBookShareeh(mateen->id);
-
-    if(s_shareehID && s_mateenID) {
-        getShorooh(s_mateenID, s_shareehID);
-        return true;
-    }
-
-    return false;
-}
-
-bool LibraryCreator::getMateen(ShamelaBookInfo *shreeh)
-{
-    int s_shareehID = shreeh->id;
-    int s_mateenID = m_shamelaManager->getBookMateen(shreeh->id);
-
-    if(s_mateenID && s_shareehID) {
-        getShorooh(s_mateenID, s_shareehID);
-        return true;
-    }
-
-    return false;
-}
-
-void LibraryCreator::getShorooh(int mateenID, int shareehID)
-{
-    QList<ShamelaShareehInfo *> idsList = m_shamelaManager->getShareehInfo(mateenID, shareehID);
-    m_shorooh.append(idsList);
-}
-
-QList<ShamelaShareehInfo *> LibraryCreator::getShorooh()
-{
-    return m_shorooh;
 }

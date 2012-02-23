@@ -72,15 +72,4 @@ public:
     QString tafessirName;
 };
 
-class ShamelaShareehInfo
-{
-public:
-    ShamelaShareehInfo(int mateenID, int mateenPage, int shareehID, int shareehPage)
-        : mateen_id(mateenID), mateen_page(mateenPage), shareeh_id(shareehID), shareeh_page(shareehPage) {}
-    int mateen_id;
-    int mateen_page;
-    int shareeh_id;
-    int shareeh_page;
-};
-
 #endif // SHAMELAIMPORTINFO_H

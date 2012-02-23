@@ -46,11 +46,11 @@ public:
     ShamelaBookInfo *nextBook();
     ShamelaBookInfo *nextFiltredBook();
 
-    int getBookShareeh(int shamelaID);
-    int getBookMateen(int shamelaID);
-    QList<ShamelaShareehInfo*> getShareehInfo(int mateen, int shareeh);
+    void importShorooh();
+    QList<int> getBookShorooh(int shamelaID);
 
     static QString mdbTable(QString table);
+
 
 protected:
     void booksCat(QStandardItem *parentNode, int catID);

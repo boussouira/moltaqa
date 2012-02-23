@@ -15,8 +15,6 @@ LibraryBook::LibraryBook()
 
 LibraryBook::~LibraryBook()
 {
-    qDeleteAll(shorooh);
-    shorooh.clear();
 }
 
 void LibraryBook::setFirstPage(int count, int part)

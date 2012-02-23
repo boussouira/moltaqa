@@ -10,6 +10,7 @@
 #include "taffesirlistmanager.h"
 #include "booklistmanager.h"
 #include "authorsmanager.h"
+#include "bookeditor.h"
 
 #include <qdebug.h>
 #include <qsqlquery.h>
@@ -65,25 +66,6 @@ void LibraryManager::openManagers()
     m_taffesirManager = new TaffesirListManager(this);
 }
 
-bool LibraryManager::hasShareeh(int bookID)
-{
-    QSqlQuery bookQuery(m_indexDB);
-    int count = 0;
-
-    bookQuery.prepare("SELECT COUNT(*) FROM ShareehMeta WHERE "
-                      "mateen_book = ?");
-    bookQuery.bindValue(0, bookID);
-    if(bookQuery.exec()) {
-        if(bookQuery.next()) {
-            count = bookQuery.value(0).toInt();
-        }
-    } else {
-        LOG_SQL_ERROR(bookQuery);
-    }
-
-    return count;
-}
-
 int LibraryManager::addBook(ImportModelNode *node)
 {
     QScopedPointer<LibraryBook> book(node->toLibraryBook());
@@ -112,31 +94,6 @@ void LibraryManager::addBook(LibraryBook *book, int catID)
 
     m_bookmanager->addBook(book);
     m_bookListManager->addBook(book, catID);
-}
-
-void LibraryManager::getShoroohPages(LibraryBook *info, BookPage *page)
-{
-    qDeleteAll(info->shorooh);
-    info->shorooh.clear();
-
-    QSqlQuery bookQuery(m_indexDB);
-
-    bookQuery.prepare("SELECT ShareehMeta.shareeh_book, ShareehMeta.shareeh_id, booksList.bookDisplayName "
-                      "FROM ShareehMeta "
-                      "LEFT JOIN booksList "
-                      "ON booksList.id =  ShareehMeta.shareeh_book "
-                      "WHERE ShareehMeta.mateen_book = ? AND ShareehMeta.mateen_id = ?");
-    bookQuery.bindValue(0, info->bookID);
-    bookQuery.bindValue(1, page->pageID);
-    if(!bookQuery.exec()) {
-        LOG_SQL_ERROR(bookQuery);
-    }
-
-    while(bookQuery.next()) {
-        info->shorooh.append(new BookShorooh(bookQuery.value(0).toInt(),
-                                             bookQuery.value(1).toInt(),
-                                             bookQuery.value(2).toString()));
-    }
 }
 
 void LibraryManager::setBookIndexStat(int bookID, Enums::indexFlags indexFlag)

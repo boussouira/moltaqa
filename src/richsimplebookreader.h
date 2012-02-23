@@ -10,6 +10,7 @@ public:
     ~RichSimpleBookReader();
 
     void setCurrentPage(QDomElement pageNode);
+    void getShorooh();
 
 protected:
     void connected();

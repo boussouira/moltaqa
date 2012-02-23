@@ -40,7 +40,7 @@ public:
     QString toString();
     void fromString(QString info);
     bool haveInfo();
-    QList<BookShorooh*> shorooh;
+    QList<BookShorooh> shorooh;
 
     LibraryBook *clone();
 
