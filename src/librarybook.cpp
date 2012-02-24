@@ -4,10 +4,10 @@
 
 LibraryBook::LibraryBook()
 {
-    partsCount = -1;
+    partsCount = 0;
     firstID = -1;
     lastID = -1;
-    bookID = -1;
+    bookID = 0;
     authorID = 0;
     flags = 0;
     m_hasInfo = false;
