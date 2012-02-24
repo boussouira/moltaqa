@@ -82,9 +82,6 @@ void BookEditor::setBookReader(RichBookReader *reader)
 
 void BookEditor::unZip()
 {
-    QTime t;
-    t.start();
-
     if(!m_bookTmpDir.isEmpty() && QFile::exists(m_bookTmpDir))
         return;
 
@@ -138,16 +135,12 @@ void BookEditor::unZip()
         file.close();
     }
 
-    qDebug("Unzip take %d ms", t.elapsed());
     m_bookTmpDir = dir.path();
     m_lastBookID = m_book->bookID;
 }
 
 bool BookEditor::zip()
 {
-    QTime t;
-    t.start();
-
     QFile zipFile(QString("%1/%2.zip")
                   .arg(MW->libraryInfo()->tempDir())
                   .arg(QFileInfo(m_book->bookPath).baseName()));
@@ -173,7 +166,6 @@ bool BookEditor::zip()
     }
 
     m_newBookPath = zipFile.fileName();
-    qDebug("Zip take %d ms", t.elapsed());
 
     return true;
 }
@@ -201,9 +193,11 @@ bool BookEditor::save()
 
     // Copy new book
     if(QFile::copy(m_newBookPath, m_book->bookPath)) {
-        qDebug("Book saved");
         QFile::remove(m_newBookPath);
         m_newBookPath.clear();
+    } else {
+        qWarning() << "Can't copy" << m_newBookPath << "to" << m_book->bookPath;
+        return false;
     }
 
     return true;
