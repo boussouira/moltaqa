@@ -68,7 +68,7 @@ void LibraryManager::openManagers()
 
 int LibraryManager::addBook(ImportModelNode *node)
 {
-    QScopedPointer<LibraryBook> book(node->toLibraryBook());
+    LibraryBook *book = node->toLibraryBook();
     QString newBookName = Utils::genBookName(m_libraryInfo->booksDir());
     QString newPath = m_libraryInfo->booksDir() + "/" + newBookName;
 
@@ -76,10 +76,9 @@ int LibraryManager::addBook(ImportModelNode *node)
         if(!QFile::remove(node->bookPath))
             qWarning() << "Can't remove:" << node->bookPath;
 
-        book->bookID = m_bookmanager->getNewBookID();
         book->fileName = newBookName;
 
-        addBook(book.data(), node->catID);
+        addBook(book, node->catID);
 
         return book->bookID;
     } else {
@@ -90,8 +89,6 @@ int LibraryManager::addBook(ImportModelNode *node)
 
 void LibraryManager::addBook(LibraryBook *book, int catID)
 {
-    QMutexLocker locker(&m_mutex);
-
     m_bookmanager->addBook(book);
     m_bookListManager->addBook(book, catID);
 }

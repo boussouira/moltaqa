@@ -296,32 +296,30 @@ void LibraryCreator::importBook(ShamelaBookInfo *shamelBook, QString path)
         delete auth;
     }
 
-    LibraryBook book;
-    book.bookID = m_libraryManager->bookManager()->getNewBookID();
-    book.bookType = shamelBook->tafessirName.isEmpty() ? LibraryBook::NormalBook : LibraryBook::TafessirBook;
-    book.bookDisplayName = shamelBook->name;
-    book.bookInfo = shamelBook->info;
-    book.authorID = m_mapper->mapFromShamelaAuthor(shamelBook->authorID);
-    book.authorName = shamelBook->authName;
-    book.fileName = fileInfo.fileName();
+    LibraryBook *book = new LibraryBook();
+    book->bookType = shamelBook->tafessirName.isEmpty() ? LibraryBook::NormalBook : LibraryBook::TafessirBook;
+    book->bookDisplayName = shamelBook->name;
+    book->bookInfo = shamelBook->info;
+    book->authorID = m_mapper->mapFromShamelaAuthor(shamelBook->authorID);
+    book->authorName = shamelBook->authName;
+    book->fileName = fileInfo.fileName();
 
-    m_libraryManager->addBook(&book, m_mapper->mapFromShamelaCat(shamelBook->cat));
+    m_libraryManager->addBook(book, m_mapper->mapFromShamelaCat(shamelBook->cat));
 
-    m_mapper->addBookMap(shamelBook->id, book.bookID);
+    m_mapper->addBookMap(shamelBook->id, book->bookID);
 }
 
 void LibraryCreator::importQuran(QString path)
 {
     QFileInfo fileInfo(path);
 
-    LibraryBook book;
-    book.bookID = m_libraryManager->bookManager()->getNewBookID();
-    book.bookType = LibraryBook::QuranBook;
-    book.bookDisplayName = tr("القرآن الكريم");
-    book.bookInfo = tr("القرآن الكريم");
-    book.fileName = fileInfo.fileName();
+    LibraryBook *book = new LibraryBook();
+    book->bookType = LibraryBook::QuranBook;
+    book->bookDisplayName = tr("القرآن الكريم");
+    book->bookInfo = tr("القرآن الكريم");
+    book->fileName = fileInfo.fileName();
 
-    m_libraryManager->addBook(&book, 0);
+    m_libraryManager->addBook(book, 0);
 }
 
 void LibraryCreator::readSimpleBook(ShamelaBookInfo *book, QSqlQuery &query, NewBookWriter &writer, bool hno)

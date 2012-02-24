@@ -148,13 +148,13 @@ QString AuthorsManager::getAuthorName(int authorID)
     return auth ? auth->name : QString();
 }
 
-AuthorInfo *AuthorsManager::findAuthor(QString name, bool fullName)
+AuthorInfo *AuthorsManager::findAuthor(QString name)
 {
     AuthorInfo *auth = 0;
     QHash<int, AuthorInfo*>::const_iterator i = m_authors.constBegin();
 
     while (i != m_authors.constEnd()) {
-        QString authorName = fullName ? i.value()->fullName : i.value()->name;
+        QString authorName = i.value()->name;
         if(Utils::arContains(authorName, name)) {
             auth = i.value();
             break;
@@ -165,10 +165,7 @@ AuthorInfo *AuthorsManager::findAuthor(QString name, bool fullName)
         ++i;
     }
 
-    if(auth)
-        return auth;
-    else
-        return fullName ? auth : findAuthor(name, true);
+    return auth;
 }
 
 void AuthorsManager::beginUpdate()

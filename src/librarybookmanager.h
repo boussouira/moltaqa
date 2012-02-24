@@ -16,7 +16,7 @@ class LibraryBookManager : public ListManager
 public:
     LibraryBookManager(QObject *parent = 0);
     ~LibraryBookManager();
-    
+
     void loadModels();
     void clear();
 
@@ -24,7 +24,6 @@ public:
     LibraryBook *getLibraryBook(int bookID);
     LibraryBook *getQuranBook();
 
-    int getNewBookID();
     void addBook(LibraryBook *book);
 
     void beginUpdate();
@@ -32,6 +31,7 @@ public:
     void updateBook(LibraryBook *book);
 
 protected:
+    int getNewBookID();
     void readBook(QDomElement &e);
     void loadLibraryBooks();
 

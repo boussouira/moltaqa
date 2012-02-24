@@ -108,6 +108,9 @@ void LibraryBookManager::addBook(LibraryBook *book)
 {
     QMutexLocker locker(&m_mutex);
 
+    if(!book->bookID)
+        book->bookID = getNewBookID();
+
     QDomElement bookElement = m_doc.createElement("book");
     bookElement.setAttribute("id", book->bookID);
     bookElement.setAttribute("type", book->bookType);
@@ -127,6 +130,8 @@ void LibraryBookManager::addBook(LibraryBook *book)
     bookElement.appendChild(bookInfoElement);
 
     m_rootElement.appendChild(bookElement);
+    m_books.insert(book->bookID, book);
+
     m_saveDom = true;
 }
 

@@ -41,7 +41,6 @@ public:
 
     QStandardItemModel *authorsModel();
 
-    int getNewAuthorID();
     int addAuthor(AuthorInfo *auth);
     void removeAuthor(int authorID);
 
@@ -49,13 +48,14 @@ public:
     bool hasAuthorInfo(int authorID);
     QString getAuthorName(int authorID);
 
-    AuthorInfo *findAuthor(QString name, bool fullName=false);
+    AuthorInfo *findAuthor(QString name);
 
     void beginUpdate();
     void endUpdate();
     void updateAuthor(AuthorInfo *auth);
 
 protected:
+    int getNewAuthorID();
     void loadAuthorsInfo();
     void readAuthor(QDomElement &e);
 
