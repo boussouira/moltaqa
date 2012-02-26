@@ -58,6 +58,7 @@ protected:
     QHash<int, int> m_levels;
     bool m_importAuthor; ///< If true, import author's information when adding a book of him
     QMutex m_mutex;
+    QString m_tempDB; // Need this if USE_MDBTOOLS is defined
 };
 
 #endif // LIBRARYCREATOR_H
