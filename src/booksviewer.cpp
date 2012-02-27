@@ -111,10 +111,6 @@ void BooksViewer::createMenus()
                                                this);
     m_comboTafasir = new QComboBox(this);
 
-    // Shorooh action
-    m_actionOpenShareeh = new QAction(QIcon(":/images/arrow-left.png"),
-                                     tr("فتح الشرح"),
-                                     this);
     // Add action to their toolbars
     m_toolBarGeneral = new QToolBar(tr("عام"), this);
     m_toolBarGeneral->addAction(m_actionNewTab);
@@ -132,9 +128,6 @@ void BooksViewer::createMenus()
     m_toolBarTafesir->addWidget(m_comboTafasir);
     m_toolBarTafesir->addAction(m_openSelectedTafsir);
 
-    m_toolBarShorooh = new QToolBar(tr("الشروح"), this);
-    m_toolBarShorooh->addAction(m_actionOpenShareeh);
-
     m_navActions << m_actionEditBook;
     m_navActions << actionSeparator(this);
     m_navActions << m_actionFirstPage;
@@ -147,7 +140,6 @@ void BooksViewer::createMenus()
     m_toolBars << m_toolBarGeneral;
     m_toolBars << m_toolBarNavigation;
     m_toolBars << m_toolBarTafesir;
-    m_toolBars << m_toolBarShorooh;
 
     connect(m_viewManager, SIGNAL(pageChanged()), SLOT(updateActions()));
     connect(m_actionEditBook, SIGNAL(triggered()), SLOT(editCurrentBook()));
@@ -169,9 +161,6 @@ void BooksViewer::createMenus()
     // Tafessir actions
     connect(m_openSelectedTafsir, SIGNAL(triggered()), SLOT(openTafessir()));
     connect(m_libraryManager->taffesirListManager(), SIGNAL(ModelsReady()), SLOT(loadTafessirList()));
-
-    // Shareeh action
-    connect(m_actionOpenShareeh, SIGNAL(triggered()), SLOT(openShareeh()));
 }
 
 void BooksViewer::updateToolBars()
@@ -180,13 +169,9 @@ void BooksViewer::updateToolBars()
 
     if(book) {
         bool showTafsssir = book->isQuran() && m_comboTafasir->count();
-        bool showShorooh = book->hasShareeh;
 
         m_toolBarTafesir->setEnabled(showTafsssir);
         m_toolBarTafesir->setVisible(showTafsssir);
-
-        m_toolBarShorooh->setEnabled(showShorooh);
-        m_toolBarShorooh->setVisible(showShorooh);
 
         m_toolBarGeneral->show();
         m_toolBarNavigation->show();
@@ -326,8 +311,6 @@ void BooksViewer::updateActions()
         m_actionLastPage->setEnabled(hasNext);
         m_actionPrevPage->setEnabled(hasPrev);
         m_actionFirstPage->setEnabled(hasPrev);
-        m_toolBarShorooh->setEnabled(m_viewManager->activeBook()->isNormal() &&
-                                     !m_viewManager->activeBook()->shorooh.isEmpty());
     }
 }
 

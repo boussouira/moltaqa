@@ -61,12 +61,10 @@ private:
     QAction *m_actionFirstPage;
     QAction *m_actionLastPage;
     QAction *m_actionGotToPage;
-    QAction *m_actionOpenShareeh;
     QAction *m_openSelectedTafsir;
     QToolBar *m_toolBarGeneral;
     QToolBar *m_toolBarNavigation;
     QToolBar *m_toolBarTafesir;
-    QToolBar *m_toolBarShorooh;
     QComboBox *m_comboTafasir;
 };
 

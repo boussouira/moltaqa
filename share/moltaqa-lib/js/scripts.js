@@ -106,6 +106,7 @@ function pageTextChanged()
     webView.pageTextChanged();
 
     toggleQuran();
+    hideShorooh();
     indexReading();
 }
 
@@ -157,4 +158,46 @@ function toggleQuran()
             $('.quran_text').slideDown('slow');
         }
     });
+}
+
+function toggleShorooh()
+{
+    $('#shorooh span.info').click(function() {
+        element = $('#shorooh .shoroohBooks');
+        if(element.css('display')!="none") {
+            element.slideUp('slow');// Hide it
+        } else {
+            element.slideDown('slow');
+        }
+    });
+}
+
+function hideShorooh()
+{
+    //$('#shorooh .shoroohBooks').hide();
+}
+
+function setShorooh(shorooh)
+{
+    if(shorooh) {
+        $('#shorooh .shoroohBooks').html('');
+
+        for(i in shorooh) {
+            $('#shorooh .shoroohBooks').append($('<p>',
+                                                 {'text': shorooh[i].bookName,
+                                                  'book': shorooh[i].bookID,
+                                                  'page': shorooh[i].pageID}));
+        }
+
+        $('#shorooh .shoroohBooks p').click(function() {
+                                                book = $(this).attr('book');;
+                                                page = $(this).attr('page');;
+
+                                                booksViewer.openBook(book, page);
+                                            });
+
+        $('#shorooh').slideDown('slow');
+    } else {
+        $('#shorooh').slideUp('slow');
+    }
 }

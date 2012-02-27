@@ -86,6 +86,11 @@ void HtmlHelper::insertSpanTag(QString text, QString selector)
     insertHtmlTag("span", text, selector);
 }
 
+void HtmlHelper::insertParagraphTag(QString text, QString selector)
+{
+    insertHtmlTag("p", text, selector);
+}
+
 void HtmlHelper::insertImage(QString src)
 {
     m_html.append("<img src=\"");

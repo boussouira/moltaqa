@@ -106,6 +106,42 @@ a {
     color: #184388;
 }
 
+#simpleBook #shorooh {
+    display:none;
+}
+
+#simpleBook #shorooh span.info {
+    border-color: #CCCCCC;
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 1px;
+    color: #507B5A;
+    cursor: pointer;
+    float: left;
+    font-size: 16px;
+    margin-bottom: 5px;
+    padding: 0 10px;
+}
+
+#simpleBook #shorooh .shoroohBooks {
+    display:none;
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+    font-size: 18px;
+    padding: 0 10px;
+}
+
+#simpleBook #shorooh .shoroohBooks p {
+    color: #0A4311;
+    cursor: pointer;
+    margin: 3px 0;
+    padding: 0;
+}
+
+#simpleBook #shorooh .shoroohBooks p:hover {
+    color: #040643;
+}
+
 footnote {
     font-size: 20px;
 }

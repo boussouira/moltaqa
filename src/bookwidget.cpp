@@ -8,6 +8,8 @@
 #include "bookreaderhelper.h"
 #include "modelenums.h"
 #include "modelutils.h"
+#include "librarybookmanager.h"
+#include "booksviewer.h"
 
 #include <qsplitter.h>
 #include <qboxlayout.h>
@@ -236,6 +238,31 @@ void BookWidget::readerTextChanged()
     if(m_db->scrollToHighlight()){
         m_view->scrollToElement(".resultHL");
     }
+
+    if(m_db->bookInfo()->shorooh.isEmpty()) {
+        m_view->execJS("setShorooh(false);");
+    } else {
+
+        QString s;
+        s += "setShorooh([";
+
+        foreach(BookShorooh shareeh, m_db->bookInfo()->shorooh) {
+            LibraryBook *book = MW->libraryManager()->bookManager()->getLibraryBook(shareeh.bookID);
+            if(!book)
+                continue;
+
+            s += "{";
+            s += QString("'bookName' : '%1', ").arg(book->bookDisplayName);
+            s += QString("'bookID' : '%1', ").arg(shareeh.bookID);
+            s += QString("'pageID' : '%1'").arg(shareeh.pageID);
+            s += "},";
+        }
+
+        s += "]);";
+
+        m_view->execJS(s);
+
+    }
 }
 
 void BookWidget::showIndex()
@@ -312,4 +339,5 @@ QString BookWidget::getBreadcrumbs()
 void BookWidget::viewObjectCleared()
 {
     m_view->addObject("bookWidget", this);
+    m_view->addObject("booksViewer", MW->booksViewer());
 }

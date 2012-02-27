@@ -84,6 +84,16 @@ QString TextFormatter::getHtmlView(QString text)
         helper.endDivTag(); // div#pageHeader
     }
 
+    if(m_book->isNormal()) {
+        helper.beginDivTag("#shorooh");
+        helper.insertSpanTag(tr("الشروح"), ".info");
+
+        helper.insertDivTag("", ".clear");
+        helper.insertDivTag("", ".shoroohBooks");
+
+        helper.endDivTag(); // div#shorooh
+    }
+
     helper.insertDivTag(text, "#pageText");
 
     if(!m_book->isQuran()) {
@@ -98,6 +108,9 @@ QString TextFormatter::getHtmlView(QString text)
     helper.addJS(m_scriptFile);
 
     helper.addJSCode("pageTextChanged();");
+
+    if(m_book->isNormal())
+        helper.addJSCode("toggleShorooh();");
 
     helper.endAllTags();
 

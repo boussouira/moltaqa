@@ -31,6 +31,7 @@ public:
     void insertHtmlTag(QString tag, QString text, QString selector="", QString attr="");
     void insertDivTag(QString text, QString selector="");
     void insertSpanTag(QString text, QString selector="");
+    void insertParagraphTag(QString text, QString selector="");
     void insertImage(QString src);
 
     void beginHtmlTag(QString tag, QString selector="", QString attr="");
