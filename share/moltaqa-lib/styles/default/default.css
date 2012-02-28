@@ -123,6 +123,11 @@ a {
     padding: 0 10px;
 }
 
+#simpleBook #shorooh span.disabled {
+    color: #D9500A;
+    cursor: default;
+}
+
 #simpleBook #shorooh .shoroohBooks {
     display:none;
     border: 1px solid #CCCCCC;

@@ -86,7 +86,7 @@ QString TextFormatter::getHtmlView(QString text)
 
     if(m_book->isNormal()) {
         helper.beginDivTag("#shorooh");
-        helper.insertSpanTag(tr("الشروح"), ".info");
+        helper.insertSpanTag(tr("الشروح (0)"), ".info");
 
         helper.insertDivTag("", ".clear");
         helper.insertDivTag("", ".shoroohBooks");

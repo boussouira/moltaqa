@@ -179,6 +179,9 @@ function hideShorooh()
 
 function setShorooh(shorooh)
 {
+    infoSpin = $('#shorooh span.info');
+    shoroohCount = 0;
+
     if(shorooh) {
         $('#shorooh .shoroohBooks').html('');
 
@@ -187,6 +190,7 @@ function setShorooh(shorooh)
                                                  {'text': shorooh[i].bookName,
                                                   'book': shorooh[i].bookID,
                                                   'page': shorooh[i].pageID}));
+            ++shoroohCount;
         }
 
         $('#shorooh .shoroohBooks p').click(function() {
@@ -196,8 +200,12 @@ function setShorooh(shorooh)
                                                 booksViewer.openBook(book, page);
                                             });
 
-        $('#shorooh').slideDown('slow');
+        infoSpin.removeClass('disabled');
+        $('#shorooh').show();
     } else {
-        $('#shorooh').slideUp('slow');
+        if(!infoSpin.hasClass('disabled'))
+            infoSpin.addClass('disabled');
     }
+
+    infoSpin.text(infoSpin.text().replace(new RegExp('([0-9]+)'), shoroohCount));
 }
