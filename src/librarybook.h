@@ -23,7 +23,16 @@ public:
     enum Type {
         QuranBook = 1,
         TafessirBook,
-        NormalBook };
+        NormalBook
+    };
+
+    enum IndexFlags {
+        NotIndexed,
+        Indexed,
+        Update,
+        Delete,
+        Ignore
+    };
 
     int firstPage(int part=1);
     int lastPage(int part=1);
@@ -62,7 +71,8 @@ public:
     int lastID;
     int bookID;
     int authorID;
-    int flags;
+    int bookFlags;
+    IndexFlags indexFlags;
 
 protected:
     QHash<int, int> m_firstPages;

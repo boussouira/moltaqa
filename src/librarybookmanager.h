@@ -2,6 +2,8 @@
 #define LIBRARYBOOKMANAGER_H
 
 #include "listmanager.h"
+#include "librarybook.h"
+
 #include <qhash.h>
 #include <qset.h>
 
@@ -29,6 +31,9 @@ public:
     void beginUpdate();
     void endUpdate();
     void updateBook(LibraryBook *book);
+
+    QList<int> getNonIndexedBooks();
+    void setBookIndexStat(int bookID, LibraryBook::IndexFlags indexFlag);
 
 protected:
     int getNewBookID();

@@ -2,7 +2,6 @@
 #include "mainwindow.h"
 #include "librarymanager.h"
 #include "libraryinfo.h"
-#include "librarybook.h"
 #include "modelenums.h"
 #include "utils.h"
 #include "xmlutils.h"
@@ -22,6 +21,7 @@ LibraryBookManager::LibraryBookManager(QObject *parent) :
     Q_CHECK_PTR(m_authorsManager);
 
     loadModels();
+    beginUpdate();
 }
 
 LibraryBookManager::~LibraryBookManager()
@@ -48,6 +48,7 @@ void LibraryBookManager::clear()
     }
 
     m_books.clear();
+    m_bookElementHash.clear();
 }
 
 void LibraryBookManager::loadLibraryBooks()
@@ -115,7 +116,8 @@ void LibraryBookManager::addBook(LibraryBook *book)
     bookElement.setAttribute("id", book->bookID);
     bookElement.setAttribute("type", book->bookType);
     bookElement.setAttribute("authorid", book->authorID);
-    bookElement.setAttribute("flags", book->flags);
+    bookElement.setAttribute("bookFlags", book->bookFlags);
+    bookElement.setAttribute("indexFlags", book->indexFlags);
 
     QDomElement titleElement = m_doc.createElement("title");
     titleElement.appendChild(m_doc.createTextNode(book->bookDisplayName));
@@ -171,6 +173,41 @@ void LibraryBookManager::updateBook(LibraryBook *book)
     }
 }
 
+QList<int> LibraryBookManager::getNonIndexedBooks()
+{
+    QList<int> list;
+    QHash<int, LibraryBook*>::const_iterator i = m_books.constBegin();
+
+    while (i != m_books.constEnd()) {
+        LibraryBook *b=i.value();
+        if(b->indexFlags == LibraryBook::NotIndexed) {
+            list << i.key();
+        }
+
+        ++i;
+    }
+
+    qDebug("Not indexed count %d", list.size());
+
+    return list;
+}
+
+void LibraryBookManager::setBookIndexStat(int bookID, LibraryBook::IndexFlags indexFlag)
+{
+    QDomElement e = m_bookElementHash.value(bookID);
+
+    if(!e.isNull()) {
+        e.setAttribute("indexFlags", static_cast<int>(indexFlag));
+
+        LibraryBook *book = m_books.value(bookID);
+        if(book)
+            book->indexFlags = indexFlag;
+        else qDebug("No book");
+
+        m_saveDom = true;
+    } else qDebug("No element");
+}
+
 int LibraryBookManager::getNewBookID()
 {
     int bookID =  0;
@@ -189,7 +226,10 @@ void LibraryBookManager::readBook(QDomElement &e)
     book->bookType = static_cast<LibraryBook::Type>(e.attribute("type").toInt());
     book->bookDisplayName = e.firstChildElement("title").text();
     book->bookInfo = e.firstChildElement("info").text();
-    book->bookPath = MW->libraryInfo()->bookPath(e.firstChildElement("filename").text());
+    book->fileName = e.firstChildElement("filename").text();
+    book->bookPath = MW->libraryInfo()->bookPath(book->fileName);
+    book->bookFlags = e.attribute("bookFlags").toInt();
+    book->indexFlags = static_cast<LibraryBook::IndexFlags>(e.attribute("indexFlags").toInt());
 
     if(!book->isQuran()) {
         book->authorID = e.attribute("authorid").toInt();

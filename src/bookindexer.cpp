@@ -47,7 +47,25 @@ void BookIndexer::startIndexing()
             task->book = MW->libraryManager()->bookManager()->getLibraryBook(task->bookID);
 
             if(task->book) {
-                indexBook(task);
+                switch (task->task) {
+                case IndexTask::Add:
+                    indexBook(task);
+                    break;
+
+                case IndexTask::Delete:
+                    deleteBook(task);
+                    break;
+
+                case IndexTask::Update:
+                    updateBook(task);
+                    break;
+
+                default:
+                    qWarning("BookIndexer: Unknow task");
+                    break;
+                }
+
+                emit taskDone(task);
             }
         } catch (BookException &e) {
             qCritical() << "Indexing error:" << e.what();
@@ -73,8 +91,31 @@ void BookIndexer::indexBook(IndexTask *task)
         qWarning("indexBook: Unknow book type");
         return;
     }
+}
 
-    emit taskDone(task);
+void BookIndexer::deleteBook(IndexTask *task)
+{
+    try {
+
+        Term *term = new Term(Utils::QStringToWChar(QString::number(task->bookID)), BOOK_ID_FIELD);
+        m_writer->deleteDocuments(term);
+        //_CLDECDELETE(term);
+    }
+    catch(CLuceneError &err) {
+        qCritical("removeBook: CLucene Error: %s", err.what());
+    }
+    catch(std::exception &err){
+        qCritical("removeBook: STD error: %s", err.what());
+    }
+    catch(...){
+        qCritical("removeBook: Unkonw error");
+    }
+}
+
+void BookIndexer::updateBook(IndexTask *task)
+{
+    deleteBook(task);
+    indexBook(task);
 }
 
 void BookIndexer::indexQuran(IndexTask *task)

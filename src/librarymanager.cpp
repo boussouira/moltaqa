@@ -93,7 +93,7 @@ void LibraryManager::addBook(LibraryBook *book, int catID)
     m_bookListManager->addBook(book, catID);
 }
 
-void LibraryManager::setBookIndexStat(int bookID, Enums::indexFlags indexFlag)
+void LibraryManager::setBookIndexStat(int bookID, LibraryBook::IndexFlags indexFlag)
 {
     QSqlQuery bookQuery(m_indexDB);
     bookQuery.prepare("UPDATE booksList "
@@ -115,7 +115,7 @@ QList<int> LibraryManager::getNonIndexedBooks()
     bookQuery.prepare("SELECT id FROM booksList "
                       "WHERE indexFlags = ?");
 
-    bookQuery.bindValue(0, Enums::NotIndexed);
+    bookQuery.bindValue(0, LibraryBook::NotIndexed);
 
     if(bookQuery.exec()) {
         while(bookQuery.next()) {

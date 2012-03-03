@@ -10,7 +10,7 @@
 #include <qfuturewatcher.h>
 #include <qstandarditemmodel.h>
 #include <QTime>
-#include "libraryenums.h"
+#include "librarybook.h"
 
 class QDomElement;
 class LibraryInfo;
@@ -39,7 +39,7 @@ public:
     int addBook(ImportModelNode *node);
     void addBook(LibraryBook *book, int catID);
 
-    void setBookIndexStat(int bookID, Enums::indexFlags indexFlag);
+    void setBookIndexStat(int bookID, LibraryBook::IndexFlags indexFlag);
     QList<int> getNonIndexedBooks();
 
     TaffesirListManager *taffesirListManager();

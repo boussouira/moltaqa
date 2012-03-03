@@ -9,7 +9,8 @@ LibraryBook::LibraryBook()
     lastID = -1;
     bookID = 0;
     authorID = 0;
-    flags = 0;
+    bookFlags = 0;
+    indexFlags = NotIndexed;
     m_hasInfo = false;
 }
 

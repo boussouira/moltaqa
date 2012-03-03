@@ -1,6 +1,7 @@
 #include "indextracker.h"
 #include "mainwindow.h"
 #include "bookexception.h"
+#include "librarybookmanager.h"
 #include "xmlutils.h"
 
 #include <qfile.h>
@@ -118,7 +119,7 @@ void IndexTracker::removeTask(IndexTask *task)
                 m_rootElement.removeChild(indexElement);
                 deleteTask(task);
 
-                m_libraryManager->setBookIndexStat(task->bookID, Enums::Indexed);
+                m_libraryManager->bookManager()->setBookIndexStat(task->bookID, LibraryBook::Indexed);
                 break;
             }
         }
@@ -158,7 +159,7 @@ void IndexTracker::findTasks()
 
 void IndexTracker::run()
 {
-    addTask(m_libraryManager->getNonIndexedBooks(), IndexTask::Add);
+    addTask(m_libraryManager->bookManager()->getNonIndexedBooks(), IndexTask::Add);
 }
 
 int IndexTracker::taskCount()
