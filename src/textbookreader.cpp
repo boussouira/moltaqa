@@ -105,6 +105,9 @@ void TextBookReader::getPages()
         while (!file.atEnd()) {
             len = file.read(buf, 4096);
             out.append(buf, len);
+
+            if(!len)
+                break;
         }
 
         m_pages.insert(id, out);

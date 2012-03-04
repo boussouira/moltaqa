@@ -184,6 +184,9 @@ void BookIndexer::indexSimpleBook(IndexTask *task)
     while (reader.hasNext()) {
         reader.nextPage();
 
+        if(page->text.isEmpty())
+            continue;
+
         pageID = Utils::intToWChar(page->pageID);
         text = Utils::QStringToWChar(page->text);
         titleID = Utils::intToWChar(page->titleID);
