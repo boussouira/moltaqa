@@ -56,7 +56,7 @@ void LibraryBookManagerWidget::enableEditWidgets(bool enable)
 
 void LibraryBookManagerWidget::loadModel()
 {
-    m_model = m_libraryManager->bookManager()->getModel();
+    m_model = LibraryBookManager::instance()->getModel();
 
     ui->treeView->setModel(m_model);
     ui->treeView->resizeColumnToContents(0);
@@ -76,14 +76,14 @@ void LibraryBookManagerWidget::save()
     saveCurrentBookInfo();
 
     if(!m_editedBookInfo.isEmpty()) {
-        m_libraryManager->bookManager()->beginUpdate();
+        LibraryBookManager::instance()->beginUpdate();
 
         foreach(LibraryBook *book, m_editedBookInfo.values()) {
             qDebug("Saving book %d...", book->bookID);
-            m_libraryManager->bookManager()->updateBook(book);
+            LibraryBookManager::instance()->updateBook(book);
         }
 
-        m_libraryManager->bookManager()->endUpdate();
+        LibraryBookManager::instance()->endUpdate();
 
         qDeleteAll(m_editedBookInfo);
         m_editedBookInfo.clear();
@@ -166,7 +166,7 @@ LibraryBook *LibraryBookManagerWidget::getBookInfo(int bookID)
 {
     LibraryBook *info = m_editedBookInfo.value(bookID);
     if(!info) {
-        info = m_libraryManager->bookManager()->getLibraryBook(bookID);
+        info = LibraryBookManager::instance()->getLibraryBook(bookID);
         if(info)
             info = info->clone();
     }

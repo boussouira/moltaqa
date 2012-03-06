@@ -19,7 +19,7 @@ IndexTracker::IndexTracker(QObject *parent) :
     QObject(parent)
 {
     m_libraryInfo = MW->libraryInfo();
-    m_libraryManager = MW->libraryManager();
+    m_libraryManager = LibraryManager::instance();
 
     setAutoDelete(false);
 
@@ -119,7 +119,7 @@ void IndexTracker::removeTask(IndexTask *task)
                 m_rootElement.removeChild(indexElement);
                 deleteTask(task);
 
-                m_libraryManager->bookManager()->setBookIndexStat(task->bookID, LibraryBook::Indexed);
+                LibraryBookManager::instance()->setBookIndexStat(task->bookID, LibraryBook::Indexed);
                 break;
             }
         }
@@ -159,7 +159,7 @@ void IndexTracker::findTasks()
 
 void IndexTracker::run()
 {
-    addTask(m_libraryManager->bookManager()->getNonIndexedBooks(), IndexTask::Add);
+    addTask(LibraryBookManager::instance()->getNonIndexedBooks(), IndexTask::Add);
 }
 
 int IndexTracker::taskCount()

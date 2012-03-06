@@ -12,7 +12,7 @@ TaffesirListManagerWidget::TaffesirListManagerWidget(QWidget *parent) :
     ui->setupUi(this);
 
     m_model = 0;
-    m_taffesirManager = m_libraryManager->taffesirListManager();
+    m_taffesirManager = TaffesirListManager::instance();
 
     loadModel();
     updateActions();

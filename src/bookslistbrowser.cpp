@@ -20,14 +20,14 @@ enum {
     ColumnCount
 };
 
-BooksListBrowser::BooksListBrowser(LibraryManager *libraryManager, QWidget *parent) :
+BooksListBrowser::BooksListBrowser(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::BooksListBrowser)
 {
     ui->setupUi(this);
 
     loadSettings();
-    m_bookListManager = libraryManager->bookListManager();
+    m_bookListManager = BookListManager::instance();
 
     m_model = 0;
     m_filterModel = new SortFilterProxyModel(this);

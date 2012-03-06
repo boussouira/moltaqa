@@ -16,7 +16,7 @@ BookSearchWidget::~BookSearchWidget()
 
 void BookSearchWidget::init(int bookID)
 {
-    m_bookInfo = MW->libraryManager()->bookManager()->getLibraryBook(bookID);
+    m_bookInfo = LibraryBookManager::instance()->getLibraryBook(bookID);
 
     if(!m_bookInfo)
         return;

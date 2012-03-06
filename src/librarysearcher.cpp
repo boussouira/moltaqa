@@ -22,7 +22,7 @@ LibrarySearcher::LibrarySearcher(QObject *parent)
       m_stop(false)
 {
     m_libraryInfo = MW->libraryInfo();
-    m_libraryManager = MW->libraryManager();
+    m_libraryManager = LibraryManager::instance();
 
     QSettings settings;
     m_resultParPage = settings.value("Search/resultPeerPage", 10).toInt();
@@ -144,7 +144,7 @@ void LibrarySearcher::fetech()
         int bookID = Utils::WCharToInt(doc.get(BOOK_ID_FIELD));
         int score = (int) (m_hits->score(i) * 100.0);
 
-        LibraryBook *book = m_libraryManager->bookManager()->getLibraryBook(bookID);
+        LibraryBook *book = LibraryBookManager::instance()->getLibraryBook(bookID);
 
         if(!book) {
             qCritical("LibrarySearcher::fetech: No book with id %d where found", bookID);

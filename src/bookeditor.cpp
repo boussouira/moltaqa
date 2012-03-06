@@ -30,7 +30,7 @@ BookEditor::~BookEditor()
 
 bool BookEditor::open(int bookID)
 {
-    return open(MW->libraryManager()->bookManager()->getLibraryBook(bookID));
+    return open(LibraryBookManager::instance()->getLibraryBook(bookID));
 }
 
 bool BookEditor::open(LibraryBook *book)

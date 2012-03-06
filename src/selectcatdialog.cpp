@@ -15,8 +15,8 @@ selectCatDialog::selectCatDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    m_libraryManager = MW->libraryManager();
-    m_model = Utils::cloneModel(MW->libraryManager()->bookListManager()->catListModel());
+    m_libraryManager = LibraryManager::instance();
+    m_model = Utils::cloneModel(BookListManager::instance()->catListModel());
 
     m_filter = new SortFilterProxyModel(this);
     m_filter->setSourceModel(m_model);

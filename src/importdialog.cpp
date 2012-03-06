@@ -201,8 +201,8 @@ void ImportDialog::startImporting()
                                    Q_ARG(int, i+1));
     }
 
-    m_libraryManager->bookManager()->reloadModels();
-    m_libraryManager->taffesirListManager()->reloadModels();
+    LibraryBookManager::instance()->reloadModels();
+    TaffesirListManager::instance()->reloadModels();
 
     qDebug() << "Importing" << imported << "books take" << time.elapsed() << "ms";
 }
@@ -248,7 +248,7 @@ void ImportDialog::doneImporting()
 
     ui->stackedWidget->setCurrentIndex(2);
 
-    MW->libraryManager()->bookListManager()->reloadModels();
+    BookListManager::instance()->reloadModels();
 }
 
 bool ImportDialog::checkNodes(QList<ImportModelNode *> nodesList)

@@ -21,7 +21,7 @@ LibrarySearchFilter::LibrarySearchFilter(QObject *parent) :
 
 void LibrarySearchFilter::loadModel()
 {
-    QStandardItemModel *model = Utils::cloneModel(MW->libraryManager()->bookListManager()->bookListModel());
+    QStandardItemModel *model = Utils::cloneModel(BookListManager::instance()->bookListModel());
     Utils::setModelCheckable(model);
 
     setSourceModel(model);

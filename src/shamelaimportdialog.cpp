@@ -40,13 +40,13 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
 
     m_shamela = new ShamelaInfo();
     m_manager = new ShamelaManager(m_shamela);
-    m_libraryManager = MW->libraryManager();
+    m_libraryManager = LibraryManager::instance();
     m_library = MW->libraryInfo();
 
     m_importedBooksCount = 0;
     m_proccessItemChange = true;
 
-    ui->radioUseShamelaCat->setChecked(!m_libraryManager->bookListManager()->categoriesCount());
+    ui->radioUseShamelaCat->setChecked(!BookListManager::instance()->categoriesCount());
     ui->groupImportOptions->setEnabled(false);
     ui->stackedWidget->setCurrentIndex(0);
     ui->pushDone->hide();
@@ -212,14 +212,14 @@ void ShamelaImportDialog::showBooks()
 
     m_booksModel->setHeaderData(0, Qt::Horizontal, tr("لائحة الكتب"), Qt::DisplayRole);
 
-    LibraryBook *quranBook = m_libraryManager->bookManager()->getQuranBook();
+    LibraryBook *quranBook = LibraryBookManager::instance()->getQuranBook();
     ui->checkImportQuran->setChecked(!quranBook || quranBook->bookID == -1);
 
     connect(ui->lineBookSearch, SIGNAL(textChanged(QString)), filterModel, SLOT(setFilterRegExp(QString)));
     connect(ui->lineBookSearch, SIGNAL(textChanged(QString)), ui->treeView, SLOT(expandAll()));
     connect(m_booksModel, SIGNAL(itemChanged(QStandardItem*)), SLOT(itemChanged(QStandardItem*)));
 
-    if(MW->libraryManager()->bookListManager()->booksCount() < m_manager->getBooksCount())
+    if(BookListManager::instance()->booksCount() < m_manager->getBooksCount())
         selectAllBooks();
 }
 
@@ -301,7 +301,7 @@ void ShamelaImportDialog::setupCategories()
         shamelaItem->setEditable(false);
 
         // Try to find this cat in our library
-        CategorieInfo *libCat = m_libraryManager->bookListManager()->findCategorie(cat->name);
+        CategorieInfo *libCat = BookListManager::instance()->findCategorie(cat->name);
         if(libCat) {
             libraryItem = new QStandardItem;
             libraryItem->setText(libCat->title);
@@ -385,10 +385,10 @@ void ShamelaImportDialog::doneImporting()
 
         if(m_importedBooksCount > 0) {
             // TODO: auto save dom model
-            MW->libraryManager()->authorsManager()->reloadModels();
-            MW->libraryManager()->bookManager()->reloadModels();
-            MW->libraryManager()->bookListManager()->reloadModels();
-            MW->libraryManager()->taffesirListManager()->reloadModels();
+            AuthorsManager::instance()->reloadModels();
+            LibraryBookManager::instance()->reloadModels();
+            BookListManager::instance()->reloadModels();
+            TaffesirListManager::instance()->reloadModels();
 
             importShorooh();
         } else {

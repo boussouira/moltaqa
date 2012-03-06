@@ -13,6 +13,8 @@
 #include <qxmlstream.h>
 #include <qtconcurrentrun.h>
 
+static BookListManager *m_instance = 0;
+
 BookListManager::BookListManager(QObject *parent)
     : ListManager(parent),
       m_bookModel(0),
@@ -22,16 +24,25 @@ BookListManager::BookListManager(QObject *parent)
 {
     QDir dataDir(MW->libraryInfo()->dataDir());
     m_filePath = dataDir.filePath("bookslist.xml");
-    m_authorsManager = MW->libraryManager()->authorsManager();
+    m_authorsManager = AuthorsManager::instance();
 
     Q_CHECK_PTR(m_authorsManager);
 
     loadModels();
+
+    m_instance = this;
 }
 
 BookListManager::~BookListManager()
 {
     clear();
+
+    m_instance = 0;
+}
+
+BookListManager *BookListManager::instance()
+{
+    return m_instance;
 }
 
 void BookListManager::loadModels()

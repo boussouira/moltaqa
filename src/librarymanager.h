@@ -29,6 +29,7 @@ public:
     LibraryManager(LibraryInfo *info, QObject *parent=0);
     ~LibraryManager();
 
+    static LibraryManager *instance();
     /**
       Open the index database
       @throw BookException

@@ -44,7 +44,7 @@ void BookIndexer::startIndexing()
 
     while(task && !m_stop) {
         try {
-            task->book = MW->libraryManager()->bookManager()->getLibraryBook(task->bookID);
+            task->book = LibraryBookManager::instance()->getLibraryBook(task->bookID);
 
             if(task->book) {
                 switch (task->task) {

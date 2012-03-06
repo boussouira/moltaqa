@@ -17,7 +17,7 @@ class BooksListBrowser : public QDialog {
     Q_OBJECT
 
 public:
-    BooksListBrowser(LibraryManager *libraryManager, QWidget *parent = 0);
+    BooksListBrowser(QWidget *parent = 0);
     ~BooksListBrowser();
 
 protected:

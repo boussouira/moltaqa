@@ -53,7 +53,7 @@ QString BookListManagerWidget::title()
 
 void BookListManagerWidget::loadModel()
 {
-    m_model = Utils::cloneModel(m_libraryManager->bookListManager()->bookListModel());
+    m_model = Utils::cloneModel(BookListManager::instance()->bookListModel());
 
     ui->treeView->setModel(m_model);
     ui->treeView->resizeColumnToContents(0);
@@ -64,7 +64,7 @@ void BookListManagerWidget::loadModel()
 
 void BookListManagerWidget::save()
 {
-    m_libraryManager->bookListManager()->save(m_model);
+    BookListManager::instance()->save(m_model);
 }
 
 void BookListManagerWidget::beginEdit()
@@ -153,7 +153,7 @@ void BookListManagerWidget::addCat()
         QStandardItem *catItem = new QStandardItem();
         catItem->setText(title);
         catItem->setIcon(QIcon(":/images/book-cat.png"));
-        catItem->setData(m_libraryManager->bookListManager()->getNewCategorieID(),
+        catItem->setData(BookListManager::instance()->getNewCategorieID(),
                          ItemRole::idRole);
         catItem->setData(ItemType::CategorieItem, ItemRole::itemTypeRole);
 

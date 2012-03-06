@@ -28,7 +28,7 @@ RichTafessirReader::~RichTafessirReader()
 
 void RichTafessirReader::connected()
 {
-    m_quranInfo = m_libraryManager->bookManager()->getQuranBook();
+    m_quranInfo = LibraryBookManager::instance()->getQuranBook();
     if(m_quranInfo && m_showQuran)
         openQuranBook();
 

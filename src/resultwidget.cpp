@@ -52,7 +52,7 @@ void ResultWidget::search(LibrarySearcher *searcher)
 void ResultWidget::setupBookReaderView()
 {
     // Setup the book reader view
-    m_readerview = new BooksViewer(MW->libraryManager(), this);
+    m_readerview = new BooksViewer(LibraryManager::instance(), this);
 
     m_readerWidget = new QWidget(this);
     QWidget *toolBarWidget = new QWidget(this);

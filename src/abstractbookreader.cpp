@@ -19,7 +19,7 @@ AbstractBookReader::AbstractBookReader(QObject *parent) : QObject(parent)
     m_indexModel = 0;
     m_bookInfo = 0;
     m_currentPage = new BookPage();
-    m_libraryManager = MW->libraryManager();
+    m_libraryManager = LibraryManager::instance();
 }
 
 AbstractBookReader::~AbstractBookReader()

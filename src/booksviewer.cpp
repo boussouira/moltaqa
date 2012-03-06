@@ -160,7 +160,7 @@ void BooksViewer::createMenus()
 
     // Tafessir actions
     connect(m_openSelectedTafsir, SIGNAL(triggered()), SLOT(openTafessir()));
-    connect(m_libraryManager->taffesirListManager(), SIGNAL(ModelsReady()), SLOT(loadTafessirList()));
+    connect(TaffesirListManager::instance(), SIGNAL(ModelsReady()), SLOT(loadTafessirList()));
 }
 
 void BooksViewer::updateToolBars()
@@ -200,7 +200,7 @@ BookPage *BooksViewer::currentPage()
 BookWidget *BooksViewer::openBook(int bookID, int pageID, lucene::search::Query *query)
 {
     int tabIndex = -1;
-    LibraryBook *bookInfo = m_libraryManager->bookManager()->getLibraryBook(bookID);
+    LibraryBook *bookInfo = LibraryBookManager::instance()->getLibraryBook(bookID);
 
     if(!bookInfo || !bookInfo->exists())
         throw BookException(tr("لم يتم العثور على ملف"), bookInfo->bookPath);
@@ -247,7 +247,7 @@ void BooksViewer::openTafessir()
 {
     int tafessirID = m_comboTafasir->itemData(m_comboTafasir->currentIndex(), ItemRole::idRole).toInt();
 
-    LibraryBook *bookInfo = m_libraryManager->bookManager()->getLibraryBook(tafessirID);
+    LibraryBook *bookInfo = LibraryBookManager::instance()->getLibraryBook(tafessirID);
     if(!bookInfo || !bookInfo->isTafessir() || !m_viewManager->activeBook()->isQuran())
         return;
 
@@ -349,7 +349,7 @@ void BooksViewer::tabChanged(int newIndex)
 void BooksViewer::loadTafessirList()
 {
     m_comboTafasir->clear();
-    m_comboTafasir->setModel(m_libraryManager->taffesirListManager()->taffesirListModel());
+    m_comboTafasir->setModel(TaffesirListManager::instance()->taffesirListModel());
 
     m_comboTafasir->setEditable(true);
     m_comboTafasir->completer()->setCompletionMode(QCompleter::PopupCompletion);

@@ -439,8 +439,8 @@ void ShamelaManager::importShorooh()
                     qApp->processEvents();
                 }
 
-                LibraryBook *mi = MW->libraryManager()->bookManager()->getLibraryBook(mateen_libID);
-                LibraryBook *si = MW->libraryManager()->bookManager()->getLibraryBook(shareeh_LibID);
+                LibraryBook *mi = LibraryBookManager::instance()->getLibraryBook(mateen_libID);
+                LibraryBook *si = LibraryBookManager::instance()->getLibraryBook(shareeh_LibID);
 
                 qDebug() << "Mateen:" <<(mi ? mi->bookDisplayName : "????")
                          << "Shareeh:" << (si ? si->bookDisplayName : "????");

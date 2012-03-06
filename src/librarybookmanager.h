@@ -19,6 +19,8 @@ public:
     LibraryBookManager(QObject *parent = 0);
     ~LibraryBookManager();
 
+    static LibraryBookManager *instance();
+
     void loadModels();
     void clear();
 

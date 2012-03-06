@@ -9,6 +9,8 @@
 #include <qdom.h>
 #include "shamelaimportinfo.h"
 
+static TaffesirListManager *m_instance = 0;
+
 TaffesirListManager::TaffesirListManager(QObject *parent) : ListManager(parent)
 {
     QDir dataDir(MW->libraryInfo()->dataDir());
@@ -16,11 +18,20 @@ TaffesirListManager::TaffesirListManager(QObject *parent) : ListManager(parent)
     m_model = 0;
 
     loadModels();
+
+    m_instance = this;
 }
 
 TaffesirListManager::~TaffesirListManager()
 {
     clear();
+
+    m_instance = 0;
+}
+
+TaffesirListManager *TaffesirListManager::instance()
+{
+    return m_instance;
 }
 
 void TaffesirListManager::loadModels()

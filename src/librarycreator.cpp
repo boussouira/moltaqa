@@ -29,7 +29,7 @@ LibraryCreator::LibraryCreator()
     m_library = importDialog->libraryInfo();
     m_mapper = m_shamelaManager->mapper();
 
-    m_libraryManager = MW->libraryManager();
+    m_libraryManager = LibraryManager::instance();
 
     m_prevArchive = -1;
     m_threadID = 0;
@@ -88,7 +88,7 @@ void LibraryCreator::importAuthors()
 
 void LibraryCreator::addTafessir(ShamelaBookInfo *tafessir)
 {
-    m_libraryManager->taffesirListManager()->addTafessir(m_mapper->mapFromShamelaBook(tafessir->id),
+    TaffesirListManager::instance()->addTafessir(m_mapper->mapFromShamelaBook(tafessir->id),
                                                          tafessir->tafessirName);
 
     qDebug() << "Add tafessir:" << tafessir->tafessirName;
@@ -96,7 +96,7 @@ void LibraryCreator::addTafessir(ShamelaBookInfo *tafessir)
 
 void LibraryCreator::addCat(ShamelaCategorieInfo *cat)
 {
-    int lastId = m_libraryManager->bookListManager()->addCategorie(cat->name,
+    int lastId = BookListManager::instance()->addCategorie(cat->name,
                                                                    m_levels.value(cat->level-1, 0) );
 
     m_mapper->addCatMap(cat->id, lastId);
@@ -120,7 +120,7 @@ void LibraryCreator::addAuthor(ShamelaAuthorInfo *auth, bool checkExist)
             return;
         } else {
             // We look for this author in the index database
-            AuthorInfo* foundAuthor = m_libraryManager->authorsManager()->findAuthor(auth->name);
+            AuthorInfo* foundAuthor = AuthorsManager::instance()->findAuthor(auth->name);
 
             // If found the author in our database so add it to the map and return
             if(foundAuthor) {
@@ -131,7 +131,7 @@ void LibraryCreator::addAuthor(ShamelaAuthorInfo *auth, bool checkExist)
     }
 
     // Add this author from shamela
-    int insertAuthor = m_libraryManager->authorsManager()->addAuthor(auth->toAuthorInfo());
+    int insertAuthor = AuthorsManager::instance()->addAuthor(auth->toAuthorInfo());
     m_mapper->addAuthorMap(auth->id, insertAuthor);
 }
 

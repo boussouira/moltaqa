@@ -19,6 +19,8 @@
 #include <qsqlerror.h>
 #include <qdatetime.h>
 
+static LibraryManager *m_instance = 0;
+
 LibraryManager::LibraryManager(LibraryInfo *info, QObject *parent) :
     QObject(parent),
     m_libraryInfo(info),
@@ -28,6 +30,8 @@ LibraryManager::LibraryManager(LibraryInfo *info, QObject *parent) :
     m_authorsManager(0)
 {
     m_connName = "BooksIndexDB";
+
+    m_instance = this;
 }
 
 LibraryManager::~LibraryManager()
@@ -40,6 +44,13 @@ LibraryManager::~LibraryManager()
 
     if(m_taffesirManager)
         delete m_taffesirManager;
+
+    m_instance = 0;
+}
+
+LibraryManager *LibraryManager::instance()
+{
+    return m_instance;
 }
 
 void LibraryManager::open()

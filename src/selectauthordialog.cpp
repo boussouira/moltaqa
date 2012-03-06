@@ -16,7 +16,7 @@ selectAuthorDialog::selectAuthorDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    m_model = MW->libraryManager()->authorsManager()->authorsModel();
+    m_model = AuthorsManager::instance()->authorsModel();
 
     m_filter = new SortFilterProxyModel(this);
     m_filter->setSourceModel(m_model);

@@ -7,6 +7,8 @@
 #include <qstandarditemmodel.h>
 #include <qdir.h>
 
+static AuthorsManager *m_instance=0;
+
 AuthorsManager::AuthorsManager(QObject *parent) :
     ListManager(parent)
 {
@@ -14,11 +16,20 @@ AuthorsManager::AuthorsManager(QObject *parent) :
     m_filePath = dataDir.filePath("authors.xml");
 
     loadModels();
+
+    m_instance = this;
 }
 
 AuthorsManager::~AuthorsManager()
 {
     clear();
+
+    m_instance = 0;
+}
+
+AuthorsManager *AuthorsManager::instance()
+{
+    return m_instance;
 }
 
 void AuthorsManager::loadModels()

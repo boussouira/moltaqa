@@ -44,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent):
     m_welcomeWidget = 0;
     m_bookView = 0;
     m_searchView = 0;
+    m_booksList = 0;
 
     setWindowTitle(App::name());
     loadSettings();
@@ -125,7 +126,7 @@ bool MainWindow::init()
         m_bookView = new BooksViewer(m_libraryManager, this);
         m_viewManager->addView(m_bookView, false);
 
-        m_booksList = new BooksListBrowser(m_libraryManager, 0);
+        m_booksList = new BooksListBrowser(0);
 
         // IndexTracker should be created before the IndexManager
         m_indexTracker = new IndexTracker(this);
@@ -163,6 +164,9 @@ bool MainWindow::init()
 
 MainWindow::~MainWindow()
 {
+    if(m_booksList)
+        delete m_booksList;
+
     if(m_welcomeWidget)
         delete m_welcomeWidget;
 

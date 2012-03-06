@@ -10,24 +10,35 @@
 #include <qdir.h>
 #include <qstandarditemmodel.h>
 
+static LibraryBookManager *m_instance=0;
+
 LibraryBookManager::LibraryBookManager(QObject *parent) :
     ListManager(parent),
     m_quranBook(0)
 {
     QDir dataDir(MW->libraryInfo()->dataDir());
     m_filePath = dataDir.filePath("booksinfo.xml");
-    m_authorsManager = MW->libraryManager()->authorsManager();
+    m_authorsManager = AuthorsManager::instance();
 
     Q_CHECK_PTR(m_authorsManager);
 
     loadModels();
     beginUpdate();
+
+    m_instance = this;
 }
 
 LibraryBookManager::~LibraryBookManager()
 {
     clear();
     qDeleteAll(m_usedBooks);
+
+    m_instance = 0;
+}
+
+LibraryBookManager *LibraryBookManager::instance()
+{
+    return m_instance;
 }
 
 void LibraryBookManager::loadModels()

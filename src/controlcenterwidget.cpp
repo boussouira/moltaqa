@@ -5,7 +5,7 @@
 ControlCenterWidget::ControlCenterWidget(QWidget *parent) : QWidget(parent)
 {
     m_modified = false;
-    m_libraryManager = MW->libraryManager();
+    m_libraryManager = LibraryManager::instance();
 }
 
 void ControlCenterWidget::setModified(bool m)
