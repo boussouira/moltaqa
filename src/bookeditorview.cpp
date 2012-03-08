@@ -15,6 +15,7 @@
 #include "openpagedialog.h"
 #include "bookexception.h"
 #include "bookindexeditor.h"
+#include "indextracker.h"
 
 #include <qstatusbar.h>
 #include <qtabwidget.h>
@@ -286,8 +287,11 @@ void BookEditorView::save()
 
         closeBook(false);
 
-        if(m_bookEditor->save())
+        if(m_bookEditor->save()) {
             editBook(book, pageID);
+
+            IndexTracker::instance()->addTask(book->bookID, IndexTask::Update);
+        }
 
         dialog.setValue(dialog.value()+1);
     }

@@ -12,7 +12,7 @@
 IndexManager::IndexManager(QObject *parent) :
     QObject(parent)
 {
-    m_indexTracker = MW->indexTracker();
+    m_indexTracker = IndexTracker::instance();
     m_library = MW->libraryInfo();
 
     m_taskIter = 0;
@@ -104,7 +104,8 @@ void IndexManager::taskDone(IndexTask *task)
                  ? "Add"
                  : (task->task==IndexTask::Delete
                     ? "Delete"
-                    : "Remove"))
+                    : "Update"))
+             << task->book->bookID
              << task->book->bookDisplayName;
 
 

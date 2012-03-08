@@ -237,8 +237,8 @@ void ImportDialog::doneImporting()
         m_signalMapper->setMapping(button, i.key());
     }
 
-    MW->indexTracker()->addTask(m_booksList.keys(), IndexTask::Add);
-    MW->indexTracker()->flush();
+    IndexTracker::instance()->addTask(m_booksList.keys(), IndexTask::Add);
+    IndexTracker::instance()->flush();
 
     setEnabled(true);
     setModal(false);

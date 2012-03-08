@@ -96,8 +96,7 @@ void BookIndexer::indexBook(IndexTask *task)
 void BookIndexer::deleteBook(IndexTask *task)
 {
     try {
-
-        Term *term = new Term(Utils::QStringToWChar(QString::number(task->bookID)), BOOK_ID_FIELD);
+        Term *term = new Term(BOOK_ID_FIELD, Utils::intToWChar(task->bookID));
         m_writer->deleteDocuments(term);
         //_CLDECDELETE(term);
     }

@@ -15,8 +15,9 @@ public:
     IndexTracker(QObject *parent = 0);
     ~IndexTracker();
 
-    void addTask(IndexTask *task);
-    void addTask(int bookID, IndexTask::Task task);
+    static IndexTracker *instance();
+
+    void addTask(int bookID, IndexTask::Task task, bool emitSignal=true);
     void addTask(const QList<int> &books, IndexTask::Task task);
     void removeTask(IndexTask *task);
 
@@ -32,6 +33,7 @@ public:
 
 protected:
     void open();
+    void addTask(IndexTask *task);
     void deleteTask(IndexTask *task);
 
 signals:

@@ -15,6 +15,8 @@ bool operator ==(const QDomElement &node, IndexTask *task)
             IndexTask::stringToTask(node.attribute("type")) == task->task);
 }
 
+static IndexTracker *m_instance = 0;
+
 IndexTracker::IndexTracker(QObject *parent) :
     QObject(parent)
 {
@@ -29,6 +31,8 @@ IndexTracker::IndexTracker(QObject *parent) :
     } catch(BookException &e) {
         qCritical() << "IndexTracker:" << e.what();
     }
+
+    m_instance = this;
 }
 
 IndexTracker::~IndexTracker()
@@ -37,6 +41,13 @@ IndexTracker::~IndexTracker()
 
     qDeleteAll(m_tasks);
     m_tasks.clear();
+
+    m_instance = 0;
+}
+
+IndexTracker* IndexTracker::instance()
+{
+    return m_instance;
 }
 
 void IndexTracker::open()
@@ -82,13 +93,16 @@ void IndexTracker::addTask(IndexTask *task)
     }
 }
 
-void IndexTracker::addTask(int bookID, IndexTask::Task task)
+void IndexTracker::addTask(int bookID, IndexTask::Task task, bool emitSignal)
 {
     IndexTask *t = new IndexTask();
     t->bookID = bookID;
     t->task = task;
 
     addTask(t);
+
+    if(emitSignal)
+        emit gotTask();
 }
 
 void IndexTracker::addTask(const QList<int> &books, IndexTask::Task task)
@@ -96,7 +110,7 @@ void IndexTracker::addTask(const QList<int> &books, IndexTask::Task task)
     if(!books.isEmpty()) {
 
         foreach(int bookID, books) {
-            addTask(bookID, task);
+            addTask(bookID, task, false);
         }
 
         qDebug("Got %d books to %s",
