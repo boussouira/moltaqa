@@ -23,7 +23,7 @@ BookListManager::BookListManager(QObject *parent)
       m_order(0)
 {
     QDir dataDir(MW->libraryInfo()->dataDir());
-    m_filePath = dataDir.filePath("bookslist.xml");
+    m_dom.setFilePath(dataDir.filePath("bookslist.xml"));
     m_authorsManager = AuthorsManager::instance();
 
     Q_CHECK_PTR(m_authorsManager);
@@ -47,7 +47,7 @@ BookListManager *BookListManager::instance()
 
 void BookListManager::loadModels()
 {
-    loadXmlDom();
+    m_dom.load();
 
     bookListModel();
     catListModel();
@@ -81,7 +81,7 @@ QStandardItemModel *BookListManager::bookListModel()
                                          << tr("المؤلف")
                                          << tr("وفاة المؤلف"));
 
-        readNode(m_bookModel->invisibleRootItem(), m_rootElement);
+        readNode(m_bookModel->invisibleRootItem(), m_dom.rootElement());
     }
 
     return m_bookModel;
@@ -96,7 +96,7 @@ QStandardItemModel *BookListManager::catListModel()
         m_catModel = new QStandardItemModel();
         m_catModel->setHorizontalHeaderLabels(QStringList() << tr("القسم"));
 
-        readNode(m_catModel->invisibleRootItem(), m_rootElement, false);
+        readNode(m_catModel->invisibleRootItem(), m_dom.rootElement(), false);
     }
 
     return m_catModel;
@@ -172,21 +172,21 @@ int BookListManager::addCategorie(const QString &title, int parentCat)
 
     int catID = getNewCategorieID();
 
-    QDomElement catElement = m_doc.createElement("cat");
+    QDomElement catElement = m_dom.domDocument().createElement("cat");
     catElement.setAttribute("id", catID);
 
-    QDomElement titleElement = m_doc.createElement("title");
-    titleElement.appendChild(m_doc.createTextNode(title));
+    QDomElement titleElement = m_dom.domDocument().createElement("title");
+    titleElement.appendChild(m_dom.domDocument().createTextNode(title));
 
     catElement.appendChild(titleElement);
 
-    QDomElement parentElement = m_catElementHash.value(parentCat, m_rootElement);
+    QDomElement parentElement = m_catElementHash.value(parentCat, m_dom.rootElement());
     QDomElement newElement = parentElement.appendChild(catElement).toElement();
 
     m_catHash.insert(catID, title);
     m_catElementHash.insert(catID, newElement);
 
-    m_saveDom = true;
+    m_dom.setNeedSave(true);
 
     return catID;
 }
@@ -196,23 +196,23 @@ void BookListManager::addBook(LibraryBook *book, int parentCat)
     // TODO: check if the author exist in the our authors list
     QMutexLocker locker(&m_mutex);
 
-    QDomElement bookElement = m_doc.createElement("book");
+    QDomElement bookElement = m_dom.domDocument().createElement("book");
     bookElement.setAttribute("id", book->bookID);
     bookElement.setAttribute("type", book->bookType);
     bookElement.setAttribute("authorid", book->authorID);
 
-    QDomElement titleElement = m_doc.createElement("title");
-    titleElement.appendChild(m_doc.createTextNode(book->bookDisplayName));
+    QDomElement titleElement = m_dom.domDocument().createElement("title");
+    titleElement.appendChild(m_dom.domDocument().createTextNode(book->bookDisplayName));
     bookElement.appendChild(titleElement);
 
-    QDomElement bookInfoElement = m_doc.createElement("info");
-    bookInfoElement.appendChild(m_doc.createCDATASection(book->bookInfo));
+    QDomElement bookInfoElement = m_dom.domDocument().createElement("info");
+    bookInfoElement.appendChild(m_dom.domDocument().createCDATASection(book->bookInfo));
     bookElement.appendChild(bookInfoElement);
 
-    QDomElement parentElement = m_catElementHash.value(parentCat, m_rootElement);
+    QDomElement parentElement = m_catElementHash.value(parentCat, m_dom.rootElement());
     parentElement.appendChild(bookElement);
 
-    m_saveDom = true;
+    m_dom.setNeedSave(true);
 }
 
 void BookListManager::readNode(QStandardItem *parentItem, QDomElement &element, bool withBooks)

@@ -10,8 +10,11 @@ public:
     XmlDomHelper();
     ~XmlDomHelper();
 
-    void setFilePath(QString &path);
+    void setFilePath(const QString &path);
+    QString filePath();
+
     void setNeedSave(bool saveDom);
+    bool needSave();
 
     void load();
     void load(QIODevice *file);
@@ -30,12 +33,15 @@ public:
 
     void setCurrentElement(QDomElement element) { m_currentElement = element; }
 
+    void setElementText(QDomElement &parent, const QString &tagName, const QString &text, bool cdata=false);
+
 protected:
     QString m_filePath;
     QDomDocument m_doc;
     QDomElement m_rootElement;
     QDomElement m_currentElement;
     bool m_needSave;
+    bool m_domLoaded;
 };
 
 #endif // XMLDOMHELPER_H

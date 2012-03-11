@@ -1,8 +1,11 @@
 #include "xmldomhelper.h"
 #include "xmlutils.h"
 #include <qtextstream.h>
+#include <qdebug.h>
 
-XmlDomHelper::XmlDomHelper() : m_needSave(false)
+XmlDomHelper::XmlDomHelper() :
+    m_needSave(false),
+    m_domLoaded(false)
 {
 }
 
@@ -10,9 +13,14 @@ XmlDomHelper::~XmlDomHelper()
 {
 }
 
-void XmlDomHelper::setFilePath(QString &path)
+void XmlDomHelper::setFilePath(const QString &path)
 {
     m_filePath = path;
+}
+
+QString XmlDomHelper::filePath()
+{
+    return m_filePath;
 }
 
 void XmlDomHelper::setNeedSave(bool saveDom)
@@ -20,11 +28,28 @@ void XmlDomHelper::setNeedSave(bool saveDom)
     m_needSave = saveDom;
 }
 
+bool XmlDomHelper::needSave()
+{
+    return m_needSave;
+}
+
 void XmlDomHelper::load()
 {
+    if(m_domLoaded)
+        return;
+
     if(!m_filePath.isEmpty()) {
-        m_doc = Utils::getDomDocument(m_filePath);
-        m_rootElement = m_doc.documentElement();
+
+        if(m_needSave)
+            qCritical("XmlDomHelper: Dom need to be saved before loading from file");
+
+        QFile file(m_filePath);
+        if (!file.open(QIODevice::ReadOnly)) {
+            qCritical() << "File open error:" << m_filePath;
+            return;
+        }
+
+        load(&file);
     } else {
         qCritical("XmlDomHelper: empty file path");
     }
@@ -32,8 +57,14 @@ void XmlDomHelper::load()
 
 void XmlDomHelper::load(QIODevice *file)
 {
+    if(m_domLoaded)
+        return;
+
     m_doc = Utils::getDomDocument(file);
     m_rootElement = m_doc.documentElement();
+
+    m_needSave = false;
+    m_domLoaded = true;
 }
 
 void XmlDomHelper::save()
@@ -59,6 +90,8 @@ void XmlDomHelper::reload()
     if(m_needSave)
         save();
 
+    m_domLoaded = false;
+
     load();
 }
 
@@ -80,4 +113,18 @@ QDomElement XmlDomHelper::findElement(const QString &tag, const QString &attr, c
     }
 
     return QDomElement();
+}
+
+void XmlDomHelper::setElementText(QDomElement &parent, const QString &tagName, const QString &text, bool cdata)
+{
+    QDomElement element = Utils::findChildElement(parent, m_doc, tagName);
+    if(!element.isNull()) {
+        QDomNode textNode = Utils::findChildText(element, m_doc, cdata);
+        if(!textNode.isNull())
+            textNode.setNodeValue(text);
+        else
+            qCritical("setElementText: Text node is null");
+    } else {
+        qCritical("setElementText: element is null");
+    }
 }

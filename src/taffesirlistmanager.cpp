@@ -14,7 +14,7 @@ static TaffesirListManager *m_instance = 0;
 TaffesirListManager::TaffesirListManager(QObject *parent) : ListManager(parent)
 {
     QDir dataDir(MW->libraryInfo()->dataDir());
-    m_filePath = dataDir.filePath("taffesirlist.xml");
+    m_dom.setFilePath(dataDir.filePath("taffesirlist.xml"));
     m_model = 0;
 
     loadModels();
@@ -36,7 +36,7 @@ TaffesirListManager *TaffesirListManager::instance()
 
 void TaffesirListManager::loadModels()
 {
-    loadXmlDom();
+    m_dom.load();
 
     taffesirListModel();
     emit ModelsReady();
@@ -70,7 +70,7 @@ QStandardItemModel *TaffesirListManager::getModel(bool allTaffasir)
     model->setHorizontalHeaderLabels(QStringList() << tr("التفسير")
                                      << tr("عرض عند تصفح القرآن الكريم"));
 
-    QDomElement e = m_rootElement.firstChildElement();
+    QDomElement e = m_dom.rootElement().firstChildElement();
     while(!e.isNull()) {
         Qt::CheckState checkStat = e.attribute("show") == "false" ? Qt::Unchecked : Qt::Checked;
         if(allTaffasir || checkStat) {
@@ -96,17 +96,17 @@ void TaffesirListManager::addTafessir(int bookID, QString taffesirName)
 {
     QMutexLocker locker(&m_mutex);
 
-    QDomElement taffesirElement = m_doc.createElement("taffesir");
+    QDomElement taffesirElement = m_dom.domDocument().createElement("taffesir");
     taffesirElement.setAttribute("bookID", bookID);
     taffesirElement.setAttribute("show", "true");
 
-    QDomElement titleElement = m_doc.createElement("title");
-    titleElement.appendChild(m_doc.createTextNode(taffesirName));
+    QDomElement titleElement = m_dom.domDocument().createElement("title");
+    titleElement.appendChild(m_dom.domDocument().createTextNode(taffesirName));
 
     taffesirElement.appendChild(titleElement);
-    m_rootElement.appendChild(taffesirElement);
+    m_dom.rootElement().appendChild(taffesirElement);
 
-    m_saveDom = true;
+    m_dom.setNeedSave(true);
 }
 
 void TaffesirListManager::saveModel(QXmlStreamWriter &writer, QStandardItemModel *model)

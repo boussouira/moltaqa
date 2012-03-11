@@ -13,7 +13,7 @@ AuthorsManager::AuthorsManager(QObject *parent) :
     ListManager(parent)
 {
     QDir dataDir(MW->libraryInfo()->dataDir());
-    m_filePath = dataDir.filePath("authors.xml");
+    m_dom.setFilePath(dataDir.filePath("authors.xml"));
 
     loadModels();
 
@@ -34,7 +34,8 @@ AuthorsManager *AuthorsManager::instance()
 
 void AuthorsManager::loadModels()
 {
-    loadXmlDom();
+    m_dom.load();
+
     loadAuthorsInfo();
 }
 
@@ -69,18 +70,18 @@ int AuthorsManager::addAuthor(AuthorInfo *auth)
     if(!auth->id)
         auth->id = getNewAuthorID();
 
-    QDomElement authorElement = m_doc.createElement("author");
+    QDomElement authorElement = m_dom.domDocument().createElement("author");
     authorElement.setAttribute("id", auth->id);
 
-    QDomElement nameEelement = m_doc.createElement("name");
-    QDomElement fullNameEelement = m_doc.createElement("full-name");
-    QDomElement infoEelement = m_doc.createElement("info");
+    QDomElement nameEelement = m_dom.domDocument().createElement("name");
+    QDomElement fullNameEelement = m_dom.domDocument().createElement("full-name");
+    QDomElement infoEelement = m_dom.domDocument().createElement("info");
 
-    nameEelement.appendChild(m_doc.createTextNode(auth->name));
-    fullNameEelement.appendChild(m_doc.createTextNode(auth->fullName));
-    infoEelement.appendChild(m_doc.createCDATASection(auth->info));
+    nameEelement.appendChild(m_dom.domDocument().createTextNode(auth->name));
+    fullNameEelement.appendChild(m_dom.domDocument().createTextNode(auth->fullName));
+    infoEelement.appendChild(m_dom.domDocument().createCDATASection(auth->info));
 
-    QDomElement birthElement = m_doc.createElement("birth");
+    QDomElement birthElement = m_dom.domDocument().createElement("birth");
     if(auth->unknowBirth) {
         birthElement.setAttribute("unknow", "true");
     } else {
@@ -88,10 +89,10 @@ int AuthorsManager::addAuthor(AuthorInfo *auth)
         if(auth->birthStr.isEmpty())
             auth->birthStr = Utils::hijriYear(auth->birthYear);
 
-        birthElement.appendChild(m_doc.createTextNode(auth->birthStr));
+        birthElement.appendChild(m_dom.domDocument().createTextNode(auth->birthStr));
     }
 
-    QDomElement deathElement = m_doc.createElement("death");
+    QDomElement deathElement = m_dom.domDocument().createElement("death");
     deathElement.removeAttribute("aLive");
     deathElement.removeAttribute("unknow");
 
@@ -104,7 +105,7 @@ int AuthorsManager::addAuthor(AuthorInfo *auth)
         if(auth->deathStr.isEmpty())
             auth->deathStr = Utils::hijriYear(auth->deathYear);
 
-        deathElement.appendChild(m_doc.createTextNode(auth->deathStr));
+        deathElement.appendChild(m_dom.domDocument().createTextNode(auth->deathStr));
     }
 
     authorElement.appendChild(nameEelement);
@@ -113,10 +114,10 @@ int AuthorsManager::addAuthor(AuthorInfo *auth)
     authorElement.appendChild(deathElement);
     authorElement.appendChild(infoEelement);
 
-    m_rootElement.appendChild(authorElement);
+    m_dom.rootElement().appendChild(authorElement);
     m_authors.insert(auth->id, auth);
 
-    m_saveDom = true;
+    m_dom.setNeedSave(true);
 
     return auth->id;
 }
@@ -126,10 +127,10 @@ void AuthorsManager::removeAuthor(int authorID)
     QDomElement e = m_elementHash.value(authorID);
 
     if(!e.isNull()) {
-        if(m_rootElement.removeChild(e).isNull())
+        if(m_dom.rootElement().removeChild(e).isNull())
             qWarning("Error occured when removing author %d", authorID);
 
-        m_saveDom = true;
+        m_dom.setNeedSave(true);
     }
 }
 
@@ -183,7 +184,7 @@ void AuthorsManager::beginUpdate()
 {
     m_elementHash.clear();
 
-    QDomElement e = m_rootElement.firstChildElement();
+    QDomElement e = m_dom.rootElement().firstChildElement();
     while(!e.isNull()) {
         m_elementHash.insert(e.attribute("id").toInt(), e);
 
@@ -204,25 +205,20 @@ void AuthorsManager::updateAuthor(AuthorInfo *auth)
     if(!e.isNull()) {
         e.setAttribute("id", auth->id);
 
-        QDomElement nameEelement = Utils::findChildElement(e, m_doc, "name");
-        QDomElement fullNameEelement = Utils::findChildElement(e, m_doc, "full-name");
-        QDomElement infoEelement = Utils::findChildElement(e, m_doc, "info");
+        m_dom.setElementText(e, "name", auth->name);
+        m_dom.setElementText(e, "full-name", auth->fullName);
+        m_dom.setElementText(e, "info", auth->info, true);
 
-        Utils::findChildText(nameEelement, m_doc).setNodeValue(auth->name);
-        Utils::findChildText(fullNameEelement, m_doc).setNodeValue(auth->fullName);
-        Utils::findChildText(infoEelement, m_doc, true).setNodeValue(auth->info);
-
-        QDomElement birthElement = Utils::findChildElement(e, m_doc, "birth");
+        QDomElement birthElement = Utils::findChildElement(e, m_dom.domDocument(), "birth");
         if(auth->unknowBirth)
             birthElement.setAttribute("unknow", "true");
         else
             birthElement.removeAttribute("unknow");
 
         birthElement.setAttribute("year", auth->birthYear);
-        QDomNode birthTextNode = Utils::findChildText(birthElement, m_doc);
-        birthTextNode.setNodeValue(auth->birthStr);
+        Utils::findChildText(birthElement, m_dom.domDocument()).setNodeValue(auth->birthStr);
 
-        QDomElement deathElement = Utils::findChildElement(e, m_doc, "death");
+        QDomElement deathElement = Utils::findChildElement(e, m_dom.domDocument(), "death");
         deathElement.removeAttribute("aLive");
         deathElement.removeAttribute("unknow");
 
@@ -232,16 +228,15 @@ void AuthorsManager::updateAuthor(AuthorInfo *auth)
             deathElement.setAttribute("unknow", "true");
 
         deathElement.setAttribute("year", auth->deathYear);
-        QDomNode deathTextNode = Utils::findChildText(deathElement, m_doc);
-        deathTextNode.setNodeValue(auth->deathStr);
+        Utils::findChildText(deathElement, m_dom.domDocument()).setNodeValue(auth->deathStr);
 
-        m_saveDom = true;
+        m_dom.setNeedSave(true);
     }
 }
 
 void AuthorsManager::loadAuthorsInfo()
 {
-    QDomElement e = m_rootElement.firstChildElement();
+    QDomElement e = m_dom.rootElement().firstChildElement();
     while(!e.isNull()) {
         readAuthor(e);
 

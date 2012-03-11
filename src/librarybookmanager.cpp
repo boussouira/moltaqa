@@ -17,7 +17,7 @@ LibraryBookManager::LibraryBookManager(QObject *parent) :
     m_quranBook(0)
 {
     QDir dataDir(MW->libraryInfo()->dataDir());
-    m_filePath = dataDir.filePath("booksinfo.xml");
+    m_dom.setFilePath(dataDir.filePath("booksinfo.xml"));
     m_authorsManager = AuthorsManager::instance();
 
     Q_CHECK_PTR(m_authorsManager);
@@ -43,7 +43,8 @@ LibraryBookManager *LibraryBookManager::instance()
 
 void LibraryBookManager::loadModels()
 {
-    loadXmlDom();
+    m_dom.load();
+
     loadLibraryBooks();
 }
 
@@ -64,7 +65,7 @@ void LibraryBookManager::clear()
 
 void LibraryBookManager::loadLibraryBooks()
 {
-    QDomElement e = m_rootElement.firstChildElement();
+    QDomElement e = m_dom.rootElement().firstChildElement();
     while(!e.isNull()) {
         readBook(e);
 
@@ -123,36 +124,36 @@ void LibraryBookManager::addBook(LibraryBook *book)
     if(!book->bookID)
         book->bookID = getNewBookID();
 
-    QDomElement bookElement = m_doc.createElement("book");
+    QDomElement bookElement = m_dom.domDocument().createElement("book");
     bookElement.setAttribute("id", book->bookID);
     bookElement.setAttribute("type", book->bookType);
     bookElement.setAttribute("authorid", book->authorID);
     bookElement.setAttribute("bookFlags", book->bookFlags);
     bookElement.setAttribute("indexFlags", book->indexFlags);
 
-    QDomElement titleElement = m_doc.createElement("title");
-    titleElement.appendChild(m_doc.createTextNode(book->bookDisplayName));
+    QDomElement titleElement = m_dom.domDocument().createElement("title");
+    titleElement.appendChild(m_dom.domDocument().createTextNode(book->bookDisplayName));
     bookElement.appendChild(titleElement);
 
-    QDomElement fileElement = m_doc.createElement("filename");
-    fileElement.appendChild(m_doc.createTextNode(book->fileName));
+    QDomElement fileElement = m_dom.domDocument().createElement("filename");
+    fileElement.appendChild(m_dom.domDocument().createTextNode(book->fileName));
     bookElement.appendChild(fileElement);
 
-    QDomElement bookInfoElement = m_doc.createElement("info");
-    bookInfoElement.appendChild(m_doc.createCDATASection(book->bookInfo));
+    QDomElement bookInfoElement = m_dom.domDocument().createElement("info");
+    bookInfoElement.appendChild(m_dom.domDocument().createCDATASection(book->bookInfo));
     bookElement.appendChild(bookInfoElement);
 
-    m_rootElement.appendChild(bookElement);
+    m_dom.rootElement().appendChild(bookElement);
     m_books.insert(book->bookID, book);
 
-    m_saveDom = true;
+    m_dom.setNeedSave(true);
 }
 
 void LibraryBookManager::beginUpdate()
 {
     m_bookElementHash.clear();
 
-    QDomElement e = m_rootElement.firstChildElement();
+    QDomElement e = m_dom.rootElement().firstChildElement();
     while(!e.isNull()) {
         m_bookElementHash.insert(e.attribute("id").toInt(), e);
 
@@ -174,13 +175,10 @@ void LibraryBookManager::updateBook(LibraryBook *book)
         e.setAttribute("id", book->bookID);
         e.setAttribute("authorid", book->authorID);
 
-        QDomElement titleEelement = Utils::findChildElement(e, m_doc, "title");
-        QDomElement infoEelement = Utils::findChildElement(e, m_doc, "info");
+        m_dom.setElementText(e, "title", book->bookDisplayName);
+        m_dom.setElementText(e, "info", book->bookInfo, true);
 
-        Utils::findChildText(titleEelement, m_doc).setNodeValue(book->bookDisplayName);
-        Utils::findChildText(infoEelement, m_doc, true).setNodeValue(book->bookInfo);
-
-        m_saveDom = true;
+        m_dom.setNeedSave(true);
     }
 }
 
@@ -213,7 +211,7 @@ void LibraryBookManager::setBookIndexStat(int bookID, LibraryBook::IndexFlags in
             book->indexFlags = indexFlag;
         else qDebug("No book");
 
-        m_saveDom = true;
+        m_dom.setNeedSave(true);
     } else qDebug("No element");
 }
 
