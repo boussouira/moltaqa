@@ -71,19 +71,7 @@ void AbstractBookReader::connected()
 
 QDomElement AbstractBookReader::getPage(int pid)
 {
-    QDomElement e = m_rootElement.firstChildElement();
-
-    while(!e.isNull()) {
-        int pageID = e.attribute("id").toInt();
-
-        if(pageID == pid) {
-            return e;
-        }
-
-        e = e.nextSiblingElement();
-    }
-
-    return QDomElement();
+    return m_pagesDom.findElement("id", pid);
 }
 
 QDomElement AbstractBookReader::getPageId(int page, int part)
@@ -91,7 +79,7 @@ QDomElement AbstractBookReader::getPageId(int page, int part)
     QString pageNum = QString::number(page);
     QString partNum = QString::number(part);
 
-    QDomElement e = m_rootElement.firstChildElement();
+    QDomElement e = m_pagesDom.rootElement().firstChildElement();
     while(!e.isNull()) {
 
         if(pageNum == e.attribute("page") && partNum == e.attribute("part")) {
@@ -106,19 +94,7 @@ QDomElement AbstractBookReader::getPageId(int page, int part)
 
 QDomElement AbstractBookReader::getPageId(int haddit)
 {
-    QString hadditNum = QString::number(haddit);
-
-    QDomElement e = m_rootElement.firstChildElement();
-    while(!e.isNull()) {
-
-        if(hadditNum == e.attribute("haddit")) {
-            return e;
-        }
-
-        e = e.nextSiblingElement();
-    }
-
-    return QDomElement();
+    return m_pagesDom.findElement("haddit", haddit);
 }
 
 QDomElement AbstractBookReader::getQuranPageId(int sora, int aya)
@@ -126,10 +102,10 @@ QDomElement AbstractBookReader::getQuranPageId(int sora, int aya)
     QString soraNum = QString::number(sora);
     QString ayaNum = QString::number(aya);
 
-    QDomElement e = m_rootElement.firstChildElement();
+    QDomElement e = m_pagesDom.rootElement().firstChildElement();
     while(!e.isNull()) {
 
-        if(soraNum == e.attribute("sora") && ayaNum == e.attribute("aya")) {
+        if(ayaNum == e.attribute("aya") && soraNum == e.attribute("sora")) {
             return e;
         }
 
@@ -183,7 +159,7 @@ void AbstractBookReader::goToHaddit(int hadditNum)
 
 void AbstractBookReader::firstPage()
 {
-    QDomElement e = m_rootElement.firstChildElement();
+    QDomElement e = m_pagesDom.rootElement().firstChildElement();
 
     if(!e.isNull())
         setCurrentPage(e);
@@ -191,7 +167,7 @@ void AbstractBookReader::firstPage()
 
 void AbstractBookReader::lastPage()
 {
-    QDomElement e = m_rootElement.lastChildElement();
+    QDomElement e = m_pagesDom.rootElement().lastChildElement();
 
     if(!e.isNull())
         setCurrentPage(e);
@@ -199,7 +175,9 @@ void AbstractBookReader::lastPage()
 
 void AbstractBookReader::nextPage()
 {
-    QDomElement e = m_currentElement.nextSiblingElement();
+    QDomElement e = m_pagesDom.currentElement().isNull()
+            ? m_pagesDom.rootElement().firstChildElement()
+            : m_pagesDom.currentElement().nextSiblingElement();
 
     if(!e.isNull())
         setCurrentPage(e);
@@ -207,7 +185,9 @@ void AbstractBookReader::nextPage()
 
 void AbstractBookReader::prevPage()
 {
-    QDomElement e = m_currentElement.previousSiblingElement();
+    QDomElement e = m_pagesDom.currentElement().isNull()
+            ? m_pagesDom.rootElement().lastChildElement()
+            : m_pagesDom.currentElement().previousSiblingElement();
 
     if(!e.isNull())
         setCurrentPage(e);
@@ -215,12 +195,14 @@ void AbstractBookReader::prevPage()
 
 bool AbstractBookReader::hasNext()
 {
-    return !m_currentElement.nextSibling().isNull();
+    return m_pagesDom.currentElement().isNull()
+            || !m_pagesDom.currentElement().nextSibling().isNull();
 }
 
 bool AbstractBookReader::hasPrev()
 {
-    return !m_currentElement.previousSibling().isNull();
+    return m_pagesDom.currentElement().isNull()
+            || !m_pagesDom.currentElement().previousSibling().isNull();
 }
 
 bool AbstractBookReader::getBookPage(LibraryBook *book, BookPage *page)
@@ -493,6 +475,5 @@ void AbstractBookReader::getBookInfo()
        }
    }
 
-   m_bookDoc = Utils::getDomDocument(&pagesFile);
-   m_rootElement = m_bookDoc.documentElement();
+   m_pagesDom.load(&pagesFile);
 }

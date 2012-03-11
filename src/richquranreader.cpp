@@ -26,7 +26,7 @@ void RichQuranReader::setCurrentPage(QDomElement pageNode)
     m_currentPage->ayatCount = MW->readerHelper()->getQuranSora(m_currentPage->sora)->ayatCount;
     m_currentPage->titleID = m_currentPage->sora;
 
-    m_currentElement = pageNode;
+    m_pagesDom.setCurrentElement(pageNode);
 
     if(pageNode.attribute("page").toInt() == m_currentPage->page) {
         return;
@@ -94,10 +94,10 @@ QStandardItemModel *RichQuranReader::indexModel()
 
 void RichQuranReader::nextPage()
 {
-    QDomElement e = m_currentElement.nextSiblingElement();
+    QDomElement e = m_pagesDom.currentElement().nextSiblingElement();
 
     while(!e.isNull()) {
-        if(e.attribute("page") != m_currentElement.attribute("page")) {
+        if(e.attribute("page") != m_pagesDom.currentElement().attribute("page")) {
             setCurrentPage(e);
             break;
         }
@@ -108,10 +108,10 @@ void RichQuranReader::nextPage()
 
 void RichQuranReader::prevPage()
 {
-    QDomElement e = m_currentElement.previousSiblingElement();
+    QDomElement e = m_pagesDom.currentElement().previousSiblingElement();
 
     while(!e.isNull()) {
-        if(e.attribute("page") != m_currentElement.attribute("page")) {
+        if(e.attribute("page") != m_pagesDom.currentElement().attribute("page")) {
             QDomElement t = e;
             while(!t.isNull()) {
                 if(t.attribute("page") == e.attribute("page"))
@@ -133,7 +133,7 @@ void RichQuranReader::prevPage()
 
 void RichQuranReader::nextAya()
 {
-    QDomElement e = m_currentElement.nextSiblingElement();
+    QDomElement e = m_pagesDom.currentElement().nextSiblingElement();
 
     if(!e.isNull())
         setCurrentPage(e);
@@ -141,7 +141,7 @@ void RichQuranReader::nextAya()
 
 void RichQuranReader::prevAya()
 {
-    QDomElement e = m_currentElement.previousSiblingElement();
+    QDomElement e = m_pagesDom.currentElement().previousSiblingElement();
 
     if(!e.isNull())
         setCurrentPage(e);

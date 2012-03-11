@@ -8,7 +8,7 @@ TextTafessirReader::TextTafessirReader(QObject *parent) :
 
 void TextTafessirReader::setCurrentPage(QDomElement pageNode)
 {
-    m_currentElement = pageNode;
+    m_pagesDom.setCurrentElement(pageNode);
     m_currentPage->pageID = pageNode.attribute("id").toInt();
     m_currentPage->part = pageNode.attribute("part").toInt();
     m_currentPage->page = pageNode.attribute("page").toInt();

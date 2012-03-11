@@ -28,15 +28,15 @@ void RichSimpleBookReader::setCurrentPage(QDomElement pageNode)
 {
     m_textFormat->start();
 
-    m_currentElement = pageNode;
+    m_pagesDom.setCurrentElement(pageNode);
 
-    m_currentPage->pageID = m_currentElement.attribute("id").toInt();
-    m_currentPage->page = m_currentElement.attribute("page").toInt();
-    m_currentPage->part = m_currentElement.attribute("part").toInt();
-    m_currentPage->haddit = m_currentElement.attribute("haddit").toInt();
+    m_currentPage->pageID = m_pagesDom.currentElement().attribute("id").toInt();
+    m_currentPage->page = m_pagesDom.currentElement().attribute("page").toInt();
+    m_currentPage->part = m_pagesDom.currentElement().attribute("part").toInt();
+    m_currentPage->haddit = m_pagesDom.currentElement().attribute("haddit").toInt();
 
-    if(m_currentElement.hasAttribute("tid"))
-        m_currentPage->titleID = m_currentElement.attribute("tid").toInt();
+    if(m_pagesDom.currentElement().hasAttribute("tid"))
+        m_currentPage->titleID = m_pagesDom.currentElement().attribute("tid").toInt();
     else
         getPageTitleID();
 
@@ -57,7 +57,7 @@ void RichSimpleBookReader::getShorooh()
 {
     m_bookInfo->shorooh.clear();
 
-    QDomElement linkElement = m_currentElement.firstChildElement("link");
+    QDomElement linkElement = m_pagesDom.currentElement().firstChildElement("link");
     while(!linkElement.isNull()) {
         int bookID = linkElement.attribute("book").toInt();
         int page = linkElement.attribute("page").toInt();

@@ -226,7 +226,7 @@ bool BookEditor::saveBookPages(QList<BookPage*> pages)
             continue;
         }
 
-        QDomElement e = m_bookReader->getPage(page->pageID);
+        QDomElement e = m_bookReader->pagesDom().findElement("id", QString::number(page->pageID));
         if(!e.isNull()) {
             e.setAttribute("page", page->page);
             e.setAttribute("part", page->part);
@@ -248,38 +248,20 @@ bool BookEditor::saveBookPages(QList<BookPage*> pages)
         out << page->text;
     }
 
-    QFile file(QString("%1/pages.xml").arg(m_bookTmpDir));
-    if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-        qWarning() << "saveBookPages: Can't write pages.xml to:" << file.fileName();
-        return false;
-    }
-
-    QTextStream out(&file);
-    out.setCodec("utf-8");
-
-    m_bookReader->m_bookDoc.save(out, 1);
+    m_bookReader->pagesDom().save(QString("%1/pages.xml").arg(m_bookTmpDir));
 
     return true;
 }
 
 void BookEditor::saveDom()
 {
-    QFile file(QString("%1/pages.xml").arg(m_bookTmpDir));
-    if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-        qWarning() << "saveBookPages: Can't write pages.xml to:" << file.fileName();
-        return;
-    }
-
-    QTextStream out(&file);
-    out.setCodec("utf-8");
-
-    m_bookReader->m_bookDoc.save(out, 1);
+    m_bookReader->pagesDom().save(QString("%1/pages.xml").arg(m_bookTmpDir));
 }
 
 void BookEditor::addPage(int pageID)
 {
-    QDomElement e = m_bookReader->m_currentElement;
-    QDomElement page = m_bookReader->m_bookDoc.createElement("item");
+    QDomElement e = m_bookReader->pagesDom().currentElement();
+    QDomElement page = m_bookReader->pagesDom().domDocument().createElement("item");
 
     page.setAttribute("id", pageID);
     page.setAttribute("page", e.attribute("page"));
@@ -292,7 +274,7 @@ void BookEditor::addPage(int pageID)
 
     page.setAttribute("tid", m_bookReader->getPageTitleID(e.attribute("id").toInt()));
 
-    QDomElement newPage = m_bookReader->m_rootElement.insertAfter(page, e).toElement();
+    QDomElement newPage = m_bookReader->pagesDom().rootElement().insertAfter(page, e).toElement();
 
     if(!newPage.isNull())
         m_bookReader->goToPage(pageID);
@@ -300,14 +282,14 @@ void BookEditor::addPage(int pageID)
 
 void BookEditor::removePage()
 {
-    QDomElement page = m_bookReader->m_currentElement;
+    QDomElement page = m_bookReader->pagesDom().currentElement();
 
     if(m_bookReader->hasNext())
         m_bookReader->nextPage();
     else
         m_bookReader->prevPage();
 
-    QDomElement removedPage = m_bookReader->m_rootElement.removeChild(page).toElement();
+    QDomElement removedPage = m_bookReader->pagesDom().rootElement().removeChild(page).toElement();
     if(!removedPage.isNull())
         m_removedPages.append(removedPage.attribute("id").toInt());
 }
@@ -389,7 +371,7 @@ bool BookEditor::zipDir(QString path, QuaZipFile *outFile)
 int BookEditor::maxPageID()
 {
     int pageID = 0;
-    QDomElement e = m_bookReader->m_rootElement.firstChildElement();
+    QDomElement e = m_bookReader->pagesDom().rootElement().firstChildElement();
     while(!e.isNull()) {
         int pid = e.attribute("id").toInt();
 
@@ -411,9 +393,9 @@ QString BookEditor::titlesFile()
 
 void BookEditor::addPageLink(int sourcPage, int destBook, int destPage)
 {
-    QDomElement pageElement = m_bookReader->getPage(sourcPage);
+    QDomElement pageElement = m_bookReader->pagesDom().findElement("id", sourcPage);
     if(!pageElement.isNull()) {
-        QDomElement linkElement = m_bookReader->m_bookDoc.createElement("link");
+        QDomElement linkElement = m_bookReader->pagesDom().domDocument().createElement("link");
         linkElement.setAttribute("book", destBook);
         linkElement.setAttribute("page", destPage);
 
@@ -423,7 +405,7 @@ void BookEditor::addPageLink(int sourcPage, int destBook, int destPage)
 
 void BookEditor::removePageLink(int sourcPage, int destBook, int destPage)
 {
-    QDomElement pageElement = m_bookReader->getPage(sourcPage);
+    QDomElement pageElement = m_bookReader->pagesDom().findElement("id", sourcPage);
     if(!pageElement.isNull()) {
         QDomElement linkElement = pageElement.firstChildElement("link");
         while(!pageElement.isNull()) {

@@ -39,17 +39,17 @@ void RichTafessirReader::setCurrentPage(QDomElement pageNode)
 {
     m_formatter->start();
 
-    m_currentElement = pageNode;
+    m_pagesDom.setCurrentElement(pageNode);
 
-    m_currentPage->pageID = m_currentElement.attribute("id").toInt();
-    m_currentPage->page = m_currentElement.attribute("page").toInt();
-    m_currentPage->part = m_currentElement.attribute("part").toInt();
-    m_currentPage->haddit = m_currentElement.attribute("haddit").toInt();
-    m_currentPage->sora = m_currentElement.attribute("sora").toInt();
-    m_currentPage->aya = m_currentElement.attribute("aya").toInt();
+    m_currentPage->pageID = m_pagesDom.currentElement().attribute("id").toInt();
+    m_currentPage->page = m_pagesDom.currentElement().attribute("page").toInt();
+    m_currentPage->part = m_pagesDom.currentElement().attribute("part").toInt();
+    m_currentPage->haddit = m_pagesDom.currentElement().attribute("haddit").toInt();
+    m_currentPage->sora = m_pagesDom.currentElement().attribute("sora").toInt();
+    m_currentPage->aya = m_pagesDom.currentElement().attribute("aya").toInt();
 
-    if(m_currentElement.hasAttribute("tid"))
-        m_currentPage->titleID = m_currentElement.attribute("tid").toInt();
+    if(m_pagesDom.currentElement().hasAttribute("tid"))
+        m_currentPage->titleID = m_pagesDom.currentElement().attribute("tid").toInt();
     else
         getPageTitleID();
 
@@ -76,7 +76,7 @@ QDomElement RichTafessirReader::getQuranPageId(int sora, int aya)
 {
     QString soraNum = QString::number(sora);
 
-    QDomElement e = m_rootElement.lastChildElement();
+    QDomElement e = m_pagesDom.rootElement().lastChildElement();
     while(!e.isNull()) {
 
         if(soraNum == e.attribute("sora")) {

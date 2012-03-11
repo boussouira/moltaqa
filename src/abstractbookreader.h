@@ -8,6 +8,7 @@
 
 #include "librarymanager.h"
 #include "sqlutils.h"
+#include "xmldomhelper.h"
 
 #include <quazip/quazip.h>
 #include <quazip/quazipfile.h>
@@ -92,6 +93,8 @@ public:
       */
     virtual bool hasPrev();
 
+    inline XmlDomHelper& pagesDom() { return m_pagesDom; }
+
     static bool getBookPage(LibraryBook *book, BookPage *page);
     static QString getFileContent(QuaZip *zip, QString fileName);
 
@@ -109,7 +112,6 @@ public:
     {
         return getFileContent(zip, QString("pages/p%1.html").arg(pageID));
     }
-
 
 protected:
     /**
@@ -132,7 +134,6 @@ private:
     static bool getQuranPage(QuaZip *zip, LibraryBook *book, BookPage *page);
 
 protected:
-    friend class BookEditor;
     LibraryBook *m_bookInfo;
     BookPage *m_currentPage;
     LibraryManager *m_libraryManager;
@@ -140,9 +141,7 @@ protected:
     QString m_bookDBPath;
     QString m_connectionName;
     QuaZip m_zip;
-    QDomDocument m_bookDoc;
-    QDomElement m_rootElement;
-    QDomElement m_currentElement;
+    XmlDomHelper m_pagesDom;
 };
 
 #endif // ABSTRACTBOOKREADER_H

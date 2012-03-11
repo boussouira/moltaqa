@@ -198,8 +198,6 @@ QList<int> LibraryBookManager::getNonIndexedBooks()
         ++i;
     }
 
-    qDebug("Not indexed count %d", list.size());
-
     return list;
 }
 

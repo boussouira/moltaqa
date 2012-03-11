@@ -130,9 +130,7 @@ void BookIndexer::indexQuran(IndexTask *task)
     wchar_t *text = NULL;
 
     reader.setBookInfo(task->book);
-
     reader.openBook();
-    reader.firstPage();
 
     BookPage *page = reader.page();
 
@@ -174,7 +172,6 @@ void BookIndexer::indexSimpleBook(IndexTask *task)
 
     reader.openBook();
     reader.load();
-    reader.firstPage();
 
     BookPage *page = reader.page();
 
@@ -219,7 +216,6 @@ void BookIndexer::indexTaffesirBook(IndexTask *task)
 
     reader.openBook();
     reader.load();
-    reader.firstPage();
 
     BookPage *page = reader.page();
 
@@ -227,6 +223,9 @@ void BookIndexer::indexTaffesirBook(IndexTask *task)
 
     while (reader.hasNext()) {
         reader.nextPage();
+
+        if(page->text.isEmpty())
+            continue;
 
         pageID = Utils::intToWChar(page->pageID);
         text = Utils::QStringToWChar(page->text);
