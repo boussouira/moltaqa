@@ -282,16 +282,10 @@ void BookEditorView::save()
         m_bookEditor->zip();
         dialog.setValue(dialog.value()+1);
 
-        int pageID = m_bookReader->page()->pageID;
         LibraryBook *book = m_bookReader->bookInfo();
 
-        closeBook(false);
-
-        if(m_bookEditor->save()) {
-            editBook(book, pageID);
-
+        if(m_bookEditor->save())
             IndexTracker::instance()->addTask(book->bookID, IndexTask::Update);
-        }
 
         dialog.setValue(dialog.value()+1);
     }

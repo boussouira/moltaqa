@@ -23,15 +23,10 @@ void TextBookReader::firstPage()
 
 void TextBookReader::load()
 {
-    //QTime t;
+    ZipOpener opener(this);
 
-    //t.start();
     getTitles();
-    //qDebug("Load Titles take %d ms", t.elapsed());
-
-    //t.restart();
     getPages();
-    //qDebug("Load Pages take %d ms", t.elapsed());
 }
 
 void TextBookReader::getTitles()

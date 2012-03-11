@@ -42,14 +42,26 @@ void AbstractBookReader::openBook()
         throw BookException(tr("لم يتم العثور على ملف الكتاب"), bookInfo()->bookPath);
     }
 
-    m_zip.setZipName(m_bookInfo->bookPath);
-
-    if(!m_zip.open(QuaZip::mdUnzip)) {
-        throw BookException(tr("لا يمكن فتح ملف الكتاب"), m_bookInfo->bookPath, m_zip.getZipError());
-    }
+    ZipOpener opener(this);
 
     connected();
     getBookInfo();
+}
+
+void AbstractBookReader::openZip()
+{
+    m_zip.setZipName(m_bookInfo->bookPath);
+
+    if(!m_zip.open(QuaZip::mdUnzip)) {
+        qCritical("Can't open book at '%s' Error: %d",
+                  qPrintable(m_bookInfo->bookPath),
+                  m_zip.getZipError());
+    }
+}
+
+void AbstractBookReader::closeZip()
+{
+    m_zip.close();
 }
 
 void AbstractBookReader::setBookInfo(LibraryBook *bi)

@@ -365,25 +365,13 @@ void BooksViewer::editCurrentBook()
     if(book && page) {
         int pageID = page->pageID;
 
-        int rep = QMessageBox::question(this,
-                                        tr("تعديل كتاب"),
-                                        tr("يجب اغلاق الكتاب قبل تعديله" "\n"
-                                           "هل تريد المتابعة؟"),
-                                        QMessageBox::Yes|QMessageBox::No,
-                                        QMessageBox::No);
-        if(rep == QMessageBox::Yes) {
-            // TODO: re-open this book after editing
-            m_viewManager->closeBook(book->bookID);
-
-            try {
-                MW->editorView()->editBook(book, pageID);
-            } catch (BookException &e) {
-                QMessageBox::information(this,
-                                         App::name(),
-                                         tr("حدث خطأ أثناء محاولة تحرير الكتاب الحالي:"
-                                            "<br>%1").arg(e.what()));
-            }
+        try {
+            MW->editorView()->editBook(book, pageID);
+        } catch (BookException &e) {
+            QMessageBox::information(this,
+                                     App::name(),
+                                     tr("حدث خطأ أثناء محاولة تحرير الكتاب الحالي:"
+                                        "<br>%1").arg(e.what()));
         }
-
     }
 }

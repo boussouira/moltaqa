@@ -9,6 +9,7 @@
 #include "librarymanager.h"
 #include "sqlutils.h"
 #include "xmldomhelper.h"
+#include "zipopener.h"
 
 #include <quazip/quazip.h>
 #include <quazip/quazipfile.h>
@@ -98,22 +99,29 @@ public:
     static bool getBookPage(LibraryBook *book, BookPage *page);
     static QString getFileContent(QuaZip *zip, QString fileName);
 
-    inline QString getFileContent(QString fileName)
-    {
-        return getFileContent(&m_zip, fileName);
-    }
-
-    inline QString getPageText(int pageID)
-    {
-        return getFileContent(&m_zip, QString("pages/p%1.html").arg(pageID));
-    }
-
     static QString getPageText(QuaZip *zip, int pageID)
     {
         return getFileContent(zip, QString("pages/p%1.html").arg(pageID));
     }
 
+    QString getFileContent(QString fileName)
+    {
+        ZipOpener opener(this);
+        return getFileContent(&m_zip, fileName);
+    }
+
+    QString getPageText(int pageID)
+    {
+        ZipOpener opener(this);
+        return getFileContent(&m_zip, QString("pages/p%1.html").arg(pageID));
+    }
+
+
 protected:
+
+    void openZip();
+    void closeZip();
+
     /**
       Generate book info
       */
@@ -134,6 +142,7 @@ private:
     static bool getQuranPage(QuaZip *zip, LibraryBook *book, BookPage *page);
 
 protected:
+    friend class ZipOpener;
     LibraryBook *m_bookInfo;
     BookPage *m_currentPage;
     LibraryManager *m_libraryManager;

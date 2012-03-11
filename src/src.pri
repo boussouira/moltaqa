@@ -108,7 +108,8 @@ SOURCES += mainwindow.cpp \
     librarybookmanager.cpp \
     authorsmanager.cpp \
     authorsmanagerwidget.cpp \
-    xmldomhelper.cpp
+    xmldomhelper.cpp \
+    zipopener.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -204,7 +205,8 @@ HEADERS += mainwindow.h \
     librarybookmanager.h \
     authorsmanager.h \
     authorsmanagerwidget.h \
-    xmldomhelper.h
+    xmldomhelper.h \
+    zipopener.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

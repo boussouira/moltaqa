@@ -60,9 +60,7 @@ int RichBookReader::getPageTitleID(int pageID)
 
 QStandardItemModel *RichBookReader::indexModel()
 {
-    m_pageTitles.clear();
-
-
+    ZipOpener opener(this);
     QuaZipFile titleFile(&m_zip);
 
     if(m_zip.setCurrentFile("titles.xml")) {
@@ -80,6 +78,7 @@ QStandardItemModel *RichBookReader::indexModel()
     QDomElement element = root.firstChildElement();
 
     m_indexModel = new QStandardItemModel();
+    m_pageTitles.clear();
 
     while(!element.isNull()) {
         readItem(element, m_indexModel->invisibleRootItem());
