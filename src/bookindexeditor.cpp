@@ -84,7 +84,6 @@ void BookIndexEditor::writeItem(QStandardItem *item, QXmlStreamWriter *writer)
 
 bool BookIndexEditor::save(QString path)
 {
-    qDebug() << "Save title:" << path;
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
         qWarning("Can't open file %s for writing", qPrintable(path));

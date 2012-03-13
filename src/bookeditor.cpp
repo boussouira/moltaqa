@@ -26,6 +26,8 @@ BookEditor::~BookEditor()
 {
     if(m_removeReader && m_bookReader)
         delete m_bookReader;
+
+    removeTemp();
 }
 
 bool BookEditor::open(int bookID)
@@ -74,8 +76,10 @@ void BookEditor::setBookReader(RichBookReader *reader)
     m_bookReader = reader;
     m_book = reader->bookInfo();
 
-    if(m_book->bookID != m_lastBookID)
+    if(m_book->bookID != m_lastBookID) {
+        removeTemp();
         m_bookTmpDir.clear();
+    }
 
     m_removeReader = false;
 }
@@ -205,7 +209,8 @@ bool BookEditor::save()
 
 void BookEditor::removeTemp()
 {
-    Utils::removeDir(m_bookTmpDir);
+    if(!m_bookTmpDir.isEmpty() && QFile::exists(m_bookTmpDir))
+        Utils::removeDir(m_bookTmpDir);
 }
 
 bool BookEditor::saveBookPages(QList<BookPage*> pages)
