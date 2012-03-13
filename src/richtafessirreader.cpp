@@ -22,8 +22,6 @@ RichTafessirReader::RichTafessirReader(QObject *parent, bool showQuran) : RichBo
 
 RichTafessirReader::~RichTafessirReader()
 {
-    if(m_quranZip.isOpen())
-        m_quranZip.close();
 }
 
 void RichTafessirReader::connected()
@@ -110,23 +108,24 @@ void RichTafessirReader::openQuranBook()
         throw BookException(tr("لم يتم العثور على ملف الكتاب"), bookInfo()->bookPath);
     }
 
-    m_quranZip.setZipName(m_quranInfo->bookPath);
+    QuaZip quranZip;
+    quranZip.setZipName(m_quranInfo->bookPath);
 
-    if(!m_quranZip.open(QuaZip::mdUnzip)) {
-        throw BookException(tr("لا يمكن فتح ملف الكتاب"), m_quranInfo->bookPath, m_quranZip.getZipError());
+    if(!quranZip.open(QuaZip::mdUnzip)) {
+        throw BookException(tr("لا يمكن فتح ملف الكتاب"), m_quranInfo->bookPath, quranZip.getZipError());
     }
 
-    m_quranPages.setZip(&m_quranZip);
+    QuaZipFile quranPages;
+    quranPages.setZip(&quranZip);
 
-    if(m_quranZip.setCurrentFile("pages.xml")) {
-        if(!m_quranPages.open(QIODevice::ReadOnly)) {
-            qWarning("getBookInfo: open error %d", m_quranPages.getZipError());
+    if(quranZip.setCurrentFile("pages.xml")) {
+        if(!quranPages.open(QIODevice::ReadOnly)) {
+            qWarning("getBookInfo: open error %d", quranPages.getZipError());
             return;
         }
     }
 
-    m_qurankDoc = Utils::getDomDocument(&m_quranPages);
-    m_quranRootElement = m_qurankDoc.documentElement();
+    m_quranDom.load(&quranPages);
 }
 
 void RichTafessirReader::readQuranText(int sora, int aya, int count)
@@ -136,7 +135,7 @@ void RichTafessirReader::readQuranText(int sora, int aya, int count)
     QString soraStr = QString::number(sora);
     QString ayaStr = QString::number(aya);
 
-    QDomElement e = m_quranRootElement.firstChildElement();
+    QDomElement e = m_quranDom.rootElement().firstChildElement();
     while(!e.isNull()) {
         // find the aya
         if(e.attribute("aya")==ayaStr && e.attribute("sora") == soraStr) {

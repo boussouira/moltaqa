@@ -22,11 +22,8 @@ protected:
 
 protected:
     TafessirTextFormat *m_formatter;
-    QuaZip m_quranZip;
     LibraryBook *m_quranInfo;
-    QuaZipFile m_quranPages;
-    QDomDocument m_qurankDoc;
-    QDomElement m_quranRootElement;
+    XmlDomHelper m_quranDom;
     bool m_showQuran;
 };
 
