@@ -37,8 +37,6 @@ IndexTracker::IndexTracker(QObject *parent) :
 
 IndexTracker::~IndexTracker()
 {
-    flush();
-
     qDeleteAll(m_tasks);
     m_tasks.clear();
 
@@ -57,8 +55,8 @@ void IndexTracker::open()
     if(!QFile::exists(m_trackerFile))
         throw BookException(tr("لم يتم العثور على الملف:"), m_trackerFile);
 
-    m_doc = Utils::getDomDocument(m_trackerFile);
-    m_rootElement = m_doc.documentElement();
+    m_dom.setFilePath(m_trackerFile);
+    m_dom.load();
 }
 
 void IndexTracker::loadTask()
@@ -66,7 +64,7 @@ void IndexTracker::loadTask()
     qDeleteAll(m_tasks);
     m_tasks.clear();
 
-    QDomElement taskNode = m_rootElement.firstChildElement("task");
+    QDomElement taskNode = m_dom.rootElement().firstChildElement("task");
 
     while(!taskNode.isNull()) {
         IndexTask *task = new IndexTask();
@@ -82,11 +80,12 @@ void IndexTracker::addTask(IndexTask *task)
 {
     if(!contains(task)) {
 
-        QDomElement newTask = m_doc.createElement("task");
+        QDomElement newTask = m_dom.domDocument().createElement("task");
 
         newTask.setAttribute("book", task->bookID);
         newTask.setAttribute("type", IndexTask::taskToString(task->task));
-        m_rootElement.appendChild(newTask);
+        m_dom.rootElement().appendChild(newTask);
+        m_dom.setNeedSave(true);
 
         m_tasks.append(task);
 
@@ -124,13 +123,14 @@ void IndexTracker::addTask(const QList<int> &books, IndexTask::Task task)
 void IndexTracker::removeTask(IndexTask *task)
 {
     if(contains(task)) {
-        QDomNodeList nodesList = m_rootElement.elementsByTagName("task");
+        QDomNodeList nodesList = m_dom.rootElement().elementsByTagName("task");
 
         for (int i=0; i<nodesList.count(); i++) {
             QDomElement indexElement = nodesList.at(i).toElement();
 
             if(indexElement == task) {
-                m_rootElement.removeChild(indexElement);
+                m_dom.rootElement().removeChild(indexElement);
+                m_dom.setNeedSave(true);
                 deleteTask(task);
 
                 LibraryBookManager::instance()->setBookIndexStat(task->bookID, LibraryBook::Indexed);
@@ -152,18 +152,9 @@ bool IndexTracker::contains(IndexTask *task)
     return false;
 }
 
-void IndexTracker::flush()
+void IndexTracker::save()
 {
-    QFile file(m_trackerFile);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-        qWarning() << "Can not open file:" << m_trackerFile;
-        return;
-    }
-
-    QTextStream out(&file);
-    out.setCodec("utf-8");
-
-    out << m_doc.toString(4);
+    m_dom.save();
 }
 
 void IndexTracker::findTasks()
@@ -183,6 +174,7 @@ int IndexTracker::taskCount()
 
 IndexTaskIter* IndexTracker::getTaskIter()
 {
+    m_dom.reload();
     loadTask();
 
     IndexTaskIter *iter = new IndexTaskIter();

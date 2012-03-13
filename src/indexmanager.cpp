@@ -137,7 +137,7 @@ void IndexManager::threadDoneIndexing()
         qDeleteAll(m_threads);
         m_threads.clear();
 
-        m_indexTracker->flush();
+        m_indexTracker->save();
 
         emit done();
     }

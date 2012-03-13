@@ -7,6 +7,7 @@
 #include "libraryinfo.h"
 #include "librarymanager.h"
 #include "indextaskiter.h"
+#include <xmldomhelper.h>
 
 class IndexTracker : public QObject, public QRunnable
 {
@@ -26,7 +27,7 @@ public:
     IndexTaskIter* getTaskIter();
 
     void loadTask();
-    void flush();
+    void save();
 
     void findTasks();
     void run();
@@ -42,10 +43,9 @@ signals:
 protected:
     LibraryInfo *m_libraryInfo;
     LibraryManager *m_libraryManager;
-    QDomDocument m_doc;
-    QDomElement m_rootElement;
     QList<IndexTask*> m_tasks;
     QString m_trackerFile;
+    XmlDomHelper m_dom;
 };
 
 #endif // INDEXTRACKER_H

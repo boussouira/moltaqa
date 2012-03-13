@@ -238,7 +238,7 @@ void ImportDialog::doneImporting()
     }
 
     IndexTracker::instance()->addTask(m_booksList.keys(), IndexTask::Add);
-    IndexTracker::instance()->flush();
+    IndexTracker::instance()->save();
 
     setEnabled(true);
     setModal(false);
