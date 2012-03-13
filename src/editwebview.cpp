@@ -36,7 +36,10 @@ void EditWebView::setupEditor(const QString &text)
                 "contentsCss: '%3', "
                 "on: {"
                 "instanceReady : function()"
-                "{ editor.execCommand('maximize'); }}});").arg(style.toString()));
+                "{ "
+                "this.dataProcessor.writer.lineBreakChars = ''; "
+                "this.dataProcessor.writer.indentationChars = ''; "
+                "this.execCommand('maximize'); }}});").arg(style.toString()));
 
     helper.endAllTags();
 
@@ -46,12 +49,12 @@ void EditWebView::setupEditor(const QString &text)
 void EditWebView::setEditorText(QString text)
 {
     execJS(QString("setEditorText('%1')").arg(text
-                                              .replace('\'', "\\\'")
                                               .replace('\\', "\\\\")
+                                              .replace('\'', "\\\'")
                                               .replace(QRegExp("[\n\r]+"), "'+'")));
 }
 
 QString EditWebView::editorText()
 {
-    return execJS("getEditorText()").toString().remove(QRegExp("[\n\r]+"));
+    return execJS("getEditorText()").toString();
 }
