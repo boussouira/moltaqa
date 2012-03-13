@@ -50,8 +50,9 @@ void EditWebView::setEditorText(QString text)
 {
     execJS(QString("setEditorText('%1')").arg(text
                                               .replace('\\', "\\\\")
-                                              .replace('\'', "\\\'")
-                                              .replace(QRegExp("[\n\r]+"), "'+'")));
+                                              .replace('\'', "\\'")
+                                              .replace('\n', "\\n")
+                                              .replace('\r', "\\r")));
 }
 
 QString EditWebView::editorText()
