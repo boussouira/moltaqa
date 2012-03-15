@@ -190,13 +190,15 @@ void ResultWidget::openResult(int resultID)
 {
     SearchResult *result = m_searcher->getResult(resultID);
     BookWidget *bookWidget = m_readerview->openBook(result->book->bookID,
-                                                    result->page->pageID,
-                                                    m_searcher->getSearchQuery());
+                                                        result->page->pageID,
+                                                        m_searcher->getSearchQuery());
 
-    ensureReaderVisible();
+    if(bookWidget) {
+        ensureReaderVisible();
 
-    if(result->book->isQuran())
-        bookWidget->openSora(result->page->sora, result->page->aya);
+        if(result->book->isQuran())
+            bookWidget->openSora(result->page->sora, result->page->aya);
+    }
 }
 
 void ResultWidget::goToPage(int page)

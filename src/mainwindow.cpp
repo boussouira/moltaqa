@@ -238,21 +238,15 @@ void MainWindow::settingDialog()
 
 void MainWindow::openBook(int pBookID)
 {
-    try {
-        m_bookView->openBook(pBookID);
+    if(!m_bookView->openBook(pBookID))
+        return;
 
-        if(m_bookView->isHidden())
-            m_bookView->show();
 
-        m_bookView->setSelectable(true);
-        m_viewManager->setCurrentView(m_bookView);
+    if(m_bookView->isHidden())
+        m_bookView->show();
 
-    } catch(BookException &e) {
-        QMessageBox::information(this,
-                                 App::name(),
-                                 tr("حدث خطأ أثناء فتح الكتاب:"
-                                    "<br>%1").arg(e.what()));
-    }
+    m_bookView->setSelectable(true);
+    m_viewManager->setCurrentView(m_bookView);
 }
 
 void MainWindow::showBooksList()

@@ -199,46 +199,61 @@ BookPage *BooksViewer::currentPage()
 
 BookWidget *BooksViewer::openBook(int bookID, int pageID, lucene::search::Query *query)
 {
-    int tabIndex = -1;
-    LibraryBook *bookInfo = LibraryBookManager::instance()->getLibraryBook(bookID);
-
-    if(!bookInfo || !bookInfo->exists())
-        throw BookException(tr("لم يتم العثور على ملف"), bookInfo->bookPath);
-
-    RichBookReader *bookReader;
-    if(bookInfo->isQuran())
-        bookReader = new RichQuranReader();
-    else if(bookInfo->isNormal())
-        bookReader = new RichSimpleBookReader();
-    else if(bookInfo->isTafessir())
-        bookReader = new RichTafessirReader();
-    else
-        throw BookException(tr("لم يتم التعرف على نوع الكتاب"), QString("Book Type: %1").arg(bookInfo->bookPath));
-
-    bookReader->setBookInfo(bookInfo);
+    LibraryBook *bookInfo = 0;
+    RichBookReader *bookReader = 0;
+    BookWidget *bookWidget = 0;
 
     try {
+        bookInfo = LibraryBookManager::instance()->getLibraryBook(bookID);
+
+        if(!bookInfo)
+            throw BookException(tr("لم يتم العثور على الكتاب المطلوب"), tr("معرف الكتاب: %1").arg(bookID));
+
+        if(!bookInfo->exists())
+            throw BookException(tr("لم يتم العثور على ملف"), bookInfo->bookPath);
+
+        if(bookInfo->isQuran())
+            bookReader = new RichQuranReader();
+        else if(bookInfo->isNormal())
+            bookReader = new RichSimpleBookReader();
+        else if(bookInfo->isTafessir())
+            bookReader = new RichTafessirReader();
+        else
+            throw BookException(tr("لم يتم التعرف على نوع الكتاب"), QString("Book Type: %1").arg(bookInfo->bookPath));
+
+        bookReader->setBookInfo(bookInfo);
+
         bookReader->openBook();
-    } catch (BookException &) {
-        delete bookReader;
-        throw;
+
+        if(query && pageID != -1)
+            bookReader->highlightPage(pageID, query);
+
+        bookWidget = new BookWidget(bookReader, this);
+        m_viewManager->addBook(bookWidget);
+
+        if(pageID == -1)
+            bookWidget->firstPage();
+        else
+            bookWidget->openPage(pageID);
+
+        connect(bookWidget->indexWidget(), SIGNAL(openPage(int)), SLOT(updateActions()));
+
+        updateActions();
+        activateWindow();
+
+    } catch (BookException &e) {
+        QMessageBox::critical(this,
+                              tr("فتح كتاب"),
+                              e.what());
+
+        if(bookReader)
+            delete bookReader;
+
+        if(bookWidget) {
+            delete bookWidget;
+            bookWidget = 0;
+        }
     }
-
-    if(query && pageID != -1)
-        bookReader->highlightPage(pageID, query);
-
-    BookWidget *bookWidget = new BookWidget(bookReader, this);
-    tabIndex = m_viewManager->addBook(bookWidget);
-
-    if(pageID == -1)
-        bookWidget->firstPage();
-    else
-        bookWidget->openPage(pageID);
-
-    connect(bookWidget->indexWidget(), SIGNAL(openPage(int)), SLOT(updateActions()));
-
-    updateActions();
-    activateWindow();
 
     return bookWidget;
 }
