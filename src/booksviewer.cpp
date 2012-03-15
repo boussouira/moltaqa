@@ -260,33 +260,41 @@ BookWidget *BooksViewer::openBook(int bookID, int pageID, lucene::search::Query 
 
 void BooksViewer::openTafessir()
 {
-    int tafessirID = m_comboTafasir->itemData(m_comboTafasir->currentIndex(), ItemRole::idRole).toInt();
-
-    LibraryBook *bookInfo = LibraryBookManager::instance()->getLibraryBook(tafessirID);
-    if(!bookInfo || !bookInfo->isTafessir() || !m_viewManager->activeBook()->isQuran())
-        return;
-
-    RichTafessirReader *bookdb = new RichTafessirReader();
-    bookdb->setBookInfo(bookInfo);
+    BookWidget *bookWidget = 0;
+    RichTafessirReader *bookdb = 0;
 
     try {
+        int tafessirID = m_comboTafasir->itemData(m_comboTafasir->currentIndex(), ItemRole::idRole).toInt();
+
+        LibraryBook *bookInfo = LibraryBookManager::instance()->getLibraryBook(tafessirID);
+        if(!bookInfo || !bookInfo->isTafessir() || !m_viewManager->activeBook()->isQuran())
+            return;
+
+        bookdb = new RichTafessirReader();
+        bookdb->setBookInfo(bookInfo);
+
         bookdb->openBook();
+
+        int sora = m_viewManager->activeBookReader()->page()->sora;
+        int aya = m_viewManager->activeBookReader()->page()->aya;
+
+        bookWidget = new BookWidget(bookdb, this);
+        m_viewManager->addBook(bookWidget);
+
+        bookWidget->openSora(sora, aya);
+
+        updateActions();
     } catch (BookException &e) {
-        delete bookdb;
+        if(bookdb)
+            delete bookdb;
+
+        if(bookWidget)
+            delete bookWidget;
+
         QMessageBox::warning(this,
                              tr("فتح التفسير"),
                              e.what());
     }
-
-    int sora = m_viewManager->activeBookReader()->page()->sora;
-    int aya = m_viewManager->activeBookReader()->page()->aya;
-
-    BookWidget *bookWidget = new BookWidget(bookdb, this);
-    m_viewManager->addBook(bookWidget);
-
-    bookWidget->openSora(sora, aya);
-
-    updateActions();
 }
 
 void BooksViewer::updateActions()

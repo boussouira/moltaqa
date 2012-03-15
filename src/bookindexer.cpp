@@ -45,6 +45,9 @@ void BookIndexer::startIndexing()
         try {
             task->book = LibraryBookManager::instance()->getLibraryBook(task->bookID);
 
+            if(!task->book)
+                throw BookException(QString("No book with id %1").arg(task->bookID));
+
             if(task->book) {
                 switch (task->task) {
                 case IndexTask::Add:
@@ -97,7 +100,6 @@ void BookIndexer::deleteBook(IndexTask *task)
     try {
         Term *term = new Term(BOOK_ID_FIELD, Utils::intToWChar(task->bookID));
         m_writer->deleteDocuments(term);
-        //_CLDECDELETE(term);
     }
     catch(CLuceneError &err) {
         qCritical("removeBook: CLucene Error: %s", err.what());
