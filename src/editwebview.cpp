@@ -53,9 +53,20 @@ void EditWebView::setEditorText(QString text)
                                               .replace('\'', "\\'")
                                               .replace('\n', "\\n")
                                               .replace('\r', "\\r")));
+    resetUndo();
 }
 
 QString EditWebView::editorText()
 {
     return execJS("getEditorText()").toString();
+}
+
+bool EditWebView::pageModified()
+{
+    return execJS("editor.getCommand('undo').state==2").toBool();
+}
+
+void EditWebView::resetUndo()
+{
+    execJS("editor.resetUndo()");
 }

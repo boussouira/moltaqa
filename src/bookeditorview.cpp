@@ -22,6 +22,7 @@
 #include <qmessagebox.h>
 #include <qprogressdialog.h>
 #include <qsplitter.h>
+#include <qtimer.h>
 
 BookEditorView::BookEditorView(QWidget *parent) :
     AbstarctView(parent),
@@ -68,7 +69,11 @@ void BookEditorView::setupView()
 
     ui->tabWidget->addTab(splitter, QString());
 
+    m_timer = new QTimer(this);
+    m_timer->setInterval(500);
+
     connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)), SLOT(closeTab(int)));
+    connect(m_timer, SIGNAL(timeout()), SLOT(checkPageModified()));
 }
 
 void BookEditorView::editBook(LibraryBook *book, int pageID)
@@ -108,6 +113,7 @@ void BookEditorView::editBook(LibraryBook *book, int pageID)
     ui->tabWidget->setTabToolTip(0, book->bookDisplayName);
 
     m_bookEditor->setBookReader(m_bookReader);
+    m_timer->start();
 
     emit showMe();
 }
@@ -151,6 +157,11 @@ void BookEditorView::updateActions()
 
     m_actionSave->setEnabled(!m_pages.isEmpty());
     m_actionCancel->setEnabled(!m_pages.isEmpty());
+
+    // If we have some saved pages then 'Save' action will be always enabled
+    // m_timer is no more needed
+    if(!m_pages.isEmpty())
+        m_timer->stop();
 }
 
 bool BookEditorView::pageEdited()
@@ -189,6 +200,7 @@ void BookEditorView::clearChanges()
     m_pages.clear();
 
     m_currentPage = 0;
+    m_timer->start();
 }
 
 bool BookEditorView::maySave(bool canCancel)
@@ -256,6 +268,13 @@ void BookEditorView::readerTextChange()
     updateActions();
 }
 
+void BookEditorView::checkPageModified()
+{
+    bool pageModified = m_webView->pageModified();
+    m_actionSave->setEnabled(!m_pages.isEmpty() || pageModified);
+    m_actionCancel->setEnabled(!m_pages.isEmpty() || pageModified);
+}
+
 void BookEditorView::save()
 {
     saveCurrentPage();
@@ -288,6 +307,11 @@ void BookEditorView::save()
             IndexTracker::instance()->addTask(book->bookID, IndexTask::Update);
 
         dialog.setValue(dialog.value()+1);
+
+        m_webView->resetUndo();
+        m_bookReader->goToPage(m_bookReader->page()->pageID);
+
+        m_timer->start();
     }
 
     updateActions();

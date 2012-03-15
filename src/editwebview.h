@@ -14,6 +14,8 @@ public:
     void setupEditor(const QString &text=QString());
     void setEditorText(QString text);
     QString editorText();
+    bool pageModified();
+    void resetUndo();
 };
 
 #endif // EDITWEBVIEW_H

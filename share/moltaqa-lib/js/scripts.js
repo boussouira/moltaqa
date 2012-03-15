@@ -139,7 +139,6 @@ function indexReading()
 function setEditorText(text)
 {
     editor.setData(text);
-    editor.resetUndo();
 }
 
 function getEditorText()
