@@ -106,8 +106,9 @@ function pageTextChanged()
     webView.pageTextChanged();
 
     toggleQuran();
-    hideShorooh();
     indexReading();
+    bookLink();
+    setupToolTip();
 }
 
 function setPageText(text, page, part)
@@ -172,11 +173,6 @@ function toggleShorooh()
     });
 }
 
-function hideShorooh()
-{
-    //$('#shorooh .shoroohBooks').hide();
-}
-
 function setShorooh(shorooh)
 {
     infoSpin = $('#shorooh span.info');
@@ -208,4 +204,24 @@ function setShorooh(shorooh)
     }
 
     infoSpin.text(infoSpin.text().replace(new RegExp('([0-9]+)'), shoroohCount));
+}
+
+function bookLink()
+{
+    $('a[book][page]').click(function() {
+        booksViewer.openBook($(this).attr('book'),
+                             $(this).attr('page'));
+        return false;
+    });
+}
+
+function setupToolTip() {
+    $('abbr').tooltip({
+        track: true,
+        showURL: false,
+        fixPNG: true,
+        opacity: 0.95,
+        left: 0,
+        positionLeft: true
+    });
 }

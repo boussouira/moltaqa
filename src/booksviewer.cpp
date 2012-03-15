@@ -98,6 +98,7 @@ void BooksViewer::createMenus()
                                  this);
     m_actionGotToPage = new QAction(QIcon::fromTheme("go-jump"), tr("انتقل الى..."),
                                   this);
+    m_actionCopyPageLink = new QAction(tr("نسخ معرف الصفحة"), this);
 
     m_actionNextAYA->setShortcut(QKeySequence("J"));
     m_actionPrevAYA->setShortcut(QKeySequence("K"));
@@ -134,8 +135,9 @@ void BooksViewer::createMenus()
     m_navActions << m_actionPrevPage;
     m_navActions << m_actionNextPage;
     m_navActions << m_actionLastPage;
-    m_navActions << actionSeparator(this);
     m_navActions << m_actionGotToPage;
+    m_navActions << actionSeparator(this);
+    m_navActions << m_actionCopyPageLink;
 
     m_toolBars << m_toolBarGeneral;
     m_toolBars << m_toolBarNavigation;
@@ -152,6 +154,7 @@ void BooksViewer::createMenus()
     connect(m_actionFirstPage, SIGNAL(triggered()), m_viewManager, SLOT(firstPage()));
     connect(m_actionLastPage, SIGNAL(triggered()), m_viewManager, SLOT(lastPage()));
     connect(m_actionGotToPage, SIGNAL(triggered()), m_viewManager, SLOT(goToPage()));
+    connect(m_actionCopyPageLink, SIGNAL(triggered()), m_viewManager, SLOT(copyPageLink()));
 
     // Generale actions
     connect(m_actionIndexDock, SIGNAL(triggered()), SLOT(showIndexWidget()));

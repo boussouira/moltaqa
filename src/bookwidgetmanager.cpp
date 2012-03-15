@@ -21,6 +21,9 @@
 #include <qboxlayout.h>
 #include <qdebug.h>
 #include <qmessagebox.h>
+#include <qapplication.h>
+#include <qclipboard.h>
+#include <qstatusbar.h>
 
 BookWidgetManager::BookWidgetManager(QWidget *parent) :
     QWidget(parent)
@@ -287,5 +290,19 @@ void BookWidgetManager::goToPage()
             activeBookWidget()->openHaddit(dialog.selectedHaddit());
         else
             qDebug("What to do?");
+    }
+}
+
+void BookWidgetManager::copyPageLink()
+{
+    AbstractBookReader *reader = activeBookReader();
+    if(reader) {
+        QClipboard *clipboard = QApplication::clipboard();
+        clipboard->setText(QString("%1:%2")
+                           .arg(reader->bookInfo()->bookID)
+                           .arg(reader->page()->pageID));
+
+        MW->statusBar()->showMessage(tr("تم نسخ معرف الصفحة"),
+                                     1000);
     }
 }

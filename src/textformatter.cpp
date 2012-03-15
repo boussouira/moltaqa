@@ -28,10 +28,6 @@ void TextFormatter::laodSettings()
 
     QString style = styleDir.filePath("default.css");
     m_styleFile = QUrl::fromLocalFile(style).toString();
-
-    QDir jsDir(App::jsDir());
-    m_jqueryFile = QUrl::fromLocalFile(jsDir.filePath("jquery.js")).toString();
-    m_scriptFile = QUrl::fromLocalFile(jsDir.filePath("scripts.js")).toString();
 }
 
 QString TextFormatter::getText()
@@ -104,8 +100,10 @@ QString TextFormatter::getHtmlView(QString text)
 
     helper.endDivTag(); // div#m_cssID
 
-    helper.addJS(m_jqueryFile);
-    helper.addJS(m_scriptFile);
+    QDir jsDir(App::jsDir());
+    helper.addJS(QUrl::fromLocalFile(jsDir.filePath("jquery.js")).toString());
+    helper.addJS(QUrl::fromLocalFile(jsDir.filePath("jquery.tooltip.js")).toString());
+    helper.addJS(QUrl::fromLocalFile(jsDir.filePath("scripts.js")).toString());
 
     helper.addJSCode("pageTextChanged();");
 

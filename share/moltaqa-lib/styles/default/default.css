@@ -460,3 +460,27 @@ div.info {
     border-color:#999;
     background:#fff;
 }
+
+abbr {
+    border-bottom: 1px dotted silver;
+    color: maroon;
+    cursor: help;
+}
+
+#tooltip {
+    background-color: #D3FFD6;
+    border: 1px solid #8BD599;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 0 5px 1px #7DCC89;
+    font-size: 18px;
+    max-width: 560px;
+    padding: 3px 5px;
+    position: absolute;
+    word-wrap: normal;
+    z-index: 3000;
+}
+
+#tooltip h3 {
+    margin: 0;
+    padding: 2px;
+}

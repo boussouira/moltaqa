@@ -61,6 +61,7 @@ private:
     QAction *m_actionLastPage;
     QAction *m_actionGotToPage;
     QAction *m_openSelectedTafsir;
+    QAction *m_actionCopyPageLink;
     QToolBar *m_toolBarGeneral;
     QToolBar *m_toolBarNavigation;
     QToolBar *m_toolBarTafesir;
