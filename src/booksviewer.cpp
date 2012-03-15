@@ -289,33 +289,6 @@ void BooksViewer::openTafessir()
     updateActions();
 }
 
-void BooksViewer::openShareeh()
-{
-    LibraryBook *info = m_viewManager->activeBook();
-
-    if(info->shorooh.isEmpty())
-        return;
-
-    QMenu menu(this);
-
-    foreach(BookShorooh shareeh, info->shorooh) {
-        QAction *act = new QAction(shareeh.bookName, &menu);
-        act->setData(QString("%1;%2").arg(shareeh.bookID).arg(shareeh.pageID));
-
-        menu.addAction(act);
-    }
-
-    QAction *ret = menu.exec(QCursor::pos());
-
-    if(ret) {
-        QStringList retList = ret->data().toString().split(";", QString::SkipEmptyParts);
-        int bookID = retList.first().toInt();
-        int pageID = retList.last().toInt();
-
-        openBook(bookID, pageID);
-    }
-}
-
 void BooksViewer::updateActions()
 {
     if(m_viewManager->activeBookWidget()) {

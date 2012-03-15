@@ -34,7 +34,6 @@ public slots:
     void showIndexWidget();
     void searchInBook();
     void openTafessir();
-    void openShareeh();
     void tabChanged(int newIndex);
     void loadTafessirList();
 
