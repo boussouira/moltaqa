@@ -22,7 +22,7 @@ public:
 
     void setStopScroll(bool stopScroll);
 
-    QVariant execJS(QString js);
+    QVariant execJS(const QString &js);
     void addObject(const QString &name, QObject *object);
     QString toHtml();
 

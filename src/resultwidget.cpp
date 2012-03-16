@@ -252,7 +252,7 @@ void ResultWidget::fetechFinnished()
 void ResultWidget::gotResult(SearchResult *result)
 {
     result->generateHTML();
-    m_view->execJS(QString("addResult('%1')").arg(result->toHtml()));
+    m_view->execJS(QString("addResult('%1')").arg(HtmlHelper::jsEscape(result->toHtml())));
 
     ui->progressBar->setValue(ui->progressBar->value()+1);
 }
@@ -277,8 +277,8 @@ void ResultWidget::gotException(QString what, int id)
     }
 
     m_view->execJS(QString("showError('%1', '%2');")
-                   .arg(errorTitle.replace('\'', "\\'"))
-                   .arg(errorDesc.replace('\'', "\\'")));
+                   .arg(HtmlHelper::jsEscape(errorTitle))
+                   .arg(HtmlHelper::jsEscape(errorDesc)));
 
     showProgressBar(false);
 }

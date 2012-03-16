@@ -108,7 +108,7 @@ void WebView::setStopScroll(bool stopScroll)
     m_stopScrolling = stopScroll;
 }
 
-QVariant WebView::execJS(QString js)
+QVariant WebView::execJS(const QString &js)
 {
     return m_frame->evaluateJavaScript(js);
 }

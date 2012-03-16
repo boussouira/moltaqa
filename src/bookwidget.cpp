@@ -227,7 +227,7 @@ void BookWidget::readerTextChanged()
 {
     if(m_viewInitialized) {
         m_view->execJS(QString("setPageText('%1', %2, %3)")
-                       .arg(m_db->page()->text)
+                       .arg(HtmlHelper::jsEscape(m_db->page()->text))
                        .arg(m_db->page()->page)
                        .arg(m_db->page()->part));
     } else {
@@ -252,7 +252,7 @@ void BookWidget::readerTextChanged()
                 continue;
 
             s += "{";
-            s += QString("'bookName' : '%1', ").arg(book->bookDisplayName);
+            s += QString("'bookName' : '%1', ").arg(HtmlHelper::jsEscape(book->bookDisplayName));
             s += QString("'bookID' : '%1', ").arg(shareeh.bookID);
             s += QString("'pageID' : '%1'").arg(shareeh.pageID);
             s += "},";
@@ -281,7 +281,7 @@ void BookWidget::showIndex()
 
     helper.endHtmlTag();
 
-    m_view->execJS(QString("setPageText('%1', '', '')").arg(helper.html()));
+    m_view->execJS(QString("setPageText('%1', '', '')").arg(HtmlHelper::jsEscape(helper.html())));
 }
 
 void BookWidget::showIndex(int tid)
@@ -307,7 +307,7 @@ void BookWidget::showIndex(int tid)
 
         m_db->page()->titleID = tid;
 
-        m_view->execJS(QString("setPageText('%1', '', '')").arg(helper.html()));
+        m_view->execJS(QString("setPageText('%1', '', '')").arg(HtmlHelper::jsEscape(helper.html())));
         m_indexWidget->selectTitle(tid);
     } else {
         m_db->goToPage(tid);

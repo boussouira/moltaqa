@@ -47,6 +47,8 @@ public:
     void addJS(QString jsFile);
     void addJSCode(QString jsCode);
 
+    static QString jsEscape(QString text);
+
 protected:
     void addSelector(QString selector);
     void addExtraAttr(QString attr);

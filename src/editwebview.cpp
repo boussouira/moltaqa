@@ -48,11 +48,7 @@ void EditWebView::setupEditor(const QString &text)
 
 void EditWebView::setEditorText(QString text)
 {
-    execJS(QString("setEditorText('%1')").arg(text
-                                              .replace('\\', "\\\\")
-                                              .replace('\'', "\\'")
-                                              .replace('\n', "\\n")
-                                              .replace('\r', "\\r")));
+    execJS(QString("setEditorText('%1')").arg(HtmlHelper::jsEscape(text)));
     resetUndo();
 }
 

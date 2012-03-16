@@ -165,6 +165,16 @@ void HtmlHelper::addJSCode(QString jsCode)
     m_html.append("</script>");
 }
 
+QString HtmlHelper::jsEscape(QString text)
+{
+    return text.replace('\\', "\\\\")
+            .replace('"', "\\\"")
+            .replace('\'', "\\'")
+            .replace('\t', "\\t")
+            .replace('\n', "\\n")
+            .replace('\r', "\\r");
+}
+
 void HtmlHelper::addSelector(QString selector)
 {
     if(selector.isEmpty())
