@@ -484,3 +484,8 @@ abbr {
     margin: 0;
     padding: 2px;
 }
+
+a[book][page] {
+    background: url("qrc:/images/external.png") no-repeat scroll left top transparent;
+    padding-left: 12px;
+}

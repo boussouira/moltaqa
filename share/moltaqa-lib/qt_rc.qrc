@@ -32,5 +32,6 @@
         <file>images/go-jump.png</file>
         <file>images/insert-link.png</file>
         <file>images/add2.png</file>
+        <file>images/external.png</file>
     </qresource>
 </RCC>
