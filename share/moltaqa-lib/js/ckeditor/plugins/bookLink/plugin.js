@@ -20,6 +20,14 @@ CKEDITOR.plugins.add( 'bookLink',
                                                      icon: iconPath
                                                  });
 
+                             editor.ui.addButton( 'RemoveBookLink',
+                                                 {
+                                                     label: 'حذف رابط الى كتاب',
+                                                     command: 'unlink',
+                                                     icon: this.path + 'images/icon2.png'
+                                                 } );
+
+
                              // Add a new dialog window definition containing all UI elements and listeners.
                              CKEDITOR.dialog.add( 'bookLinkDialog', function( editor )
                              {
@@ -127,5 +135,7 @@ CKEDITOR.plugins.add( 'bookLink',
                                      },
                                  };
                              } );
-                         }
+                         },
+
+                         requires : ['link']
                      } );

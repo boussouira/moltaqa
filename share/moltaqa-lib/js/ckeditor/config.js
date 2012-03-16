@@ -23,7 +23,7 @@ CKEDITOR.editorConfig = function( config )
                 { name: 'styles', items : [ 'Styles','Format','Font','FontSize' ] },
                 { name: 'colors', items : [ 'TextColor','BGColor' ] },
                 '/',
-                {name : 'Special', items: ['Abbr', 'BookLink']},
+                {name : 'Special', items: ['Abbr', 'RemoveAbbr', '-', 'BookLink', 'RemoveBookLink']},
             ];
 
     config.language = 'ar';

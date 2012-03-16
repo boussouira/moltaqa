@@ -7,6 +7,7 @@ CKEDITOR.plugins.add( 'abbr',
                              var iconPath = this.path + 'images/icon.png';
 
                              editor.addCommand( 'abbrDialog',new CKEDITOR.dialogCommand( 'abbrDialog' ) );
+                             editor.addCommand( 'removeAbbr', new CKEDITOR.removeAbbr() );
 
                              editor.ui.addButton( 'Abbr',
                                                  {
@@ -14,6 +15,28 @@ CKEDITOR.plugins.add( 'abbr',
                                                      command: 'abbrDialog',
                                                      icon: iconPath
                                                  } );
+
+                             editor.ui.addButton( 'RemoveAbbr',
+                                                 {
+                                                     label: 'حذف شرح كلمة',
+                                                     command: 'removeAbbr',
+                                                     icon: this.path + 'images/icon2.png'
+                                                 } );
+
+                             editor.on( 'selectionChange', function( evt )
+                             {
+                                 if ( editor.readOnly )
+                                     return;
+
+                                 var command = editor.getCommand( 'removeAbbr' ),
+                                         element = evt.data.path.lastElement && evt.data.path.lastElement.getAscendant( 'abbr', true );
+                                 if ( element && element.getName() == 'abbr'
+                                         && element.getAttribute( 'title' )
+                                         && element.getChildCount() )
+                                     command.setState( CKEDITOR.TRISTATE_OFF );
+                                 else
+                                     command.setState( CKEDITOR.TRISTATE_DISABLED );
+                             } );
 
                              if ( editor.contextMenu )
                              {
@@ -138,3 +161,26 @@ CKEDITOR.plugins.add( 'abbr',
                              } );
                          }
                      } );
+
+CKEDITOR.removeAbbr = function(){};
+CKEDITOR.removeAbbr.prototype =
+        {
+    /** @ignore */
+    exec : function( editor )
+    {
+        var sel = editor.getSelection(),
+                bms = sel.createBookmarks(),
+                element = sel.getStartElement();
+        if ( element )
+            element = element.getAscendant( 'abbr', true );
+
+        if ( element && element.getName() == 'abbr' && !element.data( 'cke-realelement' ) )
+        {
+            element.remove( 1 );
+        }
+
+        sel.selectBookmarks( bms );
+    },
+
+    startDisabled : true
+};
