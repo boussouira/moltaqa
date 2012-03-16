@@ -19,6 +19,7 @@
 #include <qfile.h>
 #include <qplaintextedit.h>
 #include <qtreeview.h>
+#include <qaction.h>
 
 BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_db(db)
 {
@@ -50,6 +51,8 @@ BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_
     connect(m_db, SIGNAL(textChanged()), SLOT(readerTextChanged()));
     connect(m_db, SIGNAL(textChanged()), SIGNAL(textChanged()));
     connect(m_db, SIGNAL(textChanged()), m_indexWidget, SLOT(displayBookInfo()));
+    connect(m_view->page()->action(QWebPage::Reload), SIGNAL(triggered()), SLOT(reloadCurrentPage()));
+
     setFocusPolicy(Qt::StrongFocus);
 
     m_view->installEventFilter(this);
@@ -263,6 +266,11 @@ void BookWidget::readerTextChanged()
         m_view->execJS(s);
 
     }
+}
+
+void BookWidget::reloadCurrentPage()
+{
+    m_db->goToPage(m_db->page()->pageID);
 }
 
 void BookWidget::showIndex()

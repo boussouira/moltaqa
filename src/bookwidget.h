@@ -43,6 +43,7 @@ public slots:
     void openHaddit(int hadditNum);
 
     void readerTextChanged();
+    void reloadCurrentPage();
 
     void showIndex();
     void showIndex(int tid);
