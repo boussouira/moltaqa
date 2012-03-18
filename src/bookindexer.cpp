@@ -2,6 +2,7 @@
 #include "bookexception.h"
 #include "clconstants.h"
 #include "mainwindow.h"
+#include "clheader.h"
 #include "clutils.h"
 #include "textsimplebookreader.h"
 #include "textquranreader.h"
@@ -146,8 +147,8 @@ void BookIndexer::indexQuran(IndexTask *task)
 
         doc.add( *_CLNEW Field(BOOK_ID_FIELD, bookID, storeAndNoToken));
         doc.add( *_CLNEW Field(PAGE_ID_FIELD, pageID, storeAndNoToken, false));
-        doc.add( *_CLNEW Field(PAGE_TEXT_FIELD, text, tokenAndNoStore, false));
         doc.add( *_CLNEW Field(QURAN_SORA_FIELD, soraNumber, tokenAndNoStore, false));
+        doc.add( *_CLNEW Field(PAGE_TEXT_FIELD, text, tokenAndNoStore, false));
 
         m_writer->addDocument(&doc);
         doc.clear();

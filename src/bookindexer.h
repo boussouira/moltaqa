@@ -2,9 +2,14 @@
 #define BOOKINDEXER_H
 
 #include <qthread.h>
-#include "clheader.h"
 #include "indextaskiter.h"
 #include "textbookreader.h"
+
+namespace lucene {
+    namespace index {
+        class IndexWriter;
+    }
+}
 
 class BookIndexer : public QThread
 {
@@ -12,7 +17,7 @@ class BookIndexer : public QThread
 public:
     BookIndexer(QObject *parent = 0);
 
-    void setWirter(IndexWriter* writer);
+    void setWirter(lucene::index::IndexWriter* writer);
     void setTaskIter(IndexTaskIter *iter);
     void stop();
     void run();
@@ -32,7 +37,7 @@ signals:
     void taskDone(IndexTask *task);
 
 protected:
-    IndexWriter *m_writer;
+    lucene::index::IndexWriter *m_writer;
     IndexTaskIter *m_trackerIter;
     bool m_stop;
 };
