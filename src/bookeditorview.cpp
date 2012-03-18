@@ -286,7 +286,7 @@ void BookEditorView::save()
         dialog.setMaximum(4);
         dialog.setMinimumDuration(0);
         dialog.setValue(0);
-        //dialog.show();
+        dialog.show();
 
         m_bookEditor->unZip();
         dialog.setValue(dialog.value()+1);
