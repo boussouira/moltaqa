@@ -28,10 +28,6 @@ protected:
     void deleteBook(IndexTask *task);
     void updateBook(IndexTask *task);
 
-    void indexQuran(IndexTask *task);
-    void indexSimpleBook(IndexTask *task);
-    void indexTaffesirBook(IndexTask *task);
-
 signals:
     void doneIndexing();
     void taskDone(IndexTask *task);

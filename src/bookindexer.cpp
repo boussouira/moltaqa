@@ -4,9 +4,8 @@
 #include "mainwindow.h"
 #include "clheader.h"
 #include "clutils.h"
-#include "textsimplebookreader.h"
-#include "textquranreader.h"
-#include "texttafessirreader.h"
+#include "simplebookindexer.h"
+#include "quranbookindexer.h"
 #include "librarybookmanager.h"
 #include <exception>
 
@@ -84,16 +83,19 @@ void BookIndexer::startIndexing()
 
 void BookIndexer::indexBook(IndexTask *task)
 {
-    if(task->book->isNormal()) {
-        indexSimpleBook(task);
-    } else if (task->book->isTafessir()) {
-        indexTaffesirBook(task);
-    } else if (task->book->isQuran()) {
-        indexQuran(task);
-    } else {
-        qWarning("indexBook: Unknow book type");
-        return;
-    }
+    TextBookIndexer *indexer = 0;
+    if(task->book->isNormal() || task->book->isTafessir())
+        indexer = new SimpleBookIndexer();
+    else if (task->book->isQuran())
+        indexer = new QuranBookIndexer();
+    else
+        throw BookException("Unknow book type", QString("Type: %1").arg(task->book->bookType));
+
+    indexer->setLibraryBook(task->book);
+    indexer->setIndexWriter(m_writer);
+
+    indexer->open();
+    indexer->start();
 }
 
 void BookIndexer::deleteBook(IndexTask *task)
@@ -117,130 +119,4 @@ void BookIndexer::updateBook(IndexTask *task)
 {
     deleteBook(task);
     indexBook(task);
-}
-
-void BookIndexer::indexQuran(IndexTask *task)
-{
-    TextQuranReader reader;
-
-    Document doc;
-    int tokenAndNoStore = Field::STORE_NO | Field::INDEX_TOKENIZED;
-    int storeAndNoToken = Field::STORE_YES | Field::INDEX_UNTOKENIZED;
-    wchar_t *bookID;
-    wchar_t *pageID;
-    wchar_t *soraNumber;
-    wchar_t *text = NULL;
-
-    reader.setBookInfo(task->book);
-    reader.openBook();
-
-    BookPage *page = reader.page();
-
-    bookID = Utils::intToWChar(task->bookID);
-
-    while (reader.hasNext()) {
-        reader.nextPage();
-
-        pageID = Utils::intToWChar(page->pageID);
-        text = Utils::QStringToWChar(page->text);
-        soraNumber = Utils::intToWChar(page->sora);
-
-        doc.add( *_CLNEW Field(BOOK_ID_FIELD, bookID, storeAndNoToken));
-        doc.add( *_CLNEW Field(PAGE_ID_FIELD, pageID, storeAndNoToken, false));
-        doc.add( *_CLNEW Field(QURAN_SORA_FIELD, soraNumber, tokenAndNoStore, false));
-        doc.add( *_CLNEW Field(PAGE_TEXT_FIELD, text, tokenAndNoStore, false));
-
-        m_writer->addDocument(&doc);
-        doc.clear();
-    }
-
-    free(bookID);
-}
-
-void BookIndexer::indexSimpleBook(IndexTask *task)
-{
-    TextSimpleBookReader reader;
-
-    Document doc;
-    int tokenAndNoStore = Field::STORE_NO | Field::INDEX_TOKENIZED;
-    int storeAndNoToken = Field::STORE_YES | Field::INDEX_UNTOKENIZED;
-    wchar_t *bookID;
-    wchar_t *pageID;
-    wchar_t *titleID;
-    wchar_t *text;
-    //wchar_t *title;
-
-    reader.setBookInfo(task->book);
-
-    reader.openBook();
-    reader.load();
-
-    BookPage *page = reader.page();
-
-    bookID = Utils::intToWChar(task->bookID);
-
-    while (reader.hasNext()) {
-        reader.nextPage();
-
-        if(page->text.isEmpty())
-            continue;
-
-        pageID = Utils::intToWChar(page->pageID);
-        text = Utils::QStringToWChar(page->text);
-        titleID = Utils::intToWChar(page->titleID);
-
-        doc.add( *_CLNEW Field(BOOK_ID_FIELD, bookID, storeAndNoToken));
-        doc.add( *_CLNEW Field(PAGE_ID_FIELD, pageID, storeAndNoToken, false));
-        doc.add( *_CLNEW Field(TITLE_ID_FIELD, titleID, storeAndNoToken, false));
-        doc.add( *_CLNEW Field(PAGE_TEXT_FIELD, text, tokenAndNoStore, false));
-
-        m_writer->addDocument(&doc);
-        doc.clear();
-    }
-
-    free(bookID);
-}
-
-void BookIndexer::indexTaffesirBook(IndexTask *task)
-{
-    TextTafessirReader reader;
-
-    Document doc;
-    int tokenAndNoStore = Field::STORE_NO | Field::INDEX_TOKENIZED;
-    int storeAndNoToken = Field::STORE_YES | Field::INDEX_UNTOKENIZED;
-    wchar_t *bookID;
-    wchar_t *pageID;
-    wchar_t *titleID;
-    wchar_t *text;
-    //wchar_t *title;
-
-    reader.setBookInfo(task->book);
-
-    reader.openBook();
-    reader.load();
-
-    BookPage *page = reader.page();
-
-    bookID = Utils::intToWChar(task->bookID);
-
-    while (reader.hasNext()) {
-        reader.nextPage();
-
-        if(page->text.isEmpty())
-            continue;
-
-        pageID = Utils::intToWChar(page->pageID);
-        text = Utils::QStringToWChar(page->text);
-        titleID = Utils::intToWChar(page->titleID);
-
-        doc.add( *_CLNEW Field(BOOK_ID_FIELD, bookID, storeAndNoToken));
-        doc.add( *_CLNEW Field(PAGE_ID_FIELD, pageID, storeAndNoToken, false));
-        doc.add( *_CLNEW Field(TITLE_ID_FIELD, titleID, storeAndNoToken, false));
-        doc.add( *_CLNEW Field(PAGE_TEXT_FIELD, text, tokenAndNoStore, false));
-
-        m_writer->addDocument(&doc);
-        doc.clear();
-    }
-
-    free(bookID);
 }
