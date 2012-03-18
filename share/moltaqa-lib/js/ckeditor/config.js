@@ -23,12 +23,12 @@ CKEDITOR.editorConfig = function( config )
                 { name: 'styles', items : [ 'Styles','Format','Font','FontSize' ] },
                 { name: 'colors', items : [ 'TextColor','BGColor' ] },
                 '/',
-                {name : 'Special', items: ['Abbr', 'RemoveAbbr', '-', 'BookLink', 'RemoveBookLink']},
+                {name : 'Special', items: ['Abbr', 'RemoveAbbr', '-', 'BookLink', 'RemoveBookLink', '-', 'Sanad', 'Mateen', 'Sheer']},
             ];
 
     config.language = 'ar';
     config.font_names = 'Lotus Linotype/Lotus Linotype;Traditional arabic/Traditional arabic;' + config.font_names;
 
-    config.extraPlugins = 'abbr,bookLink';
+    config.extraPlugins = 'abbr,bookLink,bookMeta';
     config.removePlugins = 'elementspath';
 };

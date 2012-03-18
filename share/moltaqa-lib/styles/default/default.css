@@ -489,3 +489,15 @@ a[book][page] {
     background: url("qrc:/images/external.png") no-repeat scroll left top transparent;
     padding-left: 12px;
 }
+
+sanad {
+    color: #000080;
+}
+
+mateen {
+    color: green;
+}
+
+sheer {
+    color: #273A9D;
+}
