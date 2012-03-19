@@ -16,6 +16,11 @@ private slots:
     void arCompare();
     void arContains();
     void arFuzzyContains();
+
+    void removeHtmlSpecialChars();
+    void htmlSpecialCharsEncode();
+    void removeHtmlTags();
+    void getTags();
 };
 
 #endif // UTILSTEST_H

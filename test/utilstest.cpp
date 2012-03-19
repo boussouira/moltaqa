@@ -1,5 +1,6 @@
 #include "utilstest.h"
 #include "utils.h"
+#include "stringutils.h"
 
 #define u(x) QString::fromUtf8(x)
 
@@ -87,6 +88,69 @@ void UtilsTest::arFuzzyContains()
     QVERIFY(Utils::arFuzzyContains(u("الله اكبر"), u("الله")));
     QVERIFY(Utils::arFuzzyContains(u("الله"), u("الله اكبر")));
     QVERIFY(Utils::arFuzzyContains(u("الله"), u("قُلْ هُوَ اللَّهُ أَحَدٌ")));
+}
+
+void UtilsTest::removeHtmlSpecialChars()
+{
+    QStringList origins;
+    QStringList excpected;
+
+    origins << "<p>Je suis &quot;ahmed&quot; j&#39;ai 15 &lt; age &gt; 18</p>"
+            << "&lt;a href=&#039;test&#039;&gt;Test&lt;/a&gt;";
+
+    excpected << "<p>Je suis  ahmed  j ai 15   age   18</p>"
+              << " a href= test  Test /a ";
+
+    for(int i=0; i<origins.size(); i++)
+        QCOMPARE(excpected[i], Utils::removeHtmlSpecialChars(origins[i]));
+}
+
+void UtilsTest::htmlSpecialCharsEncode()
+{
+    QStringList origins;
+    QStringList excpected;
+
+    origins << "<p>Je suis \"ahmed\" j'ai 15 < age > 18</p>"
+            << "<a href='test'>Test</a>";
+
+    excpected << "&lt;p&gt;Je suis &quot;ahmed&quot; j&#39;ai 15 &lt; age &gt; 18&lt;/p&gt;"
+              << "&lt;a href=&#39;test&#39;&gt;Test&lt;/a&gt;";
+
+    for(int i=0; i<origins.size(); i++)
+        QCOMPARE(excpected[i], Utils::htmlSpecialCharsEncode(origins[i]));
+}
+
+void UtilsTest::removeHtmlTags()
+{
+    QStringList origins;
+    QStringList excpected;
+
+    origins << "<p>Je suis \"kamal\" j'ai 15 < age > 18</p>"
+            << "<a href='test'>Test</a>"
+            << "<p>My name is <span style=\"color:red;\">kamal</span>from<img src\"pay.png\" /></p>"
+            << "<ul dir=\"ltr\"><li><sanad>saad</sanad></li><li>kamal</li><li>karim</li><li><mateen>ahmed</mateen></li></ul>";
+
+    excpected << "Je suis \"kamal\" j'ai 15 < age > 18"
+              << "Test"
+              << "My name is  kamal from"
+              << "saad   kamal  karim   ahmed";
+
+    for(int i=0; i<origins.size(); i++)
+        QCOMPARE(excpected[i], Utils::removeHtmlTags(origins[i]));
+}
+
+void UtilsTest::getTags()
+{
+    QStringList origins;
+    QStringList excpected;
+
+    origins << "Sime test<sanad>This is a test</sanad>, test an other tag:"
+              "<sanad>I mean <span>THIS</span> tag</sanad> if it work.";
+
+    excpected << "This is a test I mean  THIS  tag ";
+
+    for(int i=0; i<origins.size(); i++)
+        QCOMPARE(excpected[i], Utils::getTagsText(origins[i], "sanad"));
 }
 
 QTEST_MAIN(UtilsTest)
