@@ -6,6 +6,7 @@
 #include "textquranreader.h"
 #include "textsimplebookreader.h"
 #include "texttafessirreader.h"
+#include "stringutils.h"
 
 TextBookIndexer::TextBookIndexer() :
     m_writer(0),
@@ -43,7 +44,6 @@ void TextBookIndexer::start()
 {
     wchar_t *bookW;
     wchar_t *pageW;
-    wchar_t *textW;
 
     m_doc = new Document();
 
@@ -57,12 +57,11 @@ void TextBookIndexer::start()
             continue;
 
         pageW = Utils::intToWChar(page->pageID);
-        textW = Utils::QStringToWChar(page->text);
 
         m_doc->add( *_CLNEW Field(BOOK_ID_FIELD, bookW, m_storeAndNoToken));
         m_doc->add( *_CLNEW Field(PAGE_ID_FIELD, pageW, m_storeAndNoToken, false));
-        m_doc->add( *_CLNEW Field(PAGE_TEXT_FIELD, textW, m_tokenAndNoStore, false));
 
+        indexPageText(page);
         indexPage(page);
 
         m_writer->addDocument(m_doc);
@@ -70,4 +69,32 @@ void TextBookIndexer::start()
     }
 
     delete m_doc;
+}
+
+void TextBookIndexer::indexPageText(BookPage *page)
+{
+    QString pageText = Utils::removeHtmlSpecialChars(page->text);
+
+    wchar_t *fullText = Utils::QStringToWChar(Utils::removeHtmlTags(pageText));
+    m_doc->add( *_CLNEW Field(PAGE_TEXT_FIELD,
+                              fullText,
+                              m_tokenAndNoStore, false));
+
+    QString asanid = Utils::getTagsText(pageText, "sanad");
+    if(!asanid.isEmpty())
+        m_doc->add( *_CLNEW Field(HADDIT_SANAD_FIELD,
+                                  Utils::QStringToWChar(asanid),
+                                  m_tokenAndNoStore, false));
+
+    QString motoon = Utils::getTagsText(pageText, "mateen");
+    if(!motoon.isEmpty())
+        m_doc->add( *_CLNEW Field(HADDIT_MATEEN_FIELD,
+                                  Utils::QStringToWChar(motoon),
+                                  m_tokenAndNoStore, false));
+
+    QString sheer = Utils::getTagsText(pageText, "sheer");
+    if(!sheer.isEmpty())
+        m_doc->add( *_CLNEW Field(SHEER_FIELD,
+                                  Utils::QStringToWChar(sheer),
+                                  m_tokenAndNoStore, false));
 }

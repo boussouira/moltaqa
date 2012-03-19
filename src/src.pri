@@ -112,7 +112,8 @@ SOURCES += mainwindow.cpp \
     zipopener.cpp \
     textbookindexer.cpp \
     simplebookindexer.cpp \
-    quranbookindexer.cpp
+    quranbookindexer.cpp \
+    stringutils.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -212,7 +213,8 @@ HEADERS += mainwindow.h \
     zipopener.h \
     textbookindexer.h \
     simplebookindexer.h \
-    quranbookindexer.h
+    quranbookindexer.h \
+    stringutils.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

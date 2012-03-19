@@ -23,6 +23,7 @@ public:
     void start();
 
 protected:
+    void indexPageText(BookPage *page);
     virtual void indexPage(BookPage *page)=0;
 
 protected:
