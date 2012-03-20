@@ -236,6 +236,11 @@ p, li { white-space: pre-wrap; }
            </item>
            <item>
             <property name="text">
+             <string>العناوين</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
              <string>متون الحديث</string>
             </property>
            </item>

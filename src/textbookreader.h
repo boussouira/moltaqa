@@ -22,6 +22,8 @@ protected:
 protected:
      QList<int> m_titles;
      QHash<int, QByteArray> m_pages;
+     QHash<int, QString> m_titlesText;
+     bool m_loadTitlesText;
 };
 
 #endif // TEXTBOOKREADER_H

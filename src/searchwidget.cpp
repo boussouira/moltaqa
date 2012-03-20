@@ -169,12 +169,15 @@ QString SearchWidget::getSearchField()
         field = PAGE_TEXT_FIELD;
         break;
     case 1:
-        field = HADDIT_MATEEN_FIELD;
+        field = TITLE_TEXT_FIELD;
         break;
     case 2:
-        field = HADDIT_SANAD_FIELD;
+        field = HADDIT_MATEEN_FIELD;
         break;
     case 3:
+        field = HADDIT_SANAD_FIELD;
+        break;
+    case 4:
         field = SHEER_FIELD;
         break;
     default:

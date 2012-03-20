@@ -128,6 +128,7 @@ void LibrarySearcher::fetech()
 
     int start = m_currentPage * m_resultParPage;
     int maxResult  = qMin(start+m_resultParPage, resultsCount());
+    bool searchIsInTitle = (m_cluceneQuery->searchField == "title");
 
     for(int i=start; i < maxResult;i++){
 
@@ -160,7 +161,13 @@ void LibrarySearcher::fetech()
 
         if(gotPage) {
             SearchResult *result = new SearchResult(book, page);
-            result->snippet = Utils::highlightText(page->text, m_cluceneQuery, true);
+            if(searchIsInTitle) {
+                result->page->title = Utils::highlightText(page->title, m_cluceneQuery, true);
+                result->snippet = Utils::abbreviate(page->text, 120);
+            } else {
+                result->snippet = Utils::highlightText(page->text, m_cluceneQuery, true);
+            }
+
             result->resultID = i;
             result->score = score;
 

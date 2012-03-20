@@ -6,6 +6,7 @@
 TextBookReader::TextBookReader(QObject *parent) :
     AbstractBookReader(parent)
 {
+    m_loadTitlesText = false;
 }
 
 TextBookReader::~TextBookReader()
@@ -47,7 +48,11 @@ void TextBookReader::getTitles()
         reader.readNext();
 
         if(reader.isStartElement() && reader.name() == "item") {
-            m_titles.append(reader.attributes().value("pageID").toString().toInt());
+            int titleID = reader.attributes().value("pageID").toString().toInt();
+            m_titles.append(titleID);
+
+            if(m_loadTitlesText)
+                m_titlesText[titleID] = reader.attributes().value("text").toString();
         }
 
         if(reader.hasError()) {

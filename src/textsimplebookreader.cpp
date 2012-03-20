@@ -4,6 +4,8 @@
 TextSimpleBookReader::TextSimpleBookReader(QObject *parent) :
     TextBookReader(parent)
 {
+    m_loadTitlesText = true;
+    m_lastTitleID = -1;
 }
 
 void TextSimpleBookReader::setCurrentPage(QDomElement pageNode)
@@ -20,6 +22,10 @@ void TextSimpleBookReader::setCurrentPage(QDomElement pageNode)
 
     m_currentPage->titleID = getPageTitleID(m_currentPage->pageID);
 
-//    if(m_titles.contains(m_currentPage->pageID))
-//        m_currentPage->titleID = m_currentPage->pageID;
+    if(m_lastTitleID != m_currentPage->titleID) {
+        m_lastTitleID = m_currentPage->titleID;
+        m_currentPage->title = m_titlesText[m_lastTitleID];
+    } else {
+        m_currentPage->title.clear();
+    }
 }

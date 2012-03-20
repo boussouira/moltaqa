@@ -9,6 +9,9 @@ public:
     TextSimpleBookReader(QObject *parent=0);
 
     void setCurrentPage(QDomElement pageNode);
+
+protected:
+    int m_lastTitleID;
 };
 
 #endif // TEXTSIMPLEBOOKREADER_H
