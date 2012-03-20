@@ -117,15 +117,20 @@ void TextBookReader::getPages()
 
 int TextBookReader::getPageTitleID(int pageID)
 {
-    int id = pageID;
-    if(!m_titles.isEmpty() && !m_titles.contains(pageID)) {
+    if(!m_titles.contains(pageID)) {
+        int title = 0;
         for(int i=0; i<m_titles.size(); i++) {
-            id = m_titles.at(i);
-
-            if(pageID <= id)
-                return id;
+            title = m_titles.at(i);
+            if(i == m_titles.size()-1)
+                return m_titles.last();
+            else if(title <= pageID && pageID < m_titles.at(i+1))
+                return title;
+            if(title > pageID)
+                break;
         }
+
+        return m_titles.first();
     }
 
-    return id;
+    return pageID;
 }

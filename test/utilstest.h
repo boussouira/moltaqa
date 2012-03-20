@@ -21,6 +21,11 @@ private slots:
     void htmlSpecialCharsEncode();
     void removeHtmlTags();
     void getTags();
+
+    void getPageTitle();
+
+protected:
+    int getPageTitleID(QList<int> &titles, int pageID);
 };
 
 #endif // UTILSTEST_H

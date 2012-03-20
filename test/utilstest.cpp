@@ -153,4 +153,40 @@ void UtilsTest::getTags()
         QCOMPARE(excpected[i], Utils::getTagsText(origins[i], "sanad"));
 }
 
+void UtilsTest::getPageTitle()
+{
+    QList<int> titles;
+    QList<int> pages;
+    QList<int> excpectedTitles;
+
+    titles << 3 << 7 << 8 << 20 << 50 << 100;
+
+    pages           << 1 << 2 << 3 << 4 << 5 << 7 << 75 << 100 << 140;
+    excpectedTitles << 3 << 3 << 3 << 3 << 3 << 7 << 50 << 100 << 100;
+
+    for(int i=0; i<pages.size(); i++)
+        QCOMPARE(getPageTitleID(titles, pages[i]), excpectedTitles[i]);
+
+}
+
+int UtilsTest::getPageTitleID(QList<int> &titles, int pageID)
+{
+    if(!titles.contains(pageID)) {
+        int title = 0;
+        for(int i=0; i<titles.size(); i++) {
+            title = titles.at(i);
+            if(i == titles.size()-1)
+                return titles.last();
+            else if(title <= pageID && pageID < titles.at(i+1))
+                return title;
+            if(title > pageID)
+                break;
+        }
+
+        return titles.first();
+    }
+
+    return pageID;
+}
+
 QTEST_MAIN(UtilsTest)
