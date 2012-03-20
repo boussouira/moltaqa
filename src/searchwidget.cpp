@@ -8,6 +8,7 @@
 #include "arabicanalyzer.h"
 #include "librarysearcher.h"
 #include "booksearchfilter.h"
+#include "clucenequery.h"
 #include <qmessagebox.h>
 
 SearchWidget::SearchWidget(QWidget *parent) :
@@ -34,8 +35,14 @@ SearchWidget::SearchWidget(QWidget *parent) :
 
 SearchWidget::~SearchWidget()
 {
-    if(m_searcher)
+    if(m_searcher) {
+        if(m_searcher->isRunning()) {
+            m_searcher->stop();
+            m_searcher->wait();
+        }
+
         delete m_searcher;
+    }
 
     if(m_resultWidget)
         delete m_resultWidget;
@@ -57,7 +64,7 @@ void SearchWidget::toggleWidget()
         setCurrentWidget(ui->stackedWidget->currentIndex()==Search ? Result : Search);
 }
 
-Query *SearchWidget::getSearchQuery()
+Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
 {
     if(ui->lineQueryMust->text().isEmpty()){
         if(!ui->lineQueryShould->text().isEmpty()){
@@ -78,7 +85,7 @@ Query *SearchWidget::getSearchQuery()
     ArabicAnalyzer analyzer;
     BooleanQuery *q = new BooleanQuery;
 
-    QueryParser queryPareser(PAGE_TEXT_FIELD, &analyzer);
+    QueryParser queryPareser(searchField, &analyzer);
     queryPareser.setAllowLeadingWildcard(true);
 
     try {
@@ -121,7 +128,7 @@ Query *SearchWidget::getSearchQuery()
             free(queryText);
         }
 
-//        qDebug() << "Search:" << Utils::WCharToString(q->toString(PAGE_TEXT_FIELD));
+        //qDebug() << "Search:" << Utils::WCharToString(q->toString(field));
 
         return q;
 
@@ -154,26 +161,59 @@ Query *SearchWidget::getSearchQuery()
     }
 }
 
+QString SearchWidget::getSearchField()
+{
+    const wchar_t *field = 0;
+    switch(ui->comboSearchField->currentIndex()) {
+    case 0:
+        field = PAGE_TEXT_FIELD;
+        break;
+    case 1:
+        field = HADDIT_MATEEN_FIELD;
+        break;
+    case 2:
+        field = HADDIT_SANAD_FIELD;
+        break;
+    case 3:
+        field = SHEER_FIELD;
+        break;
+    default:
+        field = PAGE_TEXT_FIELD;
+    }
+
+    return Utils::WCharToString(field);
+}
+
 void SearchWidget::search()
 {
+    QString searchField = getSearchField();
+    wchar_t *searchFieldW = Utils::QStringToWChar(searchField);
+
     SearchFilter *searchFilter = getSearchFilterQuery();
-    Query *searchQuery = getSearchQuery();
+    Query *searchQuery = getSearchQuery(searchFieldW);
 
     if(!searchQuery)
         return;
+
+    CLuceneQuery *query = new CLuceneQuery();
+    query->searchQuery = searchQuery;
+    query->filterQuery = searchFilter->filterQuery;
+    query->filterClause = searchFilter->clause;
+    query->searchField = searchField;
+    query->searchFieldW = searchFieldW;
 
     if(m_searcher) {
         if(m_searcher->isRunning()) {
             m_searcher->stop();
             m_searcher->wait();
-
-            delete m_searcher;
-            m_searcher = 0;
         }
+
+        delete m_searcher;
+        m_searcher = 0;
     }
 
     m_searcher = new LibrarySearcher(this);
-    m_searcher->setQuery(searchQuery, searchFilter->filterQuery, searchFilter->clause);
+    m_searcher->setQuery(query);
 
     m_resultWidget->search(m_searcher);
     setCurrentWidget(Result);

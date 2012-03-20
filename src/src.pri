@@ -113,7 +113,8 @@ SOURCES += mainwindow.cpp \
     textbookindexer.cpp \
     simplebookindexer.cpp \
     quranbookindexer.cpp \
-    stringutils.cpp
+    stringutils.cpp \
+    clucenequery.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -214,7 +215,8 @@ HEADERS += mainwindow.h \
     textbookindexer.h \
     simplebookindexer.h \
     quranbookindexer.h \
-    stringutils.h
+    stringutils.h \
+    clucenequery.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

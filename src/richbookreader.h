@@ -3,6 +3,7 @@
 
 #include "abstractbookreader.h"
 #include "clutils.h"
+#include "clucenequery.h"
 
 class RichBookReader : public AbstractBookReader
 {
@@ -19,7 +20,7 @@ public:
 
     TextFormatter *textFormat();
 
-    void highlightPage(int pageID, lucene::search::Query *query);
+    void highlightPage(int pageID, CLuceneQuery *query);
 
     bool scrollToHighlight();
 
@@ -35,7 +36,7 @@ signals:
 
 protected:
     TextFormatter *m_textFormat;
-    lucene::search::Query *m_query;
+    CLuceneQuery *m_query;
     QList<int> m_pageTitles;
     int m_highlightPageID;
 };

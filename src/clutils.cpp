@@ -3,6 +3,7 @@
 #include "clheader.h"
 #include "arabicanalyzer.h"
 #include "cssformatter.h"
+#include "clucenequery.h"
 #include <stdlib.h>
 #include <qregexp.h>
 
@@ -23,7 +24,8 @@ wchar_t* intToWChar(int num, int radix)
     return intToWChar(num, str, radix);
 }
 
-QString highlightText(QString orignalText, lucene::search::Query *query, bool fragment)
+QString highlightText(QString orignalText, lucene::search::Query *query,
+                      const wchar_t *field, bool fragment)
 {
     // Highlight the text
     ArabicAnalyzer analyzer;
@@ -38,12 +40,12 @@ QString highlightText(QString orignalText, lucene::search::Query *query, bool fr
     SimpleFragmenter frag(fragmentSize);
     highlighter.setTextFragmenter(&frag);
 
-    orignalText.replace(QRegExp("[\\r\\n]"),"<br/>");
+    orignalText.replace(QRegExp("[\\r\\n]"),"<br/>"); // TODO: delete this and make orignalText a const reference
 
     wchar_t* text = QStringToWChar(orignalText);
     StringReader reader(text);
-    CachingTokenFilter tokenStream(analyzer.tokenStream(PAGE_TEXT_FIELD, &reader), true);
-    scorer.init(query, PAGE_TEXT_FIELD, &tokenStream);
+    CachingTokenFilter tokenStream(analyzer.tokenStream(field, &reader), true);
+    scorer.init(query, field, &tokenStream);
     tokenStream.reset();
 
     wchar_t* highlighterResult = highlighter.getBestFragments(
@@ -58,6 +60,11 @@ QString highlightText(QString orignalText, lucene::search::Query *query, bool fr
     _CLDELETE_CARRAY(text);
 
     return highlightedText;
+}
+
+QString highlightText(QString orignalText, CLuceneQuery *query, bool fragment)
+{
+    return highlightText(orignalText, query->searchQuery, query->searchFieldW, fragment);
 }
 
 }

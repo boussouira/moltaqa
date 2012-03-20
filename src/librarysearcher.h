@@ -8,6 +8,7 @@
 #include "libraryinfo.h"
 #include "librarymanager.h"
 #include "searchresult.h"
+#include "clucenequery.h"
 
 class LibrarySearcher : public QThread
 {
@@ -25,10 +26,10 @@ public:
     void run();
     void stop();
 
-    void setQuery(Query *searchQuery, Query *filterQuery, BooleanClause::Occur filterClause);
+    void setQuery(CLuceneQuery *query);
 
     SearchResult *getResult(int resultD);
-    Query* getSearchQuery();
+    CLuceneQuery *getSearchQuery();
     int pageCount();
     int currentPage();
     int resultsCount();
@@ -61,11 +62,8 @@ protected:
     Action m_action;
     IndexSearcher *m_searcher;
     Hits* m_hits;
-    Query* m_searchQuery;
-    Query* m_filterQuery;
     Query* m_query;
-    BooleanClause::Occur m_filterClause;
-    QString m_queryStr;
+    CLuceneQuery *m_cluceneQuery;
     int m_currentPage;
     int m_pageCount;
     int m_timeSearch;

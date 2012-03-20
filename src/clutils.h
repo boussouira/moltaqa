@@ -11,6 +11,8 @@ namespace lucene {
     }
 }
 
+class CLuceneQuery;
+
 #ifndef Q_OS_WIN
     #define _itow _itot
     #define _wtoi _ttoi
@@ -20,8 +22,10 @@ namespace Utils {
 
 wchar_t* QStringToWChar(const QString &str);
 wchar_t* intToWChar(int num, int radix=10);
-QString highlightText(QString orignalText, lucene::search::Query *query, bool fragment);
+QString highlightText(QString orignalText, lucene::search::Query *query,
+                      const wchar_t* field, bool fragment);
 
+QString highlightText(QString orignalText, CLuceneQuery *query, bool fragment);
 
 inline wchar_t* intToWChar(int num, wchar_t *dest, int radix)
 {

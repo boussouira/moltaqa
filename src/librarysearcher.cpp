@@ -16,9 +16,8 @@ LibrarySearcher::LibrarySearcher(QObject *parent)
       m_action(SEARCH),
       m_searcher(0),
       m_hits(0),
-      m_searchQuery(0),
-      m_filterQuery(0),
       m_query(0),
+      m_cluceneQuery(0),
       m_stop(false)
 {
     m_libraryInfo = MW->libraryInfo();
@@ -36,8 +35,8 @@ LibrarySearcher::~LibrarySearcher()
     if(m_query)
         delete m_query;
 
-    if(m_filterQuery)
-        delete m_filterQuery;
+    if(m_cluceneQuery)
+        delete m_cluceneQuery;
 
     if(m_searcher) {
         m_searcher->close();
@@ -87,19 +86,18 @@ void LibrarySearcher::open()
 void LibrarySearcher::buildQuery()
 {
     BooleanQuery *booleanQuery = new BooleanQuery;
-    booleanQuery->add(m_searchQuery, BooleanClause::MUST);
+    booleanQuery->add(m_cluceneQuery->searchQuery, BooleanClause::MUST);
 
-    if(m_filterQuery)
-        booleanQuery->add(m_filterQuery, m_filterClause);
+    if(m_cluceneQuery->filterQuery)
+        booleanQuery->add(m_cluceneQuery->filterQuery, m_cluceneQuery->filterClause);
 
-//    m_query = m_searcher->rewrite(booleanQuery);
     m_query = m_searcher->rewrite(booleanQuery);
 
     wchar_t *queryText = m_query->toString(PAGE_TEXT_FIELD);
     qDebug() << "Search query:" << Utils::WCharToString(queryText);
 
     free(queryText);
-//    delete booleanQuery;
+    delete booleanQuery;
 }
 
 void LibrarySearcher::search()
@@ -162,7 +160,7 @@ void LibrarySearcher::fetech()
 
         if(gotPage) {
             SearchResult *result = new SearchResult(book, page);
-            result->snippet = Utils::highlightText(page->text, m_searchQuery, true);
+            result->snippet = Utils::highlightText(page->text, m_cluceneQuery, true);
             result->resultID = i;
             result->score = score;
 
@@ -182,13 +180,11 @@ void LibrarySearcher::fetech()
     emit doneFeteching();
 }
 
-void LibrarySearcher::setQuery(Query *searchQuery, Query *filterQuery, BooleanClause::Occur filterClause)
+void LibrarySearcher::setQuery(CLuceneQuery *query)
 {
-    Q_CHECK_PTR(searchQuery);
+    Q_CHECK_PTR(query->searchQuery);
 
-    m_searchQuery = searchQuery;
-    m_filterQuery = filterQuery;
-    m_filterClause = filterClause;
+    m_cluceneQuery = query;
 }
 
 SearchResult *LibrarySearcher::getResult(int resultD)
@@ -196,9 +192,9 @@ SearchResult *LibrarySearcher::getResult(int resultD)
     return m_resultsHash.value(resultD, 0);
 }
 
-Query *LibrarySearcher::getSearchQuery()
+CLuceneQuery *LibrarySearcher::getSearchQuery()
 {
-    return m_searchQuery;
+    return m_cluceneQuery;
 }
 
 int LibrarySearcher::pageCount()

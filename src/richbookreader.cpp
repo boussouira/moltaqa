@@ -30,7 +30,7 @@ void RichBookReader::connected()
     AbstractBookReader::connected();
 }
 
-void RichBookReader::highlightPage(int pageID, lucene::search::Query *query)
+void RichBookReader::highlightPage(int pageID, CLuceneQuery *query)
 {
     m_query = query;
     m_highlightPageID = pageID;

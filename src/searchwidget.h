@@ -41,8 +41,9 @@ public:
     void toggleWidget();
 
 protected:
-    virtual lucene::search::Query *getSearchQuery();
+    virtual lucene::search::Query *getSearchQuery(const wchar_t *searchField);
     virtual SearchFilter *getSearchFilterQuery()=0;
+    QString getSearchField();
 
 public slots:
     void search();

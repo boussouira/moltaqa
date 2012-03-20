@@ -13,6 +13,7 @@ class QMainWindow;
 class QToolBar;
 class QMenu;
 class QComboBox;
+class CLuceneQuery;
 
 class BooksViewer : public AbstarctView
 {
@@ -29,7 +30,7 @@ public:
     BookPage *currentPage();
 
 public slots:
-    BookWidget *openBook(int bookID, int pageID = -1, lucene::search::Query *query=0);
+    BookWidget *openBook(int bookID, int pageID = -1, CLuceneQuery *query=0);
     void updateActions();
     void showIndexWidget();
     void searchInBook();

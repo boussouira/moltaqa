@@ -200,7 +200,7 @@ BookPage *BooksViewer::currentPage()
    return bookdb ? bookdb->page() : 0;
 }
 
-BookWidget *BooksViewer::openBook(int bookID, int pageID, lucene::search::Query *query)
+BookWidget *BooksViewer::openBook(int bookID, int pageID, CLuceneQuery *query)
 {
     LibraryBook *bookInfo = 0;
     RichBookReader *bookReader = 0;
