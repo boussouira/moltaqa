@@ -269,7 +269,7 @@ bool AbstractBookReader::getSimpleBookPage(QuaZip *zip, LibraryBook *book, BookP
     while(!bookReader.atEnd()) {
         bookReader.readNext();
 
-        if(bookReader.tokenType() == QXmlStreamReader::StartElement) {
+        if(bookReader.isStartElement()) {
             if(bookReader.name() == "item") {
                 if(pid == bookReader.attributes().value("id")) {
                     page->part = bookReader.attributes().value("part").toString().toInt();
@@ -305,7 +305,7 @@ bool AbstractBookReader::getSimpleBookPage(QuaZip *zip, LibraryBook *book, BookP
     while(!titleReader.atEnd()) {
         titleReader.readNext();
 
-        if(titleReader.tokenType() == QXmlStreamReader::StartElement) {
+        if(titleReader.isStartElement()) {
             if(titleReader.name() == "item") {
                 if(tid == titleReader.attributes().value("pageID")) {
                     page->title = titleReader.attributes().value("text").toString();
@@ -344,7 +344,7 @@ bool AbstractBookReader::getTafessirPage(QuaZip *zip, LibraryBook *book, BookPag
     while(!bookReader.atEnd()) {
         bookReader.readNext();
 
-        if(bookReader.tokenType() == QXmlStreamReader::StartElement) {
+        if(bookReader.isStartElement()) {
             if(bookReader.name() == "item") {
                 if(pid == bookReader.attributes().value("id")) {
                     page->part = bookReader.attributes().value("part").toString().toInt();
@@ -382,7 +382,7 @@ bool AbstractBookReader::getTafessirPage(QuaZip *zip, LibraryBook *book, BookPag
     while(!titleReader.atEnd()) {
         titleReader.readNext();
 
-        if(titleReader.tokenType() == QXmlStreamReader::StartElement) {
+        if(titleReader.isStartElement()) {
             if(titleReader.name() == "item") {
                 if(tid == titleReader.attributes().value("pageID")) {
                     page->title = titleReader.attributes().value("text").toString();
@@ -428,7 +428,7 @@ bool AbstractBookReader::getQuranPage(QuaZip *zip, LibraryBook *book, BookPage *
     while(!bookReader.atEnd()) {
         bookReader.readNext();
 
-        if(bookReader.tokenType() == QXmlStreamReader::StartElement) {
+        if(bookReader.isStartElement()) {
             if(bookReader.name() == "item") {
                 if(pid == bookReader.attributes().value("id")) {
                     page->part = bookReader.attributes().value("part").toString().toInt();

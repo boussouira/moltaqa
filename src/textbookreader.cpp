@@ -46,7 +46,7 @@ void TextBookReader::getTitles()
     while(!reader.atEnd()) {
         reader.readNext();
 
-        if(reader.tokenType() == QXmlStreamReader::StartElement && reader.name() == "item") {
+        if(reader.isStartElement() && reader.name() == "item") {
             m_titles.append(reader.attributes().value("pageID").toString().toInt());
         }
 
