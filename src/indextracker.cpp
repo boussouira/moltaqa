@@ -89,6 +89,9 @@ void IndexTracker::addTask(IndexTask *task)
 
         m_tasks.append(task);
 
+    } else {
+        if(!m_tasks.contains(task))
+            delete task;
     }
 }
 
