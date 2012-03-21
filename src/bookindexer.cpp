@@ -96,6 +96,8 @@ void BookIndexer::indexBook(IndexTask *task)
 
     indexer->open();
     indexer->start();
+
+    delete indexer;
 }
 
 void BookIndexer::deleteBook(IndexTask *task)

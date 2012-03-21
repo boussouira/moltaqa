@@ -68,6 +68,7 @@ void TextBookIndexer::start()
         m_doc->clear();
     }
 
+    free(bookW);
     delete m_doc;
 }
 
