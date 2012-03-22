@@ -251,6 +251,27 @@ ShamelaAuthorInfo *ShamelaManager::getAuthorInfo(int id)
     }
 }
 
+ShoortsList ShamelaManager::getBookShoorts(int bookID)
+{
+    openShamelaSpecialDB();
+
+    ShoortsList shoorts;
+    QSqlQuery specialQuery(m_shamelaSpecialDB);
+
+    if(!specialQuery.exec(QString("SELECT Ramz, Nass FROM shorts WHERE Bk = '%1'").arg(bookID)))
+        LOG_SQL_ERROR(specialQuery.lastError().text());
+
+    while(specialQuery.next()) {
+        QPair<QString, QString> pair;
+        pair.first = specialQuery.value(0).toString();
+        pair.second = specialQuery.value(1).toString();
+
+        shoorts.append(pair);
+    }
+
+    return shoorts;
+}
+
 void ShamelaManager::selectCats()
 {
     openShamelaDB();

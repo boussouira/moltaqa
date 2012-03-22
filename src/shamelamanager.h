@@ -15,6 +15,8 @@
 #include <qmutex.h>
 #include <qstandarditemmodel.h>
 
+typedef QList<QPair<QString, QString> > ShoortsList;
+
 class ShamelaManager
 {
 public:
@@ -36,6 +38,7 @@ public:
     int getCatCount();
 
     ShamelaAuthorInfo *getAuthorInfo(int id);
+    ShoortsList getBookShoorts(int bookID);
 
     void selectCats();
     void selectAuthors();
