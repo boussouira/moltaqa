@@ -29,6 +29,9 @@ public:
     void addTitle(const QString &title, int tid, int level);
 
 protected:
+    QString processPageText(QString text);
+
+protected:
     QString m_tempFolder;
     QString m_bookPath;
 

@@ -4,6 +4,7 @@
 #include "libraryinfo.h"
 #include "utils.h"
 #include "librarybook.h"
+#include <stringutils.h>
 
 #include <qsettings.h>
 #include <qdir.h>
@@ -68,7 +69,7 @@ int NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int par
     if(outFile.open(QIODevice::WriteOnly,
                      QuaZipNewInfo(QString("pages/p%1.html").arg(pageID)))) {
         QTextStream out(&outFile);
-        out << text;
+        out << processPageText(text);
     } else {
         qCritical("Can't write to pages/p%d.html - Error: %d", pageID, outFile.getZipError());
     }
@@ -87,6 +88,31 @@ void NewBookWriter::addTitle(const QString &title, int tid, int level)
 
     QDomNode parentNode = m_levels.value(level-1, m_titlesElement);
     m_levels[level] = parentNode.appendChild(titleElement);
+}
+
+QString NewBookWriter::processPageText(QString text)
+{
+    QString htmlText;
+    text = Utils::htmlSpecialCharsEncode(text);
+
+    QRegExp rxMateen(QString::fromUtf8("§([^\"»]+)([»\"])"));
+    rxMateen.setMinimal(true);
+
+    QRegExp rxSheer("^([^\\.]+ \\.\\.\\. [^\\.]+)$");
+    rxSheer.setMinimal(true);
+
+    QStringList paragraphs = text.split(QRegExp("[\\r\\n]+"));
+    foreach(QString p, paragraphs) {
+        htmlText.append("<p>");
+
+        htmlText.append(p.simplified()
+                        .replace(rxMateen, "<mateen>\\1</mateen>\\2")
+                        .replace(rxSheer, "<sheer>\\1</sheer>"));
+
+        htmlText.append("</p>");
+    }
+
+    return htmlText;
 }
 
 void NewBookWriter::startReading()
