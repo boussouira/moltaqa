@@ -41,6 +41,7 @@ win32 {
                     _CRT_NONSTDC_NO_DEPRECATE
     }
 
+    LIBS += -luser32
 }
 
 unix {

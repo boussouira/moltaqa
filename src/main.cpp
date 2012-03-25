@@ -8,6 +8,21 @@
 #include <qdatetime.h>
 #include <qdebug.h>
 
+#ifdef Q_OS_WIN
+#include <Windows.h>
+
+void setArabicKeyboardLayout()
+{
+    HKL local = LoadKeyboardLayout(L"00000401", KLF_ACTIVATE);
+
+    if(local != NULL)
+        ActivateKeyboardLayout(local, KLF_ACTIVATE);
+    else
+        qWarning("Can't load Arabic Keyboard Layout");
+}
+
+#endif
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
@@ -30,6 +45,10 @@ int main(int argc, char *argv[])
     app.setApplicationVersion("0.5");
 
     srand(uint(QDateTime::currentDateTime().toMSecsSinceEpoch() & 0xFFFFFF));
+
+#ifdef Q_OS_WIN
+    setArabicKeyboardLayout();
+#endif
 
     int ret = -1;
 
