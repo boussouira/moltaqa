@@ -11,6 +11,8 @@ XmlDomHelper::XmlDomHelper() :
 
 XmlDomHelper::~XmlDomHelper()
 {
+    if(m_needSave)
+        save();
 }
 
 void XmlDomHelper::setFilePath(const QString &path)
