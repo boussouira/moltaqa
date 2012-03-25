@@ -37,7 +37,6 @@ QString TextFormatter::getText()
 
 void TextFormatter::insertText(QString text)
 {
-    text.replace(QRegExp("[\\r\\n]"), "<br/>");
     m_htmlHelper.append(text);
 }
 
