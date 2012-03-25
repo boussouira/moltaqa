@@ -1,8 +1,10 @@
 #include "webview.h"
+#include "webpage.h"
 
 WebView::WebView(QWidget *parent) :
     QWebView(parent)
 {
+    setPage(new WebPage(this));
     m_frame = page()->mainFrame();
 
     m_stopScrolling = false;
