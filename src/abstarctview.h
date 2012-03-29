@@ -3,6 +3,7 @@
 
 #include <qwidget.h>
 #include <qtoolbar.h>
+#include <qevent.h>
 
 class ViewConfig
 {
@@ -23,10 +24,17 @@ public:
 
     virtual QString title()=0;
 
+    virtual void aboutToShow();
+    virtual void aboutToHide();
+
     bool isSelectable();
     void setSelectable(bool selectebale);
 
     static QAction *actionSeparator(QObject *parent=0);
+
+protected:
+    void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
 
 signals:
     void hideMe();
@@ -36,6 +44,7 @@ protected:
     QList<QToolBar*> m_toolBars;
     QList<QAction*> m_navActions;
     bool m_selectable;
+    bool m_crtlKey;
 };
 
 #endif // ABSTARCTVIEW_H

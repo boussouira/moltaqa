@@ -501,3 +501,59 @@ mateen {
 sheer {
     color: #273A9D;
 }
+
+.rawi-info {
+    padding: 5px;
+    text-align: right;
+}
+
+.rawi-info .nav {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.rawi-info .nav a {
+    background-image: -moz-linear-gradient(#FFFFFF, #FFDD91, #FFFFFF);
+    background-image: -webkit-linear-gradient(#FFFFFF, #FFDD91, #FFFFFF);
+    border: 1px dotted #CCCCCC;
+    border-radius: 5px 5px 5px 5px;
+    margin: 0 5px;
+    padding: 0 15px;
+}
+
+.rawi-info #info {
+    border: 1px solid #CCCCCC;
+    border-radius: 5px 5px 5px 5px;
+    padding: 0 6px;
+}
+
+.rawi-info #info p{
+    padding: 0;
+    margin: 0;
+}
+
+.rawi-info h3 {
+    border: 1px solid #CCCCCC;
+    border-bottom: none;
+    border-radius: 5px 5px 0 0;
+    margin-bottom: 0;
+    padding: 0 6px;
+}
+
+.rawi-info .head-info {
+    border: 1px solid #CCCCCC;
+    border-radius: 0 0 5px 5px;
+    padding: 0 6px;
+}
+
+.pro-name {
+    color: #306631;
+    margin-left: 5px;
+    /*font-weight: bold;*/
+}
+
+.pro-value {
+    color: #000000;
+    margin-left: 7px;
+    /*font-weight: bold;*/
+}

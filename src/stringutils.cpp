@@ -1,4 +1,5 @@
 #include "stringutils.h"
+#include <qstringlist.h>
 
 namespace Utils {
 
@@ -31,4 +32,27 @@ QString getTagsText(const QString &text, const QString &tag)
 
     return result;
 }
+
+QString formatHTML(QString text, bool useBrTag)
+{
+    QString htmlText;
+    text = Utils::htmlSpecialCharsEncode(text);
+
+    QStringList paragraphs = text.split(QRegExp("[\\r\\n]+"));
+    if(useBrTag) {
+        foreach(QString p, paragraphs) {
+            htmlText.append(p.simplified());
+            htmlText.append("<br />");
+        }
+    } else {
+        foreach(QString p, paragraphs) {
+            htmlText.append("<p>");
+            htmlText.append(p.simplified());
+            htmlText.append("</p>");
+        }
+    }
+
+    return htmlText;
+}
+
 }

@@ -11,8 +11,10 @@ TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)
 {
     m_tabBar = new QTabBar(this);
     m_canMoveToOtherTabWidget = true;
+    m_autoClose = false;
+    m_closeLastTab = true;
 
-    m_tabBar->setTabsClosable(true);
+    setTabClosable();
     m_tabBar->setContextMenuPolicy(Qt::CustomContextMenu);
 
     setTabBar(m_tabBar);
@@ -23,6 +25,8 @@ TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)
 
     connect(m_tabBar, SIGNAL(tabMoved(int, int)), this, SIGNAL(tabMoved(int,int)));
     connect(m_tabBar, SIGNAL(customContextMenuRequested(QPoint)), SLOT(showTabBarMenu(QPoint)));
+    connect(this, SIGNAL(tabCloseRequested(int)), SLOT(closeTab(int)));
+    connect(this, SIGNAL(currentChanged(int)), SLOT(setTabClosable()));
 }
 
 
@@ -47,6 +51,16 @@ void TabWidget::setCanMoveToOtherTabWidget(bool canMove)
 void TabWidget::setEnableTabBar(bool enable)
 {
     m_tabBar->setEnabled(enable);
+}
+
+void TabWidget::setAutoTabClose(bool autoClose)
+{
+    m_autoClose = autoClose;
+}
+
+void TabWidget::setCloseLastTab(bool closeLast)
+{
+    m_closeLastTab = closeLast;
 }
 
 bool TabWidget::eventFilter(QObject *obj, QEvent *event)
@@ -120,4 +134,20 @@ void TabWidget::showTabBarMenu(QPoint point)
             }
         }
     }
+}
+
+void TabWidget::closeTab(int index)
+{
+    if(m_autoClose) {
+        QWidget *w = widget(index);
+        ML_RETURN(!w);
+
+        removeTab(index);
+        delete w;
+    }
+}
+
+void TabWidget::setTabClosable()
+{
+    setTabsClosable(m_closeLastTab || count() > 1);
 }

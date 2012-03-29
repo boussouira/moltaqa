@@ -3,7 +3,8 @@
 
 AbstarctView::AbstarctView(QWidget *parent) :
     QWidget(parent),
-    m_selectable(true)
+    m_selectable(true),
+    m_crtlKey(false)
 {
 }
 
@@ -25,6 +26,14 @@ void AbstarctView::updateActions()
 {
 }
 
+void AbstarctView::aboutToShow()
+{
+}
+
+void AbstarctView::aboutToHide()
+{
+}
+
 bool AbstarctView::isSelectable()
 {
     return m_selectable;
@@ -41,4 +50,16 @@ QAction *AbstarctView::actionSeparator(QObject *parent)
     act->setSeparator(true);
 
     return act;
+}
+
+void AbstarctView::keyPressEvent(QKeyEvent *event)
+{
+    if(!m_crtlKey && (event->modifiers() & Qt::ControlModifier))
+        m_crtlKey = true;
+}
+
+void AbstarctView::keyReleaseEvent(QKeyEvent *event)
+{
+    if(m_crtlKey && !(event->modifiers() & Qt::ControlModifier))
+        m_crtlKey = false;
 }

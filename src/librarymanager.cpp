@@ -11,6 +11,7 @@
 #include "booklistmanager.h"
 #include "authorsmanager.h"
 #include "bookeditor.h"
+#include "tarajemrowatmanager.h"
 
 #include <qdebug.h>
 #include <qsqlquery.h>
@@ -45,6 +46,9 @@ LibraryManager::~LibraryManager()
     if(m_taffesirManager)
         delete m_taffesirManager;
 
+    if(m_rowatManager)
+        delete m_rowatManager;
+
     m_instance = 0;
 }
 
@@ -75,6 +79,7 @@ void LibraryManager::openManagers()
     m_bookmanager = new LibraryBookManager(this);
     m_bookListManager = new BookListManager(this);
     m_taffesirManager = new TaffesirListManager(this);
+    m_rowatManager = new TarajemRowatManager(this);
 }
 
 int LibraryManager::addBook(ImportModelNode *node)

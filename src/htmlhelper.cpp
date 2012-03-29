@@ -91,6 +91,13 @@ void HtmlHelper::insertParagraphTag(QString text, QString selector)
     insertHtmlTag("p", text, selector);
 }
 
+void HtmlHelper::insertLinkTag(QString text, QString href, QString selector)
+{
+    beginHtmlTag("a", selector, QString("href='%1'").arg(href));
+    m_html.append(text);
+    endHtmlTag();
+}
+
 void HtmlHelper::insertImage(QString src)
 {
     m_html.append("<img src=\"");
@@ -115,6 +122,11 @@ void HtmlHelper::beginDivTag(QString selector, QString attr)
     beginHtmlTag("div", selector, attr);
 }
 
+void HtmlHelper::beginParagraphTag(QString selector, QString attr)
+{
+    beginHtmlTag("p", selector, attr);
+}
+
 void HtmlHelper::beginSpanTag(QString selector, QString attr)
 {
     beginHtmlTag("span", selector, attr);
@@ -131,6 +143,11 @@ void HtmlHelper::endHtmlTag(QString tag)
 }
 
 void HtmlHelper::endDivTag()
+{
+    endHtmlTag();
+}
+
+void HtmlHelper::endParagraphTag()
 {
     endHtmlTag();
 }

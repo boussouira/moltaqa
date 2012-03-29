@@ -115,7 +115,10 @@ SOURCES += mainwindow.cpp \
     quranbookindexer.cpp \
     stringutils.cpp \
     clucenequery.cpp \
-    webpage.cpp
+    webpage.cpp \
+    tarajemrowatview.cpp \
+    tarajemrowatmanager.cpp \
+    ziphelper.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -218,7 +221,10 @@ HEADERS += mainwindow.h \
     quranbookindexer.h \
     stringutils.h \
     clucenequery.h \
-    webpage.h
+    webpage.h \
+    tarajemrowatview.h \
+    tarajemrowatmanager.h \
+    ziphelper.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \
@@ -237,7 +243,8 @@ FORMS += mainwindow.ui settingsdialog.ui \
     taffesirlistmanagerwidget.ui \
     bookeditorview.ui \
     bookindexeditor.ui \
-    authorsmanagerwidget.ui
+    authorsmanagerwidget.ui \
+    tarajemrowatview.ui
 
 RESOURCES += ../share/moltaqa-lib/qt_rc.qrc
 win32:RC_FILE = ../share/moltaqa-lib/win_rc.rc

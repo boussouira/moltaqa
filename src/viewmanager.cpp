@@ -36,12 +36,16 @@ void ViewManager::setCurrentView(AbstarctView *view)
 {
     AbstarctView *currentView = qobject_cast<AbstarctView*>(currentWidget());
 
+    currentView->aboutToHide();
+
     foreach (QToolBar *bar, currentView->toolBars()) {
         m_mainWindow->removeToolBar(bar);
     }
 
     foreach (QAction*act, currentView->navigationActions())
         m_navigationsMenu->removeAction(act);
+
+    view->aboutToShow();
 
     setCurrentWidget(view);
 

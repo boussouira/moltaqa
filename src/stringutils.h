@@ -12,12 +12,15 @@ inline QString removeHtmlSpecialChars(QString text)
 
 inline QString removeHtmlTags(QString text)
 {
-    return text.replace(QRegExp("</?\\w[^>]*>"), " ").trimmed();
+    return text.contains('<')
+            ? text.replace(QRegExp("</?\\w[^>]*>"), " ").trimmed()
+            : text;
 }
 
 QString htmlSpecialCharsEncode(QString text);
 QString getTagsText(const QString &text, const QString &tag);
 
+QString formatHTML(QString text, bool useBrTag=true);
 }
 
 #endif // STRINGUTILS_H

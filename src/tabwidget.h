@@ -12,13 +12,17 @@ public:
     TabWidget(QWidget *parent = 0);
     int addBookWidget(BookWidget *book);
     void setCanMoveToOtherTabWidget(bool canMove);
-   void setEnableTabBar(bool enable);
+    void setEnableTabBar(bool enable);
+    void setAutoTabClose(bool autoClose);
+    void setCloseLastTab(bool closeLast);
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
 
 protected slots:
     void showTabBarMenu(QPoint point);
+    void closeTab(int index);
+    void setTabClosable();
 
 signals:
     void tabMoved(int from, int to);
@@ -29,6 +33,8 @@ signals:
 private:
     QTabBar *m_tabBar;
     bool m_canMoveToOtherTabWidget;
+    bool m_autoClose;
+    bool m_closeLastTab;
 };
 
 #endif // TABWIDGET_H

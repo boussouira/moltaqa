@@ -21,6 +21,7 @@ class LibraryBookManager;
 class TaffesirListManager;
 class BookListManager;
 class AuthorsManager;
+class TarajemRowatManager;
 
 class LibraryManager : public QObject
 {
@@ -57,6 +58,7 @@ protected:
     TaffesirListManager *m_taffesirManager;
     BookListManager *m_bookListManager;
     AuthorsManager *m_authorsManager;
+    TarajemRowatManager *m_rowatManager;
 };
 
 #endif // LIBRARYMANAGER_H

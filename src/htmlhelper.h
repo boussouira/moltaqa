@@ -32,13 +32,16 @@ public:
     void insertDivTag(QString text, QString selector="");
     void insertSpanTag(QString text, QString selector="");
     void insertParagraphTag(QString text, QString selector="");
+    void insertLinkTag(QString text, QString href, QString selector="");
     void insertImage(QString src);
 
     void beginHtmlTag(QString tag, QString selector="", QString attr="");
     void beginDivTag(QString selector="", QString attr="");
+    void beginParagraphTag(QString selector="", QString attr="");
     void beginSpanTag(QString selector="", QString attr="");
     void endHtmlTag(QString tag="");
     void endDivTag();
+    void endParagraphTag();
     void endSpanTag();
 
     void endAllTags();
