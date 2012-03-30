@@ -102,6 +102,30 @@ RawiInfo *TarajemRowatManager::getRawiInfo(int rawiID)
                 rawi->rotba_hafed = e.firstChildElement("rotba").firstChildElement("hafed").text();
                 rawi->rotba_zahabi = e.firstChildElement("rotba").firstChildElement("zahabi").text();
 
+                QDomElement birthElement = e.firstChildElement("birth");
+                if(!birthElement.isNull()) {
+                    if(birthElement.hasAttribute("year"))
+                        rawi->birthYear = birthElement.attribute("year").toInt();
+
+                    QString text = birthElement.text().simplified();
+                    if(text.isEmpty() && rawi->birthYear != 99999)
+                        text = Utils::hijriYear(rawi->birthYear);
+
+                    rawi->birthStr = text;
+                }
+
+                QDomElement deathElement = e.firstChildElement("death");
+                if(!deathElement.isNull()) {
+                    if(deathElement.hasAttribute("year"))
+                        rawi->deathYear = deathElement.attribute("year").toInt();
+
+                    QString text = deathElement.text().simplified();
+                    if(text.isEmpty() && rawi->deathYear != 99999)
+                        text = Utils::hijriYear(rawi->deathYear);
+
+                    rawi->deathStr = text;
+                }
+
                 XmlDomHelperPtr infoDom = m_zip.getDomHelper(QString("data/r%1.xml").arg(rawiID));
                 rawi->sheok = infoDom->rootElement().firstChildElement("sheok").text();
                 rawi->talamid = infoDom->rootElement().firstChildElement("talamid").text();

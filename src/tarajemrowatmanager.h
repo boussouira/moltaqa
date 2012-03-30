@@ -8,14 +8,23 @@
 class RawiInfo
 {
 public:
-    RawiInfo() : id(0) {}
+    RawiInfo() : id(0), birthYear(99999), deathYear(99999) {}
 
     int id;
     QString name;
+
+    int birthYear;
+    QString birthStr;
+
+    int deathYear;
+    QString deathStr;
+
     QString tabaqa;
     QString rowat;
+
     QString rotba_hafed;
     QString rotba_zahabi;
+
     QString sheok;
     QString talamid;
     QString tarejama;

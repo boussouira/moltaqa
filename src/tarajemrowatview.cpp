@@ -20,7 +20,6 @@ TarajemRowatView::TarajemRowatView(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->tabWidget->setCanMoveToOtherTabWidget(false);
     ui->tabWidget->setAutoTabClose(true);
     ui->tabWidget->setCloseLastTab(false);
 
@@ -102,6 +101,20 @@ void TarajemRowatView::setCurrentRawi(RawiInfo *info)
     html.insertSpanTag(info->name, ".pro-value");
     html.endParagraphTag();
 
+    if(!info->birthStr.isEmpty()) {
+        html.beginParagraphTag();
+        html.insertSpanTag(tr("الولادة: "), ".pro-name");
+        html.insertSpanTag(info->birthStr, ".pro-value");
+        html.endParagraphTag();
+    }
+
+    if(!info->deathStr.isEmpty()) {
+        html.beginParagraphTag();
+        html.insertSpanTag(tr("الوفاة: "), ".pro-name");
+        html.insertSpanTag(info->deathStr, ".pro-value");
+        html.endParagraphTag();
+    }
+
     html.beginParagraphTag();
     html.insertSpanTag(tr("الطبقة: "), ".pro-name");
     html.insertSpanTag(info->tabaqa, ".pro-value");
@@ -139,7 +152,7 @@ void TarajemRowatView::setCurrentRawi(RawiInfo *info)
         int index = addTab();
         ui->tabWidget->setCurrentIndex(index);
     }
-qDebug() << html.html();
+
     setCurrentTabHtml(info->name, html.html());
 }
 

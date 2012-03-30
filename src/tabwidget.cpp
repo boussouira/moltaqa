@@ -10,7 +10,7 @@
 TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)
 {
     m_tabBar = new QTabBar(this);
-    m_canMoveToOtherTabWidget = true;
+    m_canMoveToOtherTabWidget = false;
     m_autoClose = false;
     m_closeLastTab = true;
 
@@ -138,7 +138,7 @@ void TabWidget::showTabBarMenu(QPoint point)
 
 void TabWidget::closeTab(int index)
 {
-    if(m_autoClose) {
+    if(m_autoClose && (m_closeLastTab || count() > 1)) {
         QWidget *w = widget(index);
         ML_RETURN(!w);
 

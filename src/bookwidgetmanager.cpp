@@ -55,6 +55,8 @@ BookWidgetManager::~BookWidgetManager()
 
 void BookWidgetManager::connectTab(TabWidget *tab)
 {
+    tab->setCanMoveToOtherTabWidget(true);
+
     connect(tab, SIGNAL(currentChanged(int)), SLOT(tabChanged(int)));
     connect(tab, SIGNAL(currentChanged(int)), SIGNAL(currentTabChanged(int)));
     connect(tab, SIGNAL(tabCloseRequested(int)), SLOT(tabCloseRequest(int)));
