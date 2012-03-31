@@ -7,6 +7,7 @@
 #include "textsimplebookreader.h"
 #include "texttafessirreader.h"
 #include "stringutils.h"
+#include "utils.h"
 
 TextBookIndexer::TextBookIndexer() :
     m_writer(0),
@@ -20,8 +21,7 @@ TextBookIndexer::TextBookIndexer() :
 
 TextBookIndexer::~TextBookIndexer()
 {
-    if(m_reader)
-        delete m_reader;
+    ML_DELETE_CHECK(m_reader);
 }
 
 void TextBookIndexer::open()

@@ -1,4 +1,5 @@
 #include "clucenequery.h"
+#include "utils.h"
 #include <CLucene/analysis/Analyzers.h>
 #include <CLucene/search/Query.h>
 
@@ -11,11 +12,8 @@ CLuceneQuery::CLuceneQuery() :
 
 CLuceneQuery::~CLuceneQuery()
 {
-    if(searchQuery)
-        delete searchQuery;
-
-    if(filterQuery)
-        delete filterQuery;
+    ML_DELETE_CHECK(searchQuery);
+    ML_DELETE_CHECK(filterQuery);
 
     if(searchFieldW)
         free(searchFieldW);

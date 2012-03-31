@@ -40,8 +40,7 @@ BookEditorView::BookEditorView(QWidget *parent) :
 
 BookEditorView::~BookEditorView()
 {
-    if(m_bookReader)
-        delete m_bookReader;
+    ML_DELETE_CHECK(m_bookReader);
 
     delete ui;
 }
@@ -86,10 +85,7 @@ void BookEditorView::editBook(LibraryBook *book, int pageID)
     if(book->isQuran())
         throw BookException(tr("لا يمكن تحرير القرآن الكريم"));
 
-    if(m_bookReader) {
-        delete m_bookReader;
-        m_bookReader = 0;
-    }
+    ML_DELETE_CHECK(m_bookReader);
 
     if(book->isNormal())
         m_bookReader = new RichSimpleBookReader();
@@ -230,10 +226,7 @@ void BookEditorView::closeBook(bool hide)
 {
     clearChanges();
 
-    if(m_bookReader) {
-        delete m_bookReader;
-        m_bookReader = 0;
-    }
+    ML_DELETE_CHECK(m_bookReader);
 
     if(hide) {
         ui->tabWidget->setTabText(0, QString());

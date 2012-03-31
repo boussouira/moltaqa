@@ -35,8 +35,7 @@ SearchFilterManager::~SearchFilterManager()
 
 void SearchFilterManager::setSourceModel(QStandardItemModel *model)
 {
-    if(m_model)
-        delete m_model;
+    ML_DELETE_CHECK(m_model);
 
     m_model = model;
     m_filterModel->setSourceModel(m_model);

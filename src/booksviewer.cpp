@@ -249,13 +249,8 @@ BookWidget *BooksViewer::openBook(int bookID, int pageID, CLuceneQuery *query)
                               tr("فتح كتاب"),
                               e.what());
 
-        if(bookReader)
-            delete bookReader;
-
-        if(bookWidget) {
-            delete bookWidget;
-            bookWidget = 0;
-        }
+        ML_DELETE_CHECK(bookReader);
+        ML_DELETE_CHECK(bookWidget);
     }
 
     return bookWidget;
@@ -288,11 +283,8 @@ void BooksViewer::openTafessir()
 
         updateActions();
     } catch (BookException &e) {
-        if(bookdb)
-            delete bookdb;
-
-        if(bookWidget)
-            delete bookWidget;
+        ML_DELETE_CHECK(bookdb);
+        ML_DELETE_CHECK(bookWidget);
 
         QMessageBox::warning(this,
                              tr("فتح التفسير"),

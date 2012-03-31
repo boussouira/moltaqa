@@ -5,6 +5,7 @@
 #include "booklistmanager.h"
 #include "modelutils.h"
 #include "modelenums.h"
+#include "utils.h"
 
 #include <QModelIndex>
 #include <qmessagebox.h>
@@ -40,8 +41,7 @@ BookListManagerWidget::BookListManagerWidget(QWidget *parent) :
 
 BookListManagerWidget::~BookListManagerWidget()
 {
-    if(m_model)
-        delete m_model;
+    ML_DELETE_CHECK(m_model);
 
     delete ui;
 }

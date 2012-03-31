@@ -33,8 +33,7 @@ void BookSearchFilter::setLibraryBook(LibraryBook *book)
 
 void BookSearchFilter::loadModel()
 {
-    if(m_model)
-        delete m_model;
+    ML_DELETE_CHECK(m_model);
 
     QStandardItemModel *model = new QStandardItemModel();
     model->setHorizontalHeaderLabels(QStringList() << tr("الفهرس"));

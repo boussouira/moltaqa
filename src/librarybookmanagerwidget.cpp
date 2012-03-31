@@ -5,6 +5,7 @@
 #include "selectauthordialog.h"
 #include "librarybookmanager.h"
 #include "modelenums.h"
+#include "utils.h"
 
 #include <qdebug.h>
 #include <qlineedit.h>
@@ -25,8 +26,7 @@ LibraryBookManagerWidget::LibraryBookManagerWidget(QWidget *parent) :
 
 LibraryBookManagerWidget::~LibraryBookManagerWidget()
 {
-    if(m_model)
-        delete m_model;
+    ML_DELETE_CHECK(m_model);
 
     delete ui;
 }

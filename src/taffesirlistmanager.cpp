@@ -3,11 +3,12 @@
 #include "libraryinfo.h"
 #include "modelenums.h"
 #include "xmlutils.h"
+#include "utils.h"
+#include "shamelaimportinfo.h"
 #include <qfile.h>
 #include <qxmlstream.h>
 #include <qdir.h>
 #include <qdom.h>
-#include "shamelaimportinfo.h"
 
 static TaffesirListManager *m_instance = 0;
 
@@ -44,10 +45,7 @@ void TaffesirListManager::loadModels()
 
 void TaffesirListManager::clear()
 {
-    if(m_model) {
-        delete m_model;
-        m_model = 0;
-    }
+    ML_DELETE_CHECK(m_model);
 }
 
 QStandardItemModel *TaffesirListManager::taffesirListModel()

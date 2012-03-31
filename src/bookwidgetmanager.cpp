@@ -10,6 +10,7 @@
 #include "bookexception.h"
 #include "openpagedialog.h"
 #include "mainwindow.h"
+#include "utils.h"
 
 #include <qmainwindow.h>
 #include <qmenubar.h>
@@ -80,7 +81,7 @@ void BookWidgetManager::tabCloseRequest(int tabIndex)
     if(!m_activeTab->count() && unActiveTab()->count())
         reverseActiveTab();
 
-    delete w;
+    ML_DELETE_CHECK(w);
 }
 
 void BookWidgetManager::tabChanged(int newIndex)

@@ -9,6 +9,7 @@
 #include "librarysearcher.h"
 #include "booksearchfilter.h"
 #include "clucenequery.h"
+#include "utils.h"
 #include <qmessagebox.h>
 
 SearchWidget::SearchWidget(QWidget *parent) :
@@ -44,11 +45,8 @@ SearchWidget::~SearchWidget()
         delete m_searcher;
     }
 
-    if(m_resultWidget)
-        delete m_resultWidget;
-
-    if(m_filterManager)
-        delete m_filterManager;
+    ML_DELETE_CHECK(m_resultWidget);
+    ML_DELETE_CHECK(m_filterManager);
 
     delete ui;
 }
@@ -211,8 +209,7 @@ void SearchWidget::search()
             m_searcher->wait();
         }
 
-        delete m_searcher;
-        m_searcher = 0;
+        ML_DELETE(m_searcher);
     }
 
     m_searcher = new LibrarySearcher(this);

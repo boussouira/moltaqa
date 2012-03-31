@@ -1,4 +1,5 @@
 #include "importmodel.h"
+#include "utils.h"
 
 ImportModelNode::ImportModelNode(LibraryBook::Type pType)
 {
@@ -85,7 +86,7 @@ ImportModel::ImportModel(QObject *parent)
 
 ImportModel::~ImportModel()
 {
-    delete m_rootNode;
+    ML_DELETE_CHECK(m_rootNode);
 }
 
 void ImportModel::setRootNode(ImportModelNode *node)

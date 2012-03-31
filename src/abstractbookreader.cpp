@@ -24,11 +24,8 @@ AbstractBookReader::AbstractBookReader(QObject *parent) : QObject(parent)
 
 AbstractBookReader::~AbstractBookReader()
 {
-    if(m_indexModel)
-        delete m_indexModel;
-
-    if(m_currentPage)
-        delete m_currentPage;
+    ML_DELETE_CHECK(m_indexModel);
+    ML_DELETE_CHECK(m_currentPage);
 
     if(m_zip.isOpen())
         m_zip.close();

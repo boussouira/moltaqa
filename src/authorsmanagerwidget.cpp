@@ -26,8 +26,7 @@ AuthorsManagerWidget::AuthorsManagerWidget(QWidget *parent) :
 
 AuthorsManagerWidget::~AuthorsManagerWidget()
 {
-    if(m_model)
-        delete m_model;
+    ML_DELETE_CHECK(m_model);
 
     delete ui;
 }

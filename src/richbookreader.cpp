@@ -19,8 +19,7 @@ RichBookReader::RichBookReader(QObject *parent) : AbstractBookReader(parent)
 
 RichBookReader::~RichBookReader()
 {
-    if(m_textFormat)
-        delete m_textFormat;
+    ML_DELETE_CHECK(m_textFormat);
 }
 
 void RichBookReader::connected()

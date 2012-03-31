@@ -37,17 +37,10 @@ LibraryManager::LibraryManager(LibraryInfo *info, QObject *parent) :
 
 LibraryManager::~LibraryManager()
 {
-    if(m_bookmanager)
-        delete m_bookmanager;
-
-    if(m_bookListManager)
-        delete m_bookListManager;
-
-    if(m_taffesirManager)
-        delete m_taffesirManager;
-
-    if(m_rowatManager)
-        delete m_rowatManager;
+    ML_DELETE_CHECK(m_bookmanager);
+    ML_DELETE_CHECK(m_bookListManager);
+    ML_DELETE_CHECK(m_taffesirManager);
+    ML_DELETE_CHECK(m_rowatManager);
 
     m_instance = 0;
 }

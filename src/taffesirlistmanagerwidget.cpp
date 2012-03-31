@@ -4,6 +4,7 @@
 #include "modelutils.h"
 #include "librarymanager.h"
 #include "taffesirlistmanager.h"
+#include "utils.h"
 
 TaffesirListManagerWidget::TaffesirListManagerWidget(QWidget *parent) :
     ControlCenterWidget(parent),
@@ -23,8 +24,7 @@ TaffesirListManagerWidget::TaffesirListManagerWidget(QWidget *parent) :
 
 TaffesirListManagerWidget::~TaffesirListManagerWidget()
 {
-    if(m_model)
-        delete m_model;
+    ML_DELETE_CHECK(m_model);
 
     delete ui;
 }

@@ -57,15 +57,8 @@ void BookListManager::loadModels()
 
 void BookListManager::clear()
 {
-    if(m_bookModel) {
-        delete m_bookModel;
-        m_bookModel = 0;
-    }
-
-    if(m_catModel) {
-        delete m_catModel;
-        m_catModel = 0;
-    }
+    ML_DELETE_CHECK(m_bookModel);
+    ML_DELETE_CHECK(m_catModel);
 
     m_catHash.clear();
     m_catElementHash.clear();

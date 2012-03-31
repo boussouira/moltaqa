@@ -29,14 +29,9 @@ LibrarySearcher::LibrarySearcher(QObject *parent)
 
 LibrarySearcher::~LibrarySearcher()
 {
-    if(m_hits)
-        delete m_hits;
-
-    if(m_query)
-        delete m_query;
-
-    if(m_cluceneQuery)
-        delete m_cluceneQuery;
+    ML_DELETE_CHECK(m_hits);
+    ML_DELETE_CHECK(m_query);
+    ML_DELETE_CHECK(m_cluceneQuery);
 
     if(m_searcher) {
         m_searcher->close();

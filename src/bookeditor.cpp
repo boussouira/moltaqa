@@ -24,8 +24,9 @@ BookEditor::BookEditor(QObject *parent) :
 
 BookEditor::~BookEditor()
 {
-    if(m_removeReader && m_bookReader)
-        delete m_bookReader;
+    if(m_removeReader) {
+        ML_DELETE_CHECK(m_bookReader);
+    }
 
     removeTemp();
 }
@@ -183,8 +184,7 @@ bool BookEditor::save()
         QFile::remove(backupFile);
 
     if(m_removeReader) {
-        delete m_bookReader;
-        m_bookReader = 0;
+        ML_DELETE_CHECK(m_bookReader);
     }
 
     // Create a new backup

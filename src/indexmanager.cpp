@@ -118,21 +118,13 @@ void IndexManager::threadDoneIndexing()
     if(--m_threadCount <= 0) {
         if(m_writer) {
             m_writer->close();
-            _CLLDELETE(m_writer);
-            m_writer = 0;
+            ML_DELETE(m_writer);
         }
 
-        if(m_analyzer) {
-            delete m_analyzer;
-            m_analyzer = 0;
-        }
+        ML_DELETE_CHECK(m_analyzer);
+        ML_DELETE_CHECK(m_taskIter);
 
         qDebug() << tr("تمت الفهرسة خلال %1").arg(Utils::secondsToString(m_indexingTime.elapsed()));
-
-        if(m_taskIter) {
-            delete m_taskIter;
-            m_taskIter = 0;
-        }
 
         qDeleteAll(m_threads);
         m_threads.clear();
