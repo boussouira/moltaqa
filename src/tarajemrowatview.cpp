@@ -21,14 +21,12 @@ TarajemRowatView::TarajemRowatView(QWidget *parent) :
     ui->setupUi(this);
 
     ui->tabWidget->setAutoTabClose(true);
-    ui->tabWidget->setCloseLastTab(false);
 
     m_filter = new ModelViewFilter(this);
     m_rowatManager = TarajemRowatManager::instance();
-
-    addTab(tr("الراوي"));
-
     Q_CHECK_PTR(m_rowatManager);
+
+    connect(ui->tabWidget, SIGNAL(lastTabClosed()), SIGNAL(hideMe()));
 }
 
 TarajemRowatView::~TarajemRowatView()
@@ -53,6 +51,9 @@ void TarajemRowatView::aboutToShow()
         m_filter->setTreeView(ui->treeView);
         m_filter->setup();
     }
+
+    if(!ui->tabWidget->count())
+        addTab(tr("الراوي"));
 }
 
 int TarajemRowatView::addTab(QString tabText)

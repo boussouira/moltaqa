@@ -144,6 +144,9 @@ void TabWidget::closeTab(int index)
 
         removeTab(index);
         delete w;
+
+        if(!count())
+            emit lastTabClosed();
     }
 }
 

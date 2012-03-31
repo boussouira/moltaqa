@@ -26,6 +26,7 @@ protected slots:
 
 signals:
     void tabMoved(int from, int to);
+    void lastTabClosed();
     void gotFocus();
     void moveToOtherTab(int index);
     void reverseSplitter();

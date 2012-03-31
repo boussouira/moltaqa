@@ -45,6 +45,7 @@ void ViewManager::setCurrentView(AbstarctView *view)
     foreach (QAction*act, currentView->navigationActions())
         m_navigationsMenu->removeAction(act);
 
+    view->setSelectable(true);
     view->aboutToShow();
 
     setCurrentWidget(view);

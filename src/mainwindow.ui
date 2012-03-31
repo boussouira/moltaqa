@@ -53,6 +53,7 @@
      <addaction name="actionShamelaImport"/>
     </widget>
     <addaction name="actionBooksList"/>
+    <addaction name="actionTarajemRowat"/>
     <addaction name="separator"/>
     <addaction name="menu_4"/>
     <addaction name="separator"/>
@@ -168,6 +169,11 @@
   <action name="actionSearchInBook">
    <property name="text">
     <string> في الكتاب الحالي</string>
+   </property>
+  </action>
+  <action name="actionTarajemRowat">
+   <property name="text">
+    <string>تراجم الرواة</string>
    </property>
   </action>
  </widget>

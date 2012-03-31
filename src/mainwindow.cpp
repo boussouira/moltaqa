@@ -18,6 +18,7 @@
 #include "viewmanager.h"
 #include "bookeditorview.h"
 #include "bookreaderhelper.h"
+#include "tarajemrowatview.h"
 
 #include <qmessagebox.h>
 #include <qsettings.h>
@@ -32,19 +33,22 @@ static MainWindow *m_instance = 0;
 MainWindow::MainWindow(QWidget *parent):
     QMainWindow(parent),
     ui(new Ui::MainWindow),
+    m_viewManager(0),
     m_libraryInfo(0),
     m_libraryManager(0),
+    m_bookView(0),
+    m_booksList(0),
+    m_welcomeWidget(0),
     m_indexTracker(0),
     m_indexManager(0),
-    m_readerHelper(0)
+    m_indexBar(0),
+    m_searchView(0),
+    m_readerHelper(0),
+    m_editorView(0),
+    m_tarajemView(0)
 {
     ui->setupUi(this);
     m_instance = this;
-
-    m_welcomeWidget = 0;
-    m_bookView = 0;
-    m_searchView = 0;
-    m_booksList = 0;
 
     setWindowTitle(App::name());
     loadSettings();
@@ -149,8 +153,8 @@ bool MainWindow::init()
         setupActions();
 
         m_readerHelper = new BookReaderHelper();
-
         m_indexTracker->findTasks();
+
     } catch(BookException &e) {
         QMessageBox::information(this,
                                  App::name(),
@@ -164,29 +168,15 @@ bool MainWindow::init()
 
 MainWindow::~MainWindow()
 {
-    if(m_booksList)
-        delete m_booksList;
-
-    if(m_welcomeWidget)
-        delete m_welcomeWidget;
-
-    if(m_bookView)
-        delete m_bookView;
-
-    if(m_searchView)
-        delete m_searchView;
-
-    if(m_libraryManager)
-        delete m_libraryManager;
-
-    if(m_libraryInfo)
-        delete m_libraryInfo;
-
-    if(m_readerHelper)
-        delete m_readerHelper;
-
-    if(m_indexTracker)
-        delete m_indexTracker;
+    ML_DELETE_CHECK(m_booksList);
+    ML_DELETE_CHECK(m_welcomeWidget);
+    ML_DELETE_CHECK(m_bookView);
+    ML_DELETE_CHECK(m_searchView);
+    ML_DELETE_CHECK(m_libraryManager);
+    ML_DELETE_CHECK(m_libraryInfo);
+    ML_DELETE_CHECK(m_readerHelper);
+    ML_DELETE_CHECK(m_tarajemView);
+    ML_DELETE_CHECK(m_indexTracker);
 
     delete ui;
 
@@ -216,6 +206,7 @@ void MainWindow::setupActions()
     connect(ui->actionBooksList, SIGNAL(triggered()), SLOT(showBooksList()));
     connect(ui->actionSearchView, SIGNAL(triggered()), SLOT(showSearchView()));
     connect(ui->actionSearchInBook, SIGNAL(triggered()), m_bookView, SLOT(searchInBook()));
+    connect(ui->actionTarajemRowat, SIGNAL(triggered()), SLOT(showTarajemRowatView()));
 
     connect(m_indexManager, SIGNAL(progress(int,int)), SLOT(indexProgress(int,int)));
     connect(m_indexManager, SIGNAL(started()), SLOT(startIndexing()));
@@ -245,7 +236,6 @@ void MainWindow::openBook(int pBookID)
     if(m_bookView->isHidden())
         m_bookView->show();
 
-    m_bookView->setSelectable(true);
     m_viewManager->setCurrentView(m_bookView);
 }
 
@@ -258,6 +248,16 @@ void MainWindow::showBooksList()
 void MainWindow::showSearchView()
 {
     m_searchView->ensureTabIsOpen();
+}
+
+void MainWindow::showTarajemRowatView()
+{
+    if(!m_tarajemView) {
+        m_tarajemView = new TarajemRowatView(this);
+        m_viewManager->addView(m_tarajemView);
+    }
+
+    m_viewManager->setCurrentView(m_tarajemView);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
