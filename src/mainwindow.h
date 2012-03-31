@@ -51,7 +51,7 @@ protected:
     void setupActions();
     void loadSettings();
 
-protected slots:
+public slots:
     void openBook(int pBookID);
 
     void showSearchView();
@@ -65,6 +65,7 @@ protected slots:
     void importBookDialog();
     void importFromShamela();
 
+protected slots:
     void startIndexing();
     void stopIndexing();
     void indexProgress(int value, int max);

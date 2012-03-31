@@ -245,7 +245,7 @@ void MainWindow::showBooksList()
 
 void MainWindow::showSearchView()
 {
-    m_searchView->ensureTabIsOpen();
+    m_viewManager->setCurrentView(m_searchView);
 }
 
 void MainWindow::showTarajemRowatView()

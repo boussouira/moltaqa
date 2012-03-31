@@ -14,6 +14,7 @@ SearchView::SearchView(QWidget *parent) : AbstarctView(parent)
 {
     m_layout = new QVBoxLayout(this);
     m_tabWidget = new TabWidget(this);
+    m_tabWidget->setAutoTabClose(true);
 
     m_layout->addWidget(m_tabWidget);
     m_layout->setContentsMargins(0, 6, 0, 0);
@@ -32,8 +33,7 @@ SearchView::SearchView(QWidget *parent) : AbstarctView(parent)
 
     connect(actNewTab, SIGNAL(triggered()), SLOT(openNewTab()));
     connect(actSwitchTab, SIGNAL(triggered()), SLOT(switchSearchWidget()));
-    connect(m_tabWidget, SIGNAL(tabCloseRequested(int)), SLOT(closeTab(int)));
-    connect(this, SIGNAL(lastTabClosed()), SIGNAL(hideMe()));
+    connect(m_tabWidget, SIGNAL(lastTabClosed()), SIGNAL(hideMe()));
 }
 
 QString SearchView::title()
@@ -41,12 +41,10 @@ QString SearchView::title()
     return tr("نافذة البحث");
 }
 
-void SearchView::ensureTabIsOpen()
+void SearchView::aboutToShow()
 {
-    if(m_tabWidget->count() <= 0)
+    if(!m_tabWidget->count())
         newTab(SearchWidget::LibrarySearch);
-    else
-        emit showMe();
 }
 
 bool SearchView::canSearch(bool showMessage)
@@ -102,28 +100,14 @@ void SearchView::newTab(SearchWidget::SearchType searchType, int bookID)
 
     m_tabWidget->setTabToolTip(tabIndex, tabTooltip);
     m_tabWidget->setCurrentIndex(tabIndex);
-
-    emit showMe();
-}
-
-void SearchView::closeTab(int index)
-{
-    QWidget *w = m_tabWidget->widget(index);
-    m_tabWidget->removeTab(index);
-
-    delete w;
-
-    if(m_tabWidget->count() <= 0)
-        emit lastTabClosed();
 }
 
 void SearchView::switchSearchWidget()
 {
     SearchWidget *w = qobject_cast<SearchWidget*>(m_tabWidget->currentWidget());
+    ML_RETURN(!w);
 
-    if(w) {
-        w->toggleWidget();
-    }
+    w->toggleWidget();
 }
 
 void SearchView::openNewTab()
