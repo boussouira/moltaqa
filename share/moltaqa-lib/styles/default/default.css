@@ -513,8 +513,6 @@ sheer {
 }
 
 .rawi-info .nav a {
-    background-image: -moz-linear-gradient(#FFFFFF, #FFDD91, #FFFFFF);
-    background-image: -webkit-linear-gradient(#FFFFFF, #FFDD91, #FFFFFF);
     border: 1px dotted #CCCCCC;
     border-radius: 5px 5px 5px 5px;
     margin: 0 5px;
@@ -532,7 +530,8 @@ sheer {
     margin: 0;
 }
 
-.rawi-info h3 {
+.rawi-info h4 {
+    background-color: #F7F7F7;
     border: 1px solid #CCCCCC;
     border-bottom: none;
     border-radius: 5px 5px 0 0;
@@ -541,6 +540,7 @@ sheer {
 }
 
 .rawi-info .head-info {
+    background-color: #FFFEF9;
     border: 1px solid #CCCCCC;
     border-radius: 0 0 5px 5px;
     padding: 0 6px;

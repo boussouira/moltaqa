@@ -32,6 +32,7 @@ public:
     void insertDivTag(QString text, QString selector="");
     void insertSpanTag(QString text, QString selector="");
     void insertParagraphTag(QString text, QString selector="");
+    void insertHeadTag(int head, QString text, QString selector="");
     void insertLinkTag(QString text, QString href, QString selector="");
     void insertImage(QString src);
 

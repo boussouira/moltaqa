@@ -91,6 +91,11 @@ void HtmlHelper::insertParagraphTag(QString text, QString selector)
     insertHtmlTag("p", text, selector);
 }
 
+void HtmlHelper::insertHeadTag(int head, QString text, QString selector)
+{
+    insertHtmlTag(QString("h%1").arg(head), text, selector);
+}
+
 void HtmlHelper::insertLinkTag(QString text, QString href, QString selector)
 {
     beginHtmlTag("a", selector, QString("href='%1'").arg(href));

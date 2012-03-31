@@ -87,7 +87,6 @@ void TarajemRowatView::setCurrentRawi(RawiInfo *info)
 
     html.beginDivTag(".rawi-info");
 
-
     html.beginDivTag(".nav");
     html.insertLinkTag(tr("الشيوخ "), "#sheok");
     html.insertLinkTag(tr("التلاميذ "), "#talamid");
@@ -137,13 +136,13 @@ void TarajemRowatView::setCurrentRawi(RawiInfo *info)
 
     html.endDivTag(); // #info
 
-    html.insertHtmlTag("h3", tr("الشيوخ"), "#sheok");
+    html.insertHeadTag(4, tr("الشيوخ"), "#sheok");
     html.insertDivTag(Utils::formatHTML(info->sheok), ".head-info");
 
-    html.insertHtmlTag("h3", tr("التلاميذ"), "#talamid");
+    html.insertHeadTag(4, tr("التلاميذ"), "#talamid");
     html.insertDivTag(Utils::formatHTML(info->talamid), ".head-info");
 
-    html.insertHtmlTag("h3", tr("الترجمة"), "#tarejama");
+    html.insertHeadTag(4, tr("الترجمة"), "#tarejama");
     html.insertDivTag(Utils::formatHTML(info->tarejama), ".head-info");
 
     html.endAllTags();
