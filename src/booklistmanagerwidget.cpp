@@ -74,8 +74,7 @@ void BookListManagerWidget::beginEdit()
 void BookListManagerWidget::cutNode()
 {
     QModelIndex index = Utils::selectedIndex(ui->treeView);
-    if(!index.isValid())
-        return;
+    ML_RETURN(!index.isValid());
 
     if(m_copiedItems.isEmpty()) {
         QStandardItem *parentItem = Utils::itemFromIndex(m_model, index.parent());
@@ -90,8 +89,7 @@ void BookListManagerWidget::cutNode()
 void BookListManagerWidget::pastNode()
 {
     QModelIndex index = Utils::selectedIndex(ui->treeView);
-    if(!index.isValid())
-        return;
+    ML_RETURN(!index.isValid());
 
     if(!m_copiedItems.isEmpty()) {
         QStandardItem *item = m_model->itemFromIndex(index);
@@ -107,8 +105,7 @@ void BookListManagerWidget::pastNode()
 void BookListManagerWidget::pastSublingNode()
 {
     QModelIndex index = Utils::selectedIndex(ui->treeView);
-    if(!index.isValid())
-        return;
+    ML_RETURN(!index.isValid());
 
     if(!m_copiedItems.isEmpty()) {
         QStandardItem *parentItem = Utils::itemFromIndex(m_model, index.parent());
@@ -166,8 +163,7 @@ void BookListManagerWidget::addCat()
 void BookListManagerWidget::removeCat()
 {
     QModelIndex index = Utils::selectedIndex(ui->treeView);
-    if(!index.isValid())
-        return;
+    ML_RETURN(!index.isValid());
 
     QStandardItem *item = Utils::itemFromIndex(m_model, index);
 
@@ -220,8 +216,7 @@ void BookListManagerWidget::menuRequested(QPoint)
 
 void BookListManagerWidget::updateActions()
 {
-    if(!m_model)
-        return;
+    ML_RETURN(!m_model);
 
     QModelIndex index = Utils::selectedIndex(ui->treeView);
     QModelIndex prevIndex = index.sibling(index.row()+1, index.column());

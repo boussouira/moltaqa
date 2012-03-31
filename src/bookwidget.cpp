@@ -10,6 +10,7 @@
 #include "modelutils.h"
 #include "librarybookmanager.h"
 #include "booksviewer.h"
+#include "utils.h"
 
 #include <qsplitter.h>
 #include <qboxlayout.h>
@@ -295,8 +296,7 @@ void BookWidget::showIndex()
 void BookWidget::showIndex(int tid)
 {
     QModelIndex index = Utils::findModelIndex(m_indexWidget->indexModel(), tid);
-    if(!index.isValid())
-        return;
+    ML_RETURN(!index.isValid());
 
     QModelIndex child = index.child(0, 0);
 

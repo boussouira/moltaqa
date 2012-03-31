@@ -1,4 +1,5 @@
 #include "librarybook.h"
+#include "utils.h"
 #include <qfile.h>
 #include <qstringlist.h>
 
@@ -76,8 +77,7 @@ QString LibraryBook::toString()
 
 void LibraryBook::fromString(QString info)
 {
-    if(info.isEmpty())
-        return;
+    ML_RETURN(info.isEmpty());
 
     partsCount = info.count(';');
     QStringList partInfoList;

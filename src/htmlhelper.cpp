@@ -1,4 +1,5 @@
 #include "htmlhelper.h"
+#include "utils.h"
 #include <qstringlist.h>
 
 HtmlHelper::HtmlHelper()
@@ -199,8 +200,7 @@ QString HtmlHelper::jsEscape(QString text)
 
 void HtmlHelper::addSelector(QString selector)
 {
-    if(selector.isEmpty())
-        return;
+    ML_RETURN(selector.isEmpty());
 
     if(!selector.contains('|')) {
         if(selector.startsWith('#'))

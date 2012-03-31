@@ -6,6 +6,7 @@
 #include "mainwindow.h"
 #include "bookreaderhelper.h"
 #include "modelenums.h"
+#include "utils.h"
 
 RichQuranReader::RichQuranReader(QObject *parent) : RichBookReader(parent)
 {
@@ -28,9 +29,7 @@ void RichQuranReader::setCurrentPage(QDomElement pageNode)
 
     m_pagesDom.setCurrentElement(pageNode);
 
-    if(pageNode.attribute("page").toInt() == m_currentPage->page) {
-        return;
-    }
+    ML_RETURN(pageNode.attribute("page").toInt() == m_currentPage->page);
 
     QDomElement prevNode = pageNode.previousSiblingElement();
     while(!prevNode.isNull()) {

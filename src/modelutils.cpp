@@ -1,5 +1,6 @@
 #include "modelutils.h"
 #include "modelenums.h"
+#include "utils.h"
 #include <qtreeview.h>
 
 namespace Utils {
@@ -79,15 +80,13 @@ QModelIndex changeParent(QStandardItemModel *model, QModelIndex child, QModelInd
 
 void swap(QStandardItemModel *model, QModelIndex fromIndex, QModelIndex toIndex)
 {
-    if(fromIndex.parent() != toIndex.parent())
-        return;
+    ML_RETURN(fromIndex.parent() != toIndex.parent());
 
     QModelIndex parent = fromIndex.parent();
 
     QStandardItem *parentItem = itemFromIndex(model, parent);
 
-    if(!parentItem)
-        return;
+    ML_RETURN(!parentItem);
 
     QList<QStandardItem*> rows = parentItem->takeRow(fromIndex.row());
     parentItem->insertRow(toIndex.row(), rows);
@@ -112,12 +111,10 @@ void selectIndex(QTreeView *tree, QModelIndex index)
 void moveUp(QStandardItemModel *model, QTreeView *tree)
 {
     QModelIndex index = selectedIndex(tree);
-    if(!index.isValid())
-        return;
+    ML_RETURN(!index.isValid());
 
     QModelIndex toIndex = index.sibling(index.row()-1, index.column());
-    if(!toIndex.isValid())
-        return;
+    ML_RETURN(!toIndex.isValid());
 
     tree->collapse(index);
     tree->collapse(toIndex);
@@ -130,12 +127,10 @@ void moveUp(QStandardItemModel *model, QTreeView *tree)
 void moveDown(QStandardItemModel *model, QTreeView *tree)
 {
     QModelIndex index = selectedIndex(tree);
-    if(!index.isValid())
-        return;
+    ML_RETURN(!index.isValid());
 
     QModelIndex toIndex = index.sibling(index.row()+1, index.column());
-    if(!toIndex.isValid())
-        return;
+    ML_RETURN(!toIndex.isValid());
 
     tree->collapse(index);
     tree->collapse(toIndex);
@@ -149,8 +144,7 @@ void moveRight(QStandardItemModel *model, QTreeView *tree)
 {
     QModelIndex index = selectedIndex(tree);
     QModelIndex parent = index.parent();
-    if(!index.isValid() || !parent.isValid())
-        return;
+    ML_RETURN(!index.isValid() || !parent.isValid());
 
     QModelIndex newParent = parent.parent();
 
@@ -161,8 +155,7 @@ void moveRight(QStandardItemModel *model, QTreeView *tree)
 void moveLeft(QStandardItemModel *model, QTreeView *tree)
 {
     QModelIndex index = selectedIndex(tree);
-    if(!index.isValid())
-        return;
+    ML_RETURN(!index.isValid());
 
     QModelIndex parent = index.sibling(index.row()-1, index.column());
 

@@ -1,5 +1,6 @@
 #include "xmldomhelper.h"
 #include "xmlutils.h"
+#include "utils.h"
 #include <qtextstream.h>
 #include <qdebug.h>
 
@@ -37,8 +38,7 @@ bool XmlDomHelper::needSave()
 
 void XmlDomHelper::load()
 {
-    if(m_domLoaded)
-        return;
+    ML_RETURN(m_domLoaded);
 
     if(!m_filePath.isEmpty()) {
 
@@ -59,8 +59,7 @@ void XmlDomHelper::load()
 
 void XmlDomHelper::load(QIODevice *file)
 {
-    if(m_domLoaded)
-        return;
+    ML_RETURN(m_domLoaded);
 
     m_doc = Utils::getDomDocument(file);
     m_rootElement = m_doc.documentElement();

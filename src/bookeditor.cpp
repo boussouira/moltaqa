@@ -87,8 +87,7 @@ void BookEditor::setBookReader(RichBookReader *reader)
 
 void BookEditor::unZip()
 {
-    if(!m_bookTmpDir.isEmpty() && QFile::exists(m_bookTmpDir))
-        return;
+    ML_RETURN(!m_bookTmpDir.isEmpty() && QFile::exists(m_bookTmpDir));
 
     QString folder = QFileInfo(m_book->bookPath).baseName();
     QDir dir(MW->libraryInfo()->tempDir());

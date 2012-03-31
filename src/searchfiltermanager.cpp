@@ -175,8 +175,7 @@ void SearchFilterManager::showUnSelected()
 
 void SearchFilterManager::selectChilds()
 {
-    if(m_treeView->selectionModel()->selectedIndexes().isEmpty())
-        return;
+    ML_RETURN(m_treeView->selectionModel()->selectedIndexes().isEmpty());
 
     QModelIndex index = m_treeView->selectionModel()->selectedIndexes().first();
     if(index.isValid())
@@ -185,8 +184,7 @@ void SearchFilterManager::selectChilds()
 
 void SearchFilterManager::unSelectChilds()
 {
-    if(m_treeView->selectionModel()->selectedIndexes().isEmpty())
-        return;
+    ML_RETURN(m_treeView->selectionModel()->selectedIndexes().isEmpty());
 
     QModelIndex index = m_treeView->selectionModel()->selectedIndexes().first();
     if(index.isValid())
@@ -200,8 +198,7 @@ void SearchFilterManager::clearFilter()
 
 void SearchFilterManager::enableCatSelection()
 {
-    if(!m_autoSelectParent)
-        return;
+    ML_RETURN(!m_autoSelectParent);
 
     bool catCheckable = m_filterModel->filterRegExp().isEmpty();
 

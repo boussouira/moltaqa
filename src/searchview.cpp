@@ -67,8 +67,7 @@ bool SearchView::canSearch(bool showMessage)
 
 void SearchView::newTab(SearchWidget::SearchType searchType, int bookID)
 {
-    if(!canSearch())
-        return;
+    ML_RETURN(!canSearch());
 
     SearchWidget *searchWidget = 0;
     if(searchType == SearchWidget::LibrarySearch) {

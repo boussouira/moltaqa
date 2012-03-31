@@ -265,8 +265,7 @@ void BooksViewer::openTafessir()
         int tafessirID = m_comboTafasir->itemData(m_comboTafasir->currentIndex(), ItemRole::idRole).toInt();
 
         LibraryBook *bookInfo = LibraryBookManager::instance()->getLibraryBook(tafessirID);
-        if(!bookInfo || !bookInfo->isTafessir() || !m_viewManager->activeBook()->isQuran())
-            return;
+        ML_RETURN(!bookInfo || !bookInfo->isTafessir() || !m_viewManager->activeBook()->isQuran());
 
         bookdb = new RichTafessirReader();
         bookdb->setBookInfo(bookInfo);

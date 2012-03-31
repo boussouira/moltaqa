@@ -18,8 +18,7 @@ void BookSearchWidget::init(int bookID)
 {
     m_bookInfo = LibraryBookManager::instance()->getLibraryBook(bookID);
 
-    if(!m_bookInfo)
-        return;
+    ML_RETURN(!m_bookInfo);
 
     BookSearchFilter *filter= new BookSearchFilter(this);
     filter->setLibraryBook(m_bookInfo);
