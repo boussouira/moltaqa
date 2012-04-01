@@ -169,6 +169,23 @@ void UtilsTest::getPageTitle()
 
 }
 
+void UtilsTest::formatHTML()
+{
+    QStringList origins;
+    QStringList excpected;
+
+    origins << "The head\n\nSmall paragraph\nAn other one\n\nSecondHead"
+            << "Line one\nLine Two\nLine Tree"
+            << "\n\nLine one\nLine Two\nLine Tree\n\n\n";
+
+    excpected << "<p>The head</p><p>Small paragraph<br />An other one</p><p>SecondHead</p>"
+              << "<p>Line one<br />Line Two<br />Line Tree</p>"
+              << "<p>Line one<br />Line Two<br />Line Tree</p>";
+
+    for(int i=0; i<origins.size(); i++)
+        QCOMPARE(excpected[i], Utils::formatHTML(origins[i]));
+}
+
 int UtilsTest::getPageTitleID(QList<int> &titles, int pageID)
 {
     if(!titles.contains(pageID)) {

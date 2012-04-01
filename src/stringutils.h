@@ -20,7 +20,7 @@ inline QString removeHtmlTags(QString text)
 QString htmlSpecialCharsEncode(QString text);
 QString getTagsText(const QString &text, const QString &tag);
 
-QString formatHTML(QString text, bool useBrTag=true);
+QString formatHTML(QString text);
 }
 
 #endif // STRINGUTILS_H

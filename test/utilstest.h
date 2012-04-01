@@ -24,6 +24,8 @@ private slots:
 
     void getPageTitle();
 
+    void formatHTML();
+
 protected:
     int getPageTitleID(QList<int> &titles, int pageID);
 };

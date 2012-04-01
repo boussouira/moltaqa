@@ -33,23 +33,25 @@ QString getTagsText(const QString &text, const QString &tag)
     return result;
 }
 
-QString formatHTML(QString text, bool useBrTag)
+QString formatHTML(QString text)
 {
     QString htmlText;
     text = Utils::htmlSpecialCharsEncode(text);
 
-    QStringList paragraphs = text.split(QRegExp("[\\r\\n]+"));
-    if(useBrTag) {
-        foreach(QString p, paragraphs) {
-            htmlText.append(p.simplified());
-            htmlText.append("<br />");
+    QStringList paragraphs = text.split(QRegExp("[\\r\\n]{2,}"), QString::SkipEmptyParts);
+    foreach(QString p, paragraphs) {
+        QStringList lines = p.split(QRegExp("[\\r\\n]"), QString::SkipEmptyParts);
+
+        htmlText.append("<p>");
+
+        for(int i=0;i<lines.size(); i++) {
+            if(i)
+                htmlText.append("<br />");
+
+            htmlText.append(lines[i].simplified());
         }
-    } else {
-        foreach(QString p, paragraphs) {
-            htmlText.append("<p>");
-            htmlText.append(p.simplified());
-            htmlText.append("</p>");
-        }
+
+        htmlText.append("</p>");
     }
 
     return htmlText;
