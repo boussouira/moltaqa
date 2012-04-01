@@ -35,13 +35,16 @@ public:
     void open();
     void close();
 
-    void unzip();
-    void zip();
+    QString unzip();
+    QString zip();
 
-    void save();
+    bool save();
 
     QuaZipFilePtr getZipFile(const QString &fileName);
     XmlDomHelperPtr getDomHelper(const QString &fileName);
+
+    static bool unzip(const QString &zipPath, const QString &outPath);
+    static bool zip(const QString &dir, const QString &zipPath);
 
 protected:
     ZipStat m_stat;

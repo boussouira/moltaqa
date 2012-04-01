@@ -2,6 +2,8 @@
 #include "JlCompress.h"
 #include "mainwindow.h"
 #include "libraryinfo.h"
+#include "utils.h"
+#include <qdebug.h>
 
 ZipHelper::ZipHelper(QObject *parent) :
     QObject(parent),
@@ -37,7 +39,7 @@ void ZipHelper::close()
     m_stat = Closed;
 }
 
-void ZipHelper::unzip()
+QString ZipHelper::unzip()
 {
     m_unzipDirPath= QFileInfo(m_zipPath).baseName();
     QDir dir(MW->libraryInfo()->tempDir());
@@ -45,33 +47,89 @@ void ZipHelper::unzip()
     while(dir.exists(m_unzipDirPath))
         m_unzipDirPath.append("_");
 
-    if(JlCompress::extractDir(m_zipPath, m_unzipDirPath).count())
+    dir.mkdir(m_unzipDirPath);
+
+    m_unzipDirPath = dir.absoluteFilePath(m_unzipDirPath);
+
+    if(unzip(m_zipPath, m_unzipDirPath)) {
         m_stat = UnZipped;
+        return m_unzipDirPath;
+    } else {
+        qCritical() << "ZipHelper: Error when unzip file:" << m_zipPath << "to" << m_unzipDirPath;
+        return QString();
+    }
+}
+
+QString ZipHelper::zip()
+{
+    if(m_stat != UnZipped) {
+        qDebug("ZipHelper: File is already zipped");
+        return QString();
+    }
+
+    QDir tempDir(MW->libraryInfo()->tempDir());
+    QString zipPath = Utils::genBookName(tempDir.absolutePath(), true, "mld", QFileInfo(m_zipPath).baseName()+'_');
+
+    if(zip(m_unzipDirPath, zipPath))
+        return zipPath;
     else
-        qCritical("ZipHelper: Error when unzip file");
+        return QString();
 }
 
-void ZipHelper::zip()
+bool ZipHelper::save()
 {
-    JlCompress::compressDir(m_zipPath, m_unzipDirPath);
-}
+    QString newZip = zip();
+    QString backupZip = m_zipPath + ".back";
+    if(!newZip.isEmpty()) {
+        if(!QFile::remove(backupZip))
+            qWarning() << "ZipHelper: Can't remove backup file:" << backupZip;
+        if(QFile::rename(m_zipPath, backupZip)) {
+            if(QFile::copy(newZip, m_zipPath)) {
+                qDebug() << "ZipHelper: Saved to:" << m_zipPath;
+                return true;
+            } else {
+                qCritical() << "ZipHelper: Can't copy" << newZip << "to" << m_zipPath;
+            }
+        } else {
+            qCritical() << "ZipHelper: Can't create backup file:" << backupZip;
+        }
+    } else {
+        qCritical() << "ZipHelper: Can't compress temp dir:" << m_unzipDirPath;
+    }
 
-void ZipHelper::save()
-{
+    return false;
 }
 
 QuaZipFilePtr ZipHelper::getZipFile(const QString &fileName)
 {
     QuaZipFile *file = 0;
 
-    if(m_zip.setCurrentFile(fileName)) {
-        if(file->open(QIODevice::ReadOnly))
-            file = new QuaZipFile(&m_zip);
-        else
-            qWarning("getFileContent: open error %d", file->getZipError());
+    if(m_stat == Open) {
+        if(m_zip.setCurrentFile(fileName)) {
+            if(file->open(QIODevice::ReadOnly))
+                file = new QuaZipFile(&m_zip);
+            else
+                qWarning("getZipFile: open error %d", file->getZipError());
 
+        } else {
+            qWarning("getZipFile: setCurrentFile error %d", m_zip.getZipError());
+        }
+/*
+    } else if(m_stat == UnZipped) {
+        QDir dir(m_unzipDirPath);
+        if(dir.exists(fileName)) {
+            QFile file(dir.filePath(fileName));
+            if(!file.open(QFile::WriteOnly)) {
+                qWarning("getZipFile: Can't open file for writing: %s", qPrintable(file.errorString()));
+            }
+
+        } else {
+            qWarning() << "getZipFile: File doesn't exists:" << dir.filePath(fileName);
+        }
+    }
+*/
     } else {
-        qWarning("getFileContent: setCurrentFile error %d", m_zip.getZipError());
+         qWarning("getZipFile: File is not in Open stat");
     }
 
     return QuaZipFilePtr(file);
@@ -80,16 +138,181 @@ QuaZipFilePtr ZipHelper::getZipFile(const QString &fileName)
 XmlDomHelperPtr ZipHelper::getDomHelper(const QString &fileName)
 {
     XmlDomHelper *dom = 0;
-    QuaZipFile pagesFile(&m_zip);
+    if(m_stat == Open) {
+        QuaZipFile pagesFile(&m_zip);
 
-    if(m_zip.setCurrentFile(fileName)) {
-        if(pagesFile.open(QIODevice::ReadOnly)) {
-            dom = new XmlDomHelper();
-            dom->load(&pagesFile);
-        } else {
-            qWarning("getBookInfo: open error %d", pagesFile.getZipError());
+        if(m_zip.setCurrentFile(fileName)) {
+            if(pagesFile.open(QIODevice::ReadOnly)) {
+                dom = new XmlDomHelper();
+                dom->load(&pagesFile);
+            } else {
+                qWarning("getDomHelper: open error %d", pagesFile.getZipError());
+            }
         }
+    } else if(m_stat == UnZipped) {
+        QDir dir(m_unzipDirPath);
+        dom = new XmlDomHelper();
+        dom->setFilePath(dir.filePath(fileName));
+        if(!dir.exists(fileName))
+            dom->create();
+
+        dom->load();
+        qDebug() << "Dom path:" << dir.filePath(fileName);
+    } else {
+        qWarning("getDomHelper: File is not in Open or Unzipped stat");
     }
 
     return XmlDomHelperPtr(dom);
+}
+
+bool ZipHelper::unzip(const QString &zipPath, const QString &outPath)
+{
+    ML_RETURN_FALSE(!QFile::exists(zipPath));
+    ML_RETURN_FALSE(!QFile::exists(outPath));
+
+    QDir outDir(outPath);
+
+    QFile zipFile(zipPath);
+    QuaZip zip(&zipFile);
+
+    if(!zip.open(QuaZip::mdUnzip)) {
+        qWarning("unZip: cant Open zip file %d", zip.getZipError());
+        return false;
+    }
+
+    QuaZipFileInfo info;
+    QuaZipFile file(&zip);
+
+    for(bool more=zip.goToFirstFile(); more; more=zip.goToNextFile()) {
+        if(!zip.getCurrentFileInfo(&info)) {
+            qWarning("getPages: getCurrentFileInfo Error %d", zip.getZipError());
+            continue;
+        }
+
+        if(!file.open(QIODevice::ReadOnly)) {
+            qWarning("unZip: open reader Error %d", zip.getZipError());
+            continue;
+        }
+
+        QString outPath = outDir.filePath(info.name);
+
+        outDir.mkpath(QFileInfo(outPath).path());
+
+        QFile out(outPath);
+        if(!out.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+            qWarning() << "unZip: open writer Error" << zip.getZipError()
+                       << "Path:" << outPath;
+
+            file.close();
+            continue;
+        }
+
+        char buf[4096];
+        int len = 0;
+
+        while (!file.atEnd()) {
+            len = file.read(buf, 4096);
+            out.write(buf, len);
+        }
+
+        out.close();
+        file.close();
+    }
+
+    return true;
+}
+
+bool zipDir(const QDir &parentDir, const QString &path, QuaZipFile *outFile)
+{
+    QFile inFile;
+    QDir bookDir(path);
+    QFileInfoList files = bookDir.entryInfoList(QDir::AllDirs|QDir::Files|QDir::NoSymLinks|QDir::NoDotAndDotDot);
+
+    if(files.isEmpty()) {
+        qWarning("zipDir: input directory is empty");
+    }
+
+    foreach(QFileInfo file, files) {
+        if(file.isDir()) {
+            if(zipDir(parentDir, file.filePath(), outFile))
+                continue;
+            else
+                return false;
+        }
+
+        if(!file.isFile()) {
+            qWarning() << "zipDir: Can't compress:" << file.filePath();
+            continue;
+        }
+
+        QString inFilePath = parentDir.relativeFilePath(file.filePath());
+
+        inFile.setFileName(file.filePath());
+
+        if(!inFile.open(QIODevice::ReadOnly)) {
+            qWarning("zipDir: open input file error: %s", qPrintable(inFile.errorString()));
+            return false;
+        }
+
+        if(!outFile->open(QIODevice::WriteOnly, QuaZipNewInfo(inFilePath, inFilePath))) {
+            qWarning("zipDir: open outFile error: %d", outFile->getZipError());
+            return false;
+        }
+
+        char buf[4096];
+        qint64 l = 0;
+
+        while (!inFile.atEnd()) {
+             l = inFile.read(buf, 4096);
+            if (l < 0) {
+                qWarning("zipDir: input file read error: %s", qPrintable(inFile.errorString()));
+                break;
+            }
+            if (l == 0)
+                break;
+            if (outFile->write(buf, l) != l) {
+                qWarning("zipDir: write chunk error: %d", outFile->getZipError());
+                break;
+            }
+        }
+
+        outFile->close();
+
+        if(outFile->getZipError()!=UNZ_OK) {
+            qWarning("zipDir: outFile close error: %d", outFile->getZipError());
+            return false;
+        }
+
+        inFile.close();
+    }
+
+    return true;
+}
+
+bool ZipHelper::zip(const QString &dir, const QString &zipPath)
+{
+    QFile zipFile(zipPath);
+    QDir inDir(dir);
+
+    QuaZip zip(&zipFile);
+    if(!zip.open(QuaZip::mdCreate)) {
+        qWarning("zip: open zip error: %d", zip.getZipError());
+        return false;
+    }
+
+    QuaZipFile outFile(&zip);
+
+    if(!zipDir(inDir, dir, &outFile)) {
+        zip.close();
+        return false;
+    }
+
+    zip.close();
+
+    if(zip.getZipError()!=0) {
+        qWarning("zip: close zip error: %d", zip.getZipError());
+        return false;
+    }
+
+    return true;
 }

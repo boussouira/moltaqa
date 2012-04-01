@@ -101,6 +101,13 @@ void TarajemRowatView::setCurrentRawi(RawiInfo *info)
     html.insertSpanTag(info->name, ".pro-value");
     html.endParagraphTag();
 
+    if(!info->laqab.isEmpty()) {
+        html.beginParagraphTag();
+        html.insertSpanTag(tr("اللقب: "), ".pro-name");
+        html.insertSpanTag(info->laqab, ".pro-value");
+        html.endParagraphTag();
+    }
+
     if(!info->birthStr.isEmpty()) {
         html.beginParagraphTag();
         html.insertSpanTag(tr("الولادة: "), ".pro-name");

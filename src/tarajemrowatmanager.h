@@ -12,6 +12,7 @@ public:
 
     int id;
     QString name;
+    QString laqab;
 
     int birthYear;
     QString birthStr;
@@ -28,6 +29,13 @@ public:
     QString sheok;
     QString talamid;
     QString tarejama;
+
+    static const int UnknowYear = 99999;
+
+    inline bool unknowBirth() { return (birthYear == UnknowYear); }
+    inline bool unknowDeath() { return (deathYear == UnknowYear); }
+
+    RawiInfo *clone() { return new RawiInfo(*this); }
 };
 
 class TarajemRowatManager : public ListManager
@@ -45,11 +53,17 @@ public:
 
     RawiInfo *getRawiInfo(int rawiID);
 
+    bool beginUpdate();
+    void endUpdate();
+    void updateRawi(RawiInfo *rawi);
+
 protected:
     QString m_path;
     ZipHelper m_zip;
     QHash<int, RawiInfo*> m_info;
     QHash<int, RawiInfo*> m_fullInfo;
+    QHash<int, QDomElement> m_elementHash;
+    XmlDomHelperPtr m_domHelper;
 };
 
 #endif // TARAJEMROWATMANAGER_H

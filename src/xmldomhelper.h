@@ -21,6 +21,7 @@ public:
     void save();
     void save(const QString &filePath);
     void reload();
+    void create();
 
     QDomElement findElement(const QString &attr, const QString &value);
     QDomElement findElement(const QString &attr, int value) { return findElement(attr, QString::number(value)); }

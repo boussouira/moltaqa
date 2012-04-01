@@ -1,6 +1,6 @@
 #include "controlcenterwidget.h"
-#include "mainwindow.h"
 #include "librarymanager.h"
+#include "utils.h"
 
 ControlCenterWidget::ControlCenterWidget(QWidget *parent) : QWidget(parent)
 {
@@ -10,6 +10,8 @@ ControlCenterWidget::ControlCenterWidget(QWidget *parent) : QWidget(parent)
 
 void ControlCenterWidget::setModified(bool m)
 {
+    ML_RETURN(m_modified == m);
+
     m_modified = m;
 
     emit modified(m);

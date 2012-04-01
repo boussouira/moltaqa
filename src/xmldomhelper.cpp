@@ -96,6 +96,22 @@ void XmlDomHelper::reload()
     load();
 }
 
+void XmlDomHelper::create()
+{
+    ML_RETURN(QFile::exists(m_filePath));
+
+    QString path = QFileInfo(m_filePath).path();
+
+    if(QFile::exists(path)) {
+        QDir dir;
+        dir.mkpath(path);
+    }
+
+    QFile file(m_filePath);
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
+        qWarning("Can't create file %s: %s", qPrintable(m_filePath), qPrintable(file.errorString()));
+}
+
 QDomElement XmlDomHelper::findElement(const QString &attr, const QString &value)
 {
     QString tag;

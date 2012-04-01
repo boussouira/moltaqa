@@ -4,6 +4,7 @@
 #include "librarybookmanagerwidget.h"
 #include "taffesirlistmanagerwidget.h"
 #include "authorsmanagerwidget.h"
+#include "tarajemrowatmanagerwidget.h"
 #include "utils.h"
 #include <qevent.h>
 
@@ -17,6 +18,7 @@ ControlCenterDialog::ControlCenterDialog(QWidget *parent) :
     addControlWidget(new TaffesirListManagerWidget(this));
     addControlWidget(new LibraryBookManagerWidget(this));
     addControlWidget(new AuthorsManagerWidget(this));
+    addControlWidget(new TarajemRowatManagerWidget(this));
 
     ui->listWidget->setCurrentRow(0);
     setCurrentRow(0);
