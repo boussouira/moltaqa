@@ -4,23 +4,54 @@
 #include <qregexp.h>
 
 namespace Utils {
+namespace Html {
 
-inline QString removeHtmlSpecialChars(QString text)
+inline QString removeSpecialChars(QString text)
 {
     return text.replace(QRegExp("&#?[a-z0-9]{2,8};"), " ");
 }
 
-inline QString removeHtmlTags(QString text)
+inline QString removeTags(QString text)
 {
     return text.contains('<')
             ? text.replace(QRegExp("</?\\w[^>]*>"), " ").trimmed()
             : text;
 }
 
-QString htmlSpecialCharsEncode(QString text);
+QString specialCharsEncode(QString text);
 QString getTagsText(const QString &text, const QString &tag);
 
-QString formatHTML(QString text);
-}
+QString format(QString text);
+
+} //Html
+
+namespace String {
+
+QString abbreviate(QString str, int size);
+QString secondsToString(int milsec, bool html=false);
+QString hijriYear(int hYear);
+
+
+namespace Arabic {
+
+enum Words {
+    SECOND  = 1,
+    MINUTE,
+    HOUR,
+    BOOK,
+    AUTHOR,
+    CATEGORIE,
+    FILES
+};
+
+QString plural(int count, Words word, bool html=false);
+QString clean(QString text);
+bool compare(QString first, QString second);
+bool contains(QString src, QString text);
+bool fuzzyContains(QString first, QString second);
+
+} //Arabic
+} //String
+} //Utils
 
 #endif // STRINGUTILS_H

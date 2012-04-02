@@ -105,7 +105,7 @@ void UtilsTest::removeHtmlSpecialChars()
               << " a href= test  Test /a ";
 
     for(int i=0; i<origins.size(); i++)
-        QCOMPARE(excpected[i], Utils::removeHtmlSpecialChars(origins[i]));
+        QCOMPARE(excpected[i], Utils::Html::removeSpecialChars(origins[i]));
 }
 
 void UtilsTest::htmlSpecialCharsEncode()
@@ -120,7 +120,7 @@ void UtilsTest::htmlSpecialCharsEncode()
               << "&lt;a href=&#39;test&#39;&gt;Test&lt;/a&gt;";
 
     for(int i=0; i<origins.size(); i++)
-        QCOMPARE(excpected[i], Utils::htmlSpecialCharsEncode(origins[i]));
+        QCOMPARE(excpected[i], Utils::Html::specialCharsEncode(origins[i]));
 }
 
 void UtilsTest::removeHtmlTags()
@@ -139,7 +139,7 @@ void UtilsTest::removeHtmlTags()
               << "saad   kamal  karim   ahmed";
 
     for(int i=0; i<origins.size(); i++)
-        QCOMPARE(excpected[i], Utils::removeHtmlTags(origins[i]));
+        QCOMPARE(excpected[i], Utils::Html::removeTags(origins[i]));
 }
 
 void UtilsTest::getTags()
@@ -153,7 +153,7 @@ void UtilsTest::getTags()
     excpected << "This is a test I mean  THIS  tag ";
 
     for(int i=0; i<origins.size(); i++)
-        QCOMPARE(excpected[i], Utils::getTagsText(origins[i], "sanad"));
+        QCOMPARE(excpected[i], Utils::Html::getTagsText(origins[i], "sanad"));
 }
 
 void UtilsTest::getPageTitle()
@@ -186,7 +186,7 @@ void UtilsTest::formatHTML()
               << "<p>Line one<br />Line Two<br />Line Tree</p>";
 
     for(int i=0; i<origins.size(); i++)
-        QCOMPARE(excpected[i], Utils::formatHTML(origins[i]));
+        QCOMPARE(excpected[i], Utils::Html::format(origins[i]));
 }
 
 void UtilsTest::queryBuilder()

@@ -74,26 +74,26 @@ void TextBookIndexer::start()
 
 void TextBookIndexer::indexPageText(BookPage *page)
 {
-    QString pageText = Utils::removeHtmlSpecialChars(page->text);
+    QString pageText = Utils::Html::removeSpecialChars(page->text);
 
-    wchar_t *fullText = Utils::QStringToWChar(Utils::removeHtmlTags(pageText));
+    wchar_t *fullText = Utils::QStringToWChar(Utils::Html::removeTags(pageText));
     m_doc->add( *_CLNEW Field(PAGE_TEXT_FIELD,
                               fullText,
                               m_tokenAndNoStore, false));
 
-    QString asanid = Utils::getTagsText(pageText, "sanad");
+    QString asanid = Utils::Html::getTagsText(pageText, "sanad");
     if(!asanid.isEmpty())
         m_doc->add( *_CLNEW Field(HADDIT_SANAD_FIELD,
                                   Utils::QStringToWChar(asanid),
                                   m_tokenAndNoStore, false));
 
-    QString motoon = Utils::getTagsText(pageText, "mateen");
+    QString motoon = Utils::Html::getTagsText(pageText, "mateen");
     if(!motoon.isEmpty())
         m_doc->add( *_CLNEW Field(HADDIT_MATEEN_FIELD,
                                   Utils::QStringToWChar(motoon),
                                   m_tokenAndNoStore, false));
 
-    QString sheer = Utils::getTagsText(pageText, "sheer");
+    QString sheer = Utils::Html::getTagsText(pageText, "sheer");
     if(!sheer.isEmpty())
         m_doc->add( *_CLNEW Field(SHEER_FIELD,
                                   Utils::QStringToWChar(sheer),

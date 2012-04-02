@@ -93,7 +93,7 @@ void NewBookWriter::addTitle(const QString &title, int tid, int level)
 QString NewBookWriter::processPageText(QString text)
 {
     QString htmlText;
-    text = Utils::htmlSpecialCharsEncode(text);
+    text = Utils::Html::specialCharsEncode(text);
 
     QRegExp rxMateen(QString::fromUtf8("§([^\"»]+)([»\"])"));
     rxMateen.setMinimal(true);
