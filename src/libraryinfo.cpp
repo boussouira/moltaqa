@@ -172,8 +172,7 @@ QString LibraryInfo::booksIndexPath()
 
 QString LibraryInfo::bookPath(QString bookName)
 {
-    QDir dir(m_path);
-    dir.cd(m_booksDir);
+    QDir dir(m_booksDir);
 
     return dir.filePath(bookName);
 }
