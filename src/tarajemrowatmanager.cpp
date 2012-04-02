@@ -173,7 +173,7 @@ void TarajemRowatManager::endUpdate()
 void TarajemRowatManager::updateRawi(RawiInfo *rawi)
 {
     QDomElement e = m_elementHash.value(rawi->id);
-    ML_RETURN(e.isNull());
+    ML_ASSERT(!e.isNull());
 
     e.setAttribute("id", rawi->id);
 

@@ -1,6 +1,7 @@
 #include "textbookreader.h"
 #include "librarybook.h"
 #include "bookpage.h"
+#include "utils.h"
 #include <qxmlstream.h>
 
 TextBookReader::TextBookReader(QObject *parent) :
@@ -34,14 +35,8 @@ void TextBookReader::getTitles()
 {
     QuaZipFile titleFile(&m_zip);
 
-    if(m_zip.setCurrentFile("titles.xml")) {
-        if(!titleFile.open(QIODevice::ReadOnly)) {
-            qWarning("getTitles: open error %d", titleFile.getZipError());
-            return;
-        }
-    } else {
-        qDebug("ERRR");
-    }
+    ML_ASSERT2(m_zip.setCurrentFile("titles.xml"), "getTitles: setCurrentFile error" << titleFile.getZipError());
+    ML_ASSERT2(titleFile.open(QIODevice::ReadOnly), "getTitles: open error" << titleFile.getZipError());
 
     QXmlStreamReader reader(&titleFile);
     while(!reader.atEnd()) {
@@ -72,10 +67,7 @@ void TextBookReader::getPages()
     QuaZipFileInfo info;
     QuaZipFile file(&m_zip);
     for(bool more=m_zip.goToFirstFile(); more; more=m_zip.goToNextFile()) {
-        if(!m_zip.getCurrentFileInfo(&info)) {
-            qWarning("getPages: getCurrentFileInfo Error %d", m_zip.getZipError());
-            return;
-        }
+        ML_ASSERT2(m_zip.getCurrentFileInfo(&info), "getPages: getCurrentFileInfo Error" << m_zip.getZipError());
 
         int id = 0;
         QString name = info.name;

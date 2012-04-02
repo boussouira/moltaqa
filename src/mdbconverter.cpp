@@ -143,10 +143,7 @@ void MdbConverter::getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry, bool 
     int  *bound_lens;
 
     table = mdb_read_table(entry);
-    if (!table) {
-        qCritical("Error: Table %s does not exist in this database.", entry->object_name);
-        return;
-    }
+    ML_ASSERT2(table, "getTableContent: Table %s does not exist in this database." << entry->object_name);
 
     mdb_read_columns(table);
     mdb_rewind_table(table);

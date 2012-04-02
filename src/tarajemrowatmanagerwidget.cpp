@@ -38,9 +38,9 @@ QString TarajemRowatManagerWidget::title()
 
 void TarajemRowatManagerWidget::beginEdit()
 {
-    ML_RETURN(m_webEditShoek
-              && m_webEditTalamid
-              && m_webEditTarjama);
+    ML_ASSERT(!m_webEditShoek
+              || !m_webEditTalamid
+              || !m_webEditTarjama);
 
     m_webEditShoek = new EditWebView(this);
     m_webEditTalamid = new EditWebView(this);
@@ -60,9 +60,11 @@ void TarajemRowatManagerWidget::beginEdit()
 void TarajemRowatManagerWidget::save()
 {
     saveCurrentRawi();
-    ML_RETURN(m_editedRawiInfo.isEmpty());
+    ML_ASSERT(!m_editedRawiInfo.isEmpty());
 
-    ML_RETURN(!m_manager->beginUpdate())
+    ML_BENCHMARK_START();
+
+    ML_ASSERT2(m_manager->beginUpdate(), "TarajemRowatManagerWidget: Can't start update");
 
     foreach(RawiInfo *rawi, m_editedRawiInfo.values()) {
         m_manager->updateRawi(rawi);
@@ -73,6 +75,8 @@ void TarajemRowatManagerWidget::save()
     qDeleteAll(m_editedRawiInfo);
     m_editedRawiInfo.clear();
     m_currentRawi = 0;
+
+    ML_BENCHMARK_ELAPSED("Save Rowat");
 
     setModified(false);
 }
@@ -114,7 +118,7 @@ void TarajemRowatManagerWidget::enableEditWidgets(bool enable)
 
 void TarajemRowatManagerWidget::saveCurrentRawi()
 {
-    ML_RETURN(!m_currentRawi);
+    ML_ASSERT(m_currentRawi);
 
     m_currentRawi->name = ui->lineName->text();
     m_currentRawi->laqab = ui->lineLaqab->text();
@@ -162,7 +166,7 @@ void TarajemRowatManagerWidget::on_treeView_doubleClicked(const QModelIndex &ind
 {
     int rawiID = index.data(ItemRole::authorIdRole).toInt();
     RawiInfo *rawi= getRawiInfo(rawiID);
-    ML_RETURN(!rawi);
+    ML_ASSERT(rawi);
 
     ui->tabWidget->setCurrentIndex(0);
 
@@ -200,7 +204,7 @@ void TarajemRowatManagerWidget::on_treeView_doubleClicked(const QModelIndex &ind
 
 void TarajemRowatManagerWidget::infoChanged()
 {
-    ML_RETURN(!m_currentRawi);
+    ML_ASSERT(m_currentRawi);
 
     m_editedRawiInfo[m_currentRawi->id] = m_currentRawi;
     setModified(true);
@@ -208,7 +212,7 @@ void TarajemRowatManagerWidget::infoChanged()
 
 void TarajemRowatManagerWidget::checkEditWebChange()
 {
-    ML_RETURN(!m_currentRawi);
+    ML_ASSERT(m_currentRawi);
 
     if(m_webEditShoek->pageModified()
             || m_webEditTalamid->pageModified()

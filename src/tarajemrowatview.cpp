@@ -166,13 +166,13 @@ void TarajemRowatView::setCurrentRawi(RawiInfo *info)
 void TarajemRowatView::setCurrentTabHtml(QString title, QString html)
 {
     int index = ui->tabWidget->currentIndex();
-    ML_RETURN(index == -1);
+    ML_ASSERT(index != -1);
 
     QWidget *w = ui->tabWidget->widget(index);
-    ML_RETURN(!w);
+    ML_ASSERT(w);
 
     QWebView *view = w->findChild<QWebView*>();
-    ML_RETURN(!view);
+    ML_ASSERT(view);
 
     view->setHtml(html);
 
@@ -183,10 +183,10 @@ void TarajemRowatView::setCurrentTabHtml(QString title, QString html)
 void TarajemRowatView::on_treeView_doubleClicked(const QModelIndex &index)
 {
     int rawiID = index.data(ItemRole::authorIdRole).toInt();
-    ML_RETURN(!rawiID);
+    ML_ASSERT(rawiID);
 
     RawiInfo *info = m_rowatManager->getRawiInfo(rawiID);
-    ML_RETURN(!info);
+    ML_ASSERT(info);
 
     setCurrentRawi(info);
 }

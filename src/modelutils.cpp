@@ -80,13 +80,13 @@ QModelIndex changeParent(QStandardItemModel *model, QModelIndex child, QModelInd
 
 void swap(QStandardItemModel *model, QModelIndex fromIndex, QModelIndex toIndex)
 {
-    ML_RETURN(fromIndex.parent() != toIndex.parent());
+    ML_ASSERT(fromIndex.parent() == toIndex.parent());
 
     QModelIndex parent = fromIndex.parent();
 
     QStandardItem *parentItem = itemFromIndex(model, parent);
 
-    ML_RETURN(!parentItem);
+    ML_ASSERT(parentItem);
 
     QList<QStandardItem*> rows = parentItem->takeRow(fromIndex.row());
     parentItem->insertRow(toIndex.row(), rows);
@@ -111,10 +111,10 @@ void selectIndex(QTreeView *tree, QModelIndex index)
 void moveUp(QStandardItemModel *model, QTreeView *tree)
 {
     QModelIndex index = selectedIndex(tree);
-    ML_RETURN(!index.isValid());
+    ML_ASSERT(index.isValid());
 
     QModelIndex toIndex = index.sibling(index.row()-1, index.column());
-    ML_RETURN(!toIndex.isValid());
+    ML_ASSERT(toIndex.isValid());
 
     tree->collapse(index);
     tree->collapse(toIndex);
@@ -127,10 +127,10 @@ void moveUp(QStandardItemModel *model, QTreeView *tree)
 void moveDown(QStandardItemModel *model, QTreeView *tree)
 {
     QModelIndex index = selectedIndex(tree);
-    ML_RETURN(!index.isValid());
+    ML_ASSERT(index.isValid());
 
     QModelIndex toIndex = index.sibling(index.row()+1, index.column());
-    ML_RETURN(!toIndex.isValid());
+    ML_ASSERT(toIndex.isValid());
 
     tree->collapse(index);
     tree->collapse(toIndex);
@@ -144,7 +144,7 @@ void moveRight(QStandardItemModel *model, QTreeView *tree)
 {
     QModelIndex index = selectedIndex(tree);
     QModelIndex parent = index.parent();
-    ML_RETURN(!index.isValid() || !parent.isValid());
+    ML_ASSERT(index.isValid() && parent.isValid());
 
     QModelIndex newParent = parent.parent();
 
@@ -155,7 +155,7 @@ void moveRight(QStandardItemModel *model, QTreeView *tree)
 void moveLeft(QStandardItemModel *model, QTreeView *tree)
 {
     QModelIndex index = selectedIndex(tree);
-    ML_RETURN(!index.isValid());
+    ML_ASSERT(index.isValid());
 
     QModelIndex parent = index.sibling(index.row()-1, index.column());
 

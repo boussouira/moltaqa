@@ -229,7 +229,7 @@ void MainWindow::settingDialog()
 
 void MainWindow::openBook(int pBookID)
 {
-    ML_RETURN(!m_bookView->openBook(pBookID));
+    ML_ASSERT(m_bookView->openBook(pBookID));
 
     if(m_bookView->isHidden())
         m_bookView->show();

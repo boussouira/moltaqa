@@ -216,7 +216,7 @@ QVariant ImportModel::headerData(int section,
 void ImportModel::appendNode(ImportModelNode *pNode, const QModelIndex &index)
 {
     ImportModelNode *node = nodeFromIndex(index);
-    ML_RETURN(!node);
+    ML_ASSERT(node);
 
     node->appendChild(pNode);
     layoutChanged();

@@ -81,11 +81,11 @@ void NewLibraryDialog::createLibrary(QString name, QString path, QString descrip
     libPath.mkdir("books");
     libPath.mkdir("temp");
 
-    QFile info(libPath.filePath("info.xml"));
-    if (!info.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        qDebug("can't open file %s", qPrintable(libPath.filePath("info.xml")));
-        return;
-    }
+    QString infoPath = libPath.filePath("info.xml");
+
+    QFile info(infoPath);
+    ML_ASSERT2(info.open(QIODevice::WriteOnly | QIODevice::Text),
+               "createLibrary: open file error:" << info.errorString());
 
     QTextStream out(&info);
     out.setCodec("utf-8");

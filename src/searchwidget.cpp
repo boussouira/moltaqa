@@ -193,7 +193,7 @@ void SearchWidget::search()
     SearchFilter *searchFilter = getSearchFilterQuery();
     Query *searchQuery = getSearchQuery(searchFieldW);
 
-    ML_RETURN(!searchQuery);
+    ML_ASSERT(searchQuery);
 
     CLuceneQuery *query = new CLuceneQuery();
     query->searchQuery = searchQuery;
@@ -251,7 +251,7 @@ void SearchWidget::clearLineText()
 
 void SearchWidget::showFilterTools()
 {
-    ML_RETURN(!m_filterManager);
+    ML_ASSERT(m_filterManager);
 
     QMenu menu(this);
 

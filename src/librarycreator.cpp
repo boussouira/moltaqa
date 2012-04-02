@@ -124,7 +124,7 @@ void LibraryCreator::addAuthor(ShamelaAuthorInfo *auth, bool checkExist)
 
     if(checkExist) {
         int lid = m_mapper->mapFromShamelaAuthor(auth->id);
-        ML_RETURN(lid); // This author is already in the map
+        ML_ASSERT(!lid); // This author is already in the map
 
         // We look for this author in the index database
         AuthorInfo* foundAuthor = AuthorsManager::instance()->findAuthor(auth->name);

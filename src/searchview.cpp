@@ -65,7 +65,7 @@ bool SearchView::canSearch(bool showMessage)
 
 void SearchView::newTab(SearchWidget::SearchType searchType, int bookID)
 {
-    ML_RETURN(!canSearch());
+    ML_ASSERT(canSearch());
 
     SearchWidget *searchWidget = 0;
     if(searchType == SearchWidget::LibrarySearch) {
@@ -105,7 +105,7 @@ void SearchView::newTab(SearchWidget::SearchType searchType, int bookID)
 void SearchView::switchSearchWidget()
 {
     SearchWidget *w = qobject_cast<SearchWidget*>(m_tabWidget->currentWidget());
-    ML_RETURN(!w);
+    ML_ASSERT(w);
 
     w->toggleWidget();
 }

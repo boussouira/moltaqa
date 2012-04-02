@@ -296,7 +296,7 @@ void BookWidget::showIndex()
 void BookWidget::showIndex(int tid)
 {
     QModelIndex index = Utils::findModelIndex(m_indexWidget->indexModel(), tid);
-    ML_RETURN(!index.isValid());
+    ML_ASSERT(index.isValid());
 
     QModelIndex child = index.child(0, 0);
 

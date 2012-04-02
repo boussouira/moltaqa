@@ -1,5 +1,6 @@
 #include "listmanager.h"
 #include "xmlutils.h"
+#include "utils.h"
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qdebug.h>
@@ -34,10 +35,7 @@ void ListManager::save(QStandardItemModel *model)
 
     QFile file(m_dom.filePath());
 
-    if(!file.open(QIODevice::WriteOnly)) {
-        qCritical() << "Can't open file" << m_dom.filePath();
-        return;
-    }
+    ML_ASSERT2(file.open(QIODevice::WriteOnly), "ListManager::save open file error" << file.errorString());
 
     QXmlStreamWriter writer(&file);
     writer.setAutoFormatting(true);

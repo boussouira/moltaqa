@@ -265,7 +265,7 @@ void BooksViewer::openTafessir()
         int tafessirID = m_comboTafasir->itemData(m_comboTafasir->currentIndex(), ItemRole::idRole).toInt();
 
         LibraryBook *bookInfo = LibraryBookManager::instance()->getLibraryBook(tafessirID);
-        ML_RETURN(!bookInfo || !bookInfo->isTafessir() || !m_viewManager->activeBook()->isQuran());
+        ML_ASSERT(bookInfo && bookInfo->isTafessir() && m_viewManager->activeBook()->isQuran());
 
         bookdb = new RichTafessirReader();
         bookdb->setBookInfo(bookInfo);
@@ -315,7 +315,7 @@ void BooksViewer::showIndexWidget()
 void BooksViewer::searchInBook()
 {
     LibraryBook *book = m_viewManager->activeBook();
-    ML_RETURN(!book);
+    ML_ASSERT(book);
 
     MW->searchView()->newTab(SearchWidget::BookSearch, book->bookID);
     MW->showSearchView();

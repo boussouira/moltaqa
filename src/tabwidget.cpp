@@ -138,16 +138,16 @@ void TabWidget::showTabBarMenu(QPoint point)
 
 void TabWidget::closeTab(int index)
 {
-    if(m_autoClose && (m_closeLastTab || count() > 1)) {
-        QWidget *w = widget(index);
-        ML_RETURN(!w);
+    ML_ASSERT(m_autoClose && (m_closeLastTab || count() > 1));
 
-        removeTab(index);
-        delete w;
+    QWidget *w = widget(index);
+    ML_ASSERT(w);
 
-        if(!count())
-            emit lastTabClosed();
-    }
+    removeTab(index);
+    delete w;
+
+    if(!count())
+        emit lastTabClosed();
 }
 
 void TabWidget::setTabClosable()

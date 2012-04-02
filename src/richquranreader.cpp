@@ -29,7 +29,7 @@ void RichQuranReader::setCurrentPage(QDomElement pageNode)
 
     m_pagesDom.setCurrentElement(pageNode);
 
-    ML_RETURN(pageNode.attribute("page").toInt() == m_currentPage->page);
+    ML_ASSERT(pageNode.attribute("page").toInt() != m_currentPage->page);
 
     QDomElement prevNode = pageNode.previousSiblingElement();
     while(!prevNode.isNull()) {

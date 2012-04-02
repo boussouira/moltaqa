@@ -79,7 +79,7 @@ void BookEditorView::editBook(LibraryBook *book, int pageID)
 {
     Q_CHECK_PTR(book);
 
-    ML_RETURN(!maySave());
+    ML_ASSERT(maySave());
 
     if(book->isQuran())
         throw BookException(tr("لا يمكن تحرير القرآن الكريم"));

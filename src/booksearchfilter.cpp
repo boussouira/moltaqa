@@ -179,17 +179,13 @@ void BookSearchFilter::open()
 {
     Q_CHECK_PTR(m_book);
 
-    if(!QFile::exists(m_book->bookPath)) {
-        qDebug() << tr("لم يتم العثور على ملف الكتاب") << m_book->bookPath;
-        return;
-    }
+    ML_ASSERT2(QFile::exists(m_book->bookPath),
+               tr("لم يتم العثور على ملف الكتاب") << m_book->bookPath);
 
     m_zip.setZipName(m_book->bookPath);
 
-    if(!m_zip.open(QuaZip::mdUnzip)) {
-        qDebug() << tr("لا يمكن فتح ملف الكتاب") << m_book->bookPath << "\nError:" << m_zip.getZipError();
-        return;
-    }
+    ML_ASSERT2(m_zip.open(QuaZip::mdUnzip),
+               tr("لا يمكن فتح ملف الكتاب") << m_book->bookPath << "\nError:" << m_zip.getZipError());
 }
 
 void BookSearchFilter::close()
@@ -216,12 +212,8 @@ void BookSearchFilter::loadSimpleBookModel(QStandardItemModel *model)
 {
     QuaZipFile titleFile(&m_zip);
 
-    if(m_zip.setCurrentFile("titles.xml")) {
-        if(!titleFile.open(QIODevice::ReadOnly)) {
-            qWarning("loadSimpleBookModel: open error %d", titleFile.getZipError());
-            return;
-        }
-    }
+    ML_ASSERT2(m_zip.setCurrentFile("titles.xml"), "loadSimpleBookModel: setCurrentFile error"  << titleFile.getZipError());
+    ML_ASSERT2(titleFile.open(QIODevice::ReadOnly), "loadSimpleBookModel: open error" << titleFile.getZipError());
 
     QDomDocument doc = Utils::getDomDocument(&titleFile);
     QDomElement root = doc.documentElement();

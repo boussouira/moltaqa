@@ -477,12 +477,8 @@ void AbstractBookReader::getBookInfo()
 {
    QuaZipFile pagesFile(&m_zip);
 
-   if(m_zip.setCurrentFile("pages.xml")) {
-       if(!pagesFile.open(QIODevice::ReadOnly)) {
-           qWarning("getBookInfo: open error %d", pagesFile.getZipError());
-           return;
-       }
-   }
+   ML_ASSERT2(m_zip.setCurrentFile("pages.xml"), "getBookInfo: setCurrentFile error:" << m_zip.getZipError());
+   ML_ASSERT2(pagesFile.open(QIODevice::ReadOnly), "getBookInfo: open error" << pagesFile.getZipError());
 
    m_pagesDom.load(&pagesFile);
 }

@@ -77,7 +77,7 @@ QString LibraryBook::toString()
 
 void LibraryBook::fromString(QString info)
 {
-    ML_RETURN(info.isEmpty());
+    ML_ASSERT(!info.isEmpty());
 
     partsCount = info.count(';');
     QStringList partInfoList;

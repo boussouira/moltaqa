@@ -122,7 +122,7 @@ void BookIndexEditor::addTitle()
 void BookIndexEditor::removeTitle()
 {
     QModelIndex index = Utils::selectedIndex(ui->treeView);
-    ML_RETURN(!index.isValid());
+    ML_ASSERT(index.isValid());
 
     m_model->removeRow(index.row(), index.parent());
     ui->treeView->clearSelection();
@@ -151,7 +151,7 @@ void BookIndexEditor::moveLeft()
 void BookIndexEditor::linkTitle()
 {
     QModelIndex index = Utils::selectedIndex(ui->treeView);
-    ML_RETURN(!index.isValid());
+    ML_ASSERT(index.isValid());
 
     m_editView->m_currentPage->titleID = m_editView->m_currentPage->pageID;
     ui->treeView->model()->setData(index, m_editView->m_currentPage->pageID, ItemRole::idRole);

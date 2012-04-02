@@ -7,6 +7,7 @@
 #include "bookreaderhelper.h"
 #include "xmlutils.h"
 #include "librarybookmanager.h"
+#include "utils.h"
 
 #include <qstringlist.h>
 #include <qdebug.h>
@@ -118,12 +119,8 @@ void RichTafessirReader::openQuranBook()
     QuaZipFile quranPages;
     quranPages.setZip(&quranZip);
 
-    if(quranZip.setCurrentFile("pages.xml")) {
-        if(!quranPages.open(QIODevice::ReadOnly)) {
-            qWarning("getBookInfo: open error %d", quranPages.getZipError());
-            return;
-        }
-    }
+    ML_ASSERT2(quranZip.setCurrentFile("pages.xml"), "openQuranBook: setCurrentFile error" << quranZip.getZipError());
+    ML_ASSERT2(quranPages.open(QIODevice::ReadOnly), "openQuranBook: open error" << quranPages.getZipError());
 
     m_quranDom.load(&quranPages);
 }

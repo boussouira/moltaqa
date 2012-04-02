@@ -53,10 +53,7 @@ bool IndexManager::isIndexing()
 
 void IndexManager::start()
 {
-    if(!openWriter()) {
-        qWarning("Can't open IndexWriter");
-        return;
-    }
+    ML_ASSERT2(openWriter(), "IndexManager: Can't open IndexWriter");
 
     QSettings settings;
     m_threadCount = settings.value("Search/threadCount", QThread::idealThreadCount()).toInt();

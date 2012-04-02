@@ -38,28 +38,21 @@ bool XmlDomHelper::needSave()
 
 void XmlDomHelper::load()
 {
-    ML_RETURN(m_domLoaded);
+    ML_ASSERT(!m_domLoaded);
+    ML_ASSERT2(!m_filePath.isEmpty(), "XmlDomHelper::load empty file path");
 
-    if(!m_filePath.isEmpty()) {
+    if(m_needSave)
+        qCritical("XmlDomHelper: Dom need to be saved before loading from file");
 
-        if(m_needSave)
-            qCritical("XmlDomHelper: Dom need to be saved before loading from file");
+    QFile file(m_filePath);
+    ML_ASSERT2(file.open(QIODevice::ReadOnly), "XmlDomHelper::load open file error:" << file.errorString());
 
-        QFile file(m_filePath);
-        if (!file.open(QIODevice::ReadOnly)) {
-            qCritical() << "File open error:" << m_filePath;
-            return;
-        }
-
-        load(&file);
-    } else {
-        qCritical("XmlDomHelper: empty file path");
-    }
+    load(&file);
 }
 
 void XmlDomHelper::load(QIODevice *file)
 {
-    ML_RETURN(m_domLoaded);
+    ML_ASSERT(!m_domLoaded);
 
     m_doc = Utils::getDomDocument(file);
     m_rootElement = m_doc.documentElement();
@@ -76,14 +69,12 @@ void XmlDomHelper::save()
 void XmlDomHelper::save(const QString &filePath)
 {
     QFile outFile(filePath);
-    if (outFile.open(QFile::WriteOnly | QFile::Truncate)) {
-        QTextStream out(&outFile);
-        m_doc.save(out, 4);
+    ML_ASSERT2(outFile.open(QFile::WriteOnly | QFile::Truncate), "XmlDomHelper::save open error:" << filePath);
 
-        m_needSave = false;
-    } else {
-        qCritical("Can't open file for writing: %s", qPrintable(filePath));
-    }
+    QTextStream out(&outFile);
+    m_doc.save(out, 4);
+
+    m_needSave = false;
 }
 
 void XmlDomHelper::reload()
@@ -98,7 +89,8 @@ void XmlDomHelper::reload()
 
 void XmlDomHelper::create()
 {
-    ML_RETURN(QFile::exists(m_filePath));
+    ML_ASSERT2(!QFile::exists(m_filePath),
+               "XmlDomHelper::create file already exists" << m_filePath);
 
     QString path = QFileInfo(m_filePath).path();
 
@@ -108,8 +100,8 @@ void XmlDomHelper::create()
     }
 
     QFile file(m_filePath);
-    if(!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
-        qWarning("Can't create file %s: %s", qPrintable(m_filePath), qPrintable(file.errorString()));
+    ML_ASSERT2(file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate),
+        "XmlDomHelper::create open file error:" << file.errorString());
 }
 
 QDomElement XmlDomHelper::findElement(const QString &attr, const QString &value)

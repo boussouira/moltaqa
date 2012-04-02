@@ -161,7 +161,7 @@ void ImportDialog::importBooks()
                                         tr("لم تقم باختيار أقسام بعض الكتب" "\n"
                                            "هل تريد المتابعة؟"),
                                         QMessageBox::Yes|QMessageBox::No, QMessageBox::No);
-        ML_RETURN(rep == QMessageBox::No);
+        ML_ASSERT(rep != QMessageBox::No);
     }
 
     setEnabled(false);
