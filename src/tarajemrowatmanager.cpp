@@ -27,9 +27,7 @@ TarajemRowatManager::TarajemRowatManager(QObject *parent) : ListManager(parent)
 TarajemRowatManager::~TarajemRowatManager()
 {
     m_instance = 0;
-
-    qDeleteAll(m_info);
-    m_info.clear();
+    clear();
 }
 
 TarajemRowatManager *TarajemRowatManager::instance()
@@ -58,6 +56,12 @@ void TarajemRowatManager::loadModels()
 
 void TarajemRowatManager::clear()
 {
+    qDeleteAll(m_info);
+    m_info.clear();
+    m_fullInfo.clear();
+
+    m_elementHash.clear();
+    m_newElements.clear();
 }
 
 QStandardItemModel *TarajemRowatManager::getRowatModel()
@@ -149,10 +153,16 @@ bool TarajemRowatManager::beginUpdate()
 {
     ML_RETURN_FALSE(m_zip.unzip().isEmpty());
 
-    m_domHelper = m_zip.getDomHelper("rowat.xml");
+    m_domHelper = m_zip.getDomHelper("rowat.xml", "rowat");
     ML_RETURN_FALSE(m_domHelper.isNull());
 
     m_elementHash.clear();
+
+    for(int i=0; i<m_newElements.size();i++) {
+        if(m_domHelper->rootElement().appendChild(m_newElements[i]).isNull())
+            qWarning("beginUpdate: Error on appendChild at index %d", i);
+    }
+
     QDomElement e = m_domHelper->rootElement().firstChildElement();
     while(!e.isNull()) {
         m_elementHash.insert(e.attribute("id").toInt(), e);
@@ -166,14 +176,17 @@ bool TarajemRowatManager::beginUpdate()
 void TarajemRowatManager::endUpdate()
 {
     m_elementHash.clear();
+    m_newElements.clear();
     m_domHelper.clear();
     m_zip.save();
+
+    reloadModels();
 }
 
 void TarajemRowatManager::updateRawi(RawiInfo *rawi)
 {
     QDomElement e = m_elementHash.value(rawi->id);
-    ML_ASSERT(!e.isNull());
+    ML_ASSERT2(!e.isNull(), "updateRawi: Rawi Dom Element is null");
 
     e.setAttribute("id", rawi->id);
 
@@ -202,16 +215,96 @@ void TarajemRowatManager::updateRawi(RawiInfo *rawi)
     m_domHelper->setElementText(rotbaElement, "hafed", rawi->rotba_hafed);
     m_domHelper->setElementText(rotbaElement, "zahabi", rawi->rotba_zahabi);
 
-    XmlDomHelperPtr infoDom = m_zip.getDomHelper(QString("data/r%1.xml").arg(rawi->id));
-    if(!infoDom.isNull()) {
-        infoDom->setElementText(infoDom->rootElement(), "sheok", rawi->sheok);
-        infoDom->setElementText(infoDom->rootElement(), "talamid", rawi->talamid);
-        infoDom->setElementText(infoDom->rootElement(), "tarejama", rawi->tarejama);
+    QString infoFileName = QString("data/r%1.xml").arg(rawi->id);
 
-        infoDom->setNeedSave(true);
-    } else {
-        qDebug("updateRawi: infoDom is null");
-    }
+    XmlDomHelperPtr infoDom = m_zip.getDomHelper(infoFileName, "rawi-info");
+        if(!infoDom.isNull()) {
+            infoDom->setElementText(infoDom->rootElement(), "sheok", rawi->sheok, true);
+            infoDom->setElementText(infoDom->rootElement(), "talamid", rawi->talamid, true);
+            infoDom->setElementText(infoDom->rootElement(), "tarejama", rawi->tarejama, true);
+
+            infoDom->setNeedSave(true);
+        } else {
+            qDebug("updateRawi: infoDom is null");
+        }
 
     m_domHelper->setNeedSave(true);
+}
+
+int TarajemRowatManager::addRawi(RawiInfo *rawi)
+{
+    QMutexLocker locker(&m_mutex);
+
+    if(!rawi->id)
+        rawi->id = getNewRawiID();
+
+    ZipOpener opener(&m_zip);
+
+    XmlDomHelperPtr dom = m_zip.getDomHelper("rowat.xml");
+    if(dom.isNull()) {
+        qCritical("addRawi: Dom is null");
+        return 0;
+    }
+
+    QDomElement rawiElement = dom->domDocument().createElement("rawi");
+    rawiElement.setAttribute("id", rawi->id);
+
+    QDomElement nameEelement = dom->domDocument().createElement("name");
+    QDomElement laqabEelement = dom->domDocument().createElement("laqab");
+    QDomElement tabaqaEelement = dom->domDocument().createElement("tabaqa");
+    QDomElement rowatEelement = dom->domDocument().createElement("rowat");
+
+    nameEelement.appendChild(dom->domDocument().createTextNode(rawi->name));
+    laqabEelement.appendChild(dom->domDocument().createTextNode(rawi->laqab));
+    tabaqaEelement.appendChild(dom->domDocument().createTextNode(rawi->tabaqa));
+    rowatEelement.appendChild(dom->domDocument().createTextNode(rawi->rowat));
+
+    QDomElement hafedEelement = dom->domDocument().createElement("hafed");
+    QDomElement zahabiEelement = dom->domDocument().createElement("zahabi");
+
+    hafedEelement.appendChild(dom->domDocument().createTextNode(rawi->rotba_hafed));
+    zahabiEelement.appendChild(dom->domDocument().createTextNode(rawi->rotba_zahabi));
+
+    QDomElement rotbaElement = dom->domDocument().createElement("rotba");
+    rotbaElement.appendChild(hafedEelement);
+    rotbaElement.appendChild(zahabiEelement);
+
+    rawiElement.appendChild(nameEelement);
+    rawiElement.appendChild(laqabEelement);
+    rawiElement.appendChild(tabaqaEelement);
+    rawiElement.appendChild(rowatEelement);
+    rawiElement.appendChild(rotbaElement);
+
+    if(!rawi->unknowBirth()) {
+        QDomElement birthElement = dom->domDocument().createElement("birth");
+        birthElement.setAttribute("year", rawi->birthYear);
+        birthElement.appendChild(dom->domDocument().createTextNode(rawi->birthStr));
+
+        rawiElement.appendChild(birthElement);
+    }
+
+    if(!rawi->unknowDeath()) {
+        QDomElement deathElement = dom->domDocument().createElement("death");
+        deathElement.setAttribute("year", rawi->deathYear);
+        deathElement.appendChild(dom->domDocument().createTextNode(rawi->deathStr));
+
+        rawiElement.appendChild(deathElement);
+    }
+
+    m_info[rawi->id] = rawi;
+    m_fullInfo[rawi->id] = rawi;
+
+    m_newElements.append(rawiElement);
+
+    return rawi->id;
+}
+
+int TarajemRowatManager::getNewRawiID()
+{
+    int rawiID = 0;
+    do {
+        rawiID = Utils::randInt(11111, 99999);
+    } while(m_info.contains(rawiID));
+
+    return rawiID;
 }

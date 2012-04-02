@@ -13,6 +13,9 @@ public:
     void setFilePath(const QString &path);
     QString filePath();
 
+    void setDocumentName(const QString &name);
+    QString documentName();
+
     void setNeedSave(bool saveDom);
     bool needSave();
 
@@ -38,6 +41,7 @@ public:
 
 protected:
     QString m_filePath;
+    QString m_documentName;
     QDomDocument m_doc;
     QDomElement m_rootElement;
     QDomElement m_currentElement;

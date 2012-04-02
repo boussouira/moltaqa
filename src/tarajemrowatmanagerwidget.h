@@ -15,7 +15,7 @@ class RawiInfo;
 class TarajemRowatManagerWidget : public ControlCenterWidget
 {
     Q_OBJECT
-    
+
 public:
     TarajemRowatManagerWidget(QWidget *parent = 0);
     ~TarajemRowatManagerWidget();
@@ -37,6 +37,8 @@ private slots:
     void infoChanged();
     void checkEditWebChange();
     void birthDeathChanged();
+    void newRawi();
+    void removeRawi();
 
 protected:
     Ui::TarajemRowatManagerWidget *ui;

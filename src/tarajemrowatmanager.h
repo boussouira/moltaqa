@@ -4,6 +4,7 @@
 #include "listmanager.h"
 #include "ziphelper.h"
 #include <qhash.h>
+#include <qset.h>
 
 class RawiInfo
 {
@@ -56,6 +57,10 @@ public:
     bool beginUpdate();
     void endUpdate();
     void updateRawi(RawiInfo *rawi);
+    int addRawi(RawiInfo *rawi);
+
+protected:
+    int getNewRawiID();
 
 protected:
     QString m_path;
@@ -63,6 +68,7 @@ protected:
     QHash<int, RawiInfo*> m_info;
     QHash<int, RawiInfo*> m_fullInfo;
     QHash<int, QDomElement> m_elementHash;
+    QList<QDomElement> m_newElements;
     XmlDomHelperPtr m_domHelper;
 };
 

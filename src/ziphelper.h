@@ -8,6 +8,7 @@
 
 #include "xmldomhelper.h"
 
+typedef QSharedPointer<QFile> QFilePtr;
 typedef QSharedPointer<QuaZipFile> QuaZipFilePtr;
 typedef QSharedPointer<XmlDomHelper> XmlDomHelperPtr;
 
@@ -39,9 +40,11 @@ public:
     QString zip();
 
     bool save();
+    ZipStat zipStat();
 
+    QFilePtr getFile(const QString &fileName, QIODevice::OpenModeFlag mode=QIODevice::WriteOnly);
     QuaZipFilePtr getZipFile(const QString &fileName);
-    XmlDomHelperPtr getDomHelper(const QString &fileName);
+    XmlDomHelperPtr getDomHelper(const QString &fileName, const QString &documentName=QString());
 
     static bool unzip(const QString &zipPath, const QString &outPath);
     static bool zip(const QString &dir, const QString &zipPath);

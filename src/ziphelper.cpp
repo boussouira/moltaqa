@@ -81,7 +81,7 @@ bool ZipHelper::save()
     QString newZip = zip();
     QString backupZip = m_zipPath + ".back";
     if(!newZip.isEmpty()) {
-        if(!QFile::remove(backupZip))
+        if(QFile::exists(backupZip) && !QFile::remove(backupZip))
             qWarning() << "ZipHelper: Can't remove backup file:" << backupZip;
         if(QFile::rename(m_zipPath, backupZip)) {
             if(QFile::copy(newZip, m_zipPath)) {
@@ -98,6 +98,35 @@ bool ZipHelper::save()
     }
 
     return false;
+}
+
+ZipHelper::ZipStat ZipHelper::zipStat()
+{
+    return m_stat;
+}
+
+QFilePtr ZipHelper::getFile(const QString &fileName, QIODevice::OpenModeFlag mode)
+{
+    QFile *file = 0;
+
+    if(m_stat == UnZipped) {
+        QDir dir(m_unzipDirPath);
+        QString filePath = dir.filePath(fileName);
+        QFileInfo info(filePath);
+
+        if(!dir.exists(info.path()))
+            dir.mkpath(info.path());
+
+        file = new QFile(filePath);
+        if(!file->open(mode)) {
+            qWarning("getFile: Can't open file for writing: %s", qPrintable(file->errorString()));
+            ML_DELETE(file);
+        }
+    } else {
+        qWarning("getFile: Zip file is not in Open stat");
+    }
+
+    return QFilePtr(file);
 }
 
 QuaZipFilePtr ZipHelper::getZipFile(const QString &fileName)
@@ -135,7 +164,7 @@ QuaZipFilePtr ZipHelper::getZipFile(const QString &fileName)
     return QuaZipFilePtr(file);
 }
 
-XmlDomHelperPtr ZipHelper::getDomHelper(const QString &fileName)
+XmlDomHelperPtr ZipHelper::getDomHelper(const QString &fileName, const QString &documentName)
 {
     XmlDomHelper *dom = 0;
     if(m_stat == Open) {
@@ -153,6 +182,8 @@ XmlDomHelperPtr ZipHelper::getDomHelper(const QString &fileName)
         QDir dir(m_unzipDirPath);
         dom = new XmlDomHelper();
         dom->setFilePath(dir.filePath(fileName));
+        dom->setDocumentName(documentName);
+
         if(!dir.exists(fileName))
             dom->create();
 

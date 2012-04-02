@@ -21,6 +21,16 @@ void XmlDomHelper::setFilePath(const QString &path)
     m_filePath = path;
 }
 
+void XmlDomHelper::setDocumentName(const QString &name)
+{
+    m_documentName = name;
+}
+
+QString XmlDomHelper::documentName()
+{
+    return m_documentName;
+}
+
 QString XmlDomHelper::filePath()
 {
     return m_filePath;
@@ -89,6 +99,7 @@ void XmlDomHelper::reload()
 
 void XmlDomHelper::create()
 {
+    qDebug("Create empty File...");
     ML_ASSERT2(!QFile::exists(m_filePath),
                "XmlDomHelper::create file already exists" << m_filePath);
 
@@ -101,7 +112,17 @@ void XmlDomHelper::create()
 
     QFile file(m_filePath);
     ML_ASSERT2(file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate),
-        "XmlDomHelper::create open file error:" << file.errorString());
+               "XmlDomHelper::create open file error:" << file.errorString());
+
+    ML_ASSERT(!m_documentName.isEmpty());
+    qDebug("Create XML File...");
+
+    QTextStream out(&file);
+    out.setCodec("utf-8");
+
+    out << "<?xml version=\"1.0\" encoding=\"utf-8\" ?>" << "\n"
+        << "<" << m_documentName << ">"
+        << "</" << m_documentName << ">";
 }
 
 QDomElement XmlDomHelper::findElement(const QString &attr, const QString &value)

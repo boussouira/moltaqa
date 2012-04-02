@@ -3,6 +3,8 @@
 #include "tarajemrowatmanager.h"
 #include "utils.h"
 #include "modelenums.h"
+#include "modelutils.h"
+#include <qinputdialog.h>
 
 TarajemRowatManagerWidget::TarajemRowatManagerWidget(QWidget *parent) :
     ControlCenterWidget(parent),
@@ -60,7 +62,7 @@ void TarajemRowatManagerWidget::beginEdit()
 void TarajemRowatManagerWidget::save()
 {
     saveCurrentRawi();
-    ML_ASSERT(!m_editedRawiInfo.isEmpty());
+    ML_ASSERT2(!m_editedRawiInfo.isEmpty(), "TarajemRowatManagerWidget: nothing to save");
 
     ML_BENCHMARK_START();
 
@@ -107,8 +109,8 @@ void TarajemRowatManagerWidget::setupActions()
         connect(check, SIGNAL(stateChanged(int)), SLOT(birthDeathChanged()));
     }
 
-//    connect(ui->toolAdd, SIGNAL(clicked()), SLOT(newAuthor()));
-//    connect(ui->toolRemove, SIGNAL(clicked()), SLOT(removeAuthor()));
+    connect(ui->toolAdd, SIGNAL(clicked()), SLOT(newRawi()));
+    connect(ui->toolRemove, SIGNAL(clicked()), SLOT(removeRawi()));
 }
 
 void TarajemRowatManagerWidget::enableEditWidgets(bool enable)
@@ -239,4 +241,31 @@ void TarajemRowatManagerWidget::birthDeathChanged()
             ui->lineDeathText->setText(Utils::hijriYear(spin->value()));
         }
     }
+}
+
+void TarajemRowatManagerWidget::newRawi()
+{
+    QString name = QInputDialog::getText(this,
+                                         tr("اضافة راوي"),
+                                         tr("اسم الراوي:"));
+    if(!name.isEmpty()) {
+        RawiInfo *rawi= new RawiInfo();
+        rawi->name = name;
+
+        m_manager->addRawi(rawi);
+
+        QStandardItem *authItem = new QStandardItem();
+        authItem->setText(name);
+        authItem->setData(rawi->id, ItemRole::authorIdRole);
+
+        m_model->appendRow(authItem);
+
+        QModelIndex index = m_model->indexFromItem(authItem);
+        Utils::selectIndex(ui->treeView, index);
+        on_treeView_doubleClicked(index);
+    }
+}
+
+void TarajemRowatManagerWidget::removeRawi()
+{
 }
