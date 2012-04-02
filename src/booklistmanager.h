@@ -3,6 +3,7 @@
 
 #include "listmanager.h"
 #include <qhash.h>
+#include <qicon.h>
 
 class QStandardItemModel;
 class QStandardItem;
@@ -61,6 +62,8 @@ protected:
     QHash<int, QDomElement> m_catElementHash;
     int m_booksCount;
     int m_order;
+    QIcon m_bookIcon;
+    QIcon m_catIcon;
 };
 
 #endif // BOOKLISTMANAGER_H

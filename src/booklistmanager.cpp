@@ -20,7 +20,9 @@ BookListManager::BookListManager(QObject *parent)
       m_bookModel(0),
       m_catModel(0),
       m_booksCount(0),
-      m_order(0)
+      m_order(0),
+      m_bookIcon(QIcon(":/images/book.png")),
+      m_catIcon(QIcon(":/images/book-cat.png"))
 {
     QDir dataDir(MW->libraryInfo()->dataDir());
     m_dom.setFilePath(dataDir.filePath("bookslist.xml"));
@@ -237,7 +239,7 @@ QList<QStandardItem*> BookListManager::readCatNode(QDomElement &element)
 
     QStandardItem *catItem = new QStandardItem();
     catItem->setText(title);
-    catItem->setIcon(QIcon(":/images/book-cat.png"));
+    catItem->setIcon(m_catIcon);
     catItem->setData(catID, ItemRole::idRole);
     catItem->setData(ItemType::CategorieItem, ItemRole::itemTypeRole);
     catItem->setData(++m_order, ItemRole::orderRole);
@@ -262,7 +264,7 @@ QList<QStandardItem*> BookListManager::readBookNode(QDomElement &element)
     QStandardItem *nameItem = new QStandardItem();
     nameItem->setText(bookNameElement.text());
     nameItem->setToolTip(infoElement.text());
-    nameItem->setIcon(QIcon(":/images/book.png"));
+    nameItem->setIcon(m_bookIcon);
     nameItem->setData(bookID, ItemRole::idRole);
     nameItem->setData(ItemType::BookItem, ItemRole::itemTypeRole);
     nameItem->setData(type, ItemRole::typeRole);
