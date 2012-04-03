@@ -49,6 +49,7 @@ protected:
     EditWebView *m_webEditTarjama;
     QHash<int, RawiInfo*> m_editedRawiInfo;
     RawiInfo *m_currentRawi;
+    QList<int> m_removedRowat;
 };
 
 #endif // TARAJEMROWATMANAGERWIDGET_H

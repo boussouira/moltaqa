@@ -95,18 +95,13 @@ void DatabaseError(const QSqlDatabase &db, const char *file, int line);
 #define LOG_SQL_ERROR(query) Log::QueryError(query, __FILE__, __LINE__);
 #define LOG_SQL_P_ERROR(query) Log::QueryError((*query), __FILE__, __LINE__);
 
-#define ML_RETURN_IF(con, ret) if(con) return ret
-
-#define ML_RETURN(con)    if(con) return
-#define ML_RETURN2(con, msg)    if(con) {qWarning() << msg ; return;}
-
 #define ML_ASSERT(con)    if(!(con)) return
 #define ML_ASSERT2(con, msg)    if(!(con)) {qWarning() << msg ; return;}
 
-#define ML_RETURN_FALSE(con)   ML_RETURN_IF(con, false)
-#define ML_RETURN_TRUE(con)    ML_RETURN_IF(con, true)
+#define ML_ASSERT_RET(con, ret)    if(!(con)) return ret
+#define ML_ASSERT_RET2(con, msg, ret)    if(!(con)) {qWarning() << msg ; return ret;}
 
-#define ML_DELETE(p) {delete p; p=0;}
-#define ML_DELETE_CHECK(p) if(p) ML_DELETE(p)
+#define ML_DELETE(p) delete p; p=0;
+#define ML_DELETE_CHECK(p) if(p) { delete p; p=0; }
 
 #endif // COMMON_H

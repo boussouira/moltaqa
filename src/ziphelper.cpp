@@ -198,18 +198,18 @@ XmlDomHelperPtr ZipHelper::getDomHelper(const QString &fileName, const QString &
 
 bool ZipHelper::unzip(const QString &zipPath, const QString &outPath)
 {
-    ML_RETURN_FALSE(!QFile::exists(zipPath));
-    ML_RETURN_FALSE(!QFile::exists(outPath));
+    ML_ASSERT_RET2(QFile::exists(zipPath),
+                   "ZipHelper::unzip zip file doesn't exists:" << zipPath, false);
+    ML_ASSERT_RET2(QFile::exists(outPath),
+                   "ZipHelper::unzip out path doesn't exists:" << outPath, false);
 
     QDir outDir(outPath);
 
     QFile zipFile(zipPath);
     QuaZip zip(&zipFile);
 
-    if(!zip.open(QuaZip::mdUnzip)) {
-        qWarning("unZip: cant Open zip file %d", zip.getZipError());
-        return false;
-    }
+    ML_ASSERT_RET2(zip.open(QuaZip::mdUnzip),
+                   "ZipHelper::unzip open zip error" << zip.getZipError(), false);
 
     QuaZipFileInfo info;
     QuaZipFile file(&zip);

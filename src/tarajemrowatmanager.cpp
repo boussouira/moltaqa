@@ -62,6 +62,13 @@ void TarajemRowatManager::clear()
 
     m_elementHash.clear();
     m_newElements.clear();
+    m_removedRowat.clear();
+}
+
+void TarajemRowatManager::reloadModels()
+{
+    clear();
+    loadModels();
 }
 
 QStandardItemModel *TarajemRowatManager::getRowatModel()
@@ -151,10 +158,11 @@ RawiInfo *TarajemRowatManager::getRawiInfo(int rawiID)
 
 bool TarajemRowatManager::beginUpdate()
 {
-    ML_RETURN_FALSE(m_zip.unzip().isEmpty());
+    m_zip.unzip();
+    ML_ASSERT_RET2(m_zip.zipStat() == ZipHelper::UnZipped, "beginUpdate: zip is not in UnZipped stat", false);
 
     m_domHelper = m_zip.getDomHelper("rowat.xml", "rowat");
-    ML_RETURN_FALSE(m_domHelper.isNull());
+    ML_ASSERT_RET2(!m_domHelper.isNull(), "beginUpdate: DomHelper is null", false);
 
     m_elementHash.clear();
 
@@ -165,7 +173,15 @@ bool TarajemRowatManager::beginUpdate()
 
     QDomElement e = m_domHelper->rootElement().firstChildElement();
     while(!e.isNull()) {
-        m_elementHash.insert(e.attribute("id").toInt(), e);
+        int rawiID = e.attribute("id").toInt();
+        if(m_removedRowat.contains(rawiID)) {
+            qWarning("beginUpdate: Remove rawi %d", rawiID);
+
+            if(m_domHelper->rootElement().removeChild(e).isNull())
+                qWarning("beginUpdate: Error on removeChild for rawi %d", rawiID);
+        } else {
+            m_elementHash.insert(rawiID, e);
+        }
 
         e = e.nextSiblingElement();
     }
@@ -177,6 +193,8 @@ void TarajemRowatManager::endUpdate()
 {
     m_elementHash.clear();
     m_newElements.clear();
+    m_removedRowat.clear();
+
     m_domHelper.clear();
     m_zip.save();
 
@@ -297,6 +315,19 @@ int TarajemRowatManager::addRawi(RawiInfo *rawi)
     m_newElements.append(rawiElement);
 
     return rawi->id;
+}
+
+void TarajemRowatManager::removeRawi(int rawiID)
+{
+    ML_ASSERT2(m_info.contains(rawiID), "removeRawi: no rawi with id" << rawiID);
+
+    m_removedRowat.append(rawiID);
+    RawiInfo *rawi = m_info.take(rawiID);
+    m_fullInfo.remove(rawiID);
+
+    ML_ASSERT2(rawi->id == rawiID, "removeRawi: Can't remove rawi" << rawiID << "from saved rowat info");
+
+    delete rawi;
 }
 
 int TarajemRowatManager::getNewRawiID()

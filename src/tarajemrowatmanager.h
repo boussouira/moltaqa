@@ -49,6 +49,7 @@ public:
 
     void loadModels();
     void clear();
+    void reloadModels();
 
     QStandardItemModel *getRowatModel();
 
@@ -56,8 +57,10 @@ public:
 
     bool beginUpdate();
     void endUpdate();
+
     void updateRawi(RawiInfo *rawi);
     int addRawi(RawiInfo *rawi);
+    void removeRawi(int rawiID);
 
 protected:
     int getNewRawiID();
@@ -69,6 +72,7 @@ protected:
     QHash<int, RawiInfo*> m_fullInfo;
     QHash<int, QDomElement> m_elementHash;
     QList<QDomElement> m_newElements;
+    QList<int> m_removedRowat;
     XmlDomHelperPtr m_domHelper;
 };
 

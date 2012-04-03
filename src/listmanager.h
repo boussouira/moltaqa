@@ -21,7 +21,7 @@ public:
     virtual void loadModels()=0;
     virtual void clear();
 
-    void reloadModels();
+    virtual void reloadModels();
 
     void save(QStandardItemModel *model);
 

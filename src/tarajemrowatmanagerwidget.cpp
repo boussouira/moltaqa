@@ -4,7 +4,9 @@
 #include "utils.h"
 #include "modelenums.h"
 #include "modelutils.h"
+#include <qstandarditemmodel.h>
 #include <qinputdialog.h>
+#include <qmessagebox.h>
 
 TarajemRowatManagerWidget::TarajemRowatManagerWidget(QWidget *parent) :
     ControlCenterWidget(parent),
@@ -62,7 +64,8 @@ void TarajemRowatManagerWidget::beginEdit()
 void TarajemRowatManagerWidget::save()
 {
     saveCurrentRawi();
-    ML_ASSERT2(!m_editedRawiInfo.isEmpty(), "TarajemRowatManagerWidget: nothing to save");
+    ML_ASSERT2(!m_editedRawiInfo.isEmpty() || !m_removedRowat.isEmpty(),
+               "TarajemRowatManagerWidget: nothing to save");
 
     ML_BENCHMARK_START();
 
@@ -76,6 +79,7 @@ void TarajemRowatManagerWidget::save()
 
     qDeleteAll(m_editedRawiInfo);
     m_editedRawiInfo.clear();
+    m_removedRowat.clear();
     m_currentRawi = 0;
 
     ML_BENCHMARK_ELAPSED("Save Rowat");
@@ -263,9 +267,37 @@ void TarajemRowatManagerWidget::newRawi()
         QModelIndex index = m_model->indexFromItem(authItem);
         Utils::selectIndex(ui->treeView, index);
         on_treeView_doubleClicked(index);
+
+        m_currentRawi = rawi;
+
+        infoChanged();
+        saveCurrentRawi();
     }
 }
 
 void TarajemRowatManagerWidget::removeRawi()
 {
+    QModelIndex index = Utils::selectedIndex(ui->treeView);
+    if(index.isValid()) {
+        if(QMessageBox::question(this,
+                                 tr("حذف الراوي"),
+                                 tr("هل انت متأكد من انك تريد حذف الراوي '%1'؟")
+                                 .arg(index.data().toString()),
+                                 QMessageBox::Yes|QMessageBox::No,
+                                 QMessageBox::No)==QMessageBox::Yes) {
+
+            int rawiID = index.data(ItemRole::authorIdRole).toInt();
+            RawiInfo *rawi= getRawiInfo(rawiID);
+            ML_ASSERT(rawi);
+
+            m_manager->removeRawi(rawi->id);
+            m_removedRowat.append(rawi->id);
+
+            m_model->takeRow(index.row());
+        }
+    } else {
+        QMessageBox::warning(this,
+                             tr("حذف الراوي"),
+                             tr("لم تقم باختيار اي الراوي"));
+    }
 }
