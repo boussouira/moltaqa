@@ -16,7 +16,7 @@
 static BookListManager *m_instance = 0;
 
 BookListManager::BookListManager(QObject *parent)
-    : ListManager(parent),
+    : XmlManager(parent),
       m_bookModel(0),
       m_catModel(0),
       m_booksCount(0),

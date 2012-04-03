@@ -1,7 +1,7 @@
 #ifndef TARAJEMROWATMANAGER_H
 #define TARAJEMROWATMANAGER_H
 
-#include "listmanager.h"
+#include "xmlmanager.h"
 #include "ziphelper.h"
 #include <qhash.h>
 #include <qset.h>
@@ -39,7 +39,7 @@ public:
     RawiInfo *clone() { return new RawiInfo(*this); }
 };
 
-class TarajemRowatManager : public ListManager
+class TarajemRowatManager : public XmlManager
 {
 public:
     TarajemRowatManager(QObject *parent = 0);

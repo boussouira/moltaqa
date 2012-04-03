@@ -1,10 +1,10 @@
 #ifndef TAFFESIRLISTMANAGER_H
 #define TAFFESIRLISTMANAGER_H
 
-#include "listmanager.h"
+#include "xmlmanager.h"
 #include <qstandarditemmodel.h>
 
-class TaffesirListManager : public ListManager
+class TaffesirListManager : public XmlManager
 {
     Q_OBJECT
 

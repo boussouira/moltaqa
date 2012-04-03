@@ -10,7 +10,7 @@
 static AuthorsManager *m_instance=0;
 
 AuthorsManager::AuthorsManager(QObject *parent) :
-    ListManager(parent)
+    XmlManager(parent)
 {
     QDir dataDir(MW->libraryInfo()->dataDir());
     m_dom.setFilePath(dataDir.filePath("authors.xml"));

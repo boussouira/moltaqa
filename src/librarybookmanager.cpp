@@ -13,7 +13,7 @@
 static LibraryBookManager *m_instance=0;
 
 LibraryBookManager::LibraryBookManager(QObject *parent) :
-    ListManager(parent),
+    XmlManager(parent),
     m_quranBook(0)
 {
     QDir dataDir(MW->libraryInfo()->dataDir());

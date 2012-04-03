@@ -1,7 +1,7 @@
 #ifndef BOOKLISTMANAGER_H
 #define BOOKLISTMANAGER_H
 
-#include "listmanager.h"
+#include "xmlmanager.h"
 #include <qhash.h>
 #include <qicon.h>
 
@@ -21,7 +21,7 @@ public:
     QString title;
 };
 
-class BookListManager : public ListManager
+class BookListManager : public XmlManager
 {
     Q_OBJECT
 

@@ -1,7 +1,7 @@
 #ifndef AUTHORSMANAGER_H
 #define AUTHORSMANAGER_H
 
-#include "listmanager.h"
+#include "xmlmanager.h"
 #include <qhash.h>
 
 class AuthorInfo
@@ -28,7 +28,7 @@ public:
     }
 };
 
-class AuthorsManager : public ListManager
+class AuthorsManager : public XmlManager
 {
     Q_OBJECT
 

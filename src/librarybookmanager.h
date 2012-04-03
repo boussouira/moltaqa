@@ -1,7 +1,7 @@
 #ifndef LIBRARYBOOKMANAGER_H
 #define LIBRARYBOOKMANAGER_H
 
-#include "listmanager.h"
+#include "xmlmanager.h"
 #include "librarybook.h"
 
 #include <qhash.h>
@@ -11,7 +11,7 @@ class LibraryBook;
 class QStandardItemModel;
 class AuthorsManager;
 
-class LibraryBookManager : public ListManager
+class LibraryBookManager : public XmlManager
 {
     Q_OBJECT
 

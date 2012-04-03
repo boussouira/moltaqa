@@ -13,7 +13,7 @@
 
 TarajemRowatManager *m_instance = 0;
 
-TarajemRowatManager::TarajemRowatManager(QObject *parent) : ListManager(parent)
+TarajemRowatManager::TarajemRowatManager(QObject *parent) : XmlManager(parent)
 {
     QDir dataDir(MW->libraryInfo()->dataDir());
     m_path = dataDir.filePath("rowat.zip");
