@@ -7,9 +7,7 @@
 #include <qxmlstream.h>
 
 ListManager::ListManager(QObject *parent) :
-    QObject(parent),
-    m_domLoaded(false),
-    m_saveDom(false)
+    QObject(parent)
 {
 }
 

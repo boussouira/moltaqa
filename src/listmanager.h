@@ -33,8 +33,6 @@ signals:
 
 protected:
     QMutex m_mutex;
-    bool m_domLoaded;
-    bool m_saveDom;
     XmlDomHelper m_dom;
 };
 
