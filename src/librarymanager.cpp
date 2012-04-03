@@ -68,11 +68,13 @@ void LibraryManager::open()
 
 void LibraryManager::openManagers()
 {
-    m_authorsManager = new AuthorsManager(this); // should be the first
-    m_bookmanager = new LibraryBookManager(this);
-    m_bookListManager = new BookListManager(this);
-    m_taffesirManager = new TaffesirListManager(this);
-    m_rowatManager = new TarajemRowatManager(this);
+    ML_BENCHMARK_START();
+    ML_BENCHMARK("* AuthorsManager      * ", m_authorsManager = new AuthorsManager(this)); // should be the first
+    ML_BENCHMARK("* LibraryBookManager  * ", m_bookmanager = new LibraryBookManager(this));
+    ML_BENCHMARK("* BookListManager     * ", m_bookListManager = new BookListManager(this));
+    ML_BENCHMARK("* TaffesirListManager * ", m_taffesirManager = new TaffesirListManager(this));
+    ML_BENCHMARK("* TarajemRowatManager * ", m_rowatManager = new TarajemRowatManager(this));
+    ML_BENCHMARK_ELAPSED("**** openManagers ***** ");
 }
 
 int LibraryManager::addBook(ImportModelNode *node)
