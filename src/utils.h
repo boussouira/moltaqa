@@ -91,9 +91,12 @@ void DatabaseError(const QSqlDatabase &db, const char *file, int line);
 #define ML_BENCHMARK_START() QTime bmt2;bmt2.start();
 #define ML_BENCHMARK_ELAPSED(desc) qDebug(desc " take %d ms", bmt2.elapsed());
 
-#define LOG_DB_ERROR(db) Log::DatabaseError(db, __FILE__, __LINE__);
-#define LOG_SQL_ERROR(query) Log::QueryError(query, __FILE__, __LINE__);
-#define LOG_SQL_P_ERROR(query) Log::QueryError((*query), __FILE__, __LINE__);
+#define LOG_DB_ERROR(db) Log::DatabaseError(db, __FILE__, __LINE__)
+#define LOG_SQL_ERROR(query) Log::QueryError(query, __FILE__, __LINE__)
+#define LOG_SQL_P_ERROR(query) Log::QueryError((*query), __FILE__, __LINE__)
+
+#define ML_OPEN_DB(db) if(!db.open()) { LOG_DB_ERROR(db); }
+#define ML_QUERY_EXEC(query) if(!query.exec()) { LOG_SQL_ERROR(query); }
 
 #define ML_ASSERT(con)    if(!(con)) return
 #define ML_ASSERT2(con, msg)    if(!(con)) {qWarning() << msg ; return;}

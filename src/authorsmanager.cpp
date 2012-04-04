@@ -10,11 +10,12 @@
 static AuthorsManager *m_instance=0;
 
 AuthorsManager::AuthorsManager(QObject *parent) :
-    XmlManager(parent)
+    DatabaseManager(parent)
 {
     QDir dataDir(MW->libraryInfo()->dataDir());
-    m_dom.setFilePath(dataDir.filePath("authors.xml"));
+    setDatabasePath(dataDir.filePath("authors.db"));
 
+    openDatabase();
     loadModels();
 
     m_instance = this;
@@ -34,8 +35,6 @@ AuthorsManager *AuthorsManager::instance()
 
 void AuthorsManager::loadModels()
 {
-    m_dom.load();
-
     loadAuthorsInfo();
 }
 
@@ -43,6 +42,44 @@ void AuthorsManager::clear()
 {
     qDeleteAll(m_authors);
     m_authors.clear();
+}
+
+void AuthorsManager::loadAuthorsInfo()
+{
+    QSqlQuery query(m_db);
+    query.prepare("SELECT id, name, full_name, info, birth_year, birth, "
+                  "death_year, death, flags FROM authors ORDER BY id");
+
+    ML_QUERY_EXEC(query);
+
+    while(query.next()) {
+        AuthorInfo *auth = new AuthorInfo();
+        auth->id = query.value(0).toInt();
+        auth->name = query.value(1).toString();
+        auth->fullName = query.value(2).toString();
+        auth->info = query.value(3).toString();
+
+        int flags = query.value(8).toInt();
+        if(flags & AuthorInfo::UnknowBirth) {
+            auth->unknowBirth = true;
+        } else {
+            auth->birthYear = query.value(4).toInt();
+            auth->birthStr = query.value(5).toString();
+        }
+
+        if(flags & AuthorInfo::ALive) {
+            auth->isALive = true;
+        } else if(flags & AuthorInfo::UnknowDeath) {
+            auth->unknowBirth = true;
+        } else {
+            auth->deathYear = query.value(6).toInt();
+            auth->deathStr = query.value(7).toString();
+        }
+
+        m_authors[auth->id] = auth;
+    }
+
+    ML_ASSERT2(m_authors.size(), "AuthorsManager: No author data where loaded");
 }
 
 QStandardItemModel *AuthorsManager::authorsModel()
@@ -56,7 +93,6 @@ QStandardItemModel *AuthorsManager::authorsModel()
         item->setText(auth->name);
         item->setToolTip(auth->fullName);
         item->setData(auth->id, ItemRole::authorIdRole);
-
         model->appendRow(item);
     }
 
@@ -70,68 +106,57 @@ int AuthorsManager::addAuthor(AuthorInfo *auth)
     if(!auth->id)
         auth->id = getNewAuthorID();
 
-    QDomElement authorElement = m_dom.domDocument().createElement("author");
-    authorElement.setAttribute("id", auth->id);
+    if(!auth->unknowBirth && auth->birthStr.isEmpty())
+        auth->birthStr = Utils::hijriYear(auth->birthYear);
 
-    QDomElement nameEelement = m_dom.domDocument().createElement("name");
-    QDomElement fullNameEelement = m_dom.domDocument().createElement("full-name");
-    QDomElement infoEelement = m_dom.domDocument().createElement("info");
+    if(!auth->unknowDeath && !auth->isALive && auth->deathStr.isEmpty())
+        auth->deathStr = Utils::hijriYear(auth->deathYear);
 
-    nameEelement.appendChild(m_dom.domDocument().createTextNode(auth->name));
-    fullNameEelement.appendChild(m_dom.domDocument().createTextNode(auth->fullName));
-    infoEelement.appendChild(m_dom.domDocument().createCDATASection(auth->info));
+    int flags = 0;
+    if(auth->unknowBirth)
+        flags |= AuthorInfo::UnknowBirth;
+    if(auth->unknowDeath)
+        flags |= AuthorInfo::UnknowDeath;
+    if(auth->isALive)
+        flags |= AuthorInfo::ALive;
 
-    QDomElement birthElement = m_dom.domDocument().createElement("birth");
-    if(auth->unknowBirth) {
-        birthElement.setAttribute("unknow", "true");
+    Utils::QueryBuilder q;
+    q.setTableName("authors");
+    q.setQueryType(Utils::QueryBuilder::Insert);
+
+    q.addColumn("id", auth->id);
+    q.addColumn("name", auth->name);
+    q.addColumn("full_name", auth->fullName);
+    q.addColumn("info", auth->info);
+
+    q.addColumn("birth_year", auth->birthYear);
+    q.addColumn("birth", auth->birthStr);
+    q.addColumn("death_year", auth->deathYear);
+    q.addColumn("death", auth->deathStr);
+    q.addColumn("flags", flags);
+
+    q.prepare(m_query);
+
+    if(m_query.exec()) {
+        m_authors.insert(auth->id, auth);
+        return auth->id;
     } else {
-        birthElement.setAttribute("year", auth->birthYear);
-        if(auth->birthStr.isEmpty())
-            auth->birthStr = Utils::hijriYear(auth->birthYear);
-
-        birthElement.appendChild(m_dom.domDocument().createTextNode(auth->birthStr));
+        LOG_SQL_ERROR(m_query);
+        return 0;
     }
-
-    QDomElement deathElement = m_dom.domDocument().createElement("death");
-    deathElement.removeAttribute("aLive");
-    deathElement.removeAttribute("unknow");
-
-    if(auth->isALive) {
-        deathElement.setAttribute("aLive", "true");
-    } else if(auth->unknowDeath) {
-        deathElement.setAttribute("unknow", "true");
-    } else {
-        deathElement.setAttribute("year", auth->deathYear);
-        if(auth->deathStr.isEmpty())
-            auth->deathStr = Utils::hijriYear(auth->deathYear);
-
-        deathElement.appendChild(m_dom.domDocument().createTextNode(auth->deathStr));
-    }
-
-    authorElement.appendChild(nameEelement);
-    authorElement.appendChild(fullNameEelement);
-    authorElement.appendChild(birthElement);
-    authorElement.appendChild(deathElement);
-    authorElement.appendChild(infoEelement);
-
-    m_dom.rootElement().appendChild(authorElement);
-    m_authors.insert(auth->id, auth);
-
-    m_dom.setNeedSave(true);
-
-    return auth->id;
 }
 
 void AuthorsManager::removeAuthor(int authorID)
 {
-    QDomElement e = m_elementHash.value(authorID);
-
-    if(!e.isNull()) {
-        if(m_dom.rootElement().removeChild(e).isNull())
-            qWarning("Error occured when removing author %d", authorID);
-
-        m_dom.setNeedSave(true);
+    m_query.prepare("DELETE FROM authors WHERE id = ?");
+    m_query.bindValue(0, authorID);
+    if(m_query.exec()) {
+        AuthorInfo *auth = m_authors.take(authorID);
+        ML_DELETE_CHECK(auth);
+    } else {
+        LOG_SQL_ERROR(m_query);
     }
+
 }
 
 int AuthorsManager::getNewAuthorID()
@@ -182,103 +207,15 @@ AuthorInfo *AuthorsManager::findAuthor(QString name)
 
 void AuthorsManager::beginUpdate()
 {
-    m_elementHash.clear();
-
-    QDomElement e = m_dom.rootElement().firstChildElement();
-    while(!e.isNull()) {
-        m_elementHash.insert(e.attribute("id").toInt(), e);
-
-        e = e.nextSiblingElement();
-    }
 }
 
 void AuthorsManager::endUpdate()
 {
-    m_elementHash.clear();
     reloadModels();
 }
 
 void AuthorsManager::updateAuthor(AuthorInfo *auth)
 {
-    QDomElement e = m_elementHash.value(auth->id);
-
-    if(!e.isNull()) {
-        e.setAttribute("id", auth->id);
-
-        m_dom.setElementText(e, "name", auth->name);
-        m_dom.setElementText(e, "full-name", auth->fullName);
-        m_dom.setElementText(e, "info", auth->info, true);
-
-        QDomElement birthElement = Utils::findChildElement(e, m_dom.domDocument(), "birth");
-        if(auth->unknowBirth)
-            birthElement.setAttribute("unknow", "true");
-        else
-            birthElement.removeAttribute("unknow");
-
-        birthElement.setAttribute("year", auth->birthYear);
-        Utils::findChildText(birthElement, m_dom.domDocument()).setNodeValue(auth->birthStr);
-
-        QDomElement deathElement = Utils::findChildElement(e, m_dom.domDocument(), "death");
-        deathElement.removeAttribute("aLive");
-        deathElement.removeAttribute("unknow");
-
-        if(auth->isALive)
-            deathElement.setAttribute("aLive", "true");
-        else if(auth->unknowDeath)
-            deathElement.setAttribute("unknow", "true");
-
-        deathElement.setAttribute("year", auth->deathYear);
-        Utils::findChildText(deathElement, m_dom.domDocument()).setNodeValue(auth->deathStr);
-
-        m_dom.setNeedSave(true);
-    }
-}
-
-void AuthorsManager::loadAuthorsInfo()
-{
-    QDomElement e = m_dom.rootElement().firstChildElement();
-    while(!e.isNull()) {
-        readAuthor(e);
-
-        e = e.nextSiblingElement();
-    }
-}
-
-void AuthorsManager::readAuthor(QDomElement &e)
-{
-    AuthorInfo *auth = new AuthorInfo();
-    auth->id = e.attribute("id").toInt();
-    auth->name = e.firstChildElement("name").text();
-    auth->fullName = e.firstChildElement("full-name").text();
-    auth->info = e.firstChildElement("info").text();
-
-    QDomElement deathElement = e.firstChildElement("death");
-    if(!deathElement.isNull()) {
-        if(deathElement.hasAttribute("aLive") || deathElement.attribute("year").toInt()==99999) {
-            auth->isALive = true;
-        } else if(deathElement.hasAttribute("unknow") || !deathElement.hasAttribute("year")) {
-            auth->unknowDeath = true;
-        } else {
-            auth->deathYear = deathElement.attribute("year").toInt();
-            auth->deathStr = deathElement.hasChildNodes() ? deathElement.text()
-                                                          : Utils::hijriYear(auth->deathYear);
-            auth->unknowDeath = false;
-        }
-    } else {
-        auth->unknowDeath = true;
-    }
-
-    QDomElement birthElement = e.firstChildElement("birth");
-    if(!birthElement.isNull()
-            && !birthElement.hasAttribute("unknow")
-            && birthElement.hasAttribute("year")) {
-        auth->birthYear = birthElement.attribute("year").toInt();
-        auth->birthStr = birthElement.hasChildNodes() ? birthElement.text()
-                                                      : Utils::hijriYear(auth->birthYear);
-        auth->unknowBirth = false;
-    } else {
-        auth->unknowBirth = true;
-    }
-
-    m_authors.insert(auth->id, auth);
+    removeAuthor(auth->id);
+    ML_ASSERT2(addAuthor(auth) != 0, "AuthorsManager: Error on update author:" << auth->id);
 }

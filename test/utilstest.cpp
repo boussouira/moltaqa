@@ -1,6 +1,9 @@
 #include "utilstest.h"
 #include "utils.h"
 #include "stringutils.h"
+#include "sqlutils.h"
+#include <qsqldatabase.h>
+#include <QSqlQuery>
 
 #define u(x) QString::fromUtf8(x)
 
@@ -184,6 +187,58 @@ void UtilsTest::formatHTML()
 
     for(int i=0; i<origins.size(); i++)
         QCOMPARE(excpected[i], Utils::formatHTML(origins[i]));
+}
+
+void UtilsTest::queryBuilder()
+{
+    QString testDB = QDir::current().absoluteFilePath("test.db");
+
+    QSqlDatabase db;
+    db = QSqlDatabase::addDatabase("QSQLITE", "TestQueryBuilder");
+    db.setDatabaseName(testDB);
+
+    QVERIFY(db.open());
+
+    QSqlQuery query(db);
+
+    int id = Utils::randInt(1, 500);
+
+    // Create new table
+    Utils::QueryBuilder q;
+    q.setTableName("BooksInfo");
+    q.setIgnoreExistingTable(true);
+    q.setQueryType(Utils::QueryBuilder::Create);
+
+    q.addColumn("id", "INT");
+    q.addColumn("name", "TEXT");
+    q.addColumn("path", "TEXT");
+
+    q.prepare(query);
+    QVERIFY(query.exec());
+
+    // Insert values to table
+    q.setQueryType(Utils::QueryBuilder::Insert);
+
+    q.addColumn("id", id);
+    q.addColumn("name", "The rate of hacking");
+    q.addColumn("path", "test.txt");
+
+    q.prepare(query);
+    QVERIFY(query.exec());
+
+    // Update values
+    q.setQueryType(Utils::QueryBuilder::Update);
+
+    q.addColumn("name", "The Art Of Hacking");
+    q.addColumn("path", "test.pdf");
+
+    q.addWhere("id", id);
+    q.addWhere("path", "test.txt");
+
+    q.prepare(query);
+    QVERIFY(query.exec());
+
+    QVERIFY(QFile::remove(testDB));
 }
 
 int UtilsTest::getPageTitleID(QList<int> &titles, int pageID)

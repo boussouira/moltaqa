@@ -120,7 +120,8 @@ SOURCES += mainwindow.cpp \
     tarajemrowatmanager.cpp \
     ziphelper.cpp \
     tarajemrowatmanagerwidget.cpp \
-    xmlmanager.cpp
+    xmlmanager.cpp \
+    databasemanager.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -228,7 +229,8 @@ HEADERS += mainwindow.h \
     tarajemrowatmanager.h \
     ziphelper.h \
     tarajemrowatmanagerwidget.h \
-    xmlmanager.h
+    xmlmanager.h \
+    databasemanager.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

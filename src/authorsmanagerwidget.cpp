@@ -234,26 +234,26 @@ void AuthorsManagerWidget::save()
 {
     saveCurrentAuthor();
 
-    if(!m_editedAuthInfo.isEmpty() || !m_deletedAuth.isEmpty()) {
-        m_authorsManager->beginUpdate();
+    ML_ASSERT(!m_editedAuthInfo.isEmpty() || !m_deletedAuth.isEmpty());
 
-        foreach(AuthorInfo *auth, m_editedAuthInfo.values()) {
+    m_authorsManager->transaction();
+
+    foreach(AuthorInfo *auth, m_editedAuthInfo.values()) {
+        if(m_deletedAuth.isEmpty() || !m_deletedAuth.contains(auth->id))
             m_authorsManager->updateAuthor(auth);
-        }
-
-        foreach (int authorID, m_deletedAuth) {
-            m_authorsManager->removeAuthor(authorID);
-        }
-
-        m_authorsManager->endUpdate();
-
-        qDeleteAll(m_editedAuthInfo);
-        m_editedAuthInfo.clear();
-        m_deletedAuth.clear();
-        m_currentAuthor = 0;
-
-        setModified(false);
     }
+
+    foreach (int authorID, m_deletedAuth) {
+        m_authorsManager->removeAuthor(authorID);
+    }
+
+    m_authorsManager->commit();
+
+    m_editedAuthInfo.clear();
+    m_deletedAuth.clear();
+    m_currentAuthor = 0;
+
+    setModified(false);
 }
 
 void AuthorsManagerWidget::beginEdit()

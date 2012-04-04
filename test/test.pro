@@ -8,4 +8,4 @@ DESTDIR = ../bin
 INCLUDEPATH += ../src
 
 HEADERS += utilstest.h
-SOURCES += utilstest.cpp ../src/utils.cpp ../src/stringutils.cpp
+SOURCES += utilstest.cpp ../src/utils.cpp ../src/stringutils.cpp ../src/sqlutils.cpp

@@ -1,7 +1,7 @@
 #ifndef AUTHORSMANAGER_H
 #define AUTHORSMANAGER_H
 
-#include "xmlmanager.h"
+#include "databasemanager.h"
 #include <qhash.h>
 
 class AuthorInfo
@@ -22,13 +22,19 @@ public:
     bool unknowBirth;
     bool unknowDeath;
 
+    enum AuthorFlags {
+        UnknowBirth = 0x2,
+        UnknowDeath = 0x4,
+        ALive     = 0x8
+    };
+
     AuthorInfo *clone()
     {
         return new AuthorInfo(*this);
     }
 };
 
-class AuthorsManager : public XmlManager
+class AuthorsManager : public DatabaseManager
 {
     Q_OBJECT
 
@@ -59,11 +65,9 @@ public:
 protected:
     int getNewAuthorID();
     void loadAuthorsInfo();
-    void readAuthor(QDomElement &e);
 
 protected:
     QHash<int, AuthorInfo*> m_authors;
-    QHash<int, QDomElement> m_elementHash;
 };
 
 #endif // AUTHORSMANAGER_H
