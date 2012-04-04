@@ -205,15 +205,6 @@ AuthorInfo *AuthorsManager::findAuthor(QString name)
     return auth;
 }
 
-void AuthorsManager::beginUpdate()
-{
-}
-
-void AuthorsManager::endUpdate()
-{
-    reloadModels();
-}
-
 void AuthorsManager::updateAuthor(AuthorInfo *auth)
 {
     removeAuthor(auth->id);

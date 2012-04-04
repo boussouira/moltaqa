@@ -58,8 +58,6 @@ public:
 
     AuthorInfo *findAuthor(QString name);
 
-    void beginUpdate();
-    void endUpdate();
     void updateAuthor(AuthorInfo *auth);
 
 protected:

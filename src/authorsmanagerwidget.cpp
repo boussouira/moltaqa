@@ -248,6 +248,7 @@ void AuthorsManagerWidget::save()
     }
 
     m_authorsManager->commit();
+    m_authorsManager->reloadModels();
 
     m_editedAuthInfo.clear();
     m_deletedAuth.clear();
