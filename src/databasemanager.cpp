@@ -22,11 +22,11 @@ void DatabaseManager::openDatabase()
 {
     ML_ASSERT2(!m_path.isEmpty(), "DatabaseManager: Database path is empty");
 
-    QString conn = "AuthorsDB";
+    QString conn = "DatabaseManager." + QFileInfo(m_path).baseName();
     while(m_db.contains(conn))
         conn.append('_');
 
-    m_db = QSqlDatabase::addDatabase("QSQLITE", "");
+    m_db = QSqlDatabase::addDatabase("QSQLITE", conn);
     m_db.setDatabaseName(m_path);
 
     ML_OPEN_DB(m_db);
