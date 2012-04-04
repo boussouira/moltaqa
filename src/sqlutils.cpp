@@ -40,6 +40,12 @@ void QueryBuilder::setIgnoreExistingTable(bool ignore)
     m_igonreExisting = ignore;
 }
 
+void QueryBuilder::setDropExistingTable(bool drop)
+{
+    qWarning("QueryBuilder: Drop existingt table not implement");
+    m_dropExisting = drop;
+}
+
 void QueryBuilder::addColumn(const QVariant &colName, const QVariant &colValue)
 {
     m_colums.append(colName);
@@ -60,7 +66,15 @@ QString QueryBuilder::query()
 
     QString sql;
     if(m_type == Create) {
-        sql = "CREATE TABLE ";
+        /*
+        if(m_dropExisting) {
+            sql += "DROP TABLE IF EXISTS ";
+            sql += m_tableName;
+            sql += " ; ";
+        }
+        */
+
+        sql += "CREATE TABLE ";
         if(m_igonreExisting)
             sql += "IF NOT EXISTS ";
 

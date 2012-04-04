@@ -30,9 +30,9 @@ public:
     };
 
     void setTableName(const QString &name);// { m_tableName = name; }
-    void setQueryType(QueryType type);// { m_type = type; }
-    void setIgnoreExistingTable(bool ignore);// { m_igonreExisting = ignore; }
-    //void setDropExistingTable(bool drop) { m_dropExisting = drop; }
+    void setQueryType(QueryType type);
+    void setIgnoreExistingTable(bool ignore);
+    void setDropExistingTable(bool drop);
     void addColumn(const QVariant &colName, const QVariant &colValue);
     void addWhere(const QVariant &colName, const QVariant &colValue);
 
