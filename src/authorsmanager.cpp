@@ -150,14 +150,11 @@ void AuthorsManager::removeAuthor(int authorID)
 {
     m_query.prepare("DELETE FROM authors WHERE id = ?");
     m_query.bindValue(0, authorID);
-    if(m_query.exec()) {
-        AuthorInfo *auth = m_authors.take(authorID);
-        ML_DELETE_CHECK(auth);
-    } else {
+    if(m_query.exec())
+        m_authors.remove(authorID); //FIXME: memory leak
+    else
         LOG_SQL_ERROR(m_query);
     }
-
-}
 
 int AuthorsManager::getNewAuthorID()
 {
@@ -207,6 +204,48 @@ AuthorInfo *AuthorsManager::findAuthor(QString name)
 
 void AuthorsManager::updateAuthor(AuthorInfo *auth)
 {
-    removeAuthor(auth->id);
-    ML_ASSERT2(addAuthor(auth) != 0, "AuthorsManager: Error on update author:" << auth->id);
+    QMutexLocker locker(&m_mutex);
+
+    if(!auth->id)
+        auth->id = getNewAuthorID();
+
+    if(!auth->unknowBirth && auth->birthStr.isEmpty())
+        auth->birthStr = Utils::hijriYear(auth->birthYear);
+
+    if(!auth->unknowDeath && !auth->isALive && auth->deathStr.isEmpty())
+        auth->deathStr = Utils::hijriYear(auth->deathYear);
+
+    int flags = 0;
+    if(auth->unknowBirth)
+        flags |= AuthorInfo::UnknowBirth;
+    if(auth->unknowDeath)
+        flags |= AuthorInfo::UnknowDeath;
+    if(auth->isALive)
+        flags |= AuthorInfo::ALive;
+
+    QSqlQuery query(m_db);
+
+    Utils::QueryBuilder q;
+    q.setTableName("authors");
+    q.setQueryType(Utils::QueryBuilder::Update);
+
+    q.addColumn("name", auth->name);
+    q.addColumn("full_name", auth->fullName);
+    q.addColumn("info", auth->info);
+
+    q.addColumn("birth_year", auth->birthYear);
+    q.addColumn("birth", auth->birthStr);
+    q.addColumn("death_year", auth->deathYear);
+    q.addColumn("death", auth->deathStr);
+    q.addColumn("flags", flags);
+
+    q.addWhere("id", auth->id);
+
+    q.prepare(query);
+
+    if(query.exec()) {
+        m_authors.insert(auth->id, auth); //FIXME: memory leak
+    } else {
+        LOG_SQL_ERROR(query);
+    }
 }
