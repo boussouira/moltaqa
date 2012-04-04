@@ -19,6 +19,8 @@ LibraryBookManagerWidget::LibraryBookManagerWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    m_manager = LibraryBookManager::instance();
+
     enableEditWidgets(false);
     loadModel();
     setupActions();
@@ -56,7 +58,7 @@ void LibraryBookManagerWidget::enableEditWidgets(bool enable)
 
 void LibraryBookManagerWidget::loadModel()
 {
-    m_model = LibraryBookManager::instance()->getModel();
+    m_model = m_manager->getModel();
 
     ui->treeView->setModel(m_model);
     ui->treeView->resizeColumnToContents(0);
@@ -76,16 +78,16 @@ void LibraryBookManagerWidget::save()
     saveCurrentBookInfo();
 
     if(!m_editedBookInfo.isEmpty()) {
-        LibraryBookManager::instance()->beginUpdate();
+        m_manager->transaction();
 
         foreach(LibraryBook *book, m_editedBookInfo.values()) {
             qDebug("Saving book %d...", book->bookID);
-            LibraryBookManager::instance()->updateBook(book);
+            m_manager->updateBook(book);
         }
 
-        LibraryBookManager::instance()->endUpdate();
+        m_manager->commit();
+        m_manager->reloadModels();
 
-        qDeleteAll(m_editedBookInfo);
         m_editedBookInfo.clear();
         m_currentBook = 0;
 
@@ -166,7 +168,7 @@ LibraryBook *LibraryBookManagerWidget::getBookInfo(int bookID)
 {
     LibraryBook *info = m_editedBookInfo.value(bookID);
     if(!info) {
-        info = LibraryBookManager::instance()->getLibraryBook(bookID);
+        info = m_manager->getLibraryBook(bookID);
         if(info)
             info = info->clone();
     }

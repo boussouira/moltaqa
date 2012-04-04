@@ -1,7 +1,7 @@
 #ifndef LIBRARYBOOKMANAGER_H
 #define LIBRARYBOOKMANAGER_H
 
-#include "xmlmanager.h"
+#include "databasemanager.h"
 #include "librarybook.h"
 
 #include <qhash.h>
@@ -11,7 +11,7 @@ class LibraryBook;
 class QStandardItemModel;
 class AuthorsManager;
 
-class LibraryBookManager : public XmlManager
+class LibraryBookManager : public DatabaseManager
 {
     Q_OBJECT
 
@@ -28,24 +28,23 @@ public:
     LibraryBook *getLibraryBook(int bookID);
     LibraryBook *getQuranBook();
 
-    void addBook(LibraryBook *book);
+    int addBook(LibraryBook *book);
 
     void beginUpdate();
     void endUpdate();
-    void updateBook(LibraryBook *book);
+    bool updateBook(LibraryBook *book);
+    bool removeBook(int bookID);
 
     QList<int> getNonIndexedBooks();
     void setBookIndexStat(int bookID, LibraryBook::IndexFlags indexFlag);
 
 protected:
     int getNewBookID();
-    void readBook(QDomElement &e);
     void loadLibraryBooks();
 
 protected:
     AuthorsManager *m_authorsManager;
     QHash<int, LibraryBook*> m_books;
-    QHash<int, QDomElement> m_bookElementHash;
     QSet<LibraryBook*> m_usedBooks;
     LibraryBook* m_quranBook;
 };

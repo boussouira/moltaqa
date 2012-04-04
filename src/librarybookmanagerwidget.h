@@ -12,6 +12,7 @@ namespace Ui {
 class LibraryManager;
 class LibraryBook;
 class QStandardItemModel;
+class LibraryBookManager;
 
 class LibraryBookManagerWidget : public ControlCenterWidget
 {
@@ -44,6 +45,7 @@ protected:
     Ui::LibraryBookManagerWidget *ui;
     LibraryBook *m_currentBook;
     QStandardItemModel *m_model;
+    LibraryBookManager *m_manager;
     QHash<int, LibraryBook *> m_editedBookInfo;
 };
 

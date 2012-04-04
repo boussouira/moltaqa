@@ -13,17 +13,17 @@
 static LibraryBookManager *m_instance=0;
 
 LibraryBookManager::LibraryBookManager(QObject *parent) :
-    XmlManager(parent),
+    DatabaseManager(parent),
     m_quranBook(0)
 {
     QDir dataDir(MW->libraryInfo()->dataDir());
-    m_dom.setFilePath(dataDir.filePath("booksinfo.xml"));
-    m_authorsManager = AuthorsManager::instance();
+    setDatabasePath(dataDir.filePath("books.db"));
 
+    m_authorsManager = AuthorsManager::instance();
     Q_CHECK_PTR(m_authorsManager);
 
+    openDatabase();
     loadModels();
-    beginUpdate();
 
     m_instance = this;
 }
@@ -43,8 +43,6 @@ LibraryBookManager *LibraryBookManager::instance()
 
 void LibraryBookManager::loadModels()
 {
-    m_dom.load();
-
     loadLibraryBooks();
 }
 
@@ -60,16 +58,40 @@ void LibraryBookManager::clear()
     }
 
     m_books.clear();
-    m_bookElementHash.clear();
 }
 
 void LibraryBookManager::loadLibraryBooks()
 {
-    QDomElement e = m_dom.rootElement().firstChildElement();
-    while(!e.isNull()) {
-        readBook(e);
+    QSqlQuery query(m_db);
+    query.prepare("SELECT id, title, type, authorID, author, info, bookFlags, indexFlags, filename "
+                  "FROM books ORDER BY id");
 
-        e = e.nextSiblingElement();
+    ML_QUERY_EXEC(query);
+
+    while(query.next()) {
+        LibraryBook *book = new LibraryBook();
+        book->bookID = query.value(0).toInt();
+        book->bookDisplayName = query.value(1).toString();
+        book->bookType = static_cast<LibraryBook::Type>(query.value(2).toInt());
+        book->bookInfo = query.value(5).toString();
+
+        book->bookFlags = query.value(6).toInt();
+        book->indexFlags = static_cast<LibraryBook::IndexFlags>(query.value(7).toInt());
+
+        book->fileName = query.value(8).toString();
+        book->bookPath = MW->libraryInfo()->bookPath(book->fileName);
+
+        if(!book->isQuran()) {
+            book->authorID = query.value(3).toInt();
+
+            if(book->authorID) {
+                book->authorName = m_authorsManager->getAuthorName(book->authorID);
+            } else {
+                book->authorName = query.value(4).toString();
+            }
+        }
+
+        m_books.insert(book->bookID, book);
     }
 }
 
@@ -117,68 +139,89 @@ LibraryBook *LibraryBookManager::getQuranBook()
     return m_quranBook;
 }
 
-void LibraryBookManager::addBook(LibraryBook *book)
+int LibraryBookManager::addBook(LibraryBook *book)
 {
     QMutexLocker locker(&m_mutex);
 
     if(!book->bookID)
         book->bookID = getNewBookID();
 
-    QDomElement bookElement = m_dom.domDocument().createElement("book");
-    bookElement.setAttribute("id", book->bookID);
-    bookElement.setAttribute("type", book->bookType);
-    bookElement.setAttribute("authorid", book->authorID);
-    bookElement.setAttribute("bookFlags", book->bookFlags);
-    bookElement.setAttribute("indexFlags", book->indexFlags);
+    QSqlQuery query(m_db);
 
-    QDomElement titleElement = m_dom.domDocument().createElement("title");
-    titleElement.appendChild(m_dom.domDocument().createTextNode(book->bookDisplayName));
-    bookElement.appendChild(titleElement);
+    Utils::QueryBuilder q;
+    q.setTableName("books");
+    q.setQueryType(Utils::QueryBuilder::Insert);
 
-    QDomElement fileElement = m_dom.domDocument().createElement("filename");
-    fileElement.appendChild(m_dom.domDocument().createTextNode(book->fileName));
-    bookElement.appendChild(fileElement);
+    q.addColumn("id", book->bookID);
+    q.addColumn("title", book->bookDisplayName);
+    q.addColumn("type", book->bookType);
+    q.addColumn("authorID", book->authorID);
+    q.addColumn("author", (!book->authorID) ? book->authorName : QVariant(QVariant::String));
+    q.addColumn("info", book->bookInfo);
+    q.addColumn("bookFlags", book->bookFlags);
+    q.addColumn("indexFlags", book->indexFlags);
+    q.addColumn("filename", book->fileName);
 
-    QDomElement bookInfoElement = m_dom.domDocument().createElement("info");
-    bookInfoElement.appendChild(m_dom.domDocument().createCDATASection(book->bookInfo));
-    bookElement.appendChild(bookInfoElement);
+    q.prepare(query);
 
-    m_dom.rootElement().appendChild(bookElement);
-    m_books.insert(book->bookID, book);
-
-    m_dom.setNeedSave(true);
+    if(query.exec()) {
+        m_books.insert(book->bookID, book);
+        return book->bookID;
+    } else {
+        LOG_SQL_ERROR(query);
+        return 0;
+    }
 }
 
 void LibraryBookManager::beginUpdate()
 {
-    m_bookElementHash.clear();
-
-    QDomElement e = m_dom.rootElement().firstChildElement();
-    while(!e.isNull()) {
-        m_bookElementHash.insert(e.attribute("id").toInt(), e);
-
-        e = e.nextSiblingElement();
-    }
 }
 
 void LibraryBookManager::endUpdate()
 {
-    m_bookElementHash.clear();
     reloadModels();
 }
 
-void LibraryBookManager::updateBook(LibraryBook *book)
+bool LibraryBookManager::updateBook(LibraryBook *book)
 {
-    QDomElement e = m_bookElementHash.value(book->bookID);
+    QSqlQuery query(m_db);
 
-    if(!e.isNull()) {
-        e.setAttribute("id", book->bookID);
-        e.setAttribute("authorid", book->authorID);
+    Utils::QueryBuilder q;
+    q.setTableName("books");
+    q.setQueryType(Utils::QueryBuilder::Update);
 
-        m_dom.setElementText(e, "title", book->bookDisplayName);
-        m_dom.setElementText(e, "info", book->bookInfo, true);
+    q.addColumn("title", book->bookDisplayName);
+    q.addColumn("type", book->bookType);
+    q.addColumn("authorID", book->authorID);
+    q.addColumn("author", (!book->authorID) ? book->authorName : QVariant(QVariant::String));
+    q.addColumn("info", book->bookInfo);
+    q.addColumn("bookFlags", book->bookFlags);
+    q.addColumn("indexFlags", book->indexFlags);
+    q.addColumn("filename", book->fileName);
 
-        m_dom.setNeedSave(true);
+    q.addWhere("id", book->bookID);
+
+    q.prepare(query);
+
+    if(query.exec()) {
+        m_books.insert(book->bookID, book); //FIXME: memory leak
+        return true;
+    } else {
+        LOG_SQL_ERROR(query);
+        return false;
+    }
+}
+
+bool LibraryBookManager::removeBook(int bookID)
+{
+    m_query.prepare("DELETE FROM books WHERE id = ?");
+    m_query.bindValue(0, bookID);
+    if(m_query.exec()) {
+        m_books.remove(bookID); //FIXME: memory leak
+        return true;
+    } else {
+        LOG_SQL_ERROR(m_query);
+        return false;
     }
 }
 
@@ -201,18 +244,25 @@ QList<int> LibraryBookManager::getNonIndexedBooks()
 
 void LibraryBookManager::setBookIndexStat(int bookID, LibraryBook::IndexFlags indexFlag)
 {
-    QDomElement e = m_bookElementHash.value(bookID);
+    QSqlQuery query(m_db);
 
-    if(!e.isNull()) {
-        e.setAttribute("indexFlags", static_cast<int>(indexFlag));
+    Utils::QueryBuilder q;
+    q.setTableName("books");
+    q.setQueryType(Utils::QueryBuilder::Update);
 
+    q.addColumn("indexFlags", indexFlag);
+    q.addWhere("id", bookID);
+
+    q.prepare(query);
+
+    if(query.exec()) {
         LibraryBook *book = m_books.value(bookID);
-        if(book)
-            book->indexFlags = indexFlag;
-        else qDebug("No book");
+        ML_ASSERT2(book, "LibraryBookManager::setBookIndexStat No book with id" << bookID << "where found");
 
-        m_dom.setNeedSave(true);
-    } else qDebug("No element");
+        book->indexFlags = indexFlag;
+    } else {
+        LOG_SQL_ERROR(query);
+    }
 }
 
 int LibraryBookManager::getNewBookID()
@@ -226,29 +276,3 @@ int LibraryBookManager::getNewBookID()
     return bookID;
 }
 
-void LibraryBookManager::readBook(QDomElement &e)
-{
-    LibraryBook *book = new LibraryBook();
-    book->bookID = e.attribute("id").toInt();
-    book->bookType = static_cast<LibraryBook::Type>(e.attribute("type").toInt());
-    book->bookDisplayName = e.firstChildElement("title").text();
-    book->bookInfo = e.firstChildElement("info").text();
-    book->fileName = e.firstChildElement("filename").text();
-    book->bookPath = MW->libraryInfo()->bookPath(book->fileName);
-    book->bookFlags = e.attribute("bookFlags").toInt();
-    book->indexFlags = static_cast<LibraryBook::IndexFlags>(e.attribute("indexFlags").toInt());
-
-    if(!book->isQuran()) {
-        book->authorID = e.attribute("authorid").toInt();
-
-        if(book->authorID) {
-            book->authorName = m_authorsManager->getAuthorName(book->authorID);
-        } else {
-            QDomElement authorElement = e.firstChildElement("author");
-            if(!authorElement.isNull())
-                book->authorName = authorElement.text();
-        }
-    }
-
-    m_books.insert(book->bookID, book);
-}
