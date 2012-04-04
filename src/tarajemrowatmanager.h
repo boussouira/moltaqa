@@ -1,10 +1,8 @@
 #ifndef TARAJEMROWATMANAGER_H
 #define TARAJEMROWATMANAGER_H
 
-#include "xmlmanager.h"
-#include "ziphelper.h"
+#include "databasemanager.h"
 #include <qhash.h>
-#include <qset.h>
 
 class RawiInfo
 {
@@ -39,7 +37,7 @@ public:
     RawiInfo *clone() { return new RawiInfo(*this); }
 };
 
-class TarajemRowatManager : public XmlManager
+class TarajemRowatManager : public DatabaseManager
 {
 public:
     TarajemRowatManager(QObject *parent = 0);
@@ -55,25 +53,17 @@ public:
 
     RawiInfo *getRawiInfo(int rawiID);
 
-    bool beginUpdate();
-    void endUpdate();
-
-    void updateRawi(RawiInfo *rawi);
+    bool updateRawi(RawiInfo *rawi);
     int addRawi(RawiInfo *rawi);
-    void removeRawi(int rawiID);
+    bool removeRawi(int rawiID);
 
 protected:
     int getNewRawiID();
 
 protected:
     QString m_path;
-    ZipHelper m_zip;
-    QHash<int, RawiInfo*> m_info;
-    QHash<int, RawiInfo*> m_fullInfo;
-    QHash<int, QDomElement> m_elementHash;
-    QList<QDomElement> m_newElements;
-    QList<int> m_removedRowat;
-    XmlDomHelperPtr m_domHelper;
+    QHash<int, RawiInfo*> m_rowat;
+    QList<int> m_rowatFullInfo;
 };
 
 #endif // TARAJEMROWATMANAGER_H

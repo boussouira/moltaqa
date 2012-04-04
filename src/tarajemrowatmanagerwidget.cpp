@@ -64,25 +64,19 @@ void TarajemRowatManagerWidget::beginEdit()
 void TarajemRowatManagerWidget::save()
 {
     saveCurrentRawi();
-    ML_ASSERT2(!m_editedRawiInfo.isEmpty() || !m_removedRowat.isEmpty(),
-               "TarajemRowatManagerWidget: nothing to save");
+    ML_ASSERT2(!m_editedRawiInfo.isEmpty(), "TarajemRowatManagerWidget: nothing to save");
 
-    ML_BENCHMARK_START();
-
-    ML_ASSERT2(m_manager->beginUpdate(), "TarajemRowatManagerWidget: Can't start update");
+    m_manager->transaction();
 
     foreach(RawiInfo *rawi, m_editedRawiInfo.values()) {
         m_manager->updateRawi(rawi);
     }
 
-    m_manager->endUpdate();
+    m_manager->commit();
+    m_manager->reloadModels();
 
-    qDeleteAll(m_editedRawiInfo);
     m_editedRawiInfo.clear();
-    m_removedRowat.clear();
     m_currentRawi = 0;
-
-    ML_BENCHMARK_ELAPSED("Save Rowat");
 
     setModified(false);
 }
@@ -291,7 +285,6 @@ void TarajemRowatManagerWidget::removeRawi()
             ML_ASSERT(rawi);
 
             m_manager->removeRawi(rawi->id);
-            m_removedRowat.append(rawi->id);
 
             m_model->takeRow(index.row());
         }
