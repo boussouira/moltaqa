@@ -43,7 +43,6 @@ LibraryBookManager *LibraryBookManager::instance()
 
 void LibraryBookManager::loadModels()
 {
-    loadLibraryBooks();
 }
 
 void LibraryBookManager::clear()
@@ -99,10 +98,15 @@ QStandardItemModel *LibraryBookManager::getModel()
 {
     QStandardItemModel *model = new QStandardItemModel();
 
-    foreach(LibraryBook *book, m_books.values()) {
+    QSqlQuery query(m_db);
+    query.prepare("SELECT id, title FROM books ORDER BY id");
+
+    ML_QUERY_EXEC(query);
+
+    while(query.next()) {
         QStandardItem *item = new QStandardItem();
-        item->setText(book->bookDisplayName);
-        item->setData(book->bookID, ItemRole::idRole);
+        item->setText(query.value(1).toString());
+        item->setData(query.value(0).toInt(), ItemRole::idRole);
         item->setIcon(QIcon(":/images/book.png"));
 
         model->appendRow(item);
@@ -116,12 +120,47 @@ QStandardItemModel *LibraryBookManager::getModel()
 LibraryBook *LibraryBookManager::getLibraryBook(int bookID)
 {
     LibraryBook *book = m_books.value(bookID);
-    if(book)
+    if(book) {
         m_usedBooks.insert(book);
-    else
-        qWarning("No book with id %d", bookID);
+        return book;
+    }
 
-    return book;
+    QSqlQuery query(m_db);
+    query.prepare("SELECT id, title, type, authorID, author, info, bookFlags, indexFlags, filename "
+                  "FROM books WHERE id = ?");
+    query.bindValue(0, bookID);
+
+    ML_QUERY_EXEC(query);
+
+    if(query.next()) {
+        LibraryBook *book = new LibraryBook();
+        book->bookID = query.value(0).toInt();
+        book->bookDisplayName = query.value(1).toString();
+        book->bookType = static_cast<LibraryBook::Type>(query.value(2).toInt());
+        book->bookInfo = query.value(5).toString();
+
+        book->bookFlags = query.value(6).toInt();
+        book->indexFlags = static_cast<LibraryBook::IndexFlags>(query.value(7).toInt());
+
+        book->fileName = query.value(8).toString();
+        book->bookPath = MW->libraryInfo()->bookPath(book->fileName);
+
+        if(!book->isQuran()) {
+            book->authorID = query.value(3).toInt();
+
+            if(book->authorID) {
+                book->authorName = m_authorsManager->getAuthorName(book->authorID);
+            } else {
+                book->authorName = query.value(4).toString();
+            }
+        }
+
+        m_books.insert(book->bookID, book);
+        m_usedBooks.insert(book);
+        return book;
+    }
+
+    return 0;
 }
 
 LibraryBook *LibraryBookManager::getQuranBook()
