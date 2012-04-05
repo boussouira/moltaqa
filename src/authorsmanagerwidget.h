@@ -45,7 +45,6 @@ private:
     QStandardItemModel *m_model;
     AuthorsManager *m_authorsManager;
     QHash<int, AuthorInfo*> m_editedAuthInfo;
-    QList<int> m_deletedAuth;
     AuthorInfo* m_currentAuthor;
 };
 

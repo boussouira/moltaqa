@@ -144,7 +144,7 @@ void AuthorsManagerWidget::removeAuthor()
             int autID = index.data(ItemRole::authorIdRole).toInt();
             m_model->removeRow(index.row(), index.parent());
 
-            m_deletedAuth.append(autID);
+            m_authorsManager->removeAuthor(autID);
         }
     } else {
         QMessageBox::warning(this,
@@ -234,24 +234,18 @@ void AuthorsManagerWidget::save()
 {
     saveCurrentAuthor();
 
-    ML_ASSERT(!m_editedAuthInfo.isEmpty() || !m_deletedAuth.isEmpty());
+    ML_ASSERT(!m_editedAuthInfo.isEmpty());
 
     m_authorsManager->transaction();
 
     foreach(AuthorInfo *auth, m_editedAuthInfo.values()) {
-        if(m_deletedAuth.isEmpty() || !m_deletedAuth.contains(auth->id))
-            m_authorsManager->updateAuthor(auth);
-    }
-
-    foreach (int authorID, m_deletedAuth) {
-        m_authorsManager->removeAuthor(authorID);
+        m_authorsManager->updateAuthor(auth);
     }
 
     m_authorsManager->commit();
     m_authorsManager->reloadModels();
 
     m_editedAuthInfo.clear();
-    m_deletedAuth.clear();
     m_currentAuthor = 0;
 
     setModified(false);
