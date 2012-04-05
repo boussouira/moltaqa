@@ -63,7 +63,6 @@ protected:
 protected:
     QString m_path;
     QHash<int, RawiInfo*> m_rowat;
-    QList<int> m_rowatFullInfo;
 };
 
 #endif // TARAJEMROWATMANAGER_H

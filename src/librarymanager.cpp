@@ -60,8 +60,8 @@ void LibraryManager::open()
     m_indexDB = QSqlDatabase::addDatabase("QSQLITE", m_connName);
     m_indexDB.setDatabaseName(booksIndexPath);
 
-    if (!m_indexDB.open())
-        throw BookException(tr("لم يمكن فتح قاعدة البيانات الأساسية"), m_indexDB.lastError().text());
+//    if (!m_indexDB.open())
+//        throw BookException(tr("لم يمكن فتح قاعدة البيانات الأساسية"), m_indexDB.lastError().text());
 
     openManagers();
 }

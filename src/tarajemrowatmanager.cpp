@@ -36,18 +36,6 @@ TarajemRowatManager *TarajemRowatManager::instance()
 
 void TarajemRowatManager::loadModels()
 {
-    QSqlQuery query(m_db);
-    query.prepare("SELECT id, name FROM rowat ORDER BY id");
-
-    ML_QUERY_EXEC(query);
-
-    while(query.next()) {
-        RawiInfo *rawi = new RawiInfo();
-        rawi->id = query.value(0).toInt();
-        rawi->name = query.value(1).toString();
-
-        m_rowat[rawi->id] = rawi;
-    }
 }
 
 void TarajemRowatManager::clear()
@@ -64,15 +52,20 @@ void TarajemRowatManager::reloadModels()
 
 QStandardItemModel *TarajemRowatManager::getRowatModel()
 {
-    QStandardItemModel *model = new QStandardItemModel();
 
+    QSqlQuery query(m_db);
+    query.prepare("SELECT id, name FROM rowat ORDER BY id");
+
+    ML_QUERY_EXEC(query);
+
+    QStandardItemModel *model = new QStandardItemModel();
     model->setHorizontalHeaderLabels(QStringList() << tr("الرواة"));
 
-    foreach(RawiInfo *rawi, m_rowat.values()) {
+    while(query.next()) {
         QStandardItem *item = new QStandardItem();
-        item->setText(Utils::abbreviate(rawi->name, 100));
-        item->setToolTip(rawi->name);
-        item->setData(rawi->id, ItemRole::authorIdRole);
+        item->setText(Utils::abbreviate(query.value(1).toString(), 100));
+        item->setToolTip(query.value(1).toString());
+        item->setData(query.value(0).toInt(), ItemRole::authorIdRole);
 
         model->appendRow(item);
     }
@@ -83,8 +76,7 @@ QStandardItemModel *TarajemRowatManager::getRowatModel()
 RawiInfo *TarajemRowatManager::getRawiInfo(int rawiID)
 {
     RawiInfo *rawi = m_rowat.value(rawiID);
-
-    if(rawi && m_rowatFullInfo.contains(rawiID))
+    if(rawi)
         return rawi;
 
     QSqlQuery query(m_db);
@@ -121,7 +113,6 @@ RawiInfo *TarajemRowatManager::getRawiInfo(int rawiID)
         rawi->tarejama = query.value(13).toString();
 
         m_rowat[rawi->id] = rawi;
-        m_rowatFullInfo.append(rawi->id);
     }
 
     return rawi;
