@@ -224,7 +224,7 @@ bool LibraryBookManager::updateBook(LibraryBookPtr book)
 
     ML_ASSERT_RET(q.exec(query), false);
 
-    m_books.insert(book->bookID, book); //FIXME: memory leak
+    m_books.insert(book->bookID, book);
     return true;
 }
 
@@ -233,7 +233,7 @@ bool LibraryBookManager::removeBook(int bookID)
     m_query.prepare("DELETE FROM books WHERE id = ?");
     m_query.bindValue(0, bookID);
     if(m_query.exec()) {
-        m_books.remove(bookID); //FIXME: memory leak
+        m_books.remove(bookID);
         return true;
     } else {
         LOG_SQL_ERROR(m_query);

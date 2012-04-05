@@ -145,7 +145,7 @@ void AuthorsManager::removeAuthor(int authorID)
     m_query.prepare("DELETE FROM authors WHERE id = ?");
     m_query.bindValue(0, authorID);
     if(m_query.exec())
-        m_authors.remove(authorID); //FIXME: memory leak
+        m_authors.remove(authorID);
     else
         LOG_SQL_ERROR(m_query);
     }
@@ -237,5 +237,5 @@ void AuthorsManager::updateAuthor(AuthorInfoPtr auth)
 
     ML_ASSERT(q.exec(query));
 
-    m_authors.insert(auth->id, auth); //FIXME: memory leak
+    m_authors.insert(auth->id, auth);
 }

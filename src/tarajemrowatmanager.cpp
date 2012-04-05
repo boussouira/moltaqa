@@ -154,7 +154,7 @@ bool TarajemRowatManager::updateRawi(RawiInfoPtr rawi)
 
     ML_ASSERT_RET(q.exec(query), false);
 
-    m_rowat[rawi->id] = rawi; //FIXME: Memory leak
+    m_rowat[rawi->id] = rawi;
     return true;
 }
 
@@ -204,7 +204,7 @@ bool TarajemRowatManager::removeRawi(int rawiID)
     m_query.bindValue(0, rawiID);
 
     if(m_query.exec()) {
-        m_rowat.remove(rawiID); //FIXME: memory leak
+        m_rowat.remove(rawiID);
         return true;
     } else {
         LOG_SQL_ERROR(m_query);
