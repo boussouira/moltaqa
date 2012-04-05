@@ -232,12 +232,17 @@ void TarajemRowatManagerWidget::birthDeathChanged()
     ui->lineDeathText->setVisible(!ui->checkUnknowDeath->isChecked());
 
     QSpinBox *spin = qobject_cast<QSpinBox*>(sender());
-    if(spin && m_currentRawi) {
-        if(spin == ui->spinBirth) {
-            ui->lineBirthText->setText(Utils::hijriYear(spin->value()));
-        } else if(spin == ui->spinDeath) {
-            ui->lineDeathText->setText(Utils::hijriYear(spin->value()));
-        }
+    ML_ASSERT(spin);
+
+    if(spin->value() == RawiInfo::UnknowYear)
+        spin->setValue(0);
+
+    ML_ASSERT(m_currentRawi);
+
+    if(spin == ui->spinBirth) {
+        ui->lineBirthText->setText(Utils::hijriYear(spin->value()));
+    } else if(spin == ui->spinDeath) {
+        ui->lineDeathText->setText(Utils::hijriYear(spin->value()));
     }
 }
 
