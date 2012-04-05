@@ -213,8 +213,7 @@ void UtilsTest::queryBuilder()
     q.addColumn("name", "TEXT");
     q.addColumn("path", "TEXT");
 
-    q.prepare(query);
-    QVERIFY(query.exec());
+    QVERIFY(q.exec(query));
 
     // Insert values to table
     q.setQueryType(Utils::QueryBuilder::Insert);
@@ -223,8 +222,7 @@ void UtilsTest::queryBuilder()
     q.addColumn("name", "The rate of hacking");
     q.addColumn("path", "test.txt");
 
-    q.prepare(query);
-    QVERIFY(query.exec());
+    QVERIFY(q.exec(query));
 
     // Update values
     q.setQueryType(Utils::QueryBuilder::Update);
@@ -235,8 +233,7 @@ void UtilsTest::queryBuilder()
     q.addWhere("id", id);
     q.addWhere("path", "test.txt");
 
-    q.prepare(query);
-    QVERIFY(query.exec());
+    QVERIFY(q.exec(query));
 
     QVERIFY(QFile::remove(testDB));
 }

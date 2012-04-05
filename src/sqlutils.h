@@ -37,7 +37,9 @@ public:
     void addWhere(const QVariant &colName, const QVariant &colValue);
 
     QString query();
+
     void prepare(QSqlQuery &q);
+    bool exec(QSqlQuery &q);
 
     void clear();
 

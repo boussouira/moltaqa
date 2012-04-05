@@ -135,15 +135,10 @@ int AuthorsManager::addAuthor(AuthorInfo *auth)
     q.addColumn("death", auth->deathStr);
     q.addColumn("flags", flags);
 
-    q.prepare(m_query);
+    ML_ASSERT_RET(q.exec(m_query), 0);
 
-    if(m_query.exec()) {
-        m_authors.insert(auth->id, auth);
-        return auth->id;
-    } else {
-        LOG_SQL_ERROR(m_query);
-        return 0;
-    }
+    m_authors.insert(auth->id, auth);
+    return auth->id;
 }
 
 void AuthorsManager::removeAuthor(int authorID)
@@ -241,11 +236,7 @@ void AuthorsManager::updateAuthor(AuthorInfo *auth)
 
     q.addWhere("id", auth->id);
 
-    q.prepare(query);
+    ML_ASSERT(q.exec(query));
 
-    if(query.exec()) {
-        m_authors.insert(auth->id, auth); //FIXME: memory leak
-    } else {
-        LOG_SQL_ERROR(query);
-    }
+    m_authors.insert(auth->id, auth); //FIXME: memory leak
 }

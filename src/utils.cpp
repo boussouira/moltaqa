@@ -242,10 +242,7 @@ void createIndexDB(QString path)
         q.addColumn("indexFlags", "INT");
         q.addColumn("filename", "TEXT");
 
-        q.prepare(query);
-        if(!query.exec()) {
-            LOG_SQL_ERROR(query);
-        }
+        q.exec(query);
     }
 
     {
@@ -273,10 +270,7 @@ void createIndexDB(QString path)
         q.addColumn("death", "TEXT");
         q.addColumn("flags", "INTEGER");
 
-        q.prepare(query);
-        if(!query.exec()) {
-            LOG_SQL_ERROR(query);
-        }
+        q.exec(query);
     }
     {
         QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "createDB.rowat");
@@ -313,10 +307,7 @@ void createIndexDB(QString path)
         q.addColumn("talamid", "TEXT");
         q.addColumn("tarejama", "TEXT");
 
-        q.prepare(query);
-        if(!query.exec()) {
-            LOG_SQL_ERROR(query);
-        }
+        q.exec(query);
     }
 
     QSqlDatabase::removeDatabase("createDB.books");

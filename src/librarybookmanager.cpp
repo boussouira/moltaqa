@@ -162,15 +162,10 @@ int LibraryBookManager::addBook(LibraryBook *book)
     q.addColumn("indexFlags", book->indexFlags);
     q.addColumn("filename", book->fileName);
 
-    q.prepare(query);
+    ML_ASSERT_RET(q.exec(query), 0);
 
-    if(query.exec()) {
-        m_books.insert(book->bookID, book);
-        return book->bookID;
-    } else {
-        LOG_SQL_ERROR(query);
-        return 0;
-    }
+    m_books.insert(book->bookID, book);
+    return book->bookID;
 }
 
 void LibraryBookManager::beginUpdate()
@@ -201,15 +196,10 @@ bool LibraryBookManager::updateBook(LibraryBook *book)
 
     q.addWhere("id", book->bookID);
 
-    q.prepare(query);
+    ML_ASSERT_RET(q.exec(query), false);
 
-    if(query.exec()) {
-        m_books.insert(book->bookID, book); //FIXME: memory leak
-        return true;
-    } else {
-        LOG_SQL_ERROR(query);
-        return false;
-    }
+    m_books.insert(book->bookID, book); //FIXME: memory leak
+    return true;
 }
 
 bool LibraryBookManager::removeBook(int bookID)
@@ -253,16 +243,12 @@ void LibraryBookManager::setBookIndexStat(int bookID, LibraryBook::IndexFlags in
     q.addColumn("indexFlags", indexFlag);
     q.addWhere("id", bookID);
 
-    q.prepare(query);
+    ML_ASSERT(q.exec(query));
 
-    if(query.exec()) {
-        LibraryBook *book = m_books.value(bookID);
-        ML_ASSERT2(book, "LibraryBookManager::setBookIndexStat No book with id" << bookID << "where found");
+    LibraryBook *book = m_books.value(bookID);
+    ML_ASSERT2(book, "LibraryBookManager::setBookIndexStat No book with id" << bookID << "where found");
 
-        book->indexFlags = indexFlag;
-    } else {
-        LOG_SQL_ERROR(query);
-    }
+    book->indexFlags = indexFlag;
 }
 
 int LibraryBookManager::getNewBookID()

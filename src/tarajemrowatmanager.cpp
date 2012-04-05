@@ -156,15 +156,10 @@ bool TarajemRowatManager::updateRawi(RawiInfo *rawi)
 
     q.addWhere("id", rawi->id);
 
-    q.prepare(query);
+    ML_ASSERT_RET(q.exec(query), false);
 
-    if(query.exec()) {
-        m_rowat[rawi->id] = rawi; //FIXME: Memory leak
-        return true;
-    } else {
-        LOG_SQL_ERROR(query);
-        return false;
-    }
+    m_rowat[rawi->id] = rawi; //FIXME: Memory leak
+    return true;
 }
 
 int TarajemRowatManager::addRawi(RawiInfo *rawi)
@@ -200,12 +195,9 @@ int TarajemRowatManager::addRawi(RawiInfo *rawi)
     q.addColumn("talamid", rawi->talamid);
     q.addColumn("tarejama", rawi->tarejama);
 
-    q.prepare(query);
+    ML_ASSERT_RET(q.exec(query), 0);
 
-    if(query.exec())
-        m_rowat[rawi->id] = rawi;
-    else
-        LOG_SQL_ERROR(query);
+    m_rowat[rawi->id] = rawi;
 
     return rawi->id;
 }

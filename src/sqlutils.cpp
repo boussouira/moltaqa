@@ -2,6 +2,7 @@
 #include "utils.h"
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
+#include <qsqlerror.h>
 
 namespace Utils {
 
@@ -157,15 +158,25 @@ void QueryBuilder::prepare(QSqlQuery &q)
 
     q.prepare(sql);
 
-    if(m_type != Create) {
-        for(int i=0; i<m_values.size(); i++) {
-            q.bindValue(i, m_values[i]);
-        }
+    ML_ASSERT(m_type != Create);
 
-        for(int i=0; i<m_whereValues.size(); i++) {
-            q.bindValue(i+m_values.size(), m_whereValues[i]);
-        }
-    }
+    for(int i=0; i<m_values.size(); i++)
+        q.bindValue(i, m_values[i]);
+
+    ML_ASSERT(m_type == Update);
+
+    for(int i=0; i<m_whereValues.size(); i++)
+        q.bindValue(i+m_values.size(), m_whereValues[i]);
+}
+
+bool QueryBuilder::exec(QSqlQuery &q)
+{
+    prepare(q);
+    ML_ASSERT_RET2(q.exec(),
+                   "QueryBuilder::exec Sql error:" << q.lastError().text() << "Query:" << q.lastQuery(),
+                   false);
+
+    return true;
 }
 
 void QueryBuilder::clear()
