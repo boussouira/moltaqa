@@ -1,6 +1,7 @@
 #include "libraryinfo.h"
 #include "bookexception.h"
 #include "xmlutils.h"
+#include "utils.h"
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qdir.h>
@@ -146,8 +147,8 @@ void LibraryInfo::checkDataFiles(QString dataDirPath)
     QStringList files;
     QStringList docName;
 
-    files << "authors.xml" << "booksinfo.xml" << "bookslist.xml" << "taffesirlist.xml";
-    docName << "authors" << "books-info" << "books-list" << "taffesir-list";
+    files << "bookslist.xml" << "taffesirlist.xml";
+    docName << "books-list" << "taffesir-list";
 
     for(int i=0; i<files.size(); i++) {
         if(!dataDir.exists(files.at(i))) {
@@ -160,6 +161,17 @@ void LibraryInfo::checkDataFiles(QString dataDirPath)
                 out << "<" << docName.at(i) << ">";
                 out << "</" << docName.at(i) << ">";
             }
+        }
+    }
+
+    QStringList dbs;
+    dbs << "authors.db" << "books.db" << "rowat.db";
+
+    foreach (QString db, dbs) {
+        if(!QFile::exists(db)) {
+            dataDir.cdUp();
+            Utils::createIndexDB(dataDir.absolutePath());
+            break;
         }
     }
 }

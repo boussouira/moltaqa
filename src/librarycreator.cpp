@@ -66,7 +66,7 @@ void LibraryCreator::openDB()
 
 void LibraryCreator::createTables()
 {
-    Utils::createIndexDB(m_bookQuery);
+    Utils::createIndexDB(m_library->path());
 }
 
 void LibraryCreator::importCats()

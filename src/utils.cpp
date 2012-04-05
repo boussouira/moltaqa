@@ -1,4 +1,5 @@
 #include "utils.h"
+#include "sqlutils.h"
 
 #include <qsqlquery.h>
 #include <qsqldatabase.h>
@@ -201,51 +202,128 @@ bool isLibraryPath(QString path)
 {
     QDir dir(path);
 
-    return (dir.exists() && dir.exists("books_index.db") && dir.exists("info.xml"));
-}
-
-void createIndexDB(QSqlQuery &query)
-{
-    query.exec("CREATE TABLE booksList ("
-                     "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
-                     "bookID INTEGER , "
-                     "bookType INTEGER , "
-                     "bookFlags INTEGER , "
-                     "bookCat INTEGER , "
-                     "bookDisplayName TEXT , "
-                     "bookFullName TEXT , "
-                     "bookOtherNames TEXT , "
-                     "bookInfo TEXT , "
-                     "bookEdition TEXT , "
-                     "bookPublisher TEXT , "
-                     "bookMohaqeq TEXT , "
-                     "authorName TEXT , "
-                     "authorID INTEGER , "
-                     "fileName TEXT , "
-                     "bookFolder TEXT, "
-                     "indexFlags INTEGER)");
+    return (dir.exists() && dir.exists("info.xml"));
 }
 
 void createIndexDB(QString path)
 {
     QDir dir(path);
-    QString indexPath = dir.filePath("books_index.db");
+    if(!dir.exists("data"))
+        dir.mkdir("data");
+
+    dir.cd("data");
+
+    QString booksDbPath = dir.filePath("books.db");
+    QString authorsDbPath = dir.filePath("authors.db");
+    QString rowatDbPath = dir.filePath("rowat.db");
 
     {
-        QSqlDatabase libraryManager = QSqlDatabase::addDatabase("QSQLITE", "createIndexDB");
-        libraryManager.setDatabaseName(indexPath);
+        QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "createDB.books");
+        db.setDatabaseName(booksDbPath);
 
-        if (!libraryManager.open()) {
-            LOG_DB_ERROR(libraryManager);
+        if (!db.open()) {
+            LOG_DB_ERROR(db);
         }
 
-        QSqlQuery query(libraryManager);
+        QSqlQuery query(db);
 
-        createIndexDB(query);
+        Utils::QueryBuilder q;
+        q.setTableName("books");
+        q.setIgnoreExistingTable(true);
+        q.setQueryType(Utils::QueryBuilder::Create);
+
+        q.addColumn("id", "INTEGER PRIMARY KEY NOT NULL");
+        q.addColumn("title", "TEXT");
+        q.addColumn("type", "INT");
+        q.addColumn("authorID", "INT");
+        q.addColumn("author", "TEXT");
+        q.addColumn("info", "TEXT");
+        q.addColumn("bookFlags", "INT");
+        q.addColumn("indexFlags", "INT");
+        q.addColumn("filename", "TEXT");
+
+        q.prepare(query);
+        if(!query.exec()) {
+            LOG_SQL_ERROR(query);
+        }
     }
 
-    QSqlDatabase::removeDatabase("createIndexDB");
+    {
+        QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "createDB.authors");
+        db.setDatabaseName(authorsDbPath);
+
+        if (!db.open()) {
+            LOG_DB_ERROR(db);
+        }
+
+        QSqlQuery query(db);
+
+        Utils::QueryBuilder q;
+        q.setTableName("authors");
+        q.setIgnoreExistingTable(true);
+        q.setQueryType(Utils::QueryBuilder::Create);
+
+        q.addColumn("id", "INTEGER PRIMARY KEY NOT NULL");
+        q.addColumn("name", "TEXT");
+        q.addColumn("full_name", "TEXT");
+        q.addColumn("info", "TEXT");
+        q.addColumn("birth_year", "INTEGER");
+        q.addColumn("birth", "TEXT");
+        q.addColumn("death_year", "INTEGER");
+        q.addColumn("death", "TEXT");
+        q.addColumn("flags", "INTEGER");
+
+        q.prepare(query);
+        if(!query.exec()) {
+            LOG_SQL_ERROR(query);
+        }
+    }
+    {
+        QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "createDB.rowat");
+        db.setDatabaseName(rowatDbPath);
+
+        if (!db.open()) {
+            LOG_DB_ERROR(db);
+        }
+
+        QSqlQuery query(db);
+
+        Utils::QueryBuilder q;
+        q.setTableName("rowat");
+        q.setIgnoreExistingTable(true);
+        q.setQueryType(Utils::QueryBuilder::Create);
+
+        q.addColumn("id", "INTEGER PRIMARY KEY NOT NULL");
+        q.addColumn("name", "TEXT");
+        q.addColumn("laqab", "TEXT");
+
+        q.addColumn("birth_year", "INT");
+        q.addColumn("birth", "TEXT");
+
+        q.addColumn("death_year", "INT");
+        q.addColumn("death", "TEXT");
+
+        q.addColumn("tabaqa", "TEXT");
+        q.addColumn("rowat", "TEXT");
+
+        q.addColumn("rotba_hafed", "TEXT");
+        q.addColumn("rotba_zahabi", "TEXT");
+
+        q.addColumn("sheok", "TEXT");
+        q.addColumn("talamid", "TEXT");
+        q.addColumn("tarejama", "TEXT");
+
+        q.prepare(query);
+        if(!query.exec()) {
+            LOG_SQL_ERROR(query);
+        }
+    }
+
+    QSqlDatabase::removeDatabase("createDB.books");
+    QSqlDatabase::removeDatabase("createDB.authors");
+    QSqlDatabase::removeDatabase("createIndexDB.rowat");
 }
+
 void saveWidgetPosition(QWidget *w, QString section)
 {
     QSettings settings;

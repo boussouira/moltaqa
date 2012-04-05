@@ -79,6 +79,8 @@ void NewLibraryDialog::createLibrary(QString name, QString path, QString descrip
 
     QDir libPath(path);
     libPath.mkdir("books");
+    libPath.mkdir("data");
+    libPath.mkdir("index");
     libPath.mkdir("temp");
 
     QString infoPath = libPath.filePath("info.xml");
