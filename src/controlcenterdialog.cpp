@@ -61,31 +61,39 @@ void ControlCenterDialog::rowChanged(int row)
 
 void ControlCenterDialog::setCurrentRow(int row)
 {
+    aboutToHide();
+
     ui->stackedWidget->setCurrentIndex(row);
 
     ControlCenterWidget *w = currentControlWidget();
     if(w)
         ui->labelControlName->setText(w->title());
 
-    beginEdit();
+    aboutToShow();
 }
 
 void ControlCenterDialog::save()
 {
     ControlCenterWidget *w = currentControlWidget();
+    ML_ASSERT(w);
 
-    if(w) {
-        w->save();
-    }
+    w->save();
 }
 
-void ControlCenterDialog::beginEdit()
+void ControlCenterDialog::aboutToShow()
 {
     ControlCenterWidget *w = currentControlWidget();
+    ML_ASSERT(w);
 
-    if(w) {
-        w->beginEdit();
-    }
+    w->aboutToShow();
+}
+
+void ControlCenterDialog::aboutToHide()
+{
+    ControlCenterWidget *w = currentControlWidget();
+    ML_ASSERT(w);
+
+    w->aboutToHide();
 }
 
 void ControlCenterDialog::enableSave(bool enable)

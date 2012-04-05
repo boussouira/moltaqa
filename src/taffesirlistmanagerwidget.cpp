@@ -52,10 +52,6 @@ void TaffesirListManagerWidget::save()
     m_taffesirManager->save(m_model);
 }
 
-void TaffesirListManagerWidget::beginEdit()
-{
-}
-
 void TaffesirListManagerWidget::moveUp()
 {
     Utils::moveUp(m_model, ui->treeView);

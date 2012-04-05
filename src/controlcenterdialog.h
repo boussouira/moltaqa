@@ -27,7 +27,8 @@ private slots:
     void rowChanged(int row);
     void setCurrentRow(int row);
     void save();
-    void beginEdit();
+    void aboutToShow();
+    void aboutToHide();
     void enableSave(bool enable);
 
 private:

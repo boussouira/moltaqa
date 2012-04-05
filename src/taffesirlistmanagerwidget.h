@@ -26,7 +26,6 @@ protected:
 
 public slots:
     void save();
-    void beginEdit();
     void updateActions();
     void moveUp();
     void moveDown();

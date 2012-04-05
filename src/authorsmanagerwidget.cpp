@@ -245,7 +245,3 @@ void AuthorsManagerWidget::save()
 
     setModified(false);
 }
-
-void AuthorsManagerWidget::beginEdit()
-{
-}

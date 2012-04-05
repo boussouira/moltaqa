@@ -40,7 +40,7 @@ QString TarajemRowatManagerWidget::title()
     return tr("تراجم الرواة");
 }
 
-void TarajemRowatManagerWidget::beginEdit()
+void TarajemRowatManagerWidget::aboutToShow()
 {
     ML_ASSERT(!m_webEditShoek
               || !m_webEditTalamid

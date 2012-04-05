@@ -21,3 +21,12 @@ bool ControlCenterWidget::isModified()
 {
     return m_modified;
 }
+
+void ControlCenterWidget::aboutToShow()
+{
+}
+
+
+void ControlCenterWidget::aboutToHide()
+{
+}

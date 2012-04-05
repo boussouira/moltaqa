@@ -67,10 +67,6 @@ void BookListManagerWidget::save()
     BookListManager::instance()->save(m_model);
 }
 
-void BookListManagerWidget::beginEdit()
-{
-}
-
 void BookListManagerWidget::cutNode()
 {
     QModelIndex index = Utils::selectedIndex(ui->treeView);

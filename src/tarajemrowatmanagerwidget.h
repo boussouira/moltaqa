@@ -20,7 +20,7 @@ public:
 
     QString title();
 
-    void beginEdit();
+    void aboutToShow();
     void save();
 
 protected:

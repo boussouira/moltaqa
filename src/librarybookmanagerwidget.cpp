@@ -95,10 +95,6 @@ void LibraryBookManagerWidget::save()
     }
 }
 
-void LibraryBookManagerWidget::beginEdit()
-{
-}
-
 void LibraryBookManagerWidget::on_treeView_doubleClicked(const QModelIndex &index)
 {
     int bookID = index.data(ItemRole::idRole).toInt();

@@ -23,7 +23,8 @@ protected:
 
 public slots:
     virtual void save()=0;
-    virtual void beginEdit()=0;
+    virtual void aboutToShow();
+    virtual void aboutToHide();
 
 signals:
     void modified(bool e);

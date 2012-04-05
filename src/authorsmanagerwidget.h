@@ -22,8 +22,6 @@ public:
     ~AuthorsManagerWidget();
     
     QString title();
-
-    void beginEdit();
     void save();
 
 protected:

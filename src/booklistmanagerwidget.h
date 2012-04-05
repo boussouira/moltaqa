@@ -23,7 +23,6 @@ protected:
 
 public slots:
     void save();
-    void beginEdit();
 
 protected slots:
     void cutNode();
