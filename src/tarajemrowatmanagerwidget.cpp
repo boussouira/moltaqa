@@ -124,7 +124,7 @@ void TarajemRowatManagerWidget::saveCurrentRawi()
     m_currentRawi->laqab = ui->lineLaqab->text();
 
     if(ui->checkUnknowBirth->isChecked()) {
-        m_currentRawi->birthYear = m_currentRawi->UnknowYear;
+        m_currentRawi->birthYear = RawiInfo::UnknowYear;
         m_currentRawi->birthStr.clear();
     } else {
         m_currentRawi->birthYear = ui->spinBirth->value();
@@ -132,7 +132,7 @@ void TarajemRowatManagerWidget::saveCurrentRawi()
     }
 
     if(ui->checkUnknowDeath->isChecked()){
-        m_currentRawi->deathYear = m_currentRawi->UnknowYear;
+        m_currentRawi->deathYear = RawiInfo::UnknowYear;
         m_currentRawi->deathStr.clear();
     } else {
         m_currentRawi->deathYear = ui->spinDeath->value();
