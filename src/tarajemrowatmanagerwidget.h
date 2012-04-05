@@ -3,14 +3,12 @@
 
 #include "controlcenterwidget.h"
 #include "editwebview.h"
+#include "tarajemrowatmanager.h"
 #include <qstandarditemmodel.h>
 
 namespace Ui {
 class TarajemRowatManagerWidget;
 }
-
-class TarajemRowatManager;
-class RawiInfo;
 
 class TarajemRowatManagerWidget : public ControlCenterWidget
 {
@@ -30,7 +28,7 @@ protected:
     void setupActions();
     void enableEditWidgets(bool enable);
     void saveCurrentRawi();
-    RawiInfo *getRawiInfo(int rawiID);
+    RawiInfoPtr getRawiInfo(int rawiID);
 
 private slots:
     void on_treeView_doubleClicked(const QModelIndex &index);
@@ -47,8 +45,8 @@ protected:
     EditWebView *m_webEditShoek;
     EditWebView *m_webEditTalamid;
     EditWebView *m_webEditTarjama;
-    QHash<int, RawiInfo*> m_editedRawiInfo;
-    RawiInfo *m_currentRawi;
+    QHash<int, RawiInfoPtr> m_editedRawiInfo;
+    RawiInfoPtr m_currentRawi;
 };
 
 #endif // TARAJEMROWATMANAGERWIDGET_H

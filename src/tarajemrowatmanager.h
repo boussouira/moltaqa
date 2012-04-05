@@ -2,6 +2,7 @@
 #define TARAJEMROWATMANAGER_H
 
 #include "databasemanager.h"
+#include "qsharedpointer.h"
 #include <qhash.h>
 
 class RawiInfo
@@ -37,6 +38,8 @@ public:
     RawiInfo *clone() { return new RawiInfo(*this); }
 };
 
+typedef QSharedPointer<RawiInfo> RawiInfoPtr;
+
 class TarajemRowatManager : public DatabaseManager
 {
 public:
@@ -51,10 +54,10 @@ public:
 
     QStandardItemModel *getRowatModel();
 
-    RawiInfo *getRawiInfo(int rawiID);
+    RawiInfoPtr getRawiInfo(int rawiID);
 
-    bool updateRawi(RawiInfo *rawi);
-    int addRawi(RawiInfo *rawi);
+    bool updateRawi(RawiInfoPtr rawi);
+    int addRawi(RawiInfoPtr rawi);
     bool removeRawi(int rawiID);
 
 protected:
@@ -62,7 +65,7 @@ protected:
 
 protected:
     QString m_path;
-    QHash<int, RawiInfo*> m_rowat;
+    QHash<int, RawiInfoPtr> m_rowat;
 };
 
 #endif // TARAJEMROWATMANAGER_H

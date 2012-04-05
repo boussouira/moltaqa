@@ -68,7 +68,7 @@ void TarajemRowatManagerWidget::save()
 
     m_manager->transaction();
 
-    foreach(RawiInfo *rawi, m_editedRawiInfo.values()) {
+    foreach(RawiInfoPtr rawi, m_editedRawiInfo.values()) {
         m_manager->updateRawi(rawi);
     }
 
@@ -76,7 +76,7 @@ void TarajemRowatManagerWidget::save()
     m_manager->reloadModels();
 
     m_editedRawiInfo.clear();
-    m_currentRawi = 0;
+    m_currentRawi.clear();
 
     setModified(false);
 }
@@ -150,13 +150,13 @@ void TarajemRowatManagerWidget::saveCurrentRawi()
 
 }
 
-RawiInfo *TarajemRowatManagerWidget::getRawiInfo(int rawiID)
+RawiInfoPtr TarajemRowatManagerWidget::getRawiInfo(int rawiID)
 {
-    RawiInfo *rawi = m_editedRawiInfo.value(rawiID);
+    RawiInfoPtr rawi = m_editedRawiInfo.value(rawiID);
     if(!rawi) {
         rawi = m_manager->getRawiInfo(rawiID);
         if(rawi)
-            rawi = rawi->clone();
+            rawi = RawiInfoPtr(rawi->clone());
     }
 
     return rawi;
@@ -165,17 +165,14 @@ RawiInfo *TarajemRowatManagerWidget::getRawiInfo(int rawiID)
 void TarajemRowatManagerWidget::on_treeView_doubleClicked(const QModelIndex &index)
 {
     int rawiID = index.data(ItemRole::authorIdRole).toInt();
-    RawiInfo *rawi= getRawiInfo(rawiID);
+    RawiInfoPtr rawi= getRawiInfo(rawiID);
     ML_ASSERT(rawi);
 
     ui->tabWidget->setCurrentIndex(0);
 
     saveCurrentRawi();
 
-    if(m_currentRawi && !m_editedRawiInfo.contains(m_currentRawi->id))
-        delete m_currentRawi;
-
-    m_currentRawi = 0;
+    m_currentRawi.clear();
 
     ui->lineName->setText(rawi->name);
     ui->lineLaqab->setText(rawi->laqab);
@@ -252,7 +249,7 @@ void TarajemRowatManagerWidget::newRawi()
                                          tr("اضافة راوي"),
                                          tr("اسم الراوي:"));
     if(!name.isEmpty()) {
-        RawiInfo *rawi= new RawiInfo();
+        RawiInfoPtr rawi = RawiInfoPtr(new RawiInfo());
         rawi->name = name;
 
         m_manager->addRawi(rawi);
@@ -286,7 +283,7 @@ void TarajemRowatManagerWidget::removeRawi()
                                  QMessageBox::No)==QMessageBox::Yes) {
 
             int rawiID = index.data(ItemRole::authorIdRole).toInt();
-            RawiInfo *rawi= getRawiInfo(rawiID);
+            RawiInfoPtr rawi= getRawiInfo(rawiID);
             ML_ASSERT(rawi);
 
             m_manager->removeRawi(rawi->id);

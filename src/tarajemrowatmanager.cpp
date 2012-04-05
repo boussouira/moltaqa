@@ -40,7 +40,6 @@ void TarajemRowatManager::loadModels()
 
 void TarajemRowatManager::clear()
 {
-    qDeleteAll(m_rowat);
     m_rowat.clear();
 }
 
@@ -73,9 +72,9 @@ QStandardItemModel *TarajemRowatManager::getRowatModel()
     return model;
 }
 
-RawiInfo *TarajemRowatManager::getRawiInfo(int rawiID)
+RawiInfoPtr TarajemRowatManager::getRawiInfo(int rawiID)
 {
-    RawiInfo *rawi = m_rowat.value(rawiID);
+    RawiInfoPtr rawi = m_rowat.value(rawiID);
     if(rawi)
         return rawi;
 
@@ -124,7 +123,7 @@ RawiInfo *TarajemRowatManager::getRawiInfo(int rawiID)
     return rawi;
 }
 
-bool TarajemRowatManager::updateRawi(RawiInfo *rawi)
+bool TarajemRowatManager::updateRawi(RawiInfoPtr rawi)
 {
     QSqlQuery query(m_db);
 
@@ -159,7 +158,7 @@ bool TarajemRowatManager::updateRawi(RawiInfo *rawi)
     return true;
 }
 
-int TarajemRowatManager::addRawi(RawiInfo *rawi)
+int TarajemRowatManager::addRawi(RawiInfoPtr rawi)
 {
     QMutexLocker locker(&m_mutex);
 

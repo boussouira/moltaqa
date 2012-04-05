@@ -69,7 +69,7 @@ int TarajemRowatView::addTab(QString tabText)
     return ui->tabWidget->addTab(tabRawiInfo, tabText);
 }
 
-void TarajemRowatView::setCurrentRawi(RawiInfo *info)
+void TarajemRowatView::setCurrentRawi(RawiInfoPtr info)
 {
     QDir styleDir(App::stylesDir());
     styleDir.cd("default");
@@ -185,7 +185,7 @@ void TarajemRowatView::on_treeView_doubleClicked(const QModelIndex &index)
     int rawiID = index.data(ItemRole::authorIdRole).toInt();
     ML_ASSERT(rawiID);
 
-    RawiInfo *info = m_rowatManager->getRawiInfo(rawiID);
+    RawiInfoPtr info = m_rowatManager->getRawiInfo(rawiID);
     ML_ASSERT(info);
 
     setCurrentRawi(info);

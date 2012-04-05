@@ -2,14 +2,13 @@
 #define TARAJEMROWATVIEW_H
 
 #include "abstarctview.h"
+#include "tarajemrowatmanager.h"
 #include <qstandarditemmodel.h>
 
 namespace Ui {
 class TarajemRowatView;
 }
 
-class TarajemRowatManager;
-class RawiInfo;
 class ModelViewFilter;
 
 class TarajemRowatView : public AbstarctView
@@ -25,7 +24,7 @@ public:
 
 protected:
     int addTab(QString tabText=QString());
-    void setCurrentRawi(RawiInfo *info);
+    void setCurrentRawi(RawiInfoPtr info);
     void setCurrentTabHtml(QString title, QString html);
 
 private slots:
