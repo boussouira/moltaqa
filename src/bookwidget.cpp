@@ -251,7 +251,7 @@ void BookWidget::readerTextChanged()
         s += "setShorooh([";
 
         foreach(BookShorooh shareeh, m_db->bookInfo()->shorooh) {
-            LibraryBook *book = LibraryBookManager::instance()->getLibraryBook(shareeh.bookID);
+            LibraryBookPtr book = LibraryBookManager::instance()->getLibraryBook(shareeh.bookID);
             if(!book)
                 continue;
 

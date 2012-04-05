@@ -65,9 +65,9 @@ void ImportModelNode::setAuthor(int aid, const QString &name)
     authorName = name;
 }
 
-LibraryBook *ImportModelNode::toLibraryBook()
+LibraryBookPtr ImportModelNode::toLibraryBook()
 {
-    LibraryBook *book = new LibraryBook();
+    LibraryBookPtr book(new LibraryBook());
     book->bookType = type;
     book->bookDisplayName = bookName;
     book->bookInfo = bookInfo;

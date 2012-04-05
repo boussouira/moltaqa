@@ -15,7 +15,7 @@ public:
     ~BookEditor();
 
     bool open(int bookID);
-    bool open(LibraryBook *book);
+    bool open(LibraryBookPtr book);
     void setBookReader(RichBookReader *reader);
 
     void unZip();
@@ -39,7 +39,7 @@ protected:
 
 protected:
     RichBookReader *m_bookReader;
-    LibraryBook *m_book;
+    LibraryBookPtr m_book;
     bool m_removeReader;
     QString m_bookTmpDir;
     QString m_newBookPath;

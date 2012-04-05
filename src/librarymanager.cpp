@@ -79,7 +79,7 @@ void LibraryManager::openManagers()
 
 int LibraryManager::addBook(ImportModelNode *node)
 {
-    LibraryBook *book = node->toLibraryBook();
+    LibraryBookPtr book = node->toLibraryBook();
     QString newBookName = Utils::genBookName(m_libraryInfo->booksDir());
     QString newPath = m_libraryInfo->booksDir() + "/" + newBookName;
 
@@ -98,7 +98,7 @@ int LibraryManager::addBook(ImportModelNode *node)
     }
 }
 
-void LibraryManager::addBook(LibraryBook *book, int catID)
+void LibraryManager::addBook(LibraryBookPtr book, int catID)
 {
     m_bookmanager->addBook(book);
     m_bookListManager->addBook(book, catID);

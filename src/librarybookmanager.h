@@ -7,7 +7,6 @@
 #include <qhash.h>
 #include <qset.h>
 
-class LibraryBook;
 class QStandardItemModel;
 class AuthorsManager;
 
@@ -25,14 +24,14 @@ public:
     void clear();
 
     QStandardItemModel *getModel();
-    LibraryBook *getLibraryBook(int bookID);
-    LibraryBook *getQuranBook();
+    LibraryBookPtr getLibraryBook(int bookID);
+    LibraryBookPtr getQuranBook();
 
-    int addBook(LibraryBook *book);
+    int addBook(LibraryBookPtr book);
 
     void beginUpdate();
     void endUpdate();
-    bool updateBook(LibraryBook *book);
+    bool updateBook(LibraryBookPtr book);
     bool removeBook(int bookID);
 
     QList<int> getNonIndexedBooks();
@@ -44,9 +43,8 @@ protected:
 
 protected:
     AuthorsManager *m_authorsManager;
-    QHash<int, LibraryBook*> m_books;
-    QSet<LibraryBook*> m_usedBooks;
-    LibraryBook* m_quranBook;
+    QHash<int, LibraryBookPtr> m_books;
+    LibraryBookPtr m_quranBook;
 };
 
 #endif // LIBRARYBOOKMANAGER_H

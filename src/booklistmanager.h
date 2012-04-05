@@ -2,6 +2,7 @@
 #define BOOKLISTMANAGER_H
 
 #include "xmlmanager.h"
+#include "librarybook.h"
 #include <qhash.h>
 #include <qicon.h>
 
@@ -9,7 +10,6 @@ class QStandardItemModel;
 class QStandardItem;
 class QXmlStreamWriter;
 class QModelIndex;
-class LibraryBook;
 class AuthorsManager;
 
 class CategorieInfo {
@@ -44,7 +44,7 @@ public:
 
     CategorieInfo *findCategorie(const QString &cat);
     int addCategorie(const QString &title, int parentCat);
-    void addBook(LibraryBook *book, int parentCat);
+    void addBook(LibraryBookPtr book, int parentCat);
 
 protected:
     void saveModel(QXmlStreamWriter &writer, QStandardItemModel *model);

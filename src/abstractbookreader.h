@@ -30,9 +30,9 @@ public:
     ~AbstractBookReader();
 
     void openBook();
-    void setBookInfo(LibraryBook *bi);
+    void setBookInfo(LibraryBookPtr bi);
 
-    LibraryBook *bookInfo();
+    LibraryBookPtr bookInfo();
     BookPage *page();
 
     /**
@@ -96,7 +96,7 @@ public:
 
     inline XmlDomHelper& pagesDom() { return m_pagesDom; }
 
-    static bool getBookPage(LibraryBook *book, BookPage *page);
+    static bool getBookPage(LibraryBookPtr book, BookPage *page);
     static QString getFileContent(QuaZip *zip, QString fileName);
 
     static QString getPageText(QuaZip *zip, int pageID)
@@ -137,13 +137,13 @@ protected:
     virtual QDomElement getQuranPageId(int sora, int aya);
 
 private:
-    static bool getSimpleBookPage(QuaZip *zip, LibraryBook *book, BookPage *page);
-    static bool getTafessirPage(QuaZip *zip, LibraryBook *book, BookPage *page);
-    static bool getQuranPage(QuaZip *zip, LibraryBook *book, BookPage *page);
+    static bool getSimpleBookPage(QuaZip *zip, LibraryBookPtr book, BookPage *page);
+    static bool getTafessirPage(QuaZip *zip, LibraryBookPtr book, BookPage *page);
+    static bool getQuranPage(QuaZip *zip, LibraryBookPtr book, BookPage *page);
 
 protected:
     friend class ZipOpener;
-    LibraryBook *m_bookInfo;
+    LibraryBookPtr m_bookInfo;
     BookPage *m_currentPage;
     LibraryManager *m_libraryManager;
     QStandardItemModel *m_indexModel;

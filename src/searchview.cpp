@@ -84,7 +84,7 @@ void SearchView::newTab(SearchWidget::SearchType searchType, int bookID)
     QString tabTooltip = tabLabel;
 
     if(searchType == SearchWidget::BookSearch) {
-        LibraryBook *book = LibraryBookManager::instance()->getLibraryBook(bookID);
+        LibraryBookPtr book = LibraryBookManager::instance()->getLibraryBook(bookID);
         if(book) {
             QString bookName = book->bookDisplayName;
             QString shortBookName = Utils::abbreviate(bookName, 20);

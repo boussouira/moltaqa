@@ -22,7 +22,7 @@ protected:
 
 protected:
     TafessirTextFormat *m_formatter;
-    LibraryBook *m_quranInfo;
+    LibraryBookPtr m_quranInfo;
     XmlDomHelper m_quranDom;
     bool m_showQuran;
 };

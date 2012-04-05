@@ -31,7 +31,6 @@ LibraryBookManager::LibraryBookManager(QObject *parent) :
 LibraryBookManager::~LibraryBookManager()
 {
     clear();
-    qDeleteAll(m_usedBooks);
 
     m_instance = 0;
 }
@@ -47,15 +46,6 @@ void LibraryBookManager::loadModels()
 
 void LibraryBookManager::clear()
 {
-    // Delete only unused books
-    QList<int> keys = m_books.keys();
-    for(int i=0; i<keys.size(); i++) {
-        int k = keys.at(i);
-        LibraryBook *b = m_books.value(k);
-        if(!m_usedBooks.contains(b))
-            delete m_books.take(k);
-    }
-
     m_books.clear();
 }
 
@@ -68,7 +58,7 @@ void LibraryBookManager::loadLibraryBooks()
     ML_QUERY_EXEC(query);
 
     while(query.next()) {
-        LibraryBook *book = new LibraryBook();
+        LibraryBookPtr book(new LibraryBook());
         book->bookID = query.value(0).toInt();
         book->bookDisplayName = query.value(1).toString();
         book->bookType = static_cast<LibraryBook::Type>(query.value(2).toInt());
@@ -117,13 +107,11 @@ QStandardItemModel *LibraryBookManager::getModel()
     return model;
 }
 
-LibraryBook *LibraryBookManager::getLibraryBook(int bookID)
+LibraryBookPtr LibraryBookManager::getLibraryBook(int bookID)
 {
-    LibraryBook *book = m_books.value(bookID);
-    if(book) {
-        m_usedBooks.insert(book);
+    LibraryBookPtr book = m_books.value(bookID);
+    if(book)
         return book;
-    }
 
     QSqlQuery query(m_db);
     query.prepare("SELECT id, title, type, authorID, author, info, bookFlags, indexFlags, filename "
@@ -133,7 +121,7 @@ LibraryBook *LibraryBookManager::getLibraryBook(int bookID)
     ML_QUERY_EXEC(query);
 
     if(query.next()) {
-        LibraryBook *book = new LibraryBook();
+        LibraryBookPtr book(new LibraryBook());
         book->bookID = query.value(0).toInt();
         book->bookDisplayName = query.value(1).toString();
         book->bookType = static_cast<LibraryBook::Type>(query.value(2).toInt());
@@ -156,20 +144,19 @@ LibraryBook *LibraryBookManager::getLibraryBook(int bookID)
         }
 
         m_books.insert(book->bookID, book);
-        m_usedBooks.insert(book);
+
         return book;
     }
 
-    return 0;
+    return LibraryBookPtr();
 }
 
-LibraryBook *LibraryBookManager::getQuranBook()
+LibraryBookPtr LibraryBookManager::getQuranBook()
 {
     if(!m_quranBook) {
-        foreach (LibraryBook *book, m_books.values()) {
+        foreach (LibraryBookPtr book, m_books.values()) {
             if(book->isQuran()) {
                 m_quranBook = book;
-                m_usedBooks.insert(book);
                 break;
             }
         }
@@ -178,7 +165,7 @@ LibraryBook *LibraryBookManager::getQuranBook()
     return m_quranBook;
 }
 
-int LibraryBookManager::addBook(LibraryBook *book)
+int LibraryBookManager::addBook(LibraryBookPtr book)
 {
     QMutexLocker locker(&m_mutex);
 
@@ -216,7 +203,7 @@ void LibraryBookManager::endUpdate()
     reloadModels();
 }
 
-bool LibraryBookManager::updateBook(LibraryBook *book)
+bool LibraryBookManager::updateBook(LibraryBookPtr book)
 {
     QSqlQuery query(m_db);
 
@@ -257,10 +244,10 @@ bool LibraryBookManager::removeBook(int bookID)
 QList<int> LibraryBookManager::getNonIndexedBooks()
 {
     QList<int> list;
-    QHash<int, LibraryBook*>::const_iterator i = m_books.constBegin();
+    QHash<int, LibraryBookPtr>::const_iterator i = m_books.constBegin();
 
     while (i != m_books.constEnd()) {
-        LibraryBook *b=i.value();
+        LibraryBookPtr b=i.value();
         if(b->indexFlags == LibraryBook::NotIndexed) {
             list << i.key();
         }
@@ -284,7 +271,7 @@ void LibraryBookManager::setBookIndexStat(int bookID, LibraryBook::IndexFlags in
 
     ML_ASSERT(q.exec(query));
 
-    LibraryBook *book = m_books.value(bookID);
+    LibraryBookPtr book = m_books.value(bookID);
     ML_ASSERT2(book, "LibraryBookManager::setBookIndexStat No book with id" << bookID << "where found");
 
     book->indexFlags = indexFlag;

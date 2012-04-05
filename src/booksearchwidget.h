@@ -2,11 +2,11 @@
 #define BOOKSEARCHWIDGET_H
 
 #include "searchwidget.h"
+#include "librarybook.h"
 #include "utils.h"
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
 
-class LibraryBook;
 class BookSearchFilter;
 
 class BookSearchWidget : public SearchWidget
@@ -23,7 +23,7 @@ protected:
     void loadModel();
 
 protected:
-    LibraryBook *m_bookInfo;
+    LibraryBookPtr m_bookInfo;
     QSqlDatabase m_bookDB;
     QSqlQuery m_bookQuery;
 };

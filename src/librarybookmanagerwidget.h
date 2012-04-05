@@ -2,6 +2,7 @@
 #define EDITBOOKSLISTWIDGET_H
 
 #include "controlcenterwidget.h"
+#include "librarybook.h"
 #include <qhash.h>
 #include <QModelIndex>
 
@@ -10,7 +11,6 @@ namespace Ui {
 }
 
 class LibraryManager;
-class LibraryBook;
 class QStandardItemModel;
 class LibraryBookManager;
 
@@ -29,7 +29,7 @@ protected:
     void loadModel();
     void setupActions();
     void saveCurrentBookInfo();
-    LibraryBook *getBookInfo(int bookID);
+    LibraryBookPtr getBookInfo(int bookID);
 
 public slots:
     void save();
@@ -38,15 +38,15 @@ public slots:
 private slots:
     void on_treeView_doubleClicked(const QModelIndex &index);
     void on_toolChangeAuthor_clicked();
-    void setupEdit(LibraryBook *info);
+    void setupEdit(LibraryBookPtr info);
     void infoChanged();
 
 protected:
     Ui::LibraryBookManagerWidget *ui;
-    LibraryBook *m_currentBook;
+    LibraryBookPtr m_currentBook;
     QStandardItemModel *m_model;
     LibraryBookManager *m_manager;
-    QHash<int, LibraryBook *> m_editedBookInfo;
+    QHash<int, LibraryBookPtr > m_editedBookInfo;
 };
 
 #endif // EDITBOOKSLISTWIDGET_H

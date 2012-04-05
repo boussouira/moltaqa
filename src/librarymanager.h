@@ -39,7 +39,7 @@ public:
     void openManagers();
 
     int addBook(ImportModelNode *node);
-    void addBook(LibraryBook *book, int catID);
+    void addBook(LibraryBookPtr book, int catID);
 
     void setBookIndexStat(int bookID, LibraryBook::IndexFlags indexFlag);
     QList<int> getNonIndexedBooks();

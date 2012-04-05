@@ -26,7 +26,7 @@ BookSearchFilter::~BookSearchFilter()
 {
 }
 
-void BookSearchFilter::setLibraryBook(LibraryBook *book)
+void BookSearchFilter::setLibraryBook(LibraryBookPtr book)
 {
     m_book = book;
 }
@@ -177,7 +177,7 @@ void BookSearchFilter::getChildTitles(const QModelIndex &index, QList<int> &titl
 
 void BookSearchFilter::open()
 {
-    Q_CHECK_PTR(m_book);
+    ML_ASSERT2(m_book, "BookSearchFilter::open book is null");
 
     ML_ASSERT2(QFile::exists(m_book->bookPath),
                tr("لم يتم العثور على ملف الكتاب") << m_book->bookPath);

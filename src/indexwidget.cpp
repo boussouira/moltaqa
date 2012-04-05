@@ -3,6 +3,7 @@
 #include "modelenums.h"
 #include "bookpage.h"
 #include "modelutils.h"
+#include "utils.h"
 
 #include <qstandarditemmodel.h>
 #include "modelviewfilter.h"
@@ -110,7 +111,7 @@ void IndexWidget::hideAyaSpin(bool visible)
     ui->labelAya->setVisible(visible);
 }
 
-void IndexWidget::setBookInfo(LibraryBook *book)
+void IndexWidget::setBookInfo(LibraryBookPtr book)
 {
     m_bookInfo = book;
 }
@@ -122,7 +123,7 @@ void IndexWidget::setCurrentPage(BookPage *page)
 
 void IndexWidget::selectTitle(int tid)
 {
-    Q_CHECK_PTR(m_model);
+    ML_ASSERT2(m_model, "IndexWidget::selectTitle model is null");
 
     QModelIndex index;
     QModelIndexList selected = ui->treeView->selectionModel()->selectedIndexes();

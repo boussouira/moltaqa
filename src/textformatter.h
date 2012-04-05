@@ -8,9 +8,7 @@
 #include <qstack.h>
 
 #include "htmlhelper.h"
-
-class LibraryBook;
-class BookPage;
+#include "librarybook.h"
 
 class TextFormatter : public QObject
 {
@@ -19,7 +17,7 @@ class TextFormatter : public QObject
 public:
     TextFormatter(QObject *parent = 0);
 
-    void setData(LibraryBook *book, BookPage *page);
+    void setData(LibraryBookPtr book, BookPage *page);
 
     QString getText();
     void insertText(QString text);
@@ -39,7 +37,7 @@ signals:
     void doneReading();
 
 protected:
-    LibraryBook *m_book;
+    LibraryBookPtr m_book;
     BookPage *m_page;
     QString m_styleFile;
     QString m_cssID;

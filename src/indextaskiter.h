@@ -18,7 +18,7 @@ public:
     };
 
     int bookID;
-    LibraryBook *book;
+    LibraryBookPtr book;
     TextBookReader *reader;
     Task task;
 

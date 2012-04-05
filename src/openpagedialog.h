@@ -16,7 +16,7 @@ public:
     OpenPageDialog(QWidget *parent = 0);
     ~OpenPageDialog();
 
-    void setInfo(LibraryBook *info, BookPage *page);
+    void setInfo(LibraryBookPtr info, BookPage *page);
 
     int currentPage();
 
@@ -40,7 +40,7 @@ private slots:
 private:
     int m_pageNum; ///< Selected page number
     int m_partNum; ///< Selected part number
-    LibraryBook *m_info;
+    LibraryBookPtr m_info;
     Ui::OpenPageDialog *ui;
 };
 

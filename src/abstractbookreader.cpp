@@ -17,7 +17,6 @@
 AbstractBookReader::AbstractBookReader(QObject *parent) : QObject(parent)
 {
     m_indexModel = 0;
-    m_bookInfo = 0;
     m_currentPage = new BookPage();
     m_libraryManager = LibraryManager::instance();
 }
@@ -33,7 +32,7 @@ AbstractBookReader::~AbstractBookReader()
 
 void AbstractBookReader::openBook()
 {
-    Q_CHECK_PTR(m_bookInfo);
+    ML_ASSERT2(m_bookInfo, "AbstractBookReader::openBook book is null");
 
     if(!QFile::exists(m_bookInfo->bookPath)) {
         throw BookException(tr("لم يتم العثور على ملف الكتاب"), bookInfo()->bookPath);
@@ -61,7 +60,7 @@ void AbstractBookReader::closeZip()
     m_zip.close();
 }
 
-void AbstractBookReader::setBookInfo(LibraryBook *bi)
+void AbstractBookReader::setBookInfo(LibraryBookPtr bi)
 {
     m_bookInfo = bi;
 }
@@ -124,7 +123,7 @@ QDomElement AbstractBookReader::getQuranPageId(int sora, int aya)
     return QDomElement();
 }
 
-LibraryBook *AbstractBookReader::bookInfo()
+LibraryBookPtr AbstractBookReader::bookInfo()
 {
     return m_bookInfo;
 }
@@ -214,7 +213,7 @@ bool AbstractBookReader::hasPrev()
             || !m_pagesDom.currentElement().previousSibling().isNull();
 }
 
-bool AbstractBookReader::getBookPage(LibraryBook *book, BookPage *page)
+bool AbstractBookReader::getBookPage(LibraryBookPtr book, BookPage *page)
 {
     if(!book) {
         qWarning("getBookPage: No book with given id");
@@ -247,7 +246,7 @@ bool AbstractBookReader::getBookPage(LibraryBook *book, BookPage *page)
     return false;
 }
 
-bool AbstractBookReader::getSimpleBookPage(QuaZip *zip, LibraryBook *book, BookPage *page)
+bool AbstractBookReader::getSimpleBookPage(QuaZip *zip, LibraryBookPtr book, BookPage *page)
 {
     Q_UNUSED(book);
 
@@ -322,7 +321,7 @@ bool AbstractBookReader::getSimpleBookPage(QuaZip *zip, LibraryBook *book, BookP
     return true;
 }
 
-bool AbstractBookReader::getTafessirPage(QuaZip *zip, LibraryBook *book, BookPage *page)
+bool AbstractBookReader::getTafessirPage(QuaZip *zip, LibraryBookPtr book, BookPage *page)
 {
     Q_UNUSED(book);
 
@@ -406,7 +405,7 @@ bool AbstractBookReader::getTafessirPage(QuaZip *zip, LibraryBook *book, BookPag
     return true;
 }
 
-bool AbstractBookReader::getQuranPage(QuaZip *zip, LibraryBook *book, BookPage *page)
+bool AbstractBookReader::getQuranPage(QuaZip *zip, LibraryBookPtr book, BookPage *page)
 {
     Q_UNUSED(book);
 

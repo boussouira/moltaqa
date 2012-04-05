@@ -36,7 +36,7 @@ bool BookEditor::open(int bookID)
     return open(LibraryBookManager::instance()->getLibraryBook(bookID));
 }
 
-bool BookEditor::open(LibraryBook *book)
+bool BookEditor::open(LibraryBookPtr book)
 {
     if(book) {
         RichBookReader *bookReader;

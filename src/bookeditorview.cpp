@@ -75,9 +75,9 @@ void BookEditorView::setupView()
     connect(m_timer, SIGNAL(timeout()), SLOT(checkPageModified()));
 }
 
-void BookEditorView::editBook(LibraryBook *book, int pageID)
+void BookEditorView::editBook(LibraryBookPtr book, int pageID)
 {
-    Q_CHECK_PTR(book);
+    ML_ASSERT2(book, "BookEditorView::editBook book is null");
 
     ML_ASSERT(maySave());
 
@@ -293,7 +293,7 @@ void BookEditorView::save()
         m_bookEditor->zip();
         dialog.setValue(dialog.value()+1);
 
-        LibraryBook *book = m_bookReader->bookInfo();
+        LibraryBookPtr book = m_bookReader->bookInfo();
 
         if(m_bookEditor->save())
             IndexTracker::instance()->addTask(book->bookID, IndexTask::Update);

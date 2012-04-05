@@ -80,7 +80,7 @@ void LibraryBookManagerWidget::save()
     if(!m_editedBookInfo.isEmpty()) {
         m_manager->transaction();
 
-        foreach(LibraryBook *book, m_editedBookInfo.values()) {
+        foreach(LibraryBookPtr book, m_editedBookInfo.values()) {
             qDebug("Saving book %d...", book->bookID);
             m_manager->updateBook(book);
         }
@@ -89,7 +89,7 @@ void LibraryBookManagerWidget::save()
         m_manager->reloadModels();
 
         m_editedBookInfo.clear();
-        m_currentBook = 0;
+        m_currentBook.clear();
 
         setModified(false);
     }
@@ -102,16 +102,12 @@ void LibraryBookManagerWidget::beginEdit()
 void LibraryBookManagerWidget::on_treeView_doubleClicked(const QModelIndex &index)
 {
     int bookID = index.data(ItemRole::idRole).toInt();
-    LibraryBook *info = getBookInfo(bookID);
+    LibraryBookPtr info = getBookInfo(bookID);
     if(info) {
         saveCurrentBookInfo();
 
-        // delete current book if it's not in the edited books
-        if(m_currentBook && !m_editedBookInfo.contains(m_currentBook->bookID))
-            delete m_currentBook;
-
         // this will cause infoChanged() to ignore changes that we will made next
-        m_currentBook = 0;
+        m_currentBook.clear();
 
         ui->lineDisplayName->setText(info->bookDisplayName);
         ui->lineAuthorName->setText(info->authorName);
@@ -141,7 +137,7 @@ void LibraryBookManagerWidget::on_toolChangeAuthor_clicked()
     }
 }
 
-void LibraryBookManagerWidget::setupEdit(LibraryBook *info)
+void LibraryBookManagerWidget::setupEdit(LibraryBookPtr info)
 {
     ui->lineAuthorName->setEnabled(!info->isQuran());
     ui->toolChangeAuthor->setEnabled(!info->isQuran());
@@ -164,13 +160,13 @@ void LibraryBookManagerWidget::saveCurrentBookInfo()
     }
 }
 
-LibraryBook *LibraryBookManagerWidget::getBookInfo(int bookID)
+LibraryBookPtr LibraryBookManagerWidget::getBookInfo(int bookID)
 {
-    LibraryBook *info = m_editedBookInfo.value(bookID);
+    LibraryBookPtr info = m_editedBookInfo.value(bookID);
     if(!info) {
         info = m_manager->getLibraryBook(bookID);
         if(info)
-            info = info->clone();
+            info = LibraryBookPtr(info->clone());
     }
 
     return info;

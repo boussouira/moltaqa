@@ -3,6 +3,7 @@
 
 #include "bookpage.h"
 #include <qhash.h>
+#include <qsharedpointer.h>
 #include <qdebug.h>
 
 class BookShorooh
@@ -79,6 +80,8 @@ protected:
     QHash<int, int> m_lastPages;
     bool m_hasInfo;
 };
+
+typedef QSharedPointer<LibraryBook> LibraryBookPtr;
 
 QDebug operator<<(QDebug, LibraryBook *);
 

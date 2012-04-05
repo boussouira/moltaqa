@@ -11,11 +11,10 @@ TextFormatter::TextFormatter(QObject *parent): QObject(parent)
 {
     laodSettings();
 
-    m_book = 0;
     m_page = 0;
 }
 
-void TextFormatter::setData(LibraryBook *book, BookPage *page)
+void TextFormatter::setData(LibraryBookPtr book, BookPage *page)
 {
     m_book = book;
     m_page = page;
@@ -42,8 +41,8 @@ void TextFormatter::insertText(QString text)
 
 QString TextFormatter::getHtmlView(QString text)
 {
-    Q_CHECK_PTR(m_book);
-    Q_CHECK_PTR(m_page);
+    ML_ASSERT_RET2(m_book, "TextFormatter::getHtmlView book is null", QString());
+    ML_ASSERT_RET2(m_page, "TextFormatter::getHtmlView page is null", QString());
 
     HtmlHelper helper;
     helper.beginHtml();

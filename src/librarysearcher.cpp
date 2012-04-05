@@ -138,7 +138,7 @@ void LibrarySearcher::fetech()
         int bookID = Utils::WCharToInt(doc.get(BOOK_ID_FIELD));
         int score = (int) (m_hits->score(i) * 100.0);
 
-        LibraryBook *book = LibraryBookManager::instance()->getLibraryBook(bookID);
+        LibraryBookPtr book = LibraryBookManager::instance()->getLibraryBook(bookID);
 
         if(!book) {
             qCritical("LibrarySearcher::fetech: No book with id %d where found", bookID);
@@ -184,7 +184,7 @@ void LibrarySearcher::fetech()
 
 void LibrarySearcher::setQuery(CLuceneQuery *query)
 {
-    Q_CHECK_PTR(query->searchQuery);
+    ML_ASSERT2(query->searchQuery, "LibrarySearcher::setQuery query is null");
 
     m_cluceneQuery = query;
 }

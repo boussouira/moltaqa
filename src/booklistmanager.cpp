@@ -186,7 +186,7 @@ int BookListManager::addCategorie(const QString &title, int parentCat)
     return catID;
 }
 
-void BookListManager::addBook(LibraryBook *book, int parentCat)
+void BookListManager::addBook(LibraryBookPtr book, int parentCat)
 {
     // TODO: check if the author exist in the our authors list
     QMutexLocker locker(&m_mutex);

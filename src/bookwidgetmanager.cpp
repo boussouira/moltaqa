@@ -134,10 +134,10 @@ BookWidget *BookWidgetManager::activeBookWidget()
     return qobject_cast<BookWidget*>(m_activeTab->widget(m_activeTab->currentIndex()));
 }
 
-LibraryBook *BookWidgetManager::activeBook()
+LibraryBookPtr BookWidgetManager::activeBook()
 {
     BookWidget *bookWidget = activeBookWidget();
-    return bookWidget ? bookWidget->bookReader()->bookInfo() : 0;
+    return bookWidget ? bookWidget->bookReader()->bookInfo() : LibraryBookPtr();
 }
 
 RichBookReader *BookWidgetManager::activeBookReader()

@@ -11,7 +11,6 @@ OpenPageDialog::OpenPageDialog(QWidget *parent) :
 
     m_pageNum = -1;
     m_partNum = -1;
-    m_info = 0;
 
     loadSowarNames();
 }
@@ -41,7 +40,7 @@ int OpenPageDialog::selectedPart()
     return ui->spinPart->value();
 }
 
-void OpenPageDialog::setInfo(LibraryBook *info, BookPage *page)
+void OpenPageDialog::setInfo(LibraryBookPtr info, BookPage *page)
 {
     m_info = info;
 
@@ -105,12 +104,4 @@ void OpenPageDialog::on_comboSora_currentIndexChanged(int index)
 
 void OpenPageDialog::on_spinPart_editingFinished()
 {
-    /*
-    if(!m_info)
-        return;
-
-    if(ui->spinPart->value() < m_info->partsCount) {
-        ui->spinPage->setMaximum(m_info->lastPage(ui->spinPart->value()));
-    }
-    */
 }

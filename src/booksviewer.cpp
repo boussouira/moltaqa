@@ -168,7 +168,7 @@ void BooksViewer::createMenus()
 
 void BooksViewer::updateToolBars()
 {
-    LibraryBook *book = m_viewManager->activeBook();
+    LibraryBookPtr book = m_viewManager->activeBook();
 
     if(book) {
         bool showTafsssir = book->isQuran() && m_comboTafasir->count();
@@ -183,12 +183,12 @@ void BooksViewer::updateToolBars()
 
 int BooksViewer::currentBookID()
 {
-    LibraryBook *book = m_viewManager->activeBook();
+    LibraryBookPtr book = m_viewManager->activeBook();
 
     return book ? book->bookID : 0;
 }
 
-LibraryBook *BooksViewer::currentBook()
+LibraryBookPtr BooksViewer::currentBook()
 {
     return m_viewManager->activeBook();
 }
@@ -202,7 +202,7 @@ BookPage *BooksViewer::currentPage()
 
 BookWidget *BooksViewer::openBook(int bookID, int pageID, CLuceneQuery *query)
 {
-    LibraryBook *bookInfo = 0;
+    LibraryBookPtr bookInfo;
     RichBookReader *bookReader = 0;
     BookWidget *bookWidget = 0;
 
@@ -264,7 +264,7 @@ void BooksViewer::openTafessir()
     try {
         int tafessirID = m_comboTafasir->itemData(m_comboTafasir->currentIndex(), ItemRole::idRole).toInt();
 
-        LibraryBook *bookInfo = LibraryBookManager::instance()->getLibraryBook(tafessirID);
+        LibraryBookPtr bookInfo = LibraryBookManager::instance()->getLibraryBook(tafessirID);
         ML_ASSERT(bookInfo && bookInfo->isTafessir() && m_viewManager->activeBook()->isQuran());
 
         bookdb = new RichTafessirReader();
@@ -314,7 +314,7 @@ void BooksViewer::showIndexWidget()
 
 void BooksViewer::searchInBook()
 {
-    LibraryBook *book = m_viewManager->activeBook();
+    LibraryBookPtr book = m_viewManager->activeBook();
     ML_ASSERT(book);
 
     MW->searchView()->newTab(SearchWidget::BookSearch, book->bookID);
@@ -350,7 +350,7 @@ void BooksViewer::loadTafessirList()
 
 void BooksViewer::editCurrentBook()
 {
-    LibraryBook *book = currentBook();
+    LibraryBookPtr book = currentBook();
     BookPage *page = currentPage();
 
     if(book && page) {

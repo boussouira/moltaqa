@@ -7,13 +7,13 @@
 class SearchResult
 {
 public:
-    SearchResult(LibraryBook *_book, BookPage *_page);
+    SearchResult(LibraryBookPtr _book, BookPage *_page);
     ~SearchResult();
 
     void generateHTML();
     QString toHtml();
 
-    LibraryBook *book;
+    LibraryBookPtr book;
     BookPage *page;
     QString snippet;
     QString bgColor;

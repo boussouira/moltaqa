@@ -17,7 +17,6 @@ RichTafessirReader::RichTafessirReader(QObject *parent, bool showQuran) : RichBo
 {
     m_formatter = new TafessirTextFormat();
     m_textFormat = m_formatter;
-    m_quranInfo = 0;
     m_showQuran = showQuran;
 }
 
@@ -103,7 +102,7 @@ QDomElement RichTafessirReader::getQuranPageId(int sora, int aya)
 
 void RichTafessirReader::openQuranBook()
 {
-    Q_CHECK_PTR(m_quranInfo);
+    ML_ASSERT2(m_quranInfo, "RichTafessirReader::openQuranBook Quran book is null");
 
     if(!QFile::exists(m_quranInfo->bookPath)) {
         throw BookException(tr("لم يتم العثور على ملف الكتاب"), bookInfo()->bookPath);

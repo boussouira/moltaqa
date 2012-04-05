@@ -26,7 +26,7 @@ public:
     void updateToolBars();
 
     int currentBookID();
-    LibraryBook *currentBook();
+    LibraryBookPtr currentBook();
     BookPage *currentPage();
 
 public slots:

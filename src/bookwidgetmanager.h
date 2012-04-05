@@ -2,12 +2,12 @@
 #define BOOKWIDGETMANAGER_H
 
 #include <qwidget.h>
+#include "librarybook.h"
 
 class BookWidget;
 class LibraryManager;
 class TabWidget;
 class QSplitter;
-class LibraryBook;
 class RichBookReader;
 
 class BookWidgetManager : public QWidget
@@ -20,7 +20,7 @@ public:
     int addBook(BookWidget* book);
     BookWidget *bookWidget(int index);
     BookWidget *activeBookWidget();
-    LibraryBook *activeBook();
+    LibraryBookPtr activeBook();
     RichBookReader *activeBookReader();
     TabWidget *activeTab();
     TabWidget *unActiveTab();
