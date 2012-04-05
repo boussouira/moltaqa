@@ -259,7 +259,7 @@ ShoortsList ShamelaManager::getBookShoorts(int bookID)
     QSqlQuery specialQuery(m_shamelaSpecialDB);
 
     if(!specialQuery.exec(QString("SELECT Ramz, Nass FROM shorts WHERE Bk = '%1'").arg(bookID)))
-        LOG_SQL_ERROR(specialQuery.lastError().text());
+        LOG_SQL_ERROR(specialQuery);
 
     while(specialQuery.next()) {
         QPair<QString, QString> pair;

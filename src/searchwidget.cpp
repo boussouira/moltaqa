@@ -145,7 +145,7 @@ Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
                                  "CLucene Query error",
                                  tr("code: %1\nError: %2").arg(e.number()).arg(e.what()));
 
-        _CLDELETE(q);
+        ML_DELETE(q);
 
         return 0;
     }
@@ -153,7 +153,7 @@ Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
         QMessageBox::warning(0,
                              "CLucene Query error",
                              tr("Unknow error"));
-        _CLDELETE(q);
+        ML_DELETE(q);
 
         return 0;
     }
