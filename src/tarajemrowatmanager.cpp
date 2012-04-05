@@ -98,14 +98,18 @@ RawiInfo *TarajemRowatManager::getRawiInfo(int rawiID)
         rawi->rotba_hafed = query.value(9).toString();
         rawi->rotba_zahabi = query.value(10).toString();
 
-        rawi->birthYear = query.value(3).toInt();
-        rawi->birthStr = query.value(4).toString();
+        if(!query.value(3).isNull()) {
+            rawi->birthYear = query.value(3).toInt();
+            rawi->birthStr = query.value(4).toString();
+        }
 
         if(rawi->birthStr.isEmpty() && !rawi->unknowBirth())
             rawi->birthStr = Utils::hijriYear(rawi->birthYear);
 
-        rawi->deathYear = query.value(5).toInt();
-        rawi->deathStr = query.value(6).toString();
+        if(!query.value(5).isNull()) {
+            rawi->deathYear = query.value(5).toInt();
+            rawi->deathStr = query.value(6).toString();
+        }
 
         if(rawi->deathStr.isEmpty() && !rawi->unknowDeath())
             rawi->deathStr = Utils::hijriYear(rawi->deathYear);
@@ -131,10 +135,10 @@ bool TarajemRowatManager::updateRawi(RawiInfo *rawi)
     q.addColumn("name", rawi->name);
     q.addColumn("laqab", rawi->laqab);
 
-    q.addColumn("birth_year", rawi->unknowBirth() ? RawiInfo::UnknowYear : rawi->birthYear);
+    q.addColumn("birth_year", rawi->unknowBirth() ? QVariant(QVariant::Int) : rawi->birthYear);
     q.addColumn("birth", rawi->unknowBirth() ? QVariant(QVariant::String) : rawi->birthStr);
 
-    q.addColumn("death_year", rawi->unknowBirth() ? RawiInfo::UnknowYear : rawi->deathYear);
+    q.addColumn("death_year", rawi->unknowBirth() ? QVariant(QVariant::Int) : rawi->deathYear);
     q.addColumn("death", rawi->unknowBirth() ? QVariant(QVariant::String) : rawi->deathStr);
 
     q.addColumn("tabaqa", rawi->tabaqa);
@@ -172,10 +176,10 @@ int TarajemRowatManager::addRawi(RawiInfo *rawi)
     q.addColumn("name", rawi->name);
     q.addColumn("laqab", rawi->laqab);
 
-    q.addColumn("birth_year", rawi->unknowBirth() ? RawiInfo::UnknowYear : rawi->birthYear);
+    q.addColumn("birth_year", rawi->unknowBirth() ? QVariant(QVariant::Int) : rawi->birthYear);
     q.addColumn("birth", rawi->unknowBirth() ? QVariant(QVariant::String) : rawi->birthStr);
 
-    q.addColumn("death_year", rawi->unknowBirth() ? RawiInfo::UnknowYear : rawi->deathYear);
+    q.addColumn("death_year", rawi->unknowBirth() ? QVariant(QVariant::Int) : rawi->deathYear);
     q.addColumn("death", rawi->unknowBirth() ? QVariant(QVariant::String) : rawi->deathStr);
 
     q.addColumn("tabaqa", rawi->tabaqa);
