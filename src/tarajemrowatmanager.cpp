@@ -88,7 +88,7 @@ RawiInfoPtr TarajemRowatManager::getRawiInfo(int rawiID)
     ML_QUERY_EXEC(query);
 
     if(query.next()) {
-        rawi = new RawiInfo();
+        rawi = RawiInfoPtr(new RawiInfo());
         rawi->id = query.value(0).toInt();
         rawi->name = query.value(1).toString();
         rawi->tabaqa = query.value(7).toString();
