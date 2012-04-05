@@ -40,7 +40,6 @@ void AuthorsManager::loadModels()
 
 void AuthorsManager::clear()
 {
-    qDeleteAll(m_authors);
     m_authors.clear();
 }
 
@@ -53,7 +52,7 @@ void AuthorsManager::loadAuthorsInfo()
     ML_QUERY_EXEC(query);
 
     while(query.next()) {
-        AuthorInfo *auth = new AuthorInfo();
+        AuthorInfoPtr auth(new AuthorInfo());
         auth->id = query.value(0).toInt();
         auth->name = query.value(1).toString();
         auth->fullName = query.value(2).toString();
@@ -88,7 +87,7 @@ QStandardItemModel *AuthorsManager::authorsModel()
 
     model->setHorizontalHeaderLabels(QStringList() << tr("المؤلفين"));
 
-    foreach(AuthorInfo *auth, m_authors.values()) {
+    foreach(AuthorInfoPtr auth, m_authors.values()) {
         QStandardItem *item = new QStandardItem();
         item->setText(auth->name);
         item->setToolTip(auth->fullName);
@@ -99,7 +98,7 @@ QStandardItemModel *AuthorsManager::authorsModel()
     return model;
 }
 
-int AuthorsManager::addAuthor(AuthorInfo *auth)
+int AuthorsManager::addAuthor(AuthorInfoPtr auth)
 {
     QMutexLocker locker(&m_mutex);
 
@@ -161,7 +160,7 @@ int AuthorsManager::getNewAuthorID()
     return authorID;
 }
 
-AuthorInfo *AuthorsManager::getAuthorInfo(int authorID)
+AuthorInfoPtr AuthorsManager::getAuthorInfo(int authorID)
 {
     return m_authors.value(authorID);
 }
@@ -173,14 +172,14 @@ bool AuthorsManager::hasAuthorInfo(int authorID)
 
 QString AuthorsManager::getAuthorName(int authorID)
 {
-    AuthorInfo *auth = m_authors.value(authorID);
+    AuthorInfoPtr auth = m_authors.value(authorID);
     return auth ? auth->name : QString();
 }
 
-AuthorInfo *AuthorsManager::findAuthor(QString name)
+AuthorInfoPtr AuthorsManager::findAuthor(QString name)
 {
-    AuthorInfo *auth = 0;
-    QHash<int, AuthorInfo*>::const_iterator i = m_authors.constBegin();
+    AuthorInfoPtr auth;
+    QHash<int, AuthorInfoPtr>::const_iterator i = m_authors.constBegin();
 
     while (i != m_authors.constEnd()) {
         QString authorName = i.value()->name;
@@ -197,7 +196,7 @@ AuthorInfo *AuthorsManager::findAuthor(QString name)
     return auth;
 }
 
-void AuthorsManager::updateAuthor(AuthorInfo *auth)
+void AuthorsManager::updateAuthor(AuthorInfoPtr auth)
 {
     QMutexLocker locker(&m_mutex);
 

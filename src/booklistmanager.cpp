@@ -273,7 +273,7 @@ QList<QStandardItem*> BookListManager::readBookNode(QDomElement &element)
     rows << nameItem;
 
     if(type != LibraryBook::QuranBook) {
-        AuthorInfo *auth = m_authorsManager->getAuthorInfo(authorID);
+        AuthorInfoPtr auth = m_authorsManager->getAuthorInfo(authorID);
         QString authName;
         int deathYear = 99999;
         QString deathStr;

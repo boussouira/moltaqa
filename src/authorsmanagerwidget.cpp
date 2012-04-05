@@ -1,6 +1,5 @@
 #include "authorsmanagerwidget.h"
 #include "ui_authorsmanagerwidget.h"
-#include "authorsmanager.h"
 #include "librarymanager.h"
 #include "modelenums.h"
 #include "utils.h"
@@ -12,8 +11,7 @@
 AuthorsManagerWidget::AuthorsManagerWidget(QWidget *parent) :
     ControlCenterWidget(parent),
     ui(new Ui::AuthorsManagerWidget),
-    m_model(0),
-    m_currentAuthor(0)
+    m_model(0)
 {
     ui->setupUi(this);
 
@@ -111,7 +109,7 @@ void AuthorsManagerWidget::newAuthor()
                                          tr("اضافة مؤلف"),
                                          tr("اسم المؤلف:"));
     if(!name.isEmpty()) {
-        AuthorInfo *auth = new AuthorInfo();
+        AuthorInfoPtr auth(new AuthorInfo());
         auth->name = name;
         auth->fullName = name;
         auth->unknowBirth = true;
@@ -182,13 +180,13 @@ void AuthorsManagerWidget::saveCurrentAuthor()
     }
 }
 
-AuthorInfo *AuthorsManagerWidget::getAuthorInfo(int authorID)
+AuthorInfoPtr AuthorsManagerWidget::getAuthorInfo(int authorID)
 {
-    AuthorInfo *auth = m_editedAuthInfo.value(authorID);
+    AuthorInfoPtr auth = m_editedAuthInfo.value(authorID);
     if(!auth) {
         auth = m_authorsManager->getAuthorInfo(authorID);
         if(auth)
-            auth = auth->clone();
+            auth = AuthorInfoPtr(auth->clone());
     }
 
     return auth;
@@ -197,14 +195,11 @@ AuthorInfo *AuthorsManagerWidget::getAuthorInfo(int authorID)
 void AuthorsManagerWidget::on_treeView_doubleClicked(const QModelIndex &index)
 {
     int authorID = index.data(ItemRole::authorIdRole).toInt();
-    AuthorInfo *auth = getAuthorInfo(authorID);
+    AuthorInfoPtr auth = getAuthorInfo(authorID);
     if(auth) {
         saveCurrentAuthor();
 
-        if(m_currentAuthor && !m_editedAuthInfo.contains(m_currentAuthor->id))
-            delete m_currentAuthor;
-
-        m_currentAuthor = 0;
+        m_currentAuthor.clear();
 
         ui->lineName->setText(auth->name);
         ui->lineFullName->setText(auth->fullName);
@@ -238,7 +233,7 @@ void AuthorsManagerWidget::save()
 
     m_authorsManager->transaction();
 
-    foreach(AuthorInfo *auth, m_editedAuthInfo.values()) {
+    foreach(AuthorInfoPtr auth, m_editedAuthInfo.values()) {
         m_authorsManager->updateAuthor(auth);
     }
 
@@ -246,7 +241,7 @@ void AuthorsManagerWidget::save()
     m_authorsManager->reloadModels();
 
     m_editedAuthInfo.clear();
-    m_currentAuthor = 0;
+    m_currentAuthor.clear();
 
     setModified(false);
 }

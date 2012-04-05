@@ -119,7 +119,7 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
              node->bookInfo = bookQuery.value(betakaCol).toString();
         }
 
-         AuthorInfo* foundAuth = AuthorsManager::instance()->findAuthor(bookQuery.value(authCol).toString());
+         AuthorInfoPtr foundAuth = AuthorsManager::instance()->findAuthor(bookQuery.value(authCol).toString());
          if(foundAuth)
              node->setAuthor(foundAuth->id, foundAuth->name);
          else

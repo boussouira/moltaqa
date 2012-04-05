@@ -2,6 +2,7 @@
 #define AUTHORSMANAGERWIDGET_H
 
 #include "controlcenterwidget.h"
+#include "authorsmanager.h"
 #include <qhash.h>
 
 namespace Ui {
@@ -9,7 +10,6 @@ class AuthorsManagerWidget;
 }
 
 class QStandardItemModel;
-class AuthorInfo;
 class QModelIndex;
 class AuthorsManager;
 
@@ -31,7 +31,7 @@ protected:
     void enableEditWidgets(bool enable);
     void loadModel();
     void saveCurrentAuthor();
-    AuthorInfo *getAuthorInfo(int authorID);
+    AuthorInfoPtr getAuthorInfo(int authorID);
 
 private slots:
     void infoChanged();
@@ -44,8 +44,8 @@ private:
     Ui::AuthorsManagerWidget *ui;
     QStandardItemModel *m_model;
     AuthorsManager *m_authorsManager;
-    QHash<int, AuthorInfo*> m_editedAuthInfo;
-    AuthorInfo* m_currentAuthor;
+    QHash<int, AuthorInfoPtr> m_editedAuthInfo;
+    AuthorInfoPtr m_currentAuthor;
 };
 
 #endif // AUTHORSMANAGERWIDGET_H

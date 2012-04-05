@@ -3,6 +3,7 @@
 
 #include "databasemanager.h"
 #include <qhash.h>
+#include <qsharedpointer.h>
 
 class AuthorInfo
 {
@@ -34,6 +35,8 @@ public:
     }
 };
 
+typedef QSharedPointer<AuthorInfo> AuthorInfoPtr;
+
 class AuthorsManager : public DatabaseManager
 {
     Q_OBJECT
@@ -49,23 +52,23 @@ public:
 
     QStandardItemModel *authorsModel();
 
-    int addAuthor(AuthorInfo *auth);
+    int addAuthor(AuthorInfoPtr auth);
     void removeAuthor(int authorID);
 
-    AuthorInfo *getAuthorInfo(int authorID);
+    AuthorInfoPtr getAuthorInfo(int authorID);
     bool hasAuthorInfo(int authorID);
     QString getAuthorName(int authorID);
 
-    AuthorInfo *findAuthor(QString name);
+    AuthorInfoPtr findAuthor(QString name);
 
-    void updateAuthor(AuthorInfo *auth);
+    void updateAuthor(AuthorInfoPtr auth);
 
 protected:
     int getNewAuthorID();
     void loadAuthorsInfo();
 
 protected:
-    QHash<int, AuthorInfo*> m_authors;
+    QHash<int, AuthorInfoPtr> m_authors;
 };
 
 #endif // AUTHORSMANAGER_H
