@@ -153,16 +153,22 @@ LibraryBookPtr LibraryBookManager::getLibraryBook(int bookID)
 
 LibraryBookPtr LibraryBookManager::getQuranBook()
 {
-    if(!m_quranBook) {
-        foreach (LibraryBookPtr book, m_books.values()) {
-            if(book->isQuran()) {
-                m_quranBook = book;
-                break;
-            }
-        }
+    if(m_quranBook)
+        return m_quranBook;
+
+    QSqlQuery query(m_db);
+    query.prepare("SELECT id FROM books WHERE type = ?");
+    query.bindValue(0, LibraryBook::QuranBook);
+
+    ML_QUERY_EXEC(query);
+
+    if(query.next()) {
+        m_quranBook = getLibraryBook(query.value(0).toInt());
+        if(m_quranBook)
+            return m_quranBook;
     }
 
-    return m_quranBook;
+    return LibraryBookPtr();
 }
 
 int LibraryBookManager::addBook(LibraryBookPtr book)
