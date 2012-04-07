@@ -285,6 +285,25 @@ void LibraryBookManager::setBookIndexStat(int bookID, LibraryBook::IndexFlags in
     book->indexFlags = indexFlag;
 }
 
+QList<LibraryBookPtr> LibraryBookManager::getAuthorBooks(int authorID)
+{
+    QList<LibraryBookPtr> list;
+
+    QSqlQuery query(m_db);
+    query.prepare("SELECT id FROM books WHERE authorID = ?");
+    query.bindValue(0, authorID);
+
+    ML_QUERY_EXEC(query);
+
+    while(query.next()) {
+        LibraryBookPtr book = getLibraryBook(query.value(0).toInt());
+        if(book)
+            list.append(book);
+    }
+
+    return list;
+}
+
 int LibraryBookManager::getNewBookID()
 {
     int bookID =  0;

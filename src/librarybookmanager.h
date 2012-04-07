@@ -34,8 +34,10 @@ public:
     bool updateBook(LibraryBookPtr book);
     bool removeBook(int bookID);
 
-    QList<int> getNonIndexedBooks();
+    QList<int> getBooksWithIndexStat(LibraryBook::IndexFlags indexFlag);
     void setBookIndexStat(int bookID, LibraryBook::IndexFlags indexFlag);
+
+    QList<LibraryBookPtr> getAuthorBooks(int authorID);
 
 protected:
     int getNewBookID();

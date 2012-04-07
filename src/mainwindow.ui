@@ -52,8 +52,15 @@
      <addaction name="actionImport"/>
      <addaction name="actionShamelaImport"/>
     </widget>
+    <widget class="QMenu" name="menu_2">
+     <property name="title">
+      <string>تراجم</string>
+     </property>
+     <addaction name="actionTarajemRowat"/>
+     <addaction name="actionAuthorsView"/>
+    </widget>
     <addaction name="actionBooksList"/>
-    <addaction name="actionTarajemRowat"/>
+    <addaction name="menu_2"/>
     <addaction name="separator"/>
     <addaction name="menu_4"/>
     <addaction name="separator"/>
@@ -173,7 +180,12 @@
   </action>
   <action name="actionTarajemRowat">
    <property name="text">
-    <string>تراجم الرواة</string>
+    <string>الرواة</string>
+   </property>
+  </action>
+  <action name="actionAuthorsView">
+   <property name="text">
+    <string>المؤلفين</string>
    </property>
   </action>
  </widget>

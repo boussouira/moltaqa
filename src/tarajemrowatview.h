@@ -19,8 +19,12 @@ public:
     TarajemRowatView(QWidget *parent = 0);
     ~TarajemRowatView();
 
+    static TarajemRowatView *instance();
+
     QString title();
     void aboutToShow();
+
+    void openRawiInfo(int rawiID);
 
 protected:
     int addTab(QString tabText=QString());

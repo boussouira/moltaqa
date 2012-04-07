@@ -5,6 +5,7 @@
 #include <qwebframe.h>
 #include <qwebelement.h>
 #include <qpropertyanimation.h>
+#include "shemehandler.h"
 
 class WebView : public QWebView
 {
@@ -31,6 +32,7 @@ public slots:
     void scrollToElement(QString elementQuery);
     void pageTextChanged();
     void scrollToSearch();
+    void openMoltaqaLink(QString link);
 
 protected slots:
     void populateJavaScriptWindowObject();
@@ -41,6 +43,7 @@ signals:
 protected:
     QWebFrame *m_frame;
     QPropertyAnimation *m_animation;
+    ShemeHandler m_shemeHandler;
     bool m_stopScrolling;
 };
 

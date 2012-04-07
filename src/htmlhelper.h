@@ -36,6 +36,7 @@ public:
     void insertHeadTag(int head, const QString &text, const QString &selector="");
     void insertLinkTag(const QString &text, const QString &href, const QString &selector="");
     void insertImage(const QString &src);
+    void insertBr();
 
     void beginHtmlTag(const QString &tag, const QString &selector="", const QString &attr="");
     void beginDivTag(const QString &selector="", const QString &attr="");

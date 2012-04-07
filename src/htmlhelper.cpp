@@ -113,6 +113,11 @@ void HtmlHelper::insertImage(const QString &src)
     m_html.append("\" />");
 }
 
+void HtmlHelper::insertBr()
+{
+    m_html.append("<br />");
+}
+
 void HtmlHelper::beginHtmlTag(const QString &tag, const QString &selector, const QString &attr)
 {
     m_html.append(QString("<%1").arg(tag));

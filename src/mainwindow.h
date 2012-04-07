@@ -14,6 +14,7 @@ class BooksListBrowser;
 class WelcomeWidget;
 class BookEditorView;
 class TarajemRowatView;
+class AuthorsView;
 class LibraryInfo;
 class IndexTracker;
 class IndexManager;
@@ -56,6 +57,7 @@ public slots:
 
     void showSearchView();
     void showTarajemRowatView();
+    void showAuthorsView();
 
     void showBooksList();
     void aboutdDialog();
@@ -85,6 +87,7 @@ private:
     BookReaderHelper *m_readerHelper;
     BookEditorView *m_editorView;
     TarajemRowatView *m_tarajemView;
+    AuthorsView *m_authorsView;
 };
 
 #endif // MAINWINDOW_H

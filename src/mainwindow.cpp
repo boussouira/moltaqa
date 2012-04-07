@@ -19,6 +19,7 @@
 #include "bookeditorview.h"
 #include "bookreaderhelper.h"
 #include "tarajemrowatview.h"
+#include "authorsview.h"
 
 #include <qmessagebox.h>
 #include <qsettings.h>
@@ -45,7 +46,8 @@ MainWindow::MainWindow(QWidget *parent):
     m_searchView(0),
     m_readerHelper(0),
     m_editorView(0),
-    m_tarajemView(0)
+    m_tarajemView(0),
+    m_authorsView(0)
 {
     ui->setupUi(this);
     m_instance = this;
@@ -150,6 +152,12 @@ bool MainWindow::init()
         m_editorView = new BookEditorView(this);
         m_viewManager->addView(m_editorView, false);
 
+        m_tarajemView = new TarajemRowatView(this);
+        m_viewManager->addView(m_tarajemView);
+
+        m_authorsView = new AuthorsView(this);
+        m_viewManager->addView(m_authorsView);
+
         setupActions();
 
         m_readerHelper = new BookReaderHelper();
@@ -176,6 +184,7 @@ MainWindow::~MainWindow()
     ML_DELETE_CHECK(m_libraryInfo);
     ML_DELETE_CHECK(m_readerHelper);
     ML_DELETE_CHECK(m_tarajemView);
+    ML_DELETE_CHECK(m_authorsView);
     ML_DELETE_CHECK(m_indexTracker);
 
     delete ui;
@@ -207,6 +216,7 @@ void MainWindow::setupActions()
     connect(ui->actionSearchView, SIGNAL(triggered()), SLOT(showSearchView()));
     connect(ui->actionSearchInBook, SIGNAL(triggered()), m_bookView, SLOT(searchInBook()));
     connect(ui->actionTarajemRowat, SIGNAL(triggered()), SLOT(showTarajemRowatView()));
+    connect(ui->actionAuthorsView, SIGNAL(triggered()), SLOT(showAuthorsView()));
 
     connect(m_indexManager, SIGNAL(progress(int,int)), SLOT(indexProgress(int,int)));
     connect(m_indexManager, SIGNAL(started()), SLOT(startIndexing()));
@@ -250,12 +260,12 @@ void MainWindow::showSearchView()
 
 void MainWindow::showTarajemRowatView()
 {
-    if(!m_tarajemView) {
-        m_tarajemView = new TarajemRowatView(this);
-        m_viewManager->addView(m_tarajemView);
-    }
-
     m_viewManager->setCurrentView(m_tarajemView);
+}
+
+void MainWindow::showAuthorsView()
+{
+    m_viewManager->setCurrentView(m_authorsView);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

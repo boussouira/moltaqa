@@ -1,5 +1,6 @@
 #include "webview.h"
 #include "webpage.h"
+#include "utils.h"
 
 WebView::WebView(QWidget *parent) :
     QWebView(parent)
@@ -153,6 +154,14 @@ void WebView::pageTextChanged()
 void WebView::scrollToSearch()
 {
     scrollToElement(".resultHL");
+}
+
+void WebView::openMoltaqaLink(QString link)
+{
+    QUrl url(link);
+    ML_ASSERT(url.scheme() == "moltaqa");
+
+    m_shemeHandler.open(url);
 }
 
 void WebView::populateJavaScriptWindowObject()

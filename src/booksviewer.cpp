@@ -30,10 +30,14 @@
 #include <qkeysequence.h>
 #include <QCompleter>
 
+static BooksViewer *m_instance = 0;
+
 BooksViewer::BooksViewer(LibraryManager *libraryManager, QWidget *parent): AbstarctView(parent)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
     m_viewManager = new BookWidgetManager(this);
+
+    m_instance = this;
 
     m_libraryManager = libraryManager;
     layout->addWidget(m_viewManager);
@@ -51,6 +55,13 @@ BooksViewer::BooksViewer(LibraryManager *libraryManager, QWidget *parent): Absta
 BooksViewer::~BooksViewer()
 {
     delete m_viewManager;
+
+    m_instance = 0;
+}
+
+BooksViewer *BooksViewer::instance()
+{
+    return m_instance;
 }
 
 QString BooksViewer::title()

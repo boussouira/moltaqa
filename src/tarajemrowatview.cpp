@@ -12,6 +12,8 @@
 #include <qdebug.h>
 #include <qwebview.h>
 
+static TarajemRowatView *m_instance = 0;
+
 TarajemRowatView::TarajemRowatView(QWidget *parent) :
     AbstarctView(parent),
     m_model(0),
@@ -20,6 +22,7 @@ TarajemRowatView::TarajemRowatView(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    m_instance = this;
     ui->tabWidget->setAutoTabClose(true);
 
     m_filter = new ModelViewFilter(this);
@@ -34,6 +37,13 @@ TarajemRowatView::~TarajemRowatView()
     ML_DELETE_CHECK(m_model);
 
     delete ui;
+
+    m_instance = 0;
+}
+
+TarajemRowatView *TarajemRowatView::instance()
+{
+    return m_instance;
 }
 
 QString TarajemRowatView::title()
@@ -54,6 +64,16 @@ void TarajemRowatView::aboutToShow()
 
     if(!ui->tabWidget->count())
         addTab(tr("الراوي"));
+}
+
+void TarajemRowatView::openRawiInfo(int rawiID)
+{
+    RawiInfoPtr info = m_rowatManager->getRawiInfo(rawiID);
+    ML_ASSERT2(info, "TarajemRowatView::openRawiInfo no rawi with id" << rawiID);
+
+    setCurrentRawi(info);
+
+    emit showMe();
 }
 
 int TarajemRowatView::addTab(QString tabText)

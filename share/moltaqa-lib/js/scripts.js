@@ -8,7 +8,7 @@ function bookLink()
 }
 
 function setupToolTip() {
-    $('abbr').tooltip({
+    $('*[title]').tooltip({
         track: true,
         showURL: false,
         fixPNG: true,
@@ -17,3 +17,19 @@ function setupToolTip() {
         positionLeft: true
     });
 }
+
+$('a').each(function(index) {
+    link = $(this).attr('href');
+
+    scheme = link.substring(0, link.indexOf(':'));
+
+    if(scheme == 'moltaqa') {
+        $(this).addClass('ext');
+        $(this).click(function() {
+            webView.openMoltaqaLink($(this).attr('href'));
+        });
+    }
+});
+
+bookLink();
+setupToolTip();
