@@ -391,7 +391,12 @@ bool checkDir(bool showWarnings)
     ret &= checkFiles(QStringList()
                       << "jquery.pagination.js"
                       << "jquery.growl.js"
+                      << "jquery.tooltip.js"
                       << "jquery.js"
+                      << "editor.js"
+                      << "reader.js"
+                      << "search.js"
+                      << "ckeditor"
                       << "scripts.js",
                       jsDir(),
                       showWarnings);

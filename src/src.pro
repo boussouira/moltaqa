@@ -89,7 +89,11 @@ unix {
     js.files += ../share/$$APPNAME/js/jquery.js
     js.files += ../share/$$APPNAME/js/jquery.growl.js
     js.files += ../share/$$APPNAME/js/jquery.pagination.js
+    js.files += ../share/$$APPNAME/js/jquery.tooltip.js
     js.files += ../share/$$APPNAME/js/scripts.js
+    js.files += ../share/$$APPNAME/js/editor.js
+    js.files += ../share/$$APPNAME/js/reader.js
+    js.files += ../share/$$APPNAME/js/search.js
     js.files += ../share/$$APPNAME/js/ckeditor
 
     locale.path = $$DATADIR/$$APPNAME/locale
