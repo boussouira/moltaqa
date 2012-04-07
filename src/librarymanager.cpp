@@ -52,17 +52,6 @@ LibraryManager *LibraryManager::instance()
 
 void LibraryManager::open()
 {
-    QString booksIndexPath = m_libraryInfo->booksIndexPath();
-
-    if(!QFile::exists(booksIndexPath))
-       qWarning("Can't find index database: %s", qPrintable(booksIndexPath));
-
-    m_indexDB = QSqlDatabase::addDatabase("QSQLITE", m_connName);
-    m_indexDB.setDatabaseName(booksIndexPath);
-
-//    if (!m_indexDB.open())
-//        throw BookException(tr("لم يمكن فتح قاعدة البيانات الأساسية"), m_indexDB.lastError().text());
-
     openManagers();
 }
 
