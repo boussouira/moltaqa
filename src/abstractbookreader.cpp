@@ -135,7 +135,13 @@ BookPage * AbstractBookReader::page()
 
 void AbstractBookReader::goToPage(int pid)
 {
-    QDomElement e = getPage(pid);
+    QDomElement e;
+    if(pid == -1)
+        e = m_pagesDom.rootElement().firstChildElement();
+    else if(pid == -2)
+        e = m_pagesDom.rootElement().lastChildElement();
+    else
+        e = getPage(pid);
 
     if(!e.isNull())
         setCurrentPage(e);
