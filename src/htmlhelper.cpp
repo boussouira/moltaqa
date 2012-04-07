@@ -1,8 +1,10 @@
 #include "htmlhelper.h"
 #include "utils.h"
 #include <qstringlist.h>
+#include <qurl.h>
 
-HtmlHelper::HtmlHelper()
+HtmlHelper::HtmlHelper() :
+    m_jsDir(App::jsDir())
 {
 }
 
@@ -57,17 +59,17 @@ void HtmlHelper::endHead()
     endHtmlTag();
 }
 
-void HtmlHelper::setCharset(QString charset)
+void HtmlHelper::setCharset(const QString &charset)
 {
     m_html.append(QString("<meta http-equiv=\"content-type\" content=\"text/html; charset=%1\" />").arg(charset));
 }
 
-void HtmlHelper::setTitle(QString title)
+void HtmlHelper::setTitle(const QString &title)
 {
     insertHtmlTag("title", title);
 }
 
-void HtmlHelper::insertHtmlTag(QString tag, QString text, QString selector, QString attr)
+void HtmlHelper::insertHtmlTag(const QString &tag, const QString &text, const QString &selector, const QString &attr)
 {
     m_html.append(QString("<%1").arg(tag));
 
@@ -77,41 +79,41 @@ void HtmlHelper::insertHtmlTag(QString tag, QString text, QString selector, QStr
     m_html.append(QString(">%1</%2>").arg(text).arg(tag));
 }
 
-void HtmlHelper::insertDivTag(QString text, QString selector)
+void HtmlHelper::insertDivTag(const QString &text, const QString &selector)
 {
     insertHtmlTag("div", text, selector);
 }
 
-void HtmlHelper::insertSpanTag(QString text, QString selector)
+void HtmlHelper::insertSpanTag(const QString &text, const QString &selector)
 {
     insertHtmlTag("span", text, selector);
 }
 
-void HtmlHelper::insertParagraphTag(QString text, QString selector)
+void HtmlHelper::insertParagraphTag(const QString &text, const QString &selector)
 {
     insertHtmlTag("p", text, selector);
 }
 
-void HtmlHelper::insertHeadTag(int head, QString text, QString selector)
+void HtmlHelper::insertHeadTag(int head, const QString &text, const QString &selector)
 {
     insertHtmlTag(QString("h%1").arg(head), text, selector);
 }
 
-void HtmlHelper::insertLinkTag(QString text, QString href, QString selector)
+void HtmlHelper::insertLinkTag(const QString &text, const QString &href, const QString &selector)
 {
     beginHtmlTag("a", selector, QString("href='%1'").arg(href));
     m_html.append(text);
     endHtmlTag();
 }
 
-void HtmlHelper::insertImage(QString src)
+void HtmlHelper::insertImage(const QString &src)
 {
     m_html.append("<img src=\"");
     m_html.append(src);
     m_html.append("\" />");
 }
 
-void HtmlHelper::beginHtmlTag(QString tag, QString selector, QString attr)
+void HtmlHelper::beginHtmlTag(const QString &tag, const QString &selector, const QString &attr)
 {
     m_html.append(QString("<%1").arg(tag));
 
@@ -123,22 +125,22 @@ void HtmlHelper::beginHtmlTag(QString tag, QString selector, QString attr)
     m_openTags.push(tag);
 }
 
-void HtmlHelper::beginDivTag(QString selector, QString attr)
+void HtmlHelper::beginDivTag(const QString &selector, const QString &attr)
 {
     beginHtmlTag("div", selector, attr);
 }
 
-void HtmlHelper::beginParagraphTag(QString selector, QString attr)
+void HtmlHelper::beginParagraphTag(const QString &selector, const QString &attr)
 {
     beginHtmlTag("p", selector, attr);
 }
 
-void HtmlHelper::beginSpanTag(QString selector, QString attr)
+void HtmlHelper::beginSpanTag(const QString &selector, const QString &attr)
 {
     beginHtmlTag("span", selector, attr);
 }
 
-void HtmlHelper::endHtmlTag(QString tag)
+void HtmlHelper::endHtmlTag(const QString &tag)
 {
     if(tag.isEmpty()) {
         if(!m_openTags.isEmpty())
@@ -174,12 +176,15 @@ void HtmlHelper::addCSS(QString cssFile)
     m_html.append(QString("<link href= \"%1\" rel=\"stylesheet\" type=\"text/css\" />").arg(cssFile));
 }
 
-void HtmlHelper::addJS(QString jsFile)
+void HtmlHelper::addJS(QString jsFile, bool fullPath)
 {
+    if(!fullPath)
+        jsFile = QUrl::fromLocalFile(m_jsDir.filePath(jsFile)).toString();
+
     m_html.append(QString("<script type=\"text/javascript\" src=\"%1\"></script>").arg(jsFile));
 }
 
-void HtmlHelper::addJSCode(QString jsCode)
+void HtmlHelper::addJSCode(const QString &jsCode)
 {
     m_html.append("<script type=\"text/javascript\">");
     m_html.append("//<![CDATA[\n");

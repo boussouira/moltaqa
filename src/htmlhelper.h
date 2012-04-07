@@ -3,6 +3,7 @@
 
 #include <qstring.h>
 #include <qstack.h>
+#include <qdir.h>
 
 class HtmlHelper
 {
@@ -25,22 +26,22 @@ public:
     void beginHead();
     void endHead();
 
-    void setCharset(QString charset="utf-8");
-    void setTitle(QString title);
+    void setCharset(const QString &charset="utf-8");
+    void setTitle(const QString &title);
 
-    void insertHtmlTag(QString tag, QString text, QString selector="", QString attr="");
-    void insertDivTag(QString text, QString selector="");
-    void insertSpanTag(QString text, QString selector="");
-    void insertParagraphTag(QString text, QString selector="");
-    void insertHeadTag(int head, QString text, QString selector="");
-    void insertLinkTag(QString text, QString href, QString selector="");
-    void insertImage(QString src);
+    void insertHtmlTag(const QString &tag, const QString &text, const QString &selector="", const QString &attr="");
+    void insertDivTag(const QString &text, const QString &selector="");
+    void insertSpanTag(const QString &text, const QString &selector="");
+    void insertParagraphTag(const QString &text, const QString &selector="");
+    void insertHeadTag(int head, const QString &text, const QString &selector="");
+    void insertLinkTag(const QString &text, const QString &href, const QString &selector="");
+    void insertImage(const QString &src);
 
-    void beginHtmlTag(QString tag, QString selector="", QString attr="");
-    void beginDivTag(QString selector="", QString attr="");
-    void beginParagraphTag(QString selector="", QString attr="");
-    void beginSpanTag(QString selector="", QString attr="");
-    void endHtmlTag(QString tag="");
+    void beginHtmlTag(const QString &tag, const QString &selector="", const QString &attr="");
+    void beginDivTag(const QString &selector="", const QString &attr="");
+    void beginParagraphTag(const QString &selector="", const QString &attr="");
+    void beginSpanTag(const QString &selector="", const QString &attr="");
+    void endHtmlTag(const QString &tag="");
     void endDivTag();
     void endParagraphTag();
     void endSpanTag();
@@ -48,8 +49,8 @@ public:
     void endAllTags();
 
     void addCSS(QString cssFile);
-    void addJS(QString jsFile);
-    void addJSCode(QString jsCode);
+    void addJS(QString jsFile, bool fullPath=false);
+    void addJSCode(const QString &jsCode);
 
     static QString jsEscape(QString text);
 
@@ -59,6 +60,7 @@ protected:
 
 protected:
     QString m_html;
+    QDir m_jsDir;
     QStack<QString> m_openTags;
 };
 
