@@ -14,10 +14,7 @@ void EditWebView::setupEditor(const QString &text)
 {
     settings()->setAttribute(QWebSettings::JavascriptCanAccessClipboard, true);
 
-    QUrl ckeditor(QUrl::fromLocalFile(App::jsDir() + "/ckeditor/ckeditor.js"));
     QUrl style(QUrl::fromLocalFile(App::stylesDir() + "/default/default.css"));
-    QUrl jquery(QUrl::fromLocalFile(App::jsDir() + "/jquery.js"));
-    QUrl script(QUrl::fromLocalFile(App::jsDir() + "/scripts.js"));
 
     HtmlHelper helper;
 
@@ -25,9 +22,10 @@ void EditWebView::setupEditor(const QString &text)
 
     helper.beginHead();
     helper.setTitle("Editor");
-    helper.addJS(jquery.toString());
-    helper.addJS(ckeditor.toString());
-    helper.addJS(script.toString());
+    helper.addJS("jquery.js");
+    helper.addJS("ckeditor/ckeditor.js");
+    helper.addJS("scripts.js");
+    helper.addJS("editor.js");
     helper.endHead();
 
     helper.beginBody();

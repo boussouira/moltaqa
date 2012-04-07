@@ -22,7 +22,7 @@ public:
     QString getText();
     void insertText(QString text);
 
-    QString getHtmlView(QString text=QString());
+    QString getHtmlView(const QString &text=QString(), const QString &jsCode=QString());
 
 protected:
     void laodSettings();

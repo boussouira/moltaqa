@@ -229,43 +229,41 @@ void BookWidget::hideIndexWidget()
 
 void BookWidget::readerTextChanged()
 {
-    if(m_viewInitialized) {
-        m_view->execJS(QString("setPageText('%1', %2, %3)")
-                       .arg(HtmlHelper::jsEscape(m_db->page()->text))
-                       .arg(m_db->page()->page)
-                       .arg(m_db->page()->part));
-    } else {
-        m_view->setHtml(m_db->textFormat()->getHtmlView(m_db->page()->text));
-        m_viewInitialized = true;
-    }
-
-    if(m_db->scrollToHighlight()){
-        m_view->scrollToElement(".resultHL");
-    }
-
+    QString js;
     if(m_db->bookInfo()->shorooh.isEmpty()) {
-        m_view->execJS("setShorooh(false);");
+        js = "setShorooh(false);";
     } else {
 
-        QString s;
-        s += "setShorooh([";
+        js = "setShorooh([";
 
         foreach(BookShorooh shareeh, m_db->bookInfo()->shorooh) {
             LibraryBookPtr book = LibraryBookManager::instance()->getLibraryBook(shareeh.bookID);
             if(!book)
                 continue;
 
-            s += "{";
-            s += QString("'bookName' : '%1', ").arg(HtmlHelper::jsEscape(book->bookDisplayName));
-            s += QString("'bookID' : '%1', ").arg(shareeh.bookID);
-            s += QString("'pageID' : '%1'").arg(shareeh.pageID);
-            s += "},";
+            js += "{";
+            js += QString("'bookName' : '%1', ").arg(HtmlHelper::jsEscape(book->bookDisplayName));
+            js += QString("'bookID' : '%1', ").arg(shareeh.bookID);
+            js += QString("'pageID' : '%1'").arg(shareeh.pageID);
+            js += "},";
         }
 
-        s += "]);";
+        js += "]);";
+    }
 
-        m_view->execJS(s);
+    if(m_viewInitialized) {
+        m_view->execJS(QString("setPageText('%1', %2, %3)")
+                       .arg(HtmlHelper::jsEscape(m_db->page()->text))
+                       .arg(m_db->page()->page)
+                       .arg(m_db->page()->part));
+        m_view->execJS(js);
+    } else {
+        m_view->setHtml(m_db->textFormat()->getHtmlView(m_db->page()->text, js));
+        m_viewInitialized = true;
+    }
 
+    if(m_db->scrollToHighlight()){
+        m_view->scrollToElement(".resultHL");
     }
 }
 

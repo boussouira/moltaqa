@@ -112,12 +112,6 @@ void ResultWidget::setupWebView()
     QString style = styleDir.filePath("default.css");
     QString  m_styleFile = QUrl::fromLocalFile(style).toString();
 
-    QDir jsDir(App::jsDir());
-    QString  m_jqueryGrowlFile = QUrl::fromLocalFile(jsDir.filePath("jquery.growl.js")).toString();
-    QString  m_jPagination = QUrl::fromLocalFile(jsDir.filePath("jquery.pagination.js")).toString();
-    QString  m_jqueryFile = QUrl::fromLocalFile(jsDir.filePath("jquery.js")).toString();
-    QString  m_scriptFile = QUrl::fromLocalFile(jsDir.filePath("scripts.js")).toString();
-
     HtmlHelper helper;
     helper.beginHtml();
     helper.beginHead();
@@ -128,10 +122,11 @@ void ResultWidget::setupWebView()
     helper.beginBody();
     helper.insertDivTag(".", "#searchResult");
     helper.insertDivTag("", "#pagination");
-    helper.addJS(m_jqueryFile);
-    helper.addJS(m_jqueryGrowlFile);
-    helper.addJS(m_jPagination);
-    helper.addJS(m_scriptFile);
+    helper.addJS("jquery.js");
+    helper.addJS("jquery.growl.js");
+    helper.addJS("jquery.pagination.js");
+    helper.addJS("scripts.js");
+    helper.addJS("search.js");
 
     helper.endAllTags();
 

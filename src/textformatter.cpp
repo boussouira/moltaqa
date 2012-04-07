@@ -39,7 +39,7 @@ void TextFormatter::insertText(QString text)
     m_htmlHelper.append(text);
 }
 
-QString TextFormatter::getHtmlView(QString text)
+QString TextFormatter::getHtmlView(const QString &text, const QString &jsCode)
 {
     ML_ASSERT_RET2(m_book, "TextFormatter::getHtmlView book is null", QString());
     ML_ASSERT_RET2(m_page, "TextFormatter::getHtmlView page is null", QString());
@@ -50,9 +50,6 @@ QString TextFormatter::getHtmlView(QString text)
     helper.beginHead();
     helper.setCharset("utf-8");
     helper.addCSS(m_styleFile);
-
-    helper.addJSCode(QString("var PAGE_ID = '%1';").arg(m_cssID));
-    helper.addJSCode(QString("var BOOK_NAME = '%1';").arg(m_book->bookDisplayName));
 
     helper.endHead();
 
@@ -98,15 +95,17 @@ QString TextFormatter::getHtmlView(QString text)
 
     helper.endDivTag(); // div#m_cssID
 
-    QDir jsDir(App::jsDir());
-    helper.addJS(QUrl::fromLocalFile(jsDir.filePath("jquery.js")).toString());
-    helper.addJS(QUrl::fromLocalFile(jsDir.filePath("jquery.tooltip.js")).toString());
-    helper.addJS(QUrl::fromLocalFile(jsDir.filePath("scripts.js")).toString());
+    helper.addJS("jquery.js");
+    helper.addJS("jquery.tooltip.js");
+    helper.addJS("scripts.js");
+    helper.addJS("reader.js");
 
     helper.addJSCode("pageTextChanged();");
 
     if(m_book->isNormal())
         helper.addJSCode("toggleShorooh();");
+
+    helper.addJSCode(jsCode);
 
     helper.endAllTags();
 
