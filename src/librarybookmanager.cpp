@@ -247,18 +247,20 @@ bool LibraryBookManager::removeBook(int bookID)
     }
 }
 
-QList<int> LibraryBookManager::getNonIndexedBooks()
+QList<int> LibraryBookManager::getBooksWithIndexStat(LibraryBook::IndexFlags indexFlag)
 {
     QList<int> list;
-    QHash<int, LibraryBookPtr>::const_iterator i = m_books.constBegin();
+    QSqlQuery query(m_db);
+    query.prepare("SELECT id FROM books WHERE indexFlags = ?");
 
-    while (i != m_books.constEnd()) {
-        LibraryBookPtr b=i.value();
-        if(b->indexFlags == LibraryBook::NotIndexed) {
-            list << i.key();
+    query.bindValue(0, indexFlag);
+
+    if(query.exec()) {
+        while(query.next()) {
+            list << query.value(0).toInt();
         }
-
-        ++i;
+    } else {
+        LOG_SQL_ERROR(query);
     }
 
     return list;

@@ -118,8 +118,6 @@ void IndexTracker::addTask(const QList<int> &books, IndexTask::Task task)
         qDebug("Got %d books to %s",
                books.size(),
                qPrintable(IndexTask::taskToString(task)));
-
-        emit gotTask();
     }
 }
 
@@ -167,7 +165,14 @@ void IndexTracker::findTasks()
 
 void IndexTracker::run()
 {
-    addTask(LibraryBookManager::instance()->getNonIndexedBooks(), IndexTask::Add);
+    LibraryBookManager *manager = LibraryBookManager::instance();
+
+    addTask(manager->getBooksWithIndexStat(LibraryBook::NotIndexed), IndexTask::Add);
+    addTask(manager->getBooksWithIndexStat(LibraryBook::Delete), IndexTask::Delete);
+    addTask(manager->getBooksWithIndexStat(LibraryBook::Update), IndexTask::Update);
+
+    if(!m_tasks.isEmpty())
+        emit gotTask();
 }
 
 int IndexTracker::taskCount()
