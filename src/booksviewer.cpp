@@ -242,7 +242,8 @@ BookWidget *BooksViewer::openBook(int bookID, int pageID, CLuceneQuery *query)
         connect(bookWidget->indexWidget(), SIGNAL(openPage(int)), SLOT(updateActions()));
 
         updateActions();
-        activateWindow();
+
+        emit showMe();
 
     } catch (BookException &e) {
         QMessageBox::critical(this,
