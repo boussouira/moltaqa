@@ -8,8 +8,6 @@ WebView::WebView(QWidget *parent) :
     m_frame = page()->mainFrame();
 
     m_stopScrolling = false;
-    m_scrollAya = -1;
-    m_scrollSora = -1;
 
     m_animation = new QPropertyAnimation(m_frame, "scrollPosition", this);
     connect(m_frame, SIGNAL(contentsSizeChanged(QSize)), m_animation, SLOT(stop()));
@@ -41,9 +39,6 @@ void WebView::scrollToAya(int pSoraNumber, int pAyaNumber)
 
         // Animation the scrolling to the selected AYA
         scrollToPosition(QPoint(0, ayaPosition));
-    } else {
-        m_scrollSora = pSoraNumber;
-        m_scrollAya = pAyaNumber;
     }
 }
 
@@ -148,21 +143,16 @@ void WebView::scrollToElement(QString elementQuery)
 
         // Animation the scrolling to the selected AYA
         scrollToPosition(QPoint(0, ayaPosition));
-    } else {
-        m_scrollElement = elementQuery;
     }
 }
 
 void WebView::pageTextChanged()
 {
-    if(m_scrollSora != -1 && m_scrollAya != -1) {
-        scrollToAya(m_scrollSora, m_scrollAya);
-        m_scrollSora = -1;
-        m_scrollAya = -1;
-    } else if(!m_scrollElement.isEmpty()) {
-        scrollToElement(m_scrollElement);
-        m_scrollElement.clear();
-    }
+}
+
+void WebView::scrollToSearch()
+{
+    scrollToElement(".resultHL");
 }
 
 void WebView::populateJavaScriptWindowObject()

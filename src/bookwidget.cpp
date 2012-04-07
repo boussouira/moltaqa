@@ -21,6 +21,7 @@
 #include <qplaintextedit.h>
 #include <qtreeview.h>
 #include <qaction.h>
+#include <qtimer.h>
 
 BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_db(db)
 {
@@ -256,15 +257,16 @@ void BookWidget::readerTextChanged()
                        .arg(HtmlHelper::jsEscape(m_db->page()->text))
                        .arg(m_db->page()->page)
                        .arg(m_db->page()->part));
+
         m_view->execJS(js);
     } else {
         m_view->setHtml(m_db->textFormat()->getHtmlView(m_db->page()->text, js));
         m_viewInitialized = true;
+
+        if(m_db->scrollToHighlight())
+            QTimer::singleShot(800, m_view, SLOT(scrollToSearch()));
     }
 
-    if(m_db->scrollToHighlight()){
-        m_view->scrollToElement(".resultHL");
-    }
 }
 
 void BookWidget::reloadCurrentPage()

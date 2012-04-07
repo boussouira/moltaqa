@@ -30,6 +30,7 @@ public slots:
     void setText(const QString &text);
     void scrollToElement(QString elementQuery);
     void pageTextChanged();
+    void scrollToSearch();
 
 protected slots:
     void populateJavaScriptWindowObject();
@@ -41,9 +42,6 @@ protected:
     QWebFrame *m_frame;
     QPropertyAnimation *m_animation;
     bool m_stopScrolling;
-    QString m_scrollElement;
-    int m_scrollAya;
-    int m_scrollSora;
 };
 
 #endif // KWEBVIEW_H
