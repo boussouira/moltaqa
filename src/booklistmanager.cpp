@@ -205,7 +205,10 @@ void BookListManager::addBook(LibraryBookPtr book, int parentCat)
     bookElement.appendChild(bookInfoElement);
 
     QDomElement parentElement = m_catElementHash.value(parentCat, m_dom.rootElement());
-    parentElement.appendChild(bookElement);
+    if(book->isQuran())
+        parentElement.insertBefore(bookElement, QDomNode());
+    else
+        parentElement.appendChild(bookElement);
 
     m_dom.setNeedSave(true);
 }
