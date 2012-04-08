@@ -12,6 +12,7 @@ class AuthorsManagerWidget;
 class QStandardItemModel;
 class QModelIndex;
 class AuthorsManager;
+class EditWebView;
 
 class AuthorsManagerWidget : public ControlCenterWidget
 {
@@ -24,6 +25,8 @@ public:
     QString title();
     void save();
 
+    void aboutToShow();
+
 protected:
     void setupActions();
     void enableEditWidgets(bool enable);
@@ -33,6 +36,7 @@ protected:
 
 private slots:
     void infoChanged();
+    void checkEditWebChange();
     void birthDeathChanged();
     void newAuthor();
     void removeAuthor();
@@ -42,6 +46,7 @@ private:
     Ui::AuthorsManagerWidget *ui;
     QStandardItemModel *m_model;
     AuthorsManager *m_authorsManager;
+    EditWebView *m_webEdit;
     QHash<int, AuthorInfoPtr> m_editedAuthInfo;
     AuthorInfoPtr m_currentAuthor;
 };

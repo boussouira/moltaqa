@@ -4,6 +4,7 @@
 #include "modelenums.h"
 #include "utils.h"
 #include "modelutils.h"
+#include "editwebview.h"
 #include <qstandarditemmodel.h>
 #include <qinputdialog.h>
 #include <qmessagebox.h>
@@ -11,7 +12,8 @@
 AuthorsManagerWidget::AuthorsManagerWidget(QWidget *parent) :
     ControlCenterWidget(parent),
     ui(new Ui::AuthorsManagerWidget),
-    m_model(0)
+    m_model(0),
+    m_webEdit(0)
 {
     ui->setupUi(this);
 
@@ -40,9 +42,7 @@ void AuthorsManagerWidget::setupActions()
         connect(edit, SIGNAL(textChanged(QString)), SLOT(infoChanged()));
     }
 
-    foreach(QTextEdit *edit, findChildren<QTextEdit *>()) {
-        connect(edit, SIGNAL(textChanged()), SLOT(infoChanged()));
-    }
+    connect(ui->tabWidget, SIGNAL(currentChanged(int)), SLOT(checkEditWebChange()));
 
     foreach(QSpinBox *spin, findChildren<QSpinBox *>()) {
         connect(spin, SIGNAL(valueChanged(int)), SLOT(infoChanged()));
@@ -71,6 +71,14 @@ void AuthorsManagerWidget::infoChanged()
 
         setModified(true);
     }
+}
+
+void AuthorsManagerWidget::checkEditWebChange()
+{
+    ML_ASSERT(m_webEdit);
+
+    if(m_webEdit->pageModified())
+        infoChanged();
 }
 
 void AuthorsManagerWidget::birthDeathChanged()
@@ -153,10 +161,12 @@ void AuthorsManagerWidget::removeAuthor()
 
 void AuthorsManagerWidget::saveCurrentAuthor()
 {
+    ui->tabWidget->setCurrentIndex(0);
+
     if(m_currentAuthor) {
         m_currentAuthor->name = ui->lineName->text();
         m_currentAuthor->fullName = ui->lineFullName->text();
-        m_currentAuthor->info = ui->textEdit->toPlainText();
+        m_currentAuthor->info = m_webEdit->editorText();
 
         if(!ui->checkUnknowBirth->isChecked()) {
             m_currentAuthor->birthYear = ui->spinBirth->value();
@@ -194,6 +204,8 @@ AuthorInfoPtr AuthorsManagerWidget::getAuthorInfo(int authorID)
 
 void AuthorsManagerWidget::on_treeView_doubleClicked(const QModelIndex &index)
 {
+    ML_ASSERT(m_webEdit);
+
     int authorID = index.data(ItemRole::authorIdRole).toInt();
     AuthorInfoPtr auth = getAuthorInfo(authorID);
     if(auth) {
@@ -203,7 +215,7 @@ void AuthorsManagerWidget::on_treeView_doubleClicked(const QModelIndex &index)
 
         ui->lineName->setText(auth->name);
         ui->lineFullName->setText(auth->fullName);
-        ui->textEdit->setPlainText(auth->info);
+        m_webEdit->setEditorText(auth->info);
 
         ui->checkUnknowBirth->setChecked(auth->unknowBirth);
         ui->spinBirth->setValue(auth->birthYear);
@@ -222,14 +234,14 @@ void AuthorsManagerWidget::on_treeView_doubleClicked(const QModelIndex &index)
 
 void AuthorsManagerWidget::enableEditWidgets(bool enable)
 {
-    ui->groupBox->setEnabled(enable);
+    ui->tabAuthor->setEnabled(enable);
 }
 
 void AuthorsManagerWidget::save()
 {
     saveCurrentAuthor();
 
-    ML_ASSERT(!m_editedAuthInfo.isEmpty());
+    ML_ASSERT2(!m_editedAuthInfo.isEmpty(), "AuthorsManagerWidget::save Nothing to save");
 
     m_authorsManager->transaction();
 
@@ -244,4 +256,14 @@ void AuthorsManagerWidget::save()
     m_currentAuthor.clear();
 
     setModified(false);
+}
+
+void AuthorsManagerWidget::aboutToShow()
+{
+    ML_ASSERT(!m_webEdit);
+
+    m_webEdit = new EditWebView(this);
+
+    QVBoxLayout *layout = new QVBoxLayout(ui->tabTarjama);
+    layout->addWidget(m_webEdit);
 }
