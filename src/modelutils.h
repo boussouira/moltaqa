@@ -23,6 +23,7 @@ void moveRight(QStandardItemModel *model, QTreeView *tree);
 void moveLeft(QStandardItemModel *model, QTreeView *tree);
 
 QStandardItemModel *cloneModel(QStandardItemModel *model);
+QList<QStandardItem *> cloneItem(QStandardItem *item, QStandardItem *parent, int columnCount);
 void setModelCheckable(QStandardItemModel *model, bool checkable=true);
 
 }

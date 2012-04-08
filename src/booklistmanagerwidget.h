@@ -25,6 +25,7 @@ public slots:
     void save();
 
 protected slots:
+    void copyNode();
     void cutNode();
     void pastNode();
     void pastSublingNode();

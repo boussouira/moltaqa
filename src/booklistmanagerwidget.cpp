@@ -67,6 +67,20 @@ void BookListManagerWidget::save()
     BookListManager::instance()->save(m_model);
 }
 
+void BookListManagerWidget::copyNode()
+{
+    QModelIndex index = Utils::selectedIndex(ui->treeView);
+    ML_ASSERT(index.isValid());
+
+    if(m_copiedItems.isEmpty()) {
+        QStandardItem *item = Utils::itemFromIndex(m_model, index);
+        if(item)
+            m_copiedItems = Utils::cloneItem(item,
+                                             Utils::itemFromIndex(m_model, index.parent()),
+                                             m_model->columnCount());
+    }
+}
+
 void BookListManagerWidget::cutNode()
 {
     QModelIndex index = Utils::selectedIndex(ui->treeView);
@@ -163,23 +177,14 @@ void BookListManagerWidget::removeCat()
 
     QStandardItem *item = Utils::itemFromIndex(m_model, index);
 
-    if(item->hasChildren()) {
-        QMessageBox::warning(this,
-                             tr("حذف القسم"),
-                             tr("يجب ان تحذف كل الاقسام الفرعية لقسم '%1' قبل حذفه"
-                                "\n"
-                                "ويجب نقل الكتب الموجودة في هذا القسم الى قسم اخر").arg(item->text()));
-        return;
-    }
-
-    int rep;
-    rep = QMessageBox::question(this,
-                                tr("حذف قسم"),
+    int rep = QMessageBox::question(this,
+                                title(),
                                 tr("هل انت متأكد من أنك تريد حذف '%1'").arg(item->text()),
                                 QMessageBox::Yes|QMessageBox::No, QMessageBox::No);
 
+
     QStandardItem *parentItem = Utils::itemFromIndex(m_model, index.parent());
-    if(rep == QMessageBox::Yes) {
+    if(rep == QMessageBox::Yes && parentItem) {
         parentItem->removeRow(index.row());
     }
 }
@@ -187,6 +192,7 @@ void BookListManagerWidget::removeCat()
 void BookListManagerWidget::menuRequested(QPoint)
 {
     QMenu menu(this);
+    QAction *copyAct = new QAction(tr("نسخ"), &menu);
     QAction *cutAct = new QAction(tr("قص"), &menu);
     QAction *pastAct = new QAction(tr("لصق"), &menu);
     QAction *pastSublingAct = new QAction(tr("لصق في نفس المستوى"), &menu);
@@ -195,6 +201,7 @@ void BookListManagerWidget::menuRequested(QPoint)
     pastAct->setEnabled(!m_copiedItems.isEmpty());
     pastSublingAct->setEnabled(!m_copiedItems.isEmpty());
 
+    menu.addAction(copyAct);
     menu.addAction(cutAct);
     menu.addAction(pastAct);
     menu.addAction(pastSublingAct);
@@ -203,6 +210,8 @@ void BookListManagerWidget::menuRequested(QPoint)
     if(ret) {
         if(ret == cutAct)
             cutNode();
+        else if(ret == copyAct)
+            copyNode();
         else if(ret == pastAct)
             pastNode();
         else if(ret == pastSublingAct)

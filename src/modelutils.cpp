@@ -206,6 +206,26 @@ QStandardItemModel *cloneModel(QStandardItemModel *model)
     return newModel;
 }
 
+QList<QStandardItem *> cloneItem(QStandardItem *item, QStandardItem *parent, int columnCount)
+{
+    QList<QStandardItem *> items;
+    ML_ASSERT_RET2(item, "cloneItem: item is null", items);
+    ML_ASSERT_RET2(parent, "cloneItem: parent item is null", items);
+
+    for(int i=0;i<columnCount; i++) {
+        QStandardItem *newItem = parent->child(item->row(), i);
+        if(newItem) {
+            QStandardItem *clone = newItem->clone();
+            foreach (QList<QStandardItem*> items, getItemChilds(newItem, columnCount))
+                clone->appendRow(items);
+
+            items << clone;
+        }
+    }
+
+    return items;
+}
+
 void setItemCheckable(QStandardItem *item, bool checkable)
 {
     for(int i=0; i<item->rowCount(); i++) {
