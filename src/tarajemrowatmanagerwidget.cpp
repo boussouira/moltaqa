@@ -118,6 +118,8 @@ void TarajemRowatManagerWidget::enableEditWidgets(bool enable)
 
 void TarajemRowatManagerWidget::saveCurrentRawi()
 {
+    ui->tabWidget->setCurrentIndex(0);
+
     ML_ASSERT(m_currentRawi);
 
     m_currentRawi->name = ui->lineName->text();
@@ -168,8 +170,6 @@ void TarajemRowatManagerWidget::on_treeView_doubleClicked(const QModelIndex &ind
     RawiInfoPtr rawi= getRawiInfo(rawiID);
     ML_ASSERT(rawi);
 
-    ui->tabWidget->setCurrentIndex(0);
-
     saveCurrentRawi();
 
     m_currentRawi.clear();
@@ -209,14 +209,15 @@ void TarajemRowatManagerWidget::infoChanged()
 
 void TarajemRowatManagerWidget::checkEditWebChange()
 {
-    ML_ASSERT(m_currentRawi);
+    ML_ASSERT(m_webEditShoek
+              && m_webEditTalamid
+              && m_webEditTarjama);
 
     if(m_webEditShoek->pageModified()
             || m_webEditTalamid->pageModified()
             || m_webEditTarjama->pageModified()) {
 
-        m_editedRawiInfo[m_currentRawi->id] = m_currentRawi;
-        setModified(true);
+        infoChanged();
     }
 }
 
