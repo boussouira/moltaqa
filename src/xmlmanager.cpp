@@ -42,9 +42,3 @@ void XmlManager::reloadModels()
 
     ListManager::reloadModels();
 }
-
-void XmlManager::saveModel(QXmlStreamWriter &writer, QStandardItemModel *model)
-{
-    Q_UNUSED(writer);
-    Q_UNUSED(model);
-}

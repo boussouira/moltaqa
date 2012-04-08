@@ -19,7 +19,7 @@ public:
     void reloadModels();
 
 protected:
-    virtual void saveModel(QXmlStreamWriter &writer, QStandardItemModel *model);
+    virtual void saveModel(QXmlStreamWriter &writer, QStandardItemModel *model)=0;
 
 protected:
     XmlDomHelper m_dom;
