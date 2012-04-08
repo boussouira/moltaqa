@@ -42,6 +42,8 @@ public slots:
     void openSora(int sora, int aya);
     void openHaddit(int hadditNum);
 
+    void scrollToCurrentAya(bool timer=false);
+
     void readerTextChanged();
     void reloadCurrentPage();
 
