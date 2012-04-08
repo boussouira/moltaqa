@@ -64,7 +64,7 @@ void TarajemRowatManagerWidget::aboutToShow()
 void TarajemRowatManagerWidget::save()
 {
     saveCurrentRawi();
-    ML_ASSERT2(!m_editedRawiInfo.isEmpty(), "TarajemRowatManagerWidget: nothing to save");
+    ML_ASSERT(!m_editedRawiInfo.isEmpty());
 
     m_manager->transaction();
 

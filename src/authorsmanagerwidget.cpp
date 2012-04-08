@@ -241,7 +241,7 @@ void AuthorsManagerWidget::save()
 {
     saveCurrentAuthor();
 
-    ML_ASSERT2(!m_editedAuthInfo.isEmpty(), "AuthorsManagerWidget::save Nothing to save");
+    ML_ASSERT(!m_editedAuthInfo.isEmpty());
 
     m_authorsManager->transaction();
 
