@@ -66,10 +66,10 @@ void ControlCenterDialog::setCurrentRow(int row)
     ui->stackedWidget->setCurrentIndex(row);
 
     ControlCenterWidget *w = currentControlWidget();
-    if(w)
+    if(w) {
         ui->labelControlName->setText(w->title());
-
-    aboutToShow();
+        w->aboutToShow();
+    }
 }
 
 void ControlCenterDialog::save()
