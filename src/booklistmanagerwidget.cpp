@@ -7,7 +7,7 @@
 #include "modelenums.h"
 #include "utils.h"
 
-#include <QModelIndex>
+#include <qabstractitemmodel.h>
 #include <qmessagebox.h>
 #include <qdebug.h>
 #include <qmenu.h>
@@ -16,12 +16,14 @@
 
 BookListManagerWidget::BookListManagerWidget(QWidget *parent) :
     ControlCenterWidget(parent),
+    m_model(0),
     ui(new Ui::BookListManagerWidget)
 {
     ui->setupUi(this);
 
     ui->treeView->setContextMenuPolicy(Qt::CustomContextMenu);
-    m_model = 0;
+
+    m_manager = LibraryManager::instance()->bookListManager();
 
     loadModel();
     updateActions();
@@ -53,7 +55,7 @@ QString BookListManagerWidget::title()
 
 void BookListManagerWidget::loadModel()
 {
-    m_model = Utils::cloneModel(BookListManager::instance()->bookListModel());
+    m_model = Utils::cloneModel(m_manager->bookListModel());
 
     ui->treeView->setModel(m_model);
     ui->treeView->resizeColumnToContents(0);
@@ -64,7 +66,7 @@ void BookListManagerWidget::loadModel()
 
 void BookListManagerWidget::save()
 {
-    BookListManager::instance()->save(m_model);
+    m_manager->save(m_model);
 }
 
 void BookListManagerWidget::copyNode()
@@ -160,7 +162,7 @@ void BookListManagerWidget::addCat()
         QStandardItem *catItem = new QStandardItem();
         catItem->setText(title);
         catItem->setIcon(QIcon(":/images/book-cat.png"));
-        catItem->setData(BookListManager::instance()->getNewCategorieID(),
+        catItem->setData(m_manager->getNewCategorieID(),
                          ItemRole::idRole);
         catItem->setData(ItemType::CategorieItem, ItemRole::itemTypeRole);
 

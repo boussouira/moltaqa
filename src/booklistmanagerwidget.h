@@ -43,6 +43,7 @@ protected slots:
 private:
     QStandardItemModel *m_model;
     QList<QStandardItem*> m_copiedItems;
+    BookListManager *m_manager;
     Ui::BookListManagerWidget *ui;
 };
 
