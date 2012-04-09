@@ -353,7 +353,7 @@ void MainWindow::controlCenter()
 
 void MainWindow::importBookDialog()
 {
-    ImportDialog *dialog = new ImportDialog(m_libraryManager, 0);
+    ImportDialog *dialog = new ImportDialog(0);
     connect(dialog, SIGNAL(openBook(int)), this, SLOT(openBook(int)));
 
     dialog->show();

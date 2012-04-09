@@ -45,8 +45,6 @@ public:
     AuthorsManager(QObject *parent = 0);
     ~AuthorsManager();
 
-    static AuthorsManager *instance();
-
     void loadModels();
     void clear();
 

@@ -34,6 +34,8 @@ BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_
     m_indexWidget->setBookInfo(db->bookInfo());
     m_indexWidget->setCurrentPage(db->page());
 
+    m_bookManager = LibraryManager::instance()->bookManager();
+
     m_splitter->addWidget(m_indexWidget);
     m_splitter->addWidget(m_view);
     m_layout->addWidget(m_splitter);
@@ -242,7 +244,7 @@ void BookWidget::readerTextChanged()
         js = "setShorooh([";
 
         foreach(BookShorooh shareeh, m_db->bookInfo()->shorooh) {
-            LibraryBookPtr book = LibraryBookManager::instance()->getLibraryBook(shareeh.bookID);
+            LibraryBookPtr book = m_bookManager->getLibraryBook(shareeh.bookID);
             if(!book)
                 continue;
 

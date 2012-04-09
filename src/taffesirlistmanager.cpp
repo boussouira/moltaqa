@@ -28,11 +28,6 @@ TaffesirListManager::~TaffesirListManager()
     m_instance = 0;
 }
 
-TaffesirListManager *TaffesirListManager::instance()
-{
-    return m_instance;
-}
-
 void TaffesirListManager::loadModels()
 {
     m_dom.load();

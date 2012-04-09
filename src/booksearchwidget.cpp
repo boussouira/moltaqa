@@ -8,6 +8,7 @@
 BookSearchWidget::BookSearchWidget(QWidget *parent) :
     SearchWidget(parent)
 {
+    m_bookManager = LibraryManager::instance()->bookManager();
 }
 
 BookSearchWidget::~BookSearchWidget()
@@ -16,7 +17,7 @@ BookSearchWidget::~BookSearchWidget()
 
 void BookSearchWidget::init(int bookID)
 {
-    m_bookInfo = LibraryBookManager::instance()->getLibraryBook(bookID);
+    m_bookInfo = m_bookManager->getLibraryBook(bookID);
 
     ML_ASSERT(m_bookInfo);
 

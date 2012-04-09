@@ -39,6 +39,9 @@ LibraryCreator::LibraryCreator()
     m_mapper = m_shamelaManager->mapper();
 
     m_libraryManager = LibraryManager::instance();
+    m_authorsManager = m_libraryManager->authorsManager();
+    m_taffesirManager = m_libraryManager->taffesirListManager();
+    m_bookListManager = m_libraryManager->bookListManager();
 
     m_prevArchive = -1;
     m_threadID = 0;
@@ -97,16 +100,16 @@ void LibraryCreator::importAuthors()
 
 void LibraryCreator::addTafessir(ShamelaBookInfo *tafessir)
 {
-    TaffesirListManager::instance()->addTafessir(m_mapper->mapFromShamelaBook(tafessir->id),
-                                                         tafessir->tafessirName);
+    m_taffesirManager->addTafessir(m_mapper->mapFromShamelaBook(tafessir->id),
+                                   tafessir->tafessirName);
 
     qDebug() << "Add tafessir:" << tafessir->tafessirName;
 }
 
 void LibraryCreator::addCat(ShamelaCategorieInfo *cat)
 {
-    int lastId = BookListManager::instance()->addCategorie(cat->name,
-                                                                   m_levels.value(cat->level-1, 0) );
+    int lastId = m_bookListManager->addCategorie(cat->name,
+                                                 m_levels.value(cat->level-1, 0));
 
     m_mapper->addCatMap(cat->id, lastId);
 
@@ -127,7 +130,7 @@ void LibraryCreator::addAuthor(ShamelaAuthorInfo *auth, bool checkExist)
         ML_ASSERT(!lid); // This author is already in the map
 
         // We look for this author in the index database
-        AuthorInfoPtr foundAuthor = AuthorsManager::instance()->findAuthor(auth->name);
+        AuthorInfoPtr foundAuthor = m_authorsManager->findAuthor(auth->name);
 
         // If found the author in our database so add it to the map and return
         if(foundAuthor) {
@@ -137,7 +140,7 @@ void LibraryCreator::addAuthor(ShamelaAuthorInfo *auth, bool checkExist)
     }
 
     // Add this author from shamela
-    int insertAuthor = AuthorsManager::instance()->addAuthor(AuthorInfoPtr(auth->toAuthorInfo()));
+    int insertAuthor = m_authorsManager->addAuthor(AuthorInfoPtr(auth->toAuthorInfo()));
     m_mapper->addAuthorMap(auth->id, insertAuthor);
 }
 

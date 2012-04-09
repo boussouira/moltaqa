@@ -8,6 +8,8 @@
 
 class BookWidget;
 class LibraryManager;
+class LibraryBookManager;
+class TaffesirListManager;
 class TabWidget;
 class QMainWindow;
 class QToolBar;
@@ -52,6 +54,8 @@ signals:
 
 private:
     LibraryManager *m_libraryManager;
+    LibraryBookManager *m_bookManager;
+    TaffesirListManager *m_taffesirManager;
     BookWidgetManager *m_viewManager;
     QAction *m_actionEditBook;
     QAction *m_actionNewTab;

@@ -3,6 +3,7 @@
 #include "tarajemrowatmanager.h"
 #include "modelenums.h"
 #include "htmlhelper.h"
+#include "librarymanager.h"
 #include "utils.h"
 #include "stringutils.h"
 #include "modelviewfilter.h"
@@ -26,7 +27,8 @@ TarajemRowatView::TarajemRowatView(QWidget *parent) :
     ui->tabWidget->setAutoTabClose(true);
 
     m_filter = new ModelViewFilter(this);
-    m_rowatManager = TarajemRowatManager::instance();
+    m_rowatManager = LibraryManager::instance()->rowatManager();
+
     Q_CHECK_PTR(m_rowatManager);
 
     connect(ui->tabWidget, SIGNAL(lastTabClosed()), SIGNAL(hideMe()));

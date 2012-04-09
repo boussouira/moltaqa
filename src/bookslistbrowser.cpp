@@ -27,7 +27,7 @@ BooksListBrowser::BooksListBrowser(QWidget *parent) :
     ui->setupUi(this);
 
     loadSettings();
-    m_bookListManager = BookListManager::instance();
+    m_bookListManager = LibraryManager::instance()->bookListManager();
 
     m_model = 0;
     m_filterModel = new SortFilterProxyModel(this);

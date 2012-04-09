@@ -20,9 +20,9 @@ class QSqlDatabase;
 class ImportDialog : public QDialog {
     Q_OBJECT
 public:
-    ImportDialog(LibraryManager *libraryManager, QWidget *parent = 0);
+    ImportDialog(QWidget *parent = 0);
     ~ImportDialog();
-    void setLibraryManager(LibraryManager *libraryManager) { m_libraryManager = libraryManager;}
+
     void addFile(const QString &path);
     void addDir(const QString &path);
 

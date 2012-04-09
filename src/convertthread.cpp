@@ -26,6 +26,7 @@ ConvertThread::ConvertThread(QObject *parent) : QThread(parent)
 {
     m_convertedFiles = 0;
     m_bookListManager = LibraryManager::instance()->bookListManager();
+    m_authorsManager = LibraryManager::instance()->authorsManager();
 }
 
 void ConvertThread::run()
@@ -121,7 +122,7 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
              node->bookInfo = bookQuery.value(betakaCol).toString();
         }
 
-         AuthorInfoPtr foundAuth = AuthorsManager::instance()->findAuthor(bookQuery.value(authCol).toString());
+         AuthorInfoPtr foundAuth = m_authorsManager->findAuthor(bookQuery.value(authCol).toString());
          if(foundAuth)
              node->setAuthor(foundAuth->id, foundAuth->name);
          else

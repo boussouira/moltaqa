@@ -43,6 +43,7 @@ signals:
 protected:
     LibraryInfo *m_libraryInfo;
     LibraryManager *m_libraryManager;
+    LibraryBookManager *m_bookManager;
     QList<IndexTask*> m_tasks;
     QString m_trackerFile;
     XmlDomHelper m_dom;

@@ -29,13 +29,14 @@
 #include <QTime>
 #include <qtconcurrentrun.h>
 
-ImportDialog::ImportDialog(LibraryManager *libraryManager, QWidget *parent) :
+ImportDialog::ImportDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ImportDialog)
 {
     ui->setupUi(this);
+
     m_model = new ImportModel(ui->treeView);
-    m_libraryManager = libraryManager;
+    m_libraryManager = LibraryManager::instance();
 
     setAcceptDrops(true);
 
@@ -199,8 +200,7 @@ void ImportDialog::startImporting()
                                    Q_ARG(int, i+1));
     }
 
-    LibraryBookManager::instance()->reloadModels();
-    TaffesirListManager::instance()->reloadModels();
+    m_libraryManager->reloadManagers();
 
     qDebug() << "Importing" << imported << "books take" << time.elapsed() << "ms";
 }
@@ -246,7 +246,7 @@ void ImportDialog::doneImporting()
 
     ui->stackedWidget->setCurrentIndex(2);
 
-    BookListManager::instance()->reloadModels();
+    m_libraryManager->reloadManagers();
 }
 
 bool ImportDialog::checkNodes(QList<ImportModelNode *> nodesList)

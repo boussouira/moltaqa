@@ -33,7 +33,7 @@ BookEditor::~BookEditor()
 
 bool BookEditor::open(int bookID)
 {
-    return open(LibraryBookManager::instance()->getLibraryBook(bookID));
+    return open(LibraryManager::instance()->bookManager()->getLibraryBook(bookID));
 }
 
 bool BookEditor::open(LibraryBookPtr book)

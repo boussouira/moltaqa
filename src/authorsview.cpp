@@ -2,6 +2,7 @@
 #include "ui_authorsview.h"
 #include "authorsmanager.h"
 #include "librarybookmanager.h"
+#include "librarymanager.h"
 #include "modelviewfilter.h"
 #include "modelenums.h"
 #include "utils.h"
@@ -21,7 +22,9 @@ AuthorsView::AuthorsView(QWidget *parent) :
 
     ui->tabWidget->setAutoTabClose(true);
 
-    m_manager = AuthorsManager::instance();
+    m_manager = LibraryManager::instance()->authorsManager();
+    m_bookManager = LibraryManager::instance()->bookManager();
+
     m_filter = new ModelViewFilter(this);
 
     connect(ui->tabWidget, SIGNAL(lastTabClosed()), SIGNAL(hideMe()));
@@ -91,7 +94,7 @@ void AuthorsView::setCurrentAuth(AuthorInfoPtr info)
     styleDir.cd("default");
 
     QString style = QUrl::fromLocalFile(styleDir.filePath("default.css")).toString();
-    QList<LibraryBookPtr> books = LibraryBookManager::instance()->getAuthorBooks(info->id);
+    QList<LibraryBookPtr> books = m_bookManager->getAuthorBooks(info->id);
 
     HtmlHelper html;
     html.beginHtml();

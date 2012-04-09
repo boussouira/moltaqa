@@ -46,8 +46,6 @@ public:
     TarajemRowatManager(QObject *parent = 0);
     ~TarajemRowatManager();
 
-    static TarajemRowatManager *instance();
-
     void loadModels();
     void clear();
     void reloadModels();

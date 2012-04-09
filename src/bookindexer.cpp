@@ -15,6 +15,7 @@ BookIndexer::BookIndexer(QObject *parent) :
     m_trackerIter(0),
     m_stop(false)
 {
+    m_bookManager = LibraryManager::instance()->bookManager();
 }
 
 void BookIndexer::setWirter(IndexWriter *writer)
@@ -43,7 +44,7 @@ void BookIndexer::startIndexing()
 
     while(task && !m_stop) {
         try {
-            task->book = LibraryBookManager::instance()->getLibraryBook(task->bookID);
+            task->book = m_bookManager->getLibraryBook(task->bookID);
 
             if(!task->book)
                 throw BookException(QString("No book with id %1").arg(task->bookID));

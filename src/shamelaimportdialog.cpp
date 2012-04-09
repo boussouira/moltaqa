@@ -41,12 +41,13 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
     m_shamela = new ShamelaInfo();
     m_manager = new ShamelaManager(m_shamela);
     m_libraryManager = LibraryManager::instance();
+    m_bookListManager = m_libraryManager->bookListManager();
     m_library = MW->libraryInfo();
 
     m_importedBooksCount = 0;
     m_proccessItemChange = true;
 
-    ui->radioUseShamelaCat->setChecked(!BookListManager::instance()->categoriesCount());
+    ui->radioUseShamelaCat->setChecked(!m_bookListManager->categoriesCount());
     ui->groupImportOptions->setEnabled(false);
     ui->stackedWidget->setCurrentIndex(0);
     ui->pushDone->hide();
@@ -212,14 +213,14 @@ void ShamelaImportDialog::showBooks()
 
     m_booksModel->setHeaderData(0, Qt::Horizontal, tr("لائحة الكتب"), Qt::DisplayRole);
 
-    LibraryBookPtr quranBook = LibraryBookManager::instance()->getQuranBook();
+    LibraryBookPtr quranBook = LibraryManager::instance()->bookManager()->getQuranBook();
     ui->checkImportQuran->setChecked(!quranBook || quranBook->bookID == -1);
 
     connect(ui->lineBookSearch, SIGNAL(textChanged(QString)), filterModel, SLOT(setFilterRegExp(QString)));
     connect(ui->lineBookSearch, SIGNAL(textChanged(QString)), ui->treeView, SLOT(expandAll()));
     connect(m_booksModel, SIGNAL(itemChanged(QStandardItem*)), SLOT(itemChanged(QStandardItem*)));
 
-    if(BookListManager::instance()->booksCount() < m_manager->getBooksCount())
+    if(m_bookListManager->booksCount() < m_manager->getBooksCount())
         selectAllBooks();
 }
 
@@ -301,7 +302,7 @@ void ShamelaImportDialog::setupCategories()
         shamelaItem->setEditable(false);
 
         // Try to find this cat in our library
-        CategorieInfo *libCat = BookListManager::instance()->findCategorie(cat->name);
+        CategorieInfo *libCat = m_bookListManager->findCategorie(cat->name);
         if(libCat) {
             libraryItem = new QStandardItem;
             libraryItem->setText(libCat->title);
@@ -384,12 +385,7 @@ void ShamelaImportDialog::doneImporting()
         ui->progressBar->setValue(ui->progressBar->maximum());
 
         if(m_importedBooksCount > 0) {
-            // TODO: auto save dom model
-            AuthorsManager::instance()->reloadModels();
-            LibraryBookManager::instance()->reloadModels();
-            BookListManager::instance()->reloadModels();
-            TaffesirListManager::instance()->reloadModels();
-
+            m_libraryManager->reloadManagers();
             importShorooh();
         } else {
             qDebug("No book imported");

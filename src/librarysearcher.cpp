@@ -138,7 +138,7 @@ void LibrarySearcher::fetech()
         int bookID = Utils::WCharToInt(doc.get(BOOK_ID_FIELD));
         int score = (int) (m_hits->score(i) * 100.0);
 
-        LibraryBookPtr book = LibraryBookManager::instance()->getLibraryBook(bookID);
+        LibraryBookPtr book = m_libraryManager->bookManager()->getLibraryBook(bookID);
 
         if(!book) {
             qCritical("LibrarySearcher::fetech: No book with id %d where found", bookID);

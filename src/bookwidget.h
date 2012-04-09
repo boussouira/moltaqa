@@ -7,6 +7,7 @@
 class WebView;
 class IndexWidget;
 class RichBookReader;
+class LibraryBookManager;
 class QSplitter;
 class QVBoxLayout;
 class QModelIndex;
@@ -65,6 +66,7 @@ protected:
     WebView *m_view;
     IndexWidget *m_indexWidget;
     RichBookReader *m_db;
+    LibraryBookManager *m_bookManager;
     bool m_viewInitialized;
 };
 

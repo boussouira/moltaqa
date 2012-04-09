@@ -15,6 +15,7 @@ class ShamelaImportThread;
 class QStandardItemModel;
 class QStandardItem;
 class LibraryManager;
+class BookListManager;
 
 class ShamelaImportDialog : public QDialog
 {
@@ -70,6 +71,7 @@ private:
     int m_importedBooksCount;
     LibraryInfo *m_library;
     LibraryManager *m_libraryManager;
+    BookListManager *m_bookListManager;
     ShamelaInfo *m_shamela;
     ShamelaManager *m_manager;
     ShamelaImportThread *m_importThread;

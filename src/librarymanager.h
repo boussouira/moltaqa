@@ -48,6 +48,7 @@ public:
     BookListManager *bookListManager();
     LibraryBookManager *bookManager();
     AuthorsManager *authorsManager();
+    TarajemRowatManager *rowatManager();
 
 protected:
     LibraryInfo *m_libraryInfo;

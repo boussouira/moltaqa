@@ -9,28 +9,18 @@
 #include <qdir.h>
 #include <qstandarditemmodel.h>
 
-TarajemRowatManager *m_instance = 0;
-
 TarajemRowatManager::TarajemRowatManager(QObject *parent) :
     DatabaseManager(parent)
 {
     QDir dataDir(MW->libraryInfo()->dataDir());
     setDatabasePath(dataDir.filePath("rowat.db"));
 
-    m_instance = this;
-
     openDatabase();
 }
 
 TarajemRowatManager::~TarajemRowatManager()
 {
-    m_instance = 0;
     clear();
-}
-
-TarajemRowatManager *TarajemRowatManager::instance()
-{
-    return m_instance;
 }
 
 void TarajemRowatManager::loadModels()

@@ -127,3 +127,8 @@ AuthorsManager *LibraryManager::authorsManager()
 {
     return m_authorsManager;
 }
+
+TarajemRowatManager *LibraryManager::rowatManager()
+{
+    return m_rowatManager;
+}

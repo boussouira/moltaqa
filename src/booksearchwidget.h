@@ -8,6 +8,7 @@
 #include <qsqlquery.h>
 
 class BookSearchFilter;
+class LibraryBookManager;
 
 class BookSearchWidget : public SearchWidget
 {
@@ -26,6 +27,7 @@ protected:
     LibraryBookPtr m_bookInfo;
     QSqlDatabase m_bookDB;
     QSqlQuery m_bookQuery;
+    LibraryBookManager *m_bookManager;
 };
 
 #endif // BOOKSEARCHWIDGET_H

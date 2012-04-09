@@ -35,6 +35,7 @@ signals:
 protected:
     lucene::index::IndexWriter *m_writer;
     IndexTaskIter *m_trackerIter;
+    LibraryBookManager *m_bookManager;
     bool m_stop;
 };
 

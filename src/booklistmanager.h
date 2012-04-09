@@ -29,8 +29,6 @@ public:
     BookListManager(QObject *parent=0);
     ~BookListManager();
 
-    static BookListManager *instance();
-
     void loadModels();
     void clear();
 

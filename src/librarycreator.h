@@ -53,6 +53,9 @@ protected:
     ShamelaInfo *m_shamelaInfo;
     ShamelaMapper *m_mapper;
     LibraryManager *m_libraryManager;
+    AuthorsManager *m_authorsManager;
+    BookListManager *m_bookListManager;
+    TaffesirListManager *m_taffesirManager;
     int m_prevArchive;
     int m_threadID;
     QHash<int, int> m_levels;

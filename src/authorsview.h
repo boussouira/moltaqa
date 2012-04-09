@@ -10,6 +10,7 @@ class AuthorsView;
 }
 
 class ModelViewFilter;
+class LibraryBookManager;
 
 class AuthorsView : public AbstarctView
 {
@@ -39,6 +40,7 @@ protected:
     AuthorsManager *m_manager;
     QStandardItemModel *m_model;
     ModelViewFilter *m_filter;
+    LibraryBookManager *m_bookManager;
 };
 
 #endif // AUTHORSVIEW_H

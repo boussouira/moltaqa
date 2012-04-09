@@ -12,8 +12,6 @@ public:
     TaffesirListManager(QObject *parent=0);
     ~TaffesirListManager();
 
-    static TaffesirListManager *instance();
-
     void loadModels();
     void clear();
 

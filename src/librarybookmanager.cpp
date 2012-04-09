@@ -10,8 +10,6 @@
 #include <qdir.h>
 #include <qstandarditemmodel.h>
 
-static LibraryBookManager *m_instance=0;
-
 LibraryBookManager::LibraryBookManager(QObject *parent) :
     DatabaseManager(parent),
     m_quranBook(0)
@@ -19,24 +17,15 @@ LibraryBookManager::LibraryBookManager(QObject *parent) :
     QDir dataDir(MW->libraryInfo()->dataDir());
     setDatabasePath(dataDir.filePath("books.db"));
 
-    m_authorsManager = AuthorsManager::instance();
+    m_authorsManager = LibraryManager::instance()->authorsManager();
     Q_CHECK_PTR(m_authorsManager);
 
     openDatabase();
-
-    m_instance = this;
 }
 
 LibraryBookManager::~LibraryBookManager()
 {
     clear();
-
-    m_instance = 0;
-}
-
-LibraryBookManager *LibraryBookManager::instance()
-{
-    return m_instance;
 }
 
 void LibraryBookManager::loadModels()

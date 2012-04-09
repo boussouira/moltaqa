@@ -40,6 +40,9 @@ BooksViewer::BooksViewer(LibraryManager *libraryManager, QWidget *parent): Absta
     m_instance = this;
 
     m_libraryManager = libraryManager;
+    m_bookManager = m_libraryManager->bookManager();
+    m_taffesirManager = m_libraryManager->taffesirListManager();
+
     layout->addWidget(m_viewManager);
     layout->setContentsMargins(0,6,0,0);
 
@@ -174,7 +177,7 @@ void BooksViewer::createMenus()
 
     // Tafessir actions
     connect(m_openSelectedTafsir, SIGNAL(triggered()), SLOT(openTafessir()));
-    connect(TaffesirListManager::instance(), SIGNAL(ModelsReady()), SLOT(loadTafessirList()));
+    connect(m_taffesirManager, SIGNAL(ModelsReady()), SLOT(loadTafessirList()));
 }
 
 void BooksViewer::updateToolBars()
@@ -218,7 +221,7 @@ BookWidget *BooksViewer::openBook(int bookID, int pageID, CLuceneQuery *query)
     BookWidget *bookWidget = 0;
 
     try {
-        bookInfo = LibraryBookManager::instance()->getLibraryBook(bookID);
+        bookInfo = m_bookManager->getLibraryBook(bookID);
 
         if(!bookInfo)
             throw BookException(tr("لم يتم العثور على الكتاب المطلوب"), tr("معرف الكتاب: %1").arg(bookID));
@@ -276,7 +279,7 @@ void BooksViewer::openTafessir()
     try {
         int tafessirID = m_comboTafasir->itemData(m_comboTafasir->currentIndex(), ItemRole::idRole).toInt();
 
-        LibraryBookPtr bookInfo = LibraryBookManager::instance()->getLibraryBook(tafessirID);
+        LibraryBookPtr bookInfo = m_bookManager->getLibraryBook(tafessirID);
         ML_ASSERT(bookInfo && bookInfo->isTafessir() && m_viewManager->activeBook()->isQuran());
 
         bookdb = new RichTafessirReader();
@@ -352,7 +355,7 @@ void BooksViewer::tabChanged(int newIndex)
 void BooksViewer::loadTafessirList()
 {
     m_comboTafasir->clear();
-    m_comboTafasir->setModel(TaffesirListManager::instance()->taffesirListModel());
+    m_comboTafasir->setModel(m_taffesirManager->taffesirListModel());
 
     m_comboTafasir->setEditable(true);
     m_comboTafasir->completer()->setCompletionMode(QCompleter::PopupCompletion);
