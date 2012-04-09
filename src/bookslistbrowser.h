@@ -7,6 +7,8 @@
 
 class BookListManager;
 class LibraryManager;
+class FavouritesManager;
+class ModelViewFilter;
 class SortFilterProxyModel;
 
 namespace Ui {
@@ -27,20 +29,21 @@ protected:
 
 public slots:
     void readBookListModel();
-    void setModel(QStandardItemModel *model);
+    void readFavouritesModel();
 
 private slots:
-    void setFilterText(QString text);
-    void sortChanged(int logicalIndex, Qt::SortOrder);
-    void on_treeView_doubleClicked(QModelIndex index);
+    void itemClicked(QModelIndex index);
 
 signals:
     void bookSelected(int bookID);
 
 private:
     BookListManager *m_bookListManager;
-    QStandardItemModel *m_model;
-    SortFilterProxyModel *m_filterModel;
+    FavouritesManager *m_favouritesManager;
+    QStandardItemModel *m_bookListModel;
+    QStandardItemModel *m_favouritesModel;
+    ModelViewFilter *m_bookListFilter;
+    ModelViewFilter *m_favouritesListFilter;
     Ui::BooksListBrowser *ui;
 };
 

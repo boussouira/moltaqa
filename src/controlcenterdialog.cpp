@@ -5,6 +5,7 @@
 #include "taffesirlistmanagerwidget.h"
 #include "authorsmanagerwidget.h"
 #include "tarajemrowatmanagerwidget.h"
+#include "favouritesmanagerwidget.h"
 #include "utils.h"
 #include <qevent.h>
 
@@ -15,6 +16,7 @@ ControlCenterDialog::ControlCenterDialog(QWidget *parent) :
     ui->setupUi(this);
 
     addControlWidget(new BookListManagerWidget(this));
+    addControlWidget(new FavouritesManagerWidget(this));
     addControlWidget(new TaffesirListManagerWidget(this));
     addControlWidget(new LibraryBookManagerWidget(this));
     addControlWidget(new AuthorsManagerWidget(this));

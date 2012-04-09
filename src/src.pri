@@ -123,7 +123,9 @@ SOURCES += mainwindow.cpp \
     xmlmanager.cpp \
     databasemanager.cpp \
     authorsview.cpp \
-    shemehandler.cpp
+    shemehandler.cpp \
+    favouritesmanager.cpp \
+    favouritesmanagerwidget.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -234,7 +236,9 @@ HEADERS += mainwindow.h \
     xmlmanager.h \
     databasemanager.h \
     authorsview.h \
-    shemehandler.h
+    shemehandler.h \
+    favouritesmanager.h \
+    favouritesmanagerwidget.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \
@@ -256,7 +260,8 @@ FORMS += mainwindow.ui settingsdialog.ui \
     authorsmanagerwidget.ui \
     tarajemrowatview.ui \
     tarajemrowatmanagerwidget.ui \
-    authorsview.ui
+    authorsview.ui \
+    favouritesmanagerwidget.ui
 
 RESOURCES += ../share/moltaqa-lib/qt_rc.qrc
 win32:RC_FILE = ../share/moltaqa-lib/win_rc.rc

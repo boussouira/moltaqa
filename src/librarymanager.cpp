@@ -12,6 +12,7 @@
 #include "authorsmanager.h"
 #include "bookeditor.h"
 #include "tarajemrowatmanager.h"
+#include "favouritesmanager.h"
 
 #include <qdebug.h>
 #include <qsqlquery.h>
@@ -58,6 +59,7 @@ void LibraryManager::open()
 void LibraryManager::openManagers()
 {
     m_authorsManager = new AuthorsManager(this); // should be the first
+    m_favourites = new FavouritesManager(this);
     m_bookmanager = new LibraryBookManager(this);
     m_bookListManager = new BookListManager(this);
     m_taffesirManager = new TaffesirListManager(this);
@@ -66,6 +68,7 @@ void LibraryManager::openManagers()
     m_managers.clear();
 
     m_managers << m_authorsManager
+               << m_favourites
                << m_bookmanager
                << m_bookListManager
                << m_taffesirManager
@@ -131,4 +134,9 @@ AuthorsManager *LibraryManager::authorsManager()
 TarajemRowatManager *LibraryManager::rowatManager()
 {
     return m_rowatManager;
+}
+
+FavouritesManager *LibraryManager::favouritesManager()
+{
+    return m_favourites;
 }

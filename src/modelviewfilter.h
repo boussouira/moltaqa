@@ -18,12 +18,18 @@ public:
     void setLineEdit(FancyLineEdit *edit);
     void setTreeView(QTreeView *view);
 
+    void setDefautSortRole(int role);
+    void setDefautSortColumn(int column, Qt::SortOrder order);
+
+    void setColumnSortRole(int column, int role);
+
     void setup();
 
     SortFilterProxyModel *filterModel();
 
 protected slots:
     void setFilterText(QString text);
+    void sortChanged(int logicalIndex, Qt::SortOrder);
     void filterTextChanged();
     void lineReturnPressed();
     void clearFilter();
@@ -36,6 +42,12 @@ protected:
 
     Qt::ItemDataRole m_role;
     int m_filterColumn;
+
+    int m_defaultRole;
+    int m_defaultColumn;
+    Qt::SortOrder m_defaultOrder;
+
+    QHash<int, int> m_roles;
 };
 
 #endif // MODELVIEWFILTER_H

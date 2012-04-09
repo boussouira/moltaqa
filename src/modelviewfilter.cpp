@@ -1,5 +1,6 @@
 #include "modelviewfilter.h"
 #include <qicon.h>
+#include <qheaderview.h>
 
 ModelViewFilter::ModelViewFilter(QObject *parent) :
     QObject(parent),
@@ -9,7 +10,10 @@ ModelViewFilter::ModelViewFilter(QObject *parent) :
     m_lineEdit(0),
 
     m_role(Qt::DisplayRole),
-    m_filterColumn(0)
+    m_filterColumn(0),
+    m_defaultRole(-1),
+    m_defaultColumn(-1),
+    m_defaultOrder(Qt::AscendingOrder)
 {
 }
 
@@ -28,16 +32,42 @@ void ModelViewFilter::setTreeView(QTreeView *view)
     m_treeView = view;
 }
 
+void ModelViewFilter::setDefautSortRole(int role)
+{
+    m_defaultRole = role;
+}
+
+void ModelViewFilter::setDefautSortColumn(int column, Qt::SortOrder order)
+{
+    m_defaultColumn = column;
+    m_defaultOrder = order;
+}
+
+void ModelViewFilter::setColumnSortRole(int column, int role)
+{
+    m_roles[column] = role;
+}
+
 void ModelViewFilter::setup()
 {
     m_lineEdit->setPixmap(QIcon::fromTheme("edit-clear-locationbar-ltr", QIcon(":/images/clear.png")).pixmap(16, 16));
 
+    if(m_defaultRole != -1)
+        m_filterModel->setSortRole(m_defaultRole);
+
     m_filterModel->setSourceModel(m_model);
+
     m_treeView->setModel(m_filterModel);
+
+    if(m_defaultColumn != -1)
+        m_treeView->sortByColumn(m_defaultColumn, m_defaultOrder);
 
     connect(m_lineEdit, SIGNAL(textChanged(QString)), SLOT(filterTextChanged()));
     connect(m_lineEdit, SIGNAL(returnPressed()), SLOT(lineReturnPressed()));
     connect(m_lineEdit, SIGNAL(buttonClicked()), m_lineEdit, SLOT(clear()));
+    connect(m_treeView->header(),
+            SIGNAL(sortIndicatorChanged(int,Qt::SortOrder)),
+            SLOT(sortChanged(int,Qt::SortOrder)));
 }
 
 SortFilterProxyModel *ModelViewFilter::filterModel()
@@ -79,4 +109,12 @@ void ModelViewFilter::clearFilter()
 {
     m_filterModel->setFilterFixedString("");
     m_lineEdit->clear();
+}
+
+void ModelViewFilter::sortChanged(int logicalIndex, Qt::SortOrder)
+{
+    if(m_roles.contains(logicalIndex))
+        m_filterModel->setSortRole(m_roles[logicalIndex]);
+    else
+        m_filterModel->setSortRole(Qt::DisplayRole);
 }

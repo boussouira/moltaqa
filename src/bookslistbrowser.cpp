@@ -4,6 +4,8 @@
 #include "modelenums.h"
 #include "mainwindow.h"
 #include "booklistmanager.h"
+#include "favouritesmanager.h"
+#include "modelviewfilter.h"
 #include "utils.h"
 
 #include <qsqlquery.h>
@@ -28,20 +30,24 @@ BooksListBrowser::BooksListBrowser(QWidget *parent) :
 
     loadSettings();
     m_bookListManager = LibraryManager::instance()->bookListManager();
+    m_favouritesManager = LibraryManager::instance()->favouritesManager();
 
-    m_model = 0;
-    m_filterModel = new SortFilterProxyModel(this);
+    m_bookListModel = 0;
+    m_favouritesModel = 0;
 
-    setModel(m_bookListManager->bookListModel());
+    m_bookListFilter = new ModelViewFilter(this);
+    m_favouritesListFilter = new ModelViewFilter(this);
 
-    connect(ui->lineSearch, SIGNAL(textChanged(QString)),
-            SLOT(setFilterText(QString)));// TODO: serach in book info...
+    readBookListModel();
+    readFavouritesModel();
 
     connect(m_bookListManager, SIGNAL(ModelsReady()), SLOT(readBookListModel()));
+    connect(m_favouritesManager, SIGNAL(ModelsReady()), SLOT(readFavouritesModel()));
 
-    connect(ui->treeView->header(),
-            SIGNAL(sortIndicatorChanged(int,Qt::SortOrder)),
-            SLOT(sortChanged(int,Qt::SortOrder)));
+    connect(ui->treeBookList, SIGNAL(doubleClicked(QModelIndex)),
+            SLOT(itemClicked(QModelIndex)));
+    connect(ui->treeFavouritesList, SIGNAL(doubleClicked(QModelIndex)),
+            SLOT(itemClicked(QModelIndex)));
 }
 
 BooksListBrowser::~BooksListBrowser()
@@ -65,64 +71,68 @@ void BooksListBrowser::saveSettings()
 {
     Utils::saveWidgetPosition(this, "BooksListWidget");
 
-    if(m_model) {
+    if(m_bookListModel) {
         QSettings settings;
-        settings.setValue("BooksListWidget/col_1", ui->treeView->columnWidth(0));
-        settings.setValue("BooksListWidget/col_2", ui->treeView->columnWidth(1));
+        settings.setValue("BooksListWidget/bcol_1", ui->treeBookList->columnWidth(0));
+        settings.setValue("BooksListWidget/bcol_2", ui->treeBookList->columnWidth(1));
+    }
+
+    if(m_favouritesModel) {
+        QSettings settings;
+        settings.setValue("BooksListWidget/fcol_1", ui->treeFavouritesList->columnWidth(0));
+        settings.setValue("BooksListWidget/fcol_2", ui->treeFavouritesList->columnWidth(1));
     }
 }
 
 void BooksListBrowser::readBookListModel()
 {
-    setModel(m_bookListManager->bookListModel());
-}
+    m_bookListModel = m_bookListManager->bookListModel();
+    ML_ASSERT2(m_bookListModel, "BooksListBrowser::readBookListModel model is null");
 
-void BooksListBrowser::setModel(QStandardItemModel *model)
-{
+    m_bookListFilter->setLineEdit(ui->lineFilterBookList);
+    m_bookListFilter->setTreeView(ui->treeBookList);
+    m_bookListFilter->setSourceModel(m_bookListModel);
+
+    m_bookListFilter->setDefautSortRole(ItemRole::orderRole);
+    m_bookListFilter->setDefautSortColumn(0, Qt::AscendingOrder);
+    m_bookListFilter->setColumnSortRole(AuthorDeathCol, ItemRole::authorDeathRole);
+    m_bookListFilter->setup();
+
     QSettings settings;
     settings.beginGroup("BooksListWidget");
 
-    m_model = model;
-    m_filterModel->setSourceModel(m_model);
-    m_filterModel->setFilterKeyColumn(BookNameCol);
+    ui->treeBookList->setColumnWidth(BookNameCol,
+                                 settings.value("bcol_1", 350).toInt());
 
-    ui->treeView->setModel(m_filterModel);
-
-    ui->treeView->sortByColumn(0, Qt::AscendingOrder);
-    m_filterModel->setSortRole(ItemRole::orderRole);
-
-    ui->treeView->setColumnWidth(BookNameCol,
-                                 settings.value("col_1", 350).toInt());
-
-    ui->treeView->setColumnWidth(AuthorNameCol,
-                                 settings.value("col_2", 200).toInt());
+    ui->treeBookList->setColumnWidth(AuthorNameCol,
+                                 settings.value("bcol_2", 200).toInt());
 }
 
-void BooksListBrowser::setFilterText(QString text)
+void BooksListBrowser::readFavouritesModel()
 {
-    if(text.size() > 2) {
-        text.replace(QRegExp("[\\x0627\\x0622\\x0623\\x0625]"), "[\\x0627\\x0622\\x0623\\x0625]");//ALEFs
-        text.replace(QRegExp("[\\x0647\\x0629]"), "[\\x0647\\x0629]"); //TAH_MARBUTA, HEH
-        text.replace(QRegExp("[\\x064A\\x0649]"), "[\\x064A\\x0649]"); //YAH, ALEF MAKSOURA
+    m_favouritesModel = m_favouritesManager->bookListModel();
+    ML_ASSERT2(m_favouritesModel, "BooksListBrowser::readFavouritesModel model is null");
 
-        m_filterModel->setFilterRegExp(text);
-        ui->treeView->expandAll();
-    } else {
-        m_filterModel->setFilterFixedString("");
-        ui->treeView->collapseAll();
-    }
+    m_favouritesListFilter->setLineEdit(ui->lineFilterFavourites);
+    m_favouritesListFilter->setTreeView(ui->treeFavouritesList);
+    m_favouritesListFilter->setSourceModel(m_favouritesModel);
+
+    m_favouritesListFilter->setDefautSortRole(ItemRole::orderRole);
+    m_favouritesListFilter->setDefautSortColumn(0, Qt::AscendingOrder);
+    m_favouritesListFilter->setColumnSortRole(AuthorDeathCol, ItemRole::authorDeathRole);
+    m_favouritesListFilter->setup();
+
+    QSettings settings;
+    settings.beginGroup("BooksListWidget");
+
+    ui->treeFavouritesList->setColumnWidth(BookNameCol,
+                                 settings.value("fcol_1", 350).toInt());
+
+    ui->treeFavouritesList->setColumnWidth(AuthorNameCol,
+                                 settings.value("fcol_2", 200).toInt());
 }
 
-void BooksListBrowser::sortChanged(int logicalIndex, Qt::SortOrder)
-{
-
-    if(logicalIndex != AuthorDeathCol)
-        m_filterModel->setSortRole(Qt::DisplayRole);
-    else
-        m_filterModel->setSortRole(ItemRole::authorDeathRole);
-}
-
-void BooksListBrowser::on_treeView_doubleClicked(QModelIndex index)
+void BooksListBrowser::itemClicked(QModelIndex index)
 {
     int bookType = index.sibling(index.row(), 0).data(ItemRole::itemTypeRole).toInt();
     int bookID = index.sibling(index.row(), 0).data(ItemRole::idRole).toInt();
