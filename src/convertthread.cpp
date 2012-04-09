@@ -7,6 +7,7 @@
 #include "sqlutils.h"
 #include "booklistmanager.h"
 #include "authorsmanager.h"
+#include "booklistmanager.h"
 
 #ifdef USE_MDBTOOLS
 #include "mdbconverter.h"
@@ -24,6 +25,7 @@
 ConvertThread::ConvertThread(QObject *parent) : QThread(parent)
 {
     m_convertedFiles = 0;
+    m_bookListManager = LibraryManager::instance()->bookListManager();
 }
 
 void ConvertThread::run()
@@ -106,7 +108,7 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
         node->authorName = bookQuery.value(authCol).toString();
 
         if(catCol != -1) { // Some old books doesn't have this column
-            CategorieInfo *foundCat = BookListManager::instance()->findCategorie(bookQuery.value(catCol).toString());
+            CategorieInfo *foundCat = m_bookListManager->findCategorie(bookQuery.value(catCol).toString());
             if(foundCat)
                 node->setCategories(foundCat->catID, foundCat->title);
             else

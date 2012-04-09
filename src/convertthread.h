@@ -7,6 +7,7 @@
 class ImportModel;
 class ImportModelNode;
 class LibraryManager;
+class BookListManager;
 class QSqlDatabase;
 
 class ConvertThread : public QThread
@@ -36,6 +37,7 @@ signals:
 protected:
     ImportModel *m_model;
     LibraryManager *m_libraryManager;
+    BookListManager *m_bookListManager;
     QStringList m_files;
     QString m_tempDB;
     int m_convertTime;
