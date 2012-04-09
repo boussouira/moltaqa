@@ -103,41 +103,6 @@ void LibraryManager::addBook(LibraryBookPtr book, int catID)
     m_bookListManager->addBook(book, catID);
 }
 
-void LibraryManager::setBookIndexStat(int bookID, LibraryBook::IndexFlags indexFlag)
-{
-    QSqlQuery bookQuery(m_indexDB);
-    bookQuery.prepare("UPDATE booksList "
-                      "SET indexFlags = ? "
-                      "WHERE id = ?");
-
-    bookQuery.bindValue(0, indexFlag);
-    bookQuery.bindValue(1, bookID);
-
-    if(!bookQuery.exec()) {
-        LOG_SQL_ERROR(bookQuery);
-    }
-}
-
-QList<int> LibraryManager::getNonIndexedBooks()
-{
-    QList<int> list;
-    QSqlQuery bookQuery(m_indexDB);
-    bookQuery.prepare("SELECT id FROM booksList "
-                      "WHERE indexFlags = ?");
-
-    bookQuery.bindValue(0, LibraryBook::NotIndexed);
-
-    if(bookQuery.exec()) {
-        while(bookQuery.next()) {
-            list << bookQuery.value(0).toInt();
-        }
-    } else {
-        LOG_SQL_ERROR(bookQuery);
-    }
-
-    return list;
-}
-
 TaffesirListManager *LibraryManager::taffesirListManager()
 {
     return m_taffesirManager;

@@ -41,9 +41,6 @@ public:
     int addBook(ImportModelNode *node);
     void addBook(LibraryBookPtr book, int catID);
 
-    void setBookIndexStat(int bookID, LibraryBook::IndexFlags indexFlag);
-    QList<int> getNonIndexedBooks();
-
     TaffesirListManager *taffesirListManager();
     BookListManager *bookListManager();
     LibraryBookManager *bookManager();
