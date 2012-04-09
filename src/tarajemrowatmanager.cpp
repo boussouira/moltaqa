@@ -20,7 +20,6 @@ TarajemRowatManager::TarajemRowatManager(QObject *parent) :
     m_instance = this;
 
     openDatabase();
-    loadModels();
 }
 
 TarajemRowatManager::~TarajemRowatManager()

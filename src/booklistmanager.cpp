@@ -30,8 +30,6 @@ BookListManager::BookListManager(QObject *parent)
 
     Q_CHECK_PTR(m_authorsManager);
 
-    loadModels();
-
     m_instance = this;
 }
 

@@ -23,7 +23,6 @@ LibraryBookManager::LibraryBookManager(QObject *parent) :
     Q_CHECK_PTR(m_authorsManager);
 
     openDatabase();
-    loadModels();
 
     m_instance = this;
 }

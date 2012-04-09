@@ -16,7 +16,6 @@ AuthorsManager::AuthorsManager(QObject *parent) :
     setDatabasePath(dataDir.filePath("authors.db"));
 
     openDatabase();
-    loadModels();
 
     m_instance = this;
 }
