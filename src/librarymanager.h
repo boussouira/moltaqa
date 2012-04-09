@@ -17,6 +17,7 @@ class LibraryInfo;
 class LibraryBook;
 class BookPage;
 class ImportModelNode;
+class ListManager;
 class LibraryBookManager;
 class TaffesirListManager;
 class BookListManager;
@@ -38,6 +39,8 @@ public:
     void open();
     void openManagers();
 
+    void reloadManagers();
+
     int addBook(ImportModelNode *node);
     void addBook(LibraryBookPtr book, int catID);
 
@@ -51,6 +54,7 @@ protected:
     QSqlDatabase m_indexDB;
     QString m_connName;
     QMutex m_mutex;
+    QList<ListManager*> m_managers;
     LibraryBookManager *m_bookmanager;
     TaffesirListManager *m_taffesirManager;
     BookListManager *m_bookListManager;

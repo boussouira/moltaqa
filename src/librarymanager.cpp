@@ -12,7 +12,6 @@
 #include "authorsmanager.h"
 #include "bookeditor.h"
 #include "tarajemrowatmanager.h"
-#include "favouritesmanager.h"
 
 #include <qdebug.h>
 #include <qsqlquery.h>
@@ -64,16 +63,22 @@ void LibraryManager::openManagers()
     m_taffesirManager = new TaffesirListManager(this);
     m_rowatManager = new TarajemRowatManager(this);
 
-    QList<ListManager*> m_managers;
+    m_managers.clear();
+
     m_managers << m_authorsManager
                << m_bookmanager
                << m_bookListManager
                << m_taffesirManager
                << m_rowatManager;
 
-    foreach (ListManager *manager, m_managers) {
+    foreach (ListManager *manager, m_managers)
         manager->loadModels();
-    }
+}
+
+void LibraryManager::reloadManagers()
+{
+    foreach (ListManager *manager, m_managers)
+        manager->reloadModels();
 }
 
 int LibraryManager::addBook(ImportModelNode *node)
