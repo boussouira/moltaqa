@@ -118,11 +118,6 @@ bool MainWindow::init()
     m_viewManager->setNavigationMenu(ui->menuNavigation);
     setCentralWidget(m_viewManager);
 
-    m_welcomeWidget = new WelcomeWidget(this);
-    m_viewManager->addView(m_welcomeWidget);
-    m_viewManager->setDefautView(m_welcomeWidget);
-    m_viewManager->setCurrentView(m_welcomeWidget);
-
     try {
         m_libraryInfo = new LibraryInfo(libDir);
 
@@ -145,6 +140,11 @@ bool MainWindow::init()
         m_indexBar->setToolTip(tr("تقدم تحديث الفهرس"));
         m_indexBar->hide();
         statusBar()->addPermanentWidget(m_indexBar);
+
+        m_welcomeWidget = new WelcomeWidget(this);
+        m_viewManager->addView(m_welcomeWidget);
+        m_viewManager->setDefautView(m_welcomeWidget);
+        m_viewManager->setCurrentView(m_welcomeWidget);
 
         m_searchView = new SearchView(this);
         m_viewManager->addView(m_searchView, false);
