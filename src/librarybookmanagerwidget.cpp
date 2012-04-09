@@ -19,10 +19,9 @@ LibraryBookManagerWidget::LibraryBookManagerWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    m_manager = LibraryBookManager::instance();
+    m_manager = LibraryManager::instance()->bookManager();
 
     enableEditWidgets(false);
-    loadModel();
     setupActions();
 }
 

@@ -21,11 +21,10 @@ public:
 
     QString title();
 
-protected:
     void loadModel();
+    void save();
 
 public slots:
-    void save();
     void updateActions();
     void moveUp();
     void moveDown();

@@ -13,9 +13,8 @@ TaffesirListManagerWidget::TaffesirListManagerWidget(QWidget *parent) :
     ui->setupUi(this);
 
     m_model = 0;
-    m_taffesirManager = TaffesirListManager::instance();
+    m_taffesirManager = LibraryManager::instance()->taffesirListManager();
 
-    loadModel();
     updateActions();
 
     connect(ui->toolMoveUp, SIGNAL(clicked()), SLOT(moveUp()));

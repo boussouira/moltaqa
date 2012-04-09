@@ -25,7 +25,6 @@ BookListManagerWidget::BookListManagerWidget(QWidget *parent) :
 
     m_manager = LibraryManager::instance()->bookListManager();
 
-    loadModel();
     updateActions();
 
     connect(ui->toolAddCat, SIGNAL(clicked()), SLOT(addCat()));
@@ -34,11 +33,9 @@ BookListManagerWidget::BookListManagerWidget(QWidget *parent) :
     connect(ui->toolMoveDown, SIGNAL(clicked()), SLOT(moveDown()));
     connect(ui->toolMoveRight, SIGNAL(clicked()), SLOT(moveRight()));
     connect(ui->toolMoveLeft, SIGNAL(clicked()), SLOT(moveLeft()));
+
     connect(ui->treeView, SIGNAL(customContextMenuRequested(QPoint)),
             SLOT(menuRequested(QPoint)));
-    connect(ui->treeView->selectionModel(),
-            SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-            SLOT(updateActions()));
 }
 
 BookListManagerWidget::~BookListManagerWidget()
@@ -62,6 +59,9 @@ void BookListManagerWidget::loadModel()
 
     connect(m_model, SIGNAL(layoutChanged()), SLOT(updateActions()));
     connect(m_model, SIGNAL(layoutChanged()), SLOT(modelEdited()));
+    connect(ui->treeView->selectionModel(),
+            SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+            SLOT(updateActions()));
 }
 
 void BookListManagerWidget::save()

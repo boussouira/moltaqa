@@ -20,11 +20,12 @@ public:
 
     QString title();
 
-    void aboutToShow();
+    void loadModel();
     void save();
 
+    void aboutToShow();
+
 protected:
-    void loadModel();
     void setupActions();
     void enableEditWidgets(bool enable);
     void saveCurrentRawi();

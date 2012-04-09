@@ -23,16 +23,15 @@ public:
     ~LibraryBookManagerWidget();
 
     QString title();
-    void enableEditWidgets(bool enable);
+
+    void loadModel();
+    void save();
 
 protected:
-    void loadModel();
+    void enableEditWidgets(bool enable);
     void setupActions();
     void saveCurrentBookInfo();
     LibraryBookPtr getBookInfo(int bookID);
-
-public slots:
-    void save();
 
 private slots:
     void on_treeView_doubleClicked(const QModelIndex &index);

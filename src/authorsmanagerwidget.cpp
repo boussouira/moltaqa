@@ -17,9 +17,8 @@ AuthorsManagerWidget::AuthorsManagerWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    m_authorsManager = AuthorsManager::instance();
+    m_authorsManager = LibraryManager::instance()->authorsManager();
 
-    loadModel();
     setupActions();
     enableEditWidgets(false);
 }

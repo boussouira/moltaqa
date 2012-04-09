@@ -37,6 +37,8 @@ void ControlCenterDialog::addControlWidget(ControlCenterWidget *w)
 {
     ui->stackedWidget->addWidget(w);
     ui->listWidget->addItem(w->title());
+
+    w->loadModel();
 }
 
 void ControlCenterDialog::closeEvent(QCloseEvent *event)

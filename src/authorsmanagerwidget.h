@@ -23,6 +23,8 @@ public:
     ~AuthorsManagerWidget();
     
     QString title();
+
+    void loadModel();
     void save();
 
     void aboutToShow();
@@ -30,7 +32,6 @@ public:
 protected:
     void setupActions();
     void enableEditWidgets(bool enable);
-    void loadModel();
     void saveCurrentAuthor();
     AuthorInfoPtr getAuthorInfo(int authorID);
 

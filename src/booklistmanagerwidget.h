@@ -18,10 +18,7 @@ public:
 
     QString title();
 
-protected:
     void loadModel();
-
-public slots:
     void save();
 
 protected slots:
@@ -40,7 +37,7 @@ protected slots:
     void menuRequested(QPoint);
     void updateActions();
 
-private:
+protected:
     QStandardItemModel *m_model;
     QList<QStandardItem*> m_copiedItems;
     BookListManager *m_manager;

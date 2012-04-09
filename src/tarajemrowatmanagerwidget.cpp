@@ -1,6 +1,7 @@
 #include "tarajemrowatmanagerwidget.h"
 #include "ui_tarajemrowatmanagerwidget.h"
 #include "tarajemrowatmanager.h"
+#include "librarymanager.h"
 #include "utils.h"
 #include "modelenums.h"
 #include "modelutils.h"
@@ -19,8 +20,7 @@ TarajemRowatManagerWidget::TarajemRowatManagerWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    m_manager = TarajemRowatManager::instance();
-    loadModel();
+    m_manager = LibraryManager::instance()->rowatManager();
     setupActions();
 
     enableEditWidgets(false);
