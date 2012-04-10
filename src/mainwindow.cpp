@@ -153,10 +153,10 @@ bool MainWindow::init()
         m_viewManager->addView(m_editorView, false);
 
         m_tarajemView = new TarajemRowatView(this);
-        m_viewManager->addView(m_tarajemView);
+        m_viewManager->addView(m_tarajemView, false);
 
         m_authorsView = new AuthorsView(this);
-        m_viewManager->addView(m_authorsView);
+        m_viewManager->addView(m_authorsView, false);
 
         setupActions();
 
