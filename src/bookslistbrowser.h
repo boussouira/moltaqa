@@ -33,6 +33,7 @@ public slots:
 
 private slots:
     void itemClicked(QModelIndex index);
+    void bookListMenu(QPoint);
 
 signals:
     void bookSelected(int bookID);

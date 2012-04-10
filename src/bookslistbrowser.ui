@@ -32,6 +32,9 @@
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <widget class="QTreeView" name="treeBookList">
+         <property name="contextMenuPolicy">
+          <enum>Qt::CustomContextMenu</enum>
+         </property>
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>
@@ -55,6 +58,9 @@
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
         <widget class="QTreeView" name="treeFavouritesList">
+         <property name="contextMenuPolicy">
+          <enum>Qt::CustomContextMenu</enum>
+         </property>
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>

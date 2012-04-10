@@ -7,6 +7,7 @@
 #include "xmlutils.h"
 #include "modelenums.h"
 #include "authorsmanager.h"
+#include "librarybookmanager.h"
 
 #include <qdir.h>
 #include <qstandarditemmodel.h>
@@ -17,7 +18,6 @@ BookListManager::BookListManager(QObject *parent)
     : XmlManager(parent),
       m_bookModel(0),
       m_catModel(0),
-      m_booksCount(0),
       m_order(0),
       m_bookIcon(QIcon(":/images/book.png")),
       m_catIcon(QIcon(":/images/book-cat.png"))
@@ -51,12 +51,13 @@ void BookListManager::clear()
 
     m_catHash.clear();
     m_catElementHash.clear();
+    m_booksElementHash.clear();
 }
 
 QStandardItemModel *BookListManager::bookListModel()
 {
     if(!m_bookModel) {
-        m_booksCount = 0;
+        m_booksElementHash.clear();
 
         m_bookModel = new QStandardItemModel(this);
         m_bookModel->setHorizontalHeaderLabels(QStringList() << tr("الكتاب")
@@ -111,7 +112,7 @@ int BookListManager::categoriesCount()
 
 int BookListManager::booksCount()
 {
-    return m_booksCount;
+    return m_booksElementHash.size();
 }
 
 int BookListManager::getNewCategorieID()
@@ -198,6 +199,30 @@ void BookListManager::addBook(LibraryBookPtr book, int parentCat)
         parentElement.appendChild(bookElement);
 
     m_dom.setNeedSave(true);
+}
+
+void BookListManager::addBook(int bookID, int parentCat)
+{
+    LibraryBookPtr book = LibraryManager::instance()->bookManager()->getLibraryBook(bookID);
+    if(book)
+        addBook(book, parentCat);
+}
+
+void BookListManager::removeBook(int bookID)
+{
+    QDomElement e = m_booksElementHash.value(bookID);
+    ML_ASSERT2(!e.isNull(), "BookListManager::removeBook no book with id" << bookID);
+
+    QDomNode parent = e.parentNode();
+    ML_ASSERT2(!parent.isNull(), "BookListManager::removeBook parent element is null");
+
+    ML_ASSERT2(!parent.removeChild(e).isNull(), "BookListManager::removeBook error when removing book" << bookID);
+    m_dom.setNeedSave(true);
+}
+
+bool BookListManager::containsBook(int bookID)
+{
+    return m_booksElementHash.contains(bookID);
 }
 
 void BookListManager::readNode(QStandardItem *parentItem, QDomElement &element, bool withBooks)
@@ -298,7 +323,7 @@ QList<QStandardItem*> BookListManager::readBookNode(QDomElement &element)
         rows << authItem << authDeathItem;
     }
 
-    m_booksCount++;
+    m_booksElementHash[bookID] = element;
 
     return rows;
 }

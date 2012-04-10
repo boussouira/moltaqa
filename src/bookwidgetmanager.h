@@ -37,8 +37,9 @@ public slots:
     void tabChanged(int newIndex);
     void tabCloseRequest(int tabIndex);
     void changeActiveTab();
-    void moveToOtherTab(int index);
+    void moveToOtherTab();
     void reverseSplitter();
+    void addToFavouite();
 
     void nextAya();
     void previousAya();
@@ -60,6 +61,9 @@ protected:
     TabWidget *m_activeTab;
     QSplitter *m_splitter;
     LibraryManager *m_libraryManager;
+    QAction *m_moveAct;
+    QAction *m_revAct;
+    QAction *m_favouriteAct;
     bool m_showOtherTab;
 };
 

@@ -2,6 +2,7 @@
 #include "ui_bookslistbrowser.h"
 #include "librarymanager.h"
 #include "modelenums.h"
+#include "modelutils.h"
 #include "mainwindow.h"
 #include "booklistmanager.h"
 #include "favouritesmanager.h"
@@ -13,7 +14,7 @@
 #include <qsettings.h>
 #include <qevent.h>
 #include <qsettings.h>
-#include "sortfilterproxymodel.h"
+#include <qmenu.h>
 
 enum {
     BookNameCol,
@@ -48,6 +49,9 @@ BooksListBrowser::BooksListBrowser(QWidget *parent) :
             SLOT(itemClicked(QModelIndex)));
     connect(ui->treeFavouritesList, SIGNAL(doubleClicked(QModelIndex)),
             SLOT(itemClicked(QModelIndex)));
+
+    connect(ui->treeBookList, SIGNAL(customContextMenuRequested(QPoint)),
+            SLOT(bookListMenu(QPoint)));
 }
 
 BooksListBrowser::~BooksListBrowser()
@@ -139,4 +143,44 @@ void BooksListBrowser::itemClicked(QModelIndex index)
 
     if(bookType != ItemType::CategorieItem)
         emit bookSelected(bookID);
+}
+
+void BooksListBrowser::bookListMenu(QPoint /*point*/)
+{
+    QModelIndex index = Utils::selectedIndex(ui->treeBookList);
+    ML_ASSERT(index.isValid());
+
+    int bookType = index.sibling(index.row(), 0).data(ItemRole::itemTypeRole).toInt();
+    int bookID = index.sibling(index.row(), 0).data(ItemRole::idRole).toInt();
+
+    ML_ASSERT(bookType != ItemType::CategorieItem);
+
+    QMenu menu(this);
+
+    QAction *addToFavouriteAct = 0;
+    QAction *removeFromFavouriteAct = 0;
+
+    if(!m_favouritesManager->containsBook(bookID)) {
+        addToFavouriteAct = new QAction(QIcon::fromTheme("bookmark-new", QIcon(":/images/bookmark-new.png")),
+                                        tr("اضافة الى المفضلة"),
+                                        &menu);
+
+        menu.addAction(addToFavouriteAct);
+    } else {
+        removeFromFavouriteAct = new QAction(QIcon(":/images/remove.png"),
+                                             tr("حذف من المفضلة"),
+                                             &menu);
+        menu.addAction(removeFromFavouriteAct);
+    }
+
+    QAction *ret = menu.exec(QCursor::pos());
+    if(ret) {
+        if(ret == addToFavouriteAct) {
+            m_favouritesManager->addBook(bookID, 0);
+            m_favouritesManager->reloadModels();
+        } else if(ret == removeFromFavouriteAct) {
+            m_favouritesManager->removeBook(bookID);
+            m_favouritesManager->reloadModels();
+        }
+    }
 }

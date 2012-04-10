@@ -63,6 +63,11 @@ void TabWidget::setCloseLastTab(bool closeLast)
     m_closeLastTab = closeLast;
 }
 
+void TabWidget::setTabBarActions(QList<QAction *> list)
+{
+    m_tabBarActions = list;
+}
+
 bool TabWidget::eventFilter(QObject *obj, QEvent *event)
 {
     Q_UNUSED(obj);
@@ -85,9 +90,6 @@ void TabWidget::showTabBarMenu(QPoint point)
     QAction *closeOtherAct = 0;
     QAction *closeAllAct =0;
 
-    QAction *moveAct = 0;
-    QAction *revAct = 0;
-
     if(tabsClosable()) {
         closeAct = new QAction(tr("اغلاق التبويب"), &menu);
         closeOtherAct = new QAction(tr("اغلاق كل التبويبات الاخرى"), &menu);
@@ -98,29 +100,28 @@ void TabWidget::showTabBarMenu(QPoint point)
         menu.addAction(closeAllAct);
     }
 
-    if(m_canMoveToOtherTabWidget) {
-        moveAct = new QAction(tr("نقل الى نافذة اخرى"), &menu);
-        revAct = new QAction(tr("عكس تجاور النوافذ"), &menu);
-
+    if(!m_tabBarActions.isEmpty()) {
         menu.addSeparator();
-        menu.addAction(moveAct);
-        menu.addAction(revAct);
+
+        foreach (QAction *act, m_tabBarActions) {
+            if(act)
+                menu.addAction(act);
+            else
+                menu.addSeparator();
+        }
     }
+
+    int tabIndex = m_tabBar->tabAt(point);
+    if(tabIndex != -1)
+        setCurrentIndex(tabIndex);
 
     QAction *ret = menu.exec(QCursor::pos());
     if(ret) {
-        if(ret == moveAct) {
-            int tabIndex = m_tabBar->tabAt(point);
-            if(tabIndex != -1)
-                emit moveToOtherTab(tabIndex);
-        } else if(ret == revAct) {
-            emit reverseSplitter();
-        } else if(ret == closeAct) {
-            int tabIndex = m_tabBar->tabAt(point);
+        if(ret == closeAct) {
             if(tabIndex != -1)
                 emit tabCloseRequested(tabIndex);
         } else if(ret == closeOtherAct) {
-            QWidget *w = widget(m_tabBar->tabAt(point));
+            QWidget *w = widget(tabIndex);
             if(w) {
                 for(int i=count()-1; i>=0; i--) {
                     if(widget(i) != w) {
@@ -152,5 +153,5 @@ void TabWidget::closeTab(int index)
 
 void TabWidget::setTabClosable()
 {
-    setTabsClosable(m_closeLastTab || count() > 1);
+    m_tabBar->setTabsClosable(m_closeLastTab || count() > 1);
 }

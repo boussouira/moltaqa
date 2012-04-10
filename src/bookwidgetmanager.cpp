@@ -11,6 +11,7 @@
 #include "openpagedialog.h"
 #include "mainwindow.h"
 #include "utils.h"
+#include "favouritesmanager.h"
 
 #include <qmainwindow.h>
 #include <qmenubar.h>
@@ -34,12 +35,19 @@ BookWidgetManager::BookWidgetManager(QWidget *parent) :
     m_topTab = new TabWidget(this);
     m_bottomTab = new TabWidget(this);
 
+    m_libraryManager = LibraryManager::instance();
+
     m_activeTab = m_topTab;
 
     m_splitter->addWidget(m_topTab);
     m_splitter->addWidget(m_bottomTab);
 
     m_splitter->setOrientation(Qt::Vertical);
+
+    m_moveAct = new QAction(tr("نقل الى نافذة اخرى"), this);
+    m_revAct = new QAction(tr("عكس تجاور النوافذ"), this);
+    m_favouriteAct = new QAction(QIcon::fromTheme("bookmark-new", QIcon(":/images/bookmark-new.png")),
+                                                  tr("اضافة الى المفضلة"), this);
 
     m_showOtherTab = true;
 
@@ -48,6 +56,10 @@ BookWidgetManager::BookWidgetManager(QWidget *parent) :
 
     connectTab(m_topTab);
     connectTab(m_bottomTab);
+
+    connect(m_moveAct, SIGNAL(triggered()), SLOT(moveToOtherTab()));
+    connect(m_revAct, SIGNAL(triggered()), SLOT(reverseSplitter()));
+    connect(m_favouriteAct, SIGNAL(triggered()), SLOT(addToFavouite()));
 }
 
 BookWidgetManager::~BookWidgetManager()
@@ -56,14 +68,13 @@ BookWidgetManager::~BookWidgetManager()
 
 void BookWidgetManager::connectTab(TabWidget *tab)
 {
-    tab->setCanMoveToOtherTabWidget(true);
+    tab->setTabBarActions(QList<QAction*>()
+                          << m_moveAct << m_revAct << 0 << m_favouriteAct);
 
     connect(tab, SIGNAL(currentChanged(int)), SLOT(tabChanged(int)));
     connect(tab, SIGNAL(currentChanged(int)), SIGNAL(currentTabChanged(int)));
     connect(tab, SIGNAL(tabCloseRequested(int)), SLOT(tabCloseRequest(int)));
     connect(tab, SIGNAL(gotFocus()), SLOT(changeActiveTab()));
-    connect(tab, SIGNAL(moveToOtherTab(int)), SLOT(moveToOtherTab(int)));
-    connect(tab, SIGNAL(reverseSplitter()), SLOT(reverseSplitter()));
 }
 
 void BookWidgetManager::reverseActiveTab()
@@ -156,29 +167,31 @@ TabWidget *BookWidgetManager::unActiveTab()
     return (m_activeTab == m_topTab ? m_bottomTab : m_topTab);
 }
 
-void BookWidgetManager::moveToOtherTab(int index)
+void BookWidgetManager::moveToOtherTab()
 {
-    setActiveTab(sender());
+    TabWidget *active = activeTab();
+    ML_ASSERT2(active, "BookWidgetManager::moveToOtherTab active tab is null");
 
-    TabWidget *active = qobject_cast<TabWidget*>(sender());
-    if(active) {
-        TabWidget *otherTab = (active == m_topTab) ? m_bottomTab : m_topTab;
-        BookWidget *book = bookWidget(index);
+    int index = active->currentIndex();
+    ML_ASSERT2(index != -1, "BookWidgetManager::moveToOtherTab wrong tab index");
 
-        active->blockSignals(true);
-        otherTab->blockSignals(true);
+    TabWidget *otherTab = (active == m_topTab) ? m_bottomTab : m_topTab;
+    BookWidget *book = bookWidget(index);
+    ML_ASSERT2(book, "BookWidgetManager::moveToOtherTab book widget is null");
 
-        active->removeTab(index);
-        int i = otherTab->addBookWidget(book);
-        otherTab->setCurrentIndex(i);
-        m_showOtherTab = true;
-        tabChanged(0);
+    active->blockSignals(true);
+    otherTab->blockSignals(true);
 
-        active->blockSignals(false);
-        otherTab->blockSignals(false);
+    active->removeTab(index);
+    int i = otherTab->addBookWidget(book);
+    otherTab->setCurrentIndex(i);
+    m_showOtherTab = true;
+    tabChanged(0);
 
-        reverseActiveTab();
-    }
+    active->blockSignals(false);
+    otherTab->blockSignals(false);
+
+    reverseActiveTab();
 }
 
 void BookWidgetManager::setActiveTab(QObject *obj)
@@ -201,6 +214,27 @@ void BookWidgetManager::reverseSplitter()
 {
     m_splitter->setOrientation((m_splitter->orientation()==Qt::Horizontal) ?
                                    Qt::Vertical : Qt::Horizontal);
+}
+
+void BookWidgetManager::addToFavouite()
+{
+    LibraryBookPtr book = activeBook();
+    ML_ASSERT(book);
+
+    if(m_libraryManager->favouritesManager()->containsBook(book->bookID)) {
+        QMessageBox::information(this,
+                                 tr("المفضلة"),
+                                 tr("الكتاب <strong>%1</strong> موجودة في قائمة المفضلة")
+                                 .arg(book->bookDisplayName));
+    } else {
+        m_libraryManager->favouritesManager()->addBook(book->bookID, 0);
+        m_libraryManager->favouritesManager()->reloadModels();
+
+        QMessageBox::information(this,
+                                 tr("المفضلة"),
+                                 tr("تم اضافة <strong>%1</strong> الى المفضلة")
+                                 .arg(book->bookDisplayName));
+    }
 }
 
 void BookWidgetManager::closeBook(int bookID)

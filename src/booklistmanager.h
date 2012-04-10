@@ -43,6 +43,11 @@ public:
     CategorieInfo *findCategorie(const QString &cat);
     int addCategorie(const QString &title, int parentCat);
     void addBook(LibraryBookPtr book, int parentCat);
+    void addBook(int bookID, int parentCat);
+
+    void removeBook(int bookID);
+
+    bool containsBook(int bookID);
 
 protected:
     void saveModel(QXmlStreamWriter &writer, QStandardItemModel *model);
@@ -58,7 +63,7 @@ protected:
     QStandardItemModel *m_catModel;
     QHash<int, QString> m_catHash;
     QHash<int, QDomElement> m_catElementHash;
-    int m_booksCount;
+    QHash<int, QDomElement> m_booksElementHash;
     int m_order;
     QIcon m_bookIcon;
     QIcon m_catIcon;

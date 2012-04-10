@@ -16,6 +16,8 @@ public:
     void setAutoTabClose(bool autoClose);
     void setCloseLastTab(bool closeLast);
 
+    void setTabBarActions(QList<QAction*> list);
+
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
 
@@ -33,6 +35,7 @@ signals:
 
 private:
     QTabBar *m_tabBar;
+    QList<QAction*> m_tabBarActions;
     bool m_canMoveToOtherTabWidget;
     bool m_autoClose;
     bool m_closeLastTab;
