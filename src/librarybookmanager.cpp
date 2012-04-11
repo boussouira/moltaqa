@@ -188,15 +188,6 @@ int LibraryBookManager::addBook(LibraryBookPtr book)
     return book->bookID;
 }
 
-void LibraryBookManager::beginUpdate()
-{
-}
-
-void LibraryBookManager::endUpdate()
-{
-    reloadModels();
-}
-
 bool LibraryBookManager::updateBook(LibraryBookPtr book)
 {
     QSqlQuery query(m_db);

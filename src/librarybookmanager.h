@@ -27,8 +27,6 @@ public:
 
     int addBook(LibraryBookPtr book);
 
-    void beginUpdate();
-    void endUpdate();
     bool updateBook(LibraryBookPtr book);
     bool removeBook(int bookID);
 
