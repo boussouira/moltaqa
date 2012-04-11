@@ -9,9 +9,6 @@
 #include "modelviewfilter.h"
 #include "utils.h"
 
-#include <qsqlquery.h>
-#include <qsqlerror.h>
-#include <qsettings.h>
 #include <qevent.h>
 #include <qsettings.h>
 #include <qmenu.h>
@@ -75,14 +72,14 @@ void BooksListBrowser::saveSettings()
 {
     Utils::saveWidgetPosition(this, "BooksListWidget");
 
+    QSettings settings;
+
     if(m_bookListModel) {
-        QSettings settings;
         settings.setValue("BooksListWidget/bcol_1", ui->treeBookList->columnWidth(0));
         settings.setValue("BooksListWidget/bcol_2", ui->treeBookList->columnWidth(1));
     }
 
     if(m_favouritesModel) {
-        QSettings settings;
         settings.setValue("BooksListWidget/fcol_1", ui->treeFavouritesList->columnWidth(0));
         settings.setValue("BooksListWidget/fcol_2", ui->treeFavouritesList->columnWidth(1));
     }

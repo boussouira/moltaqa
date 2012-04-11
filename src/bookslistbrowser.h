@@ -2,7 +2,6 @@
 #define BOOKSLISTBROWSER_H
 
 #include <qdialog.h>
-#include <qsqldatabase.h>
 #include <qstandarditemmodel.h>
 
 class BookListManager;
@@ -27,11 +26,9 @@ protected:
     void loadSettings();
     void saveSettings();
 
-public slots:
+protected slots:
     void readBookListModel();
     void readFavouritesModel();
-
-private slots:
     void itemClicked(QModelIndex index);
     void bookListMenu(QPoint);
 
