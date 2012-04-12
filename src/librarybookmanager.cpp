@@ -335,6 +335,21 @@ void LibraryBookManager::addBookHistory(int bookID, int pageID)
     q.exec(query);
 }
 
+int LibraryBookManager::bookLastPageID(int bookID)
+{
+    QSqlQuery query(m_db);
+
+    Utils::QueryBuilder q;
+    q.setTableName("last_open", Utils::QueryBuilder::Select);
+
+    q.select("page");
+    q.where("book", bookID);
+
+    q.exec(query);
+
+    return query.next() ? query.value(0).toInt() : -1;
+}
+
 int LibraryBookManager::getNewBookID()
 {
     int bookID =  0;

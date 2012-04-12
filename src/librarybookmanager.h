@@ -38,6 +38,8 @@ public:
     QList<LibraryBookPtr> getAuthorBooks(int authorID);
 
     void addBookHistory(int bookID, int pageID);
+    /// Get the last readed for the given book
+    int bookLastPageID(int bookID);
 
 protected:
     int getNewBookID();

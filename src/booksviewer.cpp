@@ -249,7 +249,7 @@ BookWidget *BooksViewer::openBook(int bookID, int pageID, CLuceneQuery *query)
         m_viewManager->addBook(bookWidget);
 
         if(pageID == -1)
-            bookWidget->firstPage();
+            bookWidget->openPage(m_bookManager->bookLastPageID(bookID));
         else
             bookWidget->openPage(pageID);
 
