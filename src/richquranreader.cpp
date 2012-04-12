@@ -22,6 +22,7 @@ void RichQuranReader::setCurrentPage(QDomElement pageNode)
 {
     m_formatter->start();
 
+    m_currentPage->pageID = pageNode.attribute("id").toInt();
     m_currentPage->sora = pageNode.attribute("sora").toInt();
     m_currentPage->aya = pageNode.attribute("aya").toInt();
     m_currentPage->ayatCount = MW->readerHelper()->getQuranSora(m_currentPage->sora)->ayatCount;
@@ -29,7 +30,10 @@ void RichQuranReader::setCurrentPage(QDomElement pageNode)
 
     m_pagesDom.setCurrentElement(pageNode);
 
-    ML_ASSERT(pageNode.attribute("page").toInt() != m_currentPage->page);
+    if(pageNode.attribute("page").toInt() == m_currentPage->page) {
+        updateHistory();
+        return;
+    }
 
     QDomElement prevNode = pageNode.previousSiblingElement();
     while(!prevNode.isNull()) {

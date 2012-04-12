@@ -228,9 +228,9 @@ void createIndexDB(QString path)
         QSqlQuery query(db);
 
         Utils::QueryBuilder q;
-        q.setTableName("books");
         q.setIgnoreExistingTable(true);
-        q.setQueryType(Utils::QueryBuilder::Create);
+
+        q.setTableName("books", Utils::QueryBuilder::Create);
 
         q.addColumn("id", "INTEGER PRIMARY KEY NOT NULL");
         q.addColumn("title", "TEXT");
@@ -241,6 +241,23 @@ void createIndexDB(QString path)
         q.addColumn("bookFlags", "INT");
         q.addColumn("indexFlags", "INT");
         q.addColumn("filename", "TEXT");
+
+        q.exec(query);
+
+        q.setTableName("history", Utils::QueryBuilder::Create);
+
+        q.addColumn("id", "INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL");
+        q.addColumn("book", "INT");
+        q.addColumn("page", "INT");
+        q.addColumn("open_date", "INT");
+
+        q.exec(query);
+
+        q.setTableName("last_open", Utils::QueryBuilder::Create);
+
+        q.addColumn("book", "INTEGER PRIMARY KEY NOT NULL");
+        q.addColumn("page", "INT");
+        q.addColumn("open_date", "INT");
 
         q.exec(query);
     }

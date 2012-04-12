@@ -30,6 +30,13 @@ void QueryBuilder::setTableName(const QString &name)
     m_tableName = name;
 }
 
+void QueryBuilder::setTableName(const QString &name, QueryBuilder::QueryType type)
+{
+    clear();
+    m_tableName = name;
+    m_type = type;
+}
+
 void QueryBuilder::setQueryType(QueryType type)
 {
     clear();
@@ -92,8 +99,12 @@ QString QueryBuilder::query()
         }
 
         sql += ")";
-    } else if(m_type == Insert) {
-        sql = "INSERT INTO ";
+    } else if(m_type == Insert || m_type == Replace) {
+        if(m_type == Insert)
+            sql = "INSERT INTO ";
+        else
+            sql = "INSERT OR REPLACE INTO ";
+
         sql += m_tableName;
         sql += " (";
 

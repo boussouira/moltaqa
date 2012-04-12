@@ -12,7 +12,8 @@ namespace ItemRole {
         orderRole,
         authorDeathRole,
         authorIdRole,
-        itemTypeRole
+        itemTypeRole,
+        bookIdRole
     };
 }
 

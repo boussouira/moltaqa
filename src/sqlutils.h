@@ -26,10 +26,12 @@ public:
         None,
         Create,
         Insert,
-        Update
+        Update,
+        Replace
     };
 
-    void setTableName(const QString &name);// { m_tableName = name; }
+    void setTableName(const QString &name);
+    void setTableName(const QString &name, QueryType type);
     void setQueryType(QueryType type);
     void setIgnoreExistingTable(bool ignore);
     void setDropExistingTable(bool drop);

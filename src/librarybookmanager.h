@@ -22,6 +22,8 @@ public:
     void clear();
 
     QStandardItemModel *getModel();
+    QStandardItemModel *getLastOpendModel();
+
     LibraryBookPtr getLibraryBook(int bookID);
     LibraryBookPtr getQuranBook();
 
@@ -34,6 +36,8 @@ public:
     void setBookIndexStat(int bookID, LibraryBook::IndexFlags indexFlag);
 
     QList<LibraryBookPtr> getAuthorBooks(int authorID);
+
+    void addBookHistory(int bookID, int pageID);
 
 protected:
     int getNewBookID();

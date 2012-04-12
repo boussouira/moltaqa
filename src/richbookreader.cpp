@@ -3,7 +3,7 @@
 #include "librarybook.h"
 #include "bookpage.h"
 #include "utils.h"
-#include "mainwindow.h"
+#include "librarybookmanager.h"
 #include "libraryinfo.h"
 #include "modelenums.h"
 #include "xmlutils.h"
@@ -15,6 +15,10 @@ RichBookReader::RichBookReader(QObject *parent) : AbstractBookReader(parent)
     m_textFormat = 0;
     m_query = 0;
     m_highlightPageID = -1;
+
+    m_bookmanager = m_libraryManager->bookManager();
+
+    connect(this, SIGNAL(textChanged()), SLOT(updateHistory()));
 }
 
 RichBookReader::~RichBookReader()
@@ -119,6 +123,14 @@ void RichBookReader::readItem(QDomElement &element, QStandardItem *parent)
         parent->appendRow(item);
 
     m_pageTitles.append(pageID);
+}
+
+void RichBookReader::updateHistory()
+{
+    QtConcurrent::run(m_bookmanager,
+                      &LibraryBookManager::addBookHistory,
+                      m_bookInfo->bookID,
+                      m_currentPage->pageID);
 }
 
 TextFormatter *RichBookReader::textFormat()

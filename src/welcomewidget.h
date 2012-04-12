@@ -2,6 +2,13 @@
 #define WELCOMEWIDGET_H
 
 #include "abstarctview.h"
+#include <qstandarditemmodel.h>
+
+class BookListManager;
+class LibraryManager;
+class FavouritesManager;
+class LibraryBookManager;
+class ModelViewFilter;
 
 namespace Ui {
     class WelcomeWidget;
@@ -17,15 +24,31 @@ public:
 
     QString title();
 
-private slots:
-    void on_webView_loadStarted();
-    void on_webView_loadFinished(bool);
-    void on_webView_loadProgress(int progress);
+    void aboutToShow();
+    void aboutToHide();
+
+protected:
+    void loadSettings();
+    void saveSettings();
+
+protected slots:
+    void bookListModel();
+    void favouritesModel();
+    void lastReadBooksModel();
+    void itemClicked(QModelIndex index);
+    void lastOpenedItemClicked(QModelIndex index);
 
 signals:
-    void showBooksList();
+    void bookSelected(int bookID);
 
 private:
+    BookListManager *m_bookListManager;
+    FavouritesManager *m_favouritesManager;
+    LibraryBookManager *m_bookManager;
+    QStandardItemModel *m_bookListModel;
+    QStandardItemModel *m_favouritesModel;
+    ModelViewFilter *m_bookListFilter;
+    ModelViewFilter *m_favouritesListFilter;
     Ui::WelcomeWidget *ui;
 };
 

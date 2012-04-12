@@ -53,7 +53,7 @@ protected:
     void loadSettings();
 
 public slots:
-    void openBook(int pBookID);
+    void openBook(int pBookID, int pageID = -1);
 
     void showSearchView();
     void showTarajemRowatView();

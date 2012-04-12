@@ -210,7 +210,7 @@ void MainWindow::setupActions()
     connect(ui->actionShamelaImport, SIGNAL(triggered()), SLOT(importFromShamela()));
 
     //TODO: open Quran quickly
-    connect(m_welcomeWidget, SIGNAL(showBooksList()), SLOT(showBooksList()));
+    connect(m_welcomeWidget, SIGNAL(bookSelected(int)), SLOT(openBook(int)));
     connect(m_booksList, SIGNAL(bookSelected(int)), SLOT(openBook(int)));
     connect(ui->actionBooksList, SIGNAL(triggered()), SLOT(showBooksList()));
     connect(ui->actionSearchView, SIGNAL(triggered()), SLOT(showSearchView()));
@@ -237,9 +237,9 @@ void MainWindow::settingDialog()
     settingDialog.exec();
 }
 
-void MainWindow::openBook(int pBookID)
+void MainWindow::openBook(int pBookID, int pageID)
 {
-    ML_ASSERT(m_bookView->openBook(pBookID));
+    ML_ASSERT(m_bookView->openBook(pBookID, pageID));
 
     if(m_bookView->isHidden())
         m_bookView->show();

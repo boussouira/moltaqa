@@ -95,6 +95,34 @@ QStandardItemModel *LibraryBookManager::getModel()
     return model;
 }
 
+QStandardItemModel *LibraryBookManager::getLastOpendModel()
+{
+    QStandardItemModel *model = new QStandardItemModel();
+
+    QSqlQuery query(m_db);//    0              1                 2                 3
+    query.prepare("SELECT last_open.book, last_open.page, last_open.open_date, books.title "
+                  "FROM last_open "
+                  "LEFT JOIN books "
+                  "ON books.id = last_open.book "
+                  "ORDER BY open_date DESC");
+
+    ML_QUERY_EXEC(query);
+
+    while(query.next()) {
+        QStandardItem *item = new QStandardItem();
+        item->setText(query.value(3).toString());
+        item->setData(query.value(1).toInt(), ItemRole::idRole);
+        item->setData(query.value(0).toInt(), ItemRole::bookIdRole);
+        item->setIcon(QIcon(":/images/book.png"));
+
+        model->appendRow(item);
+    }
+
+    model->setHorizontalHeaderLabels(QStringList() << tr("الكتب"));
+
+    return model;
+}
+
 LibraryBookPtr LibraryBookManager::getLibraryBook(int bookID)
 {
     LibraryBookPtr book = m_books.value(bookID);
@@ -281,6 +309,30 @@ QList<LibraryBookPtr> LibraryBookManager::getAuthorBooks(int authorID)
     }
 
     return list;
+}
+
+void LibraryBookManager::addBookHistory(int bookID, int pageID)
+{
+    QSqlQuery query(m_db);
+
+    qint64 t = QDateTime::currentDateTime().toMSecsSinceEpoch();
+
+    Utils::QueryBuilder q;
+    q.setTableName("history", Utils::QueryBuilder::Insert);
+
+    q.addColumn("book", bookID);
+    q.addColumn("page", pageID);
+    q.addColumn("open_date", t);
+
+    q.exec(query);
+
+    q.setTableName("last_open", Utils::QueryBuilder::Replace);
+
+    q.addColumn("book", bookID);
+    q.addColumn("page", pageID);
+    q.addColumn("open_date", t);
+
+    q.exec(query);
 }
 
 int LibraryBookManager::getNewBookID()

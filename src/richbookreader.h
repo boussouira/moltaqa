@@ -5,6 +5,8 @@
 #include "clutils.h"
 #include "clucenequery.h"
 
+class LibraryBookManager;
+
 class RichBookReader : public AbstractBookReader
 {
     Q_OBJECT
@@ -31,12 +33,16 @@ protected:
     virtual void connected();
     void readItem(QDomElement &element, QStandardItem *parent);
 
+protected slots:
+    void updateHistory();
+
 signals:
     void textChanged();
 
 protected:
     TextFormatter *m_textFormat;
     CLuceneQuery *m_query;
+    LibraryBookManager *m_bookmanager;
     QList<int> m_pageTitles;
     int m_highlightPageID;
 };
