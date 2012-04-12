@@ -209,31 +209,62 @@ void UtilsTest::queryBuilder()
     q.setIgnoreExistingTable(true);
     q.setQueryType(Utils::QueryBuilder::Create);
 
-    q.addColumn("id", "INT");
-    q.addColumn("name", "TEXT");
-    q.addColumn("path", "TEXT");
+    q.set("id", "INT");
+    q.set("name", "TEXT");
+    q.set("path", "TEXT");
 
     QVERIFY(q.exec(query));
 
     // Insert values to table
-    q.setQueryType(Utils::QueryBuilder::Insert);
+    for(int i=0; i<5; i++) {
+        q.setQueryType(Utils::QueryBuilder::Insert);
 
-    q.addColumn("id", id);
-    q.addColumn("name", "The rate of hacking");
-    q.addColumn("path", "test.txt");
+        q.set("id", id+i);
+        q.set("name", "The rate of hacking");
+        q.set("path", "test.txt");
 
-    QVERIFY(q.exec(query));
+        QVERIFY(q.exec(query));
+    }
 
     // Update values
     q.setQueryType(Utils::QueryBuilder::Update);
 
-    q.addColumn("name", "The Art Of Hacking");
-    q.addColumn("path", "test.pdf");
+    q.set("name", "The Art Of Hacking");
+    q.set("path", "test.pdf");
 
-    q.addWhere("id", id);
-    q.addWhere("path", "test.txt");
+    q.where("id", id);
+    q.where("path", "test.txt");
 
     QVERIFY(q.exec(query));
+
+    // Select updated value
+    q.setQueryType(Utils::QueryBuilder::Select);
+    q.select("name");
+    q.select("path");
+
+    q.orderBy("id", Utils::QueryBuilder::Asc);
+
+    QVERIFY(q.exec(query));
+    QVERIFY(query.next());
+
+    QCOMPARE(query.value(0).toString(), QString("The Art Of Hacking"));
+    QCOMPARE(query.value(1).toString(), QString("test.pdf"));
+
+    // Select updated value with where
+    q.setQueryType(Utils::QueryBuilder::Select);
+    q.select("name");
+    q.select("path");
+
+    q.where("id", id);
+
+    q.orderBy("id", Utils::QueryBuilder::Desc);
+    q.limit(1);
+
+    QVERIFY(q.exec(query));
+    QVERIFY(query.next());
+
+    QCOMPARE(query.value(0).toString(), QString("The Art Of Hacking"));
+    QCOMPARE(query.value(1).toString(), QString("test.pdf"));
 
     QVERIFY(QFile::remove(testDB));
 }

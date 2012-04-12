@@ -120,26 +120,26 @@ bool TarajemRowatManager::updateRawi(RawiInfoPtr rawi)
     q.setTableName("rowat");
     q.setQueryType(Utils::QueryBuilder::Update);
 
-    q.addColumn("name", rawi->name);
-    q.addColumn("laqab", rawi->laqab);
+    q.set("name", rawi->name);
+    q.set("laqab", rawi->laqab);
 
-    q.addColumn("birth_year", rawi->unknowBirth() ? QVariant(QVariant::Int) : rawi->birthYear);
-    q.addColumn("birth", rawi->unknowBirth() ? QVariant(QVariant::String) : rawi->birthStr);
+    q.set("birth_year", rawi->unknowBirth() ? QVariant(QVariant::Int) : rawi->birthYear);
+    q.set("birth", rawi->unknowBirth() ? QVariant(QVariant::String) : rawi->birthStr);
 
-    q.addColumn("death_year", rawi->unknowBirth() ? QVariant(QVariant::Int) : rawi->deathYear);
-    q.addColumn("death", rawi->unknowBirth() ? QVariant(QVariant::String) : rawi->deathStr);
+    q.set("death_year", rawi->unknowBirth() ? QVariant(QVariant::Int) : rawi->deathYear);
+    q.set("death", rawi->unknowBirth() ? QVariant(QVariant::String) : rawi->deathStr);
 
-    q.addColumn("tabaqa", rawi->tabaqa);
-    q.addColumn("rowat", rawi->rowat);
+    q.set("tabaqa", rawi->tabaqa);
+    q.set("rowat", rawi->rowat);
 
-    q.addColumn("rotba_hafed", rawi->rotba_hafed);
-    q.addColumn("rotba_zahabi", rawi->rotba_zahabi);
+    q.set("rotba_hafed", rawi->rotba_hafed);
+    q.set("rotba_zahabi", rawi->rotba_zahabi);
 
-    q.addColumn("sheok", rawi->sheok);
-    q.addColumn("talamid", rawi->talamid);
-    q.addColumn("tarejama", rawi->tarejama);
+    q.set("sheok", rawi->sheok);
+    q.set("talamid", rawi->talamid);
+    q.set("tarejama", rawi->tarejama);
 
-    q.addWhere("id", rawi->id);
+    q.where("id", rawi->id);
 
     ML_ASSERT_RET(q.exec(query), false);
 
@@ -160,25 +160,25 @@ int TarajemRowatManager::addRawi(RawiInfoPtr rawi)
     q.setTableName("rowat");
     q.setQueryType(Utils::QueryBuilder::Insert);
 
-    q.addColumn("id", rawi->id);
-    q.addColumn("name", rawi->name);
-    q.addColumn("laqab", rawi->laqab);
+    q.set("id", rawi->id);
+    q.set("name", rawi->name);
+    q.set("laqab", rawi->laqab);
 
-    q.addColumn("birth_year", rawi->unknowBirth() ? QVariant(QVariant::Int) : rawi->birthYear);
-    q.addColumn("birth", rawi->unknowBirth() ? QVariant(QVariant::String) : rawi->birthStr);
+    q.set("birth_year", rawi->unknowBirth() ? QVariant(QVariant::Int) : rawi->birthYear);
+    q.set("birth", rawi->unknowBirth() ? QVariant(QVariant::String) : rawi->birthStr);
 
-    q.addColumn("death_year", rawi->unknowBirth() ? QVariant(QVariant::Int) : rawi->deathYear);
-    q.addColumn("death", rawi->unknowBirth() ? QVariant(QVariant::String) : rawi->deathStr);
+    q.set("death_year", rawi->unknowBirth() ? QVariant(QVariant::Int) : rawi->deathYear);
+    q.set("death", rawi->unknowBirth() ? QVariant(QVariant::String) : rawi->deathStr);
 
-    q.addColumn("tabaqa", rawi->tabaqa);
-    q.addColumn("rowat", rawi->rowat);
+    q.set("tabaqa", rawi->tabaqa);
+    q.set("rowat", rawi->rowat);
 
-    q.addColumn("rotba_hafed", rawi->rotba_hafed);
-    q.addColumn("rotba_zahabi", rawi->rotba_zahabi);
+    q.set("rotba_hafed", rawi->rotba_hafed);
+    q.set("rotba_zahabi", rawi->rotba_zahabi);
 
-    q.addColumn("sheok", rawi->sheok);
-    q.addColumn("talamid", rawi->talamid);
-    q.addColumn("tarejama", rawi->tarejama);
+    q.set("sheok", rawi->sheok);
+    q.set("talamid", rawi->talamid);
+    q.set("tarejama", rawi->tarejama);
 
     ML_ASSERT_RET(q.exec(query), 0);
 

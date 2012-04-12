@@ -200,15 +200,15 @@ int LibraryBookManager::addBook(LibraryBookPtr book)
     q.setTableName("books");
     q.setQueryType(Utils::QueryBuilder::Insert);
 
-    q.addColumn("id", book->bookID);
-    q.addColumn("title", book->bookDisplayName);
-    q.addColumn("type", book->bookType);
-    q.addColumn("authorID", book->authorID);
-    q.addColumn("author", (!book->authorID) ? book->authorName : QVariant(QVariant::String));
-    q.addColumn("info", book->bookInfo);
-    q.addColumn("bookFlags", book->bookFlags);
-    q.addColumn("indexFlags", book->indexFlags);
-    q.addColumn("filename", book->fileName);
+    q.set("id", book->bookID);
+    q.set("title", book->bookDisplayName);
+    q.set("type", book->bookType);
+    q.set("authorID", book->authorID);
+    q.set("author", (!book->authorID) ? book->authorName : QVariant(QVariant::String));
+    q.set("info", book->bookInfo);
+    q.set("bookFlags", book->bookFlags);
+    q.set("indexFlags", book->indexFlags);
+    q.set("filename", book->fileName);
 
     ML_ASSERT_RET(q.exec(query), 0);
 
@@ -224,16 +224,16 @@ bool LibraryBookManager::updateBook(LibraryBookPtr book)
     q.setTableName("books");
     q.setQueryType(Utils::QueryBuilder::Update);
 
-    q.addColumn("title", book->bookDisplayName);
-    q.addColumn("type", book->bookType);
-    q.addColumn("authorID", book->authorID);
-    q.addColumn("author", (!book->authorID) ? book->authorName : QVariant(QVariant::String));
-    q.addColumn("info", book->bookInfo);
-    q.addColumn("bookFlags", book->bookFlags);
-    q.addColumn("indexFlags", book->indexFlags);
-    q.addColumn("filename", book->fileName);
+    q.set("title", book->bookDisplayName);
+    q.set("type", book->bookType);
+    q.set("authorID", book->authorID);
+    q.set("author", (!book->authorID) ? book->authorName : QVariant(QVariant::String));
+    q.set("info", book->bookInfo);
+    q.set("bookFlags", book->bookFlags);
+    q.set("indexFlags", book->indexFlags);
+    q.set("filename", book->fileName);
 
-    q.addWhere("id", book->bookID);
+    q.where("id", book->bookID);
 
     ML_ASSERT_RET(q.exec(query), false);
 
@@ -281,8 +281,8 @@ void LibraryBookManager::setBookIndexStat(int bookID, LibraryBook::IndexFlags in
     q.setTableName("books");
     q.setQueryType(Utils::QueryBuilder::Update);
 
-    q.addColumn("indexFlags", indexFlag);
-    q.addWhere("id", bookID);
+    q.set("indexFlags", indexFlag);
+    q.where("id", bookID);
 
     ML_ASSERT(q.exec(query));
 
@@ -320,17 +320,17 @@ void LibraryBookManager::addBookHistory(int bookID, int pageID)
     Utils::QueryBuilder q;
     q.setTableName("history", Utils::QueryBuilder::Insert);
 
-    q.addColumn("book", bookID);
-    q.addColumn("page", pageID);
-    q.addColumn("open_date", t);
+    q.set("book", bookID);
+    q.set("page", pageID);
+    q.set("open_date", t);
 
     q.exec(query);
 
     q.setTableName("last_open", Utils::QueryBuilder::Replace);
 
-    q.addColumn("book", bookID);
-    q.addColumn("page", pageID);
-    q.addColumn("open_date", t);
+    q.set("book", bookID);
+    q.set("page", pageID);
+    q.set("open_date", t);
 
     q.exec(query);
 }

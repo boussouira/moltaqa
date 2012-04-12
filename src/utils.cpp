@@ -232,32 +232,32 @@ void createIndexDB(QString path)
 
         q.setTableName("books", Utils::QueryBuilder::Create);
 
-        q.addColumn("id", "INTEGER PRIMARY KEY NOT NULL");
-        q.addColumn("title", "TEXT");
-        q.addColumn("type", "INT");
-        q.addColumn("authorID", "INT");
-        q.addColumn("author", "TEXT");
-        q.addColumn("info", "TEXT");
-        q.addColumn("bookFlags", "INT");
-        q.addColumn("indexFlags", "INT");
-        q.addColumn("filename", "TEXT");
+        q.set("id", "INTEGER PRIMARY KEY NOT NULL");
+        q.set("title", "TEXT");
+        q.set("type", "INT");
+        q.set("authorID", "INT");
+        q.set("author", "TEXT");
+        q.set("info", "TEXT");
+        q.set("bookFlags", "INT");
+        q.set("indexFlags", "INT");
+        q.set("filename", "TEXT");
 
         q.exec(query);
 
         q.setTableName("history", Utils::QueryBuilder::Create);
 
-        q.addColumn("id", "INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL");
-        q.addColumn("book", "INT");
-        q.addColumn("page", "INT");
-        q.addColumn("open_date", "INT");
+        q.set("id", "INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL");
+        q.set("book", "INT");
+        q.set("page", "INT");
+        q.set("open_date", "INT");
 
         q.exec(query);
 
         q.setTableName("last_open", Utils::QueryBuilder::Create);
 
-        q.addColumn("book", "INTEGER PRIMARY KEY NOT NULL");
-        q.addColumn("page", "INT");
-        q.addColumn("open_date", "INT");
+        q.set("book", "INTEGER PRIMARY KEY NOT NULL");
+        q.set("page", "INT");
+        q.set("open_date", "INT");
 
         q.exec(query);
     }
@@ -277,15 +277,15 @@ void createIndexDB(QString path)
         q.setIgnoreExistingTable(true);
         q.setQueryType(Utils::QueryBuilder::Create);
 
-        q.addColumn("id", "INTEGER PRIMARY KEY NOT NULL");
-        q.addColumn("name", "TEXT");
-        q.addColumn("full_name", "TEXT");
-        q.addColumn("info", "TEXT");
-        q.addColumn("birth_year", "INTEGER");
-        q.addColumn("birth", "TEXT");
-        q.addColumn("death_year", "INTEGER");
-        q.addColumn("death", "TEXT");
-        q.addColumn("flags", "INTEGER");
+        q.set("id", "INTEGER PRIMARY KEY NOT NULL");
+        q.set("name", "TEXT");
+        q.set("full_name", "TEXT");
+        q.set("info", "TEXT");
+        q.set("birth_year", "INTEGER");
+        q.set("birth", "TEXT");
+        q.set("death_year", "INTEGER");
+        q.set("death", "TEXT");
+        q.set("flags", "INTEGER");
 
         q.exec(query);
     }
@@ -304,25 +304,25 @@ void createIndexDB(QString path)
         q.setIgnoreExistingTable(true);
         q.setQueryType(Utils::QueryBuilder::Create);
 
-        q.addColumn("id", "INTEGER PRIMARY KEY NOT NULL");
-        q.addColumn("name", "TEXT");
-        q.addColumn("laqab", "TEXT");
+        q.set("id", "INTEGER PRIMARY KEY NOT NULL");
+        q.set("name", "TEXT");
+        q.set("laqab", "TEXT");
 
-        q.addColumn("birth_year", "INT");
-        q.addColumn("birth", "TEXT");
+        q.set("birth_year", "INT");
+        q.set("birth", "TEXT");
 
-        q.addColumn("death_year", "INT");
-        q.addColumn("death", "TEXT");
+        q.set("death_year", "INT");
+        q.set("death", "TEXT");
 
-        q.addColumn("tabaqa", "TEXT");
-        q.addColumn("rowat", "TEXT");
+        q.set("tabaqa", "TEXT");
+        q.set("rowat", "TEXT");
 
-        q.addColumn("rotba_hafed", "TEXT");
-        q.addColumn("rotba_zahabi", "TEXT");
+        q.set("rotba_hafed", "TEXT");
+        q.set("rotba_zahabi", "TEXT");
 
-        q.addColumn("sheok", "TEXT");
-        q.addColumn("talamid", "TEXT");
-        q.addColumn("tarejama", "TEXT");
+        q.set("sheok", "TEXT");
+        q.set("talamid", "TEXT");
+        q.set("tarejama", "TEXT");
 
         q.exec(query);
     }

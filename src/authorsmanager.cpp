@@ -111,16 +111,16 @@ int AuthorsManager::addAuthor(AuthorInfoPtr auth)
     q.setTableName("authors");
     q.setQueryType(Utils::QueryBuilder::Insert);
 
-    q.addColumn("id", auth->id);
-    q.addColumn("name", auth->name);
-    q.addColumn("full_name", auth->fullName);
-    q.addColumn("info", auth->info);
+    q.set("id", auth->id);
+    q.set("name", auth->name);
+    q.set("full_name", auth->fullName);
+    q.set("info", auth->info);
 
-    q.addColumn("birth_year", auth->birthYear);
-    q.addColumn("birth", auth->birthStr);
-    q.addColumn("death_year", auth->deathYear);
-    q.addColumn("death", auth->deathStr);
-    q.addColumn("flags", flags);
+    q.set("birth_year", auth->birthYear);
+    q.set("birth", auth->birthStr);
+    q.set("death_year", auth->deathYear);
+    q.set("death", auth->deathStr);
+    q.set("flags", flags);
 
     ML_ASSERT_RET(q.exec(m_query), 0);
 
@@ -211,17 +211,17 @@ void AuthorsManager::updateAuthor(AuthorInfoPtr auth)
     q.setTableName("authors");
     q.setQueryType(Utils::QueryBuilder::Update);
 
-    q.addColumn("name", auth->name);
-    q.addColumn("full_name", auth->fullName);
-    q.addColumn("info", auth->info);
+    q.set("name", auth->name);
+    q.set("full_name", auth->fullName);
+    q.set("info", auth->info);
 
-    q.addColumn("birth_year", auth->birthYear);
-    q.addColumn("birth", auth->birthStr);
-    q.addColumn("death_year", auth->deathYear);
-    q.addColumn("death", auth->deathStr);
-    q.addColumn("flags", flags);
+    q.set("birth_year", auth->birthYear);
+    q.set("birth", auth->birthStr);
+    q.set("death_year", auth->deathYear);
+    q.set("death", auth->deathStr);
+    q.set("flags", flags);
 
-    q.addWhere("id", auth->id);
+    q.where("id", auth->id);
 
     ML_ASSERT(q.exec(query));
 

@@ -21,7 +21,8 @@ DatabaseRemover::~DatabaseRemover()
 QueryBuilder::QueryBuilder() :
     m_type(None),
     m_igonreExisting(false),
-    m_dropExisting(false)
+    m_dropExisting(false),
+    m_limit(-1)
 {
 }
 
@@ -54,23 +55,49 @@ void QueryBuilder::setDropExistingTable(bool drop)
     m_dropExisting = drop;
 }
 
-void QueryBuilder::addColumn(const QVariant &colName, const QVariant &colValue)
+void QueryBuilder::select(const QVariant &colName)
+{
+    ML_ASSERT2(m_type == Select, "QueryBuilder::addColumn add column "
+               "without value should be only in select query");
+
+    m_colums.append(colName);
+}
+
+void QueryBuilder::set(const QVariant &colName, const QVariant &colValue)
 {
     m_colums.append(colName);
     m_values.append(colValue);
 }
 
-void QueryBuilder::addWhere(const QVariant &colName, const QVariant &colValue)
+void QueryBuilder::where(const QVariant &colName, const QVariant &colValue)
 {
     m_whereColums.append(colName);
     m_whereValues.append(colValue);
 }
 
+void QueryBuilder::orderBy(const QString &colName, QueryBuilder::Order order)
+{
+    m_orderColumns.append(QString("%1 %2")
+                          .arg(colName)
+                          .arg((order == Asc ? "ASC" : "DESC")));
+}
+
+void QueryBuilder::limit(int _limit)
+{
+    m_limit = _limit;
+}
+
 QString QueryBuilder::query()
 {
-    ML_ASSERT_RET2(m_type != None, "QueryBuilder: Query type is not set", QString());
-    ML_ASSERT_RET2(!m_tableName.isEmpty(), "QueryBuilder: Table name is not set", QString());
-    ML_ASSERT_RET2(m_values.size() == m_colums.size(), "QueryBuilder: Columns and values doesn't match", QString());
+    ML_ASSERT_RET2(m_type != None, "QueryBuilder::query Query type is not set", QString());
+    ML_ASSERT_RET2(!m_tableName.isEmpty(), "QueryBuilder::query Table name is not set", QString());
+    ML_ASSERT_RET2(m_type == Select || m_values.size() == m_colums.size(),
+                   "QueryBuilder::query Columns and values doesn't match", QString());
+
+    if(!m_whereColums.isEmpty()) {
+        ML_ASSERT_RET2(m_whereValues.size() == m_whereColums.size(),
+                       "QueryBuilder: Where columns and values doesn't match", QString());
+    }
 
     QString sql;
     if(m_type == Create) {
@@ -137,9 +164,6 @@ QString QueryBuilder::query()
         }
 
         if(!m_whereColums.isEmpty()) {
-            ML_ASSERT_RET2(m_whereValues.size() == m_whereColums.size(),
-                           "QueryBuilder: Where columns and values doesn't match", QString());
-
             sql += " WHERE ";
 
             for(int i=0; i<m_whereColums.size(); i++) {
@@ -151,6 +175,51 @@ QString QueryBuilder::query()
                 sql += '?';
             }
         }
+    } else if(m_type == Select) {
+        sql = "SELECT ";
+
+        if(!m_colums.isEmpty()) {
+            for(int i=0; i<m_colums.size(); i++) {
+                if(i)
+                    sql += ", ";
+
+                sql += m_colums[i].toString();
+            }
+        } else {
+            sql += "*";
+        }
+
+        sql += " FROM ";
+        sql += m_tableName;
+
+        if(!m_whereColums.isEmpty()) {
+            sql += " WHERE ";
+            for(int i=0; i<m_whereColums.size(); i++) {
+                if(i)
+                    sql += " AND ";
+
+                sql += m_whereColums[i].toString();
+                sql += " = ";
+                sql += '?';
+            }
+        }
+
+        if(!m_orderColumns.isEmpty()) {
+            sql += " ORDER BY ";
+
+            for(int i=0; i<m_orderColumns.size(); i++) {
+                if(i)
+                    sql += ", ";
+
+                sql += m_orderColumns[i];
+            }
+        }
+
+        if(m_limit != -1)
+            sql += QString(" LIMIT %1").arg(m_limit);
+
+    } else {
+        qWarning("QueryBuilder: Query type %d is not handled", m_type);
     }
 
     return sql;
@@ -158,9 +227,10 @@ QString QueryBuilder::query()
 
 void QueryBuilder::prepare(QSqlQuery &q)
 {
-    ML_ASSERT2(m_type != None, "QueryBuilder: Query type is not set");
-    ML_ASSERT2(!m_tableName.isEmpty(), "QueryBuilder: Table name is not set");
-    ML_ASSERT2(m_values.size() == m_colums.size(), "QueryBuilder: Columns and values doesn't match");
+    ML_ASSERT2(m_type != None, "QueryBuilder::prepare Query type is not set");
+    ML_ASSERT2(!m_tableName.isEmpty(), "QueryBuilder::prepare Table name is not set");
+    ML_ASSERT2(m_type == Select || m_values.size() == m_colums.size(),
+               "QueryBuilder::prepare Columns and values doesn't match");
 
     QString sql;
 
@@ -169,15 +239,15 @@ void QueryBuilder::prepare(QSqlQuery &q)
 
     q.prepare(sql);
 
-    ML_ASSERT(m_type != Create);
+    if(m_type != Create) {
+        for(int i=0; i<m_values.size(); i++)
+            q.bindValue(i, m_values[i]);
 
-    for(int i=0; i<m_values.size(); i++)
-        q.bindValue(i, m_values[i]);
-
-    ML_ASSERT(m_type == Update);
-
-    for(int i=0; i<m_whereValues.size(); i++)
-        q.bindValue(i+m_values.size(), m_whereValues[i]);
+        if(m_type == Update || m_type == Select) {
+            for(int i=0; i<m_whereValues.size(); i++)
+                q.bindValue(i+m_values.size(), m_whereValues[i]);
+        }
+    }
 }
 
 bool QueryBuilder::exec(QSqlQuery &q)
@@ -197,6 +267,8 @@ void QueryBuilder::clear()
     m_values.clear();
     m_whereColums.clear();
     m_whereValues.clear();
+    m_orderColumns.clear();
+    m_limit = -1;
 }
 
 }
