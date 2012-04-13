@@ -60,7 +60,7 @@ QString TextFormatter::getHtmlView(const QString &text, const QString &jsCode)
         helper.beginDivTag("#pageHeader");
 
         helper.beginDivTag(".bookInfo");
-        helper.insertSpanTag(m_book->bookDisplayName, ".bookName");
+        helper.insertSpanTag(m_book->title, ".bookName");
 
         helper.beginSpanTag("#partInfo");
         helper.insertSpanTag(tr("الجزء"), ".partText");

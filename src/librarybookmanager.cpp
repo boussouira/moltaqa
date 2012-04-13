@@ -47,16 +47,16 @@ void LibraryBookManager::loadLibraryBooks()
 
     while(query.next()) {
         LibraryBookPtr book(new LibraryBook());
-        book->bookID = query.value(0).toInt();
-        book->bookDisplayName = query.value(1).toString();
-        book->bookType = static_cast<LibraryBook::Type>(query.value(2).toInt());
-        book->bookInfo = query.value(5).toString();
+        book->id = query.value(0).toInt();
+        book->title = query.value(1).toString();
+        book->type = static_cast<LibraryBook::Type>(query.value(2).toInt());
+        book->info = query.value(5).toString();
 
         book->bookFlags = query.value(6).toInt();
         book->indexFlags = static_cast<LibraryBook::IndexFlags>(query.value(7).toInt());
 
         book->fileName = query.value(8).toString();
-        book->bookPath = MW->libraryInfo()->bookPath(book->fileName);
+        book->path = MW->libraryInfo()->bookPath(book->fileName);
 
         if(!book->isQuran()) {
             book->authorID = query.value(3).toInt();
@@ -68,7 +68,7 @@ void LibraryBookManager::loadLibraryBooks()
             }
         }
 
-        m_books.insert(book->bookID, book);
+        m_books.insert(book->id, book);
     }
 }
 
@@ -138,16 +138,16 @@ LibraryBookPtr LibraryBookManager::getLibraryBook(int bookID)
 
     if(query.next()) {
         LibraryBookPtr book(new LibraryBook());
-        book->bookID = query.value(0).toInt();
-        book->bookDisplayName = query.value(1).toString();
-        book->bookType = static_cast<LibraryBook::Type>(query.value(2).toInt());
-        book->bookInfo = query.value(5).toString();
+        book->id = query.value(0).toInt();
+        book->title = query.value(1).toString();
+        book->type = static_cast<LibraryBook::Type>(query.value(2).toInt());
+        book->info = query.value(5).toString();
 
         book->bookFlags = query.value(6).toInt();
         book->indexFlags = static_cast<LibraryBook::IndexFlags>(query.value(7).toInt());
 
         book->fileName = query.value(8).toString();
-        book->bookPath = MW->libraryInfo()->bookPath(book->fileName);
+        book->path = MW->libraryInfo()->bookPath(book->fileName);
 
         if(!book->isQuran()) {
             book->authorID = query.value(3).toInt();
@@ -159,7 +159,7 @@ LibraryBookPtr LibraryBookManager::getLibraryBook(int bookID)
             }
         }
 
-        m_books.insert(book->bookID, book);
+        m_books.insert(book->id, book);
 
         return book;
     }
@@ -191,8 +191,8 @@ int LibraryBookManager::addBook(LibraryBookPtr book)
 {
     QMutexLocker locker(&m_mutex);
 
-    if(!book->bookID)
-        book->bookID = getNewBookID();
+    if(!book->id)
+        book->id = getNewBookID();
 
     QSqlQuery query(m_db);
 
@@ -200,20 +200,20 @@ int LibraryBookManager::addBook(LibraryBookPtr book)
     q.setTableName("books");
     q.setQueryType(QueryBuilder::Insert);
 
-    q.set("id", book->bookID);
-    q.set("title", book->bookDisplayName);
-    q.set("type", book->bookType);
+    q.set("id", book->id);
+    q.set("title", book->title);
+    q.set("type", book->type);
     q.set("authorID", book->authorID);
     q.set("author", (!book->authorID) ? book->authorName : QVariant(QVariant::String));
-    q.set("info", book->bookInfo);
+    q.set("info", book->info);
     q.set("bookFlags", book->bookFlags);
     q.set("indexFlags", book->indexFlags);
     q.set("filename", book->fileName);
 
     ML_ASSERT_RET(q.exec(query), 0);
 
-    m_books.insert(book->bookID, book);
-    return book->bookID;
+    m_books.insert(book->id, book);
+    return book->id;
 }
 
 bool LibraryBookManager::updateBook(LibraryBookPtr book)
@@ -224,20 +224,20 @@ bool LibraryBookManager::updateBook(LibraryBookPtr book)
     q.setTableName("books");
     q.setQueryType(QueryBuilder::Update);
 
-    q.set("title", book->bookDisplayName);
-    q.set("type", book->bookType);
+    q.set("title", book->title);
+    q.set("type", book->type);
     q.set("authorID", book->authorID);
     q.set("author", (!book->authorID) ? book->authorName : QVariant(QVariant::String));
-    q.set("info", book->bookInfo);
+    q.set("info", book->info);
     q.set("bookFlags", book->bookFlags);
     q.set("indexFlags", book->indexFlags);
     q.set("filename", book->fileName);
 
-    q.where("id", book->bookID);
+    q.where("id", book->id);
 
     ML_ASSERT_RET(q.exec(query), false);
 
-    m_books.insert(book->bookID, book);
+    m_books.insert(book->id, book);
     return true;
 }
 

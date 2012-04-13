@@ -200,7 +200,7 @@ QString BooksViewer::viewLink()
     if(bookReader->bookInfo()->isQuran())
         link.append(QString("quran?sora=%1&aya=%2").arg(bookReader->page()->sora).arg(bookReader->page()->aya));
     else
-        link.append(QString("book?id=%1&page=%2").arg(bookReader->bookInfo()->bookID).arg(bookReader->page()->pageID));
+        link.append(QString("book?id=%1&page=%2").arg(bookReader->bookInfo()->id).arg(bookReader->page()->pageID));
 
     return link;
 }
@@ -209,7 +209,7 @@ int BooksViewer::currentBookID()
 {
     LibraryBookPtr book = m_viewManager->activeBook();
 
-    return book ? book->bookID : 0;
+    return book ? book->id : 0;
 }
 
 LibraryBookPtr BooksViewer::currentBook()
@@ -237,7 +237,7 @@ BookWidget *BooksViewer::openBook(int bookID, int pageID, CLuceneQuery *query)
             throw BookException(tr("لم يتم العثور على الكتاب المطلوب"), tr("معرف الكتاب: %1").arg(bookID));
 
         if(!bookInfo->exists())
-            throw BookException(tr("لم يتم العثور على ملف"), bookInfo->bookPath);
+            throw BookException(tr("لم يتم العثور على ملف"), bookInfo->path);
 
         if(bookInfo->isQuran())
             bookReader = new RichQuranReader();
@@ -246,7 +246,7 @@ BookWidget *BooksViewer::openBook(int bookID, int pageID, CLuceneQuery *query)
         else if(bookInfo->isTafessir())
             bookReader = new RichTafessirReader();
         else
-            throw BookException(tr("لم يتم التعرف على نوع الكتاب"), QString("Book Type: %1").arg(bookInfo->bookPath));
+            throw BookException(tr("لم يتم التعرف على نوع الكتاب"), QString("Book Type: %1").arg(bookInfo->path));
 
         bookReader->setBookInfo(bookInfo);
 
@@ -343,7 +343,7 @@ void BooksViewer::searchInBook()
     LibraryBookPtr book = m_viewManager->activeBook();
     ML_ASSERT(book);
 
-    MW->searchView()->newTab(SearchWidget::BookSearch, book->bookID);
+    MW->searchView()->newTab(SearchWidget::BookSearch, book->id);
     MW->showSearchView();
 }
 

@@ -90,7 +90,7 @@ void BookIndexer::indexBook(IndexTask *task)
     else if (task->book->isQuran())
         indexer = new QuranBookIndexer();
     else
-        throw BookException("Unknow book type", QString("Type: %1").arg(task->book->bookType));
+        throw BookException("Unknow book type", QString("Type: %1").arg(task->book->type));
 
     indexer->setLibraryBook(task->book);
     indexer->setIndexWriter(m_writer);

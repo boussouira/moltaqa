@@ -34,8 +34,8 @@ void AbstractBookReader::openBook()
 {
     ML_ASSERT2(m_bookInfo, "AbstractBookReader::openBook book is null");
 
-    if(!QFile::exists(m_bookInfo->bookPath)) {
-        throw BookException(tr("لم يتم العثور على ملف الكتاب"), bookInfo()->bookPath);
+    if(!QFile::exists(m_bookInfo->path)) {
+        throw BookException(tr("لم يتم العثور على ملف الكتاب"), bookInfo()->path);
     }
 
     ZipOpener opener(this);
@@ -46,11 +46,11 @@ void AbstractBookReader::openBook()
 
 void AbstractBookReader::openZip()
 {
-    m_zip.setZipName(m_bookInfo->bookPath);
+    m_zip.setZipName(m_bookInfo->path);
 
     if(!m_zip.open(QuaZip::mdUnzip)) {
         qCritical("Can't open book at '%s' Error: %d",
-                  qPrintable(m_bookInfo->bookPath),
+                  qPrintable(m_bookInfo->path),
                   m_zip.getZipError());
     }
 }
@@ -226,16 +226,16 @@ bool AbstractBookReader::getBookPage(LibraryBookPtr book, BookPage *page)
         return false;
     }
 
-    if(!QFile::exists(book->bookPath)) {
-        qWarning() << "File doesn't exists:" << book->bookPath;
+    if(!QFile::exists(book->path)) {
+        qWarning() << "File doesn't exists:" << book->path;
         return false;
     }
 
-    QFile zipFile(book->bookPath);
+    QFile zipFile(book->path);
     QuaZip zip(&zipFile);
 
     if(!zip.open(QuaZip::mdUnzip)) {
-        qWarning() << "Can't open zip file:" << book->bookPath << "- Error:" << zip.getZipError();
+        qWarning() << "Can't open zip file:" << book->path << "- Error:" << zip.getZipError();
     }
 
     if(book->isNormal())

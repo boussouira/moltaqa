@@ -103,8 +103,8 @@ void IndexManager::taskDone(IndexTask *task)
                  : (task->task==IndexTask::Delete
                     ? "Delete"
                     : "Update"))
-             << task->book->bookID
-             << task->book->bookDisplayName;
+             << task->book->id
+             << task->book->title;
 
 
     m_indexTracker->removeTask(task);

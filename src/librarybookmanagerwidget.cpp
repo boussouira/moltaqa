@@ -66,7 +66,7 @@ void LibraryBookManagerWidget::loadModel()
 void LibraryBookManagerWidget::infoChanged()
 {
     if(m_currentBook) {
-        m_editedBookInfo[m_currentBook->bookID] = m_currentBook;
+        m_editedBookInfo[m_currentBook->id] = m_currentBook;
 
         setModified(true);
     }
@@ -80,7 +80,7 @@ void LibraryBookManagerWidget::save()
         m_manager->transaction();
 
         foreach(LibraryBookPtr book, m_editedBookInfo.values()) {
-            qDebug("Saving book %d...", book->bookID);
+            qDebug("Saving book %d...", book->id);
             m_manager->updateBook(book);
         }
 
@@ -104,13 +104,13 @@ void LibraryBookManagerWidget::on_treeView_doubleClicked(const QModelIndex &inde
         // this will cause infoChanged() to ignore changes that we will made next
         m_currentBook.clear();
 
-        ui->lineDisplayName->setText(info->bookDisplayName);
+        ui->lineDisplayName->setText(info->title);
         ui->lineAuthorName->setText(info->authorName);
-        ui->plainBookInfo->setPlainText(info->bookInfo);
-        ui->plainBookNames->setText(info->bookOtherNames.replace(';', '\n'));
-        ui->lineEdition->setText(info->bookEdition);
-        ui->lineMohaqeq->setText(info->bookMohaqeq);
-        ui->linePublisher->setText(info->bookPublisher);
+        ui->plainBookInfo->setPlainText(info->info);
+        ui->plainBookNames->setText(info->otherTitles.replace(';', '\n'));
+        ui->lineEdition->setText(info->edition);
+        ui->lineMohaqeq->setText(info->mohaqeq);
+        ui->linePublisher->setText(info->publisher);
 
         enableEditWidgets(true);
         setupEdit(info);
@@ -145,13 +145,13 @@ void LibraryBookManagerWidget::setupEdit(LibraryBookPtr info)
 void LibraryBookManagerWidget::saveCurrentBookInfo()
 {
     if(m_currentBook) {
-        m_currentBook->bookDisplayName = ui->lineDisplayName->text().simplified();
+        m_currentBook->title = ui->lineDisplayName->text().simplified();
         m_currentBook->authorName = ui->lineAuthorName->text().simplified();
-        m_currentBook->bookInfo = ui->plainBookInfo->toPlainText();
-        m_currentBook->bookOtherNames = ui->plainBookNames->toPlainText().replace('\n', ';');
-        m_currentBook->bookEdition = ui->lineEdition->text().simplified();
-        m_currentBook->bookMohaqeq = ui->lineMohaqeq->text().simplified();
-        m_currentBook->bookPublisher = ui->linePublisher->text().simplified();
+        m_currentBook->info = ui->plainBookInfo->toPlainText();
+        m_currentBook->otherTitles = ui->plainBookNames->toPlainText().replace('\n', ';');
+        m_currentBook->edition = ui->lineEdition->text().simplified();
+        m_currentBook->mohaqeq = ui->lineMohaqeq->text().simplified();
+        m_currentBook->publisher = ui->linePublisher->text().simplified();
     }
 }
 

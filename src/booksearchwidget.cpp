@@ -43,12 +43,12 @@ SearchFilter *BookSearchWidget::getSearchFilterQuery()
 
 void BookSearchWidget::loadModel()
 {
-    QString m_connectionName = QString("book_i%1_").arg(m_bookInfo->bookID);
+    QString m_connectionName = QString("book_i%1_").arg(m_bookInfo->id);
     while(QSqlDatabase::contains(m_connectionName))
         m_connectionName.append("_");
 
     m_bookDB = QSqlDatabase::addDatabase("QSQLITE", m_connectionName);
-    m_bookDB.setDatabaseName(m_bookInfo->bookPath);
+    m_bookDB.setDatabaseName(m_bookInfo->path);
 
     if (!m_bookDB.open()) {
         LOG_DB_ERROR(m_bookDB);

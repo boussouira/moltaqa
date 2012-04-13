@@ -5,107 +5,24 @@
 
 LibraryBook::LibraryBook()
 {
-    partsCount = 0;
-    firstID = -1;
-    lastID = -1;
-    bookID = 0;
+    id = 0;
     authorID = 0;
     bookFlags = 0;
     indexFlags = NotIndexed;
-    m_hasInfo = false;
 }
 
 LibraryBook::~LibraryBook()
 {
 }
 
-void LibraryBook::setFirstPage(int count, int part)
-{
-    if(part <= partsCount)
-        m_firstPages.insert(part, count);
-    else
-        qWarning("The given part(%d) is out of range(%d)", part, partsCount);
-}
-
-int LibraryBook::firstPage(int part)
-{
-    if(part <= partsCount)
-        return m_firstPages.value(part);
-    else {
-        qWarning("The given part(%d) is out of range(%d)", part, partsCount);
-        return 0;
-    }
-}
-
-void LibraryBook::setLastPage(int count, int part)
-{
-    if(part <= partsCount)
-        m_lastPages.insert(part, count);
-    else
-        qWarning("The given part(%d) is out of range(%d)", part, partsCount);
-}
-
-int LibraryBook::lastPage(int part)
-{
-    if(part <= partsCount)
-        return m_lastPages.value(part);
-    else {
-        qWarning("The given part(%d) is out of range(%d)", part, partsCount);
-        return 0;
-    }
-}
-
 bool LibraryBook::exists()
 {
-    if(!bookPath.isEmpty()){
-        return QFile::exists(bookPath);
+    if(!path.isEmpty()){
+        return QFile::exists(path);
     } else {
         qWarning("Call to BookInfo::exists() before BookInfo::setBookPath()");
         return false;
     }
-}
-
-QString LibraryBook::toString()
-{
-    QString text;
-
-    text.append(QString("%1-%2;").arg(firstID).arg(lastID));
-    text.append(QString("%1:%2-%3").arg(partsCount).arg(firstPage()).arg(lastPage()));
-
-    return text;
-}
-
-void LibraryBook::fromString(QString info)
-{
-    ML_ASSERT(!info.isEmpty());
-
-    partsCount = info.count(';');
-    QStringList partInfoList;
-    bool idsProccessed = false;
-    int part=1;
-
-    foreach (QString partInfo, info.split(';', QString::SkipEmptyParts)) {
-        if(!idsProccessed) {
-            partInfoList = partInfo.split('-', QString::SkipEmptyParts);
-            firstID = partInfoList.first().toInt();
-            lastID = partInfoList.last().toInt();
-            idsProccessed = true;
-        } else {
-            partInfoList = partInfo.split(':', QString::SkipEmptyParts);
-            partsCount = partInfoList.first().toInt();
-            partInfoList = partInfoList.last().split('-', QString::SkipEmptyParts);
-            setFirstPage(partInfoList.first().toInt(), part);
-            setLastPage(partInfoList.last().toInt(), part);
-            part++;
-        }
-    }
-
-    m_hasInfo = true;
-}
-
-bool LibraryBook::haveInfo()
-{
-    return m_hasInfo;
 }
 
 LibraryBook *LibraryBook::clone()
@@ -113,17 +30,18 @@ LibraryBook *LibraryBook::clone()
     return new LibraryBook(*this);
 }
 
-QDebug operator<<(QDebug dbg, LibraryBook *info)
+QDebug operator<<(QDebug dbg, LibraryBookPtr &info)
 {
     dbg.nospace() << "BookInfo(\n\t"
-                  << "Type: " << info->bookType << "\n\t"
-                  << "Book name: " << info->bookDisplayName << "\n\t"
-                  << "Path: " << info->bookPath << "\n\t"
+                  << "ID: " << info->id << "\n\t"
+                  << "Type: " << info->type << "\n\t"
+                  << "Book name: " << info->title << "\n\t"
+                  << "Path: " << info->path << "\n\t"
                   << "Author: " << info->authorName << "\n\t"
-                  << "Edition: " << info->bookEdition << "\n\t"
-                  << "Publisher: " << info->bookPublisher << "\n\t"
-                  << "Mohaqeq: " << info->bookMohaqeq<< "\n\t"
-                  << "Info: " << info->bookInfo << "\n"
+                  << "Edition: " << info->edition << "\n\t"
+                  << "Publisher: " << info->publisher << "\n\t"
+                  << "Mohaqeq: " << info->mohaqeq<< "\n\t"
+                  << "Info: " << info->info << "\n"
                   << ")";
 
     return dbg.space();

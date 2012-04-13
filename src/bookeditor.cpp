@@ -45,7 +45,7 @@ bool BookEditor::open(LibraryBookPtr book)
         } else if(book->isTafessir()) {
             bookReader = new RichTafessirReader();
         } else {
-            qDebug() << "Can't edit book:" << book->bookPath;
+            qDebug() << "Can't edit book:" << book->path;
             return false;
         }
 
@@ -57,7 +57,7 @@ bool BookEditor::open(LibraryBookPtr book)
             m_bookReader = bookReader;
             m_book = book;
 
-            if(m_book->bookID != m_lastBookID)
+            if(m_book->id != m_lastBookID)
                 m_bookTmpDir.clear();
 
             m_removeReader = true;
@@ -77,7 +77,7 @@ void BookEditor::setBookReader(RichBookReader *reader)
     m_bookReader = reader;
     m_book = reader->bookInfo();
 
-    if(m_book->bookID != m_lastBookID) {
+    if(m_book->id != m_lastBookID) {
         removeTemp();
         m_bookTmpDir.clear();
     }
@@ -90,7 +90,7 @@ void BookEditor::unZip()
     ML_ASSERT(m_bookTmpDir.isEmpty());
     ML_ASSERT(!QFile::exists(m_bookTmpDir));
 
-    QString folder = QFileInfo(m_book->bookPath).baseName();
+    QString folder = QFileInfo(m_book->path).baseName();
     QDir dir(MW->libraryInfo()->tempDir());
 
     while(dir.exists(folder))
@@ -100,7 +100,7 @@ void BookEditor::unZip()
     dir.cd(folder);
     dir.mkdir("pages");
 
-    QFile zipFile(m_book->bookPath);
+    QFile zipFile(m_book->path);
     QuaZip zip(&zipFile);
 
     if(!zip.open(QuaZip::mdUnzip)) {
@@ -141,14 +141,14 @@ void BookEditor::unZip()
     }
 
     m_bookTmpDir = dir.path();
-    m_lastBookID = m_book->bookID;
+    m_lastBookID = m_book->id;
 }
 
 bool BookEditor::zip()
 {
     QFile zipFile(QString("%1/%2.zip")
                   .arg(MW->libraryInfo()->tempDir())
-                  .arg(QFileInfo(m_book->bookPath).baseName()));
+                  .arg(QFileInfo(m_book->path).baseName()));
 
     QuaZip zip(&zipFile);
     if(!zip.open(QuaZip::mdCreate)) {
@@ -178,7 +178,7 @@ bool BookEditor::zip()
 bool BookEditor::save()
 {
     // Delete Existing backup
-    QString backupFile = m_book->bookPath + ".back";
+    QString backupFile = m_book->path + ".back";
 
     if(QFile::exists(backupFile))
         QFile::remove(backupFile);
@@ -188,19 +188,19 @@ bool BookEditor::save()
     }
 
     // Create a new backup
-    if(QFile::copy(m_book->bookPath, backupFile)) {
-        QFile::remove(m_book->bookPath);
+    if(QFile::copy(m_book->path, backupFile)) {
+        QFile::remove(m_book->path);
     } else {
-        qWarning() << "Can't make a backup for:" << m_book->bookPath;
+        qWarning() << "Can't make a backup for:" << m_book->path;
         return false;
     }
 
     // Copy new book
-    if(QFile::copy(m_newBookPath, m_book->bookPath)) {
+    if(QFile::copy(m_newBookPath, m_book->path)) {
         QFile::remove(m_newBookPath);
         m_newBookPath.clear();
     } else {
-        qWarning() << "Can't copy" << m_newBookPath << "to" << m_book->bookPath;
+        qWarning() << "Can't copy" << m_newBookPath << "to" << m_book->path;
         return false;
     }
 

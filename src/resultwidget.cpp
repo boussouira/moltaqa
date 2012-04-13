@@ -184,7 +184,7 @@ void ResultWidget::lastTabClosed()
 void ResultWidget::openResult(int resultID)
 {
     SearchResult *result = m_searcher->getResult(resultID);
-    BookWidget *bookWidget = m_readerview->openBook(result->book->bookID,
+    BookWidget *bookWidget = m_readerview->openBook(result->book->id,
                                                         result->page->pageID,
                                                         m_searcher->getSearchQuery());
 

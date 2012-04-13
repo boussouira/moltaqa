@@ -168,8 +168,8 @@ void AuthorsView::setCurrentAuth(AuthorInfoPtr info)
                 bookHtml.insertBr();
 
             bookHtml.beginHtmlTag("a", "",
-                                  QString("href='moltaqa://open/book?id=%1'").arg(books[i]->bookID));
-            bookHtml.append(books[i]->bookDisplayName);
+                                  QString("href='moltaqa://open/book?id=%1'").arg(books[i]->id));
+            bookHtml.append(books[i]->title);
             bookHtml.endHtmlTag();
 
         }

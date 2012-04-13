@@ -256,7 +256,7 @@ void BookWidget::readerTextChanged()
                 continue;
 
             js += "{";
-            js += QString("'bookName' : '%1', ").arg(HtmlHelper::jsEscape(book->bookDisplayName));
+            js += QString("'bookName' : '%1', ").arg(HtmlHelper::jsEscape(book->title));
             js += QString("'bookID' : '%1', ").arg(shareeh.bookID);
             js += QString("'pageID' : '%1'").arg(shareeh.pageID);
             js += "},";

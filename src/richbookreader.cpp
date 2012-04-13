@@ -129,7 +129,7 @@ void RichBookReader::updateHistory()
 {
     QtConcurrent::run(m_bookmanager,
                       &LibraryBookManager::addBookHistory,
-                      m_bookInfo->bookID,
+                      m_bookInfo->id,
                       m_currentPage->pageID);
 }
 

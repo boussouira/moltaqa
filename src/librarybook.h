@@ -35,54 +35,34 @@ public:
         Ignore
     };
 
-    int firstPage(int part=1);
-    int lastPage(int part=1);
-
-    void setPagesCount(int count, int part=1);
-    void setFirstPage(int count, int part=1);
-    void setLastPage(int count, int part=1);
-
-    bool isQuran() { return bookType == QuranBook; }
-    bool isNormal() { return bookType == NormalBook; }
-    bool isTafessir() { return bookType == TafessirBook; }
+    bool isQuran() { return type == QuranBook; }
+    bool isNormal() { return type == NormalBook; }
+    bool isTafessir() { return type == TafessirBook; }
     bool exists();
 
-    QString toString();
-    void fromString(QString info);
-    bool haveInfo();
     QList<BookShorooh> shorooh;
 
     LibraryBook *clone();
 
 public:
-    LibraryBook::Type bookType;
-    QString bookPath;
+    LibraryBook::Type type;
+    QString path;
     QString fileName;
-    QString bookDisplayName;
-    QString bookOtherNames;
-    QString metaTable;
-    QString tafessirTable;
+    QString title;
+    QString otherTitles;
     QString authorName;
-    QString bookEdition;
-    QString bookPublisher;
-    QString bookMohaqeq;
-    QString bookInfo;
-    int partsCount;
-    int firstID;
-    int lastID;
-    int bookID;
+    QString edition;
+    QString publisher;
+    QString mohaqeq;
+    QString info;
+    int id;
     int authorID;
     int bookFlags;
     IndexFlags indexFlags;
-
-protected:
-    QHash<int, int> m_firstPages;
-    QHash<int, int> m_lastPages;
-    bool m_hasInfo;
 };
 
 typedef QSharedPointer<LibraryBook> LibraryBookPtr;
 
-QDebug operator<<(QDebug, LibraryBook *);
+QDebug operator<<(QDebug dbg, LibraryBookPtr &info);
 
 #endif // LIBRARYBOOK_H

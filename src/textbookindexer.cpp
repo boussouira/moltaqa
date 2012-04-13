@@ -33,7 +33,7 @@ void TextBookIndexer::open()
     else if (m_book->isQuran())
         m_reader = new TextQuranReader();
     else
-        throw BookException("Unknow book type", QString("Type: %1").arg(m_book->bookType));
+        throw BookException("Unknow book type", QString("Type: %1").arg(m_book->type));
 
     m_reader->setBookInfo(m_book);
     m_reader->openBook();
@@ -48,7 +48,7 @@ void TextBookIndexer::start()
     m_doc = new Document();
 
     BookPage *page = m_reader->page();
-    bookW = Utils::CLucene::intToWChar(m_book->bookID);
+    bookW = Utils::CLucene::intToWChar(m_book->id);
 
     while (m_reader->hasNext()) {
         m_reader->nextPage();

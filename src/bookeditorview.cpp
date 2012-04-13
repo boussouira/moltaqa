@@ -92,7 +92,7 @@ void BookEditorView::editBook(LibraryBookPtr book, int pageID)
     else if(book->isTafessir())
         m_bookReader = new RichTafessirReader(0, false);
      else
-        throw BookException(QString("Unknow book type %1").arg(book->bookType), book->bookPath);
+        throw BookException(QString("Unknow book type %1").arg(book->type), book->path);
 
     ui->widgetQuran->setVisible(!book->isNormal());
 
@@ -105,8 +105,8 @@ void BookEditorView::editBook(LibraryBookPtr book, int pageID)
 
     m_bookReader->goToPage(pageID);
 
-    ui->tabWidget->setTabText(0, Utils::String::abbreviate(book->bookDisplayName, 40));
-    ui->tabWidget->setTabToolTip(0, book->bookDisplayName);
+    ui->tabWidget->setTabText(0, Utils::String::abbreviate(book->title, 40));
+    ui->tabWidget->setTabToolTip(0, book->title);
 
     m_bookEditor->setBookReader(m_bookReader);
     m_timer->start();
@@ -207,7 +207,7 @@ bool BookEditorView::maySave(bool canCancel)
     if(!m_pages.isEmpty()) {
         int rep = QMessageBox::question(this,
                                         tr("حفظ التعديلات"),
-                                        tr("هل تريد حفظ التعديلات التي اجريتها على كتاب:\n%1؟").arg(m_bookReader->bookInfo()->bookDisplayName),
+                                        tr("هل تريد حفظ التعديلات التي اجريتها على كتاب:\n%1؟").arg(m_bookReader->bookInfo()->title),
                                         QMessageBox::Yes|(canCancel ? QMessageBox::No|QMessageBox::Cancel : QMessageBox::No),
                                         canCancel ? QMessageBox::Cancel : QMessageBox::No);
         if(rep == QMessageBox::No) {
@@ -297,7 +297,7 @@ void BookEditorView::save()
         LibraryBookPtr book = m_bookReader->bookInfo();
 
         if(m_bookEditor->save())
-            IndexTracker::instance()->addTask(book->bookID, IndexTask::Update);
+            IndexTracker::instance()->addTask(book->id, IndexTask::Update);
 
         dialog.setValue(dialog.value()+1);
 

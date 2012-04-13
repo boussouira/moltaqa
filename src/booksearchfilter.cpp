@@ -78,7 +78,7 @@ SearchFilter *BookSearchFilter::getQuranFilterQuery()
         soraQuery->add(termQuery, BooleanClause::SHOULD);
     }
 
-    wchar_t *bookIdStr = Utils::CLucene::intToWChar(m_book->bookID);
+    wchar_t *bookIdStr = Utils::CLucene::intToWChar(m_book->id);
     Term *term = new Term(BOOK_ID_FIELD, bookIdStr);
     TermQuery *bookQuery = new TermQuery(term);
 
@@ -111,7 +111,7 @@ SearchFilter *BookSearchFilter::getSimpleBookFilterQuery()
         pagesQuery->add(termQuery, BooleanClause::SHOULD);
     }
 
-    wchar_t *bookIdStr = Utils::CLucene::intToWChar(m_book->bookID);
+    wchar_t *bookIdStr = Utils::CLucene::intToWChar(m_book->id);
     Term *term = new Term(BOOK_ID_FIELD, bookIdStr);
     TermQuery *termQuery = new TermQuery(term);
 
@@ -179,13 +179,13 @@ void BookSearchFilter::open()
 {
     ML_ASSERT2(m_book, "BookSearchFilter::open book is null");
 
-    ML_ASSERT2(QFile::exists(m_book->bookPath),
-               tr("لم يتم العثور على ملف الكتاب") << m_book->bookPath);
+    ML_ASSERT2(QFile::exists(m_book->path),
+               tr("لم يتم العثور على ملف الكتاب") << m_book->path);
 
-    m_zip.setZipName(m_book->bookPath);
+    m_zip.setZipName(m_book->path);
 
     ML_ASSERT2(m_zip.open(QuaZip::mdUnzip),
-               tr("لا يمكن فتح ملف الكتاب") << m_book->bookPath << "\nError:" << m_zip.getZipError());
+               tr("لا يمكن فتح ملف الكتاب") << m_book->path << "\nError:" << m_zip.getZipError());
 }
 
 void BookSearchFilter::close()

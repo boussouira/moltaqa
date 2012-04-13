@@ -465,8 +465,8 @@ void ShamelaManager::importShorooh()
                 LibraryBookPtr mi = bookManager->getLibraryBook(mateen_libID);
                 LibraryBookPtr si = bookManager->getLibraryBook(shareeh_LibID);
 
-                qDebug() << "Mateen:" <<(mi ? mi->bookDisplayName : "????")
-                         << "Shareeh:" << (si ? si->bookDisplayName : "????");
+                qDebug() << "Mateen:" <<(mi ? mi->title : "????")
+                         << "Shareeh:" << (si ? si->title : "????");
 
                 // Start linking...
                 QSqlQuery specialQuery(m_shamelaSpecialDB);

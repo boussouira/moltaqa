@@ -182,16 +182,16 @@ void BookListManager::addBook(LibraryBookPtr book, int parentCat)
     QMutexLocker locker(&m_mutex);
 
     QDomElement bookElement = m_dom.domDocument().createElement("book");
-    bookElement.setAttribute("id", book->bookID);
-    bookElement.setAttribute("type", book->bookType);
+    bookElement.setAttribute("id", book->id);
+    bookElement.setAttribute("type", book->type);
     bookElement.setAttribute("authorid", book->authorID);
 
     QDomElement titleElement = m_dom.domDocument().createElement("title");
-    titleElement.appendChild(m_dom.domDocument().createTextNode(book->bookDisplayName));
+    titleElement.appendChild(m_dom.domDocument().createTextNode(book->title));
     bookElement.appendChild(titleElement);
 
     QDomElement bookInfoElement = m_dom.domDocument().createElement("info");
-    bookInfoElement.appendChild(m_dom.domDocument().createCDATASection(book->bookInfo));
+    bookInfoElement.appendChild(m_dom.domDocument().createCDATASection(book->info));
     bookElement.appendChild(bookInfoElement);
 
     QDomElement parentElement = m_catElementHash.value(parentCat, m_dom.rootElement());

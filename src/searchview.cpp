@@ -87,7 +87,7 @@ void SearchView::newTab(SearchWidget::SearchType searchType, int bookID)
     if(searchType == SearchWidget::BookSearch) {
         LibraryBookPtr book = LibraryManager::instance()->bookManager()->getLibraryBook(bookID);
         if(book) {
-            QString bookName = book->bookDisplayName;
+            QString bookName = book->title;
             QString shortBookName = Utils::String::abbreviate(bookName, 20);
 
             tabLabel = tr("بحث في %1").arg(shortBookName);

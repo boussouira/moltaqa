@@ -58,7 +58,7 @@ void ShemeHandler::openQuran(const QUrl &url)
     LibraryBookPtr quranBook = LibraryManager::instance()->bookManager()->getQuranBook();
     ML_ASSERT2(quranBook, "MoltaqaShemeHandler::openQuran quranBook is null");
 
-    BookWidget *w = BooksViewer::instance()->openBook(quranBook->bookID);
+    BookWidget *w = BooksViewer::instance()->openBook(quranBook->id);
     ML_ASSERT2(w, "MoltaqaShemeHandler::openQuran quranBook is null");
 
     w->openSora(sora, aya);

@@ -221,19 +221,19 @@ void BookWidgetManager::addToFavouite()
     LibraryBookPtr book = activeBook();
     ML_ASSERT(book);
 
-    if(m_libraryManager->favouritesManager()->containsBook(book->bookID)) {
+    if(m_libraryManager->favouritesManager()->containsBook(book->id)) {
         QMessageBox::information(this,
                                  tr("المفضلة"),
                                  tr("الكتاب <strong>%1</strong> موجودة في قائمة المفضلة")
-                                 .arg(book->bookDisplayName));
+                                 .arg(book->title));
     } else {
-        m_libraryManager->favouritesManager()->addBook(book->bookID, 0);
+        m_libraryManager->favouritesManager()->addBook(book->id, 0);
         m_libraryManager->favouritesManager()->reloadModels();
 
         QMessageBox::information(this,
                                  tr("المفضلة"),
                                  tr("تم اضافة <strong>%1</strong> الى المفضلة")
-                                 .arg(book->bookDisplayName));
+                                 .arg(book->title));
     }
 }
 
@@ -242,7 +242,7 @@ void BookWidgetManager::closeBook(int bookID)
     for(int i=m_topTab->count()-1; i>=0; i--) {
         BookWidget *bookWidget = qobject_cast<BookWidget*>(m_topTab->widget(i));
         if(bookWidget) {
-            if(bookWidget->bookReader()->bookInfo()->bookID == bookID) {
+            if(bookWidget->bookReader()->bookInfo()->id == bookID) {
                 QObject::metaObject()->invokeMethod(m_topTab, "tabCloseRequested",
                                                     Q_ARG(int, i));
             }
@@ -252,7 +252,7 @@ void BookWidgetManager::closeBook(int bookID)
     for(int i=m_bottomTab->count()-1; i>=0; i--) {
         BookWidget *bookWidget = qobject_cast<BookWidget*>(m_bottomTab->widget(i));
         if(bookWidget) {
-            if(bookWidget->bookReader()->bookInfo()->bookID == bookID) {
+            if(bookWidget->bookReader()->bookInfo()->id == bookID) {
                 QObject::metaObject()->invokeMethod(m_bottomTab, "tabCloseRequested",
                                                     Q_ARG(int, i));
             }
@@ -265,7 +265,7 @@ BookWidget *BookWidgetManager::getBookWidget(int bookID)
     for(int i=0; i<m_topTab->count(); i++) {
         BookWidget *bookWidget = qobject_cast<BookWidget*>(m_topTab->widget(i));
         if(bookWidget) {
-            if(bookWidget->bookReader()->bookInfo()->bookID == bookID) {
+            if(bookWidget->bookReader()->bookInfo()->id == bookID) {
                 return bookWidget;
             }
         }
@@ -274,7 +274,7 @@ BookWidget *BookWidgetManager::getBookWidget(int bookID)
     for(int i=0; i<m_bottomTab->count(); i++) {
         BookWidget *bookWidget = qobject_cast<BookWidget*>(m_bottomTab->widget(i));
         if(bookWidget) {
-            if(bookWidget->bookReader()->bookInfo()->bookID == bookID) {
+            if(bookWidget->bookReader()->bookInfo()->id == bookID) {
                 return bookWidget;
             }
         }

@@ -29,15 +29,15 @@ void SearchResult::generateHTML()
 
     helper.endDivTag(); //div.resultHead
 
-    helper.beginDivTag(".resultText", QString("bookid='%1' rid='%2'").arg(book->bookID).arg(resultID));
+    helper.beginDivTag(".resultText", QString("bookid='%1' rid='%2'").arg(book->id).arg(resultID));
     helper.append(snippet.simplified());
     helper.endDivTag();
 
-    helper.beginDivTag(".resultInfo", QString("bookid='b%1'").arg(book->bookID));
+    helper.beginDivTag(".resultInfo", QString("bookid='b%1'").arg(book->id));
 
     helper.beginDivTag(".bookInfo");
     helper.insertSpanTag(QObject::tr("كتاب:"), ".book");
-    helper.insertSpanTag(book->bookDisplayName, ".bookName");
+    helper.insertSpanTag(book->title, ".bookName");
     helper.endDivTag();
 
     helper.beginDivTag(".pageInfo");

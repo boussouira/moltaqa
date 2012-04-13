@@ -98,7 +98,7 @@ int LibraryManager::addBook(ImportModelNode *node)
 
         addBook(book, node->catID);
 
-        return book->bookID;
+        return book->id;
     } else {
         qWarning() << "Can't copy" << node->bookPath << "to" << newPath;
         return -1;
