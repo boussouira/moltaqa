@@ -146,9 +146,9 @@ void LibraryCreator::addAuthor(ShamelaAuthorInfo *auth, bool checkExist)
 
 void LibraryCreator::addBook(ShamelaBookInfo *book)
 {
-    Utils::DatabaseRemover remover;
+    DatabaseRemover remover;
     QString connName(QString("mdb_%1_%2").arg(m_threadID).arg(book->archive));
-    QString path = Utils::genBookName(m_library->booksDir(), true);
+    QString path = Utils::Rand::fileName(m_library->booksDir(), true);
 
     NewBookWriter bookWrite;
     bookWrite.createNewBook(path);
@@ -232,7 +232,7 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
 void LibraryCreator::addQuran()
 {
     QString connName(QString("shamela_quran_%1").arg(m_threadID));
-    QString path = Utils::genBookName(m_library->booksDir(), true);
+    QString path = Utils::Rand::fileName(m_library->booksDir(), true);
     QString tempDB;
 
     {

@@ -17,7 +17,7 @@ newQuranWriter::newQuranWriter()
 void newQuranWriter::createNewBook(QString bookPath)
 {
     if(bookPath.isEmpty())
-        m_bookPath = Utils::genBookName(m_tempFolder, true);
+        m_bookPath = Utils::Rand::fileName(m_tempFolder, true);
     else
         m_bookPath = bookPath;
 

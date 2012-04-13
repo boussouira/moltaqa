@@ -14,47 +14,25 @@
 class QSqlQuery;
 class QSqlDatabase;
 
-namespace Plural {
-enum {
-    SECOND  = 1,
-    MINUTE,
-    HOUR,
-    BOOK,
-    AUTHOR,
-    CATEGORIE,
-    FILES
-};
-}
-
 namespace Utils {
-/**
-  Generate a random file name with book extension
-  @param path Books folder path
-  @param fullPath if false return file name only, if true return the full path
-*/
-
-QString genBookName(QString path, bool fullPath=false, QString ext="alb", QString namePrefix="book_");
-int randInt(int smin, int smax);
-
-QString arPlural(int count, int word, bool html=false);
-QString secondsToString(int milsec, bool html=false);
-QString abbreviate(QString str, int size);
-QString hijriYear(int hYear);
-QString arClean(QString text);
-bool arCompare(QString first, QString second);
-bool arContains(QString src, QString text);
-bool arFuzzyContains(QString first, QString second);
-
-int hijriToGregorian(int hYear);
-int gregorianToHijri(int gYear);
 
 bool isLibraryPath(QString path);
 void createIndexDB(QString path);
 
-void saveWidgetPosition(QWidget *w, QString section);
-void restoreWidgetPosition(QWidget *w, QString section, bool showMaximized=false);
+namespace Rand {
+QString fileName(QString path, bool fullPath=false, QString ext="alb", QString namePrefix="book_");
+int number(int smin, int smax);
+}
 
+namespace Widget {
+void savePosition(QWidget *w, QString section);
+void restorePosition(QWidget *w, QString section, bool showMaximized=false);
+}
+
+namespace Files {
 void removeDir(const QString &path);
+}
+
 }
 
 namespace App {

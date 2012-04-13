@@ -6,8 +6,6 @@
 
 class QSqlQuery;
 
-namespace Utils {
-
 class DatabaseRemover
 {
 public:
@@ -66,7 +64,5 @@ protected:
     bool m_dropExisting;
     int m_limit;
 };
-
-}
 
 #endif // SQLUTILS_H

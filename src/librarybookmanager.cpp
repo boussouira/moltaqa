@@ -196,9 +196,9 @@ int LibraryBookManager::addBook(LibraryBookPtr book)
 
     QSqlQuery query(m_db);
 
-    Utils::QueryBuilder q;
+    QueryBuilder q;
     q.setTableName("books");
-    q.setQueryType(Utils::QueryBuilder::Insert);
+    q.setQueryType(QueryBuilder::Insert);
 
     q.set("id", book->bookID);
     q.set("title", book->bookDisplayName);
@@ -220,9 +220,9 @@ bool LibraryBookManager::updateBook(LibraryBookPtr book)
 {
     QSqlQuery query(m_db);
 
-    Utils::QueryBuilder q;
+    QueryBuilder q;
     q.setTableName("books");
-    q.setQueryType(Utils::QueryBuilder::Update);
+    q.setQueryType(QueryBuilder::Update);
 
     q.set("title", book->bookDisplayName);
     q.set("type", book->bookType);
@@ -277,9 +277,9 @@ void LibraryBookManager::setBookIndexStat(int bookID, LibraryBook::IndexFlags in
 {
     QSqlQuery query(m_db);
 
-    Utils::QueryBuilder q;
+    QueryBuilder q;
     q.setTableName("books");
-    q.setQueryType(Utils::QueryBuilder::Update);
+    q.setQueryType(QueryBuilder::Update);
 
     q.set("indexFlags", indexFlag);
     q.where("id", bookID);
@@ -317,8 +317,8 @@ void LibraryBookManager::addBookHistory(int bookID, int pageID)
 
     qint64 t = QDateTime::currentDateTime().toMSecsSinceEpoch();
 
-    Utils::QueryBuilder q;
-    q.setTableName("history", Utils::QueryBuilder::Insert);
+    QueryBuilder q;
+    q.setTableName("history", QueryBuilder::Insert);
 
     q.set("book", bookID);
     q.set("page", pageID);
@@ -326,7 +326,7 @@ void LibraryBookManager::addBookHistory(int bookID, int pageID)
 
     q.exec(query);
 
-    q.setTableName("last_open", Utils::QueryBuilder::Replace);
+    q.setTableName("last_open", QueryBuilder::Replace);
 
     q.set("book", bookID);
     q.set("page", pageID);
@@ -339,8 +339,8 @@ int LibraryBookManager::bookLastPageID(int bookID)
 {
     QSqlQuery query(m_db);
 
-    Utils::QueryBuilder q;
-    q.setTableName("last_open", Utils::QueryBuilder::Select);
+    QueryBuilder q;
+    q.setTableName("last_open", QueryBuilder::Select);
 
     q.select("page");
     q.where("book", bookID);
@@ -355,7 +355,7 @@ int LibraryBookManager::getNewBookID()
     int bookID =  0;
 
     do {
-        bookID = Utils::randInt(111111, 999999);
+        bookID = Utils::Rand::number(111111, 999999);
     } while(m_books.contains(bookID));
 
     return bookID;

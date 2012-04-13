@@ -8,6 +8,7 @@
 #include "arabicanalyzer.h"
 #include "bookindexer.h"
 #include "utils.h"
+#include "timeutils.h"
 
 IndexManager::IndexManager(QObject *parent) :
     QObject(parent)
@@ -121,7 +122,7 @@ void IndexManager::threadDoneIndexing()
         ML_DELETE_CHECK(m_analyzer);
         ML_DELETE_CHECK(m_taskIter);
 
-        qDebug() << tr("تمت الفهرسة خلال %1").arg(Utils::secondsToString(m_indexingTime.elapsed()));
+        qDebug() << tr("تمت الفهرسة خلال %1").arg(Utils::Time::secondsToString(m_indexingTime.elapsed()));
 
         qDeleteAll(m_threads);
         m_threads.clear();

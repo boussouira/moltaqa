@@ -4,6 +4,7 @@
 #include <qdebug.h>
 
 namespace Utils {
+namespace Xml {
 
 QDomDocument getDomDocument(const QString &filePath)
 {
@@ -60,4 +61,5 @@ QDomNode findChildText(QDomElement &parent, QDomDocument &doc, bool cdata)
     return child;
 }
 
+}
 }

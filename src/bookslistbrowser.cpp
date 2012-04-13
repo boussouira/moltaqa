@@ -65,12 +65,12 @@ void BooksListBrowser::closeEvent(QCloseEvent *event)
 
 void BooksListBrowser::loadSettings()
 {
-    Utils::restoreWidgetPosition(this, "BooksListWidget");
+    Utils::Widget::restorePosition(this, "BooksListWidget");
 }
 
 void BooksListBrowser::saveSettings()
 {
-    Utils::saveWidgetPosition(this, "BooksListWidget");
+    Utils::Widget::savePosition(this, "BooksListWidget");
 
     QSettings settings;
 
@@ -144,7 +144,7 @@ void BooksListBrowser::itemClicked(QModelIndex index)
 
 void BooksListBrowser::bookListMenu(QPoint /*point*/)
 {
-    QModelIndex index = Utils::selectedIndex(ui->treeBookList);
+    QModelIndex index = Utils::Model::selectedIndex(ui->treeBookList);
     ML_ASSERT(index.isValid());
 
     int bookType = index.sibling(index.row(), 0).data(ItemRole::itemTypeRole).toInt();

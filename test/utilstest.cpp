@@ -19,7 +19,7 @@ void UtilsTest::randInt()
     bool randInt = true;
 
     while(--count>0) {
-        int rnd = Utils::randInt(rmin, rmax);
+        int rnd = Utils::Rand::number(rmin, rmax);
         randInt = (rmin <= rnd && rnd <= rmax);
 
         if(!randInt)
@@ -32,65 +32,65 @@ void UtilsTest::randInt()
 void UtilsTest::generateFileName()
 {
     // Defaut file name prefix
-    QString name = Utils::genBookName(QApplication::applicationDirPath());
+    QString name = Utils::Rand::fileName(QApplication::applicationDirPath());
     QVERIFY(name.startsWith("book_"));
     QVERIFY(name.endsWith(".alb"));
 
-    QString name3 = Utils::genBookName(QApplication::applicationDirPath(), true);
+    QString name3 = Utils::Rand::fileName(QApplication::applicationDirPath(), true);
     QVERIFY(name3.startsWith(QString("%1/book_").arg(QApplication::applicationDirPath())));
     QVERIFY(name3.endsWith(".alb"));
 
     // Custom suffix
-    QString name2 = Utils::genBookName(QApplication::applicationDirPath(), false, "sqlite");
+    QString name2 = Utils::Rand::fileName(QApplication::applicationDirPath(), false, "sqlite");
     QVERIFY(name2.startsWith("book_"));
     QVERIFY(name2.endsWith(".sqlite"));
 
-    QString name4 = Utils::genBookName(QApplication::applicationDirPath(), true, "sqlite");
+    QString name4 = Utils::Rand::fileName(QApplication::applicationDirPath(), true, "sqlite");
     QVERIFY(name4.startsWith(QString("%1/book_").arg(QApplication::applicationDirPath())));
     QVERIFY(name4.endsWith(".sqlite"));
 
     // Custom file name prefix
-    QString name5 = Utils::genBookName(QApplication::applicationDirPath(), false, "sqlite", "mdb_");
+    QString name5 = Utils::Rand::fileName(QApplication::applicationDirPath(), false, "sqlite", "mdb_");
     QVERIFY(name5.startsWith("mdb_"));
     QVERIFY(name5.endsWith(".sqlite"));
 
-    QString name6 = Utils::genBookName(QApplication::applicationDirPath(), true, "sqlite", "mdb_");
+    QString name6 = Utils::Rand::fileName(QApplication::applicationDirPath(), true, "sqlite", "mdb_");
     QVERIFY(name6.startsWith(QString("%1/mdb_").arg(QApplication::applicationDirPath())));
     QVERIFY(name6.endsWith(".sqlite"));
 }
 
 void UtilsTest::arClean()
 {
-    QCOMPARE(Utils::arClean(u("احمد")), u("احمد"));
+    QCOMPARE(Utils::String::Arabic::clean(u("احمد")), u("احمد"));
 
-    QCOMPARE(Utils::arClean(u("أحمد  ")), u("احمد"));
+    QCOMPARE(Utils::String::Arabic::clean(u("أحمد  ")), u("احمد"));
 
-    QCOMPARE(Utils::arClean(u("إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ")),
+    QCOMPARE(Utils::String::Arabic::clean(u("إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ")),
              u("اياك نعبد واياك نستعين"));
 
-    QCOMPARE(Utils::arClean(u("إِنَّ فِي ذَلِكَ لَآيَةً لِقَوْمٍ يَتَفَكَّرُونَ")),
+    QCOMPARE(Utils::String::Arabic::clean(u("إِنَّ فِي ذَلِكَ لَآيَةً لِقَوْمٍ يَتَفَكَّرُونَ")),
              u("ان في ذلك لايه لقوم يتفكرون"));
 }
 
 void UtilsTest::arCompare()
 {
-    QVERIFY(Utils::arCompare(u("وَتَرَى الْفُلْكَ مَوَاخِرَ فِيهِ وَلِتَبْتَغُوا مِنْ فَضْلِهِ وَلَعَلَّكُمْ تَشْكُرُونَ"),
+    QVERIFY(Utils::String::Arabic::compare(u("وَتَرَى الْفُلْكَ مَوَاخِرَ فِيهِ وَلِتَبْتَغُوا مِنْ فَضْلِهِ وَلَعَلَّكُمْ تَشْكُرُونَ"),
                               u("وتري الفلك مواخر فيه ولتبتغوا من فضله ولعلكم تشكرون")));
-    QVERIFY(Utils::arCompare(u("قُلْ هُوَ اللَّهُ أَحَدٌ"),
+    QVERIFY(Utils::String::Arabic::compare(u("قُلْ هُوَ اللَّهُ أَحَدٌ"),
                              u("قل هُوَ الله     احد")));
 }
 
 void UtilsTest::arContains()
 {
-    QVERIFY(Utils::arContains(u("الله اكبر"), u("الله")));
-    QVERIFY(! Utils::arContains(u("الله"), u("الله اكبر")));
+    QVERIFY(Utils::String::Arabic::contains(u("الله اكبر"), u("الله")));
+    QVERIFY(! Utils::String::Arabic::contains(u("الله"), u("الله اكبر")));
 }
 
 void UtilsTest::arFuzzyContains()
 {
-    QVERIFY(Utils::arFuzzyContains(u("الله اكبر"), u("الله")));
-    QVERIFY(Utils::arFuzzyContains(u("الله"), u("الله اكبر")));
-    QVERIFY(Utils::arFuzzyContains(u("الله"), u("قُلْ هُوَ اللَّهُ أَحَدٌ")));
+    QVERIFY(Utils::String::Arabic::fuzzyContains(u("الله اكبر"), u("الله")));
+    QVERIFY(Utils::String::Arabic::fuzzyContains(u("الله"), u("الله اكبر")));
+    QVERIFY(Utils::String::Arabic::fuzzyContains(u("الله"), u("قُلْ هُوَ اللَّهُ أَحَدٌ")));
 }
 
 void UtilsTest::removeHtmlSpecialChars()
@@ -201,13 +201,13 @@ void UtilsTest::queryBuilder()
 
     QSqlQuery query(db);
 
-    int id = Utils::randInt(1, 500);
+    int id = Utils::Rand::number(1, 500);
 
     // Create new table
-    Utils::QueryBuilder q;
+    QueryBuilder q;
     q.setTableName("BooksInfo");
     q.setIgnoreExistingTable(true);
-    q.setQueryType(Utils::QueryBuilder::Create);
+    q.setQueryType(QueryBuilder::Create);
 
     q.set("id", "INT");
     q.set("name", "TEXT");
@@ -217,7 +217,7 @@ void UtilsTest::queryBuilder()
 
     // Insert values to table
     for(int i=0; i<5; i++) {
-        q.setQueryType(Utils::QueryBuilder::Insert);
+        q.setQueryType(QueryBuilder::Insert);
 
         q.set("id", id+i);
         q.set("name", "The rate of hacking");
@@ -227,7 +227,7 @@ void UtilsTest::queryBuilder()
     }
 
     // Update values
-    q.setQueryType(Utils::QueryBuilder::Update);
+    q.setQueryType(QueryBuilder::Update);
 
     q.set("name", "The Art Of Hacking");
     q.set("path", "test.pdf");
@@ -238,11 +238,11 @@ void UtilsTest::queryBuilder()
     QVERIFY(q.exec(query));
 
     // Select updated value
-    q.setQueryType(Utils::QueryBuilder::Select);
+    q.setQueryType(QueryBuilder::Select);
     q.select("name");
     q.select("path");
 
-    q.orderBy("id", Utils::QueryBuilder::Asc);
+    q.orderBy("id", QueryBuilder::Asc);
 
     QVERIFY(q.exec(query));
     QVERIFY(query.next());
@@ -251,13 +251,13 @@ void UtilsTest::queryBuilder()
     QCOMPARE(query.value(1).toString(), QString("test.pdf"));
 
     // Select updated value with where
-    q.setQueryType(Utils::QueryBuilder::Select);
+    q.setQueryType(QueryBuilder::Select);
     q.select("name");
     q.select("path");
 
     q.where("id", id);
 
-    q.orderBy("id", Utils::QueryBuilder::Desc);
+    q.orderBy("id", QueryBuilder::Desc);
     q.limit(1);
 
     QVERIFY(q.exec(query));

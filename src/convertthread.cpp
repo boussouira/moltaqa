@@ -68,7 +68,7 @@ void ConvertThread::run()
 
 void ConvertThread::ConvertShamelaBook(const QString &path)
 {
-    Utils::DatabaseRemover remover;
+    DatabaseRemover remover;
 
 #ifdef USE_MDBTOOLS
     MdbConverter mdb;

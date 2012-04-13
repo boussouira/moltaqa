@@ -38,7 +38,7 @@ selectAuthorDialog::~selectAuthorDialog()
 
 void selectAuthorDialog::selectAuthor()
 {
-    QModelIndex index = Utils::selectedIndex(ui->treeView);
+    QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
     if(index.isValid()) {
         m_authorName = index.data().toString();
         m_authorID = index.data(ItemRole::authorIdRole).toInt();

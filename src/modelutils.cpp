@@ -4,6 +4,7 @@
 #include <qtreeview.h>
 
 namespace Utils {
+namespace Model {
 
 QModelIndex fitchChild(QModelIndex parent, int tid)
 {
@@ -58,10 +59,10 @@ QModelIndex changeParent(QStandardItemModel *model, QModelIndex child, QModelInd
 {
     QModelIndex currentParent = child.parent();
 
-    QStandardItem *currentParentItem = itemFromIndex(model, currentParent);
+    QStandardItem *currentParentItem = Model::itemFromIndex(model, currentParent);
     QList<QStandardItem*> childItems = currentParentItem->takeRow(child.row());
 
-    QStandardItem *newParentItem = itemFromIndex(model, newParent);
+    QStandardItem *newParentItem = Model::itemFromIndex(model, newParent);
 
     if(!newParentItem)
         return QModelIndex();
@@ -84,7 +85,7 @@ void swap(QStandardItemModel *model, QModelIndex fromIndex, QModelIndex toIndex)
 
     QModelIndex parent = fromIndex.parent();
 
-    QStandardItem *parentItem = itemFromIndex(model, parent);
+    QStandardItem *parentItem = Model::itemFromIndex(model, parent);
 
     ML_ASSERT(parentItem);
 
@@ -110,7 +111,7 @@ void selectIndex(QTreeView *tree, QModelIndex index)
 
 void moveUp(QStandardItemModel *model, QTreeView *tree)
 {
-    QModelIndex index = selectedIndex(tree);
+    QModelIndex index = Model::selectedIndex(tree);
     ML_ASSERT(index.isValid());
 
     QModelIndex toIndex = index.sibling(index.row()-1, index.column());
@@ -120,13 +121,13 @@ void moveUp(QStandardItemModel *model, QTreeView *tree)
     tree->collapse(toIndex);
     tree->scrollTo(toIndex, QAbstractItemView::EnsureVisible);
 
-    swap(model, index, toIndex);
-    selectIndex(tree, toIndex);
+    Model::swap(model, index, toIndex);
+    Model::selectIndex(tree, toIndex);
 }
 
 void moveDown(QStandardItemModel *model, QTreeView *tree)
 {
-    QModelIndex index = selectedIndex(tree);
+    QModelIndex index = Model::selectedIndex(tree);
     ML_ASSERT(index.isValid());
 
     QModelIndex toIndex = index.sibling(index.row()+1, index.column());
@@ -136,31 +137,31 @@ void moveDown(QStandardItemModel *model, QTreeView *tree)
     tree->collapse(toIndex);
     tree->scrollTo(toIndex, QAbstractItemView::EnsureVisible);
 
-    swap(model, index, toIndex);
-    selectIndex(tree, toIndex);
+    Model::swap(model, index, toIndex);
+    Model::selectIndex(tree, toIndex);
 }
 
 void moveRight(QStandardItemModel *model, QTreeView *tree)
 {
-    QModelIndex index = selectedIndex(tree);
+    QModelIndex index = Model::selectedIndex(tree);
     QModelIndex parent = index.parent();
     ML_ASSERT(index.isValid() && parent.isValid());
 
     QModelIndex newParent = parent.parent();
 
-    QModelIndex changedIndex = changeParent(model, index, newParent, parent.row()+1);
-    selectIndex(tree, changedIndex);
+    QModelIndex changedIndex = Model::changeParent(model, index, newParent, parent.row()+1);
+    Model::selectIndex(tree, changedIndex);
 }
 
 void moveLeft(QStandardItemModel *model, QTreeView *tree)
 {
-    QModelIndex index = selectedIndex(tree);
+    QModelIndex index = Model::selectedIndex(tree);
     ML_ASSERT(index.isValid());
 
     QModelIndex parent = index.sibling(index.row()-1, index.column());
 
-    QModelIndex changedIndex = changeParent(model, index, parent);
-    selectIndex(tree, changedIndex);
+    QModelIndex changedIndex = Model::changeParent(model, index, parent);
+    Model::selectIndex(tree, changedIndex);
 }
 
 QList<QList<QStandardItem*> > getItemChilds(QStandardItem *item, int columnCount)
@@ -243,4 +244,5 @@ void setModelCheckable(QStandardItemModel *model, bool checkable)
     setItemCheckable(item, checkable);
 }
 
+}
 }

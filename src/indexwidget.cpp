@@ -135,7 +135,7 @@ void IndexWidget::selectTitle(int tid)
     }
 
     if(!index.isValid())
-        index = Utils::findModelIndex(ui->treeView->model(), tid);
+        index = Utils::Model::findModelIndex(ui->treeView->model(), tid);
 
     if(index.isValid()) {
         ui->treeView->clearSelection();

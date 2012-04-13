@@ -5,6 +5,7 @@
 #include "mainwindow.h"
 #include "indexmanager.h"
 #include "librarybookmanager.h"
+#include "stringutils.h"
 
 #include <qboxlayout.h>
 #include <qmessagebox.h>
@@ -87,7 +88,7 @@ void SearchView::newTab(SearchWidget::SearchType searchType, int bookID)
         LibraryBookPtr book = LibraryManager::instance()->bookManager()->getLibraryBook(bookID);
         if(book) {
             QString bookName = book->bookDisplayName;
-            QString shortBookName = Utils::abbreviate(bookName, 20);
+            QString shortBookName = Utils::String::abbreviate(bookName, 20);
 
             tabLabel = tr("بحث في %1").arg(shortBookName);
             tabTooltip = tr("بحث في %1").arg(bookName);

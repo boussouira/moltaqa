@@ -215,7 +215,7 @@ void BookSearchFilter::loadSimpleBookModel(QStandardItemModel *model)
     ML_ASSERT2(m_zip.setCurrentFile("titles.xml"), "loadSimpleBookModel: setCurrentFile error"  << titleFile.getZipError());
     ML_ASSERT2(titleFile.open(QIODevice::ReadOnly), "loadSimpleBookModel: open error" << titleFile.getZipError());
 
-    QDomDocument doc = Utils::getDomDocument(&titleFile);
+    QDomDocument doc = Utils::Xml::getDomDocument(&titleFile);
     QDomElement root = doc.documentElement();
     QDomElement element = root.firstChildElement();
 

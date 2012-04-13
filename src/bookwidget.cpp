@@ -308,7 +308,7 @@ void BookWidget::showIndex()
 
 void BookWidget::showIndex(int tid)
 {
-    QModelIndex index = Utils::findModelIndex(m_indexWidget->indexModel(), tid);
+    QModelIndex index = Utils::Model::findModelIndex(m_indexWidget->indexModel(), tid);
     ML_ASSERT(index.isValid());
 
     QModelIndex child = index.child(0, 0);
@@ -338,7 +338,7 @@ void BookWidget::showIndex(int tid)
 QString BookWidget::getBreadcrumbs()
 {
     QList<QPair<int, QString> > list;
-    QModelIndex index = Utils::findModelIndex(m_indexWidget->indexModel(), m_db->page()->titleID);
+    QModelIndex index = Utils::Model::findModelIndex(m_indexWidget->indexModel(), m_db->page()->titleID);
 
     while (index.isValid()) {
         list.append(qMakePair(index.data(ItemRole::idRole).toInt(), index.data().toString()));

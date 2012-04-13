@@ -4,6 +4,7 @@
 #include "clconstants.h"
 #include "librarybook.h"
 #include "utils.h"
+#include "stringutils.h"
 #include "abstractbookreader.h"
 #include "librarybookmanager.h"
 
@@ -158,7 +159,7 @@ void LibrarySearcher::fetech()
             SearchResult *result = new SearchResult(book, page);
             if(searchIsInTitle) {
                 result->page->title = Utils::highlightText(page->title, m_cluceneQuery, true);
-                result->snippet = Utils::abbreviate(page->text, 120);
+                result->snippet = Utils::String::abbreviate(page->text, 120);
             } else {
                 result->snippet = Utils::highlightText(page->text, m_cluceneQuery, true);
             }

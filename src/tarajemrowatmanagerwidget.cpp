@@ -5,6 +5,7 @@
 #include "utils.h"
 #include "modelenums.h"
 #include "modelutils.h"
+#include "timeutils.h"
 #include <qstandarditemmodel.h>
 #include <qinputdialog.h>
 #include <qmessagebox.h>
@@ -238,9 +239,9 @@ void TarajemRowatManagerWidget::birthDeathChanged()
     ML_ASSERT(m_currentRawi);
 
     if(spin == ui->spinBirth) {
-        ui->lineBirthText->setText(Utils::hijriYear(spin->value()));
+        ui->lineBirthText->setText(Utils::Time::hijriYear(spin->value()));
     } else if(spin == ui->spinDeath) {
-        ui->lineDeathText->setText(Utils::hijriYear(spin->value()));
+        ui->lineDeathText->setText(Utils::Time::hijriYear(spin->value()));
     }
 }
 
@@ -262,7 +263,7 @@ void TarajemRowatManagerWidget::newRawi()
         m_model->appendRow(authItem);
 
         QModelIndex index = m_model->indexFromItem(authItem);
-        Utils::selectIndex(ui->treeView, index);
+        Utils::Model::selectIndex(ui->treeView, index);
         on_treeView_doubleClicked(index);
 
         m_currentRawi = rawi;
@@ -274,7 +275,7 @@ void TarajemRowatManagerWidget::newRawi()
 
 void TarajemRowatManagerWidget::removeRawi()
 {
-    QModelIndex index = Utils::selectedIndex(ui->treeView);
+    QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
     if(index.isValid()) {
         if(QMessageBox::question(this,
                                  tr("حذف الراوي"),

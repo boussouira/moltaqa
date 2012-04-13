@@ -107,21 +107,21 @@ void BookIndexEditor::addTitle()
                                          tr("العنوان الجديد:"), QLineEdit::Normal,
                                          m_editView->m_webView->selectedText(), &ok);
     if(ok && !text.isEmpty()) {
-        QModelIndex index = Utils::selectedIndex(ui->treeView);
+        QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
         QStandardItem *title = new QStandardItem(text);
         title->setData(m_editView->m_currentPage->pageID, ItemRole::idRole);
 
-        QStandardItem *parentItem = Utils::itemFromIndex(m_model, index.parent());
+        QStandardItem *parentItem = Utils::Model::itemFromIndex(m_model, index.parent());
         int row = index.isValid() ? index.row()+1 : parentItem->rowCount();
 
         parentItem->insertRow(row, title);
-        Utils::selectIndex(ui->treeView, m_model->index(row, 0, index.parent()));
+        Utils::Model::selectIndex(ui->treeView, m_model->index(row, 0, index.parent()));
     }
 }
 
 void BookIndexEditor::removeTitle()
 {
-    QModelIndex index = Utils::selectedIndex(ui->treeView);
+    QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
     ML_ASSERT(index.isValid());
 
     m_model->removeRow(index.row(), index.parent());
@@ -130,27 +130,27 @@ void BookIndexEditor::removeTitle()
 
 void BookIndexEditor::moveUp()
 {
-    Utils::moveUp(m_model, ui->treeView);
+    Utils::Model::moveUp(m_model, ui->treeView);
 }
 
 void BookIndexEditor::moveDown()
 {
-    Utils::moveDown(m_model, ui->treeView);
+    Utils::Model::moveDown(m_model, ui->treeView);
 }
 
 void BookIndexEditor::moveRight()
 {
-    Utils::moveRight(m_model, ui->treeView);
+    Utils::Model::moveRight(m_model, ui->treeView);
 }
 
 void BookIndexEditor::moveLeft()
 {
-    Utils::moveLeft(m_model, ui->treeView);
+    Utils::Model::moveLeft(m_model, ui->treeView);
 }
 
 void BookIndexEditor::linkTitle()
 {
-    QModelIndex index = Utils::selectedIndex(ui->treeView);
+    QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
     ML_ASSERT(index.isValid());
 
     m_editView->m_currentPage->titleID = m_editView->m_currentPage->pageID;
@@ -159,7 +159,7 @@ void BookIndexEditor::linkTitle()
 
 void BookIndexEditor::updateActions()
 {
-    QModelIndex index = Utils::selectedIndex(ui->treeView);
+    QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
     QModelIndex prevIndex = index.sibling(index.row()+1, index.column());
     QModelIndex nextIndex = index.sibling(index.row()-1, index.column());
 

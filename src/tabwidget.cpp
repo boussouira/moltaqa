@@ -6,6 +6,7 @@
 #include "richbookreader.h"
 #include "webview.h"
 #include "utils.h"
+#include "stringutils.h"
 
 TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)
 {
@@ -33,7 +34,7 @@ TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)
 int TabWidget::addBookWidget(BookWidget *book)
 {
     QString bookName = book->bookReader()->bookInfo()->bookDisplayName;
-    QString shortBookName = Utils::abbreviate(bookName, 30);
+    QString shortBookName = Utils::String::abbreviate(bookName, 30);
 
     int index = addTab(book, shortBookName);
     setTabToolTip(index, bookName);

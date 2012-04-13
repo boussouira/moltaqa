@@ -4,6 +4,7 @@
 #include "modelenums.h"
 #include "utils.h"
 #include "modelutils.h"
+#include "timeutils.h"
 #include "editwebview.h"
 #include <qstandarditemmodel.h>
 #include <qinputdialog.h>
@@ -103,9 +104,9 @@ void AuthorsManagerWidget::birthDeathChanged()
     QSpinBox *spin = qobject_cast<QSpinBox*>(sender());
     if(spin && m_currentAuthor) {
         if(spin == ui->spinBirth) {
-            ui->lineBirthText->setText(Utils::hijriYear(spin->value()));
+            ui->lineBirthText->setText(Utils::Time::hijriYear(spin->value()));
         } else if(spin == ui->spinDeath) {
-            ui->lineDeathText->setText(Utils::hijriYear(spin->value()));
+            ui->lineDeathText->setText(Utils::Time::hijriYear(spin->value()));
         }
     }
 }
@@ -131,14 +132,14 @@ void AuthorsManagerWidget::newAuthor()
         m_model->appendRow(authItem);
 
         QModelIndex index = m_model->indexFromItem(authItem);
-        Utils::selectIndex(ui->treeView, index);
+        Utils::Model::selectIndex(ui->treeView, index);
         on_treeView_doubleClicked(index);
     }
 }
 
 void AuthorsManagerWidget::removeAuthor()
 {
-    QModelIndex index = Utils::selectedIndex(ui->treeView);
+    QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
     if(index.isValid()) {
         if(QMessageBox::question(this,
                                  tr("حذف مؤلف"),

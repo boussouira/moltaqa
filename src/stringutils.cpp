@@ -1,6 +1,5 @@
 #include "stringutils.h"
 #include <qstringlist.h>
-#include "utils.h" // FIXME: delete this
 
 namespace Utils {
 
@@ -75,39 +74,6 @@ QString abbreviate(QString str, int size)
             return "";
 
     return str.left(index).append("...");
-}
-
-QString secondsToString(int milsec, bool html)
-{
-    QString time;
-
-    int seconde = (int) ((milsec / 1000) % 60);
-    int minutes = (int) (((milsec / 1000) / 60) % 60);
-    int hours   = (int) (((milsec / 1000) / 60) / 60);
-
-    if(hours > 0){
-        time.append(Arabic::plural(hours, Arabic::HOUR, html));
-        time.append(QObject::tr(" و "));
-    }
-
-    if(minutes > 0 || hours > 0) {
-        time.append(Arabic::plural(minutes, Arabic::MINUTE, html));
-        time.append(QObject::tr(" و "));
-    }
-
-    time.append(Arabic::plural(seconde, Arabic::SECOND, html));
-
-    return time;
-}
-
-QString hijriYear(int hYear)
-{
-    if(hYear <= 0)
-        return QObject::tr("%1 م").arg(hijriToGregorian(hYear));
-    else if(hYear >= 99999)
-        return QObject::tr("معاصر");
-    else
-        return QObject::tr("%1 هـ").arg(hYear);
 }
 
 namespace Arabic {

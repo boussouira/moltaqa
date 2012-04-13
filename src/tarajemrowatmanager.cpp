@@ -4,6 +4,8 @@
 #include "libraryinfo.h"
 #include "modelenums.h"
 #include "utils.h"
+#include "timeutils.h"
+#include "stringutils.h"
 #include "authorsmanager.h"
 
 #include <qdir.h>
@@ -51,7 +53,7 @@ QStandardItemModel *TarajemRowatManager::getRowatModel()
 
     while(query.next()) {
         QStandardItem *item = new QStandardItem();
-        item->setText(Utils::abbreviate(query.value(1).toString(), 100));
+        item->setText(Utils::String::abbreviate(query.value(1).toString(), 100));
         item->setToolTip(query.value(1).toString());
         item->setData(query.value(0).toInt(), ItemRole::authorIdRole);
 
@@ -92,7 +94,7 @@ RawiInfoPtr TarajemRowatManager::getRawiInfo(int rawiID)
         }
 
         if(rawi->birthStr.isEmpty() && !rawi->unknowBirth())
-            rawi->birthStr = Utils::hijriYear(rawi->birthYear);
+            rawi->birthStr = Utils::Time::hijriYear(rawi->birthYear);
 
         if(!query.value(5).isNull()) {
             rawi->deathYear = query.value(5).toInt();
@@ -100,7 +102,7 @@ RawiInfoPtr TarajemRowatManager::getRawiInfo(int rawiID)
         }
 
         if(rawi->deathStr.isEmpty() && !rawi->unknowDeath())
-            rawi->deathStr = Utils::hijriYear(rawi->deathYear);
+            rawi->deathStr = Utils::Time::hijriYear(rawi->deathYear);
 
         rawi->sheok = query.value(11).toString();
         rawi->talamid = query.value(12).toString();
@@ -116,9 +118,9 @@ bool TarajemRowatManager::updateRawi(RawiInfoPtr rawi)
 {
     QSqlQuery query(m_db);
 
-    Utils::QueryBuilder q;
+    QueryBuilder q;
     q.setTableName("rowat");
-    q.setQueryType(Utils::QueryBuilder::Update);
+    q.setQueryType(QueryBuilder::Update);
 
     q.set("name", rawi->name);
     q.set("laqab", rawi->laqab);
@@ -156,9 +158,9 @@ int TarajemRowatManager::addRawi(RawiInfoPtr rawi)
 
     QSqlQuery query(m_db);
 
-    Utils::QueryBuilder q;
+    QueryBuilder q;
     q.setTableName("rowat");
-    q.setQueryType(Utils::QueryBuilder::Insert);
+    q.setQueryType(QueryBuilder::Insert);
 
     q.set("id", rawi->id);
     q.set("name", rawi->name);
@@ -205,7 +207,7 @@ int TarajemRowatManager::getNewRawiID()
 {
     int rawiID = 0;
     do {
-        rawiID = Utils::randInt(11111, 99999);
+        rawiID = Utils::Rand::number(11111, 99999);
     } while(m_rowat.contains(rawiID));
 
     return rawiID;

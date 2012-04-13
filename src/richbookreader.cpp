@@ -81,7 +81,7 @@ QStandardItemModel *RichBookReader::indexModel()
         }
     }
 
-    QDomDocument doc = Utils::getDomDocument(&titleFile);
+    QDomDocument doc = Utils::Xml::getDomDocument(&titleFile);
     if(doc.isNull())
         return 0;
 

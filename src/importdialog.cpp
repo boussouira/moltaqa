@@ -6,6 +6,8 @@
 #include "librarybookmanager.h"
 #include "convertthread.h"
 #include "utils.h"
+#include "stringutils.h"
+#include "timeutils.h"
 #include "mainwindow.h"
 #include "indextracker.h"
 #include "booklistmanager.h"
@@ -56,7 +58,7 @@ ImportDialog::ImportDialog(QWidget *parent) :
     ui->treeView->setModel(m_model);
     ui->progressBar->hide();
 
-    Utils::restoreWidgetPosition(this, "ImportDialog");
+    Utils::Widget::restorePosition(this, "ImportDialog");
 }
 
 ImportDialog::~ImportDialog()
@@ -140,10 +142,10 @@ void ImportDialog::doneConverting()
     setEnabled(true);
     ui->progressBar->hide();
 
-    QString convertedFiles = Utils::arPlural(thread->convertedFiles(), Plural::FILES);
-    QString convertTime = Utils::secondsToString(thread->convertTime(), true);
-    QString importBooks = Utils::arPlural(m_model->nodeFromIndex()->childrenNode.count(),
-                                   Plural::BOOK);
+    QString convertedFiles = Utils::String::Arabic::plural(thread->convertedFiles(), Utils::String::Arabic::FILES);
+    QString convertTime = Utils::Time::secondsToString(thread->convertTime(), true);
+    QString importBooks = Utils::String::Arabic::plural(m_model->nodeFromIndex()->childrenNode.count(),
+                                   Utils::String::Arabic::BOOK);
 
     ui->labelConvertInfo->setText(tr("تم تحويل %1 خلال %2،" "<br>"
                                      "سيتم استيراد %3:")
@@ -293,7 +295,7 @@ void ImportDialog::dropEvent(QDropEvent *event)
 
 void ImportDialog::closeEvent(QCloseEvent *event)
 {
-    Utils::saveWidgetPosition(this, "ImportDialog");
+    Utils::Widget::savePosition(this, "ImportDialog");
     event->accept();
 }
 

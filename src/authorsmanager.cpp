@@ -4,6 +4,8 @@
 #include "utils.h"
 #include "modelenums.h"
 #include "xmlutils.h"
+#include "timeutils.h"
+#include "stringutils.h"
 #include <qstandarditemmodel.h>
 #include <qdir.h>
 
@@ -94,10 +96,10 @@ int AuthorsManager::addAuthor(AuthorInfoPtr auth)
         auth->id = getNewAuthorID();
 
     if(!auth->unknowBirth && auth->birthStr.isEmpty())
-        auth->birthStr = Utils::hijriYear(auth->birthYear);
+        auth->birthStr = Utils::Time::hijriYear(auth->birthYear);
 
     if(!auth->unknowDeath && !auth->isALive && auth->deathStr.isEmpty())
-        auth->deathStr = Utils::hijriYear(auth->deathYear);
+        auth->deathStr = Utils::Time::hijriYear(auth->deathYear);
 
     int flags = 0;
     if(auth->unknowBirth)
@@ -107,9 +109,9 @@ int AuthorsManager::addAuthor(AuthorInfoPtr auth)
     if(auth->isALive)
         flags |= AuthorInfo::ALive;
 
-    Utils::QueryBuilder q;
+    QueryBuilder q;
     q.setTableName("authors");
-    q.setQueryType(Utils::QueryBuilder::Insert);
+    q.setQueryType(QueryBuilder::Insert);
 
     q.set("id", auth->id);
     q.set("name", auth->name);
@@ -142,7 +144,7 @@ int AuthorsManager::getNewAuthorID()
 {
     int authorID = 0;
     do {
-        authorID = Utils::randInt(11111, 99999);
+        authorID = Utils::Rand::number(11111, 99999);
     } while(m_authors.contains(authorID));
 
     return authorID;
@@ -171,10 +173,10 @@ AuthorInfoPtr AuthorsManager::findAuthor(QString name)
 
     while (i != m_authors.constEnd()) {
         QString authorName = i.value()->name;
-        if(Utils::arContains(authorName, name)) {
+        if(Utils::String::Arabic::contains(authorName, name)) {
             auth = i.value();
             break;
-        } else if(Utils::arFuzzyContains(authorName, name)) {
+        } else if(Utils::String::Arabic::fuzzyContains(authorName, name)) {
             auth = i.value();
         }
 
@@ -192,10 +194,10 @@ void AuthorsManager::updateAuthor(AuthorInfoPtr auth)
         auth->id = getNewAuthorID();
 
     if(!auth->unknowBirth && auth->birthStr.isEmpty())
-        auth->birthStr = Utils::hijriYear(auth->birthYear);
+        auth->birthStr = Utils::Time::hijriYear(auth->birthYear);
 
     if(!auth->unknowDeath && !auth->isALive && auth->deathStr.isEmpty())
-        auth->deathStr = Utils::hijriYear(auth->deathYear);
+        auth->deathStr = Utils::Time::hijriYear(auth->deathYear);
 
     int flags = 0;
     if(auth->unknowBirth)
@@ -207,9 +209,9 @@ void AuthorsManager::updateAuthor(AuthorInfoPtr auth)
 
     QSqlQuery query(m_db);
 
-    Utils::QueryBuilder q;
+    QueryBuilder q;
     q.setTableName("authors");
-    q.setQueryType(Utils::QueryBuilder::Update);
+    q.setQueryType(QueryBuilder::Update);
 
     q.set("name", auth->name);
     q.set("full_name", auth->fullName);

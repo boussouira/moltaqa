@@ -5,6 +5,8 @@
 #include "librarybook.h"
 #include "utils.h"
 #include "xmlutils.h"
+#include "timeutils.h"
+#include "stringutils.h"
 #include "modelenums.h"
 #include "authorsmanager.h"
 #include "librarybookmanager.h"
@@ -120,7 +122,7 @@ int BookListManager::getNewCategorieID()
     int catID = 0;
 
     do {
-        catID = Utils::randInt(11111, 99999);
+        catID = Utils::Rand::number(11111, 99999);
     } while(m_catHash.contains(catID));
 
     return catID;
@@ -133,9 +135,9 @@ CategorieInfo *BookListManager::findCategorie(const QString &cat)
 
     while (i != m_catHash.constEnd()) {
         QString title = i.value();
-        if(Utils::arContains(title, cat)) {
+        if(Utils::String::Arabic::contains(title, cat)) {
             return new CategorieInfo(i.key(), i.value());
-        } else if(Utils::arFuzzyContains(title, cat)) {
+        } else if(Utils::String::Arabic::fuzzyContains(title, cat)) {
             if(!result)
                 result = new CategorieInfo();
 
@@ -309,7 +311,7 @@ QList<QStandardItem*> BookListManager::readBookNode(QDomElement &element)
         } else {
             authName = element.firstChildElement("author").text();
             deathYear = element.firstChildElement("author").attribute("death").toInt();
-            deathStr = Utils::hijriYear(deathYear);
+            deathStr = Utils::Time::hijriYear(deathYear);
         }
 
         QStandardItem *authItem = new QStandardItem();

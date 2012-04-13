@@ -64,7 +64,7 @@ void XmlDomHelper::load(QIODevice *file)
 {
     ML_ASSERT(!m_domLoaded);
 
-    m_doc = Utils::getDomDocument(file);
+    m_doc = Utils::Xml::getDomDocument(file);
     m_rootElement = m_doc.documentElement();
 
     m_needSave = false;
@@ -147,9 +147,9 @@ QDomElement XmlDomHelper::findElement(const QString &tag, const QString &attr, c
 
 void XmlDomHelper::setElementText(QDomElement &parent, const QString &tagName, const QString &text, bool cdata)
 {
-    QDomElement element = Utils::findChildElement(parent, m_doc, tagName);
+    QDomElement element = Utils::Xml::findChildElement(parent, m_doc, tagName);
     if(!element.isNull()) {
-        QDomNode textNode = Utils::findChildText(element, m_doc, cdata);
+        QDomNode textNode = Utils::Xml::findChildText(element, m_doc, cdata);
         if(!textNode.isNull())
             textNode.setNodeValue(text);
         else

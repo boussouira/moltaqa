@@ -6,6 +6,7 @@
 class QTreeView;
 
 namespace Utils {
+namespace Model {
 
 QModelIndex findModelIndex(QAbstractItemModel *model, int tid);
 
@@ -26,6 +27,7 @@ QStandardItemModel *cloneModel(QStandardItemModel *model);
 QList<QStandardItem *> cloneItem(QStandardItem *item, QStandardItem *parent, int columnCount);
 void setModelCheckable(QStandardItemModel *model, bool checkable=true);
 
+}
 }
 
 #endif // MODELUTILS_H

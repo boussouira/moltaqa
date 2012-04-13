@@ -4,8 +4,6 @@
 #include <qsqlquery.h>
 #include <qsqlerror.h>
 
-namespace Utils {
-
 DatabaseRemover::DatabaseRemover()
 {
 }
@@ -269,6 +267,4 @@ void QueryBuilder::clear()
     m_whereValues.clear();
     m_orderColumns.clear();
     m_limit = -1;
-}
-
 }

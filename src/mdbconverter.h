@@ -31,7 +31,7 @@ protected:
     char *sanitizeName(char *str);
 
 protected:
-    Utils::DatabaseRemover m_remover;
+    DatabaseRemover m_remover;
     QSqlDatabase m_bookDB;
     QSqlQuery m_bookQuery;
     QString m_tempFolder;

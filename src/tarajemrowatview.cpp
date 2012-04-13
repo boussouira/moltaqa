@@ -216,7 +216,7 @@ void TarajemRowatView::setCurrentTabHtml(QString title, QString html)
 
     view->setHtml(html);
 
-    ui->tabWidget->setTabText(index, Utils::abbreviate(title, 50));
+    ui->tabWidget->setTabText(index, Utils::String::abbreviate(title, 50));
     ui->tabWidget->setTabToolTip(index, title);
 }
 

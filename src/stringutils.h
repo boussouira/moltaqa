@@ -28,9 +28,6 @@ QString format(QString text);
 namespace String {
 
 QString abbreviate(QString str, int size);
-QString secondsToString(int milsec, bool html=false);
-QString hijriYear(int hYear);
-
 
 namespace Arabic {
 

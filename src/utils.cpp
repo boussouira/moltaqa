@@ -16,13 +16,15 @@ static QString appRootPath;
 
 namespace Utils {
 
-int randInt(int smin, int smax)
+namespace Rand {
+
+int number(int smin, int smax)
 {
     int rVal = (smin + (rand() % (smax-smin+1)));
     return qBound(smin, rVal, smax);
 }
 
-QString genBookName(QString path, bool fullPath, QString ext, QString namePrefix)
+QString fileName(QString path, bool fullPath, QString ext, QString namePrefix)
 {
     srand(uint(QDateTime::currentDateTime().toMSecsSinceEpoch() & 0xFFFFFF));
 
@@ -36,12 +38,12 @@ QString genBookName(QString path, bool fullPath, QString ext, QString namePrefix
 
 
     for(int i=0; i<6; i++) {
-        fileName.append(chars.at(randInt(0, smax)));
+        fileName.append(chars.at(number(0, smax)));
     }
 
     while(true) {
         if(dir.exists(fileName+ext)){
-            fileName.append(chars.at(randInt(0, smax)));
+            fileName.append(chars.at(number(0, smax)));
         } else {
             break;
         }
@@ -52,150 +54,6 @@ QString genBookName(QString path, bool fullPath, QString ext, QString namePrefix
     else
         return fileName+ext;
 }
-
-QString arPlural(int count, int word, bool html)
-{
-    QStringList list;
-    QString str;
-
-    if(word == Plural::SECOND)
-        list << QObject::tr("ثانية")
-             << QObject::tr("ثانيتين")
-             << QObject::tr("ثوان")
-             << QObject::tr("ثانية");
-    else if(word == Plural::MINUTE)
-        list << QObject::tr("دقيقة")
-             << QObject::tr("دقيقتين")
-             << QObject::tr("دقائق")
-             << QObject::tr("دقيقة");
-    else if(word == Plural::HOUR)
-        list << QObject::tr("ساعة")
-             << QObject::tr("ساعتين")
-             << QObject::tr("ساعات")
-             << QObject::tr("ساعة");
-    else if(word == Plural::BOOK)
-        list << QObject::tr("كتاب واحد")
-             << QObject::tr("كتابين")
-             << QObject::tr("كتب")
-             << QObject::tr("كتابا");
-    else if(word == Plural::AUTHOR)
-        list << QObject::tr("مؤلف واحد")
-             << QObject::tr("مؤلفيين")
-             << QObject::tr("مؤلفيين")
-             << QObject::tr("مؤلفا");
-    else if(word == Plural::CATEGORIE)
-        list << QObject::tr("قسم واحد")
-             << QObject::tr("قسمين")
-             << QObject::tr("أقسام")
-             << QObject::tr("قسما");
-    else if(word == Plural::FILES)
-        list << QObject::tr("ملف واحد")
-             << QObject::tr("ملفين")
-             << QObject::tr("ملفات")
-             << QObject::tr("ملفا");
-
-    if(count <= 1)
-        str = list.at(0);
-    else if(count == 2)
-        str = list.at(1);
-    else if (count > 2 && count <= 10)
-        str = QString("%1 %2").arg(count).arg(list.at(2));
-    else if (count > 10)
-        str = QString("%1 %2").arg(count).arg(list.at(3));
-    else
-        str = QString();
-
-    return html ? QString("<strong>%1</strong>").arg(str) : str;
-}
-
-QString secondsToString(int milsec, bool html)
-{
-    QString time;
-
-    int seconde = (int) ((milsec / 1000) % 60);
-    int minutes = (int) (((milsec / 1000) / 60) % 60);
-    int hours   = (int) (((milsec / 1000) / 60) / 60);
-
-    if(hours > 0){
-        time.append(arPlural(hours, Plural::HOUR, html));
-        time.append(QObject::tr(" و "));
-    }
-
-    if(minutes > 0 || hours > 0) {
-        time.append(arPlural(minutes, Plural::MINUTE, html));
-        time.append(QObject::tr(" و "));
-    }
-
-    time.append(arPlural(seconde, Plural::SECOND, html));
-
-    return time;
-}
-
-QString abbreviate(QString str, int size) {
-        if (str.length() <= size-3)
-                return str;
-
-        str.simplified();
-        int index = str.lastIndexOf(' ', size-3);
-        if (index <= -1)
-                return "";
-
-        return str.left(index).append("...");
-}
-
-QString hijriYear(int hYear)
-{
-    if(hYear <= 0)
-        return QObject::tr("%1 م").arg(hijriToGregorian(hYear));
-    else if(hYear >= 99999)
-        return QObject::tr("معاصر");
-    else
-        return QObject::tr("%1 هـ").arg(hYear);
-}
-
-QString arClean(QString text)
-{
-    text = text.simplified();
-    text.replace(QRegExp("[\\x0622\\x0623\\x0625]"), QChar(0x0627));//ALEFs
-    text.replace(QChar(0x0629), QChar(0x0647)); //TAH_MARBUTA -> HEH
-    text.replace(QChar(0x0649), QChar(0x064A)); //YAH -> ALEF MAKSOURA
-    text.remove(QRegExp("[\\x064B-\\x0653]"));
-
-    return text;
-}
-
-bool arCompare(QString first, QString second)
-{
-    return arClean(first) == arClean(second);
-}
-
-bool arContains(QString src, QString text)
-{
-    QString cleanSrc = arClean(src);
-    QString cleanText = arClean(text);
-
-    return cleanSrc.contains(cleanText);
-}
-
-bool arFuzzyContains(QString first, QString second)
-{
-    QString cleanFirst= arClean(first);
-    QString cleanSecond = arClean(second);
-
-    if(cleanFirst.size() < cleanSecond.size())
-        return cleanSecond.contains(cleanFirst);
-    else
-        return cleanFirst.contains(cleanSecond);
-}
-
-int hijriToGregorian(int hYear)
-{
-    return (hYear + 622) - (hYear / 33);
-}
-
-int gregorianToHijri(int gYear)
-{
-    return  (gYear - 622) + ((gYear - 622) / 32);
 }
 
 bool isLibraryPath(QString path)
@@ -227,10 +85,10 @@ void createIndexDB(QString path)
 
         QSqlQuery query(db);
 
-        Utils::QueryBuilder q;
+        QueryBuilder q;
         q.setIgnoreExistingTable(true);
 
-        q.setTableName("books", Utils::QueryBuilder::Create);
+        q.setTableName("books", QueryBuilder::Create);
 
         q.set("id", "INTEGER PRIMARY KEY NOT NULL");
         q.set("title", "TEXT");
@@ -244,7 +102,7 @@ void createIndexDB(QString path)
 
         q.exec(query);
 
-        q.setTableName("history", Utils::QueryBuilder::Create);
+        q.setTableName("history", QueryBuilder::Create);
 
         q.set("id", "INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL");
         q.set("book", "INT");
@@ -253,7 +111,7 @@ void createIndexDB(QString path)
 
         q.exec(query);
 
-        q.setTableName("last_open", Utils::QueryBuilder::Create);
+        q.setTableName("last_open", QueryBuilder::Create);
 
         q.set("book", "INTEGER PRIMARY KEY NOT NULL");
         q.set("page", "INT");
@@ -272,10 +130,10 @@ void createIndexDB(QString path)
 
         QSqlQuery query(db);
 
-        Utils::QueryBuilder q;
+        QueryBuilder q;
         q.setTableName("authors");
         q.setIgnoreExistingTable(true);
-        q.setQueryType(Utils::QueryBuilder::Create);
+        q.setQueryType(QueryBuilder::Create);
 
         q.set("id", "INTEGER PRIMARY KEY NOT NULL");
         q.set("name", "TEXT");
@@ -299,10 +157,10 @@ void createIndexDB(QString path)
 
         QSqlQuery query(db);
 
-        Utils::QueryBuilder q;
+        QueryBuilder q;
         q.setTableName("rowat");
         q.setIgnoreExistingTable(true);
-        q.setQueryType(Utils::QueryBuilder::Create);
+        q.setQueryType(QueryBuilder::Create);
 
         q.set("id", "INTEGER PRIMARY KEY NOT NULL");
         q.set("name", "TEXT");
@@ -332,7 +190,9 @@ void createIndexDB(QString path)
     QSqlDatabase::removeDatabase("createIndexDB.rowat");
 }
 
-void saveWidgetPosition(QWidget *w, QString section)
+namespace Widget {
+
+void savePosition(QWidget *w, QString section)
 {
     QSettings settings;
     settings.beginGroup(section);
@@ -342,7 +202,7 @@ void saveWidgetPosition(QWidget *w, QString section)
     settings.endGroup();
 }
 
-void restoreWidgetPosition(QWidget *w, QString section, bool showMaximized)
+void restorePosition(QWidget *w, QString section, bool showMaximized)
 {
     QSettings settings;
     settings.beginGroup(section);
@@ -362,7 +222,9 @@ void restoreWidgetPosition(QWidget *w, QString section, bool showMaximized)
 
     settings.endGroup();
 }
+} // Widget
 
+namespace Files {
 void removeDir(const QString &path)
 {
     QFileInfo info(path);
@@ -378,6 +240,7 @@ void removeDir(const QString &path)
             qDebug() << "Can't delete:" << path;
     }
 }
+} // Files
 
 }
 

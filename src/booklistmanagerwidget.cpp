@@ -52,7 +52,7 @@ QString BookListManagerWidget::title()
 
 void BookListManagerWidget::loadModel()
 {
-    m_model = Utils::cloneModel(m_manager->bookListModel());
+    m_model = Utils::Model::cloneModel(m_manager->bookListModel());
 
     ui->treeView->setModel(m_model);
     ui->treeView->resizeColumnToContents(0);
@@ -71,25 +71,25 @@ void BookListManagerWidget::save()
 
 void BookListManagerWidget::copyNode()
 {
-    QModelIndex index = Utils::selectedIndex(ui->treeView);
+    QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
     ML_ASSERT(index.isValid());
 
     if(m_copiedItems.isEmpty()) {
-        QStandardItem *item = Utils::itemFromIndex(m_model, index);
+        QStandardItem *item = Utils::Model::itemFromIndex(m_model, index);
         if(item)
-            m_copiedItems = Utils::cloneItem(item,
-                                             Utils::itemFromIndex(m_model, index.parent()),
+            m_copiedItems = Utils::Model::cloneItem(item,
+                                             Utils::Model::itemFromIndex(m_model, index.parent()),
                                              m_model->columnCount());
     }
 }
 
 void BookListManagerWidget::cutNode()
 {
-    QModelIndex index = Utils::selectedIndex(ui->treeView);
+    QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
     ML_ASSERT(index.isValid());
 
     if(m_copiedItems.isEmpty()) {
-        QStandardItem *parentItem = Utils::itemFromIndex(m_model, index.parent());
+        QStandardItem *parentItem = Utils::Model::itemFromIndex(m_model, index.parent());
         if(parentItem) {
             m_copiedItems = parentItem->takeRow(index.row());
 
@@ -100,7 +100,7 @@ void BookListManagerWidget::cutNode()
 
 void BookListManagerWidget::pastNode()
 {
-    QModelIndex index = Utils::selectedIndex(ui->treeView);
+    QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
     ML_ASSERT(index.isValid());
 
     if(!m_copiedItems.isEmpty()) {
@@ -108,7 +108,7 @@ void BookListManagerWidget::pastNode()
 
         item->appendRow(m_copiedItems);
 
-        Utils::selectIndex(ui->treeView, index.child(item->rowCount()-1, 0));
+        Utils::Model::selectIndex(ui->treeView, index.child(item->rowCount()-1, 0));
 
         m_copiedItems.clear();
     }
@@ -116,14 +116,14 @@ void BookListManagerWidget::pastNode()
 
 void BookListManagerWidget::pastSublingNode()
 {
-    QModelIndex index = Utils::selectedIndex(ui->treeView);
+    QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
     ML_ASSERT(index.isValid());
 
     if(!m_copiedItems.isEmpty()) {
-        QStandardItem *parentItem = Utils::itemFromIndex(m_model, index.parent());
+        QStandardItem *parentItem = Utils::Model::itemFromIndex(m_model, index.parent());
         parentItem->insertRow(index.row()+1, m_copiedItems);
 
-        Utils::selectIndex(ui->treeView, index.sibling(index.row()+1, 0));
+        Utils::Model::selectIndex(ui->treeView, index.sibling(index.row()+1, 0));
 
         m_copiedItems.clear();
     }
@@ -131,28 +131,28 @@ void BookListManagerWidget::pastSublingNode()
 
 void BookListManagerWidget::moveUp()
 {
-    Utils::moveUp(m_model, ui->treeView);
+    Utils::Model::moveUp(m_model, ui->treeView);
 }
 
 void BookListManagerWidget::moveDown()
 {
-    Utils::moveDown(m_model, ui->treeView);
+    Utils::Model::moveDown(m_model, ui->treeView);
 }
 
 void BookListManagerWidget::moveRight()
 {
-    Utils::moveRight(m_model, ui->treeView);
+    Utils::Model::moveRight(m_model, ui->treeView);
 }
 
 void BookListManagerWidget::moveLeft()
 {
-    Utils::moveLeft(m_model, ui->treeView);
+    Utils::Model::moveLeft(m_model, ui->treeView);
 }
 
 void BookListManagerWidget::addCat()
 {
-    QModelIndex index = Utils::selectedIndex(ui->treeView);
-    QStandardItem *parentItem = Utils::itemFromIndex(m_model, index.parent());
+    QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
+    QStandardItem *parentItem = Utils::Model::itemFromIndex(m_model, index.parent());
 
     bool ok = false;
     QString title = QInputDialog::getText(this, tr("اسم القسم"),
@@ -168,16 +168,16 @@ void BookListManagerWidget::addCat()
 
         parentItem->insertRow(index.row()+1, catItem);
 
-        Utils::selectIndex(ui->treeView, index.sibling(index.row()+1, 0));
+        Utils::Model::selectIndex(ui->treeView, index.sibling(index.row()+1, 0));
     }
 }
 
 void BookListManagerWidget::removeCat()
 {
-    QModelIndex index = Utils::selectedIndex(ui->treeView);
+    QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
     ML_ASSERT(index.isValid());
 
-    QStandardItem *item = Utils::itemFromIndex(m_model, index);
+    QStandardItem *item = Utils::Model::itemFromIndex(m_model, index);
 
     int rep = QMessageBox::question(this,
                                 title(),
@@ -185,7 +185,7 @@ void BookListManagerWidget::removeCat()
                                 QMessageBox::Yes|QMessageBox::No, QMessageBox::No);
 
 
-    QStandardItem *parentItem = Utils::itemFromIndex(m_model, index.parent());
+    QStandardItem *parentItem = Utils::Model::itemFromIndex(m_model, index.parent());
     if(rep == QMessageBox::Yes && parentItem) {
         parentItem->removeRow(index.row());
     }
@@ -225,7 +225,7 @@ void BookListManagerWidget::updateActions()
 {
     ML_ASSERT(m_model);
 
-    QModelIndex index = Utils::selectedIndex(ui->treeView);
+    QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
     QModelIndex prevIndex = index.sibling(index.row()+1, index.column());
     QModelIndex nextIndex = index.sibling(index.row()-1, index.column());
 

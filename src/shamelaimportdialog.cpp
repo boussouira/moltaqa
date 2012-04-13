@@ -3,6 +3,8 @@
 #include "shamelainfo.h"
 #include "shamelamanager.h"
 #include "utils.h"
+#include "stringutils.h"
+#include "timeutils.h"
 #include "shamelaimportthread.h"
 #include "mainwindow.h"
 #include "librarymanager.h"
@@ -52,7 +54,7 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
     ui->stackedWidget->setCurrentIndex(0);
     ui->pushDone->hide();
 
-    Utils::restoreWidgetPosition(this, "ShamelaImportDialog");
+    Utils::Widget::restorePosition(this, "ShamelaImportDialog");
 
     connect(ui->pushNext, SIGNAL(clicked()), SLOT(nextStep()));
     connect(ui->pushCancel, SIGNAL(clicked()), SLOT(cancel()));
@@ -80,7 +82,7 @@ void ShamelaImportDialog::closeEvent(QCloseEvent *event)
                 m_importThreads.at(i)->wait();
         }
 
-        Utils::saveWidgetPosition(this, "ShamelaImportDialog");
+        Utils::Widget::savePosition(this, "ShamelaImportDialog");
 
         event->accept();
     } else {
@@ -392,8 +394,8 @@ void ShamelaImportDialog::doneImporting()
         }
 
         addDebugInfo(tr("تم استيراد %1 بنجاح خلال %2")
-                     .arg(Utils::arPlural(m_importedBooksCount, Plural::BOOK))
-                     .arg(Utils::secondsToString(m_importTime.elapsed())));
+                     .arg(Utils::String::Arabic::plural(m_importedBooksCount, Utils::String::Arabic::BOOK))
+                     .arg(Utils::Time::secondsToString(m_importTime.elapsed())));
 
         qDeleteAll(m_importThreads);
         m_importThreads.clear();

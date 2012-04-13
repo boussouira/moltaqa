@@ -18,7 +18,7 @@ selectCatDialog::selectCatDialog(QWidget *parent) :
     m_libraryManager = LibraryManager::instance();
 
     BookListManager *bookListManager = m_libraryManager->bookListManager();
-    m_model = Utils::cloneModel(bookListManager->catListModel());
+    m_model = Utils::Model::cloneModel(bookListManager->catListModel());
 
     m_filter = new SortFilterProxyModel(this);
     m_filter->setSourceModel(m_model);
@@ -44,7 +44,7 @@ selectCatDialog::~selectCatDialog()
 
 void selectCatDialog::selectCat()
 {
-    QModelIndex index = Utils::selectedIndex(ui->treeView);
+    QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
 
     if(!index.isValid()) {
         QMessageBox::warning(this,

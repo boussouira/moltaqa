@@ -53,12 +53,12 @@ void TaffesirListManagerWidget::save()
 
 void TaffesirListManagerWidget::moveUp()
 {
-    Utils::moveUp(m_model, ui->treeView);
+    Utils::Model::moveUp(m_model, ui->treeView);
 }
 
 void TaffesirListManagerWidget::moveDown()
 {
-    Utils::moveDown(m_model, ui->treeView);
+    Utils::Model::moveDown(m_model, ui->treeView);
 }
 
 void TaffesirListManagerWidget::updateActions()

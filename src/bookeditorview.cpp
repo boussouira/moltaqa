@@ -6,6 +6,7 @@
 #include <QDebug>
 #include "editwebview.h"
 #include "utils.h"
+#include "stringutils.h"
 #include "mainwindow.h"
 #include "librarymanager.h"
 #include "richsimplebookreader.h"
@@ -104,7 +105,7 @@ void BookEditorView::editBook(LibraryBookPtr book, int pageID)
 
     m_bookReader->goToPage(pageID);
 
-    ui->tabWidget->setTabText(0, Utils::abbreviate(book->bookDisplayName, 40));
+    ui->tabWidget->setTabText(0, Utils::String::abbreviate(book->bookDisplayName, 40));
     ui->tabWidget->setTabToolTip(0, book->bookDisplayName);
 
     m_bookEditor->setBookReader(m_bookReader);

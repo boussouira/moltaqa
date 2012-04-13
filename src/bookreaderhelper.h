@@ -29,7 +29,7 @@ protected:
     void open();
 
 protected:
-    Utils::DatabaseRemover m_remover;
+    DatabaseRemover m_remover;
     QSqlDatabase m_quranDB;
     QHash<int, QuranSora*> m_sowar;
 };

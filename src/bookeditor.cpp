@@ -210,7 +210,7 @@ bool BookEditor::save()
 void BookEditor::removeTemp()
 {
     if(!m_bookTmpDir.isEmpty() && QFile::exists(m_bookTmpDir))
-        Utils::removeDir(m_bookTmpDir);
+        Utils::Files::removeDir(m_bookTmpDir);
 }
 
 bool BookEditor::saveBookPages(QList<BookPage*> pages)

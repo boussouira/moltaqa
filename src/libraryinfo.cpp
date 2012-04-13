@@ -55,7 +55,7 @@ void LibraryInfo::loafInfo(QString path)
     if(!QFile::exists(infoFile))
         throw BookException(tr("لم يتم العثور على الملف:"), infoFile);
 
-    QDomDocument doc = Utils::getDomDocument(infoFile);
+    QDomDocument doc = Utils::Xml::getDomDocument(infoFile);
 
     m_name = "Library";
     m_path = dir.absolutePath();

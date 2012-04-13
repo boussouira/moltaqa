@@ -23,7 +23,7 @@ public:
 
 protected:
     QString m_path; ///< SQLite database path
-    Utils::DatabaseRemover m_remover;
+    DatabaseRemover m_remover;
     QSqlDatabase m_db;
     QSqlQuery m_query;
 };

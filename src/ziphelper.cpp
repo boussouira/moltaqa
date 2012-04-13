@@ -68,7 +68,7 @@ QString ZipHelper::zip()
     }
 
     QDir tempDir(MW->libraryInfo()->tempDir());
-    QString zipPath = Utils::genBookName(tempDir.absolutePath(), true, "mld", QFileInfo(m_zipPath).baseName()+'_');
+    QString zipPath = Utils::Rand::fileName(tempDir.absolutePath(), true, "mld", QFileInfo(m_zipPath).baseName()+'_');
 
     if(zip(m_unzipDirPath, zipPath))
         return zipPath;
