@@ -93,7 +93,7 @@ Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
             else
                 queryPareser.setDefaultOperator(QueryParser::OR_OPERATOR);
 
-            wchar_t *queryText = Utils::QStringToWChar(mustQureyStr);
+            wchar_t *queryText = Utils::CLucene::QStringToWChar(mustQureyStr);
             Query *mq = queryPareser.parse(queryText);
             q->add(mq, BooleanClause::MUST);
 
@@ -106,7 +106,7 @@ Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
             else
                 queryPareser.setDefaultOperator(QueryParser::OR_OPERATOR);
 
-            wchar_t *queryText = Utils::QStringToWChar(shouldQureyStr);
+            wchar_t *queryText = Utils::CLucene::QStringToWChar(shouldQureyStr);
             Query *mq = queryPareser.parse(queryText);
             q->add(mq, BooleanClause::SHOULD);
 
@@ -119,14 +119,14 @@ Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
             else
                 queryPareser.setDefaultOperator(QueryParser::OR_OPERATOR);
 
-            wchar_t *queryText = Utils::QStringToWChar(shouldNotQureyStr);
+            wchar_t *queryText = Utils::CLucene::QStringToWChar(shouldNotQureyStr);
             Query *mq = queryPareser.parse(queryText);
             q->add(mq, BooleanClause::MUST_NOT);
 
             free(queryText);
         }
 
-        //qDebug() << "Search:" << Utils::WCharToString(q->toString(field));
+        //qDebug() << "Search:" << Utils::CLucene::WCharToString(q->toString(field));
 
         return q;
 
@@ -182,13 +182,13 @@ QString SearchWidget::getSearchField()
         field = PAGE_TEXT_FIELD;
     }
 
-    return Utils::WCharToString(field);
+    return Utils::CLucene::WCharToString(field);
 }
 
 void SearchWidget::search()
 {
     QString searchField = getSearchField();
-    wchar_t *searchFieldW = Utils::QStringToWChar(searchField);
+    wchar_t *searchFieldW = Utils::CLucene::QStringToWChar(searchField);
 
     SearchFilter *searchFilter = getSearchFilterQuery();
     Query *searchQuery = getSearchQuery(searchFieldW);
@@ -272,7 +272,7 @@ void SearchWidget::clearSpecialChar()
     FancyLineEdit *edit = qobject_cast<FancyLineEdit*>(sender()->parent());
 
     if(edit) {
-        wchar_t *lineText = Utils::QStringToWChar(edit->text());
+        wchar_t *lineText = Utils::CLucene::QStringToWChar(edit->text());
         wchar_t *cleanText = QueryParser::escape(lineText);
 
         edit->setText(QString::fromWCharArray(cleanText));

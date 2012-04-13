@@ -67,7 +67,7 @@ void RichQuranReader::setCurrentPage(QDomElement pageNode)
         }
 
         if(m_query && m_highlightPageID == id)
-            text = Utils::highlightText(text, m_query, false);
+            text = Utils::CLucene::highlightText(text, m_query, false);
 
         m_formatter->insertAyaText(text, aya, sora);
 

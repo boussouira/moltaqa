@@ -110,7 +110,7 @@ SearchFilter *LibrarySearchFilter::getFilterQuery()
     }
 
     foreach(int id, books) {
-        wchar_t *idStr = Utils::intToWChar(id);
+        wchar_t *idStr = Utils::CLucene::intToWChar(id);
         Term *term = new Term(BOOK_ID_FIELD, idStr);
         TermQuery *termQuery = new TermQuery(term);
 

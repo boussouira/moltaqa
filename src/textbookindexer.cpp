@@ -48,7 +48,7 @@ void TextBookIndexer::start()
     m_doc = new Document();
 
     BookPage *page = m_reader->page();
-    bookW = Utils::intToWChar(m_book->bookID);
+    bookW = Utils::CLucene::intToWChar(m_book->bookID);
 
     while (m_reader->hasNext()) {
         m_reader->nextPage();
@@ -56,7 +56,7 @@ void TextBookIndexer::start()
         if(page->text.isEmpty())
             continue;
 
-        pageW = Utils::intToWChar(page->pageID);
+        pageW = Utils::CLucene::intToWChar(page->pageID);
 
         m_doc->add( *_CLNEW Field(BOOK_ID_FIELD, bookW, m_storeAndNoToken));
         m_doc->add( *_CLNEW Field(PAGE_ID_FIELD, pageW, m_storeAndNoToken, false));
@@ -76,7 +76,7 @@ void TextBookIndexer::indexPageText(BookPage *page)
 {
     QString pageText = Utils::Html::removeSpecialChars(page->text);
 
-    wchar_t *fullText = Utils::QStringToWChar(Utils::Html::removeTags(pageText));
+    wchar_t *fullText = Utils::CLucene::QStringToWChar(Utils::Html::removeTags(pageText));
     m_doc->add( *_CLNEW Field(PAGE_TEXT_FIELD,
                               fullText,
                               m_tokenAndNoStore, false));
@@ -84,18 +84,18 @@ void TextBookIndexer::indexPageText(BookPage *page)
     QString asanid = Utils::Html::getTagsText(pageText, "sanad");
     if(!asanid.isEmpty())
         m_doc->add( *_CLNEW Field(HADDIT_SANAD_FIELD,
-                                  Utils::QStringToWChar(asanid),
+                                  Utils::CLucene::QStringToWChar(asanid),
                                   m_tokenAndNoStore, false));
 
     QString motoon = Utils::Html::getTagsText(pageText, "mateen");
     if(!motoon.isEmpty())
         m_doc->add( *_CLNEW Field(HADDIT_MATEEN_FIELD,
-                                  Utils::QStringToWChar(motoon),
+                                  Utils::CLucene::QStringToWChar(motoon),
                                   m_tokenAndNoStore, false));
 
     QString sheer = Utils::Html::getTagsText(pageText, "sheer");
     if(!sheer.isEmpty())
         m_doc->add( *_CLNEW Field(SHEER_FIELD,
-                                  Utils::QStringToWChar(sheer),
+                                  Utils::CLucene::QStringToWChar(sheer),
                                   m_tokenAndNoStore, false));
 }

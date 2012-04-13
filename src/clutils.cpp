@@ -8,6 +8,7 @@
 #include <qregexp.h>
 
 namespace Utils {
+namespace CLucene {
 
 wchar_t* QStringToWChar(const QString &str)
 {
@@ -67,4 +68,5 @@ QString highlightText(QString orignalText, CLuceneQuery *query, bool fragment)
     return highlightText(orignalText, query->searchQuery, query->searchFieldW, fragment);
 }
 
+}
 }

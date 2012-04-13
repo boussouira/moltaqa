@@ -21,11 +21,11 @@ TCHAR *CssFormatter::highlightTerm(const TCHAR *originalText, const lucene::sear
         }
         numHighlights++; //update stats used in assertions
 
-        QString word = Utils::WCharToString(originalText);
+        QString word = Utils::CLucene::WCharToString(originalText);
         QString color;
 
         if(m_useColor && m_words.size() <= m_numColor) {
-            QString cleanWord = Utils::WCharToString(originalText)
+            QString cleanWord = Utils::CLucene::WCharToString(originalText)
                     .remove(QRegExp("[\\x064B-\\x0653\\x0640]"))
                     .replace("[\\x0622\\x0623\\x0625]", "\\x0627");
 
@@ -41,5 +41,5 @@ TCHAR *CssFormatter::highlightTerm(const TCHAR *originalText, const lucene::sear
         }
 
         QString formattedText = QString("<span class=\"%1 resultHL\">%2</span>").arg(color).arg(word);
-        return Utils::QStringToWChar(formattedText);
+        return Utils::CLucene::QStringToWChar(formattedText);
     }

@@ -10,6 +10,6 @@ QuranBookIndexer::QuranBookIndexer()
 void QuranBookIndexer::indexPage(BookPage *page)
 {
     m_doc->add( *_CLNEW Field(QURAN_SORA_FIELD,
-                              Utils::intToWChar(page->sora),
+                              Utils::CLucene::intToWChar(page->sora),
                               m_storeAndNoToken, false));
 }

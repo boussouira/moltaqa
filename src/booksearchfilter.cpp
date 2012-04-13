@@ -71,14 +71,14 @@ SearchFilter *BookSearchFilter::getQuranFilterQuery()
     soraQuery->setMaxClauseCount(0x7FFFFFFFL);
 
     foreach(int soraNumber, sowar) {
-        wchar_t *idStr = Utils::intToWChar(soraNumber);
+        wchar_t *idStr = Utils::CLucene::intToWChar(soraNumber);
         Term *term = new Term(QURAN_SORA_FIELD, idStr);
         TermQuery *termQuery = new TermQuery(term);
 
         soraQuery->add(termQuery, BooleanClause::SHOULD);
     }
 
-    wchar_t *bookIdStr = Utils::intToWChar(m_book->bookID);
+    wchar_t *bookIdStr = Utils::CLucene::intToWChar(m_book->bookID);
     Term *term = new Term(BOOK_ID_FIELD, bookIdStr);
     TermQuery *bookQuery = new TermQuery(term);
 
@@ -104,14 +104,14 @@ SearchFilter *BookSearchFilter::getSimpleBookFilterQuery()
     pagesQuery->setMaxClauseCount(0x7FFFFFFFL);
 
     foreach(int titleId, titles) {
-        wchar_t *idStr = Utils::intToWChar(titleId);
+        wchar_t *idStr = Utils::CLucene::intToWChar(titleId);
         Term *term = new Term(TITLE_ID_FIELD, idStr);
         TermQuery *termQuery = new TermQuery(term);
 
         pagesQuery->add(termQuery, BooleanClause::SHOULD);
     }
 
-    wchar_t *bookIdStr = Utils::intToWChar(m_book->bookID);
+    wchar_t *bookIdStr = Utils::CLucene::intToWChar(m_book->bookID);
     Term *term = new Term(BOOK_ID_FIELD, bookIdStr);
     TermQuery *termQuery = new TermQuery(term);
 

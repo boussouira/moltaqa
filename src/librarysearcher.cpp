@@ -90,7 +90,7 @@ void LibrarySearcher::buildQuery()
     m_query = m_searcher->rewrite(booleanQuery);
 
     wchar_t *queryText = m_query->toString(PAGE_TEXT_FIELD);
-    qDebug() << "Search query:" << Utils::WCharToString(queryText);
+    qDebug() << "Search query:" << Utils::CLucene::WCharToString(queryText);
 
     free(queryText);
     delete booleanQuery;
@@ -135,8 +135,8 @@ void LibrarySearcher::fetech()
         }
 
         Document &doc = m_hits->doc(i);
-        int entryID = Utils::WCharToInt(doc.get(PAGE_ID_FIELD));
-        int bookID = Utils::WCharToInt(doc.get(BOOK_ID_FIELD));
+        int entryID = Utils::CLucene::WCharToInt(doc.get(PAGE_ID_FIELD));
+        int bookID = Utils::CLucene::WCharToInt(doc.get(BOOK_ID_FIELD));
         int score = (int) (m_hits->score(i) * 100.0);
 
         LibraryBookPtr book = m_libraryManager->bookManager()->getLibraryBook(bookID);
@@ -150,7 +150,7 @@ void LibrarySearcher::fetech()
         page->pageID = entryID;
 
         if(!book->isQuran()) {
-            page->titleID = Utils::WCharToInt(doc.get(TITLE_ID_FIELD));
+            page->titleID = Utils::CLucene::WCharToInt(doc.get(TITLE_ID_FIELD));
         }
 
         bool gotPage = AbstractBookReader::getBookPage(book, page);
@@ -158,10 +158,10 @@ void LibrarySearcher::fetech()
         if(gotPage) {
             SearchResult *result = new SearchResult(book, page);
             if(searchIsInTitle) {
-                result->page->title = Utils::highlightText(page->title, m_cluceneQuery, true);
+                result->page->title = Utils::CLucene::highlightText(page->title, m_cluceneQuery, true);
                 result->snippet = Utils::String::abbreviate(page->text, 120);
             } else {
-                result->snippet = Utils::highlightText(page->text, m_cluceneQuery, true);
+                result->snippet = Utils::CLucene::highlightText(page->text, m_cluceneQuery, true);
             }
 
             result->resultID = i;

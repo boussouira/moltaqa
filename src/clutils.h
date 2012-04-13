@@ -17,8 +17,8 @@ class CLuceneQuery;
     #define _itow _itot
     #define _wtoi _ttoi
 #endif
-
 namespace Utils {
+namespace CLucene {
 
 wchar_t* QStringToWChar(const QString &str);
 wchar_t* intToWChar(int num, int radix=10);
@@ -42,6 +42,7 @@ inline int WCharToInt(const wchar_t *str)
     return _wtoi(str);
 }
 
+}
 }
 
 #endif // CLUTILS_H

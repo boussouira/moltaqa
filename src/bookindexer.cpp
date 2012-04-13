@@ -104,7 +104,7 @@ void BookIndexer::indexBook(IndexTask *task)
 void BookIndexer::deleteBook(IndexTask *task)
 {
     try {
-        Term *term = new Term(BOOK_ID_FIELD, Utils::intToWChar(task->bookID));
+        Term *term = new Term(BOOK_ID_FIELD, Utils::CLucene::intToWChar(task->bookID));
         m_writer->deleteDocuments(term);
     }
     catch(CLuceneError &err) {
