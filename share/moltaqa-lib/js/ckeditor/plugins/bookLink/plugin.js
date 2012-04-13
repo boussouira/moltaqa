@@ -80,22 +80,17 @@ CKEDITOR.plugins.add( 'bookLink',
                                                  {
                                                      type : 'text',
                                                      id : 'url',
-                                                     label : 'معرف الصفحة',
-                                                     validate :CKEDITOR.dialog.validate.regex(/^\d+:\d+$/, 'معرف الصفحة غير صحيح' ),
+                                                     label : 'رابط الصفحة',
+                                                     validate :CKEDITOR.dialog.validate.regex(/^moltaqa:\/\//, 'معرف الصفحة غير صحيح' ),
                                                      required : true,
                                                      setup : function( element )
                                                      {
-                                                         if(element.getAttribute( 'book' ) && element.getAttribute( 'page' ))
-                                                             this.setValue( element.getAttribute( 'book' ) + ':' + element.getAttribute( 'page' ));
+                                                         if(element.getAttribute('href'))
+                                                             this.setValue(element.getAttribute('href'));
                                                      },
-                                                     commit : function( element )
+                                                     commit : function(element)
                                                      {
-                                                         var bookID = this.getValue().split(':')[0];
-                                                         var pageID = this.getValue().split(':')[1];
-
-                                                         element.setAttribute( 'href', '#' );
-                                                         element.setAttribute('book', bookID);
-                                                         element.setAttribute('page', pageID);
+                                                         element.setAttribute('href', this.getValue());
                                                      }
                                                  },
                                              ]
@@ -110,8 +105,7 @@ CKEDITOR.plugins.add( 'bookLink',
 
                                          if ( !element
                                                  || element.getName() != 'a'
-                                                 || !element.getAttribute( 'book' )
-                                                 || !element.getAttribute( 'page' )
+                                                 || !element.getAttribute( 'href' )
                                                  || element.data( 'cke-realelement' ) )
                                          {
                                              element = editor.document.createElement( 'a' );

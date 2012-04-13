@@ -48,7 +48,6 @@ public slots:
     void firstPage();
     void lastPage();
     void goToPage();
-    void copyPageLink();
 
 signals:
     void lastTabClosed();

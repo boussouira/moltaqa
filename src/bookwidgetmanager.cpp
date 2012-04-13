@@ -329,17 +329,3 @@ void BookWidgetManager::goToPage()
             qDebug("What to do?");
     }
 }
-
-void BookWidgetManager::copyPageLink()
-{
-    AbstractBookReader *reader = activeBookReader();
-    if(reader) {
-        QClipboard *clipboard = QApplication::clipboard();
-        clipboard->setText(QString("%1:%2")
-                           .arg(reader->bookInfo()->bookID)
-                           .arg(reader->page()->pageID));
-
-        MW->statusBar()->showMessage(tr("تم نسخ معرف الصفحة"),
-                                     1000);
-    }
-}

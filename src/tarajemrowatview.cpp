@@ -182,6 +182,15 @@ void TarajemRowatView::setCurrentRawi(RawiInfoPtr info)
     html.insertHeadTag(4, tr("الترجمة"), "#tarejama");
     html.insertDivTag(info->tarejama, ".head-info");
 
+    html.endDivTag(); // .rawi-info
+
+    html.addJS("jquery.js");
+    html.addJS("jquery.tooltip.js");
+    html.addJS("scripts.js");
+
+    html.addJSCode("setupToolTip();"
+                   "moltaqaLink();");
+
     html.endAllTags();
 
     if(m_crtlKey || !ui->tabWidget->count()) {

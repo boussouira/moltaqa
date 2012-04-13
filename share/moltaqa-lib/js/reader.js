@@ -5,7 +5,7 @@ function pageTextChanged()
 
     toggleQuran();
     indexReading();
-    bookLink();
+    moltaqaLink();
     setupToolTip();
 }
 
