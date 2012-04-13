@@ -53,6 +53,13 @@ QString TarajemRowatView::title()
     return tr("تراجم الرواة");
 }
 
+QString TarajemRowatView::viewLink()
+{
+    ML_ASSERT_RET(m_currentRawi, QString());
+
+    return QString("moltaqa://open/rawi?id=%1").arg(m_currentRawi->id);
+}
+
 void TarajemRowatView::aboutToShow()
 {
     if(!m_model) {
@@ -181,6 +188,8 @@ void TarajemRowatView::setCurrentRawi(RawiInfoPtr info)
         int index = addTab();
         ui->tabWidget->setCurrentIndex(index);
     }
+
+    m_currentRawi = info;
 
     setCurrentTabHtml(info->name, html.html());
 }

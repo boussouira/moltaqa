@@ -28,6 +28,7 @@ public:
 
     void setLibraryManager(LibraryManager *libraryManager) { m_libraryManager = libraryManager;}
     QString title();
+    QString viewLink();
     void updateToolBars();
 
     int currentBookID();

@@ -26,6 +26,7 @@ public:
 
 protected slots:
     void changeWindow();
+    void copyViewLink();
 
 public slots:
     void hideView();
@@ -35,9 +36,11 @@ protected:
     MainWindow *m_mainWindow;
     QMenu *m_windowsMenu;
     QMenu *m_navigationsMenu;
+    QAction *m_copyLinkAction;
     QSet<AbstarctView*> m_viewDisplay;
     AbstarctView *m_defautView;
     AbstarctView *m_currentView;
+
 };
 
 #endif // VIEWMANAGER_H

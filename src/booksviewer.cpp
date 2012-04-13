@@ -195,6 +195,20 @@ void BooksViewer::updateToolBars()
     }
 }
 
+QString BooksViewer::viewLink()
+{
+    RichBookReader *bookReader = m_viewManager->activeBookReader();
+    ML_ASSERT_RET(bookReader, QString());
+
+    QString link = QString("moltaqa://open/");
+    if(bookReader->bookInfo()->isQuran())
+        link.append(QString("quran?sora=%1&aya=%2").arg(bookReader->page()->sora).arg(bookReader->page()->aya));
+    else
+        link.append(QString("book?id=%1&page=%2").arg(bookReader->bookInfo()->bookID).arg(bookReader->page()->pageID));
+
+    return link;
+}
+
 int BooksViewer::currentBookID()
 {
     LibraryBookPtr book = m_viewManager->activeBook();

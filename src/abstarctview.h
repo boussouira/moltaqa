@@ -32,6 +32,8 @@ public:
 
     static QAction *actionSeparator(QObject *parent=0);
 
+    virtual QString viewLink();
+
 protected:
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);

@@ -22,6 +22,7 @@ public:
     static TarajemRowatView *instance();
 
     QString title();
+    QString viewLink();
     void aboutToShow();
 
     void openRawiInfo(int rawiID);
@@ -38,6 +39,7 @@ private:
     TarajemRowatManager *m_rowatManager;
     QStandardItemModel *m_model;
     ModelViewFilter *m_filter;
+    RawiInfoPtr m_currentRawi;
     Ui::TarajemRowatView *ui;
 };
 

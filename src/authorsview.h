@@ -23,6 +23,7 @@ public:
     static AuthorsView *instance();
 
     QString title();
+    QString viewLink();
     void aboutToShow();
 
     void openAuthorInfo(int authorID);
@@ -41,6 +42,7 @@ protected:
     QStandardItemModel *m_model;
     ModelViewFilter *m_filter;
     LibraryBookManager *m_bookManager;
+    AuthorInfoPtr m_currentAuthor;
 };
 
 #endif // AUTHORSVIEW_H

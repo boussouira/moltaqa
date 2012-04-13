@@ -50,6 +50,13 @@ QString AuthorsView::title()
     return tr("المؤلفين");
 }
 
+QString AuthorsView::viewLink()
+{
+    ML_ASSERT_RET(m_currentAuthor, QString());
+
+    return QString("moltaqa://open/author?id=%1").arg(m_currentAuthor->id);
+}
+
 void AuthorsView::aboutToShow()
 {
     if(!m_model) {
@@ -186,6 +193,8 @@ void AuthorsView::setCurrentAuth(AuthorInfoPtr info)
         int index = addTab();
         ui->tabWidget->setCurrentIndex(index);
     }
+
+    m_currentAuthor = info;
 
     setCurrentTabHtml(info->name, html.html());
 }

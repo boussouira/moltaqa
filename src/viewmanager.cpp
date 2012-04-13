@@ -2,13 +2,22 @@
 #include "mainwindow.h"
 #include "abstarctview.h"
 #include <qmenu.h>
+#include <qapplication.h>
+#include <qclipboard.h>
+#include <qstatusbar.h>
 
 ViewManager::ViewManager(QWidget *parent) :
-    QStackedWidget(parent)
+    QStackedWidget(parent),
+     m_mainWindow(MW),
+     m_windowsMenu(0),
+     m_navigationsMenu(0),
+     m_copyLinkAction(0),
+     m_defautView(0),
+     m_currentView(0)
 {
-    m_mainWindow = MW;
-    m_defautView = 0;
-    m_currentView = 0;
+    m_copyLinkAction = new QAction(tr("نسخ رابط الصفحة"), this);
+
+    connect(m_copyLinkAction, SIGNAL(triggered()), SLOT(copyViewLink()));
 }
 
 void ViewManager::addView(AbstarctView *view, bool selectable)
@@ -42,8 +51,10 @@ void ViewManager::setCurrentView(AbstarctView *view)
         m_mainWindow->removeToolBar(bar);
     }
 
-    foreach (QAction*act, currentView->navigationActions())
-        m_navigationsMenu->removeAction(act);
+    if(m_navigationsMenu) {
+        foreach (QAction*act, currentView->navigationActions())
+            m_navigationsMenu->removeAction(act);
+    }
 
     view->setSelectable(true);
     view->aboutToShow();
@@ -55,10 +66,10 @@ void ViewManager::setCurrentView(AbstarctView *view)
         bar->show();
     }
 
-    foreach (QAction*act, view->navigationActions())
-        m_navigationsMenu->addAction(act);
-
-    m_navigationsMenu->setEnabled(!view->navigationActions().isEmpty());
+    if(m_navigationsMenu) {
+        foreach (QAction*act, view->navigationActions())
+            m_navigationsMenu->addAction(act);
+    }
 
     view->updateToolBars();
     m_currentView = view;
@@ -86,6 +97,7 @@ void ViewManager::setWindowsMenu(QMenu *menu)
 void ViewManager::setNavigationMenu(QMenu *menu)
 {
     m_navigationsMenu = menu;
+    menu->addAction(m_copyLinkAction);
 }
 
 void ViewManager::setupWindowsActions()
@@ -125,6 +137,20 @@ void ViewManager::changeWindow()
         }
 
         setCurrentView(act->data().toInt());
+    }
+}
+
+void ViewManager::copyViewLink()
+{
+    QString link = m_currentView->viewLink();
+    if(link.isEmpty()) {
+        m_mainWindow->statusBar()->showMessage(tr("لا يمكن نسخ رابط هذه الصفحة"),
+                                               2500);
+    } else {
+        QClipboard *clipboard = QApplication::clipboard();
+        clipboard->setText(link);
+
+        m_mainWindow->statusBar()->showMessage(tr("تم نسخ الرابط: %1").arg(link), 2500);
     }
 }
 

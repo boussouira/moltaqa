@@ -52,6 +52,11 @@ QAction *AbstarctView::actionSeparator(QObject *parent)
     return act;
 }
 
+QString AbstarctView::viewLink()
+{
+    return QString();
+}
+
 void AbstarctView::keyPressEvent(QKeyEvent *event)
 {
     if(!m_crtlKey && (event->modifiers() & Qt::ControlModifier))
