@@ -23,12 +23,6 @@ public:
     void displayInfo();
     RichBookReader *bookReader() { return m_db; }
     IndexWidget *indexWidget() { return m_indexWidget; }
-    void firstPage();
-    void lastPage();
-    void nextPage();
-    void prevPage();
-    void scrollDown();
-    void scrollUp();
     void hideIndexWidget();
     void saveSettings();
 
@@ -38,6 +32,14 @@ protected:
     void loadSettings();
 
 public slots:
+    void firstPage();
+    void lastPage();
+    void nextPage();
+    void prevPage();
+
+    void scrollDown();
+    void scrollUp();
+
     void openPage(int id);
     void openPage(int pageNum, int partNum);
     void openSora(int sora, int aya);

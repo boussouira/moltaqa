@@ -6,6 +6,7 @@
 #include <qwebelement.h>
 #include <qpropertyanimation.h>
 #include "shemehandler.h"
+#include <QTime>
 
 class WebView : public QWebView
 {
@@ -22,10 +23,14 @@ public:
     bool maxUp();
 
     void setStopScroll(bool stopScroll);
+    void scrollToBottom(bool scroll);
 
     QVariant execJS(const QString &js);
     void addObject(const QString &name, QObject *object);
     QString toHtml();
+
+protected:
+    void wheelEvent(QWheelEvent *event);
 
 public slots:
     void setText(const QString &text);
@@ -39,11 +44,15 @@ protected slots:
 
 signals:
     void textChanged();
+    void nextPage();
+    void prevPage();
 
 protected:
     QWebFrame *m_frame;
     QPropertyAnimation *m_animation;
     ShemeHandler m_shemeHandler;
+    QTime m_scrollTime;
+    bool m_scrollToBottom;
     bool m_stopScrolling;
 };
 

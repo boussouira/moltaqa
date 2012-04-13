@@ -1,6 +1,7 @@
 #include "webview.h"
 #include "webpage.h"
 #include "utils.h"
+#include <qevent.h>
 
 WebView::WebView(QWidget *parent) :
     QWebView(parent)
@@ -9,6 +10,8 @@ WebView::WebView(QWidget *parent) :
     m_frame = page()->mainFrame();
 
     m_stopScrolling = false;
+    m_scrollToBottom = false;
+    m_scrollTime.start();
 
     m_animation = new QPropertyAnimation(m_frame, "scrollPosition", this);
     connect(m_frame, SIGNAL(contentsSizeChanged(QSize)), m_animation, SLOT(stop()));
@@ -106,6 +109,11 @@ void WebView::setStopScroll(bool stopScroll)
     m_stopScrolling = stopScroll;
 }
 
+void WebView::scrollToBottom(bool scroll)
+{
+    m_scrollToBottom = scroll;
+}
+
 QVariant WebView::execJS(const QString &js)
 {
     return m_frame->evaluateJavaScript(js);
@@ -149,6 +157,11 @@ void WebView::scrollToElement(QString elementQuery)
 
 void WebView::pageTextChanged()
 {
+    if(m_scrollToBottom) {
+        m_frame->setScrollPosition(QPoint(m_frame->scrollPosition().x(),
+                                          m_frame->scrollBarMaximum(Qt::Vertical)));
+        m_scrollToBottom = false;
+    }
 }
 
 void WebView::scrollToSearch()
@@ -167,4 +180,27 @@ void WebView::openMoltaqaLink(QString link)
 void WebView::populateJavaScriptWindowObject()
 {
     addObject("webView", this);
+}
+
+void WebView::wheelEvent(QWheelEvent *event)
+{
+    bool scrollDown = event->delta() < 0;
+
+    if (event->orientation() == Qt::Vertical) {
+        if(scrollDown) {
+            if(maxDown() && m_scrollTime.elapsed() > 300) {
+                m_scrollToBottom = false;
+                emit nextPage();
+            }
+        } else {
+            if(maxUp() && m_scrollTime.elapsed() > 300) {
+                m_scrollToBottom = true;
+                emit prevPage();
+            }
+        }
+
+        m_scrollTime.restart();
+    }
+
+    QWebView::wheelEvent(event);
 }
