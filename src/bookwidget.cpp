@@ -56,8 +56,11 @@ BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_
     connect(m_db, SIGNAL(textChanged()), SIGNAL(textChanged()));
     connect(m_db, SIGNAL(textChanged()), m_indexWidget, SLOT(displayBookInfo()));
     connect(m_view->page()->action(QWebPage::Reload), SIGNAL(triggered()), SLOT(reloadCurrentPage()));
-    connect(m_view, SIGNAL(nextPage()), SLOT(nextPage()));
-    connect(m_view, SIGNAL(prevPage()), SLOT(prevPage()));
+
+    if(!m_db->bookInfo()->isQuran()) {
+        connect(m_view, SIGNAL(nextPage()), SLOT(nextPage()));
+        connect(m_view, SIGNAL(prevPage()), SLOT(prevPage()));
+    }
 
     setFocusPolicy(Qt::StrongFocus);
 
