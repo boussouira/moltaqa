@@ -56,7 +56,7 @@ public:
     ~ShamelaBookInfo();
 
     void genInfo();
-    void genInfo(ShamelaInfo *info);
+    void genInfo(ShamelaInfo *shaInfo);
 
 public:
     int id;

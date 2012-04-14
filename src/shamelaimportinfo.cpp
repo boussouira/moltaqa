@@ -23,9 +23,9 @@ void ShamelaBookInfo::genInfo()
     tocTable = (archive) ? QString("t%1").arg(id) : "title";
 }
 
-void ShamelaBookInfo::genInfo(ShamelaInfo *info)
+void ShamelaBookInfo::genInfo(ShamelaInfo *shaInfo)
 {
     genInfo();
 
-    path = info->buildFilePath(QString::number(id), archive);
+    path = shaInfo->buildFilePath(QString::number(id), archive);
 }
