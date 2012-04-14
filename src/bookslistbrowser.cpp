@@ -53,6 +53,9 @@ BooksListBrowser::BooksListBrowser(QWidget *parent) :
 
 BooksListBrowser::~BooksListBrowser()
 {
+    ML_DELETE_CHECK(m_bookListModel);
+    ML_DELETE_CHECK(m_favouritesManager);
+
     delete ui;
 }
 
@@ -87,7 +90,9 @@ void BooksListBrowser::saveSettings()
 
 void BooksListBrowser::readBookListModel()
 {
-    m_bookListModel = m_bookListManager->bookListModel();
+    ML_DELETE_CHECK(m_bookListModel);
+
+    m_bookListModel = Utils::Model::cloneModel(m_bookListManager->bookListModel());
     ML_ASSERT2(m_bookListModel, "BooksListBrowser::readBookListModel model is null");
 
     m_bookListFilter->setLineEdit(ui->lineFilterBookList);
@@ -111,7 +116,9 @@ void BooksListBrowser::readBookListModel()
 
 void BooksListBrowser::readFavouritesModel()
 {
-    m_favouritesModel = m_favouritesManager->bookListModel();
+    ML_DELETE_CHECK(m_favouritesModel);
+
+    m_favouritesModel = Utils::Model::cloneModel(m_favouritesManager->bookListModel());
     ML_ASSERT2(m_favouritesModel, "BooksListBrowser::readFavouritesModel model is null");
 
     m_favouritesListFilter->setLineEdit(ui->lineFilterFavourites);

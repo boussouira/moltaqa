@@ -47,6 +47,7 @@ private:
     LibraryBookManager *m_bookManager;
     QStandardItemModel *m_bookListModel;
     QStandardItemModel *m_favouritesModel;
+    QStandardItemModel *m_lastReadedModel;
     ModelViewFilter *m_bookListFilter;
     ModelViewFilter *m_favouritesListFilter;
     Ui::WelcomeWidget *ui;
