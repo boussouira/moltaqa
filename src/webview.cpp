@@ -184,6 +184,9 @@ void WebView::populateJavaScriptWindowObject()
 
 void WebView::wheelEvent(QWheelEvent *event)
 {
+    if(m_animation->state() == QPropertyAnimation::Running)
+        m_animation->stop();
+
     bool scrollDown = event->delta() < 0;
 
     if (event->orientation() == Qt::Vertical) {
