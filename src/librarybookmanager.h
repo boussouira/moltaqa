@@ -9,6 +9,7 @@
 
 class QStandardItemModel;
 class AuthorsManager;
+class LibraryInfo;
 
 class LibraryBookManager : public DatabaseManager
 {
@@ -46,6 +47,7 @@ protected:
     void loadLibraryBooks();
 
 protected:
+    LibraryInfo *m_libraryInfo;
     AuthorsManager *m_authorsManager;
     QHash<int, LibraryBookPtr> m_books;
     LibraryBookPtr m_quranBook;

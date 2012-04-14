@@ -14,7 +14,9 @@ LibraryBookManager::LibraryBookManager(QObject *parent) :
     DatabaseManager(parent),
     m_quranBook(0)
 {
-    QDir dataDir(MW->libraryInfo()->dataDir());
+    m_libraryInfo = MW->libraryInfo();
+
+    QDir dataDir(m_libraryInfo->dataDir());
     setDatabasePath(dataDir.filePath("books.db"));
 
     m_authorsManager = LibraryManager::instance()->authorsManager();
@@ -56,7 +58,7 @@ void LibraryBookManager::loadLibraryBooks()
         book->indexFlags = static_cast<LibraryBook::IndexFlags>(query.value(7).toInt());
 
         book->fileName = query.value(8).toString();
-        book->path = MW->libraryInfo()->bookPath(book->fileName);
+        book->path = m_libraryInfo->bookPath(book->fileName);
 
         if(!book->isQuran()) {
             book->authorID = query.value(3).toInt();
@@ -147,7 +149,7 @@ LibraryBookPtr LibraryBookManager::getLibraryBook(int bookID)
         book->indexFlags = static_cast<LibraryBook::IndexFlags>(query.value(7).toInt());
 
         book->fileName = query.value(8).toString();
-        book->path = MW->libraryInfo()->bookPath(book->fileName);
+        book->path = m_libraryInfo->bookPath(book->fileName);
 
         if(!book->isQuran()) {
             book->authorID = query.value(3).toInt();
