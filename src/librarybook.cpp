@@ -17,12 +17,10 @@ LibraryBook::~LibraryBook()
 
 bool LibraryBook::exists()
 {
-    if(!path.isEmpty()){
-        return QFile::exists(path);
-    } else {
-        qWarning("Call to BookInfo::exists() before BookInfo::setBookPath()");
-        return false;
-    }
+    ML_ASSERT_RET2(!path.isEmpty(), "LibraryBook::exists path is empty", false);
+    ML_ASSERT_RET2(QFile::exists(path), "LibraryBook::exists book" << path << "doesn't exists", false);
+
+    return true;
 }
 
 LibraryBook *LibraryBook::clone()

@@ -44,7 +44,6 @@ public:
 
 protected:
     int getNewBookID();
-    void loadLibraryBooks();
 
 protected:
     LibraryInfo *m_libraryInfo;

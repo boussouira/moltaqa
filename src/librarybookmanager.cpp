@@ -39,47 +39,6 @@ void LibraryBookManager::clear()
     m_books.clear();
 }
 
-void LibraryBookManager::loadLibraryBooks()
-{
-    QSqlQuery query(m_db);
-    query.prepare("SELECT id, title, type, authorID, author, info, bookFlags, indexFlags, filename, "
-                  "otherTitles, edition, publisher, mohaqeq "
-                  "FROM books ORDER BY id");
-
-    ML_QUERY_EXEC(query);
-
-    while(query.next()) {
-        LibraryBookPtr book(new LibraryBook());
-        book->id = query.value(0).toInt();
-        book->title = query.value(1).toString();
-        book->type = static_cast<LibraryBook::Type>(query.value(2).toInt());
-        book->info = query.value(5).toString();
-
-        book->otherTitles = query.value(9).toString();
-        book->edition = query.value(10).toString();
-        book->publisher = query.value(11).toString();
-        book->mohaqeq = query.value(12).toString();
-
-        book->bookFlags = query.value(6).toInt();
-        book->indexFlags = static_cast<LibraryBook::IndexFlags>(query.value(7).toInt());
-
-        book->fileName = query.value(8).toString();
-        book->path = m_libraryInfo->bookPath(book->fileName);
-
-        if(!book->isQuran()) {
-            book->authorID = query.value(3).toInt();
-
-            if(book->authorID) {
-                book->authorName = m_authorsManager->getAuthorName(book->authorID);
-            } else {
-                book->authorName = query.value(4).toString();
-            }
-        }
-
-        m_books.insert(book->id, book);
-    }
-}
-
 QStandardItemModel *LibraryBookManager::getModel()
 {
     QStandardItemModel *model = new QStandardItemModel();
