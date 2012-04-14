@@ -94,12 +94,13 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
                      "<br><b style=\"direction:rtl\">%1</b>").arg(bookQuery.lastError().text()), path);
     }
 
+    int bkIdCol = bookQuery.record().indexOf("BkId");
+    int bkCol = bookQuery.record().indexOf("bk");
+    int authCol = bookQuery.record().indexOf("Auth");
+    int catCol = bookQuery.record().indexOf("cat");
+    int betakaCol = bookQuery.record().indexOf("Betaka");
+
     while(bookQuery.next()) {
-        int bkIdCol = bookQuery.record().indexOf("BkId");
-        int bkCol = bookQuery.record().indexOf("bk");
-        int authCol = bookQuery.record().indexOf("Auth");
-        int catCol = bookQuery.record().indexOf("cat");
-        int betakaCol = bookQuery.record().indexOf("Betaka");
 
         int bookID = bookQuery.value(bkIdCol).toInt();
 
