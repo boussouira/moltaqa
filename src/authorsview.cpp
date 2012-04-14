@@ -131,7 +131,12 @@ void AuthorsView::setCurrentAuth(AuthorInfoPtr info)
     if(!info->name.isEmpty()) {
         html.beginParagraphTag();
         html.insertSpanTag(tr("الاسم: "), ".pro-name");
-        html.insertSpanTag(info->name, ".pro-value");
+
+        if(info->isALive)
+            html.insertSpanTag(tr("%1 (معاصر)").arg(info->name), ".pro-value");
+        else
+            html.insertSpanTag(info->name, ".pro-value");
+
         html.endParagraphTag();
     }
 
