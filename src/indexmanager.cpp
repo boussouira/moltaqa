@@ -44,6 +44,8 @@ bool IndexManager::openWriter()
     m_writer->setRAMBufferSizeMB(ramSize);
     m_writer->setMergeFactor(25);
 
+    qDebug("IndexManager: open writer using %d MB", ramSize);
+
     return true;
 }
 
@@ -65,6 +67,11 @@ void IndexManager::start()
     m_indexingTime.start();
 
     if(m_taskIter->taskCount()) {
+        m_threadCount = qMin(m_threadCount, m_taskIter->taskCount());
+
+        qDebug("IndexManager: start %d tasks with %d threads",
+               m_taskIter->taskCount(), m_threadCount);
+
         for(int i=0;i<m_threadCount;i++) {
             BookIndexer *indexThread = new BookIndexer();
             connect(indexThread, SIGNAL(taskDone(IndexTask*)), SLOT(taskDone(IndexTask*)));
