@@ -92,10 +92,14 @@ void createIndexDB(QString path)
 
         q.set("id", "INTEGER PRIMARY KEY NOT NULL");
         q.set("title", "TEXT");
+        q.set("otherTitles", "TEXT");
         q.set("type", "INT");
         q.set("authorID", "INT");
         q.set("author", "TEXT");
         q.set("info", "TEXT");
+        q.set("edition", "TEXT");
+        q.set("publisher", "TEXT");
+        q.set("mohaqeq", "TEXT");
         q.set("bookFlags", "INT");
         q.set("indexFlags", "INT");
         q.set("filename", "TEXT");

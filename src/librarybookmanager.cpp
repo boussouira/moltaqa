@@ -42,7 +42,8 @@ void LibraryBookManager::clear()
 void LibraryBookManager::loadLibraryBooks()
 {
     QSqlQuery query(m_db);
-    query.prepare("SELECT id, title, type, authorID, author, info, bookFlags, indexFlags, filename "
+    query.prepare("SELECT id, title, type, authorID, author, info, bookFlags, indexFlags, filename, "
+                  "otherTitles, edition, publisher, mohaqeq "
                   "FROM books ORDER BY id");
 
     ML_QUERY_EXEC(query);
@@ -53,6 +54,11 @@ void LibraryBookManager::loadLibraryBooks()
         book->title = query.value(1).toString();
         book->type = static_cast<LibraryBook::Type>(query.value(2).toInt());
         book->info = query.value(5).toString();
+
+        book->otherTitles = query.value(9).toString();
+        book->edition = query.value(10).toString();
+        book->publisher = query.value(11).toString();
+        book->mohaqeq = query.value(12).toString();
 
         book->bookFlags = query.value(6).toInt();
         book->indexFlags = static_cast<LibraryBook::IndexFlags>(query.value(7).toInt());
@@ -132,7 +138,8 @@ LibraryBookPtr LibraryBookManager::getLibraryBook(int bookID)
         return book;
 
     QSqlQuery query(m_db);
-    query.prepare("SELECT id, title, type, authorID, author, info, bookFlags, indexFlags, filename "
+    query.prepare("SELECT id, title, type, authorID, author, info, bookFlags, indexFlags, filename, "
+                  "otherTitles, edition, publisher, mohaqeq "
                   "FROM books WHERE id = ?");
     query.bindValue(0, bookID);
 
@@ -144,6 +151,11 @@ LibraryBookPtr LibraryBookManager::getLibraryBook(int bookID)
         book->title = query.value(1).toString();
         book->type = static_cast<LibraryBook::Type>(query.value(2).toInt());
         book->info = query.value(5).toString();
+
+        book->otherTitles = query.value(9).toString();
+        book->edition = query.value(10).toString();
+        book->publisher = query.value(11).toString();
+        book->mohaqeq = query.value(12).toString();
 
         book->bookFlags = query.value(6).toInt();
         book->indexFlags = static_cast<LibraryBook::IndexFlags>(query.value(7).toInt());
@@ -227,10 +239,14 @@ bool LibraryBookManager::updateBook(LibraryBookPtr book)
     q.setQueryType(QueryBuilder::Update);
 
     q.set("title", book->title);
+    q.set("otherTitles", book->otherTitles);
     q.set("type", book->type);
     q.set("authorID", book->authorID);
     q.set("author", (!book->authorID) ? book->authorName : QVariant(QVariant::String));
     q.set("info", book->info);
+    q.set("edition", book->edition);
+    q.set("publisher", book->publisher);
+    q.set("mohaqeq", book->mohaqeq);
     q.set("bookFlags", book->bookFlags);
     q.set("indexFlags", book->indexFlags);
     q.set("filename", book->fileName);
