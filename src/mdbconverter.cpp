@@ -42,11 +42,6 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
 
     QTime timer;
     timer.start();
-    MdbHandle *mdb;
-    char *env = g_strdup("MDB_JET3_CHARSET=cp1256");
-
-    putenv(env);
-    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("windows-1256"));
 
     QString convert_path;
     if(!sql_path.isEmpty()){
@@ -54,6 +49,8 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
     } else {
         convert_path = Utils::Rand::fileName(m_tempFolder, true, "sqlite", "mdb_");
     }
+
+    MdbHandle *mdb;
 
     // initialize the library
     mdb_init();
@@ -105,7 +102,6 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
 
     qDebug() << "Converting" << info.fileName() << " take " << m_time << "ms";
 
-    g_free(env);
     mdb_close(mdb);
     mdb_exit();
 
