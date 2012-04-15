@@ -202,8 +202,6 @@ void ImportDialog::startImporting()
                                    Q_ARG(int, i+1));
     }
 
-    m_libraryManager->reloadManagers();
-
     qDebug() << "Importing" << imported << "books take" << time.elapsed() << "ms";
 }
 
