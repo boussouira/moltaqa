@@ -49,9 +49,9 @@ public:
     void setQueryType(QueryType type);
     void setIgnoreExistingTable(bool ignore);
     void setDropExistingTable(bool drop);
-    void select(const QVariant &colName);
-    void set(const QVariant &colName, const QVariant &colValue);
-    void where(const QVariant &colName, const QVariant &colValue);
+    void select(const QString &colName);
+    void set(const QString &colName, const QVariant &colValue);
+    void where(const QString &colName, const QVariant &colValue);
     void orderBy(const QString &colName, Order order=Asc);
     void limit(int _limit);
 
@@ -65,9 +65,9 @@ public:
 protected:
     QueryType m_type;
     QString m_tableName;
-    QList<QVariant> m_colums;
+    QList<QString> m_colums;
     QList<QVariant> m_values;
-    QList<QVariant> m_whereColums;
+    QList<QString> m_whereColums;
     QList<QVariant> m_whereValues;
     QList<QString> m_orderColumns;
     bool m_igonreExisting;

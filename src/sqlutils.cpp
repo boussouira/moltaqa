@@ -60,7 +60,7 @@ void QueryBuilder::setDropExistingTable(bool drop)
     m_dropExisting = drop;
 }
 
-void QueryBuilder::select(const QVariant &colName)
+void QueryBuilder::select(const QString &colName)
 {
     ML_ASSERT2(m_type == Select, "QueryBuilder::addColumn add column "
                "without value should be only in select query");
@@ -68,13 +68,13 @@ void QueryBuilder::select(const QVariant &colName)
     m_colums.append(colName);
 }
 
-void QueryBuilder::set(const QVariant &colName, const QVariant &colValue)
+void QueryBuilder::set(const QString &colName, const QVariant &colValue)
 {
     m_colums.append(colName);
     m_values.append(colValue);
 }
 
-void QueryBuilder::where(const QVariant &colName, const QVariant &colValue)
+void QueryBuilder::where(const QString &colName, const QVariant &colValue)
 {
     m_whereColums.append(colName);
     m_whereValues.append(colValue);
@@ -125,7 +125,7 @@ QString QueryBuilder::query()
             if(i)
                 sql += ", ";
 
-            sql += m_colums[i].toString();
+            sql += m_colums[i];
             sql += " ";
             sql += m_values[i].toString();
         }
@@ -148,7 +148,7 @@ QString QueryBuilder::query()
                 values += ", ";
             }
 
-            sql += m_colums[i].toString();
+            sql += m_colums[i];
             values += "?";
         }
 
@@ -163,7 +163,7 @@ QString QueryBuilder::query()
             if(i)
                 sql += ", ";
 
-            sql += m_colums[i].toString();
+            sql += m_colums[i];
             sql += " = ";
             sql += "?";
         }
@@ -175,7 +175,7 @@ QString QueryBuilder::query()
                 if(i)
                     sql += " AND ";
 
-                sql += m_whereColums[i].toString();
+                sql += m_whereColums[i];
                 sql += " = ";
                 sql += '?';
             }
@@ -188,7 +188,7 @@ QString QueryBuilder::query()
                 if(i)
                     sql += ", ";
 
-                sql += m_colums[i].toString();
+                sql += m_colums[i];
             }
         } else {
             sql += "*";
@@ -203,7 +203,7 @@ QString QueryBuilder::query()
                 if(i)
                     sql += " AND ";
 
-                sql += m_whereColums[i].toString();
+                sql += m_whereColums[i];
                 sql += " = ";
                 sql += '?';
             }
