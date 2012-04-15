@@ -1,4 +1,5 @@
 #include "shamelaimportinfo.h"
+#include "stringutils.h"
 #include <qdebug.h>
 
 ShamelaBookInfo::ShamelaBookInfo(int bid, QString bname, QString bbetaka,
@@ -7,7 +8,7 @@ ShamelaBookInfo::ShamelaBookInfo(int bid, QString bname, QString bbetaka,
                                  QString btafessirName) :
     id(bid),
     name(bname),
-    info(binfo),
+    info(Utils::Html::format(binfo)),
     betaka(bbetaka),
     archive(barchive),
     cat(bcat),

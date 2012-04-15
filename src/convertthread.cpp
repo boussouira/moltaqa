@@ -5,6 +5,7 @@
 #include "utils.h"
 #include "bookexception.h"
 #include "sqlutils.h"
+#include "stringutils.h"
 #include "booklistmanager.h"
 #include "authorsmanager.h"
 #include "booklistmanager.h"
@@ -124,7 +125,7 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
              node->bookBetaka = bookQuery.value(betakaCol).toString();
 
         if(infoCol != -1)
-            node->bookInfo = bookQuery.value(infoCol).toString();
+            node->bookInfo = Utils::Html::format(bookQuery.value(infoCol).toString());
 
          AuthorInfoPtr foundAuth = m_authorsManager->findAuthor(bookQuery.value(authCol).toString());
          if(foundAuth)
