@@ -16,10 +16,12 @@
 #include <qsqlerror.h>
 #include <qstandarditemmodel.h>
 
-ShamelaManager::ShamelaManager(ShamelaInfo *info)
+ShamelaManager::ShamelaManager(ShamelaInfo *info) :
+     m_info(info),
+     m_mapper(new ShamelaMapper()),
+     m_shamelaQuery(0),
+     m_shamelaSpecialQuery(0)
 {
-    m_mapper = new ShamelaMapper();
-    m_info = info;
     m_haveBookFilter = false;
 }
 
@@ -32,22 +34,6 @@ ShamelaManager::~ShamelaManager()
 ShamelaMapper *ShamelaManager::mapper()
 {
     return m_mapper;
-}
-
-void ShamelaManager::openIndexDB()
-{
-    if(!m_libraryManager.isOpen()) {
-        QString book = m_library->booksIndexPath();
-
-        m_libraryManager = QSqlDatabase::addDatabase("QSQLITE", "indexDb_");
-        m_libraryManager.setDatabaseName(book);
-
-        if (!m_libraryManager.open()) {
-            LOG_DB_ERROR(m_libraryManager);
-        }
-
-        m_indexQuery = new QSqlQuery(m_libraryManager);
-    }
 }
 
 void ShamelaManager::openShamelaDB()
@@ -102,28 +88,11 @@ void ShamelaManager::openShamelaSpecialDB()
 
 void ShamelaManager::close()
 {
-    if(m_libraryManager.isOpen()) {
-        delete m_indexQuery;
-        m_libraryManager.close();
-    }
+    m_remover.removeDatabase(m_shamelaDB);
+    m_remover.removeDatabase(m_shamelaSpecialDB);
 
-    if(m_shamelaDB.isOpen()) {
-        delete m_shamelaQuery;
-        m_shamelaDB.close();
-
-#ifdef USE_MDBTOOLS
-        QFile::remove(m_tempShamelaDB);
-#endif
-    }
-
-    if(m_shamelaSpecialDB.isOpen()) {
-        delete m_shamelaSpecialQuery;
-        m_shamelaSpecialDB.close();
-
-#ifdef USE_MDBTOOLS
-        QFile::remove(m_tempshamelaSpecialDB);
-#endif
-    }
+    ML_DELETE_CHECK(m_shamelaQuery);
+    ML_DELETE_CHECK(m_shamelaSpecialQuery);
 }
 
 QStandardItemModel *ShamelaManager::getBooksListModel()

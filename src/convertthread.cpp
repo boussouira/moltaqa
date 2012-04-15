@@ -140,7 +140,7 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
         m_model->appendNode(node);
     }
 
-    remover.connectionName = "mdb";
+    remover.removeDatabase("mdb");
 }
 
 void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDatabase &bookDB, int bookID)

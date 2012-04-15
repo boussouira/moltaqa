@@ -9,8 +9,7 @@ DatabaseManager::DatabaseManager(QObject *parent) :
 
 DatabaseManager::~DatabaseManager()
 {
-    if(m_db.isOpen())
-        m_remover.connectionName = m_db.connectionName();
+    m_remover.removeDatabase(m_db);
 }
 
 void DatabaseManager::setDatabasePath(const QString &path)

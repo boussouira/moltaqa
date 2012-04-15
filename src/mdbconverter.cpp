@@ -107,7 +107,7 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
 
     m_converted[mdb_path.toLower()] = convert_path;
 
-    m_remover.connectionName = m_bookDB.connectionName();
+    m_remover.removeDatabase(m_bookDB);
 
     return convert_path;
 }
@@ -293,4 +293,6 @@ void MdbConverter::removeAllConvertedDB()
         qDebug() << "Remove:" << i.value();
         QFile::remove(i.value());
     }
+
+    m_converted.clear();
 }

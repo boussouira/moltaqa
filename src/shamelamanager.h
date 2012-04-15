@@ -2,9 +2,9 @@
 #define SHAMELAMANAGER_H
 
 #include "shamelainfo.h"
-#include "libraryinfo.h"
 #include "shamelaimportinfo.h"
 #include "shamelamapper.h"
+#include "sqlutils.h"
 
 #include <qthread.h>
 #include <qmutex.h>
@@ -26,7 +26,6 @@ public:
     void setFilterBooks(bool filter);
     void setAcceptedBooks(QList<int> accepted);
 
-    void openIndexDB();
     void openShamelaDB();
     void openShamelaSpecialDB();
     void close();
@@ -59,13 +58,11 @@ protected:
     void booksCat(QStandardItem *parentNode, int catID);
 
 protected:
-    LibraryInfo *m_library;
+    DatabaseRemover m_remover;
     ShamelaInfo *m_info;
     ShamelaMapper *m_mapper;
-    QSqlDatabase m_libraryManager;
     QSqlDatabase m_shamelaDB;
     QSqlDatabase m_shamelaSpecialDB;
-    QSqlQuery *m_indexQuery;
     QSqlQuery *m_shamelaQuery;
     QSqlQuery *m_shamelaSpecialQuery;
     bool m_haveBookFilter;

@@ -13,8 +13,7 @@ BookReaderHelper::BookReaderHelper()
 
 BookReaderHelper::~BookReaderHelper()
 {
-    if(m_quranDB.isOpen())
-        m_remover.connectionName = m_quranDB.connectionName();
+    m_remover.removeDatabase(m_quranDB);
 
     qDeleteAll(m_sowar);
     m_sowar.clear();

@@ -10,10 +10,17 @@ DatabaseRemover::DatabaseRemover()
 
 DatabaseRemover::~DatabaseRemover()
 {
-    if(!connectionName.isEmpty()) {
-        //qDebug("Remove database: %s", qPrintable(connectionName));
-        QSqlDatabase::removeDatabase(connectionName);
+    for(int i=0; i<m_connectionNames.size(); i++) {
+        //qDebug("DatabaseRemover: remove database %s", qPrintable(m_connectionNames[i]));
+        QSqlDatabase::removeDatabase(m_connectionNames[i]);
     }
+}
+
+void DatabaseRemover::removeDatabase(const QSqlDatabase &db)
+{
+    //ML_ASSERT2(db.isOpen(), "DatabaseRemover::removeDatabase db is not currently open");
+
+    m_connectionNames.append(db.connectionName());
 }
 
 QueryBuilder::QueryBuilder() :

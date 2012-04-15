@@ -49,8 +49,7 @@ LibraryCreator::LibraryCreator()
 
 LibraryCreator::~LibraryCreator()
 {
-    if(m_bookDB.isOpen())
-        m_remover.connectionName = m_bookDB.connectionName();
+    m_remover.removeDatabase(m_bookDB);
 }
 
 void LibraryCreator::openDB()
@@ -220,7 +219,7 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
     bookWrite.endReading();
 
     if(!book->archive)
-        remover.connectionName = connName;
+        remover.removeDatabase(connName);
 
     importBook(book, path);
 

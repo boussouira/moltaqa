@@ -2,8 +2,10 @@
 #define SQLUTILS_H
 
 #include <qstring.h>
+#include <qstringlist.h>
 #include <qvariant.h>
 
+class QSqlDatabase;
 class QSqlQuery;
 
 class DatabaseRemover
@@ -12,7 +14,15 @@ public:
     DatabaseRemover();
     ~DatabaseRemover();
 
-    QString connectionName;
+    inline void removeDatabase(const QString &name)
+    {
+        m_connectionNames.append(name);
+    }
+
+    void removeDatabase(const QSqlDatabase &db);
+
+protected:
+    QStringList m_connectionNames;
 };
 
 class QueryBuilder
