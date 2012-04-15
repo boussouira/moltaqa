@@ -29,6 +29,7 @@ public:
     QString bookName;
     QString authorName;
     QString bookInfo;
+    QString bookBetaka;
     QString bookPath;
     QString typeName;
     QString catName;

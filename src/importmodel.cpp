@@ -70,6 +70,7 @@ LibraryBookPtr ImportModelNode::toLibraryBook()
     LibraryBookPtr book(new LibraryBook());
     book->type = type;
     book->title = bookName;
+    book->comment = bookBetaka;
     book->info = bookInfo;
     book->authorID = authorID;
     book->authorName = authorName;
@@ -164,7 +165,7 @@ QVariant ImportModel::data(const QModelIndex &index, int role) const
 
     } else if (role == Qt::ToolTipRole) {
         if (index.column() == 0)
-            return node->bookInfo;
+            return node->bookBetaka;
     } else if(role == Qt::BackgroundRole) {
         if (index.column() == 1 && node->authorID == 0)
             return QColor(0xf5, 0x82, 0x82);

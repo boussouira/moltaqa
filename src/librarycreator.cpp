@@ -308,6 +308,7 @@ void LibraryCreator::importBook(ShamelaBookInfo *shamelBook, QString path)
     LibraryBookPtr book(new LibraryBook());
     book->type = shamelBook->tafessirName.isEmpty() ? LibraryBook::NormalBook : LibraryBook::TafessirBook;
     book->title = shamelBook->name;
+    book->comment = shamelBook->betaka;
     book->info = shamelBook->info;
     book->authorID = m_mapper->mapFromShamelaAuthor(shamelBook->authorID);
     book->authorName = shamelBook->authName;

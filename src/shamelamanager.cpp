@@ -318,9 +318,11 @@ void ShamelaManager::selectBooks()
 {
     openShamelaDB();
 
-    if(!m_shamelaQuery->exec(QString("SELECT bkid, bk, cat, betaka, authno, auth, Archive, TafseerNam FROM %1 ORDER BY Archive")
-                             .arg(mdbTable("0bok"))))
+    if(!m_shamelaQuery->exec(QString("SELECT bkid, bk, cat, betaka, inf, authno, auth, Archive, TafseerNam "
+                                     "FROM %1 ORDER BY Archive")
+                             .arg(mdbTable("0bok")))) {
         LOG_SQL_P_ERROR(m_shamelaQuery);
+    }
 }
 
 ShamelaBookInfo *ShamelaManager::nextBook()
@@ -334,11 +336,12 @@ ShamelaBookInfo *ShamelaManager::nextBook()
             return new ShamelaBookInfo(m_shamelaQuery->value(0).toInt(),
                                        m_shamelaQuery->value(1).toString(),
                                        m_shamelaQuery->value(3).toString(),
-                                       m_shamelaQuery->value(6).toInt(),
+                                       m_shamelaQuery->value(4).toString(),
+                                       m_shamelaQuery->value(7).toInt(),
                                        m_shamelaQuery->value(2).toInt(),
-                                       m_shamelaQuery->value(4).toInt(),
-                                       m_shamelaQuery->value(5).toString(),
-                                       m_shamelaQuery->value(7).toString());
+                                       m_shamelaQuery->value(5).toInt(),
+                                       m_shamelaQuery->value(6).toString(),
+                                       m_shamelaQuery->value(8).toString());
         } else {
             return 0;
         }
@@ -353,11 +356,12 @@ ShamelaBookInfo *ShamelaManager::nextFiltredBook()
             return new ShamelaBookInfo(m_shamelaQuery->value(0).toInt(),
                                        m_shamelaQuery->value(1).toString(),
                                        m_shamelaQuery->value(3).toString(),
-                                       m_shamelaQuery->value(6).toInt(),
+                                       m_shamelaQuery->value(4).toString(),
+                                       m_shamelaQuery->value(7).toInt(),
                                        m_shamelaQuery->value(2).toInt(),
-                                       m_shamelaQuery->value(4).toInt(),
-                                       m_shamelaQuery->value(5).toString(),
-                                       m_shamelaQuery->value(7).toString());
+                                       m_shamelaQuery->value(5).toInt(),
+                                       m_shamelaQuery->value(6).toString(),
+                                       m_shamelaQuery->value(8).toString());
         }
     }
 

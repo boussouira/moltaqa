@@ -97,6 +97,7 @@ void createIndexDB(QString path)
         q.set("authorID", "INT");
         q.set("author", "TEXT");
         q.set("info", "TEXT");
+        q.set("comment", "TEXT");
         q.set("edition", "TEXT");
         q.set("publisher", "TEXT");
         q.set("mohaqeq", "TEXT");

@@ -99,6 +99,7 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
     int authCol = bookQuery.record().indexOf("Auth");
     int catCol = bookQuery.record().indexOf("cat");
     int betakaCol = bookQuery.record().indexOf("Betaka");
+    int infoCol = bookQuery.record().indexOf("inf");
 
     while(bookQuery.next()) {
 
@@ -119,9 +120,11 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
             node->setCategories(0);
         }
 
-        if(betakaCol != -1) {
-             node->bookInfo = bookQuery.value(betakaCol).toString();
-        }
+        if(betakaCol != -1)
+             node->bookBetaka = bookQuery.value(betakaCol).toString();
+
+        if(infoCol != -1)
+            node->bookInfo = bookQuery.value(infoCol).toString();
 
          AuthorInfoPtr foundAuth = m_authorsManager->findAuthor(bookQuery.value(authCol).toString());
          if(foundAuth)

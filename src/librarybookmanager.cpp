@@ -98,7 +98,7 @@ LibraryBookPtr LibraryBookManager::getLibraryBook(int bookID)
 
     QSqlQuery query(m_db);
     query.prepare("SELECT id, title, type, authorID, author, info, bookFlags, indexFlags, filename, "
-                  "otherTitles, edition, publisher, mohaqeq "
+                  "otherTitles, edition, publisher, mohaqeq, comment "
                   "FROM books WHERE id = ?");
     query.bindValue(0, bookID);
 
@@ -110,6 +110,7 @@ LibraryBookPtr LibraryBookManager::getLibraryBook(int bookID)
         book->title = query.value(1).toString();
         book->type = static_cast<LibraryBook::Type>(query.value(2).toInt());
         book->info = query.value(5).toString();
+        book->comment = query.value(13).toString();
 
         book->otherTitles = query.value(9).toString();
         book->edition = query.value(10).toString();
@@ -175,10 +176,15 @@ int LibraryBookManager::addBook(LibraryBookPtr book)
 
     q.set("id", book->id);
     q.set("title", book->title);
+    q.set("otherTitles", book->otherTitles);
     q.set("type", book->type);
     q.set("authorID", book->authorID);
     q.set("author", (!book->authorID) ? book->authorName : QVariant(QVariant::String));
+    q.set("comment", book->comment);
     q.set("info", book->info);
+    q.set("edition", book->edition);
+    q.set("publisher", book->publisher);
+    q.set("mohaqeq", book->mohaqeq);
     q.set("bookFlags", book->bookFlags);
     q.set("indexFlags", book->indexFlags);
     q.set("filename", book->fileName);
@@ -202,6 +208,7 @@ bool LibraryBookManager::updateBook(LibraryBookPtr book)
     q.set("type", book->type);
     q.set("authorID", book->authorID);
     q.set("author", (!book->authorID) ? book->authorName : QVariant(QVariant::String));
+    q.set("comment", book->comment);
     q.set("info", book->info);
     q.set("edition", book->edition);
     q.set("publisher", book->publisher);

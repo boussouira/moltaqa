@@ -191,7 +191,7 @@ void BookListManager::addBook(LibraryBookPtr book, int parentCat)
     bookElement.appendChild(titleElement);
 
     QDomElement bookInfoElement = m_dom.domDocument().createElement("info");
-    bookInfoElement.appendChild(m_dom.domDocument().createCDATASection(book->info));
+    bookInfoElement.appendChild(m_dom.domDocument().createCDATASection(book->comment));
     bookElement.appendChild(bookInfoElement);
 
     QDomElement parentElement = m_catElementHash.value(parentCat, m_dom.rootElement());

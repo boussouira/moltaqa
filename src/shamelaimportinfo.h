@@ -52,7 +52,8 @@ public:
 class ShamelaBookInfo
 {
 public:
-    ShamelaBookInfo(int bid, QString bname, QString binfo, int barchive, int bcat, int bauth, QString bauthName, QString btafessirName);
+    ShamelaBookInfo(int bid, QString bname, QString bbetaka, QString binfo, int barchive,
+                    int bcat, int bauth, QString bauthName, QString btafessirName);
     ~ShamelaBookInfo();
 
     void genInfo();
@@ -63,6 +64,7 @@ public:
     QString name;
     QString path;
     QString info;
+    QString betaka;
     QString mainTable;
     QString tocTable;
     int archive;

@@ -39,6 +39,7 @@ QDebug operator<<(QDebug dbg, LibraryBookPtr &info)
                   << "Edition: " << info->edition << "\n\t"
                   << "Publisher: " << info->publisher << "\n\t"
                   << "Mohaqeq: " << info->mohaqeq<< "\n\t"
+                  << "comment: " << info->comment<< "\n\t"
                   << "Info: " << info->info << "\n"
                   << ")";
 

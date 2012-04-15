@@ -54,6 +54,7 @@ public:
     QString edition;
     QString publisher;
     QString mohaqeq;
+    QString comment;
     QString info;
     int id;
     int authorID;
