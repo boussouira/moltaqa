@@ -35,6 +35,22 @@ public:
         Ignore
     };
 
+    enum BookFlags {
+        NoBookFlags = 0,
+        AutoPageNumber = 1,
+        PrintedPageNumber = 2,
+        MakhetotPageNumer = 4,
+
+        NotMoqabal = 8,
+        MoqabalMoteboa = 16,
+        MoqabalMakhetot = 32,
+        MoqabalPdf = 64,
+
+        LinkedWithShareeh = 128,
+        HaveFootNotes = 256,
+        Mashekool = 512
+    };
+
     bool isQuran() { return type == QuranBook; }
     bool isNormal() { return type == NormalBook; }
     bool isTafessir() { return type == TafessirBook; }
@@ -58,7 +74,7 @@ public:
     QString info;
     int id;
     int authorID;
-    int bookFlags;
+    BookFlags bookFlags;
     IndexFlags indexFlags;
 };
 

@@ -7,7 +7,7 @@ LibraryBook::LibraryBook()
 {
     id = 0;
     authorID = 0;
-    bookFlags = 0;
+    bookFlags = NoBookFlags;
     indexFlags = NotIndexed;
 }
 

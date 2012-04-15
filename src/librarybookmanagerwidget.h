@@ -13,6 +13,7 @@ namespace Ui {
 class LibraryManager;
 class QStandardItemModel;
 class LibraryBookManager;
+class EditWebView;
 
 class LibraryBookManagerWidget : public ControlCenterWidget
 {
@@ -23,6 +24,7 @@ public:
     ~LibraryBookManagerWidget();
 
     QString title();
+    void aboutToShow();
 
     void loadModel();
     void save();
@@ -38,12 +40,14 @@ private slots:
     void on_toolChangeAuthor_clicked();
     void setupEdit(LibraryBookPtr info);
     void infoChanged();
+    void checkEditWebChange();
 
 protected:
     Ui::LibraryBookManagerWidget *ui;
     LibraryBookPtr m_currentBook;
     QStandardItemModel *m_model;
     LibraryBookManager *m_manager;
+    EditWebView *m_webEdit;
     QHash<int, LibraryBookPtr > m_editedBookInfo;
 };
 

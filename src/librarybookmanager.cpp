@@ -117,7 +117,7 @@ LibraryBookPtr LibraryBookManager::getLibraryBook(int bookID)
         book->publisher = query.value(11).toString();
         book->mohaqeq = query.value(12).toString();
 
-        book->bookFlags = query.value(6).toInt();
+        book->bookFlags = static_cast<LibraryBook::BookFlags>(query.value(6).toInt());
         book->indexFlags = static_cast<LibraryBook::IndexFlags>(query.value(7).toInt());
 
         book->fileName = query.value(8).toString();

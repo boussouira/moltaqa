@@ -6,6 +6,7 @@
 #include "librarybookmanager.h"
 #include "modelenums.h"
 #include "utils.h"
+#include "editwebview.h"
 
 #include <qdebug.h>
 #include <qlineedit.h>
@@ -37,6 +38,16 @@ QString LibraryBookManagerWidget::title()
     return tr("الكتب");
 }
 
+void LibraryBookManagerWidget::aboutToShow()
+{
+    ML_ASSERT(!m_webEdit);
+
+    m_webEdit = new EditWebView(this);
+
+    QVBoxLayout *layout = new QVBoxLayout(ui->tabBookInfo);
+    layout->addWidget(m_webEdit);
+}
+
 void LibraryBookManagerWidget::setupActions()
 {
      foreach(QLineEdit *edit, findChildren<QLineEdit *>()) {
@@ -46,13 +57,13 @@ void LibraryBookManagerWidget::setupActions()
      foreach(QTextEdit *edit, findChildren<QTextEdit *>()) {
          connect(edit, SIGNAL(textChanged()), SLOT(infoChanged()));
      }
+
+     connect(ui->tabWidget, SIGNAL(currentChanged(int)), SLOT(checkEditWebChange()));
 }
 
 void LibraryBookManagerWidget::enableEditWidgets(bool enable)
 {
-    ui->groupBox->setEnabled(enable);
     ui->tabWidget->setEnabled(enable);
-    ui->plainBookNames->setEnabled(enable);
 }
 
 void LibraryBookManagerWidget::loadModel()
@@ -70,6 +81,14 @@ void LibraryBookManagerWidget::infoChanged()
 
         setModified(true);
     }
+}
+
+void LibraryBookManagerWidget::checkEditWebChange()
+{
+    ML_ASSERT(m_webEdit);
+
+    if(m_webEdit->pageModified())
+        infoChanged();
 }
 
 void LibraryBookManagerWidget::save()
@@ -106,11 +125,12 @@ void LibraryBookManagerWidget::on_treeView_doubleClicked(const QModelIndex &inde
 
         ui->lineDisplayName->setText(info->title);
         ui->lineAuthorName->setText(info->authorName);
-        ui->plainBookInfo->setPlainText(info->info);
+        m_webEdit->setEditorText(info->info);
         ui->plainBookNames->setText(info->otherTitles.replace(';', '\n'));
         ui->lineEdition->setText(info->edition);
         ui->lineMohaqeq->setText(info->mohaqeq);
         ui->linePublisher->setText(info->publisher);
+        ui->plainBookComment->setPlainText(info->comment);
 
         enableEditWidgets(true);
         setupEdit(info);
@@ -134,24 +154,30 @@ void LibraryBookManagerWidget::on_toolChangeAuthor_clicked()
 
 void LibraryBookManagerWidget::setupEdit(LibraryBookPtr info)
 {
-    ui->lineAuthorName->setEnabled(!info->isQuran());
-    ui->toolChangeAuthor->setEnabled(!info->isQuran());
-    ui->plainBookNames->setEnabled(!info->isQuran());
-    ui->lineEdition->setEnabled(!info->isQuran());
-    ui->lineMohaqeq->setEnabled(!info->isQuran());
-    ui->linePublisher->setEnabled(!info->isQuran());
+    bool enable = !info->isQuran();
+
+    ui->lineAuthorName->setEnabled(enable);
+    ui->toolChangeAuthor->setEnabled(enable);
+    ui->plainBookNames->setEnabled(enable);
+    ui->lineEdition->setEnabled(enable);
+    ui->lineMohaqeq->setEnabled(enable);
+    ui->linePublisher->setEnabled(enable);
+    ui->widgetBookMeta->setEnabled(enable);
 }
 
 void LibraryBookManagerWidget::saveCurrentBookInfo()
 {
+    ui->tabWidget->setCurrentIndex(0);
+
     if(m_currentBook) {
         m_currentBook->title = ui->lineDisplayName->text().simplified();
         m_currentBook->authorName = ui->lineAuthorName->text().simplified();
-        m_currentBook->info = ui->plainBookInfo->toPlainText();
+        m_currentBook->info = m_webEdit->editorText();
         m_currentBook->otherTitles = ui->plainBookNames->toPlainText().replace('\n', ';');
         m_currentBook->edition = ui->lineEdition->text().simplified();
         m_currentBook->mohaqeq = ui->lineMohaqeq->text().simplified();
         m_currentBook->publisher = ui->linePublisher->text().simplified();
+        m_currentBook->comment = ui->plainBookComment->toPlainText();
     }
 }
 
