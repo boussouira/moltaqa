@@ -192,7 +192,7 @@ void createIndexDB(QString path)
 
     QSqlDatabase::removeDatabase("createDB.books");
     QSqlDatabase::removeDatabase("createDB.authors");
-    QSqlDatabase::removeDatabase("createIndexDB.rowat");
+    QSqlDatabase::removeDatabase("createDB.rowat");
 }
 
 namespace Widget {
