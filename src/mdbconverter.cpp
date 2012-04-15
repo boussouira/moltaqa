@@ -84,18 +84,6 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
 
     QFileInfo info(mdb_path);
 
-//    if(m_time) {
-//        int etime = (int)((info.size() * (double)m_time)/(double)m_size);
-//        if(etime > 60000) {
-//            int seconde = (int) ((etime / 1000) % 60);
-//            int minutes = (int) (((etime / 1000) / 60) % 60);
-//            qDebug() << "Converting will take"
-//                     << qPrintable(QString("%1:%2")
-//                                   .arg(minutes, 2, 10, QChar('0'))
-//                                   .arg(seconde, 2, 10, QChar('0')));
-//        }
-//    }
-
     // loop over each entry in the catalog
     MdbCatalogEntry *entry;
     unsigned int num_catalog = mdb->num_catalog;
@@ -110,9 +98,6 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
         m_bookDB.transaction();
         getTableContent(mdb, entry, false);
         m_bookDB.commit();
-
-        printf("Converting %d%%...\r", int(((double)(i+1)/(double)num_catalog)*100));
-        fflush(stdout);
     }
 
     m_size = info.size();
