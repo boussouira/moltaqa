@@ -55,7 +55,8 @@ void XmlDomHelper::load()
         qCritical("XmlDomHelper: Dom need to be saved before loading from file");
 
     QFile file(m_filePath);
-    ML_ASSERT2(file.open(QIODevice::ReadOnly), "XmlDomHelper::load open file error:" << file.errorString());
+    ML_ASSERT2(file.open(QIODevice::ReadOnly),
+               "XmlDomHelper::load open file error:" << file.errorString() << m_filePath);
 
     load(&file);
 }
