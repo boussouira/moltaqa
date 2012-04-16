@@ -39,6 +39,10 @@ WelcomeWidget::WelcomeWidget(QWidget *parent) :
     bookListModel();
     favouritesModel();
 
+    connect(m_bookListManager, SIGNAL(ModelsReady()),
+            SLOT(bookListModel()));
+    connect(m_favouritesManager, SIGNAL(ModelsReady()),
+            SLOT(favouritesModel()));
     connect(ui->treeBookList, SIGNAL(doubleClicked(QModelIndex)),
             SLOT(itemClicked(QModelIndex)));
     connect(ui->treeFavouritesList, SIGNAL(doubleClicked(QModelIndex)),
