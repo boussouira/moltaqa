@@ -75,7 +75,6 @@ void WelcomeWidget::aboutToShow()
 
 void WelcomeWidget::aboutToHide()
 {
-    saveSettings();
 }
 
 void WelcomeWidget::loadSettings()
@@ -85,6 +84,8 @@ void WelcomeWidget::loadSettings()
 
     if(settings.contains("splitter"))
         ui->splitter->restoreState(settings.value("splitter").toByteArray());
+
+    ui->tabWidget->setCurrentIndex(settings.value("tab", 0).toInt());
 }
 
 void WelcomeWidget::saveSettings()
@@ -93,6 +94,7 @@ void WelcomeWidget::saveSettings()
     settings.beginGroup("WelcomeWidget");
 
     settings.setValue("splitter", ui->splitter->saveState());
+    settings.setValue("tab", ui->tabWidget->currentIndex());
 
     if(m_bookListModel) {
         settings.setValue("bcol_1", ui->treeBookList->columnWidth(0));
