@@ -28,6 +28,8 @@ private slots:
 
     void queryBuilder();
 
+    void cleanupTestCase();
+
 protected:
     int getPageTitleID(QList<int> &titles, int pageID);
 };

@@ -191,11 +191,9 @@ void UtilsTest::formatHTML()
 
 void UtilsTest::queryBuilder()
 {
-    QString testDB = QDir::current().absoluteFilePath("test.db");
-
     QSqlDatabase db;
     db = QSqlDatabase::addDatabase("QSQLITE", "TestQueryBuilder");
-    db.setDatabaseName(testDB);
+    db.setDatabaseName(QDir::current().absoluteFilePath("test.db"));
 
     QVERIFY(db.open());
 
@@ -265,8 +263,13 @@ void UtilsTest::queryBuilder()
 
     QCOMPARE(query.value(0).toString(), QString("The Art Of Hacking"));
     QCOMPARE(query.value(1).toString(), QString("test.pdf"));
+}
 
-    QVERIFY(QFile::remove(testDB));
+void UtilsTest::cleanupTestCase()
+{
+    QSqlDatabase::removeDatabase("TestQueryBuilder");
+
+    QVERIFY(QFile::remove(QDir::current().absoluteFilePath("test.db")));
 }
 
 int UtilsTest::getPageTitleID(QList<int> &titles, int pageID)
