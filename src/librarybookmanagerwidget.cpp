@@ -58,6 +58,14 @@ void LibraryBookManagerWidget::setupActions()
          connect(edit, SIGNAL(textChanged()), SLOT(infoChanged()));
      }
 
+     foreach (QCheckBox *check, findChildren<QCheckBox *>()) {
+         connect(check, SIGNAL(stateChanged(int)), SLOT(infoChanged()));
+     }
+
+     foreach (QComboBox *combo, findChildren<QComboBox *>()) {
+         connect(combo, SIGNAL(currentIndexChanged(int)), SLOT(infoChanged()));
+     }
+
      connect(ui->tabWidget, SIGNAL(currentChanged(int)), SLOT(checkEditWebChange()));
 }
 
@@ -132,6 +140,28 @@ void LibraryBookManagerWidget::on_treeView_doubleClicked(const QModelIndex &inde
         ui->linePublisher->setText(info->publisher);
         ui->plainBookComment->setPlainText(info->comment);
 
+        if(info->bookFlags & LibraryBook::AutoPageNumber)
+            ui->comboPageNumber->setCurrentIndex(1);
+        else if(info->bookFlags & LibraryBook::PrintedPageNumber)
+            ui->comboPageNumber->setCurrentIndex(2);
+        else if(info->bookFlags & LibraryBook::MakhetotPageNumer)
+            ui->comboPageNumber->setCurrentIndex(3);
+        else
+            ui->comboPageNumber->setCurrentIndex(0);
+
+        if(info->bookFlags & LibraryBook::MoqabalMoteboa)
+            ui->comboMoqabal->setCurrentIndex(1);
+        else if(info->bookFlags & LibraryBook::MoqabalMakhetot)
+            ui->comboMoqabal->setCurrentIndex(2);
+        else if(info->bookFlags & LibraryBook::MoqabalPdf)
+            ui->comboMoqabal->setCurrentIndex(3);
+        else
+            ui->comboMoqabal->setCurrentIndex(0);
+
+        ui->checkLinkedWithshareeh->setChecked(info->bookFlags & LibraryBook::LinkedWithShareeh);
+        ui->checkHaveFootnote->setChecked(info->bookFlags & LibraryBook::HaveFootNotes);
+        ui->checkMashekol->setChecked(info->bookFlags & LibraryBook::Mashekool);
+
         enableEditWidgets(true);
         setupEdit(info);
 
@@ -178,6 +208,49 @@ void LibraryBookManagerWidget::saveCurrentBookInfo()
         m_currentBook->mohaqeq = ui->lineMohaqeq->text().simplified();
         m_currentBook->publisher = ui->linePublisher->text().simplified();
         m_currentBook->comment = ui->plainBookComment->toPlainText();
+
+        m_currentBook->bookFlags = LibraryBook::NoBookFlags;
+
+        int flags = 0;
+
+        switch (ui->comboPageNumber->currentIndex()) {
+        case 1:
+            flags |= LibraryBook::AutoPageNumber;
+            break;
+        case 2:
+            flags |= LibraryBook::PrintedPageNumber;
+            break;
+        case 3:
+            flags |= LibraryBook::MakhetotPageNumer;
+            break;
+        default:
+            break;
+        }
+
+        switch (ui->comboMoqabal->currentIndex()) {
+        case 1:
+            flags |= LibraryBook::MoqabalMoteboa;
+            break;
+        case 2:
+            flags |= LibraryBook::MoqabalMakhetot;
+            break;
+        case 3:
+            flags |= LibraryBook::MoqabalPdf;
+            break;
+        default:
+            break;
+        }
+
+        if(ui->checkLinkedWithshareeh->isChecked())
+            flags |= LibraryBook::LinkedWithShareeh;
+
+        if(ui->checkHaveFootnote->isChecked())
+                flags |= LibraryBook::HaveFootNotes;
+
+        if(ui->checkMashekol->isChecked())
+                flags |= LibraryBook::Mashekool;
+
+        m_currentBook->bookFlags = static_cast<LibraryBook::BookFlags>(flags);
     }
 }
 

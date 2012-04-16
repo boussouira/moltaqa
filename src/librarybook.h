@@ -41,14 +41,13 @@ public:
         PrintedPageNumber = 2,
         MakhetotPageNumer = 4,
 
-        NotMoqabal = 8,
-        MoqabalMoteboa = 16,
-        MoqabalMakhetot = 32,
-        MoqabalPdf = 64,
+        MoqabalMoteboa = 8,
+        MoqabalMakhetot = 16,
+        MoqabalPdf = 32,
 
-        LinkedWithShareeh = 128,
-        HaveFootNotes = 256,
-        Mashekool = 512
+        LinkedWithShareeh = 64,
+        HaveFootNotes = 128,
+        Mashekool = 256
     };
 
     bool isQuran() { return type == QuranBook; }

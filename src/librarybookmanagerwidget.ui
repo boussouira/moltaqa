@@ -169,7 +169,7 @@
            <item>
             <layout class="QGridLayout" name="gridLayout_2">
              <item row="2" column="1">
-              <widget class="QCheckBox" name="checkBox">
+              <widget class="QCheckBox" name="checkHaveFootnote">
                <property name="text">
                 <string>مذيل بالحواشي</string>
                </property>
@@ -183,14 +183,14 @@
               </widget>
              </item>
              <item row="2" column="0">
-              <widget class="QCheckBox" name="checkBox_3">
+              <widget class="QCheckBox" name="checkLinkedWithshareeh">
                <property name="text">
                 <string>مرتبط بشرح</string>
                </property>
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QComboBox" name="comboBox">
+              <widget class="QComboBox" name="comboPageNumber">
                <item>
                 <property name="text">
                  <string>غير موافق للمطبوع</string>
@@ -216,7 +216,7 @@
               </widget>
              </item>
              <item row="1" column="1">
-              <widget class="QComboBox" name="comboBox_2">
+              <widget class="QComboBox" name="comboMoqabal">
                <item>
                 <property name="text">
                  <string>غير مقابل</string>
@@ -240,7 +240,7 @@
               </widget>
              </item>
              <item row="3" column="0">
-              <widget class="QCheckBox" name="checkBox_2">
+              <widget class="QCheckBox" name="checkMashekol">
                <property name="text">
                 <string>الكتاب مشكول</string>
                </property>
