@@ -30,13 +30,13 @@ void RichSimpleBookReader::setCurrentPage(QDomElement pageNode)
 
     m_pagesDom.setCurrentElement(pageNode);
 
-    m_currentPage->pageID = m_pagesDom.currentElement().attribute("id").toInt();
-    m_currentPage->page = m_pagesDom.currentElement().attribute("page").toInt();
-    m_currentPage->part = m_pagesDom.currentElement().attribute("part").toInt();
-    m_currentPage->haddit = m_pagesDom.currentElement().attribute("haddit").toInt();
+    m_currentPage->pageID = pageNode.attribute("id").toInt();
+    m_currentPage->page = pageNode.attribute("page").toInt();
+    m_currentPage->part = pageNode.attribute("part").toInt();
+    m_currentPage->haddit = pageNode.attribute("haddit").toInt();
 
-    if(m_pagesDom.currentElement().hasAttribute("tid"))
-        m_currentPage->titleID = m_pagesDom.currentElement().attribute("tid").toInt();
+    if(pageNode.hasAttribute("tid"))
+        m_currentPage->titleID = pageNode.attribute("tid").toInt();
     else
         getPageTitleID();
 
