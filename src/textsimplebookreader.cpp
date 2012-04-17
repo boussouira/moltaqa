@@ -20,7 +20,10 @@ void TextSimpleBookReader::setCurrentPage(QDomElement pageNode)
 //    if(!m_pages.contains(m_currentPage->pageID))
 //        qWarning("Can't find page %d", m_currentPage->pageID);
 
-    m_currentPage->titleID = getPageTitleID(m_currentPage->pageID);
+    if(pageNode.hasAttribute("tid"))
+        m_currentPage->titleID = pageNode.attribute("tid").toInt();
+    else
+        m_currentPage->titleID = getPageTitleID(m_currentPage->pageID);
 
     if(m_lastTitleID != m_currentPage->titleID) {
         m_lastTitleID = m_currentPage->titleID;
