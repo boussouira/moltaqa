@@ -54,7 +54,7 @@ BooksListBrowser::BooksListBrowser(QWidget *parent) :
 BooksListBrowser::~BooksListBrowser()
 {
     ML_DELETE_CHECK(m_bookListModel);
-    ML_DELETE_CHECK(m_favouritesManager);
+    ML_DELETE_CHECK(m_favouritesModel);
 
     delete ui;
 }
