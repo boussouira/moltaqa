@@ -37,7 +37,6 @@ public:
 
     enum BookFlags {
         NoBookFlags = 0,
-        AutoPageNumber = 1,
         PrintedPageNumber = 2,
         MakhetotPageNumer = 4,
 

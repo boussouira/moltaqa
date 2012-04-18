@@ -144,12 +144,10 @@ void LibraryBookManagerWidget::on_treeView_doubleClicked(const QModelIndex &inde
         ui->linePublisher->setText(info->publisher);
         ui->plainBookComment->setPlainText(info->comment);
 
-        if(info->bookFlags & LibraryBook::AutoPageNumber)
+        if(info->bookFlags & LibraryBook::PrintedPageNumber)
             ui->comboPageNumber->setCurrentIndex(1);
-        else if(info->bookFlags & LibraryBook::PrintedPageNumber)
-            ui->comboPageNumber->setCurrentIndex(2);
         else if(info->bookFlags & LibraryBook::MakhetotPageNumer)
-            ui->comboPageNumber->setCurrentIndex(3);
+            ui->comboPageNumber->setCurrentIndex(2);
         else
             ui->comboPageNumber->setCurrentIndex(0);
 
@@ -219,12 +217,9 @@ void LibraryBookManagerWidget::saveCurrentBookInfo()
 
         switch (ui->comboPageNumber->currentIndex()) {
         case 1:
-            flags |= LibraryBook::AutoPageNumber;
-            break;
-        case 2:
             flags |= LibraryBook::PrintedPageNumber;
             break;
-        case 3:
+        case 2:
             flags |= LibraryBook::MakhetotPageNumer;
             break;
         default:
