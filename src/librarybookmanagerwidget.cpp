@@ -7,6 +7,7 @@
 #include "modelenums.h"
 #include "utils.h"
 #include "editwebview.h"
+#include "modelutils.h"
 
 #include <qdebug.h>
 #include <qlineedit.h>
@@ -77,7 +78,9 @@ void LibraryBookManagerWidget::enableEditWidgets(bool enable)
 
 void LibraryBookManagerWidget::loadModel()
 {
-    m_model = m_manager->getModel();
+    ML_DELETE_CHECK(m_model);
+
+    m_model = Utils::Model::cloneModel(m_manager->getModel().data());
 
     ui->treeView->setModel(m_model);
     ui->treeView->resizeColumnToContents(0);

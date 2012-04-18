@@ -39,7 +39,7 @@ void LibraryBookManager::clear()
     m_books.clear();
 }
 
-QStandardItemModel *LibraryBookManager::getModel()
+StandardItemModelPtr LibraryBookManager::getModel()
 {
     QStandardItemModel *model = new QStandardItemModel();
 
@@ -59,10 +59,10 @@ QStandardItemModel *LibraryBookManager::getModel()
 
     model->setHorizontalHeaderLabels(QStringList() << tr("الكتب"));
 
-    return model;
+    return StandardItemModelPtr(model);
 }
 
-QStandardItemModel *LibraryBookManager::getLastOpendModel()
+StandardItemModelPtr LibraryBookManager::getLastOpendModel()
 {
     QStandardItemModel *model = new QStandardItemModel();
 
@@ -87,7 +87,7 @@ QStandardItemModel *LibraryBookManager::getLastOpendModel()
 
     model->setHorizontalHeaderLabels(QStringList() << tr("الكتب"));
 
-    return model;
+    return StandardItemModelPtr(model);
 }
 
 LibraryBookPtr LibraryBookManager::getLibraryBook(int bookID)

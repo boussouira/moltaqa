@@ -6,10 +6,13 @@
 
 #include <qhash.h>
 #include <qset.h>
+#include <qsharedpointer.h>
 
 class QStandardItemModel;
 class AuthorsManager;
 class LibraryInfo;
+
+typedef QSharedPointer<QStandardItemModel> StandardItemModelPtr;
 
 class LibraryBookManager : public DatabaseManager
 {
@@ -22,8 +25,8 @@ public:
     void loadModels();
     void clear();
 
-    QStandardItemModel *getModel();
-    QStandardItemModel *getLastOpendModel();
+    StandardItemModelPtr getModel();
+    StandardItemModelPtr getLastOpendModel();
 
     LibraryBookPtr getLibraryBook(int bookID);
     LibraryBookPtr getQuranBook();

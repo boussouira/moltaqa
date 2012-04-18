@@ -163,7 +163,7 @@ void WelcomeWidget::lastReadBooksModel()
 {
     ML_DELETE_CHECK(m_lastReadedModel);
 
-    m_lastReadedModel = Utils::Model::cloneModel(m_bookManager->getLastOpendModel());
+    m_lastReadedModel = Utils::Model::cloneModel(m_bookManager->getLastOpendModel().data());
     ML_ASSERT2(m_lastReadedModel, "WelcomeWidget::lastReadBooksModel model is null");
 
     ui->treeLastBook->setModel(m_lastReadedModel);
