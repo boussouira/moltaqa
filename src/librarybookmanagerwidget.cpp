@@ -16,7 +16,8 @@ LibraryBookManagerWidget::LibraryBookManagerWidget(QWidget *parent) :
     ControlCenterWidget(parent),
     ui(new Ui::LibraryBookManagerWidget),
     m_currentBook(0),
-    m_model(0)
+    m_model(0),
+    m_webEdit(0)
 {
     ui->setupUi(this);
 
