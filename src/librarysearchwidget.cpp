@@ -13,7 +13,6 @@
 LibrarySearchWidget::LibrarySearchWidget(QWidget *parent) :
     SearchWidget(parent)
 {
-    ui->lineQueryMust->setText(tr("الله اعلم"));
 }
 
 LibrarySearchWidget::~LibrarySearchWidget()
