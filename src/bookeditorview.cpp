@@ -116,7 +116,7 @@ void BookEditorView::editBook(LibraryBookPtr book, int pageID)
 
 void BookEditorView::setupToolBar()
 {
-    QToolBar *bar = new QToolBar(this);
+    QToolBar *bar = new QToolBar(tr("تحرير الكتاب"), this);
 
     QIcon nextIcon  = QIcon::fromTheme("go-previous", QIcon(":/images/go-previous.png"));
     QIcon prevIcon  = QIcon::fromTheme("go-next", QIcon(":/images/go-next.png"));

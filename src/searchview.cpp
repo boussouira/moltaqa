@@ -20,7 +20,7 @@ SearchView::SearchView(QWidget *parent) : AbstarctView(parent)
     m_layout->addWidget(m_tabWidget);
     m_layout->setContentsMargins(0, 6, 0, 0);
 
-    QToolBar *bar = new QToolBar(this);
+    QToolBar *bar = new QToolBar(tr("البحث"), this);
 
     QAction *actNewTab = new QAction(QIcon(":/images/tab-new.png"),
                                tr("تبويب بحث جديد"), this);
