@@ -2,6 +2,7 @@
 #define SHAMELAIMPORTINFO_H
 
 #include <qobject.h>
+#include "stringutils.h"
 #include "shamelainfo.h"
 #include "authorsmanager.h"
 
@@ -41,7 +42,7 @@ public:
         AuthorInfo *author = new AuthorInfo;
         author->name = name;
         author->fullName = fullName;
-        author->info = info;
+        author->info = Utils::Html::format(info);
 
         if(author->deathYear >= 2013)
             author->isALive = true;
