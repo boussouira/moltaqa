@@ -165,7 +165,7 @@ void AuthorsView::setCurrentAuth(AuthorInfoPtr info)
 
 
     if(!books.isEmpty()) {
-        html.insertHeadTag(4, tr("كتب المؤلف"), "#books");
+        html.insertHeadTag(4, tr("كتب المؤلف (%1)").arg(books.size()), "#books");
         HtmlHelper bookHtml;
 
         for(int i=0; i<books.size(); i++) {
