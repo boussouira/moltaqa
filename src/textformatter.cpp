@@ -54,46 +54,46 @@ QString TextFormatter::getHtmlView(const QString &text, const QString &jsCode)
     helper.endHead();
 
     helper.beginBody();
-    helper.beginDivTag("#" + m_cssID);
+    helper.beginDiv("#" + m_cssID);
 
     if(!m_book->isQuran()) {
-        helper.beginDivTag("#pageHeader");
+        helper.beginDiv("#pageHeader");
 
-        helper.beginDivTag(".bookInfo");
-        helper.insertSpanTag(m_book->title, ".bookName");
+        helper.beginDiv(".bookInfo");
+        helper.insertSpan(m_book->title, ".bookName");
 
-        helper.beginSpanTag("#partInfo");
-        helper.insertSpanTag(tr("الجزء"), ".partText");
-        helper.insertSpanTag(QString::number(m_page->part), ".partNum");
-        helper.endSpanTag(); // span#partInfo
+        helper.beginSpan("#partInfo");
+        helper.insertSpan(tr("الجزء"), ".partText");
+        helper.insertSpan(QString::number(m_page->part), ".partNum");
+        helper.endSpan(); // span#partInfo
 
-        helper.endDivTag(); // div.bookInfo
+        helper.endDiv(); // div.bookInfo
 
-        helper.beginDivTag(".breadcrumbs");
-        helper.endDivTag();
+        helper.beginDiv(".breadcrumbs");
+        helper.endDiv();
 
-        helper.endDivTag(); // div#pageHeader
+        helper.endDiv(); // div#pageHeader
     }
 
     if(m_book->isNormal()) {
-        helper.beginDivTag("#shorooh");
-        helper.insertSpanTag(tr("الشروح (0)"), ".info");
+        helper.beginDiv("#shorooh");
+        helper.insertSpan(tr("الشروح (0)"), ".info");
 
-        helper.insertDivTag("", ".clear");
-        helper.insertDivTag("", ".shoroohBooks");
+        helper.insertDiv("", ".clear");
+        helper.insertDiv("", ".shoroohBooks");
 
-        helper.endDivTag(); // div#shorooh
+        helper.endDiv(); // div#shorooh
     }
 
-    helper.insertDivTag(text, "#pageText");
+    helper.insertDiv(text, "#pageText");
 
     if(!m_book->isQuran()) {
-        helper.beginDivTag("#pageFooter");
-        helper.insertSpanTag(QString::number(m_page->page), ".page");
-        helper.endDivTag(); // div#pageFooter
+        helper.beginDiv("#pageFooter");
+        helper.insertSpan(QString::number(m_page->page), ".page");
+        helper.endDiv(); // div#pageFooter
     }
 
-    helper.endDivTag(); // div#m_cssID
+    helper.endDiv(); // div#m_cssID
 
     helper.addJS("jquery.js");
     helper.addJS("jquery.tooltip.js");
@@ -107,7 +107,7 @@ QString TextFormatter::getHtmlView(const QString &text, const QString &jsCode)
 
     helper.addJSCode(jsCode);
 
-    helper.endAllTags();
+    helper.endAll();
 
     return helper.html();
 }
@@ -126,7 +126,7 @@ void TextFormatter::start()
 
 void TextFormatter::done()
 {
-    m_htmlHelper.endAllTags();
+    m_htmlHelper.endAll();
 
     if(m_page)
         m_page->text = m_htmlHelper.html();

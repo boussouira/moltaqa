@@ -115,74 +115,74 @@ void TarajemRowatView::setCurrentRawi(RawiInfoPtr info)
 
     html.beginBody();
 
-    html.beginDivTag(".rawi-info");
+    html.beginDiv(".rawi-info");
 
-    html.beginDivTag(".nav");
-    html.insertLinkTag(tr("الشيوخ "), "#sheok");
-    html.insertLinkTag(tr("التلاميذ "), "#talamid");
-    html.insertLinkTag(tr("الترجمة"), "#tarejama");
-    html.endDivTag();
+    html.beginDiv(".nav");
+    html.insertLink(tr("الشيوخ "), "#sheok");
+    html.insertLink(tr("التلاميذ "), "#talamid");
+    html.insertLink(tr("الترجمة"), "#tarejama");
+    html.endDiv();
 
-    html.beginDivTag("#info");
+    html.beginDiv("#info");
 
-    html.beginParagraphTag();
-    html.insertSpanTag(tr("اسم الراوي: "), ".pro-name");
-    html.insertSpanTag(info->name, ".pro-value");
-    html.endParagraphTag();
+    html.beginParagraph();
+    html.insertSpan(tr("اسم الراوي: "), ".pro-name");
+    html.insertSpan(info->name, ".pro-value");
+    html.endParagraph();
 
     if(!info->laqab.isEmpty()) {
-        html.beginParagraphTag();
-        html.insertSpanTag(tr("اللقب: "), ".pro-name");
-        html.insertSpanTag(info->laqab, ".pro-value");
-        html.endParagraphTag();
+        html.beginParagraph();
+        html.insertSpan(tr("اللقب: "), ".pro-name");
+        html.insertSpan(info->laqab, ".pro-value");
+        html.endParagraph();
     }
 
     if(!info->birthStr.isEmpty()) {
-        html.beginParagraphTag();
-        html.insertSpanTag(tr("الولادة: "), ".pro-name");
-        html.insertSpanTag(info->birthStr, ".pro-value");
-        html.endParagraphTag();
+        html.beginParagraph();
+        html.insertSpan(tr("الولادة: "), ".pro-name");
+        html.insertSpan(info->birthStr, ".pro-value");
+        html.endParagraph();
     }
 
     if(!info->deathStr.isEmpty()) {
-        html.beginParagraphTag();
-        html.insertSpanTag(tr("الوفاة: "), ".pro-name");
-        html.insertSpanTag(info->deathStr, ".pro-value");
-        html.endParagraphTag();
+        html.beginParagraph();
+        html.insertSpan(tr("الوفاة: "), ".pro-name");
+        html.insertSpan(info->deathStr, ".pro-value");
+        html.endParagraph();
     }
 
-    html.beginParagraphTag();
-    html.insertSpanTag(tr("الطبقة: "), ".pro-name");
-    html.insertSpanTag(info->tabaqa, ".pro-value");
-    html.endParagraphTag();
+    html.beginParagraph();
+    html.insertSpan(tr("الطبقة: "), ".pro-name");
+    html.insertSpan(info->tabaqa, ".pro-value");
+    html.endParagraph();
 
-    html.beginParagraphTag();
-    html.insertSpanTag(tr("روى له: "), ".pro-name");
-    html.insertSpanTag(info->rowat, ".pro-value");
-    html.endParagraphTag();
+    html.beginParagraph();
+    html.insertSpan(tr("روى له: "), ".pro-name");
+    html.insertSpan(info->rowat, ".pro-value");
+    html.endParagraph();
 
-    html.beginParagraphTag();
-    html.insertSpanTag(tr("رتبته عند ابن حجر: "), ".pro-name");
-    html.insertSpanTag(info->rotba_hafed, ".pro-value");
-    html.endParagraphTag();
+    html.beginParagraph();
+    html.insertSpan(tr("رتبته عند ابن حجر: "), ".pro-name");
+    html.insertSpan(info->rotba_hafed, ".pro-value");
+    html.endParagraph();
 
-    html.beginParagraphTag();
-    html.insertSpanTag(tr("رتبته عند الذهبي: "), ".pro-name");
-    html.insertSpanTag(info->rotba_zahabi, ".pro-value");
-    html.endParagraphTag();
+    html.beginParagraph();
+    html.insertSpan(tr("رتبته عند الذهبي: "), ".pro-name");
+    html.insertSpan(info->rotba_zahabi, ".pro-value");
+    html.endParagraph();
 
-    html.endDivTag(); // #info
+    html.endDiv(); // #info
 
-    html.insertHeadTag(4, tr("الشيوخ"), "#sheok");
-    html.insertDivTag(info->sheok, ".head-info");
+    html.insertHead(4, tr("الشيوخ"), "#sheok");
+    html.insertDiv(info->sheok, ".head-info");
 
-    html.insertHeadTag(4, tr("التلاميذ"), "#talamid");
-    html.insertDivTag(info->talamid, ".head-info");
+    html.insertHead(4, tr("التلاميذ"), "#talamid");
+    html.insertDiv(info->talamid, ".head-info");
 
-    html.insertHeadTag(4, tr("الترجمة"), "#tarejama");
-    html.insertDivTag(info->tarejama, ".head-info");
+    html.insertHead(4, tr("الترجمة"), "#tarejama");
+    html.insertDiv(info->tarejama, ".head-info");
 
-    html.endDivTag(); // .rawi-info
+    html.endDiv(); // .rawi-info
 
     html.addJS("jquery.js");
     html.addJS("jquery.tooltip.js");
@@ -191,7 +191,7 @@ void TarajemRowatView::setCurrentRawi(RawiInfoPtr info)
     html.addJSCode("setupToolTip();"
                    "moltaqaLink();");
 
-    html.endAllTags();
+    html.endAll();
 
     if(m_crtlKey || !ui->tabWidget->count()) {
         int index = addTab();

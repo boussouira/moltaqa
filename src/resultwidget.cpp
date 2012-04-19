@@ -120,15 +120,15 @@ void ResultWidget::setupWebView()
     helper.endHead();
 
     helper.beginBody();
-    helper.insertDivTag(".", "#searchResult");
-    helper.insertDivTag("", "#pagination");
+    helper.insertDiv(".", "#searchResult");
+    helper.insertDiv("", "#pagination");
     helper.addJS("jquery.js");
     helper.addJS("jquery.growl.js");
     helper.addJS("jquery.pagination.js");
     helper.addJS("scripts.js");
     helper.addJS("search.js");
 
-    helper.endAllTags();
+    helper.endAll();
 
     m_view->setHtml(helper.html());
 }

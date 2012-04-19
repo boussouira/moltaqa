@@ -24,7 +24,7 @@ void HtmlHelper::insertHtmlTag(const QString &tag, const QString &text, const QS
     m_html.append(QString(">%1</%2>").arg(text).arg(tag));
 }
 
-void HtmlHelper::insertLinkTag(const QString &text, const QString &href, const QString &selector)
+void HtmlHelper::insertLink(const QString &text, const QString &href, const QString &selector)
 {
     beginHtmlTag("a", selector, QString("href='%1'").arg(href));
     m_html.append(text);
@@ -60,7 +60,7 @@ void HtmlHelper::endHtmlTag(const QString &tag)
     }
 }
 
-void HtmlHelper::endAllTags()
+void HtmlHelper::endAll()
 {
     while(!m_openTags.isEmpty())
         m_html.append(QString("</%1>").arg(m_openTags.pop()));
@@ -127,5 +127,5 @@ void HtmlHelper::addExtraAttr(QString attr)
 
 void HtmlHelper::insertAuthorLink(const QString &authorName, int authorID)
 {
-    insertLinkTag(authorName, QString("moltaqa://open/author?id=%1").arg(authorID));
+    insertLink(authorName, QString("moltaqa://open/author?id=%1").arg(authorID));
 }

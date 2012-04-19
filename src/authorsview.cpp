@@ -114,58 +114,58 @@ void AuthorsView::setCurrentAuth(AuthorInfoPtr info)
 
     html.beginBody();
 
-    html.beginDivTag(".rawi-info");
+    html.beginDiv(".rawi-info");
 
-    html.beginDivTag(".nav");
+    html.beginDiv(".nav");
 
     if(!books.isEmpty())
-    html.insertLinkTag(tr("الكتب "), "#books");
+    html.insertLink(tr("الكتب "), "#books");
 
     if(!info->info.isEmpty())
-        html.insertLinkTag(tr("الترجمة"), "#tarejama");
+        html.insertLink(tr("الترجمة"), "#tarejama");
 
-    html.endDivTag(); // .nav
+    html.endDiv(); // .nav
 
-    html.beginDivTag("#info");
+    html.beginDiv("#info");
 
     if(!info->name.isEmpty()) {
-        html.beginParagraphTag();
-        html.insertSpanTag(tr("الاسم: "), ".pro-name");
+        html.beginParagraph();
+        html.insertSpan(tr("الاسم: "), ".pro-name");
 
         if(info->isALive)
-            html.insertSpanTag(tr("%1 (معاصر)").arg(info->name), ".pro-value");
+            html.insertSpan(tr("%1 (معاصر)").arg(info->name), ".pro-value");
         else
-            html.insertSpanTag(info->name, ".pro-value");
+            html.insertSpan(info->name, ".pro-value");
 
-        html.endParagraphTag();
+        html.endParagraph();
     }
 
     if(!info->fullName.isEmpty()) {
-        html.beginParagraphTag();
-        html.insertSpanTag(tr("الاسم الكامل: "), ".pro-name");
-        html.insertSpanTag(info->fullName, ".pro-value");
-        html.endParagraphTag();
+        html.beginParagraph();
+        html.insertSpan(tr("الاسم الكامل: "), ".pro-name");
+        html.insertSpan(info->fullName, ".pro-value");
+        html.endParagraph();
     }
 
     if(!info->birthStr.isEmpty()) {
-        html.beginParagraphTag();
-        html.insertSpanTag(tr("الولادة: "), ".pro-name");
-        html.insertSpanTag(info->birthStr, ".pro-value");
-        html.endParagraphTag();
+        html.beginParagraph();
+        html.insertSpan(tr("الولادة: "), ".pro-name");
+        html.insertSpan(info->birthStr, ".pro-value");
+        html.endParagraph();
     }
 
     if(!info->deathStr.isEmpty()) {
-        html.beginParagraphTag();
-        html.insertSpanTag(tr("الوفاة: "), ".pro-name");
-        html.insertSpanTag(info->deathStr, ".pro-value");
-        html.endParagraphTag();
+        html.beginParagraph();
+        html.insertSpan(tr("الوفاة: "), ".pro-name");
+        html.insertSpan(info->deathStr, ".pro-value");
+        html.endParagraph();
     }
 
-    html.endDivTag(); // #info
+    html.endDiv(); // #info
 
 
     if(!books.isEmpty()) {
-        html.insertHeadTag(4, tr("كتب المؤلف (%1)").arg(books.size()), "#books");
+        html.insertHead(4, tr("كتب المؤلف (%1)").arg(books.size()), "#books");
         HtmlHelper bookHtml;
 
         for(int i=0; i<books.size(); i++) {
@@ -179,15 +179,15 @@ void AuthorsView::setCurrentAuth(AuthorInfoPtr info)
 
         }
 
-        html.insertDivTag(bookHtml.html(), ".head-info");
+        html.insertDiv(bookHtml.html(), ".head-info");
     }
 
     if(!info->info.isEmpty()) {
-        html.insertHeadTag(4, tr("الترجمة"), "#tarejama");
-        html.insertDivTag(info->info, ".head-info");
+        html.insertHead(4, tr("الترجمة"), "#tarejama");
+        html.insertDiv(info->info, ".head-info");
     }
 
-    html.endDivTag(); // .rawi-info
+    html.endDiv(); // .rawi-info
 
     html.addJS("jquery.js");
     html.addJS("jquery.tooltip.js");
@@ -196,7 +196,7 @@ void AuthorsView::setCurrentAuth(AuthorInfoPtr info)
     html.addJSCode("setupToolTip();"
                    "moltaqaLink();");
 
-    html.endAllTags();
+    html.endAll();
 
     if(m_crtlKey || !ui->tabWidget->count()) {
         int index = addTab();

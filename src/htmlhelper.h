@@ -12,13 +12,13 @@ public:
 
     void insertHtmlTag(const QString &tag, const QString &text, const QString &selector="", const QString &attr="");
 
-    void insertLinkTag(const QString &text, const QString &href, const QString &selector="");
-    void insertImage(const QString &src);
-
     void beginHtmlTag(const QString &tag, const QString &selector="", const QString &attr="");
     void endHtmlTag(const QString &tag="");
 
-    void endAllTags();
+    void endAll();
+
+    void insertLink(const QString &text, const QString &href, const QString &selector="");
+    void insertImage(const QString &src);
 
     void addCSS(QString cssFile);
     void addJS(QString jsFile, bool fullPath=false);
@@ -43,46 +43,46 @@ public:
         m_html.append(QString("<meta http-equiv=\"content-type\" content=\"text/html; charset=%1\" />").arg(charset));
     }
 
-    inline void insertDivTag(const QString &text, const QString &selector="")
+    inline void insertDiv(const QString &text, const QString &selector="")
     {
         insertHtmlTag("div", text, selector);
     }
 
-    inline void insertSpanTag(const QString &text, const QString &selector="")
+    inline void insertSpan(const QString &text, const QString &selector="")
     {
         insertHtmlTag("span", text, selector);
     }
 
-    inline void insertParagraphTag(const QString &text, const QString &selector="")
+    inline void insertParagraph(const QString &text, const QString &selector="")
     {
         insertHtmlTag("p", text, selector);
     }
 
-    inline void insertHeadTag(int head, const QString &text, const QString &selector="")
+    inline void insertHead(int head, const QString &text, const QString &selector="")
     {
         insertHtmlTag(QString("h%1").arg(head), text, selector);
     }
 
-    inline void beginDivTag(const QString &selector="", const QString &attr="")
+    inline void beginDiv(const QString &selector="", const QString &attr="")
     {
         beginHtmlTag("div", selector, attr);
     }
 
-    inline void beginParagraphTag(const QString &selector="", const QString &attr="")
+    inline void beginParagraph(const QString &selector="", const QString &attr="")
     {
         beginHtmlTag("p", selector, attr);
     }
 
-    inline void beginSpanTag(const QString &selector="", const QString &attr="")
+    inline void beginSpan(const QString &selector="", const QString &attr="")
     {
         beginHtmlTag("span", selector, attr);
     }
 
-    inline void endDivTag() { endHtmlTag(); }
-    inline void endParagraphTag() { endHtmlTag(); }
-    inline void endSpanTag() { endHtmlTag(); }
+    inline void endDiv() { endHtmlTag(); }
+    inline void endParagraph() { endHtmlTag(); }
+    inline void endSpan() { endHtmlTag(); }
 
-     inline void insertBr() { m_html.append("<br />"); }
+    inline void insertBr() { m_html.append("<br />"); }
 
     void insertAuthorLink(const QString &authorName, int authorID);
 

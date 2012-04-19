@@ -18,38 +18,38 @@ SearchResult::~SearchResult()
 void SearchResult::generateHTML()
 {
     HtmlHelper helper;
-    helper.beginDivTag(".result");
+    helper.beginDiv(".result");
 
-    helper.beginDivTag(".resultHead");
+    helper.beginDiv(".resultHead");
     helper.insertHtmlTag("h3", page->title);
 
-    helper.beginSpanTag(".progSpan", QString("style=\"width: %1px;\"").arg(score));
-    helper.insertSpanTag("", ".progSpanContainre");
-    helper.endSpanTag();
+    helper.beginSpan(".progSpan", QString("style=\"width: %1px;\"").arg(score));
+    helper.insertSpan("", ".progSpanContainre");
+    helper.endSpan();
 
-    helper.endDivTag(); //div.resultHead
+    helper.endDiv(); //div.resultHead
 
-    helper.beginDivTag(".resultText", QString("bookid='%1' rid='%2'").arg(book->id).arg(resultID));
+    helper.beginDiv(".resultText", QString("bookid='%1' rid='%2'").arg(book->id).arg(resultID));
     helper.append(snippet.simplified());
-    helper.endDivTag();
+    helper.endDiv();
 
-    helper.beginDivTag(".resultInfo", QString("bookid='b%1'").arg(book->id));
+    helper.beginDiv(".resultInfo", QString("bookid='b%1'").arg(book->id));
 
-    helper.beginDivTag(".bookInfo");
-    helper.insertSpanTag(QObject::tr("كتاب:"), ".book");
-    helper.insertSpanTag(book->title, ".bookName");
-    helper.endDivTag();
+    helper.beginDiv(".bookInfo");
+    helper.insertSpan(QObject::tr("كتاب:"), ".book");
+    helper.insertSpan(book->title, ".bookName");
+    helper.endDiv();
 
-    helper.beginDivTag(".pageInfo");
-    helper.insertSpanTag(QObject::tr("الصفحة:"), ".page");
-    helper.insertSpanTag(QString::number(page->page), ".pageVal");
-    helper.insertSpanTag(QObject::tr("الجزء:"), ".part");
-    helper.insertSpanTag(QString::number(page->part), ".partVal");
-    helper.endDivTag();
+    helper.beginDiv(".pageInfo");
+    helper.insertSpan(QObject::tr("الصفحة:"), ".page");
+    helper.insertSpan(QString::number(page->page), ".pageVal");
+    helper.insertSpan(QObject::tr("الجزء:"), ".part");
+    helper.insertSpan(QString::number(page->part), ".partVal");
+    helper.endDiv();
 
-    helper.insertDivTag("", ".clear");
+    helper.insertDiv("", ".clear");
 
-    helper.endAllTags();
+    helper.endAll();
 
     m_html = helper.html();
 }

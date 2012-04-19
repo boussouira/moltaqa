@@ -8,20 +8,20 @@ TafessirTextFormat::TafessirTextFormat()
 void TafessirTextFormat::insertSoraName(const QString &pSoraName)
 {
     QString soraName = tr("سورة %1").arg(pSoraName);
-    m_htmlHelper.insertDivTag(soraName, "soraname");
+    m_htmlHelper.insertDiv(soraName, "soraname");
 }
 
 void TafessirTextFormat::insertBassemala()
 {
-    m_htmlHelper.insertDivTag(tr("بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ"), ".bassemala");
+    m_htmlHelper.insertDiv(tr("بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ"), ".bassemala");
 }
 
 void TafessirTextFormat::insertAyaText(const QString &pAyaText, int pAyaNumber, int pSoraNumber)
 {
-    m_htmlHelper.beginDivTag(".ayaDiv");
-    m_htmlHelper.insertSpanTag(pAyaText, QString(".ayatxt|#s%1a%2").arg(pSoraNumber).arg(pAyaNumber));
-    m_htmlHelper.insertSpanTag(QString("(%1)").arg(pAyaNumber), ".ayanumber");
-    m_htmlHelper.endDivTag();
+    m_htmlHelper.beginDiv(".ayaDiv");
+    m_htmlHelper.insertSpan(pAyaText, QString(".ayatxt|#s%1a%2").arg(pSoraNumber).arg(pAyaNumber));
+    m_htmlHelper.insertSpan(QString("(%1)").arg(pAyaNumber), ".ayanumber");
+    m_htmlHelper.endDiv();
 }
 
 void TafessirTextFormat::beginQuran(QString soraName, int firstAya, int lastAya)
@@ -34,18 +34,18 @@ void TafessirTextFormat::beginQuran(QString soraName, int firstAya, int lastAya)
         quranTextInfo = tr("سورة %1، الاية %2").arg(soraName).arg(firstAya);
     }
 
-    m_htmlHelper.beginDivTag(".tafessir_quran");
+    m_htmlHelper.beginDiv(".tafessir_quran");
 
-    m_htmlHelper.beginDivTag(".toggale_quran");
-    m_htmlHelper.insertSpanTag(quranTextInfo, ".quran_info");
+    m_htmlHelper.beginDiv(".toggale_quran");
+    m_htmlHelper.insertSpan(quranTextInfo, ".quran_info");
     m_htmlHelper.insertImage("qrc:/images/add.png");
-    m_htmlHelper.endDivTag();
+    m_htmlHelper.endDiv();
 
-    m_htmlHelper.beginDivTag(".quran_text");
+    m_htmlHelper.beginDiv(".quran_text");
 }
 
 void TafessirTextFormat::endQuran()
 {
-    m_htmlHelper.endDivTag();
-    m_htmlHelper.endDivTag();
+    m_htmlHelper.endDiv();
+    m_htmlHelper.endDiv();
 }

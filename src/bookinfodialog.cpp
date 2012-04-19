@@ -38,14 +38,14 @@ void BookInfoDialog::setup()
 
     html.beginBody();
 
-    html.beginDivTag(".rawi-info");
+    html.beginDiv(".rawi-info");
 
-    html.beginDivTag("#info");
+    html.beginDiv("#info");
 
-    html.beginParagraphTag();
-    html.insertSpanTag(tr("الكتاب:"), ".pro-name");
-    html.insertSpanTag(m_book->title, ".pro-value");
-    html.endParagraphTag();
+    html.beginParagraph();
+    html.insertSpan(tr("الكتاب:"), ".pro-name");
+    html.insertSpan(m_book->title, ".pro-value");
+    html.endParagraph();
 
     QString authorDeath;
     AuthorInfoPtr author = LibraryManager::instance()->authorsManager()->getAuthorInfo(m_book->authorID);
@@ -56,45 +56,45 @@ void BookInfoDialog::setup()
             authorDeath = tr("(%1)").arg(author->deathStr);
     }
 
-    html.beginParagraphTag();
-    html.insertSpanTag(tr("المؤلف:"), ".pro-name");
-    html.beginSpanTag(".pro-value");
+    html.beginParagraph();
+    html.insertSpan(tr("المؤلف:"), ".pro-name");
+    html.beginSpan(".pro-value");
     html.insertAuthorLink(m_book->authorName + " " + authorDeath, m_book->authorID);
-    html.endSpanTag();
-    html.endParagraphTag();
+    html.endSpan();
+    html.endParagraph();
 
     if(!m_book->edition.isEmpty()) {
-        html.beginParagraphTag();
-        html.insertSpanTag(tr("الطبعة:"), ".pro-name");
-        html.insertSpanTag(m_book->edition, ".pro-value");
-        html.endParagraphTag();
+        html.beginParagraph();
+        html.insertSpan(tr("الطبعة:"), ".pro-name");
+        html.insertSpan(m_book->edition, ".pro-value");
+        html.endParagraph();
     }
 
     if(!m_book->publisher.isEmpty()) {
-        html.beginParagraphTag();
-        html.insertSpanTag(tr("الناشر:"), ".pro-name");
-        html.insertSpanTag(m_book->publisher, ".pro-value");
-        html.endParagraphTag();
+        html.beginParagraph();
+        html.insertSpan(tr("الناشر:"), ".pro-name");
+        html.insertSpan(m_book->publisher, ".pro-value");
+        html.endParagraph();
     }
 
     if(!m_book->mohaqeq.isEmpty()) {
-        html.beginParagraphTag();
-        html.insertSpanTag(tr("المحقق:"), ".pro-name");
-        html.insertSpanTag(m_book->mohaqeq, ".pro-value");
-        html.endParagraphTag();
+        html.beginParagraph();
+        html.insertSpan(tr("المحقق:"), ".pro-name");
+        html.insertSpan(m_book->mohaqeq, ".pro-value");
+        html.endParagraph();
     }
 
-    html.beginParagraphTag();
-    html.insertSpanTag(tr("ترقيم الكتاب:"), ".pro-name");
+    html.beginParagraph();
+    html.insertSpan(tr("ترقيم الكتاب:"), ".pro-name");
 
     if(m_book->bookFlags & LibraryBook::PrintedPageNumber)
-        html.insertSpanTag(tr("موافق للمطبوع"), ".pro-value");
+        html.insertSpan(tr("موافق للمطبوع"), ".pro-value");
     else if(m_book->bookFlags & LibraryBook::MakhetotPageNumer)
-        html.insertSpanTag(tr("موافق للمخطوط"), ".pro-value");
+        html.insertSpan(tr("موافق للمخطوط"), ".pro-value");
     else
-        html.insertSpanTag(tr("غير موافق للمطبوع"), ".pro-value");
+        html.insertSpan(tr("غير موافق للمطبوع"), ".pro-value");
 
-    html.endParagraphTag();
+    html.endParagraph();
 
 
     QString moqabal;
@@ -106,10 +106,10 @@ void BookInfoDialog::setup()
         moqabal += tr("نسخة مصورة PDF");
 
     if(!moqabal.isEmpty()) {
-        html.beginParagraphTag();
-        html.insertSpanTag(tr("مقابل على:"), ".pro-name");
-        html.insertSpanTag(moqabal, ".pro-value");
-        html.endParagraphTag();
+        html.beginParagraph();
+        html.insertSpan(tr("مقابل على:"), ".pro-name");
+        html.insertSpan(moqabal, ".pro-value");
+        html.endParagraph();
     }
 
     QString otherInfo;
@@ -121,10 +121,10 @@ void BookInfoDialog::setup()
         otherInfo += tr("مشكول، ");
 
     if(!otherInfo.isEmpty()) {
-        html.beginParagraphTag();
-        html.insertSpanTag(tr("معلومات اخرى:"), ".pro-name");
-        html.insertSpanTag(otherInfo, ".pro-value");
-        html.endParagraphTag();
+        html.beginParagraph();
+        html.insertSpan(tr("معلومات اخرى:"), ".pro-name");
+        html.insertSpan(otherInfo, ".pro-value");
+        html.endParagraph();
     }
 
     /*
@@ -136,14 +136,14 @@ void BookInfoDialog::setup()
     }
     */
 
-    html.endDivTag(); // #info
+    html.endDiv(); // #info
 
     if(!m_book->info.isEmpty()) {
-        html.insertHeadTag(4, tr("نبذة حول الكتاب"));
-        html.insertDivTag(m_book->info, ".head-info");
+        html.insertHead(4, tr("نبذة حول الكتاب"));
+        html.insertDiv(m_book->info, ".head-info");
     }
 
-    html.endDivTag(); // .rawi-info
+    html.endDiv(); // .rawi-info
 
     html.addJS("jquery.js");
     html.addJS("jquery.tooltip.js");
@@ -152,7 +152,7 @@ void BookInfoDialog::setup()
     html.addJSCode("setupToolTip();"
                    "moltaqaLink();");
 
-    html.endAllTags();
+    html.endAll();
 
     m_view->setHtml(html.html());
 }

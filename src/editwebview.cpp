@@ -41,7 +41,7 @@ void EditWebView::setupEditor(const QString &text)
                 "this.dataProcessor.writer.indentationChars = ''; "
                 "this.execCommand('maximize'); }}});").arg(style.toString()));
 
-    helper.endAllTags();
+    helper.endAll();
 
     setHtml(helper.html());
 }
