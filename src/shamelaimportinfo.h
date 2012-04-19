@@ -42,7 +42,12 @@ public:
         author->name = name;
         author->fullName = fullName;
         author->info = info;
-        author->deathYear = dieYear;
+
+        if(author->deathYear >= 2013)
+            author->isALive = true;
+        else
+            author->deathYear = dieYear;
+
         author->unknowBirth = true;
 
         return author;
