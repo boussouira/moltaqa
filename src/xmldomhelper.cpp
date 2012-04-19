@@ -128,8 +128,7 @@ void XmlDomHelper::create()
 
 QDomElement XmlDomHelper::findElement(const QString &attr, const QString &value)
 {
-    QString tag;
-    return findElement(tag, attr, value);
+    return findElement(QString(), attr, value);
 }
 
 QDomElement XmlDomHelper::findElement(const QString &tag, const QString &attr, const QString &value)
