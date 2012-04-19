@@ -66,7 +66,7 @@ void DatabaseError(const QSqlDatabase &db, const char *file, int line);
 
 #define ML_BENCHMARK(desc, code) do {QTime bmt;bmt.start();code;qDebug(desc " take %d ms", bmt.elapsed());} while(false)
 #define ML_BENCHMARK_START() QTime bmt2;bmt2.start();
-#define ML_BENCHMARK_ELAPSED(desc) qDebug(desc " take %d ms", bmt2.elapsed());
+#define ML_BENCHMARK_ELAPSED(desc) qDebug(desc " take %d ms", bmt2.restart());
 
 #define LOG_DB_ERROR(db) Log::DatabaseError(db, __FILE__, __LINE__)
 #define LOG_SQL_ERROR(query) Log::QueryError(query, __FILE__, __LINE__)
