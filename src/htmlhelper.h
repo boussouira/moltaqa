@@ -84,6 +84,8 @@ public:
 
      inline void insertBr() { m_html.append("<br />"); }
 
+    void insertAuthorLink(const QString &authorName, int authorID);
+
     static QString jsEscape(QString text);
 
 protected:

@@ -12,6 +12,7 @@
 #include "mainwindow.h"
 #include "utils.h"
 #include "favouritesmanager.h"
+#include "bookinfodialog.h"
 
 #include <qmainwindow.h>
 #include <qmenubar.h>
@@ -49,6 +50,8 @@ BookWidgetManager::BookWidgetManager(QWidget *parent) :
     m_favouriteAct = new QAction(QIcon::fromTheme("bookmark-new", QIcon(":/images/bookmark-new.png")),
                                                   tr("اضافة الى المفضلة"), this);
 
+    m_bookInfoAct = new QAction(tr("بطاقة الكتاب"), this);
+
     m_showOtherTab = true;
 
     layout->addWidget(m_splitter);
@@ -60,6 +63,7 @@ BookWidgetManager::BookWidgetManager(QWidget *parent) :
     connect(m_moveAct, SIGNAL(triggered()), SLOT(moveToOtherTab()));
     connect(m_revAct, SIGNAL(triggered()), SLOT(reverseSplitter()));
     connect(m_favouriteAct, SIGNAL(triggered()), SLOT(addToFavouite()));
+    connect(m_bookInfoAct, SIGNAL(triggered()), SLOT(showBookInfo()));
 }
 
 BookWidgetManager::~BookWidgetManager()
@@ -68,8 +72,11 @@ BookWidgetManager::~BookWidgetManager()
 
 void BookWidgetManager::connectTab(TabWidget *tab)
 {
-    tab->setTabBarActions(QList<QAction*>()
-                          << m_moveAct << m_revAct << 0 << m_favouriteAct);
+    QList<QAction*> actionsList;
+    actionsList << m_moveAct << m_revAct << 0
+                << m_bookInfoAct << m_favouriteAct;
+
+    tab->setTabBarActions(actionsList);
 
     connect(tab, SIGNAL(currentChanged(int)), SLOT(tabChanged(int)));
     connect(tab, SIGNAL(currentChanged(int)), SIGNAL(currentTabChanged(int)));
@@ -235,6 +242,17 @@ void BookWidgetManager::addToFavouite()
                                  tr("تم اضافة <strong>%1</strong> الى المفضلة")
                                  .arg(book->title));
     }
+}
+
+void BookWidgetManager::showBookInfo()
+{
+    LibraryBookPtr book = activeBook();
+    ML_ASSERT(book);
+
+    BookInfoDialog *dialog = new BookInfoDialog(0);
+    dialog->setLibraryBook(book);
+    dialog->setup();
+    dialog->show();
 }
 
 void BookWidgetManager::closeBook(int bookID)

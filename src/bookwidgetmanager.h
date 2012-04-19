@@ -40,6 +40,7 @@ public slots:
     void moveToOtherTab();
     void reverseSplitter();
     void addToFavouite();
+    void showBookInfo();
 
     void nextAya();
     void previousAya();
@@ -63,6 +64,7 @@ protected:
     QAction *m_moveAct;
     QAction *m_revAct;
     QAction *m_favouriteAct;
+    QAction *m_bookInfoAct;
     bool m_showOtherTab;
 };
 

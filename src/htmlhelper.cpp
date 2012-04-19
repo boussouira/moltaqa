@@ -124,3 +124,8 @@ void HtmlHelper::addExtraAttr(QString attr)
         m_html.append(attr);
     }
 }
+
+void HtmlHelper::insertAuthorLink(const QString &authorName, int authorID)
+{
+    insertLinkTag(authorName, QString("moltaqa://open/author?id=%1").arg(authorID));
+}
