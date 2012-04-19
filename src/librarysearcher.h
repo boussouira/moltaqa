@@ -10,6 +10,8 @@
 #include "searchresult.h"
 #include "clucenequery.h"
 
+class SearchResultReader;
+
 class LibrarySearcher : public QThread
 {
     Q_OBJECT
@@ -64,6 +66,7 @@ protected:
     Hits* m_hits;
     Query* m_query;
     CLuceneQuery *m_cluceneQuery;
+    SearchResultReader *m_resultReader;
     int m_currentPage;
     int m_pageCount;
     int m_timeSearch;

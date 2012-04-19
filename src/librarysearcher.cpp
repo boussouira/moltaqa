@@ -7,6 +7,7 @@
 #include "stringutils.h"
 #include "abstractbookreader.h"
 #include "librarybookmanager.h"
+#include "searchresultreader.h"
 
 #include <qdatetime.h>
 #include <qsqlquery.h>
@@ -23,6 +24,7 @@ LibrarySearcher::LibrarySearcher(QObject *parent)
 {
     m_libraryInfo = MW->libraryInfo();
     m_libraryManager = LibraryManager::instance();
+    m_resultReader = new SearchResultReader(this);
 
     QSettings settings;
     m_resultParPage = settings.value("Search/resultPeerPage", 10).toInt();
@@ -33,6 +35,7 @@ LibrarySearcher::~LibrarySearcher()
     ML_DELETE_CHECK(m_hits);
     ML_DELETE_CHECK(m_query);
     ML_DELETE_CHECK(m_cluceneQuery);
+    ML_DELETE_CHECK(m_resultReader);
 
     if(m_searcher) {
         m_searcher->close();
@@ -153,7 +156,7 @@ void LibrarySearcher::fetech()
             page->titleID = Utils::CLucene::WCharToInt(doc.get(TITLE_ID_FIELD));
         }
 
-        bool gotPage = AbstractBookReader::getBookPage(book, page);
+        bool gotPage = m_resultReader->getBookPage(book, page);
 
         if(gotPage) {
             SearchResult *result = new SearchResult(book, page);

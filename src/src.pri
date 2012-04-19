@@ -127,7 +127,8 @@ SOURCES += mainwindow.cpp \
     favouritesmanager.cpp \
     favouritesmanagerwidget.cpp \
     timeutils.cpp \
-    bookinfodialog.cpp
+    bookinfodialog.cpp \
+    searchresultreader.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -242,7 +243,8 @@ HEADERS += mainwindow.h \
     favouritesmanager.h \
     favouritesmanagerwidget.h \
     timeutils.h \
-    bookinfodialog.h
+    bookinfodialog.h \
+    searchresultreader.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

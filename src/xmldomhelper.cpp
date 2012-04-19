@@ -126,11 +126,6 @@ void XmlDomHelper::create()
         << "</" << m_documentName << ">";
 }
 
-QDomElement XmlDomHelper::findElement(const QString &attr, const QString &value)
-{
-    return findElement(QString(), attr, value);
-}
-
 QDomElement XmlDomHelper::findElement(const QString &tag, const QString &attr, const QString &value)
 {
     QDomElement e = m_rootElement.firstChildElement(tag);
@@ -143,6 +138,42 @@ QDomElement XmlDomHelper::findElement(const QString &tag, const QString &attr, c
     }
 
     return QDomElement();
+}
+
+QDomElement elementFind(QDomElement element, const QString &tag, const QString &attr, const QString &value)
+{
+    while(!element.isNull()) {
+        if(element.attribute(attr) == value)
+            return element;
+
+        if(element.hasChildNodes()) {
+            QDomElement nextElement = element.nextSiblingElement(tag);
+            if(!nextElement.isNull()) {
+                int next = nextElement.attribute(attr).toInt();
+                if(next <= value.toInt()) {
+                    element = element.nextSiblingElement(tag);
+                    continue;
+                }
+            }
+            QDomElement child = element.firstChildElement(tag);
+            while(!child.isNull()){
+                QDomElement found = elementFind(child, tag, attr, value);
+                if(!found.isNull())
+                    return found;
+
+                child = child.nextSiblingElement(tag);
+            }
+        }
+
+        element = element.nextSiblingElement(tag);
+    }
+
+    return QDomElement();
+}
+
+QDomElement XmlDomHelper::treeFindElement(const QString &tag, const QString &attr, const QString &value)
+{
+    return elementFind(m_rootElement.firstChildElement(tag), tag, attr, value);
 }
 
 void XmlDomHelper::setElementText(QDomElement &parent, const QString &tagName, const QString &text, bool cdata)

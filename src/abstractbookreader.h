@@ -96,7 +96,6 @@ public:
 
     inline XmlDomHelper& pagesDom() { return m_pagesDom; }
 
-    static bool getBookPage(LibraryBookPtr book, BookPage *page);
     static QString getFileContent(QuaZip *zip, QString fileName);
 
     static QString getPageText(QuaZip *zip, int pageID)
@@ -135,11 +134,6 @@ protected:
     QDomElement getPageId(int page, int part);
     QDomElement getPageId(int haddit);
     virtual QDomElement getQuranPageId(int sora, int aya);
-
-private:
-    static bool getSimpleBookPage(QuaZip *zip, LibraryBookPtr book, BookPage *page);
-    static bool getTafessirPage(QuaZip *zip, LibraryBookPtr book, BookPage *page);
-    static bool getQuranPage(QuaZip *zip, LibraryBookPtr book, BookPage *page);
 
 protected:
     friend class ZipOpener;

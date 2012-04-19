@@ -26,10 +26,13 @@ public:
     void reload();
     void create();
 
-    QDomElement findElement(const QString &attr, const QString &value);
-    QDomElement findElement(const QString &attr, int value) { return findElement(attr, QString::number(value)); }
-
+    QDomElement findElement(const QString &attr, const QString &value) { return findElement(QString(), attr, value); }
+    QDomElement findElement(const QString &attr, int value) { return findElement(QString(), attr, QString::number(value)); }
     QDomElement findElement(const QString &tag, const QString &attr, const QString &value);
+
+    QDomElement treeFindElement(const QString &attr, const QString &value) { return treeFindElement(QString(), attr, value);}
+    QDomElement treeFindElement(const QString &attr, int value) { return treeFindElement(QString(), attr, QString::number(value));}
+    QDomElement treeFindElement(const QString &tag, const QString &attr, const QString &value);
 
     inline QDomElement& rootElement() { return m_rootElement; }
     inline QDomElement& currentElement() { return m_currentElement; }
