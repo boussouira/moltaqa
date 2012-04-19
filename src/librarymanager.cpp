@@ -29,7 +29,9 @@ LibraryManager::LibraryManager(LibraryInfo *info, QObject *parent) :
     m_bookmanager(0),
     m_taffesirManager(0),
     m_bookListManager(0),
-    m_authorsManager(0)
+    m_authorsManager(0),
+    m_rowatManager(0),
+    m_favourites(0)
 {
     m_connName = "BooksIndexDB";
 
@@ -41,7 +43,9 @@ LibraryManager::~LibraryManager()
     ML_DELETE_CHECK(m_bookmanager);
     ML_DELETE_CHECK(m_bookListManager);
     ML_DELETE_CHECK(m_taffesirManager);
+    ML_DELETE_CHECK(m_authorsManager);
     ML_DELETE_CHECK(m_rowatManager);
+    ML_DELETE_CHECK(m_favourites);
 
     m_instance = 0;
 }

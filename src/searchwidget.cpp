@@ -188,7 +188,7 @@ void SearchWidget::search()
     QString searchField = getSearchField();
     wchar_t *searchFieldW = Utils::CLucene::QStringToWChar(searchField);
 
-    SearchFilter *searchFilter = getSearchFilterQuery();
+    QScopedPointer<SearchFilter> searchFilter(getSearchFilterQuery());
     Query *searchQuery = getSearchQuery(searchFieldW);
 
     ML_ASSERT(searchQuery);

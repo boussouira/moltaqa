@@ -16,6 +16,7 @@ SearchFilterManager::SearchFilterManager(QObject *parent)
       m_model(0),
       m_treeView(0),
       m_lineEdit(0),
+      m_menu(0),
       m_role(Qt::DisplayRole),
       m_filterColumn(0),
       m_proccessItemChange(true),
@@ -30,7 +31,9 @@ SearchFilterManager::SearchFilterManager(QObject *parent)
 
 SearchFilterManager::~SearchFilterManager()
 {
-    delete m_filterModel;
+    ML_DELETE_CHECK(m_filterModel);
+    ML_DELETE_CHECK(m_model);
+    ML_DELETE_CHECK(m_menu);
 }
 
 void SearchFilterManager::setSourceModel(QStandardItemModel *model)
