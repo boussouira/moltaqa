@@ -202,7 +202,7 @@ MainWindow *MainWindow::instance()
 void MainWindow::setupActions()
 {
 
-    connect(ui->actionExit, SIGNAL(triggered()), SLOT(close()));
+    connect(ui->actionExit, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
     connect(ui->actionAbout, SIGNAL(triggered()), SLOT(aboutdDialog()));
     connect(ui->actionSettings, SIGNAL(triggered()), SLOT(settingDialog()));
     connect(ui->actionControlCenter, SIGNAL(triggered()), SLOT(controlCenter()));
