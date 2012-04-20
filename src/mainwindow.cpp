@@ -241,9 +241,6 @@ void MainWindow::openBook(int pBookID, int pageID)
 {
     ML_ASSERT(m_bookView->openBook(pBookID, pageID));
 
-    if(m_bookView->isHidden())
-        m_bookView->show();
-
     m_viewManager->setCurrentView(m_bookView);
 }
 
