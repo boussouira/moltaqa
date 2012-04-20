@@ -75,6 +75,7 @@ void ViewManager::setCurrentView(AbstarctView *view)
     m_currentView = view;
 
     setupWindowsActions();
+    m_mainWindow->activateWindow();
 }
 
 void ViewManager::setDefautView(AbstarctView *view)
