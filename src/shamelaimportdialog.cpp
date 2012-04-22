@@ -268,7 +268,6 @@ void ShamelaImportDialog::setupImporting()
     } else {
         LibraryCreator creator;
         creator.openDB();
-        creator.createTables();
 
         creator.start();
 

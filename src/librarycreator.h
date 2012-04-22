@@ -23,7 +23,6 @@ public:
     ~LibraryCreator();
     void setThreadID(int tid) { m_threadID = tid; }
     void openDB();
-    void createTables();
 
     void start();
     void done();
