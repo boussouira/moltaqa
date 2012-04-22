@@ -65,11 +65,6 @@ public:
       */
     QString bookPath(QString bookName);
 
-    /**
-     Get books list file
-     */
-    QString booksListFile();
-
 protected:
     void loafInfo(QString path);
     void checkDataFiles(QString dataDirPath);
@@ -83,7 +78,6 @@ protected:
     QString m_indexDir;
     QString m_indexDataDir;
     QString m_trackerFile;
-    QString m_booksListFile;
 };
 
 #endif // CONNECTIONINFO_H

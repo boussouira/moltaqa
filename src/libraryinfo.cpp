@@ -95,7 +95,6 @@ void LibraryInfo::loafInfo(QString path)
 
     dataDir.cd(m_dataDir);
     m_dataDir = dataDir.absolutePath();
-    m_booksListFile = dataDir.absoluteFilePath("bookslist.xml");
     checkDataFiles(m_dataDir);
 
     QDir booksDir(m_path);
@@ -187,11 +186,6 @@ QString LibraryInfo::bookPath(QString bookName)
     QDir dir(m_booksDir);
 
     return dir.filePath(bookName);
-}
-
-QString LibraryInfo::booksListFile()
-{
-    return m_booksListFile;
 }
 
 QString LibraryInfo::tempDir()
