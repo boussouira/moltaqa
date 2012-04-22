@@ -14,8 +14,6 @@
 #include <qfileinfo.h>
 #include <qhash.h>
 
-static int m_time = 0;
-static qint64 m_size = 0;
 static QHash<QString, QString> m_converted;
 
 MdbConverter::MdbConverter(bool cache) : m_cache(cache)
@@ -97,10 +95,7 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
         m_bookDB.commit();
     }
 
-    m_size = info.size();
-    m_time = timer.elapsed();
-
-    qDebug() << "Converting" << info.fileName() << " take " << m_time << "ms";
+    qDebug() << "Converting" << info.fileName() << " take " << timer.elapsed() << "ms";
 
     mdb_close(mdb);
     mdb_exit();
