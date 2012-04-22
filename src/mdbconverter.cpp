@@ -280,7 +280,6 @@ void MdbConverter::removeConvertedDB(QString shamelaDB)
     QString convertedDB = m_converted.value(shamelaDB.toLower(), QString());
     if(!convertedDB.isEmpty()) {
         QFile::remove(convertedDB);
-        qDebug() << "Delete converted book" << convertedDB;
         m_converted.remove(convertedDB);
     }
 }
@@ -290,7 +289,6 @@ void MdbConverter::removeAllConvertedDB()
     QHashIterator<QString, QString> i(m_converted);
     while (i.hasNext()) {
         i.next();
-        qDebug() << "Remove:" << i.value();
         QFile::remove(i.value());
     }
 
