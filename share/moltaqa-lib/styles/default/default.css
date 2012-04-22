@@ -45,7 +45,6 @@ a {
 }
 
 #simpleBook #pageText {
-    min-height: 400;
 }
 
 #simpleBook #pageHeader {
@@ -61,12 +60,20 @@ a {
   cursor: pointer;
 }
 
-#simpleBook #pageHeader .bookInfo #partInfo {
-  float: left;
+#simpleBook #pageHeader .bookInfo #currentPage {
+    float: left;
 }
 
-#simpleBook #pageHeader .bookInfo #partInfo .partText {
+#simpleBook #pageHeader .bookInfo #currentPage > span{
     margin: 0 5px;
+}
+
+#simpleBook #pageHeader .bookInfo #currentPage .page span {
+    margin-left: 2px;
+}
+
+#simpleBook #pageHeader .bookInfo #currentPage .part span {
+    margin-left: 2px;
 }
 
 #simpleBook #pageHeader .breadcrumbs {
@@ -80,17 +87,6 @@ a {
 
 #simpleBook #pageHeader .breadcrumbs span:hover {
     color: #184388;
-}
-
-#simpleBook #pageFooter {
-  font-size: 17px;
-  border-top: 1px solid #CCCCCC;
-  margin-top: 15px;
-  text-align: center;
-}
-
-#simpleBook #pageFooter .page {
-  color: #333333;
 }
 
 #simpleBook ul.bookIndex {

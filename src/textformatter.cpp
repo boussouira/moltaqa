@@ -62,10 +62,19 @@ QString TextFormatter::getHtmlView(const QString &text, const QString &jsCode)
         helper.beginDiv(".bookInfo");
         helper.insertSpan(m_book->title, ".bookName");
 
-        helper.beginSpan("#partInfo");
-        helper.insertSpan(tr("الجزء"), ".partText");
-        helper.insertSpan(QString::number(m_page->part), ".partNum");
-        helper.endSpan(); // span#partInfo
+        helper.beginDiv("#currentPage");
+
+        helper.beginSpan(".page");
+        helper.insertSpan(tr("الصفحة "), ".name");
+        helper.insertSpan(QString::number(m_page->page), ".val");
+        helper.endSpan(); // span.page
+
+        helper.beginSpan(".part");
+        helper.insertSpan(tr(" الجزء "), ".name");
+        helper.insertSpan(QString::number(m_page->part), ".val");
+        helper.endSpan(); // span.part
+
+        helper.endDiv(); // div#currentPage
 
         helper.endDiv(); // div.bookInfo
 
@@ -86,12 +95,6 @@ QString TextFormatter::getHtmlView(const QString &text, const QString &jsCode)
     }
 
     helper.insertDiv(text, "#pageText");
-
-    if(!m_book->isQuran()) {
-        helper.beginDiv("#pageFooter");
-        helper.insertSpan(QString::number(m_page->page), ".page");
-        helper.endDiv(); // div#pageFooter
-    }
 
     helper.endDiv(); // div#m_cssID
 
