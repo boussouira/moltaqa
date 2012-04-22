@@ -211,7 +211,7 @@ void MdbConverter::generateTableSchema(MdbCatalogEntry *entry)
 
         sqlCmd.append(sanitizeName(col->name));
         sqlCmd.append(" ");
-        sqlCmd.append(qPrintable(sqlite_types.at(col->col_type)));
+        sqlCmd.append(sqlite_types.at(col->col_type));
 
         if (mdb_coltype_takes_length(mdb->default_backend, col->col_type)) {
             if (col->col_size == 0)
