@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     app.setApplicationName("Moltaqa-Library");
     app.setApplicationVersion("0.5");
 
-    srand(uint(QDateTime::currentDateTime().toMSecsSinceEpoch() & 0xFFFFFF));
+    Utils::Rand::srand();
 
 #ifdef Q_OS_WIN
     setArabicKeyboardLayout();

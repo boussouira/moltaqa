@@ -13,10 +13,16 @@
 #include <qsettings.h>
 
 static QString appRootPath;
+static uint m_randSlat = uint(QDateTime::currentDateTime().toMSecsSinceEpoch() & 0xFFFFFF);
 
 namespace Utils {
 
 namespace Rand {
+
+void srand()
+{
+    ::srand(++m_randSlat);
+}
 
 int number(int smin, int smax)
 {
@@ -26,7 +32,7 @@ int number(int smin, int smax)
 
 QString fileName(QString path, bool fullPath, QString ext, QString namePrefix)
 {
-    srand(uint(QDateTime::currentDateTime().toMSecsSinceEpoch() & 0xFFFFFF));
+    Rand::srand();
 
     QDir dir(path);
     QString fileName(namePrefix);
@@ -53,6 +59,23 @@ QString fileName(QString path, bool fullPath, QString ext, QString namePrefix)
         return dir.filePath(fileName+ext);
     else
         return fileName+ext;
+}
+
+QString string(int size)
+{
+    ML_ASSERT_RET2(size, "Rand::string size must be greater than 0", QString());
+
+    Rand::srand();
+
+    QString str;
+    QString chars("abcdefghijklmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ0123456789");
+    int smax = chars.size()-1;
+
+    for(int i=0; i<size; i++) {
+        str.append(chars.at(number(0, smax)));
+    }
+
+    return str;
 }
 }
 

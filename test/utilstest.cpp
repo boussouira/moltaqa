@@ -13,20 +13,29 @@ UtilsTest::UtilsTest()
 
 void UtilsTest::randInt()
 {
-    int count = 1000;
     int rmin = 0;
     int rmax = 100;
-    bool randInt = true;
 
-    while(--count>0) {
+    Utils::Rand::srand();
+
+    for(int i=0;i<1000;i++) {
         int rnd = Utils::Rand::number(rmin, rmax);
-        randInt = (rmin <= rnd && rnd <= rmax);
 
-        if(!randInt)
-            break;
+        QVERIFY(rmin <= rnd && rnd <= rmax);
     }
 
-    QVERIFY(randInt);
+    int randSize = 32;
+    QString lastStr;
+    for(int i=0; i<10; i++) {
+        QString str = Utils::Rand::string(randSize);
+
+        QCOMPARE(str.size(), randSize);
+
+        if(lastStr.size())
+            QVERIFY(lastStr != str);
+
+        lastStr = str;
+    }
 }
 
 void UtilsTest::generateFileName()

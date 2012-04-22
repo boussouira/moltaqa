@@ -20,8 +20,10 @@ bool isLibraryPath(QString path);
 void createIndexDB(QString path);
 
 namespace Rand {
-QString fileName(QString path, bool fullPath=false, QString ext="alb", QString namePrefix="book_");
+void srand();
 int number(int smin, int smax);
+QString string(int size);
+QString fileName(QString path, bool fullPath=false, QString ext="alb", QString namePrefix="book_");
 }
 
 namespace Widget {
