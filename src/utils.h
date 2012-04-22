@@ -16,8 +16,10 @@ class QSqlDatabase;
 
 namespace Utils {
 
-bool isLibraryPath(QString path);
-void createIndexDB(QString path);
+namespace Library {
+bool isValidLibrary(const QString &path);
+void createDatabases(const QString &path);
+}
 
 namespace Rand {
 void srand();

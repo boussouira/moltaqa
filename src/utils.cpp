@@ -79,14 +79,16 @@ QString string(int size)
 }
 }
 
-bool isLibraryPath(QString path)
+namespace Library {
+
+bool isValidLibrary(const QString &path)
 {
     QDir dir(path);
 
     return (dir.exists() && dir.exists("info.xml"));
 }
 
-void createIndexDB(QString path)
+void createDatabases(const QString &path)
 {
     QDir dir(path);
     if(!dir.exists("data"))
@@ -216,6 +218,7 @@ void createIndexDB(QString path)
     QSqlDatabase::removeDatabase("createDB.books");
     QSqlDatabase::removeDatabase("createDB.authors");
     QSqlDatabase::removeDatabase("createDB.rowat");
+}
 }
 
 namespace Widget {

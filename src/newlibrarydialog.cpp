@@ -47,7 +47,7 @@ void NewLibraryDialog::on_toolSelectLibDir_clicked()
                                                     QFileDialog::ShowDirsOnly
                                                     |QFileDialog::DontResolveSymlinks);
     if(!dirPath.isEmpty()) {
-        if(Utils::isLibraryPath(dirPath)) {
+        if(Utils::Library::isValidLibrary(dirPath)) {
             int ret = QMessageBox::question(this,
                                             App::name(),
                                             tr("لقد تم العثور على مكتبة في المجلد الذي اخترته" "<br>"
@@ -100,7 +100,7 @@ void NewLibraryDialog::createLibrary(QString name, QString path, QString descrip
     out << "    <description>" << description << "</description>" << "\n";
     out << "</library-info>" << "\n";
 
-    Utils::createIndexDB(libPath.absolutePath());
+    Utils::Library::createDatabases(libPath.absolutePath());
 
     QMessageBox::information(this,
                              tr("انشاء مكتبة جديدة"),

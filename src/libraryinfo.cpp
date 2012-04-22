@@ -169,7 +169,7 @@ void LibraryInfo::checkDataFiles(QString dataDirPath)
     foreach (QString db, dbs) {
         if(!QFile::exists(db)) {
             dataDir.cdUp();
-            Utils::createIndexDB(dataDir.absolutePath());
+            Utils::Library::createDatabases(dataDir.absolutePath());
             break;
         }
     }
