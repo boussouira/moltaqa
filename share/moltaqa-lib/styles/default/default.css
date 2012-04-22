@@ -414,7 +414,6 @@ div.info {
 
 /* Pagination */
 .pagination {
-    font-size: 0.9em;
     text-align: center;
     direction: ltr;
 }
@@ -430,10 +429,10 @@ div.info {
 }
 .pagination a, .pagination span {
     box-shadow: 0 0 5px #AEAEAE ;
-    padding: 0.3em 0.5em;
+    padding: 0 10px;
+    font-size: 0.9em;
     margin-right: 5px;
     margin-bottom: 5px;
-    min-width:1em;
     text-align:center;
 }
 
