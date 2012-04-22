@@ -291,49 +291,50 @@ int versionNumber()
     return APP_VERSION;
 }
 
-bool checkDir(bool showWarnings)
+QStringList checkDir(bool showWarnings)
 {
-    bool ret = true;
-    ret &= checkFiles(QStringList()
-                      << "quran-meta.db",
-                      dataDir(),
-                      showWarnings);
+    QStringList missingFiles;
 
-    ret &= checkFiles(QStringList()
-                      << "jquery.pagination.js"
-                      << "jquery.growl.js"
-                      << "jquery.tooltip.js"
-                      << "jquery.js"
-                      << "editor.js"
-                      << "reader.js"
-                      << "search.js"
-                      << "ckeditor"
-                      << "scripts.js",
-                      jsDir(),
-                      showWarnings);
+    missingFiles << checkFiles(QStringList()
+                               << "quran-meta.db",
+                               dataDir(),
+                               showWarnings);
 
-    ret &=  checkFiles(QStringList()
-                       << "qt_ar.qm",
-                       localeDir(),
-                       showWarnings);
+    missingFiles << checkFiles(QStringList()
+                               << "jquery.pagination.js"
+                               << "jquery.growl.js"
+                               << "jquery.tooltip.js"
+                               << "jquery.js"
+                               << "editor.js"
+                               << "reader.js"
+                               << "search.js"
+                               << "ckeditor"
+                               << "scripts.js",
+                               jsDir(),
+                               showWarnings);
 
-    return ret;
+    missingFiles << checkFiles(QStringList()
+                               << "qt_ar.qm",
+                               localeDir(),
+                               showWarnings);
+
+    return  missingFiles;
 }
 
-bool checkFiles(QStringList files, QDir dir, bool showWarnings)
+QStringList checkFiles(QStringList files, QDir dir, bool showWarnings)
 {
-    bool ret = true;
+    QStringList missingFiles;
 
     foreach(QString fileName, files) {
         if(!dir.exists(fileName)) {
+            missingFiles << dir.filePath(fileName);
+
             if(showWarnings)
-                qWarning() << "checkFiles: File doesn't exist"
-                           << dir.filePath(fileName);
-            ret = false;
+                qWarning() << "checkFiles: File doesn't exist" << dir.filePath(fileName);
         }
     }
 
-    return ret;
+    return missingFiles;
 }
 
 QString appDir()
@@ -343,16 +344,21 @@ QString appDir()
         dir.cdUp();
 
         appRootPath = dir.absolutePath();
-        if(!checkDir(false)) {
+        QStringList missingFiles;
+
+        missingFiles = checkDir(false);
+        if(!missingFiles.isEmpty()) {
 //            qWarning() << "Can't find some files at" << appRootPath;
 //            qWarning() << "Check if we can use current working directory...";
             appRootPath = QDir::currentPath();
-            if(!checkDir(true)) {
+
+            missingFiles = checkDir(false);
+            if(!missingFiles.isEmpty()) {
                 QMessageBox::critical(0,
                                      App::name(),
-                                     QObject::tr("لم يتم العثور على بعض الملفات في مجلد البرنامج"
-                                                 "\n"
-                                                 "من فضلك قم باعادة تتبيث البرنامج"));
+                                     QObject::tr("لم يتم العثور على بعض الملفات في مجلد البرنامج""\n"
+                                                 "من فضلك قم باعادة تتبيث البرنامج""\n"
+                                                 "الملفات الناقصة:""\n") + missingFiles.join("\n"));
 
                 qFatal("Some files are messing");
             } else {

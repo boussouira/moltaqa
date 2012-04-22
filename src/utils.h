@@ -44,8 +44,8 @@ QString name();
 const char *version();
 int versionNumber();
 
-bool checkDir(bool showWarning);
-bool checkFiles(QStringList files, QDir dir, bool showWarning);
+QStringList checkDir(bool showWarning);
+QStringList checkFiles(QStringList files, QDir dir, bool showWarning);
 
 QString appDir();
 QString binDir();
