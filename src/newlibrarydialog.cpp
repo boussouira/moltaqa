@@ -100,8 +100,6 @@ void NewLibraryDialog::createLibrary(QString name, QString path, QString descrip
     out << "    <description>" << description << "</description>" << "\n";
     out << "</library-info>" << "\n";
 
-    Utils::Library::createDatabases(libPath.absolutePath());
-
     QMessageBox::information(this,
                              tr("انشاء مكتبة جديدة"),
                              tr("تم انشاء المكتبة"));
