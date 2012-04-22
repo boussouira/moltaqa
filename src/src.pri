@@ -128,7 +128,8 @@ SOURCES += mainwindow.cpp \
     favouritesmanagerwidget.cpp \
     timeutils.cpp \
     bookinfodialog.cpp \
-    searchresultreader.cpp
+    searchresultreader.cpp \
+    aboutdialog.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -244,7 +245,8 @@ HEADERS += mainwindow.h \
     favouritesmanagerwidget.h \
     timeutils.h \
     bookinfodialog.h \
-    searchresultreader.h
+    searchresultreader.h \
+    aboutdialog.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \
@@ -267,7 +269,8 @@ FORMS += mainwindow.ui settingsdialog.ui \
     tarajemrowatview.ui \
     tarajemrowatmanagerwidget.ui \
     authorsview.ui \
-    favouritesmanagerwidget.ui
+    favouritesmanagerwidget.ui \
+    aboutdialog.ui
 
 RESOURCES += ../share/moltaqa-lib/qt_rc.qrc
 win32:RC_FILE = ../share/moltaqa-lib/win_rc.rc

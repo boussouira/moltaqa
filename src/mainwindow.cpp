@@ -20,6 +20,7 @@
 #include "bookreaderhelper.h"
 #include "tarajemrowatview.h"
 #include "authorsview.h"
+#include "aboutdialog.h"
 
 #include <qmessagebox.h>
 #include <qsettings.h>
@@ -226,9 +227,8 @@ void MainWindow::setupActions()
 
 void MainWindow::aboutdDialog()
 {
-    QMessageBox::information(this,
-                             App::name(),
-                             tr("مكتبة ملتقى اهل الحديث"));
+    AboutDialog dialog(this);
+    dialog.exec();
 }
 
 void MainWindow::settingDialog()
