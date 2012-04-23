@@ -3,6 +3,7 @@
 #include "resultwidget.h"
 #include "clheader.h"
 #include "clutils.h"
+#include "utils.h"
 #include "clconstants.h"
 #include "arabicanalyzer.h"
 #include "searchfiltermanager.h"
@@ -17,6 +18,7 @@ LibrarySearchWidget::LibrarySearchWidget(QWidget *parent) :
 
 LibrarySearchWidget::~LibrarySearchWidget()
 {
+    Utils::Widget::save(ui->treeView, "LibrarySearch", 2);
 }
 
 void LibrarySearchWidget::init(int bookID)
@@ -33,6 +35,9 @@ void LibrarySearchWidget::init(int bookID)
 
     ui->treeView->setModel(filter->filterModel());
     ui->treeView->setColumnWidth(0, 300);
+
+    Utils::Widget::restore(ui->treeView, "LibrarySearch",
+                           QList<int>() << 350 << 200);
 
     m_filterManager = filter;
 }

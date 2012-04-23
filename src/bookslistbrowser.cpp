@@ -75,17 +75,8 @@ void BooksListBrowser::saveSettings()
 {
     Utils::Widget::save(this, "BooksListWidget");
 
-    QSettings settings;
-
-    if(m_bookListModel) {
-        settings.setValue("BooksListWidget/bcol_1", ui->treeBookList->columnWidth(0));
-        settings.setValue("BooksListWidget/bcol_2", ui->treeBookList->columnWidth(1));
-    }
-
-    if(m_favouritesModel) {
-        settings.setValue("BooksListWidget/fcol_1", ui->treeFavouritesList->columnWidth(0));
-        settings.setValue("BooksListWidget/fcol_2", ui->treeFavouritesList->columnWidth(1));
-    }
+    Utils::Widget::save(ui->treeBookList, "BooksListBrowser.bookList", 2);
+    Utils::Widget::save(ui->treeFavouritesList, "BooksListBrowser.favourites", 2);
 }
 
 void BooksListBrowser::readBookListModel()
@@ -104,14 +95,9 @@ void BooksListBrowser::readBookListModel()
     m_bookListFilter->setColumnSortRole(AuthorDeathCol, ItemRole::authorDeathRole);
     m_bookListFilter->setup();
 
-    QSettings settings;
-    settings.beginGroup("BooksListWidget");
-
-    ui->treeBookList->setColumnWidth(BookNameCol,
-                                 settings.value("bcol_1", 350).toInt());
-
-    ui->treeBookList->setColumnWidth(AuthorNameCol,
-                                 settings.value("bcol_2", 200).toInt());
+    Utils::Widget::restore(ui->treeBookList,
+                           "BooksListBrowser.bookList",
+                           QList<int>() << 350 << 200);
 }
 
 void BooksListBrowser::readFavouritesModel()
@@ -130,14 +116,9 @@ void BooksListBrowser::readFavouritesModel()
     m_favouritesListFilter->setColumnSortRole(AuthorDeathCol, ItemRole::authorDeathRole);
     m_favouritesListFilter->setup();
 
-    QSettings settings;
-    settings.beginGroup("BooksListWidget");
-
-    ui->treeFavouritesList->setColumnWidth(BookNameCol,
-                                 settings.value("fcol_1", 350).toInt());
-
-    ui->treeFavouritesList->setColumnWidth(AuthorNameCol,
-                                 settings.value("fcol_2", 200).toInt());
+    Utils::Widget::restore(ui->treeFavouritesList,
+                           "BooksListBrowser.favourites",
+                           QList<int>() << 350 << 200);
 }
 
 void BooksListBrowser::itemClicked(QModelIndex index)

@@ -96,15 +96,11 @@ void WelcomeWidget::saveSettings()
     settings.setValue("splitter", ui->splitter->saveState());
     settings.setValue("tab", ui->tabWidget->currentIndex());
 
-    if(m_bookListModel) {
-        settings.setValue("bcol_1", ui->treeBookList->columnWidth(0));
-        settings.setValue("bcol_2", ui->treeBookList->columnWidth(1));
-    }
+    if(m_bookListModel)
+        Utils::Widget::save(ui->treeBookList, "WelcomeWidget.bookList", 2);
 
-    if(m_favouritesModel) {
-        settings.setValue("fcol_1", ui->treeFavouritesList->columnWidth(0));
-        settings.setValue("fcol_2", ui->treeFavouritesList->columnWidth(1));
-    }
+    if(m_favouritesModel)
+        Utils::Widget::save(ui->treeFavouritesList, "WelcomeWidget.favourites", 2);
 }
 
 void WelcomeWidget::bookListModel()
@@ -123,14 +119,9 @@ void WelcomeWidget::bookListModel()
     m_bookListFilter->setColumnSortRole(AuthorDeathCol, ItemRole::authorDeathRole);
     m_bookListFilter->setup();
 
-    QSettings settings;
-    settings.beginGroup("WelcomeWidget");
-
-    ui->treeBookList->setColumnWidth(BookNameCol,
-                                 settings.value("bcol_1", 350).toInt());
-
-    ui->treeBookList->setColumnWidth(AuthorNameCol,
-                                 settings.value("bcol_2", 200).toInt());
+    Utils::Widget::restore(ui->treeBookList,
+                           "WelcomeWidget.bookList",
+                           QList<int>() << 350 << 200);
 }
 
 void WelcomeWidget::favouritesModel()
@@ -149,14 +140,9 @@ void WelcomeWidget::favouritesModel()
     m_favouritesListFilter->setColumnSortRole(AuthorDeathCol, ItemRole::authorDeathRole);
     m_favouritesListFilter->setup();
 
-    QSettings settings;
-    settings.beginGroup("WelcomeWidget");
-
-    ui->treeFavouritesList->setColumnWidth(BookNameCol,
-                                 settings.value("fcol_1", 350).toInt());
-
-    ui->treeFavouritesList->setColumnWidth(AuthorNameCol,
-                                           settings.value("fcol_2", 200).toInt());
+    Utils::Widget::restore(ui->treeFavouritesList,
+                           "WelcomeWidget.favourites",
+                           QList<int>() << 350 << 200);
 }
 
 void WelcomeWidget::lastReadBooksModel()

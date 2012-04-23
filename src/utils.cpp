@@ -11,6 +11,8 @@
 #include <qmessagebox.h>
 #include <QDateTime>
 #include <qsettings.h>
+#include <qtreeview.h>
+#include <qheaderview.h>
 
 static QString appRootPath;
 static uint m_randSlat = uint(QDateTime::currentDateTime().toMSecsSinceEpoch() & 0xFFFFFF);
@@ -217,6 +219,40 @@ void restore(QWidget *w, QString section, bool showMaximized)
         w->showMaximized();
 
     settings.endGroup();
+}
+
+void save(QTreeView *tree, QString section, int columnCount)
+{
+    QSettings settings;
+    settings.beginGroup("TreeViewStat");
+
+    if(columnCount == -1)
+        columnCount = tree->header()->count();
+
+    settings.setValue(QString("%1.count").arg(section), columnCount);
+
+    for(int i=0; i<columnCount; i++) {
+        settings.setValue(QString("%1.col%2").arg(section).arg(i),
+                          tree->columnWidth(i));
+    }
+}
+
+void restore(QTreeView *tree, QString section, QList<int> defaultWidth)
+{
+    QSettings settings;
+    settings.beginGroup("TreeViewStat");
+
+    int columnCount =settings.value(QString("%1.count").arg(section)).toInt();
+
+    if(!defaultWidth.isEmpty())
+        columnCount = qMin(defaultWidth.size(), columnCount);
+
+    for(int i=0; i<columnCount; i++) {
+        int colWidth = settings.value(QString("%1.col%2").arg(section).arg(i),
+                                      defaultWidth.at(i)).toInt();
+
+        tree->setColumnWidth(i, colWidth);
+    }
 }
 } // Widget
 

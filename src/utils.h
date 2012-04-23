@@ -13,6 +13,7 @@
 
 class QSqlQuery;
 class QSqlDatabase;
+class QTreeView;
 
 namespace Utils {
 
@@ -31,6 +32,9 @@ QString fileName(QString path, bool fullPath=false, QString ext="alb", QString n
 namespace Widget {
 void save(QWidget *w, QString section);
 void restore(QWidget *w, QString section, bool showMaximized=false);
+
+void save(QTreeView *tree, QString section, int columnCount=-1);
+void restore(QTreeView *tree, QString section, QList<int> defaultWidth);
 }
 
 namespace Files {
