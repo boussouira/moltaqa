@@ -273,7 +273,7 @@ void MdbConverter::removeConvertedDB(QString shamelaDB)
     QString convertedDB = m_converted.value(shamelaDB.toLower(), QString());
     if(!convertedDB.isEmpty()) {
         QFile::remove(convertedDB);
-        m_converted.remove(convertedDB);
+        m_converted.remove(shamelaDB.toLower());
     }
 }
 
