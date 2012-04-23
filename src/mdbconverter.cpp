@@ -233,24 +233,18 @@ void MdbConverter::generateTableSchema(MdbCatalogEntry *entry)
     mdb_free_tabledef (table);
 }
 
-char* MdbConverter::sanitizeName(char *str)
+QString MdbConverter::sanitizeName(QString str)
 {
-    static char namebuf[256];
-    char *p = namebuf;
+    if(m_sanitizedName.contains(str))
+        return m_sanitizedName[str];
 
-    while (*str) {
-        *p = isalnum(*str) ? *str : '_';
-        p++;
-        str++;
-    }
+    QString clearStr = str;
+    if(!clearStr[0].isLetter())
+        clearStr[0] = '_';
 
-    // if the first char is a number
-    if(isdigit(*namebuf))
-        *namebuf = '_' ;
+    m_sanitizedName[str] = clearStr;
 
-    *p = 0;
-
-    return namebuf;
+    return clearStr;
 }
 
 void MdbConverter::print_col(QString &str,gchar *col_val, int quote_text, int col_type, char *quote_char, char *escape_char)
