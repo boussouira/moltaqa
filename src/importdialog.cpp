@@ -203,7 +203,7 @@ void ImportDialog::startImporting()
             imported++;
             m_booksList.insert(lastInsert, node->bookName);
         } else {
-            qWarning() << "Error:" << node->bookName;
+            qWarning() << "ImportDialog: Unknow error when importing" << node->bookName;
         }
 
         metaObject()->invokeMethod(ui->progressBar, "setValue",
@@ -293,7 +293,7 @@ void ImportDialog::dropEvent(QDropEvent *event)
                 addDir(path);
         }
     } else {
-        qWarning("MimeType is not handled");
+        qWarning("ImportDialog: MimeType is not handled");
     }
 
     event->acceptProposedAction();

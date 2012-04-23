@@ -76,7 +76,8 @@ QStandardItemModel *RichBookReader::indexModel()
 
     if(m_zip.setCurrentFile("titles.xml")) {
         if(!titleFile.open(QIODevice::ReadOnly)) {
-            qWarning("testRead(): file.open(): %d", titleFile.getZipError());
+            qWarning("RichBookReader::indexModel open title file error %d",
+                     titleFile.getZipError());
             return 0;
         }
     }

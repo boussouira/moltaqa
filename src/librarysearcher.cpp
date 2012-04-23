@@ -179,7 +179,7 @@ void LibrarySearcher::fetech()
                 emit gotResult(result);
             }
         } else {
-            qWarning("No result found for id %d book %d", entryID, bookID);
+            qWarning("LibrarySearcher::fetech No result found for id %d book %d", entryID, bookID);
         }
     }
 

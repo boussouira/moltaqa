@@ -33,7 +33,7 @@ void NewBookWriter::createNewBook(QString bookPath)
         m_bookPath = bookPath;
 
     while(QFile::exists(m_bookPath)) {
-        qWarning() << "createNewBook: File at:" << m_bookPath << "already exists";
+        qWarning() << "NewBookWriter::createNewBook file" << m_bookPath << "already exists";
         m_bookPath.replace(".alb", "_.alb");
     }
 

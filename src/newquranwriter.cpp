@@ -21,9 +21,8 @@ void newQuranWriter::createNewBook(QString bookPath)
     else
         m_bookPath = bookPath;
 
-    qWarning() << "newQuranWriter File at:" << m_bookPath;
     while(QFile::exists(m_bookPath)) {
-        qWarning() << "createNewBook: File at:" << m_bookPath << "already exists";
+        qWarning() << "newQuranWriter::createNewBook file" << m_bookPath << "already exists";
         m_bookPath.replace(".alb", "_.alb");
     }
 

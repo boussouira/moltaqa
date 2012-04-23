@@ -16,12 +16,12 @@ SearchResultReader::SearchResultReader(QObject *parent) :
 bool SearchResultReader::getBookPage(LibraryBookPtr book, BookPage *page)
 {
     if(!book) {
-        qWarning("getBookPage: No book with given id");
+        qWarning("SearchResultReader::getBookPage No book with given id");
         return false;
     }
 
     if(!QFile::exists(book->path)) {
-        qWarning() << "File doesn't exists:" << book->path;
+        qWarning() << "SearchResultReader::getBookPage File doesn't exists:" << book->path;
         return false;
     }
 
@@ -29,7 +29,8 @@ bool SearchResultReader::getBookPage(LibraryBookPtr book, BookPage *page)
     QuaZip zip(&zipFile);
 
     if(!zip.open(QuaZip::mdUnzip)) {
-        qWarning() << "Can't open zip file:" << book->path << "- Error:" << zip.getZipError();
+        qWarning() << "SearchResultReader::getBookPage Can't open zip file"
+                   << book->path << "error:" << zip.getZipError();
     }
 
     if(book->isNormal())
@@ -39,7 +40,7 @@ bool SearchResultReader::getBookPage(LibraryBookPtr book, BookPage *page)
     else if(book->isQuran())
         return getQuranPage(&zip, book, page);
     else
-        qWarning("getBookPage: Unknow book type");
+        qWarning("SearchResultReader::getBookPage Unknow book type");
 
     zip.close();
 
@@ -55,7 +56,10 @@ bool SearchResultReader::getSimpleBookPage(QuaZip *zip, LibraryBookPtr book, Boo
     QuaZipFile pagesFile(zip);
     if(zip->setCurrentFile("pages.xml")) {
         if(!pagesFile.open(QIODevice::ReadOnly)) {
-            qWarning("getSimpleBookPage: open error %d", pagesFile.getZipError());
+            qWarning() << "getSimpleBookPage: open book pages error" << pagesFile.getZipError()
+                       << "book" << book->title
+                       << "id" << book->id;
+
             return false;
         }
     }
@@ -87,7 +91,10 @@ bool SearchResultReader::getSimpleBookPage(QuaZip *zip, LibraryBookPtr book, Boo
 
     if(zip->setCurrentFile("titles.xml")) {
         if(!titleFile.open(QIODevice::ReadOnly)) {
-            qWarning("getSimpleBookPage: open error: %d", titleFile.getZipError());
+            qWarning() << "getSimpleBookPage: open book titles error" << titleFile.getZipError()
+                       << "book" << book->title
+                       << "id" << book->id;
+
             return false;
         }
     }
@@ -123,7 +130,10 @@ bool SearchResultReader::getTafessirPage(QuaZip *zip, LibraryBookPtr book, BookP
     QuaZipFile pagesFile(zip);
     if(zip->setCurrentFile("pages.xml")) {
         if(!pagesFile.open(QIODevice::ReadOnly)) {
-            qWarning("getTafessirPage: open error %d", pagesFile.getZipError());
+            qWarning() << "getTafessirPage: open book pages error" << pagesFile.getZipError()
+                       << "book" << book->title
+                       << "id" << book->id;
+
             return false;
         }
     }
@@ -156,7 +166,10 @@ bool SearchResultReader::getTafessirPage(QuaZip *zip, LibraryBookPtr book, BookP
 
     if(zip->setCurrentFile("titles.xml")) {
         if(!titleFile.open(QIODevice::ReadOnly)) {
-            qWarning("getTafessirPage: open error: %d", titleFile.getZipError());
+            qWarning() << "getTafessirPage: open book titles error" << titleFile.getZipError()
+                       << "book" << book->title
+                       << "id" << book->id;
+
             return false;
         }
     }
@@ -197,7 +210,9 @@ bool SearchResultReader::getQuranPage(QuaZip *zip, LibraryBookPtr book, BookPage
     QuaZipFile pagesFile(zip);
     if(zip->setCurrentFile("pages.xml")) {
         if(!pagesFile.open(QIODevice::ReadOnly)) {
-            qWarning("getQuranPage: open error %d", pagesFile.getZipError());
+            qWarning() << "getQuranPage: open book pages error" << pagesFile.getZipError()
+                       << "book" << book->title
+                       << "id" << book->id;
             return false;
         }
     }

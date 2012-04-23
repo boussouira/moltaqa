@@ -119,11 +119,11 @@ QFilePtr ZipHelper::getFile(const QString &fileName, QIODevice::OpenModeFlag mod
 
         file = new QFile(filePath);
         if(!file->open(mode)) {
-            qWarning("getFile: Can't open file for writing: %s", qPrintable(file->errorString()));
+            qWarning("ZipHelper::getFile Can't open file for writing: %s", qPrintable(file->errorString()));
             ML_DELETE(file);
         }
     } else {
-        qWarning("getFile: Zip file is not in Open stat");
+        qWarning("ZipHelper::getFile Zip file is not in Open stat");
     }
 
     return QFilePtr(file);
@@ -138,10 +138,10 @@ QuaZipFilePtr ZipHelper::getZipFile(const QString &fileName)
             if(file->open(QIODevice::ReadOnly))
                 file = new QuaZipFile(&m_zip);
             else
-                qWarning("getZipFile: open error %d", file->getZipError());
+                qWarning("ZipHelper::getZipFile open error %d", file->getZipError());
 
         } else {
-            qWarning("getZipFile: setCurrentFile error %d", m_zip.getZipError());
+            qWarning("ZipHelper::getZipFile setCurrentFile error %d", m_zip.getZipError());
         }
 /*
     } else if(m_stat == UnZipped) {
@@ -158,7 +158,7 @@ QuaZipFilePtr ZipHelper::getZipFile(const QString &fileName)
     }
 */
     } else {
-         qWarning("getZipFile: File is not in Open stat");
+         qWarning("ZipHelper::getZipFile File is not in Open stat");
     }
 
     return QuaZipFilePtr(file);
@@ -175,7 +175,7 @@ XmlDomHelperPtr ZipHelper::getDomHelper(const QString &fileName, const QString &
                 dom = new XmlDomHelper();
                 dom->load(&pagesFile);
             } else {
-                qWarning("getDomHelper: open error %d", pagesFile.getZipError());
+                qWarning("ZipHelper::getDomHelper open error %d", pagesFile.getZipError());
             }
         }
     } else if(m_stat == UnZipped) {
@@ -190,7 +190,7 @@ XmlDomHelperPtr ZipHelper::getDomHelper(const QString &fileName, const QString &
         dom->load();
         qDebug() << "ZipHelper::getDomHelper Dom path:" << dir.filePath(fileName);
     } else {
-        qWarning("getDomHelper: File is not in Open or Unzipped stat");
+        qWarning("ZipHelper::getDomHelper File is not in Open or Unzipped stat");
     }
 
     return XmlDomHelperPtr(dom);
@@ -216,12 +216,12 @@ bool ZipHelper::unzip(const QString &zipPath, const QString &outPath)
 
     for(bool more=zip.goToFirstFile(); more; more=zip.goToNextFile()) {
         if(!zip.getCurrentFileInfo(&info)) {
-            qWarning("getPages: getCurrentFileInfo Error %d", zip.getZipError());
+            qWarning("ZipHelper::unzip getCurrentFileInfo error %d", zip.getZipError());
             continue;
         }
 
         if(!file.open(QIODevice::ReadOnly)) {
-            qWarning("unZip: open reader Error %d", zip.getZipError());
+            qWarning("ZipHelper::unzip open input file error %d", zip.getZipError());
             continue;
         }
 
@@ -231,7 +231,7 @@ bool ZipHelper::unzip(const QString &zipPath, const QString &outPath)
 
         QFile out(outPath);
         if(!out.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-            qWarning() << "unZip: open writer Error" << zip.getZipError()
+            qWarning() << "ZipHelper::unzip open output file error" << zip.getZipError()
                        << "Path:" << outPath;
 
             file.close();
@@ -260,7 +260,7 @@ bool zipDir(const QDir &parentDir, const QString &path, QuaZipFile *outFile)
     QFileInfoList files = bookDir.entryInfoList(QDir::AllDirs|QDir::Files|QDir::NoSymLinks|QDir::NoDotAndDotDot);
 
     if(files.isEmpty()) {
-        qWarning("zipDir: input directory is empty");
+        qWarning() << "zipDir: input directory is empty" << path;
     }
 
     foreach(QFileInfo file, files) {

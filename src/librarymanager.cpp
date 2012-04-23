@@ -96,7 +96,7 @@ int LibraryManager::addBook(ImportModelNode *node)
 
     if(QFile::copy(node->bookPath, newPath)){
         if(!QFile::remove(node->bookPath))
-            qWarning() << "Can't remove:" << node->bookPath;
+            qWarning() << "LibraryManager::addBook Can't remove:" << node->bookPath;
 
         book->fileName = newBookName;
 
@@ -104,7 +104,7 @@ int LibraryManager::addBook(ImportModelNode *node)
 
         return book->id;
     } else {
-        qWarning() << "Can't copy" << node->bookPath << "to" << newPath;
+        qWarning() << "LibraryManager::addBook Can't copy" << node->bookPath << "to" << newPath;
         return -1;
     }
 }

@@ -86,7 +86,7 @@ void TextBookReader::getPages()
         }
 
         if(!file.open(QIODevice::ReadOnly)) {
-            qWarning("getPages: open Error %d", m_zip.getZipError());
+            qWarning("TextBookReader::getPages zip error %d", m_zip.getZipError());
             continue;
         }
 
@@ -106,7 +106,7 @@ void TextBookReader::getPages()
 
         file.close();
         if(file.getZipError()!=UNZ_OK) {
-            qWarning("getPages: open error %d", file.getZipError());
+            qWarning("TextBookReader::getPages zip error %d", file.getZipError());
             continue;
         }
     }

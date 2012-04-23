@@ -44,7 +44,7 @@ void ConvertThread::run()
             if(info.suffix().compare("bok", Qt::CaseInsensitive) == 0)
                 ConvertShamelaBook(file);
             else
-                qWarning() << "File" << info.fileName() << "not handeled";
+                qWarning() << "ConvertThread: File" << info.fileName() << "not handeled";
 
             emit setProgress(++m_convertedFiles);
 

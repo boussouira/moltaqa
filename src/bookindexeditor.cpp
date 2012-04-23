@@ -87,7 +87,8 @@ bool BookIndexEditor::save(QString path)
 {
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-        qWarning("Can't open file %s for writing", qPrintable(path));
+        qWarning() << "BookIndexEditor::save Can't open file"
+                   << path << "for writing" << file.errorString();
         return false;
     }
 

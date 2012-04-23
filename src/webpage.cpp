@@ -7,7 +7,7 @@ WebPage::WebPage(QObject *parent) :
 
 void WebPage::javaScriptConsoleMessage ( const QString & message, int lineNumber, const QString & sourceID )
 {
-    qWarning("WebPage error: '%s', file: '%s', line: %d",
+    qWarning("WebPage: javaScript error '%s', file: '%s', line: %d",
            qPrintable(message),
            qPrintable(sourceID),
            lineNumber);

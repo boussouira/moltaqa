@@ -34,7 +34,7 @@ void ShemeHandler::commandOpen(const QUrl &url)
     } else if(type == "rawi") {
         openRawi(url);
     } else {
-        qWarning() << "MoltaqaShemeHandler::commandOpen unknow type:" << type;
+        qWarning() << "ShemeHandler::commandOpen unknow type:" << type;
     }
 }
 

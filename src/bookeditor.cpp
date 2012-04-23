@@ -104,7 +104,7 @@ void BookEditor::unZip()
     QuaZip zip(&zipFile);
 
     if(!zip.open(QuaZip::mdUnzip)) {
-        qWarning("unZip: cant Open zip file %d", zip.getZipError());
+        qWarning("BookEditor::unZip cant Open zip file %d", zip.getZipError());
     }
 
     QuaZipFileInfo info;
@@ -112,18 +112,18 @@ void BookEditor::unZip()
 
     for(bool more=zip.goToFirstFile(); more; more=zip.goToNextFile()) {
         if(!zip.getCurrentFileInfo(&info)) {
-            qWarning("getPages: getCurrentFileInfo Error %d", zip.getZipError());
+            qWarning("BookEditor::unZip getCurrentFileInfo Error %d", zip.getZipError());
             continue;
         }
 
         if(!file.open(QIODevice::ReadOnly)) {
-            qWarning("unZip: open reader Error %d", zip.getZipError());
+            qWarning("BookEditor::unZip open reader Error %d", zip.getZipError());
             continue;
         }
 
         QFile out(dir.filePath(info.name));
         if(!out.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-            qWarning("unZip: open writer Error %d", zip.getZipError());
+            qWarning("BookEditor::unZip open writer Error %d", zip.getZipError());
             file.close();
             continue;
         }
@@ -152,7 +152,7 @@ bool BookEditor::zip()
 
     QuaZip zip(&zipFile);
     if(!zip.open(QuaZip::mdCreate)) {
-        qWarning("zip zip.open(): %d", zip.getZipError());
+        qWarning("BookEditor::zip open zip error %d", zip.getZipError());
         return false;
     }
 
@@ -166,7 +166,7 @@ bool BookEditor::zip()
     zip.close();
 
     if(zip.getZipError()!=0) {
-        qWarning("zip zip.close(): %d", zip.getZipError());
+        qWarning("BookEditor::zip close zip error %d", zip.getZipError());
         return false;
     }
 
@@ -191,7 +191,7 @@ bool BookEditor::save()
     if(QFile::copy(m_book->path, backupFile)) {
         QFile::remove(m_book->path);
     } else {
-        qWarning() << "Can't make a backup for:" << m_book->path;
+        qWarning() << "BookEditor::save Can't make a backup for:" << m_book->path;
         return false;
     }
 
@@ -200,7 +200,7 @@ bool BookEditor::save()
         QFile::remove(m_newBookPath);
         m_newBookPath.clear();
     } else {
-        qWarning() << "Can't copy" << m_newBookPath << "to" << m_book->path;
+        qWarning() << "BookEditor::save Can't copy" << m_newBookPath << "to" << m_book->path;
         return false;
     }
 
@@ -227,7 +227,8 @@ bool BookEditor::saveBookPages(QList<BookPage*> pages)
 
         QFile file(pagePath);
         if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-            qWarning() << "saveBookPages: Can't write page" << page->pageID << "to:" << file.fileName();
+            qWarning() << "BookEditor::saveBookPages: Can't write page"
+                       << page->pageID << "to:" << file.fileName();
             continue;
         }
 
@@ -306,7 +307,7 @@ bool BookEditor::zipDir(QString path, QuaZipFile *outFile)
     QFileInfoList files = bookDir.entryInfoList(QDir::AllDirs|QDir::Files|QDir::NoSymLinks|QDir::NoDotAndDotDot);
 
     if(files.isEmpty()) {
-        qWarning("Ziping an empty directory");
+        qWarning() << "BookEditor::zipDir Ziping an empty directory" << path;
     }
 
     QDir bookTempDir(m_bookTmpDir);
@@ -320,7 +321,7 @@ bool BookEditor::zipDir(QString path, QuaZipFile *outFile)
         }
 
         if(!file.isFile()) {
-            qWarning() << "Can't zip file:" << file.filePath();
+            qWarning() << "BookEditor::zipDir Can't zip file:" << file.filePath();
             continue;
         }
 
@@ -329,7 +330,7 @@ bool BookEditor::zipDir(QString path, QuaZipFile *outFile)
         inFile.setFileName(file.filePath());
 
         if(!inFile.open(QIODevice::ReadOnly)) {
-            qWarning("zip inFile.open(): %s", qPrintable(inFile.errorString()));
+            qWarning("BookEditor::zipDir open input file error %s", qPrintable(inFile.errorString()));
             return false;
         }
 
@@ -344,26 +345,28 @@ bool BookEditor::zipDir(QString path, QuaZipFile *outFile)
         while (!inFile.atEnd()) {
              l = inFile.read(buf, 4096);
             if (l < 0) {
-                qWarning("read(): %s", qPrintable(inFile.errorString()));
+                qWarning("BookEditor::zipDir read from input file error %s",
+                         qPrintable(inFile.errorString()));
                 break;
             }
             if (l == 0)
                 break;
             if (outFile->write(buf, l) != l) {
-                qWarning("write(): %d", outFile->getZipError());
+                qWarning("BookEditor::zipDir write to output file error %d",
+                         outFile->getZipError());
                 break;
             }
         }
 
         if(outFile->getZipError()!=UNZ_OK) {
-            qWarning("zip outFile->putChar(): %d", outFile->getZipError());
+            qWarning("BookEditor::zipDir outFile error %d", outFile->getZipError());
             return false;
         }
 
         outFile->close();
 
         if(outFile->getZipError()!=UNZ_OK) {
-            qWarning("zip outFile->close(): %d", outFile->getZipError());
+            qWarning("BookEditor::zipDir outFile error %d", outFile->getZipError());
             return false;
         }
 
