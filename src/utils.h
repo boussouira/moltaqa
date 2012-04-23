@@ -29,8 +29,8 @@ QString fileName(QString path, bool fullPath=false, QString ext="alb", QString n
 }
 
 namespace Widget {
-void savePosition(QWidget *w, QString section);
-void restorePosition(QWidget *w, QString section, bool showMaximized=false);
+void save(QWidget *w, QString section);
+void restore(QWidget *w, QString section, bool showMaximized=false);
 }
 
 namespace Files {

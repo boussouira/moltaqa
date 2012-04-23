@@ -25,7 +25,7 @@ ControlCenterDialog::ControlCenterDialog(QWidget *parent) :
     ui->listWidget->setCurrentRow(0);
     setCurrentRow(0);
 
-    Utils::Widget::restorePosition(this, "ControlCenterDialog");
+    Utils::Widget::restore(this, "ControlCenterDialog");
 
     connect(ui->listWidget, SIGNAL(currentRowChanged(int)), SLOT(rowChanged(int)));
 }
@@ -46,7 +46,7 @@ void ControlCenterDialog::addControlWidget(ControlCenterWidget *w)
 void ControlCenterDialog::closeEvent(QCloseEvent *event)
 {
     save();
-    Utils::Widget::savePosition(this, "ControlCenterDialog");
+    Utils::Widget::save(this, "ControlCenterDialog");
 
     event->accept();
 }

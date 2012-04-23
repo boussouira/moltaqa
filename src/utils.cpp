@@ -188,7 +188,7 @@ void createDatabases(const QString &path)
 
 namespace Widget {
 
-void savePosition(QWidget *w, QString section)
+void save(QWidget *w, QString section)
 {
     QSettings settings;
     settings.beginGroup("WidgetPosition");
@@ -198,7 +198,7 @@ void savePosition(QWidget *w, QString section)
     settings.endGroup();
 }
 
-void restorePosition(QWidget *w, QString section, bool showMaximized)
+void restore(QWidget *w, QString section, bool showMaximized)
 {
     QSettings settings;
     settings.beginGroup("WidgetPosition");

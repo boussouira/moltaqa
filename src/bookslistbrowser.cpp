@@ -68,12 +68,12 @@ void BooksListBrowser::closeEvent(QCloseEvent *event)
 
 void BooksListBrowser::loadSettings()
 {
-    Utils::Widget::restorePosition(this, "BooksListWidget");
+    Utils::Widget::restore(this, "BooksListWidget");
 }
 
 void BooksListBrowser::saveSettings()
 {
-    Utils::Widget::savePosition(this, "BooksListWidget");
+    Utils::Widget::save(this, "BooksListWidget");
 
     QSettings settings;
 

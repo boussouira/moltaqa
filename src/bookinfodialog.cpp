@@ -14,7 +14,7 @@ BookInfoDialog::BookInfoDialog(QWidget *parent) : QWidget(parent)
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addWidget(m_view);
 
-    Utils::Widget::restorePosition(this, "BookInfoDialog");
+    Utils::Widget::restore(this, "BookInfoDialog");
 }
 
 void BookInfoDialog::setup()
@@ -159,6 +159,6 @@ void BookInfoDialog::setup()
 
 void BookInfoDialog::closeEvent(QCloseEvent *event)
 {
-    Utils::Widget::savePosition(this, "BookInfoDialog");
+    Utils::Widget::save(this, "BookInfoDialog");
     event->accept();
 }

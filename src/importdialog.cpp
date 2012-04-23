@@ -59,7 +59,7 @@ ImportDialog::ImportDialog(QWidget *parent) :
     ui->treeView->setModel(m_model);
     ui->progressBar->hide();
 
-    Utils::Widget::restorePosition(this, "ImportDialog");
+    Utils::Widget::restore(this, "ImportDialog");
 }
 
 ImportDialog::~ImportDialog()
@@ -301,7 +301,7 @@ void ImportDialog::dropEvent(QDropEvent *event)
 
 void ImportDialog::closeEvent(QCloseEvent *event)
 {
-    Utils::Widget::savePosition(this, "ImportDialog");
+    Utils::Widget::save(this, "ImportDialog");
     event->accept();
 }
 

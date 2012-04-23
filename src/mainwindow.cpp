@@ -267,7 +267,7 @@ void MainWindow::showAuthorsView()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    Utils::Widget::savePosition(this, "MainWindow");
+    Utils::Widget::save(this, "MainWindow");
 
     m_booksList->close();
     m_editorView->maySave(false);
@@ -280,7 +280,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::loadSettings()
 {
-    Utils::Widget::restorePosition(this, "MainWindow", true);
+    Utils::Widget::restore(this, "MainWindow", true);
 }
 
 LibraryInfo *MainWindow::libraryInfo()
