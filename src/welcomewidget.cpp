@@ -34,8 +34,6 @@ WelcomeWidget::WelcomeWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->webView->setUrl(QUrl("http://www.ahlalhdeeth.com/vb/forumdisplay.php?f=75"));
-
     bookListModel();
     favouritesModel();
 
@@ -82,9 +80,6 @@ void WelcomeWidget::loadSettings()
     QSettings settings;
     settings.beginGroup("WelcomeWidget");
 
-    if(settings.contains("splitter"))
-        ui->splitter->restoreState(settings.value("splitter").toByteArray());
-
     ui->tabWidget->setCurrentIndex(settings.value("tab", 0).toInt());
 }
 
@@ -92,8 +87,6 @@ void WelcomeWidget::saveSettings()
 {
     QSettings settings;
     settings.beginGroup("WelcomeWidget");
-
-    settings.setValue("splitter", ui->splitter->saveState());
     settings.setValue("tab", ui->tabWidget->currentIndex());
 
     if(m_bookListModel)
