@@ -38,6 +38,8 @@ ShamelaMapper *ShamelaManager::mapper()
 
 void ShamelaManager::openShamelaDB()
 {
+    QMutexLocker locker(&m_mutex);
+
     if(!m_shamelaDB.isOpen()) {
         QString book = m_info->shamelaMainDbPath();
 
@@ -63,6 +65,8 @@ void ShamelaManager::openShamelaDB()
 
 void ShamelaManager::openShamelaSpecialDB()
 {
+    QMutexLocker locker(&m_mutex);
+
     if(!m_shamelaSpecialDB.isOpen()) {
         QString book = m_info->shamelaSpecialDbPath();
 
