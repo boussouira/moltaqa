@@ -74,7 +74,6 @@ private:
     BookListManager *m_bookListManager;
     ShamelaInfo *m_shamela;
     ShamelaManager *m_manager;
-    ShamelaImportThread *m_importThread;
     QStandardItemModel *m_booksModel;
     QList<ShamelaImportThread*> m_importThreads;
     Ui::ShamelaImportDialog *ui;
