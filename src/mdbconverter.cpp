@@ -96,7 +96,7 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
         m_bookDB.commit();
     }
 
-    qDebug() << "MdbConverter: Converting" << info.fileName() << " take " << timer.elapsed() << "ms";
+    qDebug() << "MdbConverter: Converting" << info.fileName() << "take" << timer.elapsed() << "ms";
 
     mdb_close(mdb);
 

@@ -25,9 +25,6 @@
    </property>
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
-     <property name="currentIndex">
-      <number>3</number>
-     </property>
      <widget class="QWidget" name="page">
       <layout class="QVBoxLayout" name="verticalLayout">
        <property name="margin">
@@ -69,7 +66,7 @@
          <property name="title">
           <string>خيارات الاستيراد:</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_12">
+         <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
            <widget class="QGroupBox" name="groupBox_5">
             <property name="title">
@@ -109,6 +106,33 @@ p, li { white-space: pre-wrap; }
                 <bool>true</bool>
                </property>
               </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBox">
+            <property name="title">
+             <string>خطوط الاستيراد:</string>
+            </property>
+            <layout class="QFormLayout" name="formLayout">
+             <item row="0" column="0">
+              <layout class="QHBoxLayout" name="horizontalLayout_5">
+               <item>
+                <widget class="QLabel" name="label_5">
+                 <property name="text">
+                  <string>عدد خطوط الاستيراد:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QSpinBox" name="spinImportThreads">
+                 <property name="minimum">
+                  <number>1</number>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
             </layout>
            </widget>
