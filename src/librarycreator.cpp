@@ -287,7 +287,7 @@ void LibraryCreator::done()
     if(m_bookDB.commit())
         qDebug("LibraryCreator::done Commit change to database");
     else
-        qFatal("LibraryCreator::done Error when committing change to database");
+        qCritical("LibraryCreator::done Error when committing change to database");
 }
 
 void LibraryCreator::importBook(ShamelaBookInfo *shamelBook, QString path)

@@ -71,9 +71,9 @@ void BookIndexer::startIndexing()
                 emit taskDone(task);
             }
         } catch (BookException &e) {
-            qCritical() << "Indexing error:" << e.what();
+            qCritical() << "BookIndexer: Indexing error:" << e.what();
         } catch (std::exception &e) {
-            qCritical() << "Indexing std error:" << e.what();
+            qCritical() << "BookIndexer: Indexing std error:" << e.what();
         }
 
         task = m_trackerIter->next();
@@ -108,13 +108,13 @@ void BookIndexer::deleteBook(IndexTask *task)
         m_writer->deleteDocuments(term);
     }
     catch(CLuceneError &err) {
-        qCritical("removeBook: CLucene Error: %s", err.what());
+        qCritical("BookIndexer::deleteBook CLucene Error: %s", err.what());
     }
     catch(std::exception &err){
-        qCritical("removeBook: STD error: %s", err.what());
+        qCritical("BookIndexer::deleteBook STD error: %s", err.what());
     }
     catch(...){
-        qCritical("removeBook: Unkonw error");
+        qCritical("BookIndexer::deleteBook Unkonw error");
     }
 }
 

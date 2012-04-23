@@ -71,7 +71,8 @@ int NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int par
         QTextStream out(&outFile);
         out << processPageText(text);
     } else {
-        qCritical("Can't write to pages/p%d.html - Error: %d", pageID, outFile.getZipError());
+        qCritical("NewBookWriter::addPage error %d when writing to pages/p%d.html",
+                  outFile.getZipError(), pageID);
     }
 
     m_pagesElemnent.appendChild(page);
@@ -138,7 +139,8 @@ void NewBookWriter::endReading()
 
         m_titlesDoc.save(out, 1);
     } else {
-        qCritical("Can't write to titles.xml - Error: %d", titlesFile.getZipError());
+        qCritical("NewBookWriter::endReading error %d when writing to titles.xml",
+                  titlesFile.getZipError());
     }
 
     QuaZipFile pagesFile(&m_zip);
@@ -148,7 +150,8 @@ void NewBookWriter::endReading()
 
         m_pagesDoc.save(out, 1);
     } else {
-        qCritical("Can't write to pages.xml - Error: %d", pagesFile.getZipError());
+        qCritical("NewBookWriter::endReading error %d when writing to pages.xml",
+                  pagesFile.getZipError());
     }
 
     m_zip.close();

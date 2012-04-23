@@ -30,7 +30,7 @@ IndexTracker::IndexTracker(QObject *parent) :
         open();
         loadTask();
     } catch(BookException &e) {
-        qCritical() << "IndexTracker:" << e.what();
+        qCritical() << "IndexTracker: error" << e.what();
     }
 
     m_instance = this;

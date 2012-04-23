@@ -25,9 +25,9 @@ void ZipHelper::open()
     m_zip.setZipName(m_zipPath);
 
     if(!m_zip.open(QuaZip::mdUnzip)) {
-        qCritical("ZipHelper: Can't open book at '%s' Error: %d",
-                  qPrintable(m_zipPath),
-                  m_zip.getZipError());
+        qCritical() << "ZipHelper: open zip file error"
+                    << m_zip.getZipError()
+                    << "Path" << m_zipPath;
     } else {
         m_stat = Open;
     }
@@ -55,7 +55,7 @@ QString ZipHelper::unzip()
         m_stat = UnZipped;
         return m_unzipDirPath;
     } else {
-        qCritical() << "ZipHelper: Error when unzip file:" << m_zipPath << "to" << m_unzipDirPath;
+        qCritical() << "ZipHelper: Error when unzip file:" << m_zipPath << "in" << m_unzipDirPath;
         return QString();
     }
 }

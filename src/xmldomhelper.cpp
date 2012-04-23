@@ -52,7 +52,7 @@ void XmlDomHelper::load()
     ML_ASSERT2(!m_filePath.isEmpty(), "XmlDomHelper::load empty file path");
 
     if(m_needSave)
-        qCritical("XmlDomHelper: Dom need to be saved before loading from file");
+        qCritical("XmlDomHelper::load Dom need to be saved first");
 
     QFile file(m_filePath);
     ML_ASSERT2(file.open(QIODevice::ReadOnly),
@@ -184,8 +184,8 @@ void XmlDomHelper::setElementText(QDomElement &parent, const QString &tagName, c
         if(!textNode.isNull())
             textNode.setNodeValue(text);
         else
-            qCritical("setElementText: Text node is null");
+            qCritical("XmlDomHelper::setElementText Text node is null");
     } else {
-        qCritical("setElementText: element is null");
+        qCritical("XmlDomHelper::setElementText element is null");
     }
 }

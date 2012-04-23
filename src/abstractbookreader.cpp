@@ -49,9 +49,11 @@ void AbstractBookReader::openZip()
     m_zip.setZipName(m_bookInfo->path);
 
     if(!m_zip.open(QuaZip::mdUnzip)) {
-        qCritical("Can't open book at '%s' Error: %d",
-                  qPrintable(m_bookInfo->path),
-                  m_zip.getZipError());
+        qCritical() << "AbstractBookReader::openZip open book error"
+                    << m_zip.getZipError();
+        qCritical() << "\t" "id" << m_bookInfo->id
+                    << "\t" "title" << m_bookInfo->title
+                    << "\t" "Path" << m_bookInfo->path;
     }
 }
 

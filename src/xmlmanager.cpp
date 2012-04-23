@@ -19,7 +19,7 @@ void XmlManager::setFilePath(QString path)
 void XmlManager::save(QStandardItemModel *model)
 {
     if(m_dom.needSave()) {
-        qCritical("ListManager: The XML need to be save before saving the model");
+        qCritical("XmlManager::save The XML need to be save before saving the model");
         m_dom.setNeedSave(false);
     }
 

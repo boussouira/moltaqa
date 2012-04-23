@@ -268,7 +268,7 @@ void removeDir(const QString &path)
         dir.rmdir(path);
     } else {
         if(!QFile::remove(path))
-            qDebug() << "Can't delete:" << path;
+            qDebug() << "Utils::Files::removeDir Can't delete:" << path;
     }
 }
 } // Files
@@ -360,7 +360,7 @@ QString appDir()
                                                  "من فضلك قم باعادة تتبيث البرنامج""\n"
                                                  "الملفات الناقصة:""\n") + missingFiles.join("\n"));
 
-                qFatal("Some files are messing");
+                qFatal("Some files are messing:\n\t%s", qPrintable(missingFiles.join("\n\t")));
             } else {
 //                qDebug() << "Using current working directory:" << appRootPath;
             }

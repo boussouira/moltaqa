@@ -55,14 +55,18 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
 
     // open the database
     if (!(mdb = mdb_open (qPrintable(mdb_path), MDB_NOFLAGS))) {
-        qCritical() << "Couldn't open mdb database at" << mdb_path;
+        qCritical() << "MdbConverter: Couldn't open mdb database at"
+                    << mdb_path;
+
         return QString();
     }
 
 
     // read the catalog
     if (!mdb_read_catalog (mdb, MDB_TABLE)) {
-        qCritical("File does not appear to be an Access database.");
+        qCritical() << "MdbConverter: File" << mdb_path
+                    << "does not appear to be an Access database.";
+
         return QString();
     }
 

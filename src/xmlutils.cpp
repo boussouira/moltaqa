@@ -11,7 +11,8 @@ QDomDocument getDomDocument(const QString &filePath)
 
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly)) {
-        qCritical() << "File open error:" << filePath;
+        qCritical() << "getDomDocument: file open error" << file.errorString()
+                    << "path" << filePath;
         return QDomDocument();
     }
 
@@ -26,7 +27,7 @@ QDomDocument getDomDocument(QIODevice *file)
 
     QDomDocument doc;
     if (!doc.setContent(file, 0, &errorStr, &errorLine, &errorColumn)) {
-        qCritical("loadModel: Parse error at line %d, column %d: %s",
+        qCritical("getDomDocument: Parse error at line %d, column %d: %s",
                   errorLine, errorColumn, qPrintable(errorStr));
 
         QFile *f = qobject_cast<QFile*>(file);

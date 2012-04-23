@@ -52,7 +52,8 @@ void newQuranWriter::endReading()
         QTextStream out(&pagesFile);
         out << m_pagesDoc.toString(-1);
     } else {
-        qCritical("Can't write to pages.xml - Error: %d", pagesFile.getZipError());
+        qCritical("newQuranWriter::endReading error %d when writing to pages.xml",
+                  pagesFile.getZipError());
     }
 
     m_zip.close();

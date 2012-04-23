@@ -59,13 +59,15 @@ void LibrarySearcher::run()
             fetech();
         }
     } catch(CLuceneError &e) {
-        qCritical("Search error(%d): %s", e.number(), e.what());
+        qCritical("LibrarySearcher::run CLucene exception %s", e.what());
         emit gotException(e.what(), e.number());
     } catch(std::exception &e){
+        qCritical("LibrarySearcher::run STD exception %s", e.what());
         emit gotException(e.what(), 0);
     } catch(...) {
-        qCritical("Unknow error when searching at \"%s\".",
-                  qPrintable(m_libraryInfo->indexDataDir()));
+        qCritical() << "LibrarySearcher::run Unknow exception when searching at"
+                    << m_libraryInfo->indexDataDir();
+
         emit gotException("UNKNOW", -1);
     }
 }
