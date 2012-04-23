@@ -348,24 +348,18 @@ QString appDir()
 
         missingFiles = checkDir(false);
         if(!missingFiles.isEmpty()) {
-//            qWarning() << "Can't find some files at" << appRootPath;
-//            qWarning() << "Check if we can use current working directory...";
             appRootPath = QDir::currentPath();
 
             missingFiles = checkDir(false);
             if(!missingFiles.isEmpty()) {
                 QMessageBox::critical(0,
-                                     App::name(),
-                                     QObject::tr("لم يتم العثور على بعض الملفات في مجلد البرنامج""\n"
-                                                 "من فضلك قم باعادة تتبيث البرنامج""\n"
-                                                 "الملفات الناقصة:""\n") + missingFiles.join("\n"));
+                                      App::name(),
+                                      QObject::tr("لم يتم العثور على بعض الملفات في مجلد البرنامج""\n"
+                                                  "من فضلك قم باعادة تتبيث البرنامج""\n"
+                                                  "الملفات الناقصة:""\n") + missingFiles.join("\n"));
 
                 qFatal("Some files are messing:\n\t%s", qPrintable(missingFiles.join("\n\t")));
-            } else {
-//                qDebug() << "Using current working directory:" << appRootPath;
             }
-        } else {
-//            qDebug() << "Using application directory:" << appRootPath;
         }
     }
 
