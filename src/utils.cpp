@@ -191,29 +191,29 @@ namespace Widget {
 void save(QWidget *w, QString section)
 {
     QSettings settings;
-    settings.beginGroup("WidgetPosition");
-    settings.setValue(section + "_pos", w->pos());
-    settings.setValue(section + "_size", w->size());
-    settings.setValue(section + "_maximized", w->isMaximized());
+    settings.beginGroup("WidgetStat");
+    settings.setValue(section + ".pos", w->pos());
+    settings.setValue(section + ".size", w->size());
+    settings.setValue(section + ".maximized", w->isMaximized());
     settings.endGroup();
 }
 
 void restore(QWidget *w, QString section, bool showMaximized)
 {
     QSettings settings;
-    settings.beginGroup("WidgetPosition");
+    settings.beginGroup("WidgetStat");
 
     QRect r(1337,1337,1337,1337);
 
-    QPoint pos = settings.value(section + "_pos", r.topLeft()).toPoint();
+    QPoint pos = settings.value(section + ".pos", r.topLeft()).toPoint();
     if(pos != r.topLeft())
         w->move(pos);
 
-    QSize size = settings.value(section + "_size", r.size()).toSize();
+    QSize size = settings.value(section + ".size", r.size()).toSize();
     if(size != r.size())
         w->resize(size);
 
-    if(settings.value(section + "_maximized", showMaximized).toBool())
+    if(settings.value(section + ".maximized", showMaximized).toBool())
         w->showMaximized();
 
     settings.endGroup();
