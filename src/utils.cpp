@@ -244,8 +244,11 @@ void restore(QTreeView *tree, QString section, QList<int> defaultWidth)
 
     int columnCount =settings.value(QString("%1.count").arg(section)).toInt();
 
-    if(!defaultWidth.isEmpty())
-        columnCount = qMin(defaultWidth.size(), columnCount);
+    if(!columnCount)
+        columnCount = defaultWidth.size();
+    else
+        columnCount = qMin(columnCount, defaultWidth.size());
+
 
     for(int i=0; i<columnCount; i++) {
         int colWidth = settings.value(QString("%1.col%2").arg(section).arg(i),
