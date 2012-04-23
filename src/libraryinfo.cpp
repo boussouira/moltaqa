@@ -151,6 +151,8 @@ void LibraryInfo::checkDataFiles(QString dataDirPath)
 
     for(int i=0; i<files.size(); i++) {
         if(!dataDir.exists(files.at(i))) {
+            qDebug("checkDataFiles: create %s...", qPrintable(files.at(i)));
+
             QFile file(dataDir.filePath(files.at(i)));
             if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
                 QTextStream out(&file);
@@ -164,13 +166,32 @@ void LibraryInfo::checkDataFiles(QString dataDirPath)
     }
 
     QStringList dbs;
-    dbs << "authors.db" << "books.db" << "rowat.db";
+    dbs << "authors.db" << "books.db";
 
     foreach (QString db, dbs) {
         if(!dataDir.exists(db)) {
             dataDir.cdUp();
             Utils::Library::createDatabases(dataDir.absolutePath());
             break;
+        }
+    }
+
+    dataDir.setPath(dataDirPath);
+
+    QString rowatDB  = "rowat.db";
+    if(!dataDir.exists(rowatDB)) {
+        QDir appDataDir(App::dataDir());
+
+        if(QFile::copy(appDataDir.absoluteFilePath(rowatDB), dataDir.absoluteFilePath(rowatDB))) {
+            qDebug() << "checkDataFiles: copy"
+                     << appDataDir.absoluteFilePath(rowatDB)
+                     << "->"
+                     << dataDir.absoluteFilePath(rowatDB);
+        } else {
+            qWarning() << "LibraryInfo::checkDataFiles can't copy"
+                       << appDataDir.absoluteFilePath(rowatDB)
+                       << "->"
+                       << dataDir.absoluteFilePath(rowatDB);
         }
     }
 }

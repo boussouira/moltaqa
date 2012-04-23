@@ -98,9 +98,10 @@ void createDatabases(const QString &path)
 
     QString booksDbPath = dir.filePath("books.db");
     QString authorsDbPath = dir.filePath("authors.db");
-    QString rowatDbPath = dir.filePath("rowat.db");
 
     {
+        qDebug("createDatabases: create books database...");
+
         QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "createDB.books");
         db.setDatabaseName(booksDbPath);
 
@@ -151,6 +152,8 @@ void createDatabases(const QString &path)
     }
 
     {
+        qDebug("createDatabases: create authors database...");
+
         QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "createDB.authors");
         db.setDatabaseName(authorsDbPath);
 
@@ -177,47 +180,9 @@ void createDatabases(const QString &path)
 
         q.exec(query);
     }
-    {
-        QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "createDB.rowat");
-        db.setDatabaseName(rowatDbPath);
-
-        if (!db.open()) {
-            LOG_DB_ERROR(db);
-        }
-
-        QSqlQuery query(db);
-
-        QueryBuilder q;
-        q.setTableName("rowat");
-        q.setIgnoreExistingTable(true);
-        q.setQueryType(QueryBuilder::Create);
-
-        q.set("id", "INTEGER PRIMARY KEY NOT NULL");
-        q.set("name", "TEXT");
-        q.set("laqab", "TEXT");
-
-        q.set("birth_year", "INT");
-        q.set("birth", "TEXT");
-
-        q.set("death_year", "INT");
-        q.set("death", "TEXT");
-
-        q.set("tabaqa", "TEXT");
-        q.set("rowat", "TEXT");
-
-        q.set("rotba_hafed", "TEXT");
-        q.set("rotba_zahabi", "TEXT");
-
-        q.set("sheok", "TEXT");
-        q.set("talamid", "TEXT");
-        q.set("tarejama", "TEXT");
-
-        q.exec(query);
-    }
 
     QSqlDatabase::removeDatabase("createDB.books");
     QSqlDatabase::removeDatabase("createDB.authors");
-    QSqlDatabase::removeDatabase("createDB.rowat");
 }
 }
 
