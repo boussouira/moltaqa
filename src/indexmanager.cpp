@@ -90,14 +90,14 @@ void IndexManager::start()
 
 void IndexManager::stop()
 {
-    qDebug("Stop indexer...");
+    qDebug("IndexManager: Stop indexer...");
     foreach (BookIndexer *thread, m_threads) {
             thread->stop();
     }
 
     foreach (BookIndexer *thread, m_threads) {
         if(thread->isRunning()) {
-            qDebug("Wait for thread to finnish...");
+            qDebug("IndexManager: Wait for thread to finnish...");
             thread->wait();
         }
     }
@@ -105,7 +105,7 @@ void IndexManager::stop()
 
 void IndexManager::taskDone(IndexTask *task)
 {
-    qDebug() << "Indexer" << (task->task==IndexTask::Add
+    qDebug() << "IndexManager::taskDone" << (task->task==IndexTask::Add
                  ? "Add"
                  : (task->task==IndexTask::Delete
                     ? "Delete"
@@ -129,7 +129,8 @@ void IndexManager::threadDoneIndexing()
         ML_DELETE_CHECK(m_analyzer);
         ML_DELETE_CHECK(m_taskIter);
 
-        qDebug() << tr("تمت الفهرسة خلال %1").arg(Utils::Time::secondsToString(m_indexingTime.elapsed()));
+        qDebug() << "IndexManager:"
+                 << tr("تمت الفهرسة خلال %1").arg(Utils::Time::secondsToString(m_indexingTime.elapsed()));
 
         qDeleteAll(m_threads);
         m_threads.clear();

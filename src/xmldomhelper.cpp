@@ -100,7 +100,7 @@ void XmlDomHelper::reload()
 
 void XmlDomHelper::create()
 {
-    qDebug("Create empty File...");
+    qDebug("XmlDomHelper::create Create empty File...");
     ML_ASSERT2(!QFile::exists(m_filePath),
                "XmlDomHelper::create file already exists" << m_filePath);
 
@@ -116,7 +116,7 @@ void XmlDomHelper::create()
                "XmlDomHelper::create open file error:" << file.errorString());
 
     ML_ASSERT(!m_documentName.isEmpty());
-    qDebug("Create XML File...");
+    qDebug("XmlDomHelper::create Create XML File...");
 
     QTextStream out(&file);
     out.setCodec("utf-8");

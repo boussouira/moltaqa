@@ -33,7 +33,7 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
           QString convertDB = m_converted.value(shamelaDB, QString());
 
           if(!convertDB.isEmpty()) {
-              qDebug() << "Database:" << shamelaDB << "already converted";
+              qDebug() << "MdbConverter: Database" << shamelaDB << "already converted";
               return convertDB;
           }
     }
@@ -95,7 +95,7 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
         m_bookDB.commit();
     }
 
-    qDebug() << "Converting" << info.fileName() << " take " << timer.elapsed() << "ms";
+    qDebug() << "MdbConverter: Converting" << info.fileName() << " take " << timer.elapsed() << "ms";
 
     mdb_close(mdb);
     mdb_exit();

@@ -59,7 +59,8 @@ void LibraryCreator::openDB()
         m_bookDB.setDatabaseName(m_library->booksIndexPath());
 
         if(!m_bookDB.open()) {
-            qDebug() << QObject::tr("لم يمكن فتح قاعدة البيانات: %1").arg(m_library->booksIndexPath());
+            qDebug() << "LibraryCreator::openDB"
+                     << QObject::tr("لم يمكن فتح قاعدة البيانات: %1").arg(m_library->booksIndexPath());
         }
 
         m_bookQuery = QSqlQuery(m_bookDB);
@@ -97,7 +98,7 @@ void LibraryCreator::addTafessir(ShamelaBookInfo *tafessir)
     m_taffesirManager->addTafessir(m_mapper->mapFromShamelaBook(tafessir->id),
                                    tafessir->tafessirName);
 
-    qDebug() << "Add tafessir:" << tafessir->tafessirName;
+    qDebug() << "LibraryCreator::addTafessir new tafessir:" << tafessir->tafessirName;
 }
 
 void LibraryCreator::addCat(ShamelaCategorieInfo *cat)
@@ -284,9 +285,9 @@ void LibraryCreator::start()
 void LibraryCreator::done()
 {
     if(m_bookDB.commit())
-        qDebug("LibraryCreator: Commit...");
+        qDebug("LibraryCreator::done Commit change to database");
     else
-        qFatal("Error when committing");
+        qFatal("LibraryCreator::done Error when committing change to database");
 }
 
 void LibraryCreator::importBook(ShamelaBookInfo *shamelBook, QString path)

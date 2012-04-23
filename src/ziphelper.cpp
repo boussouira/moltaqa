@@ -188,7 +188,7 @@ XmlDomHelperPtr ZipHelper::getDomHelper(const QString &fileName, const QString &
             dom->create();
 
         dom->load();
-        qDebug() << "Dom path:" << dir.filePath(fileName);
+        qDebug() << "ZipHelper::getDomHelper Dom path:" << dir.filePath(fileName);
     } else {
         qWarning("getDomHelper: File is not in Open or Unzipped stat");
     }

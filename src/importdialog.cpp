@@ -210,7 +210,7 @@ void ImportDialog::startImporting()
                                    Q_ARG(int, i+1));
     }
 
-    qDebug() << "Importing" << imported << "books take" << time.elapsed() << "ms";
+    qDebug("ImportDialog: Importing %d books take %d ms", imported, time.elapsed());
 }
 
 void ImportDialog::doneImporting()
@@ -322,7 +322,7 @@ void ImportDialog::addFile(const QString &path)
 void ImportDialog::addDir(const QString &path)
 {
     QDir dir(path);
-    qDebug() << "Feteching directory" << path;
+    qDebug() << "ImportDialog::addDir Feteching directory" << path;
     foreach(QString file, dir.entryList(QDir::Files|QDir::Dirs|QDir::NoDotAndDotDot)) {
         QFileInfo info(dir.absoluteFilePath(file));
         if(info.isFile())

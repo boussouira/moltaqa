@@ -134,7 +134,7 @@ void TextFormatter::done()
     if(m_page)
         m_page->text = m_htmlHelper.html();
     else
-        qDebug("TextFormatter: no page to save text");
+        qDebug("TextFormatter::done no page to save text");
 
     emit doneReading();
 }

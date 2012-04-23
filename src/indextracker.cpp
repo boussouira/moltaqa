@@ -116,7 +116,7 @@ void IndexTracker::addTask(const QList<int> &books, IndexTask::Task task)
             addTask(bookID, task, false);
         }
 
-        qDebug("Got %d books to %s",
+        qDebug("IndexTracker: Got %d books to %s",
                books.size(),
                qPrintable(IndexTask::taskToString(task)));
     }

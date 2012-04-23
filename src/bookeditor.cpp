@@ -45,7 +45,7 @@ bool BookEditor::open(LibraryBookPtr book)
         } else if(book->isTafessir()) {
             bookReader = new RichTafessirReader();
         } else {
-            qDebug() << "Can't edit book:" << book->path;
+            qDebug() << "BookEditor::open Can't edit book:" << book->path;
             return false;
         }
 
@@ -244,7 +244,7 @@ bool BookEditor::saveBookPages(QList<BookPage*> pages)
                 e.setAttribute("aya", page->aya);
             }
         } else {
-            qDebug("NULL");
+            qDebug("BookEditor::saveBookPages no element with id %d", page->pageID);
         }
 
         QTextStream out(&file);

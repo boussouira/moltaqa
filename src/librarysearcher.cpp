@@ -93,7 +93,7 @@ void LibrarySearcher::buildQuery()
     m_query = m_searcher->rewrite(booleanQuery);
 
     wchar_t *queryText = m_query->toString(PAGE_TEXT_FIELD);
-    qDebug() << "Search query:" << Utils::CLucene::WCharToString(queryText);
+    qDebug() << "LibrarySearcher: Search query:" << Utils::CLucene::WCharToString(queryText);
 
     free(queryText);
     delete booleanQuery;

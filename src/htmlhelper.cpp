@@ -108,7 +108,7 @@ void HtmlHelper::addSelector(QString selector)
         else if(selector.startsWith('.'))
             m_html.append(QString(" class=\"%1\"").arg(selector.remove(0, 1)));
         else
-            qDebug("Unknow selector: %s", qPrintable(selector));
+            qDebug("HtmlHelper::addSelector Unknow selector: %s", qPrintable(selector));
     } else {
         foreach (QString sel, selector.split('|', QString::SkipEmptyParts)) {
             addSelector(sel);

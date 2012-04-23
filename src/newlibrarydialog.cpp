@@ -72,7 +72,7 @@ void NewLibraryDialog::on_toolSelectLibDir_clicked()
 void NewLibraryDialog::createLibrary(QString name, QString path, QString description)
 {
     if(!QFile::exists(path)) {
-        qDebug() << "Make path:" << path;
+        qDebug() << "NewLibraryDialog::createLibrary make path:" << path;
         QDir dir;
         dir.mkpath(path);
     }

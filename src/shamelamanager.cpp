@@ -399,25 +399,25 @@ void ShamelaManager::importShorooh()
         // Get linked shorooh
         QList<int> shorooh = getBookShorooh(mateen_oNum);
         if(!shorooh.isEmpty()) {
-            qDebug("Book %d has %d shorooh", mateen_bkId, shorooh.size());
+            qDebug("ShamelaManager::importShorooh Book %d has %d shorooh", mateen_bkId, shorooh.size());
             // Link with each shareeh
             foreach(int shareeh_oNum, shorooh) {
                 // Convert oNum to bkid
                 int shareeh_bkid = numToBook[shareeh_oNum];
                 if(!shareeh_bkid) {
-                    qDebug("Can't find bkid for book with oNum %d", shareeh_oNum);
+                    qDebug("ShamelaManager::importShorooh Can't find bkid for book with oNum %d", shareeh_oNum);
                     continue;
                 }
 
                 if(m_haveBookFilter && !m_accepted.contains(shareeh_bkid)) {
-                    qDebug("Shareeh %d not imported from shamela", shareeh_bkid);
+                    qDebug("ShamelaManager::importShorooh Shareeh %d not imported from shamela", shareeh_bkid);
                     continue;
                 }
 
                 // Convert bkid to this library book id
                 int shareeh_LibID = m_mapper->mapFromShamelaBook(shareeh_bkid);
                 if(!shareeh_LibID) {
-                    qDebug("Can't map book %d", shareeh_bkid);
+                    qDebug("ShamelaManager::importShorooh Can't map book %d", shareeh_bkid);
                     continue;
                 }
 
@@ -438,7 +438,8 @@ void ShamelaManager::importShorooh()
                 LibraryBookPtr mi = bookManager->getLibraryBook(mateen_libID);
                 LibraryBookPtr si = bookManager->getLibraryBook(shareeh_LibID);
 
-                qDebug() << "Mateen:" <<(mi ? mi->title : "????")
+                qDebug() << "ShamelaManager::importShorooh"
+                         << "Mateen:" <<(mi ? mi->title : "????")
                          << "Shareeh:" << (si ? si->title : "????");
 
                 // Start linking...

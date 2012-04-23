@@ -396,7 +396,7 @@ void ShamelaImportDialog::doneImporting()
             m_libraryManager->reloadManagers();
             importShorooh();
         } else {
-            qDebug("No book imported");
+            qDebug("ShamelaImportDialog::doneImporting no book imported");
         }
 
         addDebugInfo(tr("تم استيراد %1 بنجاح خلال %2")

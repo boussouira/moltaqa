@@ -388,7 +388,7 @@ void BookEditorView::gotoPage()
             else if(dialog.currentPage() == 2) // Open selected haddit
                 m_bookReader->goToHaddit(dialog.selectedHaddit());
             else
-                qDebug("What to do?");
+                qDebug("BookEditorView::gotoPage unknow page index %d", dialog.currentPage());
         }
     }
 }
