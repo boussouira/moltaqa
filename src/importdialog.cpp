@@ -236,8 +236,8 @@ void ImportDialog::doneImporting()
         label->setStyleSheet("padding:5px;border:1px solid #cccccc;");
 
         int row = gridLayout->rowCount();
-        gridLayout->addWidget(label, row, 0, Qt::AlignTop);
-        gridLayout->addWidget(button, row, 1, Qt::AlignTop);
+        gridLayout->addWidget(label, row, 0);
+        gridLayout->addWidget(button, row, 1);
 
         connect(button, SIGNAL(clicked()), m_signalMapper, SLOT(map()));
         m_signalMapper->setMapping(button, i.key());
