@@ -53,8 +53,6 @@ int main(int argc, char *argv[])
 #ifdef Q_OS_LINUX
     if(setenv("MDB_JET3_CHARSET", "cp1256", 1))
         qCritical("main: setenv error");
-
-    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("windows-1256"));
 #endif
 
     int ret = -1;
