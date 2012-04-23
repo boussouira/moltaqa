@@ -29,6 +29,7 @@
 #include <qstandarditemmodel.h>
 #include <qmessagebox.h>
 #include <qevent.h>
+#include <qsettings.h>
 
 static ShamelaImportDialog* m_instance=0;
 
@@ -134,7 +135,11 @@ QString ShamelaImportDialog::getFolderPath(const QString &defaultPath)
 
 void ShamelaImportDialog::selectShamela()
 {
-    QString path = getFolderPath(ui->lineShamelaDir->text());
+    QSettings settings;
+    QString lastPath = settings.value("SavedPath/ShamelaImportDialog",
+                                      ui->lineShamelaDir->text()).toString();
+
+    QString path = getFolderPath(lastPath);
 
     if(!path.isEmpty()){
         if(m_shamela->isShamelaPath(path)) {
@@ -143,6 +148,8 @@ void ShamelaImportDialog::selectShamela()
 
             m_manager->close();
             m_shamela->setShamelaPath(path);
+
+            settings.setValue("SavedPath/ShamelaImportDialog", path);
         } else {
             QMessageBox::warning(this,
                                  tr("الاستيراد من الشاملة"),
