@@ -24,6 +24,9 @@ public:
     static void removeConvertedDB(QString shamelaDB);
     static void removeAllConvertedDB();
 
+    static void init();
+    static void exit();
+
 protected:
     void generateTableSchema(MdbCatalogEntry *entry);
     void getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry, bool fieldsName=true);

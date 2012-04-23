@@ -50,9 +50,6 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
 
     MdbHandle *mdb;
 
-    // initialize the library
-    mdb_init();
-
     // open the database
     if (!(mdb = mdb_open (qPrintable(mdb_path), MDB_NOFLAGS))) {
         qCritical() << "MdbConverter: Couldn't open mdb database at"
@@ -102,7 +99,6 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
     qDebug() << "MdbConverter: Converting" << info.fileName() << " take " << timer.elapsed() << "ms";
 
     mdb_close(mdb);
-    mdb_exit();
 
     m_converted[mdb_path.toLower()] = convert_path;
 
@@ -286,4 +282,14 @@ void MdbConverter::removeAllConvertedDB()
     }
 
     m_converted.clear();
+}
+
+void MdbConverter::init()
+{
+    mdb_init();
+}
+
+void MdbConverter::exit()
+{
+    mdb_exit();
 }

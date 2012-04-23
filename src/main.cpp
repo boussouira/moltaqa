@@ -1,5 +1,10 @@
 #include "mainwindow.h"
 #include "utils.h"
+
+#ifdef USE_MDBTOOLS
+#include "mdbconverter.h"
+#endif
+
 #include <qapplication.h>
 #include <qtranslator.h>
 #include <qlocale.h>
@@ -50,9 +55,11 @@ int main(int argc, char *argv[])
     setArabicKeyboardLayout();
 #endif
 
-#ifdef Q_OS_LINUX
+#ifdef USE_MDBTOOLS
     if(setenv("MDB_JET3_CHARSET", "cp1256", 1))
         qCritical("main: setenv error");
+
+    MdbConverter::init();
 #endif
 
     int ret = -1;
@@ -63,6 +70,10 @@ int main(int argc, char *argv[])
         w.show();
         ret = app.exec();
     }
+
+#ifdef USE_MDBTOOLS
+    MdbConverter::exit();
+#endif
 
     return ret;
 }
