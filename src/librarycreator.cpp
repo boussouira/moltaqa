@@ -284,9 +284,7 @@ void LibraryCreator::start()
 
 void LibraryCreator::done()
 {
-    if(m_bookDB.commit())
-        qDebug("LibraryCreator::done Commit change to database");
-    else
+    if(!m_bookDB.commit())
         qCritical("LibraryCreator::done Error when committing change to database");
 }
 
