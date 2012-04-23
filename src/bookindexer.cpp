@@ -96,7 +96,16 @@ void BookIndexer::indexBook(IndexTask *task)
     indexer->setIndexWriter(m_writer);
 
     indexer->open();
-    indexer->start();
+
+    try {
+        indexer->start();
+    } catch(CLuceneError &err) {
+        qCritical("BookIndexer::indexBook CLucene Error: %s", err.what());
+    } catch(std::exception &err) {
+        qCritical("BookIndexer::indexBook STD error: %s", err.what());
+    } catch(...) {
+        qCritical("BookIndexer::indexBook Unkonw error");
+    }
 
     delete indexer;
 }
