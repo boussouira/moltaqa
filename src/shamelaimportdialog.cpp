@@ -343,6 +343,10 @@ void ShamelaImportDialog::startImporting()
     m_importThreadCount = QThread::idealThreadCount();
 #endif
 
+    qDebug("ShamelaImportDialog: Start importing %d books using %d threads",
+           m_manager->getBooksCount(),
+           m_importThreadCount);
+
     m_manager->selectBooks();
 
     bool addQuarn = ui->checkImportQuran->isChecked();
