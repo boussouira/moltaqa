@@ -167,7 +167,7 @@ void LibraryInfo::checkDataFiles(QString dataDirPath)
     dbs << "authors.db" << "books.db" << "rowat.db";
 
     foreach (QString db, dbs) {
-        if(!QFile::exists(db)) {
+        if(!dataDir.exists(db)) {
             dataDir.cdUp();
             Utils::Library::createDatabases(dataDir.absolutePath());
             break;
