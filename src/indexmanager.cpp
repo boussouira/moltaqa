@@ -105,15 +105,6 @@ void IndexManager::stop()
 
 void IndexManager::taskDone(IndexTask *task)
 {
-    qDebug() << "IndexManager::taskDone" << (task->task==IndexTask::Add
-                 ? "Add"
-                 : (task->task==IndexTask::Delete
-                    ? "Delete"
-                    : "Update"))
-             << task->book->id
-             << task->book->title;
-
-
     m_indexTracker->removeTask(task);
     emit progress(++m_indexedBookCount, m_taskIter->taskCount());
 }

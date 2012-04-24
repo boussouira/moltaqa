@@ -97,8 +97,6 @@ void LibraryCreator::addTafessir(ShamelaBookInfo *tafessir)
 {
     m_taffesirManager->addTafessir(m_mapper->mapFromShamelaBook(tafessir->id),
                                    tafessir->tafessirName);
-
-    qDebug() << "LibraryCreator::addTafessir new tafessir:" << tafessir->tafessirName;
 }
 
 void LibraryCreator::addCat(ShamelaCategorieInfo *cat)
