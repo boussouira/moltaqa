@@ -10,8 +10,8 @@ RCC_DIR += .rcc
 
 unix {
         DEFINES += USE_MDBTOOLS
-        HEADERS += mdbconverter.h mdbconvertermanager.h
-        SOURCES += mdbconverter.cpp mdbconvertermanager.cpp
+        HEADERS += mdbconverter.h
+        SOURCES += mdbconverter.cpp
 
         QMAKE_CXXFLAGS += $$system(pkg-config libmdb --cflags)
         LIBS += $$system(pkg-config libmdb --libs)
