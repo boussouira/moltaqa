@@ -83,7 +83,6 @@ int NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int par
 void NewBookWriter::addTitle(const QString &title, int tid, int level)
 {
     QDomElement titleElement = m_titlesDoc.createElement("item");
-    titleElement.setAttribute("id", ++m_titleID);
     titleElement.setAttribute("pageID", tid);
     titleElement.setAttribute("text", title);
 
@@ -118,8 +117,6 @@ QString NewBookWriter::processPageText(QString text)
 
 void NewBookWriter::startReading()
 {
-    m_titleID = 0;
-
     m_pagesDoc.setContent(QString("<?xml version=\"1.0\" encoding=\"utf-8\" ?><pages></pages>"));
     m_titlesDoc.setContent(QString("<?xml version=\"1.0\" encoding=\"utf-8\" ?><titles></titles>"));
 

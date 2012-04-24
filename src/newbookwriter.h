@@ -42,8 +42,6 @@ protected:
     QDomElement m_titlesElement;
     QDomElement m_lastTitlesElement;
 
-    int m_titleID;
-
     QHash<int, QDomNode> m_levels;
     QTime m_time;
 };
