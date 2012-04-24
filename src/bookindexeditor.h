@@ -38,8 +38,10 @@ protected slots:
 
 protected:
      void setModel(QStandardItemModel *model);
-
      void writeItem(QStandardItem *item, QXmlStreamWriter *writer);
+
+signals:
+     void indexEdited();
 
 private:
     Ui::BookIndexEditor *ui;

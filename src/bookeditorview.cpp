@@ -29,7 +29,8 @@ BookEditorView::BookEditorView(QWidget *parent) :
     AbstarctView(parent),
     ui(new Ui::BookEditorView),
     m_bookReader(0),
-    m_currentPage(0)
+    m_currentPage(0),
+    m_indexEdited(false)
 {
     ui->setupUi(this);
 
@@ -74,6 +75,7 @@ void BookEditorView::setupView()
 
     connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)), SLOT(closeTab(int)));
     connect(m_timer, SIGNAL(timeout()), SLOT(checkPageModified()));
+    connect(m_indexEditor, SIGNAL(indexEdited()), SLOT(indexChanged()));
 }
 
 void BookEditorView::editBook(LibraryBookPtr book, int pageID)
@@ -109,6 +111,8 @@ void BookEditorView::editBook(LibraryBookPtr book, int pageID)
     ui->tabWidget->setTabToolTip(0, book->title);
 
     m_bookEditor->setBookReader(m_bookReader);
+
+    m_indexEdited = false;
     m_timer->start();
 
     emit showMe();
@@ -196,6 +200,7 @@ void BookEditorView::clearChanges()
     m_pages.clear();
 
     m_currentPage = 0;
+    m_indexEdited = false;
     m_timer->start();
 }
 
@@ -264,8 +269,14 @@ void BookEditorView::readerTextChange()
 void BookEditorView::checkPageModified()
 {
     bool pageModified = m_webView->pageModified();
-    m_actionSave->setEnabled(!m_pages.isEmpty() || pageModified);
-    m_actionCancel->setEnabled(!m_pages.isEmpty() || pageModified);
+    m_actionSave->setEnabled(!m_pages.isEmpty() || pageModified || m_indexEdited);
+    m_actionCancel->setEnabled(!m_pages.isEmpty() || pageModified || m_indexEdited);
+}
+
+void BookEditorView::indexChanged()
+{
+    m_indexEdited = true;
+    checkPageModified();
 }
 
 void BookEditorView::save()

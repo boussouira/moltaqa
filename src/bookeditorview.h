@@ -53,6 +53,7 @@ protected slots:
 
     void readerTextChange();
     void checkPageModified();
+    void indexChanged();
 
 protected:
     friend class BookIndexEditor;
@@ -75,6 +76,7 @@ protected:
     QHash<int, BookPage*> m_pages;
     BookPage *m_currentPage;
     QTimer *m_timer;
+    bool m_indexEdited;
 };
 
 #endif // BOOKEDITORVIEW_H

@@ -41,6 +41,8 @@ void BookIndexEditor::setup()
 
 void BookIndexEditor::setModel(QStandardItemModel *model)
 {
+    ML_ASSERT2(model, "BookIndexEditor::setModel model is null");
+
     m_model = model;
     ui->treeView->setModel(model);
 
@@ -48,12 +50,14 @@ void BookIndexEditor::setModel(QStandardItemModel *model)
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             SLOT(updateActions()));
 
+    connect(m_model, SIGNAL(layoutChanged()), SIGNAL(indexEdited()));
+
     updateActions();
 }
 
 void BookIndexEditor::saveModel(QXmlStreamWriter *writer)
 {
-    Q_CHECK_PTR(m_model);
+    ML_ASSERT2(m_model, "BookIndexEditor::setModel model is null");
 
     writer->writeStartDocument();
     writer->writeStartElement("titles");
