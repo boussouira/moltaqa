@@ -300,7 +300,8 @@ QStringList checkDir(bool showWarnings)
     QStringList missingFiles;
 
     missingFiles << checkFiles(QStringList()
-                               << "quran-meta.db",
+                               << "quran-meta.db"
+                               << "rowat.db",
                                dataDir(),
                                showWarnings);
 
