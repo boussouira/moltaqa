@@ -69,9 +69,9 @@ void BookIndexEditor::saveModel(QXmlStreamWriter *writer)
 
 void BookIndexEditor::writeItem(QStandardItem *item, QXmlStreamWriter *writer)
 {
-    writer->writeStartElement("item");
+    writer->writeStartElement("title");
     writer->writeAttribute("pageID", item->data(ItemRole::idRole).toString());
-    writer->writeAttribute("text", item->text());
+    writer->writeTextElement("text", item->text());
 
     if(item->hasChildren()) {
         for(int i=0; i<item->rowCount(); i++) {

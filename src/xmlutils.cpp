@@ -62,5 +62,17 @@ QDomNode findChildText(QDomElement &parent, QDomDocument &doc, bool cdata)
     return child;
 }
 
+void setElementText(QDomElement &parent, QDomDocument &doc, const QString &text, bool cdata)
+{
+    if(!parent.isNull()) {
+        QDomNode textNode = Utils::Xml::findChildText(parent, doc, cdata);
+        if(!textNode.isNull())
+            textNode.setNodeValue(text);
+        else
+            qCritical("findChildText: Text node is null");
+    } else {
+        qCritical("findChildText: element is null");
+    }
+}
 }
 }

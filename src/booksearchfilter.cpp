@@ -229,17 +229,17 @@ void BookSearchFilter::loadSimpleBookModel(QStandardItemModel *model)
 void BookSearchFilter::readItem(QDomElement &element, QStandardItem *parent)
 {
     QStandardItem *item = new QStandardItem();
-    item->setText(element.attribute("text"));
+    item->setText(element.firstChildElement("text").text());
     item->setData(element.attribute("pageID").toInt(), ItemRole::idRole);
     item->setCheckable(true);
 
-    if(element.hasChildNodes()) {
-        QDomElement child = element.firstChildElement();
+    if(element.childNodes().count() > 1) {
+        QDomElement child = element.firstChildElement("title");
 
         while(!child.isNull()) {
             readItem(child, item);
 
-            child = child.nextSiblingElement();
+            child = child.nextSiblingElement("title");
         }
     }
 

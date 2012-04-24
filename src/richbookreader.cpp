@@ -107,16 +107,16 @@ void RichBookReader::readItem(QDomElement &element, QStandardItem *parent)
 {
     int pageID = element.attribute("pageID").toInt();
 
-    QStandardItem *item = new QStandardItem(element.attribute("text"));
+    QStandardItem *item = new QStandardItem(element.firstChildElement("text").text());
     item->setData(pageID, ItemRole::idRole);
 
-    if(element.hasChildNodes()) {
-        QDomElement child = element.firstChildElement();
+    if(element.childNodes().count() > 1) {
+        QDomElement child = element.firstChildElement("title");
 
         while(!child.isNull()) {
             readItem(child, item);
 
-            child = child.nextSiblingElement();
+            child = child.nextSiblingElement("title");
         }
     }
 

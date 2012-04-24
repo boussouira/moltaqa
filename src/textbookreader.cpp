@@ -39,15 +39,21 @@ void TextBookReader::getTitles()
     ML_ASSERT2(titleFile.open(QIODevice::ReadOnly), "getTitles: open error" << titleFile.getZipError());
 
     QXmlStreamReader reader(&titleFile);
+    int titleID = -1;
+
     while(!reader.atEnd()) {
         reader.readNext();
 
-        if(reader.isStartElement() && reader.name() == "item") {
-            int titleID = reader.attributes().value("pageID").toString().toInt();
-            m_titles.append(titleID);
-
-            if(m_loadTitlesText)
-                m_titlesText[titleID] = reader.attributes().value("text").toString();
+        if(reader.isStartElement()) {
+            if(reader.name() == "title") {
+                titleID = reader.attributes().value("pageID").toString().toInt();
+                m_titles.append(titleID);
+            } else if(m_loadTitlesText && reader.name() == "text") {
+                if(reader.readNext() == QXmlStreamReader::Characters)
+                    m_titlesText[titleID] = reader.text().toString();
+                else
+                    qWarning() << "TextBookReader::getTitles Unexpected token type" << reader.tokenString();
+            }
         }
 
         if(reader.hasError()) {
