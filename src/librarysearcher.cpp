@@ -25,6 +25,7 @@ LibrarySearcher::LibrarySearcher(QObject *parent)
     m_libraryInfo = MW->libraryInfo();
     m_libraryManager = LibraryManager::instance();
     m_resultReader = new SearchResultReader(this);
+    m_sort = new Sort();
 
     QSettings settings;
     m_resultParPage = settings.value("Search/resultPeerPage", 10).toInt();
@@ -99,6 +100,22 @@ void LibrarySearcher::buildQuery()
 
     free(queryText);
     delete booleanQuery;
+
+    // FIXME: memory leaks
+    SortField *sort1[] = {SortField::FIELD_SCORE(), NULL};
+    SortField *sort2[] = {new SortField(BOOK_ID_FIELD), SortField::FIELD_SCORE(), NULL};
+    SortField *sort3[] = {new SortField(BOOK_ID_FIELD), new SortField(PAGE_ID_FIELD), NULL};
+    SortField *sort4[] = {new SortField(AUTHOR_DEATH_FIELD), SortField::FIELD_SCORE(), NULL};
+    SortField *sort5[] = {new SortField(AUTHOR_DEATH_FIELD), new SortField(BOOK_ID_FIELD), new SortField(PAGE_ID_FIELD), NULL};
+
+    QList<SortField**> sortFields;
+    sortFields << sort1;
+    sortFields << sort2;
+    sortFields << sort3;
+    sortFields << sort4;
+    sortFields << sort5;
+
+    m_sort->setSort(sortFields.at(m_cluceneQuery->sort));
 }
 
 void LibrarySearcher::search()
@@ -113,7 +130,7 @@ void LibrarySearcher::search()
     QTime time;
     time.start();
 
-    m_hits = m_searcher->search(m_query);
+    m_hits = m_searcher->search(m_query, m_sort);
 
     m_timeSearch = time.elapsed();
 

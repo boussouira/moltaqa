@@ -199,6 +199,7 @@ void SearchWidget::search()
     query->filterClause = searchFilter->clause;
     query->searchField = searchField;
     query->searchFieldW = searchFieldW;
+    query->sort = static_cast<CLuceneQuery::SearchSort>(ui->comboSortSearch->currentIndex());
 
     if(m_searcher) {
         if(m_searcher->isRunning()) {

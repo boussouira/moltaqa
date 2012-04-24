@@ -65,6 +65,7 @@ protected:
     IndexSearcher *m_searcher;
     Hits* m_hits;
     Query* m_query;
+    Sort *m_sort;
     CLuceneQuery *m_cluceneQuery;
     SearchResultReader *m_resultReader;
     int m_currentPage;

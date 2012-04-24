@@ -17,11 +17,20 @@ public:
     CLuceneQuery();
     ~CLuceneQuery();
 
+    enum SearchSort {
+        Relvance,
+        BookRelvance,
+        BookPage,
+        DeathRelvance,
+        DeathBookPage
+    };
+
     lucene::search::Query* searchQuery;
     lucene::search::Query *filterQuery;
     lucene::search::BooleanClause::Occur filterClause;
     QString searchField;
     wchar_t *searchFieldW;
+    SearchSort sort;
 };
 
 #endif // CLUCENEQUERY_H
