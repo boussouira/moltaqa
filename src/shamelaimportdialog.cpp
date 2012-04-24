@@ -418,6 +418,10 @@ void ShamelaImportDialog::doneImporting()
 #ifdef USE_MDBTOOLS
         MdbConverter::removeAllConvertedDB();
 #endif
+
+        QMessageBox::information(this,
+                                 tr("الاستيراد من الشاملة"),
+                                 tr("سيتم فهرسة الكتب التي تم استيرادها بعد اعادة تشغيل البرنامج"));
     }
 }
 
