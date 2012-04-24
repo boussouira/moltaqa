@@ -10,7 +10,6 @@
 
 #include <sqlutils.h>
 
-#define is_text_type(x) (x==MDB_TEXT || x==MDB_MEMO || x==MDB_SDATETIME)
 using namespace std;
 
 class QSqlQuery;
@@ -30,7 +29,7 @@ public:
 protected:
     void generateTableSchema(MdbCatalogEntry *entry);
     void getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry, bool fieldsName=true);
-    void print_col(QString &std, gchar *col_val, int quote_text, int col_type, char *quote_char, char *escape_char);
+    void print_col(QString &std, gchar *col_val, bool quote_text, int col_type);
     QString sanitizeName(QString str);
 
 protected:

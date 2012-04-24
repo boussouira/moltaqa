@@ -14,6 +14,8 @@
 #include <qfileinfo.h>
 #include <qhash.h>
 
+#define is_text_type(x) (x==MDB_TEXT || x==MDB_MEMO || x==MDB_SDATETIME)
+
 static QHash<QString, QString> m_converted;
 
 MdbConverter::MdbConverter(bool cache) : m_cache(cache)
@@ -113,9 +115,7 @@ void MdbConverter::getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry, bool 
     MdbColumn *col;
 
     char **bound_values;
-    char *quote_char = g_strdup("\"");
     char *null_str = g_strdup("NULL");
-    char *escape_char = NULL;
     int  *bound_lens;
 
     table = mdb_read_table(entry);
@@ -158,9 +158,9 @@ void MdbConverter::getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry, bool 
                 sqlCmd.append(", ");
 
             if (!bound_lens[p])
-                print_col(sqlCmd, null_str, 0, col->col_type, quote_char, escape_char);
+                print_col(sqlCmd, null_str, false, col->col_type);
              else
-                print_col(sqlCmd, bound_values[p], 1, col->col_type, quote_char, escape_char);
+                print_col(sqlCmd, bound_values[p], true, col->col_type);
         }
        sqlCmd.append(");");
 
@@ -173,7 +173,6 @@ void MdbConverter::getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry, bool 
         g_free(bound_values[n]);
 
     g_free(bound_values);
-    g_free(quote_char);
     g_free(null_str);
     g_free(bound_lens);
     mdb_free_tabledef(table);
@@ -247,18 +246,13 @@ QString MdbConverter::sanitizeName(QString str)
     return clearStr;
 }
 
-void MdbConverter::print_col(QString &str,gchar *col_val, int quote_text, int col_type, char *quote_char, char *escape_char)
+void MdbConverter::print_col(QString &str,gchar *col_val, bool quote_text, int col_type)
 {
     QString value = QString::fromLocal8Bit(col_val);
     if (quote_text && is_text_type(col_type)) {
-        str.append(quote_char);
-        if (!escape_char)
-            value.replace(quote_char[0], QString("%1%1").arg(quote_char));
-        else
-            value.replace(quote_char[0], QString("%1%2").arg(escape_char).arg(quote_char));
-
-        str.append(value);
-        str.append(quote_char);
+        str.append('"');
+        str.append(value.replace('"', "\"\""));
+        str.append('"');
     } else {
         str.append(value);
     }
