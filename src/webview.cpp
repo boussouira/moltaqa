@@ -6,7 +6,9 @@
 WebView::WebView(QWidget *parent) :
     QWebView(parent)
 {
-    setPage(new WebPage(this));
+    m_page = new WebPage(this);
+
+    setPage(m_page);
     m_frame = page()->mainFrame();
 
     m_stopScrolling = false;
@@ -17,6 +19,11 @@ WebView::WebView(QWidget *parent) :
     connect(m_frame, SIGNAL(contentsSizeChanged(QSize)), m_animation, SLOT(stop()));
     connect(m_frame, SIGNAL(javaScriptWindowObjectCleared()),
             SLOT(populateJavaScriptWindowObject()));
+}
+
+WebView::~WebView()
+{
+    ML_DELETE_CHECK(m_page);
 }
 
 void WebView::scrollToAya(int pSoraNumber, int pAyaNumber)

@@ -35,6 +35,7 @@ LibrarySearcher::~LibrarySearcher()
 {
     ML_DELETE_CHECK(m_hits);
     ML_DELETE_CHECK(m_query);
+    ML_DELETE_CHECK(m_sort);
     ML_DELETE_CHECK(m_cluceneQuery);
     ML_DELETE_CHECK(m_resultReader);
 
@@ -101,21 +102,22 @@ void LibrarySearcher::buildQuery()
     free(queryText);
     delete booleanQuery;
 
-    // FIXME: memory leaks
-    SortField *sort1[] = {SortField::FIELD_SCORE(), NULL};
-    SortField *sort2[] = {new SortField(BOOK_ID_FIELD), SortField::FIELD_SCORE(), NULL};
-    SortField *sort3[] = {new SortField(BOOK_ID_FIELD), new SortField(PAGE_ID_FIELD), NULL};
-    SortField *sort4[] = {new SortField(AUTHOR_DEATH_FIELD), SortField::FIELD_SCORE(), NULL};
-    SortField *sort5[] = {new SortField(AUTHOR_DEATH_FIELD), new SortField(BOOK_ID_FIELD), new SortField(PAGE_ID_FIELD), NULL};
-
-    QList<SortField**> sortFields;
-    sortFields << sort1;
-    sortFields << sort2;
-    sortFields << sort3;
-    sortFields << sort4;
-    sortFields << sort5;
-
-    m_sort->setSort(sortFields.at(m_cluceneQuery->sort));
+    if(m_cluceneQuery->sort == CLuceneQuery::BookRelvance) {
+        SortField *sort[] = {new SortField(BOOK_ID_FIELD), SortField::FIELD_SCORE(), NULL};
+        m_sort->setSort(sort);
+    } else if (m_cluceneQuery->sort == CLuceneQuery::BookPage) {
+        SortField *sort[] = {new SortField(BOOK_ID_FIELD), new SortField(PAGE_ID_FIELD), NULL};
+        m_sort->setSort(sort);
+    } else if (m_cluceneQuery->sort == CLuceneQuery::DeathRelvance) {
+        SortField *sort[] = {new SortField(AUTHOR_DEATH_FIELD), SortField::FIELD_SCORE(), NULL};
+        m_sort->setSort(sort);
+    } else if (m_cluceneQuery->sort == CLuceneQuery::DeathBookPage) {
+        SortField *sort[] = {new SortField(AUTHOR_DEATH_FIELD), new SortField(BOOK_ID_FIELD), new SortField(PAGE_ID_FIELD), NULL};
+        m_sort->setSort(sort);
+    } else {
+        SortField *sort[] = {SortField::FIELD_SCORE(), NULL};
+        m_sort->setSort(sort);
+    }
 }
 
 void LibrarySearcher::search()

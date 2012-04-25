@@ -93,7 +93,7 @@ Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
 
             wchar_t *queryText = Utils::CLucene::QStringToWChar(mustQureyStr);
             Query *mq = queryPareser.parse(queryText);
-            q->add(mq, BooleanClause::MUST);
+            q->add(mq, true, BooleanClause::MUST);
 
             free(queryText);
         }
@@ -106,7 +106,7 @@ Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
 
             wchar_t *queryText = Utils::CLucene::QStringToWChar(shouldQureyStr);
             Query *mq = queryPareser.parse(queryText);
-            q->add(mq, BooleanClause::SHOULD);
+            q->add(mq, true, BooleanClause::SHOULD);
 
             free(queryText);
         }
