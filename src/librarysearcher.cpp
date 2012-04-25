@@ -180,6 +180,9 @@ void LibrarySearcher::fetech()
                 result->snippet = Utils::String::abbreviate(page->text, 120);
             } else {
                 result->snippet = Utils::CLucene::highlightText(page->text, m_cluceneQuery, true);
+
+                if(result->snippet.endsWith("</p"))
+                    result->snippet.append('>');
             }
 
             result->resultID = i;
