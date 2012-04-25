@@ -166,18 +166,25 @@ QString AuthorsManager::getAuthorName(int authorID)
     return auth ? auth->name : QString();
 }
 
-AuthorInfoPtr AuthorsManager::findAuthor(QString name)
+AuthorInfoPtr AuthorsManager::findAuthor(QString name, bool fazzy)
 {
     AuthorInfoPtr auth;
     QHash<int, AuthorInfoPtr>::const_iterator i = m_authors.constBegin();
 
     while (i != m_authors.constEnd()) {
         QString authorName = i.value()->name;
-        if(Utils::String::Arabic::contains(authorName, name)) {
-            auth = i.value();
-            break;
-        } else if(Utils::String::Arabic::fuzzyContains(authorName, name)) {
-            auth = i.value();
+        if(fazzy) {
+            if(Utils::String::Arabic::contains(authorName, name)) {
+                auth = i.value();
+                break;
+            } else if(Utils::String::Arabic::fuzzyContains(authorName, name)) {
+                auth = i.value();
+            }
+        } else {
+            if(Utils::String::Arabic::compare(authorName, name)) {
+                auth = i.value();
+                break;
+            }
         }
 
         ++i;
