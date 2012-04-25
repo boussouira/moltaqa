@@ -124,7 +124,17 @@ Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
             free(queryText);
         }
 
-        //qDebug() << "Search:" << Utils::CLucene::WCharToString(q->toString(field));
+        QString queryStr;
+        if(mustQureyStr.size())
+            queryStr += "+(" + mustQureyStr + ") ";
+
+        if(shouldQureyStr.size())
+            queryStr += "(" + shouldQureyStr + ") ";
+
+        if(shouldNotQureyStr.size())
+            queryStr += "-(" + shouldNotQureyStr + ") ";
+
+        qDebug() << "Search: Query" << queryStr.trimmed();
 
         return q;
 

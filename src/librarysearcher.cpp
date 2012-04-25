@@ -96,11 +96,6 @@ void LibrarySearcher::buildQuery()
 
     m_query = m_searcher->rewrite(&booleanQuery);
 
-    wchar_t *queryText = m_query->toString(PAGE_TEXT_FIELD);
-    qDebug() << "LibrarySearcher: Search query:" << Utils::CLucene::WCharToString(queryText);
-
-    free(queryText);
-
     if(m_cluceneQuery->sort == CLuceneQuery::BookRelvance) {
         SortField *sort[] = {new SortField(BOOK_ID_FIELD), SortField::FIELD_SCORE(), NULL};
         m_sort->setSort(sort);
