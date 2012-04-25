@@ -34,9 +34,9 @@ bool IndexManager::openWriter()
         if(IndexReader::isLocked(qPrintable(m_library->indexDataDir())))
             IndexReader::unlock(qPrintable(m_library->indexDataDir()));
 
-        m_writer = _CLNEW IndexWriter( qPrintable(m_library->indexDataDir()), m_analyzer, false);
+        m_writer = new IndexWriter( qPrintable(m_library->indexDataDir()), m_analyzer, false);
     } else {
-        m_writer = _CLNEW IndexWriter( qPrintable(m_library->indexDataDir()), m_analyzer, true);
+        m_writer = new IndexWriter( qPrintable(m_library->indexDataDir()), m_analyzer, true);
     }
 
     m_writer->setUseCompoundFile(false);
