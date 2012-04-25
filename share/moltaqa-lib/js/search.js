@@ -5,23 +5,20 @@ function clear(selector)
     $(selector).html('');
 }
 
-function resultEvents()
+function addResult(str)
 {
-    $('.result .resultText').click(function() {
-        var d = $(this).parent('.result');
-        var p = d.find('.resultText');
-        var bookID = p.attr('bookid');
-        var resultID = p.attr('rid');
+    var result = $(str);
+    result.find('.resultText').click(function() {
+        var bookID = $(this).attr('bookid');
+        var resultID = $(this).attr('rid');
 
         resultWidget.openResult(resultID);
 
-        scroll(d.position().left, d.position().top);
+        var p = $(this).parent('.result');
+        scroll(p.position().left, p.position().top);
     });
-}
 
-function addResult(str)
-{
-    $('#searchResult').append($(str));
+    $('#searchResult').append(result);
 }
 
 function searchStarted()
@@ -48,7 +45,6 @@ function fetechStarted()
 
 function fetechFinnished()
 {
-    resultEvents();
     clearBody = true;
 }
 
