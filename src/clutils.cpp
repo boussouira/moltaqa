@@ -25,7 +25,7 @@ wchar_t* intToWChar(int num, int radix)
     return intToWChar(num, str, radix);
 }
 
-QString highlightText(QString orignalText, lucene::search::Query *query,
+QString highlightText(const QString &orignalText, lucene::search::Query *query,
                       const wchar_t *field, bool fragment)
 {
     // Highlight the text
@@ -40,8 +40,6 @@ QString highlightText(QString orignalText, lucene::search::Query *query,
     Highlighter highlighter(&formatter, &scorer);
     SimpleFragmenter frag(fragmentSize);
     highlighter.setTextFragmenter(&frag);
-
-    orignalText.replace(QRegExp("[\\r\\n]"),"<br/>"); // TODO: delete this and make orignalText a const reference
 
     wchar_t* text = QStringToWChar(orignalText);
     StringReader reader(text);
@@ -63,7 +61,7 @@ QString highlightText(QString orignalText, lucene::search::Query *query,
     return highlightedText;
 }
 
-QString highlightText(QString orignalText, CLuceneQuery *query, bool fragment)
+QString highlightText(const QString &orignalText, CLuceneQuery *query, bool fragment)
 {
     return highlightText(orignalText, query->searchQuery, query->searchFieldW, fragment);
 }
