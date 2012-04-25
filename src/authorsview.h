@@ -25,6 +25,7 @@ public:
     QString title();
     QString viewLink();
     void aboutToShow();
+    void aboutToHide();
 
     void openAuthorInfo(int authorID);
 

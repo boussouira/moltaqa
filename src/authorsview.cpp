@@ -9,6 +9,7 @@
 #include "stringutils.h"
 #include "webview.h"
 #include "htmlhelper.h"
+#include <qsettings.h>
 
 static AuthorsView *m_instance = 0;
 
@@ -71,6 +72,16 @@ void AuthorsView::aboutToShow()
 
     if(!ui->tabWidget->count())
         addTab(tr("المؤلف"));
+
+    QSettings settings;
+    if(settings.contains("AuthorsView/splitter"))
+        ui->splitter->restoreState(settings.value("AuthorsView/splitter").toByteArray());
+}
+
+void AuthorsView::aboutToHide()
+{
+    QSettings settings;
+    settings.setValue("AuthorsView/splitter", ui->splitter->saveState());
 }
 
 void AuthorsView::openAuthorInfo(int authorID)

@@ -24,6 +24,7 @@ public:
     QString title();
     QString viewLink();
     void aboutToShow();
+    void aboutToHide();
 
     void openRawiInfo(int rawiID);
 

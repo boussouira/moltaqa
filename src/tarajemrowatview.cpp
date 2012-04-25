@@ -12,6 +12,7 @@
 #include <qurl.h>
 #include <qdebug.h>
 #include <qwebview.h>
+#include <qsettings.h>
 
 static TarajemRowatView *m_instance = 0;
 
@@ -73,6 +74,16 @@ void TarajemRowatView::aboutToShow()
 
     if(!ui->tabWidget->count())
         addTab(tr("الراوي"));
+
+    QSettings settings;
+    if(settings.contains("RowatView/splitter"))
+        ui->splitter->restoreState(settings.value("RowatView/splitter").toByteArray());
+}
+
+void TarajemRowatView::aboutToHide()
+{
+    QSettings settings;
+    settings.setValue("RowatView/splitter", ui->splitter->saveState());
 }
 
 void TarajemRowatView::openRawiInfo(int rawiID)
