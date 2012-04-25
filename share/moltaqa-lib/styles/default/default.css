@@ -261,7 +261,7 @@ div.clear {
     border-bottom: 1px solid #D5D5D5;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
-    margin: 0 0 15px;
+    margin: 0;
 }
 .result .progSpan {
     background-color: #C3EBBC;
