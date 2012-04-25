@@ -118,7 +118,7 @@ SearchFilter *LibrarySearchFilter::getFilterQuery()
         count++;
     }
 
-    filter->filterQuery = count ? q : 0;
+    filter->filterQuery = (count ? q : 0);
 
     return filter;
 }
