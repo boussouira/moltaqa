@@ -28,6 +28,8 @@ public:
     lucene::search::Query* searchQuery;
     lucene::search::Query *filterQuery;
     lucene::search::BooleanClause::Occur filterClause;
+    lucene::search::Query *resultFilterQuery;
+    lucene::search::BooleanClause::Occur resultFilterClause;
     QString searchField;
     wchar_t *searchFieldW;
     SearchSort sort;

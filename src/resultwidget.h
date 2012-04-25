@@ -29,6 +29,7 @@ protected:
 public slots:
     void openResult(int resultID);
     void goToPage(int page);
+    void showBookMenu(int bookID);
 
 private slots:
     void searchStarted();

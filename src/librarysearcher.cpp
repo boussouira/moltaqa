@@ -94,6 +94,9 @@ void LibrarySearcher::buildQuery()
     if(m_cluceneQuery->filterQuery)
         booleanQuery.add(m_cluceneQuery->filterQuery, m_cluceneQuery->filterClause);
 
+    if(m_cluceneQuery->resultFilterQuery)
+        booleanQuery.add(m_cluceneQuery->resultFilterQuery, m_cluceneQuery->resultFilterClause);
+
     m_query = m_searcher->rewrite(&booleanQuery);
 
     if(m_cluceneQuery->sort == CLuceneQuery::BookRelvance) {

@@ -5,6 +5,16 @@ function clear(selector)
     $(selector).html('');
 }
 
+function bookNameClick()
+{
+    $('.result .resultInfo .bookInfo').click(function() {
+        var p = $(this).parent('.resultInfo');
+        var bookID = p.attr('bookid');
+
+        resultWidget.showBookMenu(bookID);
+    });
+}
+
 function addResult(str)
 {
     var result = $(str);
@@ -45,6 +55,7 @@ function fetechStarted()
 
 function fetechFinnished()
 {
+    bookNameClick();
     clearBody = true;
 }
 

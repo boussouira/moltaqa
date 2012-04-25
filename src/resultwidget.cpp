@@ -3,14 +3,17 @@
 #include "utils.h"
 #include "webview.h"
 #include "booksviewer.h"
-#include "mainwindow.h"
+#include "librarybookmanager.h"
 #include "bookwidget.h"
 #include "htmlhelper.h"
+#include "bookinfodialog.h"
+#include "clconstants.h"
 #include <qdir.h>
 #include <qplaintextedit.h>
 #include <qboxlayout.h>
 #include <qsettings.h>
 #include <qtoolbutton.h>
+#include <qmenu.h>
 
 ResultWidget::ResultWidget(QWidget *parent) :
     QWidget(parent),
@@ -199,6 +202,50 @@ void ResultWidget::openResult(int resultID)
 void ResultWidget::goToPage(int page)
 {
     m_searcher->fetechResults(page);
+}
+
+void ResultWidget::showBookMenu(int bookID)
+{
+    LibraryBookPtr book = LibraryManager::instance()->bookManager()->getLibraryBook(bookID);
+    ML_ASSERT2(book, "ResultWidget::showBookMenu no book with id" << bookID);
+
+    QMenu menu(this);
+    QAction *includeOnlyAct = new QAction(tr("بحث في هذا الكتاب فقط"), &menu);
+    QAction *excludeAct = new QAction(tr("حذف هذا الكتاب من البحث"), &menu);
+    QAction *bookInfoAct = new QAction(tr("بطاقة الكتاب"), &menu);
+
+    menu.addAction(includeOnlyAct);
+    menu.addAction(excludeAct);
+    menu.addAction(bookInfoAct);
+
+
+    QAction *ret = menu.exec(QCursor::pos());
+    if(ret) {
+        if(ret == includeOnlyAct || ret == excludeAct) {
+            CLuceneQuery *query = m_searcher->getSearchQuery();
+
+            wchar_t *idStr = Utils::CLucene::intToWChar(bookID);
+            Term *term = new Term(BOOK_ID_FIELD, idStr);
+            TermQuery *termQuery = new TermQuery(term);
+
+            BooleanQuery *q = new BooleanQuery();
+            q->add(termQuery, BooleanClause::SHOULD);
+
+            if(ret == excludeAct && query->resultFilterQuery)
+                q->add(query->resultFilterQuery, BooleanClause::SHOULD);
+
+            query->resultFilterQuery = q;
+            query->resultFilterClause = ((ret == includeOnlyAct) ? BooleanClause::MUST : BooleanClause::MUST_NOT);
+
+            m_searcher->setQuery(query);
+            m_searcher->start();
+        } else if(ret == bookInfoAct) {
+            BookInfoDialog *dialog = new BookInfoDialog(0);
+            dialog->setLibraryBook(book);
+            dialog->setup();
+            dialog->show();
+        }
+    }
 }
 
 void ResultWidget::searchStarted()
