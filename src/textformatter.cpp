@@ -22,11 +22,6 @@ void TextFormatter::setData(LibraryBookPtr book, BookPage *page)
 
 void TextFormatter::laodSettings()
 {
-    QDir styleDir(App::stylesDir());
-    styleDir.cd("default");
-
-    QString style = styleDir.filePath("default.css");
-    m_styleFile = QUrl::fromLocalFile(style).toString();
 }
 
 QString TextFormatter::getText()
@@ -49,7 +44,7 @@ QString TextFormatter::getHtmlView(const QString &text, const QString &jsCode)
 
     helper.beginHead();
     helper.setCharset("utf-8");
-    helper.addCSS(m_styleFile);
+    helper.addCSS("default.css");
 
     helper.endHead();
 

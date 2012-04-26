@@ -20,7 +20,7 @@ public:
     void insertLink(const QString &text, const QString &href, const QString &selector="");
     void insertImage(const QString &src);
 
-    void addCSS(QString cssFile);
+    void addCSS(QString cssFile, bool fullPath=false);
     void addJS(QString jsFile, bool fullPath=false);
     void addJSCode(const QString &jsCode);
 

@@ -323,6 +323,11 @@ QStringList checkDir(bool showWarnings)
                                localeDir(),
                                showWarnings);
 
+    missingFiles << checkFiles(QStringList()
+                               << "default/default.css",
+                               stylesDir(),
+                               showWarnings);
+
     return  missingFiles;
 }
 
@@ -418,6 +423,31 @@ QString dataDir()
 
     return dir.absolutePath();
 }
+
+QString currentStyle(const QString &fileName)
+{
+    QSettings settings;
+    QString defaultStyle = "default";
+    QString currentStyle = settings.value("style", defaultStyle).toString();
+
+    QDir dir(stylesDir());
+    if(!dir.cd(currentStyle)) {
+        qWarning("currentStyle: style directory %s not found", qPrintable(currentStyle));
+        if(!dir.cd(defaultStyle)) {
+            qFatal("currentStyle: %s style directory not found", qPrintable(defaultStyle));
+        }
+    }
+
+    if(fileName.size()) {
+        ml_warn_on_fail(dir.exists(fileName),
+                        "currentStyle: file" << fileName << "not found in" << dir.absolutePath());
+
+        return dir.absoluteFilePath(fileName);
+    }
+
+    return dir.absolutePath();
+}
+
 }
 
 namespace Log {

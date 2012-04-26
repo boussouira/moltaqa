@@ -58,6 +58,8 @@ QString stylesDir();
 QString jsDir();
 QString localeDir();
 QString dataDir();
+
+QString currentStyle(const QString &fileName=QString());
 }
 
 namespace Log {

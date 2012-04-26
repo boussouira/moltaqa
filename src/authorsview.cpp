@@ -109,17 +109,13 @@ int AuthorsView::addTab(QString tabText)
 
 void AuthorsView::setCurrentAuth(AuthorInfoPtr info)
 {
-    QDir styleDir(App::stylesDir());
-    styleDir.cd("default");
-
-    QString style = QUrl::fromLocalFile(styleDir.filePath("default.css")).toString();
     QList<LibraryBookPtr> books = m_bookManager->getAuthorBooks(info->id);
 
     HtmlHelper html;
     html.beginHtml();
     html.beginHead();
     html.setCharset();
-    html.addCSS(style);
+    html.addCSS("default.css");
     html.setTitle(info->name);
     html.endHead();
 

@@ -66,8 +66,11 @@ void HtmlHelper::endAll()
         m_html.append(QString("</%1>").arg(m_openTags.pop()));
 }
 
-void HtmlHelper::addCSS(QString cssFile)
+void HtmlHelper::addCSS(QString cssFile, bool fullPath)
 {
+    if(!fullPath)
+        cssFile = QUrl::fromLocalFile(App::currentStyle(cssFile)).toString();
+
     m_html.append(QString("<link href= \"%1\" rel=\"stylesheet\" type=\"text/css\" />").arg(cssFile));
 }
 

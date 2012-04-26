@@ -39,7 +39,6 @@ signals:
 protected:
     LibraryBookPtr m_book;
     BookPage *m_page;
-    QString m_styleFile;
     QString m_cssID;
     QString m_headerText;
     QString m_footerText;

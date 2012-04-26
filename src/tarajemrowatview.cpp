@@ -111,16 +111,11 @@ int TarajemRowatView::addTab(QString tabText)
 
 void TarajemRowatView::setCurrentRawi(RawiInfoPtr info)
 {
-    QDir styleDir(App::stylesDir());
-    styleDir.cd("default");
-
-    QString style = QUrl::fromLocalFile(styleDir.filePath("default.css")).toString();
-
     HtmlHelper html;
     html.beginHtml();
     html.beginHead();
     html.setCharset();
-    html.addCSS(style);
+    html.addCSS("default.css");
     html.setTitle(info->name);
     html.endHead();
 

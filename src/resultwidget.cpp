@@ -109,17 +109,11 @@ void ResultWidget::setupBookReaderView()
 
 void ResultWidget::setupWebView()
 {
-    QDir styleDir(App::stylesDir());
-    styleDir.cd("default");
-
-    QString style = styleDir.filePath("default.css");
-    QString  m_styleFile = QUrl::fromLocalFile(style).toString();
-
     HtmlHelper helper;
     helper.beginHtml();
     helper.beginHead();
     helper.setCharset("utf-8");
-    helper.addCSS(m_styleFile);
+    helper.addCSS("default.css");
     helper.endHead();
 
     helper.beginBody();
