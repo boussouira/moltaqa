@@ -207,7 +207,7 @@ void ResultWidget::goToPage(int page)
 void ResultWidget::showBookMenu(int bookID)
 {
     LibraryBookPtr book = LibraryManager::instance()->bookManager()->getLibraryBook(bookID);
-    ML_ASSERT2(book, "ResultWidget::showBookMenu no book with id" << bookID);
+    ml_return_on_fail2(book, "ResultWidget::showBookMenu no book with id" << bookID);
 
     QMenu menu(this);
     QAction *includeOnlyAct = new QAction(tr("بحث في هذا الكتاب فقط"), &menu);

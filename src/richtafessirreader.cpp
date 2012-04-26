@@ -102,7 +102,7 @@ QDomElement RichTafessirReader::getQuranPageId(int sora, int aya)
 
 void RichTafessirReader::openQuranBook()
 {
-    ML_ASSERT2(m_quranInfo, "RichTafessirReader::openQuranBook Quran book is null");
+    ml_return_on_fail2(m_quranInfo, "RichTafessirReader::openQuranBook Quran book is null");
 
     if(!QFile::exists(m_quranInfo->path)) {
         throw BookException(tr("لم يتم العثور على ملف الكتاب"), bookInfo()->path);
@@ -118,8 +118,8 @@ void RichTafessirReader::openQuranBook()
     QuaZipFile quranPages;
     quranPages.setZip(&quranZip);
 
-    ML_ASSERT2(quranZip.setCurrentFile("pages.xml"), "openQuranBook: setCurrentFile error" << quranZip.getZipError());
-    ML_ASSERT2(quranPages.open(QIODevice::ReadOnly), "openQuranBook: open error" << quranPages.getZipError());
+    ml_return_on_fail2(quranZip.setCurrentFile("pages.xml"), "openQuranBook: setCurrentFile error" << quranZip.getZipError());
+    ml_return_on_fail2(quranPages.open(QIODevice::ReadOnly), "openQuranBook: open error" << quranPages.getZipError());
 
     m_quranDom.load(&quranPages);
 }

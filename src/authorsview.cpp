@@ -34,8 +34,8 @@ AuthorsView::AuthorsView(QWidget *parent) :
 
 AuthorsView::~AuthorsView()
 {
-    ML_DELETE_CHECK(m_model);
-    ML_DELETE_CHECK(m_filter);
+    ml_delete_check(m_model);
+    ml_delete_check(m_filter);
 
     delete ui;
 
@@ -54,7 +54,7 @@ QString AuthorsView::title()
 
 QString AuthorsView::viewLink()
 {
-    ML_ASSERT_RET(m_currentAuthor, QString());
+    ml_return_val_on_fail(m_currentAuthor, QString());
 
     return QString("moltaqa://open/author?id=%1").arg(m_currentAuthor->id);
 }
@@ -87,7 +87,7 @@ void AuthorsView::aboutToHide()
 void AuthorsView::openAuthorInfo(int authorID)
 {
     AuthorInfoPtr info = m_manager->getAuthorInfo(authorID);
-    ML_ASSERT2(info, "AuthorsView::openAuthorInfo no author with id" << authorID);
+    ml_return_on_fail2(info, "AuthorsView::openAuthorInfo no author with id" << authorID);
 
     setCurrentAuth(info);
 
@@ -222,13 +222,13 @@ void AuthorsView::setCurrentAuth(AuthorInfoPtr info)
 void AuthorsView::setCurrentTabHtml(QString title, QString html)
 {
     int index = ui->tabWidget->currentIndex();
-    ML_ASSERT(index != -1);
+    ml_return_on_fail(index != -1);
 
     QWidget *w = ui->tabWidget->widget(index);
-    ML_ASSERT(w);
+    ml_return_on_fail(w);
 
     WebView *view = w->findChild<WebView*>();
-    ML_ASSERT(view);
+    ml_return_on_fail(view);
 
     view->setHtml(html);
 
@@ -241,7 +241,7 @@ void AuthorsView::on_treeView_doubleClicked(const QModelIndex &index)
     int authID = index.data(ItemRole::authorIdRole).toInt();
 
     AuthorInfoPtr info = m_manager->getAuthorInfo(authID);
-    ML_ASSERT2(info, "AuthorsView::doubleClicked no author with id" << authID);
+    ml_return_on_fail2(info, "AuthorsView::doubleClicked no author with id" << authID);
 
     setCurrentAuth(info);
 }

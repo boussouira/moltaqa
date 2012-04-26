@@ -83,14 +83,14 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
 #endif
 
     if (!bookDB.open()) {
-        LOG_DB_ERROR(bookDB);
+        ml_warn_db_error(bookDB);
         throw BookException(tr("لا يمكن فتح قاعدة البيانات"), path);
     }
 
     QSqlQuery bookQuery(bookDB);
 
     if(!bookQuery.exec("SELECT * FROM Main")) {
-        LOG_SQL_ERROR(bookQuery);
+        ml_warn_query_error(bookQuery);
         throw BookException(tr("حدث خطأ أثناء سحب المعلومات من قاعدة البيانات"
                      "<br><b style=\"direction:rtl\">%1</b>").arg(bookQuery.lastError().text()), path);
     }
@@ -149,10 +149,10 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
 
 #ifdef USE_MDBTOOLS
     if(!query.exec(QString("SELECT * FROM b%1 LIMIT 1").arg(bookID)))
-        LOG_SQL_ERROR(query);
+        ml_warn_query_error(query);
 #else
     if(!query.exec(QString("SELECT TOP 1 * FROM b%1").arg(bookID)))
-        LOG_SQL_ERROR(query);
+        ml_warn_query_error(query);
 #endif
 
     int hnoCol = query.record().indexOf("hno");
@@ -179,7 +179,7 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
                                             query.value(5).toInt());
                 }
             } else {
-                LOG_SQL_ERROR(query);
+                ml_warn_query_error(query);
             }
         } else {
             // We don't have hno column
@@ -194,7 +194,7 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
                                    query.value(5).toInt());
                 }
             } else {
-                LOG_SQL_ERROR(query);
+                ml_warn_query_error(query);
             }
         }
     } else {
@@ -210,7 +210,7 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
                                             query.value(4).toInt());
                 }
             } else {
-                LOG_SQL_ERROR(query);
+                ml_warn_query_error(query);
             }
         } else {
             // We don't have hno column
@@ -222,7 +222,7 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
                                             query.value(3).toInt());
                 }
             } else {
-                LOG_SQL_ERROR(query);
+                ml_warn_query_error(query);
             }
         }
     }
@@ -234,7 +234,7 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
                             query.value(2).toInt());
         }
     } else {
-        LOG_SQL_ERROR(query);
+        ml_warn_query_error(query);
     }
 
     writer.endReading();
@@ -257,7 +257,7 @@ QString ConvertThread::getBookType(const QSqlDatabase &bookDB)
                                "لم يتم العثور على جدول البيانات"));
 
     if(!query.exec(QString("SELECT * FROM %1").arg(bookTable))) {
-        LOG_SQL_ERROR(query);
+        ml_warn_query_error(query);
     }
 
     if(query.next()) {

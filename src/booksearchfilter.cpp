@@ -33,7 +33,7 @@ void BookSearchFilter::setLibraryBook(LibraryBookPtr book)
 
 void BookSearchFilter::loadModel()
 {
-    ML_DELETE_CHECK(m_model);
+    ml_delete_check(m_model);
 
     QStandardItemModel *model = new QStandardItemModel();
     model->setHorizontalHeaderLabels(QStringList() << tr("الفهرس"));
@@ -177,14 +177,14 @@ void BookSearchFilter::getChildTitles(const QModelIndex &index, QList<int> &titl
 
 void BookSearchFilter::open()
 {
-    ML_ASSERT2(m_book, "BookSearchFilter::open book is null");
+    ml_return_on_fail2(m_book, "BookSearchFilter::open book is null");
 
-    ML_ASSERT2(QFile::exists(m_book->path),
+    ml_return_on_fail2(QFile::exists(m_book->path),
                tr("لم يتم العثور على ملف الكتاب") << m_book->path);
 
     m_zip.setZipName(m_book->path);
 
-    ML_ASSERT2(m_zip.open(QuaZip::mdUnzip),
+    ml_return_on_fail2(m_zip.open(QuaZip::mdUnzip),
                tr("لا يمكن فتح ملف الكتاب") << m_book->path << "\nError:" << m_zip.getZipError());
 }
 
@@ -212,8 +212,8 @@ void BookSearchFilter::loadSimpleBookModel(QStandardItemModel *model)
 {
     QuaZipFile titleFile(&m_zip);
 
-    ML_ASSERT2(m_zip.setCurrentFile("titles.xml"), "loadSimpleBookModel: setCurrentFile error"  << titleFile.getZipError());
-    ML_ASSERT2(titleFile.open(QIODevice::ReadOnly), "loadSimpleBookModel: open error" << titleFile.getZipError());
+    ml_return_on_fail2(m_zip.setCurrentFile("titles.xml"), "loadSimpleBookModel: setCurrentFile error"  << titleFile.getZipError());
+    ml_return_on_fail2(titleFile.open(QIODevice::ReadOnly), "loadSimpleBookModel: open error" << titleFile.getZipError());
 
     QDomDocument doc = Utils::Xml::getDomDocument(&titleFile);
     QDomElement root = doc.documentElement();

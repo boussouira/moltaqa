@@ -65,7 +65,7 @@ QString fileName(QString path, bool fullPath, QString ext, QString namePrefix)
 
 QString string(int size)
 {
-    ML_ASSERT_RET2(size, "Rand::string size must be greater than 0", QString());
+    ml_return_val_on_fail2(size, "Rand::string size must be greater than 0", QString());
 
     Rand::srand();
 
@@ -108,7 +108,7 @@ void createDatabases(const QString &path)
         db.setDatabaseName(booksDbPath);
 
         if (!db.open()) {
-            LOG_DB_ERROR(db);
+            ml_warn_db_error(db);
         }
 
         QSqlQuery query(db);
@@ -160,7 +160,7 @@ void createDatabases(const QString &path)
         db.setDatabaseName(authorsDbPath);
 
         if (!db.open()) {
-            LOG_DB_ERROR(db);
+            ml_warn_db_error(db);
         }
 
         QSqlQuery query(db);

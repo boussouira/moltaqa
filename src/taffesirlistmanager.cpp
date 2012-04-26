@@ -38,7 +38,7 @@ void TaffesirListManager::loadModels()
 
 void TaffesirListManager::clear()
 {
-    ML_DELETE_CHECK(m_model);
+    ml_delete_check(m_model);
 }
 
 QStandardItemModel *TaffesirListManager::taffesirListModel()

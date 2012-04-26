@@ -19,7 +19,7 @@ BookInfoDialog::BookInfoDialog(QWidget *parent) : QWidget(parent)
 
 void BookInfoDialog::setup()
 {
-    ML_ASSERT2(m_book, "BookInfoDialog::setup book is null");
+    ml_return_on_fail2(m_book, "BookInfoDialog::setup book is null");
 
     setWindowTitle(m_book->title);
 

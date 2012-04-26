@@ -46,7 +46,7 @@ QStandardItemModel *TarajemRowatManager::getRowatModel()
     QSqlQuery query(m_db);
     query.prepare("SELECT id, name FROM rowat ORDER BY id");
 
-    ML_QUERY_EXEC(query);
+    ml_query_exec(query);
 
     QStandardItemModel *model = new QStandardItemModel();
     model->setHorizontalHeaderLabels(QStringList() << tr("الرواة"));
@@ -76,7 +76,7 @@ RawiInfoPtr TarajemRowatManager::getRawiInfo(int rawiID)
 
     query.bindValue(0, rawiID);
 
-    ML_QUERY_EXEC(query);
+    ml_query_exec(query);
 
     if(query.next()) {
         rawi = RawiInfoPtr(new RawiInfo());
@@ -143,7 +143,7 @@ bool TarajemRowatManager::updateRawi(RawiInfoPtr rawi)
 
     q.where("id", rawi->id);
 
-    ML_ASSERT_RET(q.exec(query), false);
+    ml_return_val_on_fail(q.exec(query), false);
 
     m_rowat[rawi->id] = rawi;
     return true;
@@ -182,7 +182,7 @@ int TarajemRowatManager::addRawi(RawiInfoPtr rawi)
     q.set("talamid", rawi->talamid);
     q.set("tarejama", rawi->tarejama);
 
-    ML_ASSERT_RET(q.exec(query), 0);
+    ml_return_val_on_fail(q.exec(query), 0);
 
     m_rowat[rawi->id] = rawi;
 
@@ -198,7 +198,7 @@ bool TarajemRowatManager::removeRawi(int rawiID)
         m_rowat.remove(rawiID);
         return true;
     } else {
-        LOG_SQL_ERROR(m_query);
+        ml_warn_query_error(m_query);
         return false;
     }
 }

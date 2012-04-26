@@ -35,8 +35,8 @@ void TextBookReader::getTitles()
 {
     QuaZipFile titleFile(&m_zip);
 
-    ML_ASSERT2(m_zip.setCurrentFile("titles.xml"), "getTitles: setCurrentFile error" << titleFile.getZipError());
-    ML_ASSERT2(titleFile.open(QIODevice::ReadOnly), "getTitles: open error" << titleFile.getZipError());
+    ml_return_on_fail2(m_zip.setCurrentFile("titles.xml"), "getTitles: setCurrentFile error" << titleFile.getZipError());
+    ml_return_on_fail2(titleFile.open(QIODevice::ReadOnly), "getTitles: open error" << titleFile.getZipError());
 
     QXmlStreamReader reader(&titleFile);
     int titleID = -1;
@@ -73,7 +73,7 @@ void TextBookReader::getPages()
     QuaZipFileInfo info;
     QuaZipFile file(&m_zip);
     for(bool more=m_zip.goToFirstFile(); more; more=m_zip.goToNextFile()) {
-        ML_ASSERT2(m_zip.getCurrentFileInfo(&info), "getPages: getCurrentFileInfo Error" << m_zip.getZipError());
+        ml_return_on_fail2(m_zip.getCurrentFileInfo(&info), "getPages: getCurrentFileInfo Error" << m_zip.getZipError());
 
         int id = 0;
         QString name = info.name;

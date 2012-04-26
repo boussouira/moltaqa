@@ -53,9 +53,9 @@ WelcomeWidget::~WelcomeWidget()
 {
     saveSettings();
 
-    ML_DELETE_CHECK(m_bookListModel);
-    ML_DELETE_CHECK(m_favouritesModel);
-    ML_DELETE_CHECK(m_lastReadedModel);
+    ml_delete_check(m_bookListModel);
+    ml_delete_check(m_favouritesModel);
+    ml_delete_check(m_lastReadedModel);
 
     delete ui;
 }
@@ -98,10 +98,10 @@ void WelcomeWidget::saveSettings()
 
 void WelcomeWidget::bookListModel()
 {
-    ML_DELETE_CHECK(m_bookListModel);
+    ml_delete_check(m_bookListModel);
 
     m_bookListModel = Utils::Model::cloneModel(m_bookListManager->bookListModel());
-    ML_ASSERT2(m_bookListModel, "BooksListBrowser::readBookListModel model is null");
+    ml_return_on_fail2(m_bookListModel, "BooksListBrowser::readBookListModel model is null");
 
     m_bookListFilter->setLineEdit(ui->lineFilterBookList);
     m_bookListFilter->setTreeView(ui->treeBookList);
@@ -119,10 +119,10 @@ void WelcomeWidget::bookListModel()
 
 void WelcomeWidget::favouritesModel()
 {
-    ML_DELETE_CHECK(m_favouritesModel);
+    ml_delete_check(m_favouritesModel);
 
     m_favouritesModel = Utils::Model::cloneModel(m_favouritesManager->bookListModel());
-    ML_ASSERT2(m_favouritesModel, "BooksListBrowser::readFavouritesModel model is null");
+    ml_return_on_fail2(m_favouritesModel, "BooksListBrowser::readFavouritesModel model is null");
 
     m_favouritesListFilter->setLineEdit(ui->lineFilterFavourites);
     m_favouritesListFilter->setTreeView(ui->treeFavouritesList);
@@ -140,10 +140,10 @@ void WelcomeWidget::favouritesModel()
 
 void WelcomeWidget::lastReadBooksModel()
 {
-    ML_DELETE_CHECK(m_lastReadedModel);
+    ml_delete_check(m_lastReadedModel);
 
     m_lastReadedModel = Utils::Model::cloneModel(m_bookManager->getLastOpendModel().data());
-    ML_ASSERT2(m_lastReadedModel, "WelcomeWidget::lastReadBooksModel model is null");
+    ml_return_on_fail2(m_lastReadedModel, "WelcomeWidget::lastReadBooksModel model is null");
 
     ui->treeLastBook->setModel(m_lastReadedModel);
 }

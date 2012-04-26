@@ -120,7 +120,7 @@ void LibraryCreator::addAuthor(ShamelaAuthorInfo *auth, bool checkExist)
 
     if(checkExist) {
         int lid = m_mapper->mapFromShamelaAuthor(auth->id);
-        ML_ASSERT(!lid); // This author is already in the map
+        ml_return_on_fail(!lid); // This author is already in the map
 
         // We look for this author in the index database
         AuthorInfoPtr foundAuthor = m_authorsManager->findAuthor(auth->name, false);
@@ -174,17 +174,17 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
 
     if(!bookDB.isOpen()) {
         if (!bookDB.open()) {
-            LOG_DB_ERROR(bookDB);
+            ml_warn_db_error(bookDB);
         }
     }
 
     QSqlQuery query(bookDB);
 #ifdef USE_MDBTOOLS
     if(!query.exec(QString("SELECT * FROM %1 LIMIT 1").arg(book->mainTable)))
-        LOG_SQL_ERROR(query);
+        ml_warn_query_error(query);
 #else
     if(!query.exec(QString("SELECT TOP 1 * FROM %1").arg(book->mainTable)))
-        LOG_SQL_ERROR(query);
+        ml_warn_query_error(query);
 #endif
 
     int hnoCol = query.record().indexOf("hno");
@@ -207,7 +207,7 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
                                query.value(2).toInt());
         }
     } else {
-        LOG_SQL_ERROR(query);
+        ml_warn_query_error(query);
     }
 
     bookWrite.endReading();
@@ -244,7 +244,7 @@ void LibraryCreator::addQuran()
 #endif
 
         if (!bookDB.open()) {
-            LOG_DB_ERROR(bookDB);
+            ml_warn_db_error(bookDB);
         }
 
         QSqlQuery query(bookDB);
@@ -259,7 +259,7 @@ void LibraryCreator::addQuran()
                                    query.value(3).toInt());
             }
         } else {
-            LOG_SQL_ERROR(query);
+            ml_warn_query_error(query);
         }
 
         quranWrite.endReading();
@@ -341,7 +341,7 @@ void LibraryCreator::readSimpleBook(ShamelaBookInfo *book, QSqlQuery &query, New
                                query.value(4).toInt());
             }
         } else {
-            LOG_SQL_ERROR(query);
+            ml_warn_query_error(query);
         }
     } else {
         query.prepare(QString("SELECT id, nass, page, part FROM %1 ORDER BY id").arg(book->mainTable));
@@ -356,7 +356,7 @@ void LibraryCreator::readSimpleBook(ShamelaBookInfo *book, QSqlQuery &query, New
                                query.value(3).toInt());
             }
         } else {
-            LOG_SQL_ERROR(query);
+            ml_warn_query_error(query);
         }
 
     }
@@ -382,7 +382,7 @@ void LibraryCreator::readTafessirBook(ShamelaBookInfo *book, QSqlQuery &query, N
                                query.value(5).toInt());
             }
         } else {
-            LOG_SQL_ERROR(query);
+            ml_warn_query_error(query);
         }
     } else {
         query.prepare(QString("SELECT id, nass, page, part, aya, sora FROM %1 ORDER BY id").arg(book->mainTable));
@@ -400,7 +400,7 @@ void LibraryCreator::readTafessirBook(ShamelaBookInfo *book, QSqlQuery &query, N
                                query.value(5).toInt());
             }
         } else {
-            LOG_SQL_ERROR(query);
+            ml_warn_query_error(query);
         }
 
     }

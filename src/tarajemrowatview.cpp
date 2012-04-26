@@ -37,7 +37,7 @@ TarajemRowatView::TarajemRowatView(QWidget *parent) :
 
 TarajemRowatView::~TarajemRowatView()
 {
-    ML_DELETE_CHECK(m_model);
+    ml_delete_check(m_model);
 
     delete ui;
 
@@ -56,7 +56,7 @@ QString TarajemRowatView::title()
 
 QString TarajemRowatView::viewLink()
 {
-    ML_ASSERT_RET(m_currentRawi, QString());
+    ml_return_val_on_fail(m_currentRawi, QString());
 
     return QString("moltaqa://open/rawi?id=%1").arg(m_currentRawi->id);
 }
@@ -89,7 +89,7 @@ void TarajemRowatView::aboutToHide()
 void TarajemRowatView::openRawiInfo(int rawiID)
 {
     RawiInfoPtr info = m_rowatManager->getRawiInfo(rawiID);
-    ML_ASSERT2(info, "TarajemRowatView::openRawiInfo no rawi with id" << rawiID);
+    ml_return_on_fail2(info, "TarajemRowatView::openRawiInfo no rawi with id" << rawiID);
 
     setCurrentRawi(info);
 
@@ -217,13 +217,13 @@ void TarajemRowatView::setCurrentRawi(RawiInfoPtr info)
 void TarajemRowatView::setCurrentTabHtml(QString title, QString html)
 {
     int index = ui->tabWidget->currentIndex();
-    ML_ASSERT(index != -1);
+    ml_return_on_fail(index != -1);
 
     QWidget *w = ui->tabWidget->widget(index);
-    ML_ASSERT(w);
+    ml_return_on_fail(w);
 
     QWebView *view = w->findChild<QWebView*>();
-    ML_ASSERT(view);
+    ml_return_on_fail(view);
 
     view->setHtml(html);
 
@@ -234,10 +234,10 @@ void TarajemRowatView::setCurrentTabHtml(QString title, QString html)
 void TarajemRowatView::on_treeView_doubleClicked(const QModelIndex &index)
 {
     int rawiID = index.data(ItemRole::authorIdRole).toInt();
-    ML_ASSERT(rawiID);
+    ml_return_on_fail(rawiID);
 
     RawiInfoPtr info = m_rowatManager->getRawiInfo(rawiID);
-    ML_ASSERT(info);
+    ml_return_on_fail(info);
 
     setCurrentRawi(info);
 }

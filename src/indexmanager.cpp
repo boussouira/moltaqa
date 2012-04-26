@@ -56,7 +56,7 @@ bool IndexManager::isIndexing()
 
 void IndexManager::start()
 {
-    ML_ASSERT2(openWriter(), "IndexManager: Can't open IndexWriter");
+    ml_return_on_fail2(openWriter(), "IndexManager: Can't open IndexWriter");
 
     QSettings settings;
     m_threadCount = settings.value("Search/threadCount", QThread::idealThreadCount()).toInt();
@@ -114,11 +114,11 @@ void IndexManager::threadDoneIndexing()
     if(--m_threadCount <= 0) {
         if(m_writer) {
             m_writer->close();
-            ML_DELETE(m_writer);
+            ml_delete(m_writer);
         }
 
-        ML_DELETE_CHECK(m_analyzer);
-        ML_DELETE_CHECK(m_taskIter);
+        ml_delete_check(m_analyzer);
+        ml_delete_check(m_taskIter);
 
         qDebug() << "IndexManager:"
                  << tr("تمت الفهرسة خلال %1").arg(Utils::Time::secondsToString(m_indexingTime.elapsed()));

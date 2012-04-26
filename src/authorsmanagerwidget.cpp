@@ -26,7 +26,7 @@ AuthorsManagerWidget::AuthorsManagerWidget(QWidget *parent) :
 
 AuthorsManagerWidget::~AuthorsManagerWidget()
 {
-    ML_DELETE_CHECK(m_model);
+    ml_delete_check(m_model);
 
     delete ui;
 }
@@ -75,7 +75,7 @@ void AuthorsManagerWidget::infoChanged()
 
 void AuthorsManagerWidget::checkEditWebChange()
 {
-    ML_ASSERT(m_webEdit);
+    ml_return_on_fail(m_webEdit);
 
     if(m_webEdit->pageModified())
         infoChanged();
@@ -204,7 +204,7 @@ AuthorInfoPtr AuthorsManagerWidget::getAuthorInfo(int authorID)
 
 void AuthorsManagerWidget::on_treeView_doubleClicked(const QModelIndex &index)
 {
-    ML_ASSERT(m_webEdit);
+    ml_return_on_fail(m_webEdit);
 
     int authorID = index.data(ItemRole::authorIdRole).toInt();
     AuthorInfoPtr auth = getAuthorInfo(authorID);
@@ -241,7 +241,7 @@ void AuthorsManagerWidget::save()
 {
     saveCurrentAuthor();
 
-    ML_ASSERT(!m_editedAuthInfo.isEmpty());
+    ml_return_on_fail(!m_editedAuthInfo.isEmpty());
 
     m_authorsManager->transaction();
 
@@ -260,7 +260,7 @@ void AuthorsManagerWidget::save()
 
 void AuthorsManagerWidget::aboutToShow()
 {
-    ML_ASSERT(!m_webEdit);
+    ml_return_on_fail(!m_webEdit);
 
     m_webEdit = new EditWebView(this);
 

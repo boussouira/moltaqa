@@ -123,7 +123,7 @@ void IndexWidget::setCurrentPage(BookPage *page)
 
 void IndexWidget::selectTitle(int tid)
 {
-    ML_ASSERT2(m_model, "IndexWidget::selectTitle model is null");
+    ml_return_on_fail2(m_model, "IndexWidget::selectTitle model is null");
 
     QModelIndex index;
     QModelIndexList selected = ui->treeView->selectionModel()->selectedIndexes();

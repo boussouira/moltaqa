@@ -74,7 +74,7 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
     m_bookDB.setDatabaseName(convert_path);
 
     if (!m_bookDB.open()) {
-        LOG_DB_ERROR(m_bookDB);
+        ml_warn_db_error(m_bookDB);
         return QString();
     }
 
@@ -119,7 +119,7 @@ void MdbConverter::getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry, bool 
     int  *bound_lens;
 
     table = mdb_read_table(entry);
-    ML_ASSERT2(table, "getTableContent: Table %s does not exist in this database." << entry->object_name);
+    ml_return_on_fail2(table, "getTableContent: Table %s does not exist in this database." << entry->object_name);
 
     mdb_read_columns(table);
     mdb_rewind_table(table);
@@ -165,7 +165,7 @@ void MdbConverter::getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry, bool 
        sqlCmd.append(");");
 
        if(!m_bookQuery.exec(sqlCmd)) {
-           LOG_SQL_ERROR(m_bookQuery);
+           ml_warn_query_error(m_bookQuery);
        }
     }
 
@@ -226,7 +226,7 @@ void MdbConverter::generateTableSchema(MdbCatalogEntry *entry)
 
     sqlCmd.append( ");");
     if(!m_bookQuery.exec(sqlCmd)){
-        LOG_SQL_ERROR(m_bookQuery);
+        ml_warn_query_error(m_bookQuery);
     }
 
     mdb_free_tabledef (table);

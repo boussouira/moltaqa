@@ -81,13 +81,13 @@ QModelIndex changeParent(QStandardItemModel *model, QModelIndex child, QModelInd
 
 void swap(QStandardItemModel *model, QModelIndex fromIndex, QModelIndex toIndex)
 {
-    ML_ASSERT(fromIndex.parent() == toIndex.parent());
+    ml_return_on_fail(fromIndex.parent() == toIndex.parent());
 
     QModelIndex parent = fromIndex.parent();
 
     QStandardItem *parentItem = Model::itemFromIndex(model, parent);
 
-    ML_ASSERT(parentItem);
+    ml_return_on_fail(parentItem);
 
     QList<QStandardItem*> rows = parentItem->takeRow(fromIndex.row());
     parentItem->insertRow(toIndex.row(), rows);
@@ -112,10 +112,10 @@ void selectIndex(QTreeView *tree, QModelIndex index)
 void moveUp(QStandardItemModel *model, QTreeView *tree)
 {
     QModelIndex index = Model::selectedIndex(tree);
-    ML_ASSERT(index.isValid());
+    ml_return_on_fail(index.isValid());
 
     QModelIndex toIndex = index.sibling(index.row()-1, index.column());
-    ML_ASSERT(toIndex.isValid());
+    ml_return_on_fail(toIndex.isValid());
 
     tree->collapse(index);
     tree->collapse(toIndex);
@@ -128,10 +128,10 @@ void moveUp(QStandardItemModel *model, QTreeView *tree)
 void moveDown(QStandardItemModel *model, QTreeView *tree)
 {
     QModelIndex index = Model::selectedIndex(tree);
-    ML_ASSERT(index.isValid());
+    ml_return_on_fail(index.isValid());
 
     QModelIndex toIndex = index.sibling(index.row()+1, index.column());
-    ML_ASSERT(toIndex.isValid());
+    ml_return_on_fail(toIndex.isValid());
 
     tree->collapse(index);
     tree->collapse(toIndex);
@@ -145,7 +145,7 @@ void moveRight(QStandardItemModel *model, QTreeView *tree)
 {
     QModelIndex index = Model::selectedIndex(tree);
     QModelIndex parent = index.parent();
-    ML_ASSERT(index.isValid() && parent.isValid());
+    ml_return_on_fail(index.isValid() && parent.isValid());
 
     QModelIndex newParent = parent.parent();
 
@@ -156,7 +156,7 @@ void moveRight(QStandardItemModel *model, QTreeView *tree)
 void moveLeft(QStandardItemModel *model, QTreeView *tree)
 {
     QModelIndex index = Model::selectedIndex(tree);
-    ML_ASSERT(index.isValid());
+    ml_return_on_fail(index.isValid());
 
     QModelIndex parent = index.sibling(index.row()-1, index.column());
 
@@ -210,8 +210,8 @@ QStandardItemModel *cloneModel(QStandardItemModel *model)
 QList<QStandardItem *> cloneItem(QStandardItem *item, QStandardItem *parent, int columnCount)
 {
     QList<QStandardItem *> items;
-    ML_ASSERT_RET2(item, "cloneItem: item is null", items);
-    ML_ASSERT_RET2(parent, "cloneItem: parent item is null", items);
+    ml_return_val_on_fail2(item, "cloneItem: item is null", items);
+    ml_return_val_on_fail2(parent, "cloneItem: parent item is null", items);
 
     for(int i=0;i<columnCount; i++) {
         QStandardItem *newItem = parent->child(item->row(), i);

@@ -199,7 +199,7 @@ void BooksViewer::updateToolBars()
 QString BooksViewer::viewLink()
 {
     RichBookReader *bookReader = m_viewManager->activeBookReader();
-    ML_ASSERT_RET(bookReader, QString());
+    ml_return_val_on_fail(bookReader, QString());
 
     QString link = QString("moltaqa://open/");
     if(bookReader->bookInfo()->isQuran())
@@ -279,8 +279,8 @@ BookWidget *BooksViewer::openBook(int bookID, int pageID, CLuceneQuery *query)
                               tr("فتح كتاب"),
                               e.what());
 
-        ML_DELETE_CHECK(bookReader);
-        ML_DELETE_CHECK(bookWidget);
+        ml_delete_check(bookReader);
+        ml_delete_check(bookWidget);
     }
 
     return bookWidget;
@@ -295,7 +295,7 @@ void BooksViewer::openTafessir()
         int tafessirID = m_comboTafasir->itemData(m_comboTafasir->currentIndex(), ItemRole::idRole).toInt();
 
         LibraryBookPtr bookInfo = m_bookManager->getLibraryBook(tafessirID);
-        ML_ASSERT(bookInfo && bookInfo->isTafessir() && m_viewManager->activeBook()->isQuran());
+        ml_return_on_fail(bookInfo && bookInfo->isTafessir() && m_viewManager->activeBook()->isQuran());
 
         bookdb = new RichTafessirReader();
         bookdb->setBookInfo(bookInfo);
@@ -312,8 +312,8 @@ void BooksViewer::openTafessir()
 
         updateActions();
     } catch (BookException &e) {
-        ML_DELETE_CHECK(bookdb);
-        ML_DELETE_CHECK(bookWidget);
+        ml_delete_check(bookdb);
+        ml_delete_check(bookWidget);
 
         QMessageBox::warning(this,
                              tr("فتح التفسير"),
@@ -345,7 +345,7 @@ void BooksViewer::showIndexWidget()
 void BooksViewer::searchInBook()
 {
     LibraryBookPtr book = m_viewManager->activeBook();
-    ML_ASSERT(book);
+    ml_return_on_fail(book);
 
     MW->searchView()->newTab(SearchWidget::BookSearch, book->id);
     MW->showSearchView();

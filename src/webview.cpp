@@ -23,7 +23,7 @@ WebView::WebView(QWidget *parent) :
 
 WebView::~WebView()
 {
-    ML_DELETE_CHECK(m_page);
+    ml_delete_check(m_page);
 }
 
 void WebView::scrollToAya(int pSoraNumber, int pAyaNumber)
@@ -179,7 +179,7 @@ void WebView::scrollToSearch()
 void WebView::openMoltaqaLink(QString link)
 {
     QUrl url(link);
-    ML_ASSERT(url.scheme() == "moltaqa");
+    ml_return_on_fail(url.scheme() == "moltaqa");
 
     m_shemeHandler.open(url);
 }

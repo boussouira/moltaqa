@@ -87,7 +87,7 @@ ImportModel::ImportModel(QObject *parent)
 
 ImportModel::~ImportModel()
 {
-    ML_DELETE_CHECK(m_rootNode);
+    ml_delete_check(m_rootNode);
 }
 
 void ImportModel::setRootNode(ImportModelNode *node)
@@ -217,7 +217,7 @@ QVariant ImportModel::headerData(int section,
 void ImportModel::appendNode(ImportModelNode *pNode, const QModelIndex &index)
 {
     ImportModelNode *node = nodeFromIndex(index);
-    ML_ASSERT(node);
+    ml_return_on_fail(node);
 
     node->appendChild(pNode);
     layoutChanged();

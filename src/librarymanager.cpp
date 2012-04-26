@@ -40,12 +40,12 @@ LibraryManager::LibraryManager(LibraryInfo *info, QObject *parent) :
 
 LibraryManager::~LibraryManager()
 {
-    ML_DELETE_CHECK(m_bookmanager);
-    ML_DELETE_CHECK(m_bookListManager);
-    ML_DELETE_CHECK(m_taffesirManager);
-    ML_DELETE_CHECK(m_authorsManager);
-    ML_DELETE_CHECK(m_rowatManager);
-    ML_DELETE_CHECK(m_favourites);
+    ml_delete_check(m_bookmanager);
+    ml_delete_check(m_bookListManager);
+    ml_delete_check(m_taffesirManager);
+    ml_delete_check(m_authorsManager);
+    ml_delete_check(m_rowatManager);
+    ml_delete_check(m_favourites);
 
     m_instance = 0;
 }

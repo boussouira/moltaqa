@@ -44,7 +44,7 @@ QuranSora *BookReaderHelper::getQuranSora(int sora)
             qWarning("getQuranSora: No sora with the given id: %d", sora);
         }
     } else {
-        LOG_SQL_ERROR(query);
+        ml_warn_query_error(query);
     }
 
     return quranSora;
@@ -60,7 +60,7 @@ void BookReaderHelper::open()
         m_quranDB.setDatabaseName(path);
 
         if(!m_quranDB.open()) {
-            LOG_DB_ERROR(m_quranDB);
+            ml_warn_db_error(m_quranDB);
         }
     }
 }

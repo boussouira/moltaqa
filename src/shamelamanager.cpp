@@ -56,7 +56,7 @@ void ShamelaManager::openShamelaDB()
 #endif
 
         if (!m_shamelaDB.open()) {
-            LOG_DB_ERROR(m_shamelaDB);
+            ml_warn_db_error(m_shamelaDB);
         }
 
         m_shamelaQuery = new QSqlQuery(m_shamelaDB);
@@ -83,7 +83,7 @@ void ShamelaManager::openShamelaSpecialDB()
 #endif
 
         if (!m_shamelaSpecialDB.open()) {
-            LOG_DB_ERROR(m_shamelaSpecialDB);
+            ml_warn_db_error(m_shamelaSpecialDB);
         }
 
         m_shamelaSpecialQuery = new QSqlQuery(m_shamelaSpecialDB);
@@ -95,8 +95,8 @@ void ShamelaManager::close()
     m_remover.removeDatabase(m_shamelaDB);
     m_remover.removeDatabase(m_shamelaSpecialDB);
 
-    ML_DELETE_CHECK(m_shamelaQuery);
-    ML_DELETE_CHECK(m_shamelaSpecialQuery);
+    ml_delete_check(m_shamelaQuery);
+    ml_delete_check(m_shamelaSpecialQuery);
 }
 
 QStandardItemModel *ShamelaManager::getBooksListModel()
@@ -107,7 +107,7 @@ QStandardItemModel *ShamelaManager::getBooksListModel()
 
     QSqlQuery query(m_shamelaDB);
     if(!query.exec(QString("SELECT id, name, Lvl FROM %1 ORDER BY catord").arg(mdbTable("0cat"))))
-        LOG_SQL_ERROR(query);
+        ml_warn_query_error(query);
 
     while(query.next()) {
         QStandardItem *item = new QStandardItem();
@@ -135,7 +135,7 @@ void ShamelaManager::booksCat(QStandardItem *parentNode, int catID)
                           "FROM %1 WHERE cat = ? ORDER BY bkid").arg(mdbTable("0bok")));
     query.bindValue(0, catID);
     if(!query.exec())
-        LOG_SQL_ERROR(query);
+        ml_warn_query_error(query);
 
     while(query.next()) {
         QStandardItem *item = new QStandardItem();
@@ -157,7 +157,7 @@ int ShamelaManager::getBooksCount()
     int count=-1;
 
     if(!m_shamelaQuery->exec(QString("SELECT COUNT(*) FROM %1").arg(mdbTable("0bok"))))
-        LOG_SQL_P_ERROR(m_shamelaQuery);
+        ml_warn_query_error2(m_shamelaQuery);
 
     if(m_shamelaQuery->next()) {
         count = m_shamelaQuery->value(0).toInt();
@@ -175,7 +175,7 @@ int ShamelaManager::getAuthorsCount()
     openShamelaSpecialDB();
 
     if(!m_shamelaSpecialQuery->exec("SELECT COUNT(*) FROM Auth"))
-        LOG_SQL_P_ERROR(m_shamelaSpecialQuery);
+        ml_warn_query_error2(m_shamelaSpecialQuery);
 
     if(m_shamelaSpecialQuery->next()) {
         return m_shamelaSpecialQuery->value(0).toInt();
@@ -190,10 +190,10 @@ int ShamelaManager::getCatCount()
 
 #ifdef USE_MDBTOOLS
     if(!m_shamelaQuery->exec("SELECT COUNT(*) FROM _cat"))
-        LOG_SQL_P_ERROR(m_shamelaQuery);
+        ml_warn_query_error2(m_shamelaQuery);
 #else
     if(!m_shamelaQuery->exec("SELECT COUNT(*) FROM 0cat"))
-        LOG_SQL_P_ERROR(m_shamelaQuery);
+        ml_warn_query_error2(m_shamelaQuery);
 #endif
 
     if(m_shamelaQuery->next()) {
@@ -211,7 +211,7 @@ ShamelaAuthorInfo *ShamelaManager::getAuthorInfo(int id)
     specialQuery.prepare("SELECT authid, auth, Lng, AD, inf FROM Auth WHERE authid = ?");
     specialQuery.bindValue(0, id);
     if(!specialQuery.exec())
-        LOG_SQL_ERROR(specialQuery);
+        ml_warn_query_error(specialQuery);
 
     if(specialQuery.next()) {
         return new ShamelaAuthorInfo(specialQuery.value(0).toInt(),
@@ -232,7 +232,7 @@ ShoortsList ShamelaManager::getBookShoorts(int bookID)
     QSqlQuery specialQuery(m_shamelaSpecialDB);
 
     if(!specialQuery.exec(QString("SELECT Ramz, Nass FROM shorts WHERE Bk = '%1'").arg(bookID)))
-        LOG_SQL_ERROR(specialQuery);
+        ml_warn_query_error(specialQuery);
 
     while(specialQuery.next()) {
         QPair<QString, QString> pair;
@@ -251,7 +251,7 @@ void ShamelaManager::selectCats()
 
     if(!m_shamelaQuery->exec(QString("SELECT id, name, catord, Lvl FROM %1 ORDER BY catord")
                              .arg(mdbTable("0cat"))))
-        LOG_SQL_P_ERROR(m_shamelaQuery);
+        ml_warn_query_error2(m_shamelaQuery);
 }
 
 ShamelaCategorieInfo *ShamelaManager::nextCat()
@@ -271,7 +271,7 @@ void ShamelaManager::selectAuthors()
     openShamelaSpecialDB();
 
     if(!m_shamelaSpecialQuery->exec("SELECT authid, auth, Lng, AD, inf FROM Auth"))
-        LOG_SQL_P_ERROR(m_shamelaSpecialQuery);
+        ml_warn_query_error2(m_shamelaSpecialQuery);
 }
 
 ShamelaAuthorInfo *ShamelaManager::nextAuthor()
@@ -294,7 +294,7 @@ void ShamelaManager::selectBooks()
     if(!m_shamelaQuery->exec(QString("SELECT bkid, bk, cat, betaka, inf, authno, auth, Archive, TafseerNam "
                                      "FROM %1 ORDER BY Archive")
                              .arg(mdbTable("0bok")))) {
-        LOG_SQL_P_ERROR(m_shamelaQuery);
+        ml_warn_query_error2(m_shamelaQuery);
     }
 }
 
@@ -360,7 +360,7 @@ QList<int> ShamelaManager::getBookShorooh(int shamelaID)
     specialQuery.prepare("SELECT Sharh FROM oShrooh WHERE Matn = ?");
     specialQuery.bindValue(0, shamelaID);
     if(!specialQuery.exec())
-        LOG_SQL_ERROR(specialQuery);
+        ml_warn_query_error(specialQuery);
 
     while(specialQuery.next()) {
             ret << specialQuery.value(0).toInt();
@@ -462,7 +462,7 @@ void ShamelaManager::importShorooh()
                         }
                     }
                 } else {
-                    LOG_SQL_ERROR(specialQuery);
+                    ml_warn_query_error(specialQuery);
                     continue;
                 }
 

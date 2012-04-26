@@ -19,7 +19,7 @@ void DatabaseManager::setDatabasePath(const QString &path)
 
 void DatabaseManager::openDatabase()
 {
-    ML_ASSERT2(!m_path.isEmpty(), "DatabaseManager: Database path is empty");
+    ml_return_on_fail2(!m_path.isEmpty(), "DatabaseManager: Database path is empty");
 
     QString conn = "DatabaseManager." + QFileInfo(m_path).baseName();
     while(m_db.contains(conn))
@@ -28,19 +28,19 @@ void DatabaseManager::openDatabase()
     m_db = QSqlDatabase::addDatabase("QSQLITE", conn);
     m_db.setDatabaseName(m_path);
 
-    ML_OPEN_DB(m_db);
+    ml_open_db(m_db);
 
     m_query = QSqlQuery(m_db);
 }
 
 void DatabaseManager::transaction()
 {
-    ML_ASSERT2(m_db.transaction(),
+    ml_return_on_fail2(m_db.transaction(),
                "DatabaseManager: Error on transaction:" << m_db.lastError().text());
 }
 
 void DatabaseManager::commit()
 {
-    ML_ASSERT2(m_db.commit(),
+    ml_return_on_fail2(m_db.commit(),
                "DatabaseManager: Error on commit:" << m_db.lastError().text());
 }

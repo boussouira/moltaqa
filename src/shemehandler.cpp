@@ -40,7 +40,7 @@ void ShemeHandler::commandOpen(const QUrl &url)
 
 void ShemeHandler::openBook(const QUrl &url)
 {
-    ML_ASSERT2(url.hasQueryItem("id"), "MoltaqaShemeHandler::openBook url doesn't have an id query item");
+    ml_return_on_fail2(url.hasQueryItem("id"), "MoltaqaShemeHandler::openBook url doesn't have an id query item");
 
     int bookID = url.queryItemValue("id").toInt();
     int page = url.hasQueryItem("page") ? url.queryItemValue("page").toInt() : -1;
@@ -50,23 +50,23 @@ void ShemeHandler::openBook(const QUrl &url)
 
 void ShemeHandler::openQuran(const QUrl &url)
 {
-    ML_ASSERT2(url.hasQueryItem("sora"), "MoltaqaShemeHandler::openQuran url doesn't have a sora query item");
+    ml_return_on_fail2(url.hasQueryItem("sora"), "MoltaqaShemeHandler::openQuran url doesn't have a sora query item");
 
     int sora = url.queryItemValue("sora").toInt();
     int aya = url.hasQueryItem("aya") ? url.queryItemValue("aya").toInt() : 1;
 
     LibraryBookPtr quranBook = LibraryManager::instance()->bookManager()->getQuranBook();
-    ML_ASSERT2(quranBook, "MoltaqaShemeHandler::openQuran quranBook is null");
+    ml_return_on_fail2(quranBook, "MoltaqaShemeHandler::openQuran quranBook is null");
 
     BookWidget *w = BooksViewer::instance()->openBook(quranBook->id);
-    ML_ASSERT2(w, "MoltaqaShemeHandler::openQuran quranBook is null");
+    ml_return_on_fail2(w, "MoltaqaShemeHandler::openQuran quranBook is null");
 
     w->openSora(sora, aya);
 }
 
 void ShemeHandler::openAuthor(const QUrl &url)
 {
-    ML_ASSERT2(url.hasQueryItem("id"), "MoltaqaShemeHandler::openAuthor url doesn't have an id query item");
+    ml_return_on_fail2(url.hasQueryItem("id"), "MoltaqaShemeHandler::openAuthor url doesn't have an id query item");
     int author = url.queryItemValue("id").toInt();
 
     AuthorsView::instance()->openAuthorInfo(author);
@@ -74,7 +74,7 @@ void ShemeHandler::openAuthor(const QUrl &url)
 
 void ShemeHandler::openRawi(const QUrl &url)
 {
-    ML_ASSERT2(url.hasQueryItem("id"), "MoltaqaShemeHandler::openRawi url doesn't have an id query item");
+    ml_return_on_fail2(url.hasQueryItem("id"), "MoltaqaShemeHandler::openRawi url doesn't have an id query item");
     int rawi = url.queryItemValue("id").toInt();
 
     TarajemRowatView::instance()->openRawiInfo(rawi);

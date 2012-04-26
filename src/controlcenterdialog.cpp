@@ -79,7 +79,7 @@ void ControlCenterDialog::setCurrentRow(int row)
 void ControlCenterDialog::save()
 {
     ControlCenterWidget *w = currentControlWidget();
-    ML_ASSERT(w);
+    ml_return_on_fail(w);
 
     w->save();
 }
@@ -87,7 +87,7 @@ void ControlCenterDialog::save()
 void ControlCenterDialog::aboutToShow()
 {
     ControlCenterWidget *w = currentControlWidget();
-    ML_ASSERT(w);
+    ml_return_on_fail(w);
 
     w->aboutToShow();
 }
@@ -95,7 +95,7 @@ void ControlCenterDialog::aboutToShow()
 void ControlCenterDialog::aboutToHide()
 {
     ControlCenterWidget *w = currentControlWidget();
-    ML_ASSERT(w);
+    ml_return_on_fail(w);
 
     w->aboutToHide();
 }

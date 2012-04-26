@@ -13,9 +13,9 @@ CLuceneQuery::CLuceneQuery() :
 
 CLuceneQuery::~CLuceneQuery()
 {
-    ML_DELETE_CHECK(searchQuery);
-    ML_DELETE_CHECK(filterQuery);
-    ML_DELETE_CHECK(resultFilterQuery);
+    ml_delete_check(searchQuery);
+    ml_delete_check(filterQuery);
+    ml_delete_check(resultFilterQuery);
 
     if(searchFieldW)
         free(searchFieldW);

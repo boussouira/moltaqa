@@ -21,7 +21,7 @@ TextBookIndexer::TextBookIndexer() :
 
 TextBookIndexer::~TextBookIndexer()
 {
-    ML_DELETE_CHECK(m_reader);
+    ml_delete_check(m_reader);
 }
 
 void TextBookIndexer::open()

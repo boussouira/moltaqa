@@ -39,7 +39,7 @@ void AuthorsManager::loadAuthorsInfo()
     query.prepare("SELECT id, name, full_name, info, birth_year, birth, "
                   "death_year, death, flags FROM authors ORDER BY id");
 
-    ML_QUERY_EXEC(query);
+    ml_query_exec(query);
 
     while(query.next()) {
         AuthorInfoPtr auth(new AuthorInfo());
@@ -68,7 +68,7 @@ void AuthorsManager::loadAuthorsInfo()
         m_authors[auth->id] = auth;
     }
 
-    ML_ASSERT2(m_authors.size(), "AuthorsManager: No author data where loaded");
+    ml_return_on_fail2(m_authors.size(), "AuthorsManager: No author data where loaded");
 }
 
 QStandardItemModel *AuthorsManager::authorsModel()
@@ -124,7 +124,7 @@ int AuthorsManager::addAuthor(AuthorInfoPtr auth)
     q.set("death", auth->deathStr);
     q.set("flags", flags);
 
-    ML_ASSERT_RET(q.exec(m_query), 0);
+    ml_return_val_on_fail(q.exec(m_query), 0);
 
     m_authors.insert(auth->id, auth);
     return auth->id;
@@ -137,7 +137,7 @@ void AuthorsManager::removeAuthor(int authorID)
     if(m_query.exec())
         m_authors.remove(authorID);
     else
-        LOG_SQL_ERROR(m_query);
+        ml_warn_query_error(m_query);
     }
 
 int AuthorsManager::getNewAuthorID()
@@ -232,7 +232,7 @@ void AuthorsManager::updateAuthor(AuthorInfoPtr auth)
 
     q.where("id", auth->id);
 
-    ML_ASSERT(q.exec(query));
+    ml_return_on_fail(q.exec(query));
 
     m_authors.insert(auth->id, auth);
 }

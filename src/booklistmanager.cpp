@@ -48,8 +48,8 @@ void BookListManager::loadModels()
 
 void BookListManager::clear()
 {
-    ML_DELETE_CHECK(m_bookModel);
-    ML_DELETE_CHECK(m_catModel);
+    ml_delete_check(m_bookModel);
+    ml_delete_check(m_catModel);
 
     m_catHash.clear();
     m_catElementHash.clear();
@@ -213,12 +213,12 @@ void BookListManager::addBook(int bookID, int parentCat)
 void BookListManager::removeBook(int bookID)
 {
     QDomElement e = m_booksElementHash.value(bookID);
-    ML_ASSERT2(!e.isNull(), "BookListManager::removeBook no book with id" << bookID);
+    ml_return_on_fail2(!e.isNull(), "BookListManager::removeBook no book with id" << bookID);
 
     QDomNode parent = e.parentNode();
-    ML_ASSERT2(!parent.isNull(), "BookListManager::removeBook parent element is null");
+    ml_return_on_fail2(!parent.isNull(), "BookListManager::removeBook parent element is null");
 
-    ML_ASSERT2(!parent.removeChild(e).isNull(), "BookListManager::removeBook error when removing book" << bookID);
+    ml_return_on_fail2(!parent.removeChild(e).isNull(), "BookListManager::removeBook error when removing book" << bookID);
     m_dom.setNeedSave(true);
 }
 

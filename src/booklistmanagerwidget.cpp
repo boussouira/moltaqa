@@ -40,7 +40,7 @@ BookListManagerWidget::BookListManagerWidget(QWidget *parent) :
 
 BookListManagerWidget::~BookListManagerWidget()
 {
-    ML_DELETE_CHECK(m_model);
+    ml_delete_check(m_model);
 
     delete ui;
 }
@@ -72,7 +72,7 @@ void BookListManagerWidget::save()
 void BookListManagerWidget::copyNode()
 {
     QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
-    ML_ASSERT(index.isValid());
+    ml_return_on_fail(index.isValid());
 
     if(m_copiedItems.isEmpty()) {
         QStandardItem *item = Utils::Model::itemFromIndex(m_model, index);
@@ -86,7 +86,7 @@ void BookListManagerWidget::copyNode()
 void BookListManagerWidget::cutNode()
 {
     QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
-    ML_ASSERT(index.isValid());
+    ml_return_on_fail(index.isValid());
 
     if(m_copiedItems.isEmpty()) {
         QStandardItem *parentItem = Utils::Model::itemFromIndex(m_model, index.parent());
@@ -101,7 +101,7 @@ void BookListManagerWidget::cutNode()
 void BookListManagerWidget::pastNode()
 {
     QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
-    ML_ASSERT(index.isValid());
+    ml_return_on_fail(index.isValid());
 
     if(!m_copiedItems.isEmpty()) {
         QStandardItem *item = m_model->itemFromIndex(index);
@@ -117,7 +117,7 @@ void BookListManagerWidget::pastNode()
 void BookListManagerWidget::pastSublingNode()
 {
     QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
-    ML_ASSERT(index.isValid());
+    ml_return_on_fail(index.isValid());
 
     if(!m_copiedItems.isEmpty()) {
         QStandardItem *parentItem = Utils::Model::itemFromIndex(m_model, index.parent());
@@ -175,7 +175,7 @@ void BookListManagerWidget::addCat()
 void BookListManagerWidget::removeCat()
 {
     QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
-    ML_ASSERT(index.isValid());
+    ml_return_on_fail(index.isValid());
 
     QStandardItem *item = Utils::Model::itemFromIndex(m_model, index);
 
@@ -223,7 +223,7 @@ void BookListManagerWidget::menuRequested(QPoint)
 
 void BookListManagerWidget::updateActions()
 {
-    ML_ASSERT(m_model);
+    ml_return_on_fail(m_model);
 
     QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
     QModelIndex prevIndex = index.sibling(index.row()+1, index.column());

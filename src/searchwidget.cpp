@@ -43,8 +43,8 @@ SearchWidget::~SearchWidget()
         delete m_searcher;
     }
 
-    ML_DELETE_CHECK(m_resultWidget);
-    ML_DELETE_CHECK(m_filterManager);
+    ml_delete_check(m_resultWidget);
+    ml_delete_check(m_filterManager);
 
     delete ui;
 }
@@ -153,7 +153,7 @@ Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
                                  "CLucene Query error",
                                  tr("code: %1\nError: %2").arg(e.number()).arg(e.what()));
 
-        ML_DELETE(q);
+        ml_delete(q);
 
         return 0;
     }
@@ -161,7 +161,7 @@ Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
         QMessageBox::warning(0,
                              "CLucene Query error",
                              tr("Unknow error"));
-        ML_DELETE(q);
+        ml_delete(q);
 
         return 0;
     }
@@ -201,7 +201,7 @@ void SearchWidget::search()
     QScopedPointer<SearchFilter> searchFilter(getSearchFilterQuery());
     Query *searchQuery = getSearchQuery(searchFieldW);
 
-    ML_ASSERT(searchQuery);
+    ml_return_on_fail(searchQuery);
 
     CLuceneQuery *query = new CLuceneQuery();
     query->searchQuery = searchQuery;
@@ -217,7 +217,7 @@ void SearchWidget::search()
             m_searcher->wait();
         }
 
-        ML_DELETE(m_searcher);
+        ml_delete(m_searcher);
     }
 
     m_searcher = new LibrarySearcher(this);
@@ -260,7 +260,7 @@ void SearchWidget::clearLineText()
 
 void SearchWidget::showFilterTools()
 {
-    ML_ASSERT(m_filterManager);
+    ml_return_on_fail(m_filterManager);
 
     QMenu menu(this);
 

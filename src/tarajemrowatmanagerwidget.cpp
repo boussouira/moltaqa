@@ -29,9 +29,9 @@ TarajemRowatManagerWidget::TarajemRowatManagerWidget(QWidget *parent) :
 
 TarajemRowatManagerWidget::~TarajemRowatManagerWidget()
 {
-    ML_DELETE_CHECK(m_webEditShoek);
-    ML_DELETE_CHECK(m_webEditTalamid);
-    ML_DELETE_CHECK(m_webEditTarjama);
+    ml_delete_check(m_webEditShoek);
+    ml_delete_check(m_webEditTalamid);
+    ml_delete_check(m_webEditTarjama);
 
     delete ui;
 }
@@ -43,7 +43,7 @@ QString TarajemRowatManagerWidget::title()
 
 void TarajemRowatManagerWidget::aboutToShow()
 {
-    ML_ASSERT(!m_webEditShoek
+    ml_return_on_fail(!m_webEditShoek
               || !m_webEditTalamid
               || !m_webEditTarjama);
 
@@ -65,7 +65,7 @@ void TarajemRowatManagerWidget::aboutToShow()
 void TarajemRowatManagerWidget::save()
 {
     saveCurrentRawi();
-    ML_ASSERT(!m_editedRawiInfo.isEmpty());
+    ml_return_on_fail(!m_editedRawiInfo.isEmpty());
 
     m_manager->transaction();
 
@@ -121,7 +121,7 @@ void TarajemRowatManagerWidget::saveCurrentRawi()
 {
     ui->tabWidget->setCurrentIndex(0);
 
-    ML_ASSERT(m_currentRawi);
+    ml_return_on_fail(m_currentRawi);
 
     m_currentRawi->name = ui->lineName->text();
     m_currentRawi->laqab = ui->lineLaqab->text();
@@ -169,7 +169,7 @@ void TarajemRowatManagerWidget::on_treeView_doubleClicked(const QModelIndex &ind
 {
     int rawiID = index.data(ItemRole::authorIdRole).toInt();
     RawiInfoPtr rawi= getRawiInfo(rawiID);
-    ML_ASSERT(rawi);
+    ml_return_on_fail(rawi);
 
     saveCurrentRawi();
 
@@ -202,7 +202,7 @@ void TarajemRowatManagerWidget::on_treeView_doubleClicked(const QModelIndex &ind
 
 void TarajemRowatManagerWidget::infoChanged()
 {
-    ML_ASSERT(m_currentRawi);
+    ml_return_on_fail(m_currentRawi);
 
     m_editedRawiInfo[m_currentRawi->id] = m_currentRawi;
     setModified(true);
@@ -210,7 +210,7 @@ void TarajemRowatManagerWidget::infoChanged()
 
 void TarajemRowatManagerWidget::checkEditWebChange()
 {
-    ML_ASSERT(m_webEditShoek
+    ml_return_on_fail(m_webEditShoek
               && m_webEditTalamid
               && m_webEditTarjama);
 
@@ -231,12 +231,12 @@ void TarajemRowatManagerWidget::birthDeathChanged()
     ui->lineDeathText->setVisible(!ui->checkUnknowDeath->isChecked());
 
     QSpinBox *spin = qobject_cast<QSpinBox*>(sender());
-    ML_ASSERT(spin);
+    ml_return_on_fail(spin);
 
     if(spin->value() == RawiInfo::UnknowYear)
         spin->setValue(0);
 
-    ML_ASSERT(m_currentRawi);
+    ml_return_on_fail(m_currentRawi);
 
     if(spin == ui->spinBirth) {
         ui->lineBirthText->setText(Utils::Time::hijriYear(spin->value()));
@@ -286,7 +286,7 @@ void TarajemRowatManagerWidget::removeRawi()
 
             int rawiID = index.data(ItemRole::authorIdRole).toInt();
             RawiInfoPtr rawi= getRawiInfo(rawiID);
-            ML_ASSERT(rawi);
+            ml_return_on_fail(rawi);
 
             m_manager->removeRawi(rawi->id);
 

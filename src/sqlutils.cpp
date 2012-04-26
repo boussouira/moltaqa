@@ -18,7 +18,7 @@ DatabaseRemover::~DatabaseRemover()
 
 void DatabaseRemover::removeDatabase(const QSqlDatabase &db)
 {
-    //ML_ASSERT2(db.isOpen(), "DatabaseRemover::removeDatabase db is not currently open");
+    //ml_return_on_fail2(db.isOpen(), "DatabaseRemover::removeDatabase db is not currently open");
 
     m_connectionNames.append(db.connectionName());
 }
@@ -62,7 +62,7 @@ void QueryBuilder::setDropExistingTable(bool drop)
 
 void QueryBuilder::select(const QString &colName)
 {
-    ML_ASSERT2(m_type == Select, "QueryBuilder::addColumn add column "
+    ml_return_on_fail2(m_type == Select, "QueryBuilder::addColumn add column "
                "without value should be only in select query");
 
     m_colums.append(colName);
@@ -94,13 +94,13 @@ void QueryBuilder::limit(int _limit)
 
 QString QueryBuilder::query()
 {
-    ML_ASSERT_RET2(m_type != None, "QueryBuilder::query Query type is not set", QString());
-    ML_ASSERT_RET2(!m_tableName.isEmpty(), "QueryBuilder::query Table name is not set", QString());
-    ML_ASSERT_RET2(m_type == Select || m_values.size() == m_colums.size(),
+    ml_return_val_on_fail2(m_type != None, "QueryBuilder::query Query type is not set", QString());
+    ml_return_val_on_fail2(!m_tableName.isEmpty(), "QueryBuilder::query Table name is not set", QString());
+    ml_return_val_on_fail2(m_type == Select || m_values.size() == m_colums.size(),
                    "QueryBuilder::query Columns and values doesn't match", QString());
 
     if(!m_whereColums.isEmpty()) {
-        ML_ASSERT_RET2(m_whereValues.size() == m_whereColums.size(),
+        ml_return_val_on_fail2(m_whereValues.size() == m_whereColums.size(),
                        "QueryBuilder: Where columns and values doesn't match", QString());
     }
 
@@ -232,15 +232,15 @@ QString QueryBuilder::query()
 
 void QueryBuilder::prepare(QSqlQuery &q)
 {
-    ML_ASSERT2(m_type != None, "QueryBuilder::prepare Query type is not set");
-    ML_ASSERT2(!m_tableName.isEmpty(), "QueryBuilder::prepare Table name is not set");
-    ML_ASSERT2(m_type == Select || m_values.size() == m_colums.size(),
+    ml_return_on_fail2(m_type != None, "QueryBuilder::prepare Query type is not set");
+    ml_return_on_fail2(!m_tableName.isEmpty(), "QueryBuilder::prepare Table name is not set");
+    ml_return_on_fail2(m_type == Select || m_values.size() == m_colums.size(),
                "QueryBuilder::prepare Columns and values doesn't match");
 
     QString sql;
 
     sql = query();
-    ML_ASSERT2(!sql.isEmpty(), "QueryBuilder::prepare Query is empty");
+    ml_return_on_fail2(!sql.isEmpty(), "QueryBuilder::prepare Query is empty");
 
     q.prepare(sql);
 
@@ -258,7 +258,7 @@ void QueryBuilder::prepare(QSqlQuery &q)
 bool QueryBuilder::exec(QSqlQuery &q)
 {
     prepare(q);
-    ML_ASSERT_RET2(q.exec(),
+    ml_return_val_on_fail2(q.exec(),
                    "QueryBuilder::exec Sql error:" << q.lastError().text() << "Query:" << q.lastQuery(),
                    false);
 

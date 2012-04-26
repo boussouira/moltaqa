@@ -53,8 +53,8 @@ BooksListBrowser::BooksListBrowser(QWidget *parent) :
 
 BooksListBrowser::~BooksListBrowser()
 {
-    ML_DELETE_CHECK(m_bookListModel);
-    ML_DELETE_CHECK(m_favouritesModel);
+    ml_delete_check(m_bookListModel);
+    ml_delete_check(m_favouritesModel);
 
     delete ui;
 }
@@ -81,10 +81,10 @@ void BooksListBrowser::saveSettings()
 
 void BooksListBrowser::readBookListModel()
 {
-    ML_DELETE_CHECK(m_bookListModel);
+    ml_delete_check(m_bookListModel);
 
     m_bookListModel = Utils::Model::cloneModel(m_bookListManager->bookListModel());
-    ML_ASSERT2(m_bookListModel, "BooksListBrowser::readBookListModel model is null");
+    ml_return_on_fail2(m_bookListModel, "BooksListBrowser::readBookListModel model is null");
 
     m_bookListFilter->setLineEdit(ui->lineFilterBookList);
     m_bookListFilter->setTreeView(ui->treeBookList);
@@ -102,10 +102,10 @@ void BooksListBrowser::readBookListModel()
 
 void BooksListBrowser::readFavouritesModel()
 {
-    ML_DELETE_CHECK(m_favouritesModel);
+    ml_delete_check(m_favouritesModel);
 
     m_favouritesModel = Utils::Model::cloneModel(m_favouritesManager->bookListModel());
-    ML_ASSERT2(m_favouritesModel, "BooksListBrowser::readFavouritesModel model is null");
+    ml_return_on_fail2(m_favouritesModel, "BooksListBrowser::readFavouritesModel model is null");
 
     m_favouritesListFilter->setLineEdit(ui->lineFilterFavourites);
     m_favouritesListFilter->setTreeView(ui->treeFavouritesList);
@@ -133,12 +133,12 @@ void BooksListBrowser::itemClicked(QModelIndex index)
 void BooksListBrowser::bookListMenu(QPoint /*point*/)
 {
     QModelIndex index = Utils::Model::selectedIndex(ui->treeBookList);
-    ML_ASSERT(index.isValid());
+    ml_return_on_fail(index.isValid());
 
     int bookType = index.sibling(index.row(), 0).data(ItemRole::itemTypeRole).toInt();
     int bookID = index.sibling(index.row(), 0).data(ItemRole::idRole).toInt();
 
-    ML_ASSERT(bookType != ItemType::CategorieItem);
+    ml_return_on_fail(bookType != ItemType::CategorieItem);
 
     QMenu menu(this);
 

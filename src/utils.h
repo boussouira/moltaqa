@@ -72,24 +72,26 @@ void DatabaseError(const QSqlDatabase &db, const char *file, int line);
 
 // TODO: move this defines to an other header file
 
-#define ML_BENCHMARK(desc, code) do {QTime bmt;bmt.start();code;qDebug(desc " take %d ms", bmt.elapsed());} while(false)
-#define ML_BENCHMARK_START() QTime bmt2;bmt2.start();
-#define ML_BENCHMARK_ELAPSED(desc) qDebug(desc " take %d ms", bmt2.restart());
+#define ml_benchmark(desc, code) do {QTime bmt;bmt.start();code;qDebug(desc " take %d ms", bmt.elapsed());} while(false)
+#define ml_benchmark_start() QTime bmt2;bmt2.start();
+#define ml_benchmark_elapsed(desc) qDebug(desc " take %d ms", bmt2.restart());
 
-#define LOG_DB_ERROR(db) Log::DatabaseError(db, __FILE__, __LINE__)
-#define LOG_SQL_ERROR(query) Log::QueryError(query, __FILE__, __LINE__)
-#define LOG_SQL_P_ERROR(query) Log::QueryError((*query), __FILE__, __LINE__)
+#define ml_warn_db_error(db) Log::DatabaseError(db, __FILE__, __LINE__)
+#define ml_warn_query_error(query) Log::QueryError(query, __FILE__, __LINE__)
+#define ml_warn_query_error2(query) Log::QueryError((*query), __FILE__, __LINE__)
 
-#define ML_OPEN_DB(db) if(!db.open()) { LOG_DB_ERROR(db); }
-#define ML_QUERY_EXEC(query) if(!query.exec()) { LOG_SQL_ERROR(query); }
+#define ml_open_db(db) if(!db.open()) { ml_warn_db_error(db); }
+#define ml_query_exec(query) if(!query.exec()) { ml_warn_query_error(query); }
 
-#define ML_ASSERT(con)    if(!(con)) return
-#define ML_ASSERT2(con, msg)    if(!(con)) {qWarning() << msg ; return;}
+#define ml_return_on_fail(con)    if(!(con)) return
+#define ml_return_on_fail2(con, msg)    if(!(con)) {qWarning() << msg ; return;}
 
-#define ML_ASSERT_RET(con, ret)    if(!(con)) return ret
-#define ML_ASSERT_RET2(con, msg, ret)    if(!(con)) {qWarning() << msg ; return ret;}
+#define ml_return_val_on_fail(con, ret)    if(!(con)) return ret
+#define ml_return_val_on_fail2(con, msg, ret)    if(!(con)) {qWarning() << msg ; return ret;}
 
-#define ML_DELETE(p) delete p; p=0;
-#define ML_DELETE_CHECK(p) if(p) { delete p; p=0; }
+#define ml_warn_on_fail(con, msg) if(!(con)) {qWarning() << msg ;}
+
+#define ml_delete(p) delete p; p=0;
+#define ml_delete_check(p) if(p) { delete p; p=0; }
 
 #endif // COMMON_H

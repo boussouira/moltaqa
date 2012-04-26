@@ -99,7 +99,7 @@ void BookWidgetManager::tabCloseRequest(int tabIndex)
     if(!m_activeTab->count() && unActiveTab()->count())
         reverseActiveTab();
 
-    ML_DELETE_CHECK(w);
+    ml_delete_check(w);
 }
 
 void BookWidgetManager::tabChanged(int newIndex)
@@ -177,14 +177,14 @@ TabWidget *BookWidgetManager::unActiveTab()
 void BookWidgetManager::moveToOtherTab()
 {
     TabWidget *active = activeTab();
-    ML_ASSERT2(active, "BookWidgetManager::moveToOtherTab active tab is null");
+    ml_return_on_fail2(active, "BookWidgetManager::moveToOtherTab active tab is null");
 
     int index = active->currentIndex();
-    ML_ASSERT2(index != -1, "BookWidgetManager::moveToOtherTab wrong tab index");
+    ml_return_on_fail2(index != -1, "BookWidgetManager::moveToOtherTab wrong tab index");
 
     TabWidget *otherTab = (active == m_topTab) ? m_bottomTab : m_topTab;
     BookWidget *book = bookWidget(index);
-    ML_ASSERT2(book, "BookWidgetManager::moveToOtherTab book widget is null");
+    ml_return_on_fail2(book, "BookWidgetManager::moveToOtherTab book widget is null");
 
     active->blockSignals(true);
     otherTab->blockSignals(true);
@@ -226,7 +226,7 @@ void BookWidgetManager::reverseSplitter()
 void BookWidgetManager::addToFavouite()
 {
     LibraryBookPtr book = activeBook();
-    ML_ASSERT(book);
+    ml_return_on_fail(book);
 
     if(m_libraryManager->favouritesManager()->containsBook(book->id)) {
         QMessageBox::information(this,
@@ -247,7 +247,7 @@ void BookWidgetManager::addToFavouite()
 void BookWidgetManager::showBookInfo()
 {
     LibraryBookPtr book = activeBook();
-    ML_ASSERT(book);
+    ml_return_on_fail(book);
 
     BookInfoDialog *dialog = new BookInfoDialog(0);
     dialog->setLibraryBook(book);

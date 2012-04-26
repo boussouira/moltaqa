@@ -10,7 +10,7 @@ ControlCenterWidget::ControlCenterWidget(QWidget *parent) : QWidget(parent)
 
 void ControlCenterWidget::setModified(bool m)
 {
-    ML_ASSERT(m_modified != m);
+    ml_return_on_fail(m_modified != m);
 
     m_modified = m;
 

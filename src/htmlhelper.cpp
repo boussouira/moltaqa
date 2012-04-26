@@ -100,7 +100,7 @@ QString HtmlHelper::jsEscape(QString text)
 
 void HtmlHelper::addSelector(QString selector)
 {
-    ML_ASSERT(!selector.isEmpty());
+    ml_return_on_fail(!selector.isEmpty());
 
     if(!selector.contains('|')) {
         if(selector.startsWith('#'))

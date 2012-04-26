@@ -23,8 +23,8 @@ AbstractBookReader::AbstractBookReader(QObject *parent) : QObject(parent)
 
 AbstractBookReader::~AbstractBookReader()
 {
-    ML_DELETE_CHECK(m_indexModel);
-    ML_DELETE_CHECK(m_currentPage);
+    ml_delete_check(m_indexModel);
+    ml_delete_check(m_currentPage);
 
     if(m_zip.isOpen())
         m_zip.close();
@@ -32,7 +32,7 @@ AbstractBookReader::~AbstractBookReader()
 
 void AbstractBookReader::openBook()
 {
-    ML_ASSERT2(m_bookInfo, "AbstractBookReader::openBook book is null");
+    ml_return_on_fail2(m_bookInfo, "AbstractBookReader::openBook book is null");
 
     if(!QFile::exists(m_bookInfo->path)) {
         throw BookException(tr("لم يتم العثور على ملف الكتاب"), bookInfo()->path);
@@ -242,8 +242,8 @@ void AbstractBookReader::getBookInfo()
 {
    QuaZipFile pagesFile(&m_zip);
 
-   ML_ASSERT2(m_zip.setCurrentFile("pages.xml"), "getBookInfo: setCurrentFile error:" << m_zip.getZipError());
-   ML_ASSERT2(pagesFile.open(QIODevice::ReadOnly), "getBookInfo: open error" << pagesFile.getZipError());
+   ml_return_on_fail2(m_zip.setCurrentFile("pages.xml"), "getBookInfo: setCurrentFile error:" << m_zip.getZipError());
+   ml_return_on_fail2(pagesFile.open(QIODevice::ReadOnly), "getBookInfo: open error" << pagesFile.getZipError());
 
    m_pagesDom.load(&pagesFile);
 }

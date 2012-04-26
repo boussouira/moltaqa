@@ -33,11 +33,11 @@ LibrarySearcher::LibrarySearcher(QObject *parent)
 
 LibrarySearcher::~LibrarySearcher()
 {
-    ML_DELETE_CHECK(m_hits);
-    ML_DELETE_CHECK(m_query);
-    ML_DELETE_CHECK(m_sort);
-    ML_DELETE_CHECK(m_cluceneQuery);
-    ML_DELETE_CHECK(m_resultReader);
+    ml_delete_check(m_hits);
+    ml_delete_check(m_query);
+    ml_delete_check(m_sort);
+    ml_delete_check(m_cluceneQuery);
+    ml_delete_check(m_resultReader);
 
     if(m_searcher) {
         m_searcher->close();
@@ -209,7 +209,7 @@ void LibrarySearcher::fetech()
 
 void LibrarySearcher::setQuery(CLuceneQuery *query)
 {
-    ML_ASSERT2(query->searchQuery, "LibrarySearcher::setQuery query is null");
+    ml_return_on_fail2(query->searchQuery, "LibrarySearcher::setQuery query is null");
 
     m_cluceneQuery = query;
 }

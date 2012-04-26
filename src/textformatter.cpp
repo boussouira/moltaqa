@@ -41,8 +41,8 @@ void TextFormatter::insertText(QString text)
 
 QString TextFormatter::getHtmlView(const QString &text, const QString &jsCode)
 {
-    ML_ASSERT_RET2(m_book, "TextFormatter::getHtmlView book is null", QString());
-    ML_ASSERT_RET2(m_page, "TextFormatter::getHtmlView page is null", QString());
+    ml_return_val_on_fail2(m_book, "TextFormatter::getHtmlView book is null", QString());
+    ml_return_val_on_fail2(m_page, "TextFormatter::getHtmlView page is null", QString());
 
     HtmlHelper helper;
     helper.beginHtml();

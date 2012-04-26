@@ -25,7 +25,7 @@ void XmlManager::save(QStandardItemModel *model)
 
     QFile file(m_dom.filePath());
 
-    ML_ASSERT2(file.open(QIODevice::WriteOnly), "ListManager::save open file error" << file.errorString());
+    ml_return_on_fail2(file.open(QIODevice::WriteOnly), "ListManager::save open file error" << file.errorString());
 
     QXmlStreamWriter writer(&file);
     writer.setAutoFormatting(true);
