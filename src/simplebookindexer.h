@@ -14,6 +14,7 @@ protected:
 
 protected:
     wchar_t *m_authorDeath;
+    bool m_unknowAuthor;
 };
 
 #endif // SIMPLEBOOKINDEXER_H

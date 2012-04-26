@@ -7,7 +7,8 @@
 #include <qdebug.h>
 
 SimpleBookIndexer::SimpleBookIndexer() :
-    m_authorDeath(0)
+    m_authorDeath(0),
+    m_unknowAuthor(false)
 {
 }
 
@@ -19,10 +20,14 @@ SimpleBookIndexer::~SimpleBookIndexer()
 
 void SimpleBookIndexer::indexPage(BookPage *page)
 {
-    if(!m_authorDeath) {
+    if(!m_authorDeath && !m_unknowAuthor) {
         AuthorInfoPtr author = LibraryManager::instance()->authorsManager()->getAuthorInfo(m_book->authorID);
-        if(author)
-            m_authorDeath = Utils::CLucene::intToWChar(author->deathYear);
+        if(author) {
+            int death = (author->isALive ? 9999 : (author->unknowDeath ? 0 : author->deathYear));
+            m_authorDeath = Utils::CLucene::intToWChar(death);
+        } else {
+            m_unknowAuthor = true;
+        }
     }
 
     m_doc->add( *_CLNEW Field(TITLE_ID_FIELD,
