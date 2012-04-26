@@ -59,7 +59,7 @@ void AuthorsManager::loadAuthorsInfo()
         if(flags & AuthorInfo::ALive) {
             auth->isALive = true;
         } else if(flags & AuthorInfo::UnknowDeath) {
-            auth->unknowBirth = true;
+            auth->unknowDeath = true;
         } else {
             auth->deathYear = query.value(6).toInt();
             auth->deathStr = query.value(7).toString();

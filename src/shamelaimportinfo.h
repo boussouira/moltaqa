@@ -44,7 +44,7 @@ public:
         author->fullName = fullName;
         author->info = Utils::Html::format(info);
 
-        if(author->deathYear >= 2013)
+        if(dieYear >= 2013)
             author->isALive = true;
         else
             author->deathYear = dieYear;
