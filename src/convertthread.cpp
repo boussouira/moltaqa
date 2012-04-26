@@ -108,8 +108,8 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
 
         ImportModelNode *node = new ImportModelNode(LibraryBook::NormalBook);
         node->setTypeName(getBookType(bookDB));
-        node->bookName = bookQuery.value(bkCol).toString();
-        node->authorName = bookQuery.value(authCol).toString();
+        node->bookName = bookQuery.value(bkCol).toString().trimmed();
+        node->authorName = bookQuery.value(authCol).toString().trimmed();
 
         if(catCol != -1) { // Some old books doesn't have this column
             CategorieInfo *foundCat = m_bookListManager->findCategorie(bookQuery.value(catCol).toString());
