@@ -82,19 +82,19 @@ void TextBookIndexer::indexPageText(BookPage *page)
                               m_tokenAndNoStore, false));
 
     QString asanid = Utils::Html::getTagsText(pageText, "sanad");
-    if(!asanid.isEmpty())
+    if(asanid.size())
         m_doc->add( *_CLNEW Field(HADDIT_SANAD_FIELD,
                                   Utils::CLucene::QStringToWChar(asanid),
                                   m_tokenAndNoStore, false));
 
     QString motoon = Utils::Html::getTagsText(pageText, "mateen");
-    if(!motoon.isEmpty())
+    if(motoon.size())
         m_doc->add( *_CLNEW Field(HADDIT_MATEEN_FIELD,
                                   Utils::CLucene::QStringToWChar(motoon),
                                   m_tokenAndNoStore, false));
 
     QString sheer = Utils::Html::getTagsText(pageText, "sheer");
-    if(!sheer.isEmpty())
+    if(sheer.size())
         m_doc->add( *_CLNEW Field(SHEER_FIELD,
                                   Utils::CLucene::QStringToWChar(sheer),
                                   m_tokenAndNoStore, false));

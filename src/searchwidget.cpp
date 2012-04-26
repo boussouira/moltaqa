@@ -63,7 +63,7 @@ void SearchWidget::toggleWidget()
 Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
 {
     if(ui->lineQueryMust->text().isEmpty()){
-        if(!ui->lineQueryShould->text().isEmpty()){
+        if(ui->lineQueryShould->text().size()){
             ui->lineQueryMust->setText(ui->lineQueryShould->text());
             ui->lineQueryShould->clear();
         } else {
@@ -85,7 +85,7 @@ Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
     queryPareser.setAllowLeadingWildcard(true);
 
     try {
-        if(!mustQureyStr.isEmpty()) {
+        if(mustQureyStr.size()) {
             if(ui->checkQueryMust->isChecked())
                 queryPareser.setDefaultOperator(QueryParser::AND_OPERATOR);
             else
@@ -98,7 +98,7 @@ Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
             free(queryText);
         }
 
-        if(!shouldQureyStr.isEmpty()) {
+        if(shouldQureyStr.size()) {
             if(ui->checkQueryShould->isChecked())
                 queryPareser.setDefaultOperator(QueryParser::AND_OPERATOR);
             else
@@ -111,7 +111,7 @@ Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
             free(queryText);
         }
 
-        if(!shouldNotQureyStr.isEmpty()) {
+        if(shouldNotQureyStr.size()) {
             if(ui->checkQueryShouldNot->isChecked())
                 queryPareser.setDefaultOperator(QueryParser::AND_OPERATOR);
             else

@@ -110,7 +110,7 @@ void IndexTracker::addTask(int bookID, IndexTask::Task task, bool emitSignal)
 
 void IndexTracker::addTask(const QList<int> &books, IndexTask::Task task)
 {
-    if(!books.isEmpty()) {
+    if(books.size()) {
 
         foreach(int bookID, books) {
             addTask(bookID, task, false);
@@ -170,7 +170,7 @@ void IndexTracker::run()
     addTask(m_bookManager->getBooksWithIndexStat(LibraryBook::Delete), IndexTask::Delete);
     addTask(m_bookManager->getBooksWithIndexStat(LibraryBook::Update), IndexTask::Update);
 
-    if(!m_tasks.isEmpty())
+    if(m_tasks.size())
         emit gotTask();
 }
 

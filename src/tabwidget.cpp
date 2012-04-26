@@ -101,7 +101,7 @@ void TabWidget::showTabBarMenu(QPoint point)
         menu.addAction(closeAllAct);
     }
 
-    if(!m_tabBarActions.isEmpty()) {
+    if(m_tabBarActions.size()) {
         menu.addSeparator();
 
         foreach (QAction *act, m_tabBarActions) {

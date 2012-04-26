@@ -217,7 +217,7 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
 
     importBook(book, path);
 
-    if(!book->tafessirName.isEmpty()) {
+    if(book->tafessirName.size()) {
         addTafessir(book);
     }
 }

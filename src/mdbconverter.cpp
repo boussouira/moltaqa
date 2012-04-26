@@ -34,7 +34,7 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
           shamelaDB = shamelaDB.toLower();
           QString convertDB = m_converted.value(shamelaDB, QString());
 
-          if(!convertDB.isEmpty()) {
+          if(convertDB.size()) {
               qDebug() << "MdbConverter: Database" << shamelaDB << "already converted";
               return convertDB;
           }
@@ -44,7 +44,7 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
     timer.start();
 
     QString convert_path;
-    if(!sql_path.isEmpty()){
+    if(sql_path.size()){
         convert_path = sql_path;
     } else {
         convert_path = Utils::Rand::fileName(m_tempFolder, true, "sqlite", "mdb_");
@@ -261,7 +261,7 @@ void MdbConverter::print_col(QString &str,gchar *col_val, bool quote_text, int c
 void MdbConverter::removeConvertedDB(QString shamelaDB)
 {
     QString convertedDB = m_converted.value(shamelaDB.toLower(), QString());
-    if(!convertedDB.isEmpty()) {
+    if(convertedDB.size()) {
         QFile::remove(convertedDB);
         m_converted.remove(shamelaDB.toLower());
     }

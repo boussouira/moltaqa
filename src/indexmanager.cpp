@@ -51,7 +51,7 @@ bool IndexManager::openWriter()
 
 bool IndexManager::isIndexing()
 {
-    return !m_threads.isEmpty();
+    return m_threads.size();
 }
 
 void IndexManager::start()

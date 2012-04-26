@@ -117,7 +117,7 @@ SearchFilter *BookSearchFilter::getSimpleBookFilterQuery()
 
     q->add(termQuery, BooleanClause::MUST);
 
-    if(!titles.isEmpty())
+    if(titles.size())
         q->add(pagesQuery, BooleanClause::MUST);
 
     filter->filterQuery = q;

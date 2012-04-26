@@ -352,11 +352,11 @@ QString appDir()
         QStringList missingFiles;
 
         missingFiles = checkDir(false);
-        if(!missingFiles.isEmpty()) {
+        if(missingFiles.size()) {
             appRootPath = QDir::currentPath();
 
             missingFiles = checkDir(false);
-            if(!missingFiles.isEmpty()) {
+            if(missingFiles.size()) {
                 QMessageBox::critical(0,
                                       App::name(),
                                       QObject::tr("لم يتم العثور على بعض الملفات في مجلد البرنامج""\n"

@@ -209,7 +209,7 @@ bool BookEditor::save()
 
 void BookEditor::removeTemp()
 {
-    if(!m_bookTmpDir.isEmpty() && QFile::exists(m_bookTmpDir))
+    if(m_bookTmpDir.size() && QFile::exists(m_bookTmpDir))
         Utils::Files::removeDir(m_bookTmpDir);
 }
 

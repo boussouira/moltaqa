@@ -63,21 +63,21 @@ void BookInfoDialog::setup()
     html.endSpan();
     html.endParagraph();
 
-    if(!m_book->edition.isEmpty()) {
+    if(m_book->edition.size()) {
         html.beginParagraph();
         html.insertSpan(tr("الطبعة:"), ".pro-name");
         html.insertSpan(m_book->edition, ".pro-value");
         html.endParagraph();
     }
 
-    if(!m_book->publisher.isEmpty()) {
+    if(m_book->publisher.size()) {
         html.beginParagraph();
         html.insertSpan(tr("الناشر:"), ".pro-name");
         html.insertSpan(m_book->publisher, ".pro-value");
         html.endParagraph();
     }
 
-    if(!m_book->mohaqeq.isEmpty()) {
+    if(m_book->mohaqeq.size()) {
         html.beginParagraph();
         html.insertSpan(tr("المحقق:"), ".pro-name");
         html.insertSpan(m_book->mohaqeq, ".pro-value");
@@ -105,7 +105,7 @@ void BookInfoDialog::setup()
     else if(m_book->bookFlags & LibraryBook::MoqabalPdf)
         moqabal += tr("نسخة مصورة PDF");
 
-    if(!moqabal.isEmpty()) {
+    if(moqabal.size()) {
         html.beginParagraph();
         html.insertSpan(tr("مقابل على:"), ".pro-name");
         html.insertSpan(moqabal, ".pro-value");
@@ -120,7 +120,7 @@ void BookInfoDialog::setup()
     if(m_book->bookFlags & LibraryBook::Mashekool)
         otherInfo += tr("مشكول، ");
 
-    if(!otherInfo.isEmpty()) {
+    if(otherInfo.size()) {
         html.beginParagraph();
         html.insertSpan(tr("معلومات اخرى:"), ".pro-name");
         html.insertSpan(otherInfo, ".pro-value");
@@ -128,7 +128,7 @@ void BookInfoDialog::setup()
     }
 
     /*
-    if(!m_book->comment.isEmpty()) {
+    if(m_book->comment.size()) {
         html.beginParagraphTag();
         html.insertSpanTag(tr("ملاحظات:"), ".pro-name");
         html.insertSpanTag(m_book->comment, ".pro-value");
@@ -138,7 +138,7 @@ void BookInfoDialog::setup()
 
     html.endDiv(); // #info
 
-    if(!m_book->info.isEmpty()) {
+    if(m_book->info.size()) {
         html.insertHead(4, tr("نبذة حول الكتاب"));
         html.insertDiv(m_book->info, ".head-info");
     }

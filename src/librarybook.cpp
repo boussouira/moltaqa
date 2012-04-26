@@ -17,7 +17,7 @@ LibraryBook::~LibraryBook()
 
 bool LibraryBook::exists()
 {
-    ml_return_val_on_fail2(!path.isEmpty(), "LibraryBook::exists path is empty", false);
+    ml_return_val_on_fail2(path.size(), "LibraryBook::exists path is empty", false);
     ml_return_val_on_fail2(QFile::exists(path), "LibraryBook::exists book" << path << "doesn't exists", false);
 
     return true;

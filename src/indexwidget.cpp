@@ -129,7 +129,7 @@ void IndexWidget::selectTitle(int tid)
     QModelIndexList selected = ui->treeView->selectionModel()->selectedIndexes();
 
     // Check if the title is already selected
-    if(!selected.isEmpty()) {
+    if(selected.size()) {
         if(selected.at(0).data(ItemRole::idRole).toInt() == tid)
             index = selected.at(0);
     }

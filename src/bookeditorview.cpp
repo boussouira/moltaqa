@@ -151,12 +151,12 @@ void BookEditorView::updateActions()
         m_actionFirstPage->setEnabled(m_bookReader->hasPrev());
     }
 
-    m_actionSave->setEnabled(!m_pages.isEmpty());
-    m_actionCancel->setEnabled(!m_pages.isEmpty());
+    m_actionSave->setEnabled(m_pages.size());
+    m_actionCancel->setEnabled(m_pages.size());
 
     // If we have some saved pages then 'Save' action will be always enabled
     // m_timer is no more needed
-    if(!m_pages.isEmpty())
+    if(m_pages.size())
         m_timer->stop();
 }
 
@@ -204,7 +204,7 @@ bool BookEditorView::maySave(bool canCancel)
     saveCurrentPage();
     updateActions();
 
-    if(!m_pages.isEmpty()) {
+    if(m_pages.size()) {
         int rep = QMessageBox::question(this,
                                         tr("حفظ التعديلات"),
                                         tr("هل تريد حفظ التعديلات التي اجريتها على كتاب:\n%1؟").arg(m_bookReader->bookInfo()->title),
@@ -264,15 +264,15 @@ void BookEditorView::readerTextChange()
 void BookEditorView::checkPageModified()
 {
     bool pageModified = m_webView->pageModified();
-    m_actionSave->setEnabled(!m_pages.isEmpty() || pageModified);
-    m_actionCancel->setEnabled(!m_pages.isEmpty() || pageModified);
+    m_actionSave->setEnabled(m_pages.size() || pageModified);
+    m_actionCancel->setEnabled(m_pages.size() || pageModified);
 }
 
 void BookEditorView::save()
 {
     saveCurrentPage();
 
-    if(!m_pages.isEmpty()) {
+    if(m_pages.size()) {
         QProgressDialog dialog(this);
         dialog.setWindowTitle(tr("حفظ التغييرات"));
         dialog.setLabelText(tr("جاري حفظ التغييرات..."));

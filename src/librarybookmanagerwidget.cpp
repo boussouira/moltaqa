@@ -107,7 +107,7 @@ void LibraryBookManagerWidget::save()
 {
     saveCurrentBookInfo();
 
-    if(!m_editedBookInfo.isEmpty()) {
+    if(m_editedBookInfo.size()) {
         m_manager->transaction();
 
         foreach(LibraryBookPtr book, m_editedBookInfo.values()) {

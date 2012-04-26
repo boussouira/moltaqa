@@ -178,7 +178,7 @@ void SearchFilterManager::showUnSelected()
 
 void SearchFilterManager::selectChilds()
 {
-    ml_return_on_fail(!m_treeView->selectionModel()->selectedIndexes().isEmpty());
+    ml_return_on_fail(m_treeView->selectionModel()->selectedIndexes().size());
 
     QModelIndex index = m_treeView->selectionModel()->selectedIndexes().first();
     if(index.isValid())
@@ -187,7 +187,7 @@ void SearchFilterManager::selectChilds()
 
 void SearchFilterManager::unSelectChilds()
 {
-    ml_return_on_fail(!m_treeView->selectionModel()->selectedIndexes().isEmpty());
+    ml_return_on_fail(m_treeView->selectionModel()->selectedIndexes().size());
 
     QModelIndex index = m_treeView->selectionModel()->selectedIndexes().first();
     if(index.isValid())

@@ -49,7 +49,7 @@ bool XmlDomHelper::needSave()
 void XmlDomHelper::load()
 {
     ml_return_on_fail(!m_domLoaded);
-    ml_return_on_fail2(!m_filePath.isEmpty(), "XmlDomHelper::load empty file path");
+    ml_return_on_fail2(m_filePath.size(), "XmlDomHelper::load empty file path");
 
     if(m_needSave)
         qCritical("XmlDomHelper::load Dom need to be saved first");
@@ -115,7 +115,7 @@ void XmlDomHelper::create()
     ml_return_on_fail2(file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate),
                "XmlDomHelper::create open file error:" << file.errorString());
 
-    ml_return_on_fail(!m_documentName.isEmpty());
+    ml_return_on_fail(m_documentName.size());
     qDebug("XmlDomHelper::create Create XML File...");
 
     QTextStream out(&file);

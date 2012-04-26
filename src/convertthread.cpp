@@ -49,7 +49,7 @@ void ConvertThread::run()
             emit setProgress(++m_convertedFiles);
 
 #ifdef USE_MDBTOOLS
-            if(!m_tempDB.isEmpty()) {
+            if(m_tempDB.size()) {
                 QFile::remove(m_tempDB);
                 m_tempDB.clear();
             }

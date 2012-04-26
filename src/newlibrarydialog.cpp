@@ -46,7 +46,7 @@ void NewLibraryDialog::on_toolSelectLibDir_clicked()
                                                     ui->lineLibDir->text(),
                                                     QFileDialog::ShowDirsOnly
                                                     |QFileDialog::DontResolveSymlinks);
-    if(!dirPath.isEmpty()) {
+    if(dirPath.size()) {
         if(Utils::Library::isValidLibrary(dirPath)) {
             int ret = QMessageBox::question(this,
                                             App::name(),

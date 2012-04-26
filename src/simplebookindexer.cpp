@@ -35,7 +35,7 @@ void SimpleBookIndexer::indexPage(BookPage *page)
                                   m_storeAndNoToken));
     }
 
-    if(!page->title.isEmpty()) {
+    if(page->title.size()) {
         m_doc->add( *_CLNEW Field(TITLE_TEXT_FIELD,
                                   Utils::CLucene::QStringToWChar(page->title),
                                   m_tokenAndNoStore, false));

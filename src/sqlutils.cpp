@@ -95,11 +95,11 @@ void QueryBuilder::limit(int _limit)
 QString QueryBuilder::query()
 {
     ml_return_val_on_fail2(m_type != None, "QueryBuilder::query Query type is not set", QString());
-    ml_return_val_on_fail2(!m_tableName.isEmpty(), "QueryBuilder::query Table name is not set", QString());
+    ml_return_val_on_fail2(m_tableName.size(), "QueryBuilder::query Table name is not set", QString());
     ml_return_val_on_fail2(m_type == Select || m_values.size() == m_colums.size(),
                    "QueryBuilder::query Columns and values doesn't match", QString());
 
-    if(!m_whereColums.isEmpty()) {
+    if(m_whereColums.size()) {
         ml_return_val_on_fail2(m_whereValues.size() == m_whereColums.size(),
                        "QueryBuilder: Where columns and values doesn't match", QString());
     }
@@ -168,7 +168,7 @@ QString QueryBuilder::query()
             sql += "?";
         }
 
-        if(!m_whereColums.isEmpty()) {
+        if(m_whereColums.size()) {
             sql += " WHERE ";
 
             for(int i=0; i<m_whereColums.size(); i++) {
@@ -183,7 +183,7 @@ QString QueryBuilder::query()
     } else if(m_type == Select) {
         sql = "SELECT ";
 
-        if(!m_colums.isEmpty()) {
+        if(m_colums.size()) {
             for(int i=0; i<m_colums.size(); i++) {
                 if(i)
                     sql += ", ";
@@ -197,7 +197,7 @@ QString QueryBuilder::query()
         sql += " FROM ";
         sql += m_tableName;
 
-        if(!m_whereColums.isEmpty()) {
+        if(m_whereColums.size()) {
             sql += " WHERE ";
             for(int i=0; i<m_whereColums.size(); i++) {
                 if(i)
@@ -209,7 +209,7 @@ QString QueryBuilder::query()
             }
         }
 
-        if(!m_orderColumns.isEmpty()) {
+        if(m_orderColumns.size()) {
             sql += " ORDER BY ";
 
             for(int i=0; i<m_orderColumns.size(); i++) {
@@ -233,14 +233,14 @@ QString QueryBuilder::query()
 void QueryBuilder::prepare(QSqlQuery &q)
 {
     ml_return_on_fail2(m_type != None, "QueryBuilder::prepare Query type is not set");
-    ml_return_on_fail2(!m_tableName.isEmpty(), "QueryBuilder::prepare Table name is not set");
+    ml_return_on_fail2(m_tableName.size(), "QueryBuilder::prepare Table name is not set");
     ml_return_on_fail2(m_type == Select || m_values.size() == m_colums.size(),
                "QueryBuilder::prepare Columns and values doesn't match");
 
     QString sql;
 
     sql = query();
-    ml_return_on_fail2(!sql.isEmpty(), "QueryBuilder::prepare Query is empty");
+    ml_return_on_fail2(sql.size(), "QueryBuilder::prepare Query is empty");
 
     q.prepare(sql);
 

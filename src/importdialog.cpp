@@ -85,7 +85,7 @@ void ImportDialog::on_pushAddFile_clicked()
         addFile(file);
     }
 
-    if(!files.isEmpty())
+    if(files.size())
         settings.setValue("SavedPath/ImportDialog",
                           QFileInfo(files.first()).absolutePath());
 }

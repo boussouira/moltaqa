@@ -402,7 +402,7 @@ void ShamelaManager::importShorooh()
 
         // Get linked shorooh
         QList<int> shorooh = getBookShorooh(mateen_oNum);
-        if(!shorooh.isEmpty()) {
+        if(shorooh.size()) {
             qDebug("ShamelaManager::importShorooh Book %d has %d shorooh", mateen_bkId, shorooh.size());
             // Link with each shareeh
             foreach(int shareeh_oNum, shorooh) {

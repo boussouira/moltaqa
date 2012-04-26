@@ -78,7 +78,7 @@ void BookWidget::loadSettings()
     QSettings settings;
     settings.beginGroup("BookWidget");
     QByteArray sizes = settings.value("splitter").toByteArray();
-    if(!sizes.isEmpty())
+    if(sizes.size())
         m_splitter->restoreState(sizes);
     settings.endGroup();
 }

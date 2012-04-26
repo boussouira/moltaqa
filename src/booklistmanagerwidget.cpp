@@ -103,7 +103,7 @@ void BookListManagerWidget::pastNode()
     QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
     ml_return_on_fail(index.isValid());
 
-    if(!m_copiedItems.isEmpty()) {
+    if(m_copiedItems.size()) {
         QStandardItem *item = m_model->itemFromIndex(index);
 
         item->appendRow(m_copiedItems);
@@ -119,7 +119,7 @@ void BookListManagerWidget::pastSublingNode()
     QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
     ml_return_on_fail(index.isValid());
 
-    if(!m_copiedItems.isEmpty()) {
+    if(m_copiedItems.size()) {
         QStandardItem *parentItem = Utils::Model::itemFromIndex(m_model, index.parent());
         parentItem->insertRow(index.row()+1, m_copiedItems);
 
@@ -158,7 +158,7 @@ void BookListManagerWidget::addCat()
     QString title = QInputDialog::getText(this, tr("اسم القسم"),
                                          tr("ادخل اسم القسم:"), QLineEdit::Normal,
                                          QString(), &ok);
-    if(ok && !title.isEmpty()) {
+    if(ok && title.size()) {
         QStandardItem *catItem = new QStandardItem();
         catItem->setText(title);
         catItem->setIcon(QIcon(":/images/book-cat.png"));

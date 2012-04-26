@@ -80,7 +80,7 @@ bool ZipHelper::save()
 {
     QString newZip = zip();
     QString backupZip = m_zipPath + ".back";
-    if(!newZip.isEmpty()) {
+    if(newZip.size()) {
         if(QFile::exists(backupZip) && !QFile::remove(backupZip))
             qWarning() << "ZipHelper: Can't remove backup file:" << backupZip;
         if(QFile::rename(m_zipPath, backupZip)) {

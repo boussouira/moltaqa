@@ -116,7 +116,7 @@ void AuthorsManagerWidget::newAuthor()
     QString name = QInputDialog::getText(this,
                                          tr("اضافة مؤلف"),
                                          tr("اسم المؤلف:"));
-    if(!name.isEmpty()) {
+    if(name.size()) {
         AuthorInfoPtr auth(new AuthorInfo());
         auth->name = name;
         auth->fullName = name;
@@ -241,7 +241,7 @@ void AuthorsManagerWidget::save()
 {
     saveCurrentAuthor();
 
-    ml_return_on_fail(!m_editedAuthInfo.isEmpty());
+    ml_return_on_fail(m_editedAuthInfo.size());
 
     m_authorsManager->transaction();
 

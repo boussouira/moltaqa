@@ -65,7 +65,7 @@ void TarajemRowatManagerWidget::aboutToShow()
 void TarajemRowatManagerWidget::save()
 {
     saveCurrentRawi();
-    ml_return_on_fail(!m_editedRawiInfo.isEmpty());
+    ml_return_on_fail(m_editedRawiInfo.size());
 
     m_manager->transaction();
 
@@ -250,7 +250,7 @@ void TarajemRowatManagerWidget::newRawi()
     QString name = QInputDialog::getText(this,
                                          tr("اضافة راوي"),
                                          tr("اسم الراوي:"));
-    if(!name.isEmpty()) {
+    if(name.size()) {
         RawiInfoPtr rawi = RawiInfoPtr(new RawiInfo());
         rawi->name = name;
 

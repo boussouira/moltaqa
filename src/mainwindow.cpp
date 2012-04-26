@@ -65,7 +65,7 @@ bool MainWindow::init()
 
     if(!Utils::Library::isValidLibrary(libDir)) {
         int ret;
-        if(!libDir.isEmpty()) {
+        if(libDir.size()) {
             // We have a path to the library but it is invalid
             ret = QMessageBox::question(this,
                                         App::name(),
@@ -100,7 +100,7 @@ bool MainWindow::init()
             QString path = QFileDialog::getExistingDirectory(this,
                                                              tr("اختر مجلد المكتبة"),
                                                              QDir::homePath());
-            if(!path.isEmpty() && Utils::Library::isValidLibrary(path)) {
+            if(path.size() && Utils::Library::isValidLibrary(path)) {
                 libDir = path;
                 settings.setValue("library_dir", libDir);
             } else {

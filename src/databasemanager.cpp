@@ -19,7 +19,7 @@ void DatabaseManager::setDatabasePath(const QString &path)
 
 void DatabaseManager::openDatabase()
 {
-    ml_return_on_fail2(!m_path.isEmpty(), "DatabaseManager: Database path is empty");
+    ml_return_on_fail2(m_path.size(), "DatabaseManager: Database path is empty");
 
     QString conn = "DatabaseManager." + QFileInfo(m_path).baseName();
     while(m_db.contains(conn))

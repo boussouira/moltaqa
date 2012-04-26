@@ -107,7 +107,7 @@ void BookIndexEditor::addTitle()
     QString text = QInputDialog::getText(this, tr("عنوان جديد"),
                                          tr("العنوان الجديد:"), QLineEdit::Normal,
                                          m_editView->m_webView->selectedText(), &ok);
-    if(ok && !text.isEmpty()) {
+    if(ok && text.size()) {
         QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
         QStandardItem *title = new QStandardItem(text);
         title->setData(m_editView->m_currentPage->pageID, ItemRole::idRole);

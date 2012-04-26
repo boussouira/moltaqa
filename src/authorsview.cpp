@@ -129,17 +129,17 @@ void AuthorsView::setCurrentAuth(AuthorInfoPtr info)
 
     html.beginDiv(".nav");
 
-    if(!books.isEmpty())
+    if(books.size())
     html.insertLink(tr("الكتب "), "#books");
 
-    if(!info->info.isEmpty())
+    if(info->info.size())
         html.insertLink(tr("الترجمة"), "#tarejama");
 
     html.endDiv(); // .nav
 
     html.beginDiv("#info");
 
-    if(!info->name.isEmpty()) {
+    if(info->name.size()) {
         html.beginParagraph();
         html.insertSpan(tr("الاسم: "), ".pro-name");
 
@@ -151,21 +151,21 @@ void AuthorsView::setCurrentAuth(AuthorInfoPtr info)
         html.endParagraph();
     }
 
-    if(!info->fullName.isEmpty()) {
+    if(info->fullName.size()) {
         html.beginParagraph();
         html.insertSpan(tr("الاسم الكامل: "), ".pro-name");
         html.insertSpan(info->fullName, ".pro-value");
         html.endParagraph();
     }
 
-    if(!info->birthStr.isEmpty()) {
+    if(info->birthStr.size()) {
         html.beginParagraph();
         html.insertSpan(tr("الولادة: "), ".pro-name");
         html.insertSpan(info->birthStr, ".pro-value");
         html.endParagraph();
     }
 
-    if(!info->deathStr.isEmpty()) {
+    if(info->deathStr.size()) {
         html.beginParagraph();
         html.insertSpan(tr("الوفاة: "), ".pro-name");
         html.insertSpan(info->deathStr, ".pro-value");
@@ -175,7 +175,7 @@ void AuthorsView::setCurrentAuth(AuthorInfoPtr info)
     html.endDiv(); // #info
 
 
-    if(!books.isEmpty()) {
+    if(books.size()) {
         html.insertHead(4, tr("كتب المؤلف (%1)").arg(books.size()), "#books");
         HtmlHelper bookHtml;
 
@@ -193,7 +193,7 @@ void AuthorsView::setCurrentAuth(AuthorInfoPtr info)
         html.insertDiv(bookHtml.html(), ".head-info");
     }
 
-    if(!info->info.isEmpty()) {
+    if(info->info.size()) {
         html.insertHead(4, tr("الترجمة"), "#tarejama");
         html.insertDiv(info->info, ".head-info");
     }

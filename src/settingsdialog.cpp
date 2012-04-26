@@ -29,7 +29,7 @@ void SettingsDialog::loadSettings()
 {
     QSettings settings;
     QString booksPath = settings.value("library_dir").toString();
-    if(!booksPath.isEmpty())
+    if(booksPath.size())
         ui->lineBooksDir->setText(booksPath);
 
     settings.beginGroup("Search");
@@ -74,7 +74,7 @@ QString SettingsDialog::getFolderPath(const QString &defaultPath)
                                                     defaultPath,
                                                     QFileDialog::ShowDirsOnly
                                                     |QFileDialog::DontResolveSymlinks);
-    if(!dirPath.isEmpty()) {
+    if(dirPath.size()) {
         QDir dir(dirPath);
         return dir.absolutePath();
     }
@@ -85,7 +85,7 @@ QString SettingsDialog::getFolderPath(const QString &defaultPath)
 void SettingsDialog::changeBooksDir()
 {
     QString filePath = getFolderPath(ui->lineBooksDir->text());
-    if(!filePath.isEmpty()) {
+    if(filePath.size()) {
         ui->lineBooksDir->setText(filePath);
     }
 }

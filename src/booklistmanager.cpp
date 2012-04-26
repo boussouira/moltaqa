@@ -235,7 +235,7 @@ void BookListManager::readNode(QStandardItem *parentItem, QDomElement &element, 
     else if(withBooks && element.tagName() == "book")
         rows = readBookNode(element);
 
-    if(!rows.isEmpty())
+    if(rows.size())
         parentItem->appendRow(rows);
 
     QStandardItem *newParentItem = rows.isEmpty() ? parentItem : rows.first();
