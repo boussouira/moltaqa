@@ -60,10 +60,6 @@ QString localeDir();
 QString dataDir();
 }
 
-namespace Sql {
-QString buildLikeQuery(QString text, QString column);
-}
-
 namespace Log {
 
 void QueryError(const QSqlQuery &query, const char *file, int line);
