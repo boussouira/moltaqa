@@ -54,6 +54,11 @@ void SearchWidget::setCurrentWidget(SearchWidget::CurrentWidget index)
     ui->stackedWidget->setCurrentIndex(index);
 }
 
+SearchWidget::CurrentWidget SearchWidget::currentWidget()
+{
+    return static_cast<CurrentWidget>(ui->stackedWidget->currentIndex());
+}
+
 void SearchWidget::toggleWidget()
 {
     if(m_searcher) // Do we have any search result?
