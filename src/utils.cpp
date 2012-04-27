@@ -443,7 +443,6 @@ QString currentStyle(const QString &fileName)
         ml_warn_on_fail(dir.exists(fileName),
                         "currentStyle: file" << fileName << "not found in" << dir.absolutePath());
 
-        qDebug() << dir.absoluteFilePath(fileName);
         return dir.absoluteFilePath(fileName);
     }
 
