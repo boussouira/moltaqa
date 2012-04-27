@@ -10,7 +10,7 @@ a {
     text-decoration: none;
 }
 #quran {
-    border: 1px solid #CCCCCC;
+    border: 1px solid #333333;
     padding: 15px;
     text-align: center;
 }
@@ -19,8 +19,8 @@ a {
     text-align: right;
 }
 .soraname {
-    border: 1px solid #CCCCCC;
-    color: #444444;
+    border: 1px solid #4E4E4E;
+    color: #FFDADA;
     font-size: 30px;
     margin-bottom: 25px;
     margin-left: 5px;
@@ -36,7 +36,7 @@ a {
     text-align: justify;
 }
 .bassemala {
-    color: DarkBlue;
+    color: #9DE7FF;
     margin-bottom: 10px;
     text-align: center;
 }
