@@ -38,19 +38,19 @@ void SettingsDialog::loadSettings()
     ui->spinThreadCount->setMinimum(1);
     ui->spinThreadCount->setMaximum(QThread::idealThreadCount()*2);
 
-    ui->comboBox->addItem(tr("%1 ميغا").arg(100), 100);
-    ui->comboBox->addItem(tr("%1 ميغا").arg(200), 200);
-    ui->comboBox->addItem(tr("%1 ميغا").arg(300), 300);
-    ui->comboBox->addItem(tr("%1 ميغا").arg(500), 500);
-    ui->comboBox->addItem(tr("%1 جيغا").arg(1), 1000);
-    ui->comboBox->addItem(tr("%1 جيغا").arg(1.5), 1500);
-    ui->comboBox->addItem(tr("%1 جيغا").arg(2), 2000);
-    ui->comboBox->addItem(tr("%1 جيغا").arg(3), 3000);
+    ui->comboIndexingRam->addItem(tr("%1 ميغا").arg(100), 100);
+    ui->comboIndexingRam->addItem(tr("%1 ميغا").arg(200), 200);
+    ui->comboIndexingRam->addItem(tr("%1 ميغا").arg(300), 300);
+    ui->comboIndexingRam->addItem(tr("%1 ميغا").arg(500), 500);
+    ui->comboIndexingRam->addItem(tr("%1 جيغا").arg(1), 1000);
+    ui->comboIndexingRam->addItem(tr("%1 جيغا").arg(1.5), 1500);
+    ui->comboIndexingRam->addItem(tr("%1 جيغا").arg(2), 2000);
+    ui->comboIndexingRam->addItem(tr("%1 جيغا").arg(3), 3000);
 
     int currentSize = settings.value("ramSize", 100).toInt();
-    for(int i=0; i<ui->comboBox->count(); i++) {
-        if(ui->comboBox->itemData(i).toInt() == currentSize) {
-            ui->comboBox->setCurrentIndex(i);
+    for(int i=0; i<ui->comboIndexingRam->count(); i++) {
+        if(ui->comboIndexingRam->itemData(i).toInt() == currentSize) {
+            ui->comboIndexingRam->setCurrentIndex(i);
             break;
         }
     }
@@ -100,7 +100,7 @@ void SettingsDialog::saveSettings()
     settings.beginGroup("Search");
     settings.setValue("resultPeerPage", ui->spinResultPeerPage->value());
     settings.setValue("threadCount", ui->spinThreadCount->value());
-    settings.setValue("ramSize", ui->comboBox->itemData(ui->comboBox->currentIndex()));
+    settings.setValue("ramSize", ui->comboIndexingRam->itemData(ui->comboIndexingRam->currentIndex()));
     settings.endGroup();
 
     accept();
