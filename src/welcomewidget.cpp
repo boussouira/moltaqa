@@ -73,6 +73,10 @@ void WelcomeWidget::aboutToShow()
 
 void WelcomeWidget::aboutToHide()
 {
+    QSettings settings;
+    settings.beginGroup("WelcomeWidget");
+
+    settings.setValue("tab", ui->tabWidget->currentIndex());
 }
 
 void WelcomeWidget::loadSettings()
