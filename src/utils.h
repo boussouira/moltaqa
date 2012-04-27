@@ -10,6 +10,11 @@
 #define APP_VERSION 0x000900
 #define APP_VERSION_CHECK(major, minor, patch) ((major<<16)|(minor<<8)|(patch))
 
+#if QT_VERSION >= 0x040800
+    #define ML_DEFAULT_STYLE "default"
+#else
+    #define ML_DEFAULT_STYLE "light"
+#endif
 
 class QSqlQuery;
 class QSqlDatabase;

@@ -1,11 +1,13 @@
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
+#include "utils.h"
 
 #include <qsettings.h>
 #include <qfile.h>
 #include <qmessagebox.h>
 #include <qfiledialog.h>
 #include <qthread.h>
+#include <qvariant.h>
 
 SettingsDialog::SettingsDialog(QWidget *parent) :
     QDialog(parent),
@@ -56,6 +58,35 @@ void SettingsDialog::loadSettings()
     }
 
     settings.endGroup();
+
+    loadStyles();
+
+    QString currentStyle = settings.value("style", ML_DEFAULT_STYLE).toString();
+    for(int i=0; i<ui->comboStyles->count(); i++) {
+        if(ui->comboStyles->itemData(i).toHash().value("dir").toString() == currentStyle) {
+            ui->comboStyles->setCurrentIndex(i);
+            break;
+        }
+    }
+}
+
+void SettingsDialog::loadStyles()
+{
+    QDir dir(App::stylesDir());
+    foreach (QString style, dir.entryList(QDir::Dirs|QDir::NoDotAndDotDot)) {
+        QDir styleDir(dir.absoluteFilePath(style));
+        if(styleDir.exists("config.cfg")) {
+            QSettings cfg(styleDir.absoluteFilePath("config.cfg"), QSettings::IniFormat);
+            if(cfg.contains("name") && cfg.contains("description")) {
+                QHash<QString, QVariant> styleInfo;
+                styleInfo["name"] = QString::fromUtf8(cfg.value("name").toByteArray());
+                styleInfo["description"] = QString::fromUtf8(cfg.value("description").toByteArray());
+                styleInfo["dir"] = style;
+
+                ui->comboStyles->addItem(styleInfo["name"].toString(), styleInfo);
+            }
+        }
+    }
 }
 
 QString SettingsDialog::getFilePath()
@@ -96,6 +127,8 @@ void SettingsDialog::saveSettings()
     QString appPath = ui->lineBooksDir->text();
 
     settings.setValue("library_dir", appPath);
+    settings.setValue("style", ui->comboStyles->itemData(ui->comboStyles->currentIndex(),
+                                                         Qt::UserRole).toHash().value("dir"));
 
     settings.beginGroup("Search");
     settings.setValue("resultPeerPage", ui->spinResultPeerPage->value());

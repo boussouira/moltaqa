@@ -324,6 +324,7 @@ QStringList checkDir(bool showWarnings)
                                showWarnings);
 
     missingFiles << checkFiles(QStringList()
+                               << "default/config.cfg"
                                << "default/default.css",
                                stylesDir(),
                                showWarnings);
@@ -427,7 +428,7 @@ QString dataDir()
 QString currentStyle(const QString &fileName)
 {
     QSettings settings;
-    QString defaultStyle = "default";
+    QString defaultStyle = ML_DEFAULT_STYLE;
     QString currentStyle = settings.value("style", defaultStyle).toString();
 
     QDir dir(stylesDir());
@@ -442,6 +443,7 @@ QString currentStyle(const QString &fileName)
         ml_warn_on_fail(dir.exists(fileName),
                         "currentStyle: file" << fileName << "not found in" << dir.absolutePath());
 
+        qDebug() << dir.absoluteFilePath(fileName);
         return dir.absoluteFilePath(fileName);
     }
 
