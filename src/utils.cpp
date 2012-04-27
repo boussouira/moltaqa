@@ -324,8 +324,8 @@ QStringList checkDir(bool showWarnings)
                                showWarnings);
 
     missingFiles << checkFiles(QStringList()
-                               << "default/config.cfg"
-                               << "default/default.css",
+                               << ML_DEFAULT_STYLE "/config.cfg"
+                               << ML_DEFAULT_STYLE "/default.css",
                                stylesDir(),
                                showWarnings);
 
