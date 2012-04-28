@@ -91,11 +91,11 @@ void LibrarySearcher::buildQuery()
     BooleanQuery booleanQuery;
     booleanQuery.add(m_cluceneQuery->searchQuery, BooleanClause::MUST);
 
-    if(m_cluceneQuery->filterQuery)
-        booleanQuery.add(m_cluceneQuery->filterQuery, m_cluceneQuery->filterClause);
+    if(m_cluceneQuery->filter)
+        booleanQuery.add(m_cluceneQuery->filter->query, m_cluceneQuery->filter->clause);
 
-    if(m_cluceneQuery->resultFilterQuery)
-        booleanQuery.add(m_cluceneQuery->resultFilterQuery, m_cluceneQuery->resultFilterClause);
+    if(m_cluceneQuery->resultFilter)
+        booleanQuery.add(m_cluceneQuery->resultFilter->query, m_cluceneQuery->resultFilter->clause);
 
     m_query = m_searcher->rewrite(&booleanQuery);
 

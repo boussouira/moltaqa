@@ -18,12 +18,7 @@ namespace lucene {
     }
 }
 
-class SearchFilter {
-public:
-    SearchFilter(): query(0){}
-    lucene::search::Query *query;
-    lucene::search::BooleanClause::Occur clause;
-};
+class SearchFilter;
 
 class SearchFilterManager : public QObject
 {

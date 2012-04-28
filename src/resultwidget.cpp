@@ -225,11 +225,17 @@ void ResultWidget::showBookMenu(int bookID)
             BooleanQuery *q = new BooleanQuery();
             q->add(termQuery, BooleanClause::SHOULD);
 
-            if(ret == excludeAct && query->resultFilterQuery)
-                q->add(query->resultFilterQuery, BooleanClause::SHOULD);
+            if(ret == excludeAct
+                    && query->resultFilter
+                    && query->resultFilter->clause == BooleanClause::MUST_NOT) {
+                q->add(query->resultFilter->query, BooleanClause::SHOULD);
+            }
 
-            query->resultFilterQuery = q;
-            query->resultFilterClause = ((ret == includeOnlyAct) ? BooleanClause::MUST : BooleanClause::MUST_NOT);
+            if(!query->resultFilter)
+                query->resultFilter = new SearchFilter();
+
+            query->resultFilter->query = q;
+            query->resultFilter->clause = ((ret == includeOnlyAct) ? BooleanClause::MUST : BooleanClause::MUST_NOT);
 
             m_searcher->setQuery(query);
             m_searcher->start();

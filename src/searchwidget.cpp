@@ -221,15 +221,14 @@ void SearchWidget::search()
     QString searchField = getSearchField();
     wchar_t *searchFieldW = Utils::CLucene::QStringToWChar(searchField);
 
-    QScopedPointer<SearchFilter> searchFilter(getSearchFilterQuery());
+    SearchFilter *searchFilter = getSearchFilterQuery();
     Query *searchQuery = getSearchQuery(searchFieldW);
 
     ml_return_on_fail(searchQuery);
 
     CLuceneQuery *query = new CLuceneQuery();
     query->searchQuery = searchQuery;
-    query->filterQuery = searchFilter->query;
-    query->filterClause = searchFilter->clause;
+    query->filter = searchFilter;
     query->searchField = searchField;
     query->searchFieldW = searchFieldW;
     query->sort = static_cast<CLuceneQuery::SearchSort>(ui->comboSortSearch->currentIndex());

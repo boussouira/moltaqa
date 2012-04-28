@@ -9,6 +9,7 @@
 #include "mainwindow.h"
 #include "bookreaderhelper.h"
 #include "xmlutils.h"
+#include "clucenequery.h"
 
 #include <qsqlquery.h>
 #include <qitemselectionmodel.h>
