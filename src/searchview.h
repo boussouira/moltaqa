@@ -28,6 +28,7 @@ public slots:
 protected slots:
     void openNewTab();
     void searchAgain();
+    void searchInfo();
 
 signals:
     void lastTabClosed();

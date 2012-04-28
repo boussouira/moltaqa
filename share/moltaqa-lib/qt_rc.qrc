@@ -34,5 +34,6 @@
         <file>images/add2.png</file>
         <file>images/external.png</file>
         <file>images/refresh.png</file>
+        <file>images/about.png</file>
     </qresource>
 </RCC>

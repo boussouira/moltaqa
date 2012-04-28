@@ -65,6 +65,24 @@ void SearchWidget::toggleWidget()
         setCurrentWidget(ui->stackedWidget->currentIndex()==Search ? Result : Search);
 }
 
+void SearchWidget::showSearchInfo()
+{
+    ml_return_on_fail(m_searcher);
+
+    QString sec = QString::number(m_searcher->searchTime()/1000.);
+    if(sec.indexOf('.') != -1)
+        sec = sec.left(sec.indexOf('.')+5);
+
+    QString info;
+    info += tr("تم البحث خلال: %1 ثانية").arg(sec);
+    info += "\n";
+    info += tr("عدد نتائج البحث: %1").arg(m_searcher->resultsCount());
+
+    QMessageBox::information(this,
+                             tr("نتائج البحث"),
+                             info);
+}
+
 Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
 {
     if(ui->lineQueryMust->text().isEmpty()){
