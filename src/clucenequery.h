@@ -17,6 +17,8 @@ public:
     ~SearchFilter();
     lucene::search::Query *query;
     lucene::search::BooleanClause::Occur clause;
+    int selected;
+    int unSelected;
 };
 
 class CLuceneQuery

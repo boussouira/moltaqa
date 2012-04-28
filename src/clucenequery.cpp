@@ -4,7 +4,9 @@
 #include <CLucene/search/Query.h>
 
 SearchFilter::SearchFilter() :
-    query(0)
+    query(0),
+    selected(0),
+    unSelected(0)
 {
 
 }

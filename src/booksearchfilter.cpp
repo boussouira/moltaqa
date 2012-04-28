@@ -88,6 +88,7 @@ SearchFilter *BookSearchFilter::getQuranFilterQuery()
         q->add(soraQuery, BooleanClause::MUST);
 
     filter->query = q;
+    filter->selected = 1;
 
     return filter;
 }
@@ -122,6 +123,7 @@ SearchFilter *BookSearchFilter::getSimpleBookFilterQuery()
         q->add(pagesQuery, BooleanClause::MUST);
 
     filter->query = q;
+    filter->selected = 1;
 
     return filter;
 }

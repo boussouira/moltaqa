@@ -68,6 +68,7 @@ void SearchWidget::toggleWidget()
 void SearchWidget::showSearchInfo()
 {
     ml_return_on_fail(m_searcher);
+    ml_return_on_fail(m_searcher->getSearchQuery());
 
     QString sec = QString::number(m_searcher->searchTime()/1000.);
     if(sec.indexOf('.') != -1)
@@ -75,6 +76,25 @@ void SearchWidget::showSearchInfo()
 
     QString info;
     info += tr("تم البحث خلال: %1 ثانية").arg(sec);
+
+    CLuceneQuery *query = m_searcher->getSearchQuery();
+    if((query->resultFilter && query->resultFilter->clause == BooleanClause::MUST)
+            || (query->filter && query->filter->clause == BooleanClause::MUST && query->filter->selected == 1)) {
+        info += tr(" في كتاب واحد");
+    } else {
+        if(query->filter) {
+            int selected = query->filter->selected;
+            info += tr(" في %1 كتاب").arg(selected);
+
+        } else {
+            info += tr(" في كل المكتبة");
+        }
+
+        if(query->resultFilter) {
+            info += tr(" مع استبعاد %1 كتاب").arg(query->resultFilter->unSelected);
+        }
+    }
+
     info += "\n";
     info += tr("عدد نتائج البحث: %1").arg(m_searcher->resultsCount());
 

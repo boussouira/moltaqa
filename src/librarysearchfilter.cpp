@@ -121,6 +121,8 @@ SearchFilter *LibrarySearchFilter::getFilterQuery()
     ml_warn_on_fail(count, "LibrarySearchFilter::getFilterQuery count is 0");
 
     filter->query = q;
+    filter->selected = selectedCount();
+    filter->unSelected = unSelecCount();
 
     return filter;
 }
