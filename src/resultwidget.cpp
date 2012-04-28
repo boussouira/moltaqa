@@ -8,6 +8,9 @@
 #include "htmlhelper.h"
 #include "bookinfodialog.h"
 #include "clconstants.h"
+#include "mainwindow.h"
+#include "richbookreader.h"
+
 #include <qdir.h>
 #include <qplaintextedit.h>
 #include <qboxlayout.h>
@@ -24,9 +27,13 @@ ResultWidget::ResultWidget(QWidget *parent) :
     m_view = new WebView(this);
     ui->verticalLayout->insertWidget(0, m_view);
 
+    m_moveToReaderViewAct = new QAction(tr("نقل الى نافذة عرض الكتب"), this);
+
     connect(m_view->page()->mainFrame(),
             SIGNAL(javaScriptWindowObjectCleared()),
             SLOT(populateJavaScriptWindowObject()));
+
+    connect(m_moveToReaderViewAct, SIGNAL(triggered()), SLOT(moveToReaderView()));
 
     setupWebView();
     setupBookReaderView();
@@ -65,6 +72,8 @@ void ResultWidget::setupBookReaderView()
     foreach(QToolBar *bar, m_readerview->toolBars()) {
         toolBarLayout->addWidget(bar);
     }
+
+    m_readerview->bookWidgetManager()->addTabActions(QList<QAction*>() << 0 << m_moveToReaderViewAct);
 
     // hide/maximize/minmize buttons
     QSpacerItem *horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -176,6 +185,14 @@ void ResultWidget::minimizeBookReader()
 void ResultWidget::lastTabClosed()
 {
     ensureReaderHidden(false);
+}
+
+void ResultWidget::moveToReaderView()
+{
+    RichBookReader *reader = m_readerview->bookWidgetManager()->activeBookReader();
+    ml_return_on_fail(reader);
+
+    MW->booksViewer()->openBook(reader->bookInfo()->id, reader->page()->pageID);
 }
 
 void ResultWidget::openResult(int resultID)

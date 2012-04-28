@@ -29,6 +29,8 @@ public:
     void closeBook(int bookID);
     BookWidget *getBookWidget(int bookID);
 
+    void addTabActions(QList<QAction *> tabActions);
+
 protected:
     void connectTab(TabWidget *tab);
     void reverseActiveTab();

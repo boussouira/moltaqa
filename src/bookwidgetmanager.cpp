@@ -301,6 +301,18 @@ BookWidget *BookWidgetManager::getBookWidget(int bookID)
     return 0;
 }
 
+void BookWidgetManager::addTabActions(QList<QAction*> tabActions)
+{
+    QList<QAction*> topActions = m_topTab->tabActions();
+    topActions.append(tabActions);
+    m_topTab->setTabBarActions(topActions);
+
+    QList<QAction*> bottomActions = m_bottomTab->tabActions();
+    bottomActions.append(tabActions);
+    m_bottomTab->setTabBarActions(bottomActions);
+
+}
+
 void BookWidgetManager::nextAya()
 {
     activeBookWidget()->scrollDown();

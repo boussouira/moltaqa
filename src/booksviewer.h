@@ -35,6 +35,8 @@ public:
     LibraryBookPtr currentBook();
     BookPage *currentPage();
 
+    BookWidgetManager *bookWidgetManager() { return m_viewManager; }
+
 public slots:
     BookWidget *openBook(int bookID, int pageID = -1, CLuceneQuery *query=0);
     void updateActions();
