@@ -20,8 +20,8 @@ namespace lucene {
 
 class SearchFilter {
 public:
-    SearchFilter(): filterQuery(0){}
-    lucene::search::Query *filterQuery;
+    SearchFilter(): query(0){}
+    lucene::search::Query *query;
     lucene::search::BooleanClause::Occur clause;
 };
 

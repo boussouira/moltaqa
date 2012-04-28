@@ -93,7 +93,7 @@ SearchFilter *LibrarySearchFilter::getFilterQuery()
 
     // Every thing is selected we don't need a filter
     if(unSelecCount()==0 || selectedCount()==0 ) {
-        filter->filterQuery = 0;
+        filter->query = 0;
         return filter;
     }
 
@@ -118,7 +118,7 @@ SearchFilter *LibrarySearchFilter::getFilterQuery()
         count++;
     }
 
-    filter->filterQuery = (count ? q : 0);
+    filter->query = (count ? q : 0);
 
     return filter;
 }

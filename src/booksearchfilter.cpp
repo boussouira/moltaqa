@@ -86,7 +86,7 @@ SearchFilter *BookSearchFilter::getQuranFilterQuery()
     if(!sowar.isEmpty() && sowar.size() != 114)
         q->add(soraQuery, BooleanClause::MUST);
 
-    filter->filterQuery = q;
+    filter->query = q;
 
     return filter;
 }
@@ -120,7 +120,7 @@ SearchFilter *BookSearchFilter::getSimpleBookFilterQuery()
     if(titles.size())
         q->add(pagesQuery, BooleanClause::MUST);
 
-    filter->filterQuery = q;
+    filter->query = q;
 
     return filter;
 }

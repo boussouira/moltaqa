@@ -228,7 +228,7 @@ void SearchWidget::search()
 
     CLuceneQuery *query = new CLuceneQuery();
     query->searchQuery = searchQuery;
-    query->filterQuery = searchFilter->filterQuery;
+    query->filterQuery = searchFilter->query;
     query->filterClause = searchFilter->clause;
     query->searchField = searchField;
     query->searchFieldW = searchFieldW;
