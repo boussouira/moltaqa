@@ -98,6 +98,9 @@ void WelcomeWidget::saveSettings()
 
     if(m_favouritesModel)
         Utils::Widget::save(ui->treeFavouritesList, "WelcomeWidget.favourites", 2);
+
+    if(m_lastReadedModel)
+        Utils::Widget::save(ui->treeLastBook, "WelcomeWidget.lastBook", 1);
 }
 
 void WelcomeWidget::bookListModel()
@@ -150,6 +153,10 @@ void WelcomeWidget::lastReadBooksModel()
     ml_return_on_fail2(m_lastReadedModel, "WelcomeWidget::lastReadBooksModel model is null");
 
     ui->treeLastBook->setModel(m_lastReadedModel);
+
+    Utils::Widget::restore(ui->treeLastBook,
+                           "WelcomeWidget.lastBook",
+                           QList<int>() << 350);
 }
 
 void WelcomeWidget::itemClicked(QModelIndex index)

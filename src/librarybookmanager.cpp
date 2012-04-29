@@ -5,6 +5,7 @@
 #include "modelenums.h"
 #include "utils.h"
 #include "xmlutils.h"
+#include "timeutils.h"
 #include "authorsmanager.h"
 
 #include <qdir.h>
@@ -82,10 +83,13 @@ StandardItemModelPtr LibraryBookManager::getLastOpendModel()
         item->setData(query.value(0).toInt(), ItemRole::bookIdRole);
         item->setIcon(QIcon(":/images/book.png"));
 
-        model->appendRow(item);
+        QStandardItem *timeItem = new QStandardItem();
+        timeItem->setText(Utils::Time::elapsedTime(query.value(2).toInt()));
+
+        model->invisibleRootItem()->appendRow(QList<QStandardItem*>() << item << timeItem);
     }
 
-    model->setHorizontalHeaderLabels(QStringList() << tr("الكتب"));
+    model->setHorizontalHeaderLabels(QStringList() << tr("الكتب") << tr("اخر تصفح قبل"));
 
     return StandardItemModelPtr(model);
 }

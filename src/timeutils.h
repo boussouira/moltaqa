@@ -13,6 +13,7 @@ int gregorianToHijri(int gYear);
 QString hijriYear(int hYear);
 
 QString secondsToString(int milsec, bool html=false);
+QString elapsedTime(uint timestamp);
 
 } // Time
 } // Utils
