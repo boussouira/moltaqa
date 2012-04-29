@@ -15,7 +15,7 @@
 #include <qheaderview.h>
 
 static QString appRootPath;
-static uint m_randSlat = uint(QDateTime::currentDateTime().toMSecsSinceEpoch() & 0xFFFFFF);
+static uint m_randSlat = QDateTime::currentDateTime().toTime_t();
 
 namespace Utils {
 

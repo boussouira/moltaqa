@@ -299,7 +299,7 @@ void LibraryBookManager::addBookHistory(int bookID, int pageID)
 {
     QSqlQuery query(m_db);
 
-    qint64 t = QDateTime::currentDateTime().toMSecsSinceEpoch();
+    uint t = QDateTime::currentDateTime().toTime_t();
 
     QueryBuilder q;
     q.setTableName("history", QueryBuilder::Insert);
