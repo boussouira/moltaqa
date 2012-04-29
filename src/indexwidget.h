@@ -32,6 +32,7 @@ public slots:
     void setIndex(QStandardItemModel *indexModel);
     void displayBookInfo();
     void setSelectedSora(int pSoraNumber);
+    void updateCurrentTitle(bool checked);
 
 private slots:
     void listDoubleClicked(QModelIndex pIndex);

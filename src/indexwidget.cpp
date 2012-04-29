@@ -7,6 +7,7 @@
 
 #include <qstandarditemmodel.h>
 #include "modelviewfilter.h"
+#include <qsettings.h>
 
 IndexWidget::IndexWidget(QWidget *parent) :
     QWidget(parent),
@@ -23,15 +24,24 @@ IndexWidget::IndexWidget(QWidget *parent) :
     ui->treeView->setExpandsOnDoubleClick(false);
     ui->treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
 
+    QSettings settings;
+    ui->toolSyncTitle->setChecked(settings.value("IndexWidget/updateTitle",
+                                                 true).toBool());
+
     connect(ui->treeView, SIGNAL(doubleClicked(QModelIndex)),
             this, SLOT(listDoubleClicked(QModelIndex)));
     connect(actionOpenSoraInNewTab, SIGNAL(triggered()),
             this, SLOT(openPageInNewTab()));
-
+    connect(ui->toolSyncTitle, SIGNAL(toggled(bool)),
+            SLOT(updateCurrentTitle(bool)));
 }
 
 IndexWidget::~IndexWidget()
 {
+    QSettings settings;
+    settings.setValue("IndexWidget/updateTitle",
+                      ui->toolSyncTitle->isChecked());
+
     delete ui;
 }
 
@@ -65,7 +75,8 @@ void IndexWidget::displayBookInfo()
         ui->spinAya->setValue(m_page->aya);
     }
 
-    selectTitle(m_page->titleID);
+    if(ui->toolSyncTitle->isChecked())
+        selectTitle(m_page->titleID);
 
     sendSignals = true;
 
@@ -79,6 +90,12 @@ void IndexWidget::setSelectedSora(int pSoraNumber)
     selection->select(itemToSelect,
                       QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
     ui->treeView->scrollTo(itemToSelect);
+}
+
+void IndexWidget::updateCurrentTitle(bool checked)
+{
+    if(checked)
+        selectTitle(m_page->titleID);
 }
 
 void IndexWidget::listDoubleClicked(QModelIndex index)
