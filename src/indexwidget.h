@@ -36,14 +36,10 @@ public slots:
 
 private slots:
     void listDoubleClicked(QModelIndex pIndex);
-    void openPageInNewTab();
 
 signals:
     void openSora(int sora, int aya);
     void openPage(int pageID);
-
-    void openSoraInNewTab(int sora, int aya);
-    void openPageInNewTab(int pageID);
 
     void bookInfoChanged();
 

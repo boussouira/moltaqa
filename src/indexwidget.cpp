@@ -14,15 +14,11 @@ IndexWidget::IndexWidget(QWidget *parent) :
     ui(new Ui::IndexWidget)
 {
     ui->setupUi(this);
-    sendSignals = true;
 
+    sendSignals = true;
     m_filter = new ModelViewFilter(this);
 
-    QAction *actionOpenSoraInNewTab = new QAction(tr("فتح في تبويب جديد"), this);
-
-    ui->treeView->addAction(actionOpenSoraInNewTab);
     ui->treeView->setExpandsOnDoubleClick(false);
-    ui->treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
 
     QSettings settings;
     ui->toolSyncTitle->setChecked(settings.value("IndexWidget/updateTitle",
@@ -30,8 +26,6 @@ IndexWidget::IndexWidget(QWidget *parent) :
 
     connect(ui->treeView, SIGNAL(doubleClicked(QModelIndex)),
             SLOT(listDoubleClicked(QModelIndex)));
-    connect(actionOpenSoraInNewTab, SIGNAL(triggered()),
-            SLOT(openPageInNewTab()));
     connect(ui->toolSyncTitle, SIGNAL(toggled(bool)),
             SLOT(updateCurrentTitle(bool)));
 }
@@ -105,19 +99,6 @@ void IndexWidget::listDoubleClicked(QModelIndex index)
             emit openSora(index.row()+1, 1);
         } else {
             emit openPage(index.data(ItemRole::idRole).toInt());
-        }
-    }
-}
-
-void IndexWidget::openPageInNewTab()
-{
-    QModelIndex index = ui->treeView->currentIndex();
-
-    if(sendSignals && index.isValid()) {
-        if(m_bookInfo->isQuran()) {
-            emit openSoraInNewTab(index.row()+1, 1);
-        } else {
-            emit openPageInNewTab(index.data(ItemRole::idRole).toInt());
         }
     }
 }
