@@ -48,6 +48,15 @@ unix {
     CLUCENE_LIBS_PATH = $$CLUCENE_BUILD_PATH/bin
 }
 
+exists(../.git/HEAD) {
+    GITVERSION = $$system(git log -n1 --pretty=format:%h)
+    !isEmpty(GITVERSION) {
+        GITCHANGENUMBER = $$system(git log --pretty=format:%h | wc -l)
+        DEFINES += GITVERSION=\"\\\"$$GITVERSION\\\"\"
+        DEFINES += GITCHANGENUMBER=\"\\\"$$GITCHANGENUMBER\\\"\"
+    }
+}
+
 DEFINES += _REENTRANT _UCS2 _UNICODE
 
 INCLUDEPATH += $$CLUCENE_SOURCE_PATH/src/core \
