@@ -139,6 +139,7 @@ void BooksViewer::createMenus()
     m_toolBarNavigation->addAction(m_actionNextPage);
     m_toolBarNavigation->addAction(m_actionNextAYA);
     m_toolBarNavigation->addAction(m_actionPrevAYA);
+    m_toolBarNavigation->addAction(m_actionGotToPage);
 
     m_toolBarTafesir = new QToolBar(tr("التفاسير"), this);
     m_toolBarTafesir->addWidget(m_comboTafasir);
