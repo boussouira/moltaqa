@@ -94,6 +94,35 @@ StandardItemModelPtr LibraryBookManager::getLastOpendModel()
     return StandardItemModelPtr(model);
 }
 
+StandardItemModelPtr LibraryBookManager::getBookHistoryModel(int bookID)
+{
+    QStandardItemModel *model = new QStandardItemModel();
+
+    QSqlQuery query(m_db);//0   1
+    query.prepare("SELECT page, open_date "
+                  "FROM history "
+                  "WHERE book = ? "
+                  "ORDER BY open_date DESC");
+    query.bindValue(0, bookID);
+
+    ml_query_exec(query);
+
+    while(query.next()) {
+        QStandardItem *item = new QStandardItem();
+        item->setText(tr("الصفحة %1").arg(query.value(0).toInt()));
+        item->setData(query.value(0).toInt(), ItemRole::idRole);
+
+        QStandardItem *timeItem = new QStandardItem();
+        timeItem->setText(Utils::Time::elapsedTime(query.value(1).toInt()));
+
+        model->invisibleRootItem()->appendRow(QList<QStandardItem*>() << item << timeItem);
+    }
+
+    model->setHorizontalHeaderLabels(QStringList() << tr("الصفحة") << tr("التاريخ"));
+
+    return StandardItemModelPtr(model);
+}
+
 LibraryBookPtr LibraryBookManager::getLibraryBook(int bookID)
 {
     LibraryBookPtr book = m_books.value(bookID);

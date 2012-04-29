@@ -43,6 +43,7 @@ public slots:
     void reverseSplitter();
     void addToFavouite();
     void showBookInfo();
+    void showBookHistory();
 
     void nextAya();
     void previousAya();

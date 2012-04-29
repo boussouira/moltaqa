@@ -13,6 +13,7 @@
 #include "utils.h"
 #include "favouritesmanager.h"
 #include "bookinfodialog.h"
+#include "bookhistorydialog.h"
 
 #include <qmainwindow.h>
 #include <qmenubar.h>
@@ -253,6 +254,21 @@ void BookWidgetManager::showBookInfo()
     dialog->setLibraryBook(book);
     dialog->setup();
     dialog->show();
+}
+
+void BookWidgetManager::showBookHistory()
+{
+    LibraryBookPtr book = activeBook();
+    BookWidget *widget = activeBookWidget();
+    ml_return_on_fail(book && widget);
+
+    BookHistoryDialog *dialog = new BookHistoryDialog(this);
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->setLibraryBook(book);
+    dialog->setup();
+    dialog->show();
+
+    connect(dialog, SIGNAL(openPage(int)), widget, SLOT(openPage(int)));
 }
 
 void BookWidgetManager::closeBook(int bookID)

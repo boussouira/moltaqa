@@ -103,6 +103,7 @@ void BooksViewer::createMenus()
                                   this);
 
     m_bookInfoAct = new QAction(tr("بطاقة الكتاب"), this);
+    QAction *readHistoryAct = new QAction(tr("تاريخ تصفح الكتاب"), this);
 
     m_actionNextAYA->setShortcut(QKeySequence("J"));
     m_actionPrevAYA->setShortcut(QKeySequence("K"));
@@ -143,6 +144,7 @@ void BooksViewer::createMenus()
     m_navActions << m_actionGotToPage;
     m_navActions << actionSeparator(this);
     m_navActions << m_bookInfoAct;
+    m_navActions << readHistoryAct;
 
     m_toolBars << m_toolBarGeneral;
     m_toolBars << m_toolBarNavigation;
@@ -160,6 +162,7 @@ void BooksViewer::createMenus()
     connect(m_actionLastPage, SIGNAL(triggered()), m_viewManager, SLOT(lastPage()));
     connect(m_actionGotToPage, SIGNAL(triggered()), m_viewManager, SLOT(goToPage()));
     connect(m_bookInfoAct, SIGNAL(triggered()), m_viewManager, SLOT(showBookInfo()));
+    connect(readHistoryAct, SIGNAL(triggered()), m_viewManager, SLOT(showBookHistory()));
 
     // Generale actions
     connect(m_actionIndexDock, SIGNAL(triggered()), SLOT(showIndexWidget()));
