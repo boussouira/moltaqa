@@ -13,7 +13,7 @@ AboutDialog::AboutDialog(QWidget *parent) :
 
     QString info;
 #ifdef GITCHANGENUMBER
-    QString("Git: %1 (rev: %2) - ").arg(GITVERSION).arg(GITCHANGENUMBER));
+    info += QString("Git: %1 (rev: %2) - ").arg(GITVERSION).arg(GITCHANGENUMBER);
 #endif
 
     info += QString("Qt: %1 - ").arg(QT_VERSION_STR);
