@@ -199,8 +199,8 @@ void ResultWidget::openResult(int resultID)
 {
     SearchResult *result = m_searcher->getResult(resultID);
     BookWidget *bookWidget = m_readerview->openBook(result->book->id,
-                                                        result->page->pageID,
-                                                        m_searcher->getSearchQuery());
+                                                    result->page->pageID,
+                                                    m_searcher->getSearchQuery());
 
     if(bookWidget) {
         ensureReaderVisible();

@@ -128,8 +128,6 @@ void NewBookWriter::startReading()
     m_pagesElemnent = m_pagesDoc.documentElement();
     m_titlesElement = m_titlesDoc.documentElement();
     m_lastTitlesElement = m_titlesElement;
-
-    //m_time.start();
 }
 
 void NewBookWriter::endReading()
@@ -158,6 +156,5 @@ void NewBookWriter::endReading()
 
     m_zip.close();
     // TODO: check if the close success
-    //qDebug("[*] Writting take %d ms", m_time.elapsed());
 }
 

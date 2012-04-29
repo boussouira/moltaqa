@@ -29,9 +29,9 @@ IndexWidget::IndexWidget(QWidget *parent) :
                                                  true).toBool());
 
     connect(ui->treeView, SIGNAL(doubleClicked(QModelIndex)),
-            this, SLOT(listDoubleClicked(QModelIndex)));
+            SLOT(listDoubleClicked(QModelIndex)));
     connect(actionOpenSoraInNewTab, SIGNAL(triggered()),
-            this, SLOT(openPageInNewTab()));
+            SLOT(openPageInNewTab()));
     connect(ui->toolSyncTitle, SIGNAL(toggled(bool)),
             SLOT(updateCurrentTitle(bool)));
 }
