@@ -12,8 +12,8 @@ AboutDialog::AboutDialog(QWidget *parent) :
     ui->labelVersion->setText(tr("الاصدار: %1").arg(App::version()));
 
     QString info;
-#ifdef GITCHANGENUMBER
-    info += QString("Git: %1 (rev: %2) - ").arg(GITVERSION).arg(GITCHANGENUMBER);
+#ifdef GITVERSION
+    info += QString("(rev: %1) - ").arg(GITVERSION);
 #endif
 
     info += QString("Qt: %1 - ").arg(QT_VERSION_STR);
