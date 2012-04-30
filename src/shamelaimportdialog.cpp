@@ -58,7 +58,7 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
     QSettings settings;
     ui->spinImportThreads->setMaximum(QThread::idealThreadCount() * 5);
     ui->spinImportThreads->setValue(settings.value("ShamelaImportDialog/threadCount",
-                                                   QThread::idealThreadCount() * 2).toInt());
+                                                   QThread::idealThreadCount()).toInt());
 
     Utils::Widget::restore(this, "ShamelaImportDialog");
 
