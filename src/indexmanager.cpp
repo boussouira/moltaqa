@@ -9,6 +9,7 @@
 #include "bookindexer.h"
 #include "utils.h"
 #include "timeutils.h"
+#include "clconstants.h"
 
 IndexManager::IndexManager(QObject *parent) :
     QObject(parent)
@@ -26,7 +27,7 @@ bool IndexManager::openWriter()
     QSettings settings;
     m_analyzer = new ArabicAnalyzer();
 
-    int ramSize = settings.value("Search/ramSize", 100).toInt();
+    int ramSize = settings.value("Search/ramSize", DEFAULT_INDEXING_RAM).toInt();
 
     if(!dir.exists(m_library->indexDataDir()))
         dir.mkdir(m_library->indexDataDir());

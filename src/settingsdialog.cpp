@@ -1,6 +1,7 @@
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
 #include "utils.h"
+#include "clconstants.h"
 
 #include <qsettings.h>
 #include <qfile.h>
@@ -53,7 +54,7 @@ void SettingsDialog::loadSettings()
     ui->comboIndexingRam->addItem(tr("%1 جيغا").arg(2), 2000);
     ui->comboIndexingRam->addItem(tr("%1 جيغا").arg(3), 3000);
 
-    int currentSize = settings.value("ramSize", 100).toInt();
+    int currentSize = settings.value("ramSize", DEFAULT_INDEXING_RAM).toInt();
     for(int i=0; i<ui->comboIndexingRam->count(); i++) {
         if(ui->comboIndexingRam->itemData(i).toInt() == currentSize) {
             ui->comboIndexingRam->setCurrentIndex(i);

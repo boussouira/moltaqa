@@ -3,6 +3,7 @@
 
 
 #define MAX_SEGMENT 2
+#define DEFAULT_INDEXING_RAM 500
 
 #define IS_UPPER(c) (0x41 <= c &&  c <= 0x5A)
 #define IS_LOWER(c) (0x61 <= c &&  c <= 0x7A)
