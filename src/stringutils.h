@@ -46,6 +46,8 @@ enum Words {
 
 QString plural(int count, Words word, bool html=false);
 QString clean(QString text);
+inline QString removeTashekil(QString text) { return text.remove(QRegExp("[\\x064B-\\x0653]")); }
+
 bool compare(QString first, QString second);
 bool contains(QString src, QString text);
 bool fuzzyContains(QString first, QString second);

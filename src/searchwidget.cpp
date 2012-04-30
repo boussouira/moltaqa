@@ -103,6 +103,13 @@ void SearchWidget::showSearchInfo()
                              info);
 }
 
+void SearchWidget::setSearchText(QString mustQuery, QString shouldQuery, QString mustNotQuery)
+{
+    ui->lineQueryMust->setText(Utils::CLucene::clearSpecialChars(mustQuery));
+    ui->lineQueryShould->setText(Utils::CLucene::clearSpecialChars(shouldQuery));
+    ui->lineQueryShouldNot->setText(Utils::CLucene::clearSpecialChars(mustNotQuery));
+}
+
 Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
 {
     if(ui->lineQueryMust->text().isEmpty()){

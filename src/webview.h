@@ -34,6 +34,7 @@ public:
 
 protected:
     void wheelEvent(QWheelEvent *event);
+    void contextMenuEvent(QContextMenuEvent *event);
 
 public slots:
     void setText(const QString &text);
@@ -44,6 +45,10 @@ public slots:
 
 protected slots:
     void populateJavaScriptWindowObject();
+    void openLinkInBrowser();
+    void searchInCurrentBook();
+    void searchInQuran();
+    void searchInLibrary();
 
 signals:
     void textChanged();
@@ -56,6 +61,7 @@ protected:
     QPropertyAnimation *m_animation;
     ShemeHandler m_shemeHandler;
     QTime m_scrollTime;
+    QPoint m_lastMenuPos;
     bool m_scrollToBottom;
     bool m_stopScrolling;
 };

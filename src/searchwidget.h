@@ -43,6 +43,8 @@ public:
 
     void showSearchInfo();
 
+    void setSearchText(QString mustQuery, QString shouldQuery="", QString mustNotQuery="");
+
 protected:
     virtual lucene::search::Query *getSearchQuery(const wchar_t *searchField);
     virtual SearchFilter *getSearchFilterQuery()=0;

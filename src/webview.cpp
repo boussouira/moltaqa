@@ -1,7 +1,16 @@
 #include "webview.h"
 #include "webpage.h"
 #include "utils.h"
+#include "stringutils.h"
+#include "librarymanager.h"
+#include "librarybookmanager.h"
+#include "mainwindow.h"
+#include "bookwidget.h"
+#include "richbookreader.h"
+
 #include <qevent.h>
+#include <qmenu.h>
+#include <qdesktopservices.h>
 
 WebView::WebView(QWidget *parent) :
     QWebView(parent)
@@ -10,6 +19,8 @@ WebView::WebView(QWidget *parent) :
 
     setPage(m_page);
     m_frame = page()->mainFrame();
+
+    pageAction(QWebPage::Copy)->setShortcut(QKeySequence(QKeySequence::Copy));
 
     m_stopScrolling = false;
     m_scrollToBottom = false;
@@ -189,6 +200,65 @@ void WebView::populateJavaScriptWindowObject()
     addObject("webView", this);
 }
 
+void WebView::openLinkInBrowser()
+{
+    QWebHitTestResult r = page()->mainFrame()->hitTestContent(m_lastMenuPos);
+    if (!r.linkUrl().isEmpty()) {
+        QDesktopServices::openUrl(r.linkUrl());
+    }
+}
+
+void WebView::searchInCurrentBook()
+{
+    ml_return_on_fail2(parent(), "WebView::searchInCurrentBook parent is null");
+
+    BookWidget *p = qobject_cast<BookWidget*>(parent()->parent()); // QSplitter > BookWidget
+    ml_return_on_fail2(p, "WebView::searchInCurrentBook book widget is null");
+
+    QString text = selectedText().simplified();
+    ml_return_on_fail2(text.size(), "WebView::searchInLibrary search text is empty");
+
+    SearchWidget *searchWidget = MW->searchView()->newTab(SearchWidget::BookSearch,
+                                                          p->bookReader()->bookInfo()->id);
+    ml_return_on_fail2(searchWidget, "WebView::searchInLibrary searchWidget is null");
+
+    searchWidget->setSearchText(text);
+    searchWidget->search();
+
+    MW->showSearchView();
+}
+
+void WebView::searchInQuran()
+{
+    LibraryBookPtr quranBook = LibraryManager::instance()->bookManager()->getQuranBook();
+    ml_return_on_fail2(quranBook, "WebView::searchInQuran can't find quran book");
+
+    QString text = selectedText().simplified();
+    ml_return_on_fail2(text.size(), "WebView::searchInQuran search text is empty");
+
+    SearchWidget *searchWidget = MW->searchView()->newTab(SearchWidget::BookSearch, quranBook->id);
+    ml_return_on_fail2(searchWidget, "WebView::searchInQuran searchWidget is null");
+
+    searchWidget->setSearchText(text);
+    searchWidget->search();
+
+    MW->showSearchView();
+}
+
+void WebView::searchInLibrary()
+{
+    QString text = selectedText().simplified();
+    ml_return_on_fail2(text.size(), "WebView::searchInLibrary search text is empty");
+
+    SearchWidget *searchWidget = MW->searchView()->newTab(SearchWidget::LibrarySearch);
+    ml_return_on_fail2(searchWidget, "WebView::searchInLibrary searchWidget is null");
+
+    searchWidget->setSearchText(text);
+    searchWidget->search();
+
+    MW->showSearchView();
+}
+
 void WebView::wheelEvent(QWheelEvent *event)
 {
     if(m_animation->state() == QPropertyAnimation::Running)
@@ -213,4 +283,46 @@ void WebView::wheelEvent(QWheelEvent *event)
     }
 
     QWebView::wheelEvent(event);
+}
+
+void WebView::contextMenuEvent(QContextMenuEvent *event)
+{
+    m_lastMenuPos = event->pos();
+    QMenu menu(this);
+
+    QWebHitTestResult r = page()->mainFrame()->hitTestContent(event->pos());
+    if (!r.linkUrl().isEmpty()) {
+        if(r.linkUrl().scheme() != "moltaqa") {
+            menu.addAction(tr("فتح الرابط في المتصفح"), this, SLOT(openLinkInBrowser()));
+            menu.addSeparator();
+        }
+
+        menu.addAction(pageAction(QWebPage::CopyLinkToClipboard));
+    }
+
+    if(selectedText().size() && parent()) {
+//        QString text = Utils::String::Arabic::removeTashekil(selectedText().simplified());
+//        text = Utils::String::abbreviate(text, 120);
+//        QMenu *sub = menu.addMenu(tr("بحث عن '%1' في").arg(text));
+
+        QMenu *sub = menu.addMenu(tr("بحث عن النص المحدد في"));
+        BookWidget *p = qobject_cast<BookWidget*>(parent()->parent()); // QSplitter > BookWidget
+        if(p)
+            sub->addAction(tr("الكتاب الحالي"), this, SLOT(searchInCurrentBook()));
+
+        if(LibraryManager::instance()->bookManager()->getQuranBook())
+            sub->addAction(tr("القرآن الكريم"), this, SLOT(searchInQuran()));
+
+        sub->addAction(tr("كل الكتب"), this, SLOT(searchInLibrary()));
+        menu.addSeparator();
+
+        menu.addAction(pageAction(QWebPage::Copy));
+    }
+
+    if(menu.actions().size()) {
+        menu.exec(mapToGlobal(event->pos()));
+        return;
+    }
+
+    QWebView::contextMenuEvent(event);
 }
