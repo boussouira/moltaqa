@@ -50,7 +50,7 @@ void BookIndexEditor::setModel(QStandardItemModel *model)
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             SLOT(updateActions()));
 
-    connect(m_model, SIGNAL(layoutChanged()), SIGNAL(indexEdited()));
+    connect(m_model, SIGNAL(itemChanged(QStandardItem*)), SIGNAL(indexEdited()));
 
     updateActions();
 }
@@ -121,6 +121,8 @@ void BookIndexEditor::addTitle()
 
         parentItem->insertRow(row, title);
         Utils::Model::selectIndex(ui->treeView, m_model->index(row, 0, index.parent()));
+
+        emit indexEdited();
     }
 }
 
@@ -131,26 +133,32 @@ void BookIndexEditor::removeTitle()
 
     m_model->removeRow(index.row(), index.parent());
     ui->treeView->clearSelection();
+
+    emit indexEdited();
 }
 
 void BookIndexEditor::moveUp()
 {
     Utils::Model::moveUp(m_model, ui->treeView);
+    emit indexEdited();
 }
 
 void BookIndexEditor::moveDown()
 {
     Utils::Model::moveDown(m_model, ui->treeView);
+    emit indexEdited();
 }
 
 void BookIndexEditor::moveRight()
 {
     Utils::Model::moveRight(m_model, ui->treeView);
+    emit indexEdited();
 }
 
 void BookIndexEditor::moveLeft()
 {
     Utils::Model::moveLeft(m_model, ui->treeView);
+    emit indexEdited();
 }
 
 void BookIndexEditor::linkTitle()
@@ -160,6 +168,8 @@ void BookIndexEditor::linkTitle()
 
     m_editView->m_currentPage->titleID = m_editView->m_currentPage->pageID;
     ui->treeView->model()->setData(index, m_editView->m_currentPage->pageID, ItemRole::idRole);
+
+    emit indexEdited();
 }
 
 void BookIndexEditor::updateActions()

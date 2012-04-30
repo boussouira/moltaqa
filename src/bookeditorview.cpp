@@ -160,7 +160,7 @@ void BookEditorView::updateActions()
 
     // If we have some saved pages then 'Save' action will be always enabled
     // m_timer is no more needed
-    if(m_pages.size())
+    if(m_pages.size() || m_indexEdited)
         m_timer->stop();
 }
 
@@ -209,7 +209,7 @@ bool BookEditorView::maySave(bool canCancel)
     saveCurrentPage();
     updateActions();
 
-    if(m_pages.size()) {
+    if(m_pages.size() || m_indexEdited) {
         int rep = QMessageBox::question(this,
                                         tr("حفظ التعديلات"),
                                         tr("هل تريد حفظ التعديلات التي اجريتها على كتاب:\n%1؟").arg(m_bookReader->bookInfo()->title),
@@ -283,7 +283,7 @@ void BookEditorView::save()
 {
     saveCurrentPage();
 
-    if(m_pages.size()) {
+    if(m_pages.size() || m_indexEdited) {
         QProgressDialog dialog(this);
         dialog.setWindowTitle(tr("حفظ التغييرات"));
         dialog.setLabelText(tr("جاري حفظ التغييرات..."));
