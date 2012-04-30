@@ -22,7 +22,7 @@ public:
     SearchWidget *currentSearchWidget();
 
 public slots:
-    void newTab(SearchWidget::SearchType searchType, int bookID=0);
+    SearchWidget *newTab(SearchWidget::SearchType searchType, int bookID=0);
     void switchSearchWidget();
 
 protected slots:

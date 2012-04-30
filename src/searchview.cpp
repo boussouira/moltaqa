@@ -78,9 +78,9 @@ SearchWidget *SearchView::currentSearchWidget()
     return qobject_cast<SearchWidget*>(m_tabWidget->currentWidget());
 }
 
-void SearchView::newTab(SearchWidget::SearchType searchType, int bookID)
+SearchWidget *SearchView::newTab(SearchWidget::SearchType searchType, int bookID)
 {
-    ml_return_on_fail(canSearch());
+    ml_return_val_on_fail(canSearch(), 0);
 
     SearchWidget *searchWidget = 0;
     if(searchType == SearchWidget::LibrarySearch) {
@@ -89,7 +89,7 @@ void SearchView::newTab(SearchWidget::SearchType searchType, int bookID)
         searchWidget = new BookSearchWidget(this);
     } else {
         qCritical("SearchView: Unknow search type: %d", searchType);
-        return;
+        return 0;
     }
 
     searchWidget->init(bookID);
@@ -115,6 +115,8 @@ void SearchView::newTab(SearchWidget::SearchType searchType, int bookID)
 
     m_tabWidget->setTabToolTip(tabIndex, tabTooltip);
     m_tabWidget->setCurrentIndex(tabIndex);
+
+    return searchWidget;
 }
 
 void SearchView::switchSearchWidget()
