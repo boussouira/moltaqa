@@ -153,7 +153,7 @@ void BookEditorView::updateActions()
         m_actionFirstPage->setEnabled(m_bookReader->hasPrev());
     }
 
-    m_actionSave->setEnabled(m_pages.size());
+    m_actionSave->setEnabled(m_pages.size() || m_indexEdited);
 
     // If we have some saved pages then 'Save' action will be always enabled
     // m_timer is no more needed
