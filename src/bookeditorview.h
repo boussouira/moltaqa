@@ -62,7 +62,6 @@ protected:
     QTabWidget *m_tabWidget;
     BookIndexEditor *m_indexEditor;
     QAction *m_actionSave;
-    QAction *m_actionCancel;
     QAction *m_actionAddPage;
     QAction *m_actionRemovePage;
     QAction *m_actionNextPage;

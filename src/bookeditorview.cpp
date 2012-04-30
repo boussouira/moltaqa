@@ -130,8 +130,6 @@ void BookEditorView::setupToolBar()
 
     m_actionSave = bar->addAction(QIcon::fromTheme("document-save", QIcon(":/images/document-save.png")),
                                   tr("حفظ التغييرات"), this, SLOT(save()));
-    m_actionCancel = bar->addAction(QIcon::fromTheme("document-revert", QIcon(":/images/document-revert.png")),
-                                    tr("الغاء التغييرات"), this, SLOT(cancel()));
     bar->addSeparator();
     m_actionFirstPage = bar->addAction(firstIcon, tr("الصفحة الاولى"), this, SLOT(firstPage()));
     m_actionPrevPage = bar->addAction(prevIcon, tr("الصفحة السابقة"), this, SLOT(prevPage()));
@@ -156,7 +154,6 @@ void BookEditorView::updateActions()
     }
 
     m_actionSave->setEnabled(m_pages.size());
-    m_actionCancel->setEnabled(m_pages.size());
 
     // If we have some saved pages then 'Save' action will be always enabled
     // m_timer is no more needed
@@ -270,7 +267,6 @@ void BookEditorView::checkPageModified()
 {
     bool pageModified = m_webView->pageModified();
     m_actionSave->setEnabled(m_pages.size() || pageModified || m_indexEdited);
-    m_actionCancel->setEnabled(m_pages.size() || pageModified || m_indexEdited);
 }
 
 void BookEditorView::indexChanged()
