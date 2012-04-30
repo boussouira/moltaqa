@@ -429,7 +429,7 @@ QString currentStyle(const QString &fileName)
 {
     QSettings settings;
     QString defaultStyle = ML_DEFAULT_STYLE;
-    QString currentStyle = settings.value("style", defaultStyle).toString();
+    QString currentStyle = settings.value("Style/name", defaultStyle).toString();
 
     QDir dir(stylesDir());
     if(!dir.cd(currentStyle)) {

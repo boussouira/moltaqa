@@ -61,7 +61,7 @@ void SettingsDialog::loadSettings()
 
     loadStyles();
 
-    QString currentStyle = settings.value("style", ML_DEFAULT_STYLE).toString();
+    QString currentStyle = settings.value("Style/name", ML_DEFAULT_STYLE).toString();
     for(int i=0; i<ui->comboStyles->count(); i++) {
         if(ui->comboStyles->itemData(i).toHash().value("dir").toString() == currentStyle) {
             ui->comboStyles->setCurrentIndex(i);
@@ -127,7 +127,7 @@ void SettingsDialog::saveSettings()
     QString appPath = ui->lineBooksDir->text();
 
     settings.setValue("library_dir", appPath);
-    settings.setValue("style", ui->comboStyles->itemData(ui->comboStyles->currentIndex(),
+    settings.setValue("Style/name", ui->comboStyles->itemData(ui->comboStyles->currentIndex(),
                                                          Qt::UserRole).toHash().value("dir"));
 
     settings.beginGroup("Search");
