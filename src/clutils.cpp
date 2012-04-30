@@ -66,5 +66,18 @@ QString highlightText(const QString &orignalText, CLuceneQuery *query, bool frag
     return highlightText(orignalText, query->searchQuery, query->searchFieldW, fragment);
 }
 
+QString clearSpecialChars(const QString &text)
+{
+    wchar_t *lineText = Utils::CLucene::QStringToWChar(text);
+    wchar_t *cleanText = QueryParser::escape(lineText);
+
+    QString clearText = QString::fromWCharArray(cleanText);
+
+    free(lineText);
+    free(cleanText);
+
+    return clearText;
+}
+
 }
 }

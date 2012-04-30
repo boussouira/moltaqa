@@ -323,12 +323,6 @@ void SearchWidget::clearSpecialChar()
     FancyLineEdit *edit = qobject_cast<FancyLineEdit*>(sender()->parent());
 
     if(edit) {
-        wchar_t *lineText = Utils::CLucene::QStringToWChar(edit->text());
-        wchar_t *cleanText = QueryParser::escape(lineText);
-
-        edit->setText(QString::fromWCharArray(cleanText));
-
-        free(lineText);
-        free(cleanText);
+        edit->setText(Utils::CLucene::clearSpecialChars(edit->text()));
     }
 }
