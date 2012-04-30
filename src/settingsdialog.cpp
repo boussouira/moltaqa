@@ -8,6 +8,8 @@
 #include <qfiledialog.h>
 #include <qthread.h>
 #include <qvariant.h>
+#include <qfont.h>
+#include <qwebsettings.h>
 
 SettingsDialog::SettingsDialog(QWidget *parent) :
     QDialog(parent),
@@ -16,6 +18,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->setupUi(this);
     setModal(true);
     loadSettings();
+
+    ui->tabWidget->setCurrentIndex(0);
 
     connect(ui->pushBooksDir, SIGNAL(clicked()), this, SLOT(changeBooksDir()));
     connect(ui->pushSaveSettings, SIGNAL(clicked()), this, SLOT(saveSettings()));
@@ -61,13 +65,27 @@ void SettingsDialog::loadSettings()
 
     loadStyles();
 
-    QString currentStyle = settings.value("Style/name", ML_DEFAULT_STYLE).toString();
+    settings.beginGroup("Style");
+    QString currentStyle = settings.value("name", ML_DEFAULT_STYLE).toString();
     for(int i=0; i<ui->comboStyles->count(); i++) {
         if(ui->comboStyles->itemData(i).toHash().value("dir").toString() == currentStyle) {
             ui->comboStyles->setCurrentIndex(i);
             break;
         }
     }
+
+    QWebSettings *webSettings = QWebSettings::globalSettings();
+    QString fontString = settings.value("fontFamily", webSettings->fontFamily(QWebSettings::StandardFont)).toString();
+    int fontSize = settings.value("fontSize", webSettings->fontSize(QWebSettings::DefaultFontSize)).toInt();
+
+    QFont font;
+    font.fromString(fontString);
+
+    if(fontSize < 9 || 72 < fontSize)
+        fontSize = 9;
+
+    ui->fontComboBox->setCurrentFont(font);
+    ui->comboFontSize->setCurrentIndex(ui->comboFontSize->findText(QString::number(fontSize)));
 }
 
 void SettingsDialog::loadStyles()
@@ -127,14 +145,25 @@ void SettingsDialog::saveSettings()
     QString appPath = ui->lineBooksDir->text();
 
     settings.setValue("library_dir", appPath);
-    settings.setValue("Style/name", ui->comboStyles->itemData(ui->comboStyles->currentIndex(),
-                                                         Qt::UserRole).toHash().value("dir"));
 
     settings.beginGroup("Search");
     settings.setValue("resultPeerPage", ui->spinResultPeerPage->value());
     settings.setValue("threadCount", ui->spinThreadCount->value());
     settings.setValue("ramSize", ui->comboIndexingRam->itemData(ui->comboIndexingRam->currentIndex()));
     settings.endGroup();
+
+    settings.beginGroup("Style");
+    settings.setValue("name", ui->comboStyles->itemData(ui->comboStyles->currentIndex(),
+                                                        Qt::UserRole).toHash().value("dir"));
+    settings.setValue("fontFamily", ui->fontComboBox->currentFont().toString());
+    settings.setValue("fontSize", ui->comboFontSize->currentText());
+    settings.endGroup();
+
+    QWebSettings *webSettings = QWebSettings::globalSettings();
+    webSettings->setFontFamily(QWebSettings::StandardFont,
+                               ui->fontComboBox->currentFont().toString());
+    webSettings->setFontSize(QWebSettings::DefaultFontSize,
+                             ui->comboFontSize->currentText().toInt());
 
     accept();
 }
