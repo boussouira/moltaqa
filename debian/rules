@@ -13,6 +13,7 @@ include /usr/share/quilt/quilt.make
 
 export CLUCENE_SOURCE_PATH=/home/naruto/Programming/clucene
 export CLUCENE_BUILD_PATH=/home/naruto/Programming/clucene
+export DEFAULT_INSTALL_PREFIX=/usr
 
 clean:
 	dh_testdir
@@ -21,7 +22,6 @@ clean:
 
 	# Add here commands to clean up after the build process.
 	rm -rf builddir
-	rm -rf tools/htmlToXBel/.rcc/qrc_source.cpp
 	find . -name .obj | xargs rm -rf
 
 	dh_clean
@@ -32,7 +32,7 @@ builddir:
 	mkdir -p builddir
 
 builddir/Makefile: builddir patch
-	cd builddir && qmake PREFIX=/usr ../moltaqa-lib.pro
+	cd builddir && qmake PREFIX=$(DEFAULT_INSTALL_PREFIX) ../moltaqa-lib.pro
 
 build-stamp: builddir/Makefile
 	dh_testdir
@@ -50,6 +50,8 @@ install: build
 
 	# Add here commands to install the package into debian/moltaqa-lib
 	cd builddir && $(MAKE) INSTALL_ROOT=$(CURDIR)/debian/moltaqa-lib install
+	test -d $(CURDIR)/debian/moltaqa-lib$(DEFAULT_INSTALL_PREFIX)/lib || mkdir $(CURDIR)/debian/moltaqa-lib$(DEFAULT_INSTALL_PREFIX)/lib
+	cp -d -v $(CLUCENE_BUILD_PATH)/bin/libclucene-* $(CURDIR)/debian/moltaqa-lib$(DEFAULT_INSTALL_PREFIX)/lib
 
 
 binary-indep: install

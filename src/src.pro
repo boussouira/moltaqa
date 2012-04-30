@@ -80,35 +80,20 @@ unix {
     LIBDIR = $$PREFIX/lib
     DATADIR = $$PREFIX/share
 
-
-    INSTALLS += target script data styles js locale fonts
+    INSTALLS += target script share
 
     target.path = $$BINDIR
 
     script.path = $$BINDIR
     script.files += ../bin/moltaqa-lib
 
-    data.path = $$DATADIR/$$APPNAME/data
-    data.files += ../share/$$APPNAME/data/quran-meta.db
-
-    styles.path = $$DATADIR/$$APPNAME/styles/default
-    styles.files += ../share/$$APPNAME/styles/default/default.css
-
-    js.path = $$DATADIR/$$APPNAME/js
-    js.files += ../share/$$APPNAME/js/jquery.js
-    js.files += ../share/$$APPNAME/js/jquery.growl.js
-    js.files += ../share/$$APPNAME/js/jquery.pagination.js
-    js.files += ../share/$$APPNAME/js/jquery.tooltip.js
-    js.files += ../share/$$APPNAME/js/scripts.js
-    js.files += ../share/$$APPNAME/js/editor.js
-    js.files += ../share/$$APPNAME/js/reader.js
-    js.files += ../share/$$APPNAME/js/search.js
-    js.files += ../share/$$APPNAME/js/ckeditor
-
-    locale.path = $$DATADIR/$$APPNAME/locale
-    locale.files += ../share/$$APPNAME/locale/qt_ar.qm
-
-    fonts.path = $$DATADIR/fonts/$$APPNAME
-    fonts.files += ../share/fonts/$$APPNAME/LotusLinotype_Light.otf
-    fonts.files += ../share/fonts/$$APPNAME/LotusLinotype_Bold.otf
+    share.path = $$DATADIR
+    share.files += ../share/fonts
+    share.files += ../share/app-install
+    share.files += ../share/applications
+    share.files += ../share/pixmaps
+    share.files += ../share/$$APPNAME/data
+    share.files += ../share/$$APPNAME/js
+    share.files += ../share/$$APPNAME/locale
+    share.files += ../share/$$APPNAME/styles
 }

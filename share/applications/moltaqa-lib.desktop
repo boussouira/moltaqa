@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Moltaqa library
+Name[ar]=مكتبة الملتقى
+Comment=Arabic library
+Comment[ar]=مكتبة الكترونية
+Exec=moltaqa-lib
+Terminal=false
+StartupNotify=true
+Type=Application
+Categories=Education;
+Icon=moltaqa-lib
