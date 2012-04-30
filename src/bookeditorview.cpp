@@ -42,7 +42,7 @@ BookEditorView::BookEditorView(QWidget *parent) :
 
 BookEditorView::~BookEditorView()
 {
-    ML_DELETE_CHECK(m_bookReader);
+    ml_delete_check(m_bookReader);
 
     delete ui;
 }
@@ -80,14 +80,14 @@ void BookEditorView::setupView()
 
 void BookEditorView::editBook(LibraryBookPtr book, int pageID)
 {
-    ML_ASSERT2(book, "BookEditorView::editBook book is null");
+    ml_return_on_fail2(book, "BookEditorView::editBook book is null");
 
-    ML_ASSERT(maySave());
+    ml_return_on_fail(maySave());
 
     if(book->isQuran())
         throw BookException(tr("لا يمكن تحرير القرآن الكريم"));
 
-    ML_DELETE_CHECK(m_bookReader);
+    ml_delete_check(m_bookReader);
 
     if(book->isNormal())
         m_bookReader = new RichSimpleBookReader();
@@ -155,12 +155,12 @@ void BookEditorView::updateActions()
         m_actionFirstPage->setEnabled(m_bookReader->hasPrev());
     }
 
-    m_actionSave->setEnabled(!m_pages.isEmpty());
-    m_actionCancel->setEnabled(!m_pages.isEmpty());
+    m_actionSave->setEnabled(m_pages.size());
+    m_actionCancel->setEnabled(m_pages.size());
 
     // If we have some saved pages then 'Save' action will be always enabled
     // m_timer is no more needed
-    if(!m_pages.isEmpty())
+    if(m_pages.size())
         m_timer->stop();
 }
 
@@ -209,7 +209,7 @@ bool BookEditorView::maySave(bool canCancel)
     saveCurrentPage();
     updateActions();
 
-    if(!m_pages.isEmpty()) {
+    if(m_pages.size()) {
         int rep = QMessageBox::question(this,
                                         tr("حفظ التعديلات"),
                                         tr("هل تريد حفظ التعديلات التي اجريتها على كتاب:\n%1؟").arg(m_bookReader->bookInfo()->title),
@@ -231,7 +231,7 @@ void BookEditorView::closeBook(bool hide)
 {
     clearChanges();
 
-    ML_DELETE_CHECK(m_bookReader);
+    ml_delete_check(m_bookReader);
 
     if(hide) {
         ui->tabWidget->setTabText(0, QString());
@@ -269,8 +269,8 @@ void BookEditorView::readerTextChange()
 void BookEditorView::checkPageModified()
 {
     bool pageModified = m_webView->pageModified();
-    m_actionSave->setEnabled(!m_pages.isEmpty() || pageModified || m_indexEdited);
-    m_actionCancel->setEnabled(!m_pages.isEmpty() || pageModified || m_indexEdited);
+    m_actionSave->setEnabled(m_pages.size() || pageModified || m_indexEdited);
+    m_actionCancel->setEnabled(m_pages.size() || pageModified || m_indexEdited);
 }
 
 void BookEditorView::indexChanged()
@@ -283,7 +283,7 @@ void BookEditorView::save()
 {
     saveCurrentPage();
 
-    if(!m_pages.isEmpty()) {
+    if(m_pages.size()) {
         QProgressDialog dialog(this);
         dialog.setWindowTitle(tr("حفظ التغييرات"));
         dialog.setLabelText(tr("جاري حفظ التغييرات..."));

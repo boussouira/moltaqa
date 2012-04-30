@@ -43,8 +43,8 @@ SearchWidget::~SearchWidget()
         delete m_searcher;
     }
 
-    ML_DELETE_CHECK(m_resultWidget);
-    ML_DELETE_CHECK(m_filterManager);
+    ml_delete_check(m_resultWidget);
+    ml_delete_check(m_filterManager);
 
     delete ui;
 }
@@ -54,16 +54,59 @@ void SearchWidget::setCurrentWidget(SearchWidget::CurrentWidget index)
     ui->stackedWidget->setCurrentIndex(index);
 }
 
+SearchWidget::CurrentWidget SearchWidget::currentWidget()
+{
+    return static_cast<CurrentWidget>(ui->stackedWidget->currentIndex());
+}
+
 void SearchWidget::toggleWidget()
 {
     if(m_searcher) // Do we have any search result?
         setCurrentWidget(ui->stackedWidget->currentIndex()==Search ? Result : Search);
 }
 
+void SearchWidget::showSearchInfo()
+{
+    ml_return_on_fail(m_searcher);
+    ml_return_on_fail(m_searcher->getSearchQuery());
+
+    QString sec = QString::number(m_searcher->searchTime()/1000.);
+    if(sec.indexOf('.') != -1)
+        sec = sec.left(sec.indexOf('.')+5);
+
+    QString info;
+    info += tr("تم البحث خلال: %1 ثانية").arg(sec);
+
+    CLuceneQuery *query = m_searcher->getSearchQuery();
+    if((query->resultFilter && query->resultFilter->clause == BooleanClause::MUST)
+            || (query->filter && query->filter->clause == BooleanClause::MUST && query->filter->selected == 1)) {
+        info += tr(" في كتاب واحد");
+    } else {
+        if(query->filter) {
+            int selected = query->filter->selected;
+            info += tr(" في %1 كتاب").arg(selected);
+
+        } else {
+            info += tr(" في كل المكتبة");
+        }
+
+        if(query->resultFilter) {
+            info += tr(" مع استبعاد %1 كتاب").arg(query->resultFilter->unSelected);
+        }
+    }
+
+    info += "\n";
+    info += tr("عدد نتائج البحث: %1").arg(m_searcher->resultsCount());
+
+    QMessageBox::information(this,
+                             tr("نتائج البحث"),
+                             info);
+}
+
 Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
 {
     if(ui->lineQueryMust->text().isEmpty()){
-        if(!ui->lineQueryShould->text().isEmpty()){
+        if(ui->lineQueryShould->text().size()){
             ui->lineQueryMust->setText(ui->lineQueryShould->text());
             ui->lineQueryShould->clear();
         } else {
@@ -85,7 +128,7 @@ Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
     queryPareser.setAllowLeadingWildcard(true);
 
     try {
-        if(!mustQureyStr.isEmpty()) {
+        if(mustQureyStr.size()) {
             if(ui->checkQueryMust->isChecked())
                 queryPareser.setDefaultOperator(QueryParser::AND_OPERATOR);
             else
@@ -93,12 +136,12 @@ Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
 
             wchar_t *queryText = Utils::CLucene::QStringToWChar(mustQureyStr);
             Query *mq = queryPareser.parse(queryText);
-            q->add(mq, BooleanClause::MUST);
+            q->add(mq, true, BooleanClause::MUST);
 
             free(queryText);
         }
 
-        if(!shouldQureyStr.isEmpty()) {
+        if(shouldQureyStr.size()) {
             if(ui->checkQueryShould->isChecked())
                 queryPareser.setDefaultOperator(QueryParser::AND_OPERATOR);
             else
@@ -106,12 +149,12 @@ Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
 
             wchar_t *queryText = Utils::CLucene::QStringToWChar(shouldQureyStr);
             Query *mq = queryPareser.parse(queryText);
-            q->add(mq, BooleanClause::SHOULD);
+            q->add(mq, true, BooleanClause::SHOULD);
 
             free(queryText);
         }
 
-        if(!shouldNotQureyStr.isEmpty()) {
+        if(shouldNotQureyStr.size()) {
             if(ui->checkQueryShouldNot->isChecked())
                 queryPareser.setDefaultOperator(QueryParser::AND_OPERATOR);
             else
@@ -124,7 +167,17 @@ Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
             free(queryText);
         }
 
-        //qDebug() << "Search:" << Utils::CLucene::WCharToString(q->toString(field));
+        QString queryStr;
+        if(mustQureyStr.size())
+            queryStr += "+(" + mustQureyStr + ") ";
+
+        if(shouldQureyStr.size())
+            queryStr += "(" + shouldQureyStr + ") ";
+
+        if(shouldNotQureyStr.size())
+            queryStr += "-(" + shouldNotQureyStr + ") ";
+
+        qDebug() << "Search: Query" << queryStr.trimmed();
 
         return q;
 
@@ -143,7 +196,7 @@ Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
                                  "CLucene Query error",
                                  tr("code: %1\nError: %2").arg(e.number()).arg(e.what()));
 
-        ML_DELETE(q);
+        ml_delete(q);
 
         return 0;
     }
@@ -151,7 +204,7 @@ Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
         QMessageBox::warning(0,
                              "CLucene Query error",
                              tr("Unknow error"));
-        ML_DELETE(q);
+        ml_delete(q);
 
         return 0;
     }
@@ -188,17 +241,17 @@ void SearchWidget::search()
     QString searchField = getSearchField();
     wchar_t *searchFieldW = Utils::CLucene::QStringToWChar(searchField);
 
-    QScopedPointer<SearchFilter> searchFilter(getSearchFilterQuery());
+    SearchFilter *searchFilter = getSearchFilterQuery();
     Query *searchQuery = getSearchQuery(searchFieldW);
 
-    ML_ASSERT(searchQuery);
+    ml_return_on_fail(searchQuery);
 
     CLuceneQuery *query = new CLuceneQuery();
     query->searchQuery = searchQuery;
-    query->filterQuery = searchFilter->filterQuery;
-    query->filterClause = searchFilter->clause;
+    query->filter = searchFilter;
     query->searchField = searchField;
     query->searchFieldW = searchFieldW;
+    query->sort = static_cast<CLuceneQuery::SearchSort>(ui->comboSortSearch->currentIndex());
 
     if(m_searcher) {
         if(m_searcher->isRunning()) {
@@ -206,7 +259,7 @@ void SearchWidget::search()
             m_searcher->wait();
         }
 
-        ML_DELETE(m_searcher);
+        ml_delete(m_searcher);
     }
 
     m_searcher = new LibrarySearcher(this);
@@ -249,7 +302,7 @@ void SearchWidget::clearLineText()
 
 void SearchWidget::showFilterTools()
 {
-    ML_ASSERT(m_filterManager);
+    ml_return_on_fail(m_filterManager);
 
     QMenu menu(this);
 

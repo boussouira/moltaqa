@@ -25,6 +25,7 @@ LibrarySearcher::LibrarySearcher(QObject *parent)
     m_libraryInfo = MW->libraryInfo();
     m_libraryManager = LibraryManager::instance();
     m_resultReader = new SearchResultReader(this);
+    m_sort = new Sort();
 
     QSettings settings;
     m_resultParPage = settings.value("Search/resultPeerPage", 10).toInt();
@@ -32,10 +33,11 @@ LibrarySearcher::LibrarySearcher(QObject *parent)
 
 LibrarySearcher::~LibrarySearcher()
 {
-    ML_DELETE_CHECK(m_hits);
-    ML_DELETE_CHECK(m_query);
-    ML_DELETE_CHECK(m_cluceneQuery);
-    ML_DELETE_CHECK(m_resultReader);
+    ml_delete_check(m_hits);
+    ml_delete_check(m_query);
+    ml_delete_check(m_sort);
+    ml_delete_check(m_cluceneQuery);
+    ml_delete_check(m_resultReader);
 
     if(m_searcher) {
         m_searcher->close();
@@ -86,19 +88,33 @@ void LibrarySearcher::open()
 
 void LibrarySearcher::buildQuery()
 {
-    BooleanQuery *booleanQuery = new BooleanQuery;
-    booleanQuery->add(m_cluceneQuery->searchQuery, BooleanClause::MUST);
+    BooleanQuery booleanQuery;
+    booleanQuery.add(m_cluceneQuery->searchQuery, BooleanClause::MUST);
 
-    if(m_cluceneQuery->filterQuery)
-        booleanQuery->add(m_cluceneQuery->filterQuery, m_cluceneQuery->filterClause);
+    if(m_cluceneQuery->filter)
+        booleanQuery.add(m_cluceneQuery->filter->query, m_cluceneQuery->filter->clause);
 
-    m_query = m_searcher->rewrite(booleanQuery);
+    if(m_cluceneQuery->resultFilter)
+        booleanQuery.add(m_cluceneQuery->resultFilter->query, m_cluceneQuery->resultFilter->clause);
 
-    wchar_t *queryText = m_query->toString(PAGE_TEXT_FIELD);
-    qDebug() << "LibrarySearcher: Search query:" << Utils::CLucene::WCharToString(queryText);
+    m_query = m_searcher->rewrite(&booleanQuery);
 
-    free(queryText);
-    delete booleanQuery;
+    if(m_cluceneQuery->sort == CLuceneQuery::BookRelvance) {
+        SortField *sort[] = {new SortField(BOOK_ID_FIELD), SortField::FIELD_SCORE(), NULL};
+        m_sort->setSort(sort);
+    } else if (m_cluceneQuery->sort == CLuceneQuery::BookPage) {
+        SortField *sort[] = {new SortField(BOOK_ID_FIELD), new SortField(PAGE_ID_FIELD), NULL};
+        m_sort->setSort(sort);
+    } else if (m_cluceneQuery->sort == CLuceneQuery::DeathRelvance) {
+        SortField *sort[] = {new SortField(AUTHOR_DEATH_FIELD), SortField::FIELD_SCORE(), NULL};
+        m_sort->setSort(sort);
+    } else if (m_cluceneQuery->sort == CLuceneQuery::DeathBookPage) {
+        SortField *sort[] = {new SortField(AUTHOR_DEATH_FIELD), new SortField(BOOK_ID_FIELD), new SortField(PAGE_ID_FIELD), NULL};
+        m_sort->setSort(sort);
+    } else {
+        SortField *sort[] = {SortField::FIELD_SCORE(), NULL};
+        m_sort->setSort(sort);
+    }
 }
 
 void LibrarySearcher::search()
@@ -113,7 +129,7 @@ void LibrarySearcher::search()
     QTime time;
     time.start();
 
-    m_hits = m_searcher->search(m_query);
+    m_hits = m_searcher->search(m_query, m_sort);
 
     m_timeSearch = time.elapsed();
 
@@ -167,6 +183,9 @@ void LibrarySearcher::fetech()
                 result->snippet = Utils::String::abbreviate(page->text, 120);
             } else {
                 result->snippet = Utils::CLucene::highlightText(page->text, m_cluceneQuery, true);
+
+                if(result->snippet.endsWith("</p"))
+                    result->snippet.append('>');
             }
 
             result->resultID = i;
@@ -190,7 +209,7 @@ void LibrarySearcher::fetech()
 
 void LibrarySearcher::setQuery(CLuceneQuery *query)
 {
-    ML_ASSERT2(query->searchQuery, "LibrarySearcher::setQuery query is null");
+    ml_return_on_fail2(query->searchQuery, "LibrarySearcher::setQuery query is null");
 
     m_cluceneQuery = query;
 }

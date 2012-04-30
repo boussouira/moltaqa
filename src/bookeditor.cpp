@@ -25,7 +25,7 @@ BookEditor::BookEditor(QObject *parent) :
 BookEditor::~BookEditor()
 {
     if(m_removeReader) {
-        ML_DELETE_CHECK(m_bookReader);
+        ml_delete_check(m_bookReader);
     }
 
     removeTemp();
@@ -87,8 +87,8 @@ void BookEditor::setBookReader(RichBookReader *reader)
 
 void BookEditor::unZip()
 {
-    ML_ASSERT(m_bookTmpDir.isEmpty());
-    ML_ASSERT(!QFile::exists(m_bookTmpDir));
+    ml_return_on_fail(m_bookTmpDir.isEmpty());
+    ml_return_on_fail(!QFile::exists(m_bookTmpDir));
 
     QString folder = QFileInfo(m_book->path).baseName();
     QDir dir(MW->libraryInfo()->tempDir());
@@ -184,7 +184,7 @@ bool BookEditor::save()
         QFile::remove(backupFile);
 
     if(m_removeReader) {
-        ML_DELETE_CHECK(m_bookReader);
+        ml_delete_check(m_bookReader);
     }
 
     // Create a new backup
@@ -209,7 +209,7 @@ bool BookEditor::save()
 
 void BookEditor::removeTemp()
 {
-    if(!m_bookTmpDir.isEmpty() && QFile::exists(m_bookTmpDir))
+    if(m_bookTmpDir.size() && QFile::exists(m_bookTmpDir))
         Utils::Files::removeDir(m_bookTmpDir);
 }
 

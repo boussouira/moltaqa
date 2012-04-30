@@ -16,13 +16,7 @@
   <property name="layoutDirection">
    <enum>Qt::RightToLeft</enum>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout_2">
-   <property name="spacing">
-    <number>0</number>
-   </property>
-   <property name="margin">
-    <number>0</number>
-   </property>
+  <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
@@ -207,6 +201,62 @@ p, li { white-space: pre-wrap; }
         </layout>
        </item>
        <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <item>
+          <widget class="QLabel" name="label_7">
+           <property name="text">
+            <string>ترتيب النتائج حسب:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="comboSortSearch">
+           <item>
+            <property name="text">
+             <string>التطابق</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>الكتاب ثم التطابق</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>كتاب ثم ترتيب الصفحات</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>وفاة المؤلف ثم التطابق</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>وفاة المؤلف ثم الكتاب</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
         <widget class="QWidget" name="widgetSelectedFilter" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout_3">
           <property name="margin">
@@ -298,6 +348,8 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
   </layout>
+  <zorder>stackedWidget</zorder>
+  <zorder>pushSearch</zorder>
  </widget>
  <customwidgets>
   <customwidget>

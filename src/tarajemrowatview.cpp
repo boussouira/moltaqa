@@ -12,6 +12,7 @@
 #include <qurl.h>
 #include <qdebug.h>
 #include <qwebview.h>
+#include <qsettings.h>
 
 static TarajemRowatView *m_instance = 0;
 
@@ -36,7 +37,7 @@ TarajemRowatView::TarajemRowatView(QWidget *parent) :
 
 TarajemRowatView::~TarajemRowatView()
 {
-    ML_DELETE_CHECK(m_model);
+    ml_delete_check(m_model);
 
     delete ui;
 
@@ -55,7 +56,7 @@ QString TarajemRowatView::title()
 
 QString TarajemRowatView::viewLink()
 {
-    ML_ASSERT_RET(m_currentRawi, QString());
+    ml_return_val_on_fail(m_currentRawi, QString());
 
     return QString("moltaqa://open/rawi?id=%1").arg(m_currentRawi->id);
 }
@@ -73,12 +74,22 @@ void TarajemRowatView::aboutToShow()
 
     if(!ui->tabWidget->count())
         addTab(tr("الراوي"));
+
+    QSettings settings;
+    if(settings.contains("RowatView/splitter"))
+        ui->splitter->restoreState(settings.value("RowatView/splitter").toByteArray());
+}
+
+void TarajemRowatView::aboutToHide()
+{
+    QSettings settings;
+    settings.setValue("RowatView/splitter", ui->splitter->saveState());
 }
 
 void TarajemRowatView::openRawiInfo(int rawiID)
 {
     RawiInfoPtr info = m_rowatManager->getRawiInfo(rawiID);
-    ML_ASSERT2(info, "TarajemRowatView::openRawiInfo no rawi with id" << rawiID);
+    ml_return_on_fail2(info, "TarajemRowatView::openRawiInfo no rawi with id" << rawiID);
 
     setCurrentRawi(info);
 
@@ -100,16 +111,11 @@ int TarajemRowatView::addTab(QString tabText)
 
 void TarajemRowatView::setCurrentRawi(RawiInfoPtr info)
 {
-    QDir styleDir(App::stylesDir());
-    styleDir.cd("default");
-
-    QString style = QUrl::fromLocalFile(styleDir.filePath("default.css")).toString();
-
     HtmlHelper html;
     html.beginHtml();
     html.beginHead();
     html.setCharset();
-    html.addCSS(style);
+    html.addCSS("default.css");
     html.setTitle(info->name);
     html.endHead();
 
@@ -130,21 +136,21 @@ void TarajemRowatView::setCurrentRawi(RawiInfoPtr info)
     html.insertSpan(info->name, ".pro-value");
     html.endParagraph();
 
-    if(!info->laqab.isEmpty()) {
+    if(info->laqab.size()) {
         html.beginParagraph();
         html.insertSpan(tr("اللقب: "), ".pro-name");
         html.insertSpan(info->laqab, ".pro-value");
         html.endParagraph();
     }
 
-    if(!info->birthStr.isEmpty()) {
+    if(info->birthStr.size()) {
         html.beginParagraph();
         html.insertSpan(tr("الولادة: "), ".pro-name");
         html.insertSpan(info->birthStr, ".pro-value");
         html.endParagraph();
     }
 
-    if(!info->deathStr.isEmpty()) {
+    if(info->deathStr.size()) {
         html.beginParagraph();
         html.insertSpan(tr("الوفاة: "), ".pro-name");
         html.insertSpan(info->deathStr, ".pro-value");
@@ -206,13 +212,13 @@ void TarajemRowatView::setCurrentRawi(RawiInfoPtr info)
 void TarajemRowatView::setCurrentTabHtml(QString title, QString html)
 {
     int index = ui->tabWidget->currentIndex();
-    ML_ASSERT(index != -1);
+    ml_return_on_fail(index != -1);
 
     QWidget *w = ui->tabWidget->widget(index);
-    ML_ASSERT(w);
+    ml_return_on_fail(w);
 
     QWebView *view = w->findChild<QWebView*>();
-    ML_ASSERT(view);
+    ml_return_on_fail(view);
 
     view->setHtml(html);
 
@@ -223,10 +229,10 @@ void TarajemRowatView::setCurrentTabHtml(QString title, QString html)
 void TarajemRowatView::on_treeView_doubleClicked(const QModelIndex &index)
 {
     int rawiID = index.data(ItemRole::authorIdRole).toInt();
-    ML_ASSERT(rawiID);
+    ml_return_on_fail(rawiID);
 
     RawiInfoPtr info = m_rowatManager->getRawiInfo(rawiID);
-    ML_ASSERT(info);
+    ml_return_on_fail(info);
 
     setCurrentRawi(info);
 }

@@ -7,13 +7,13 @@ ShamelaBookInfo::ShamelaBookInfo(int bid, QString bname, QString bbetaka,
                                  int bauth, QString bauthName,
                                  QString btafessirName) :
     id(bid),
-    name(bname),
+    name(bname.trimmed()),
     info(Utils::Html::format(binfo)),
     betaka(bbetaka),
     archive(barchive),
     cat(bcat),
     authorID(bauth),
-    authName(bauthName),
+    authName(bauthName.trimmed()),
     tafessirName(btafessirName)
 {
 }

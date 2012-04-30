@@ -19,7 +19,7 @@ void BookSearchWidget::init(int bookID)
 {
     m_bookInfo = m_bookManager->getLibraryBook(bookID);
 
-    ML_ASSERT(m_bookInfo);
+    ml_return_on_fail(m_bookInfo);
 
     BookSearchFilter *filter= new BookSearchFilter(this);
     filter->setLibraryBook(m_bookInfo);
@@ -51,7 +51,7 @@ void BookSearchWidget::loadModel()
     m_bookDB.setDatabaseName(m_bookInfo->path);
 
     if (!m_bookDB.open()) {
-        LOG_DB_ERROR(m_bookDB);
+        ml_warn_db_error(m_bookDB);
         return;
     }
     m_bookQuery = QSqlQuery(m_bookDB);

@@ -13,7 +13,7 @@ WordTypeFilter::~WordTypeFilter()
 
 Token* WordTypeFilter::next(Token* token)
 {
-    if(!m_savedBuffer.isEmpty()) {
+    if(m_savedBuffer.size()) {
         StringBuffer *output = m_savedBuffer.dequeue();
         token->setText(output->getBuffer());
         token->setPositionIncrement(0);

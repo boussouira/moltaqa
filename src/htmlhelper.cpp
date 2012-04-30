@@ -53,7 +53,7 @@ void HtmlHelper::beginHtmlTag(const QString &tag, const QString &selector, const
 void HtmlHelper::endHtmlTag(const QString &tag)
 {
     if(tag.isEmpty()) {
-        if(!m_openTags.isEmpty())
+        if(m_openTags.size())
             m_html.append(QString("</%1>").arg(m_openTags.pop()));
     } else {
         m_html.append(QString("</%1>").arg(tag));
@@ -62,12 +62,15 @@ void HtmlHelper::endHtmlTag(const QString &tag)
 
 void HtmlHelper::endAll()
 {
-    while(!m_openTags.isEmpty())
+    while(m_openTags.size())
         m_html.append(QString("</%1>").arg(m_openTags.pop()));
 }
 
-void HtmlHelper::addCSS(QString cssFile)
+void HtmlHelper::addCSS(QString cssFile, bool fullPath)
 {
+    if(!fullPath)
+        cssFile = QUrl::fromLocalFile(App::currentStyle(cssFile)).toString();
+
     m_html.append(QString("<link href= \"%1\" rel=\"stylesheet\" type=\"text/css\" />").arg(cssFile));
 }
 
@@ -100,7 +103,7 @@ QString HtmlHelper::jsEscape(QString text)
 
 void HtmlHelper::addSelector(QString selector)
 {
-    ML_ASSERT(!selector.isEmpty());
+    ml_return_on_fail(selector.size());
 
     if(!selector.contains('|')) {
         if(selector.startsWith('#'))
@@ -118,7 +121,7 @@ void HtmlHelper::addSelector(QString selector)
 
 void HtmlHelper::addExtraAttr(QString attr)
 {
-    if(!attr.isEmpty()) {
+    if(attr.size()) {
         m_html.append(' ');
         attr.replace('\'', '"');
         m_html.append(attr);

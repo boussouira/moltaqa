@@ -30,14 +30,10 @@
 #include <qkeysequence.h>
 #include <QCompleter>
 
-static BooksViewer *m_instance = 0;
-
 BooksViewer::BooksViewer(LibraryManager *libraryManager, QWidget *parent): AbstarctView(parent)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
     m_viewManager = new BookWidgetManager(this);
-
-    m_instance = this;
 
     m_libraryManager = libraryManager;
     m_bookManager = m_libraryManager->bookManager();
@@ -58,13 +54,6 @@ BooksViewer::BooksViewer(LibraryManager *libraryManager, QWidget *parent): Absta
 BooksViewer::~BooksViewer()
 {
     delete m_viewManager;
-
-    m_instance = 0;
-}
-
-BooksViewer *BooksViewer::instance()
-{
-    return m_instance;
 }
 
 QString BooksViewer::title()
@@ -114,6 +103,7 @@ void BooksViewer::createMenus()
                                   this);
 
     m_bookInfoAct = new QAction(tr("بطاقة الكتاب"), this);
+    QAction *readHistoryAct = new QAction(tr("تاريخ تصفح الكتاب"), this);
 
     m_actionNextAYA->setShortcut(QKeySequence("J"));
     m_actionPrevAYA->setShortcut(QKeySequence("K"));
@@ -139,6 +129,7 @@ void BooksViewer::createMenus()
     m_toolBarNavigation->addAction(m_actionNextPage);
     m_toolBarNavigation->addAction(m_actionNextAYA);
     m_toolBarNavigation->addAction(m_actionPrevAYA);
+    m_toolBarNavigation->addAction(m_actionGotToPage);
 
     m_toolBarTafesir = new QToolBar(tr("التفاسير"), this);
     m_toolBarTafesir->addWidget(m_comboTafasir);
@@ -153,6 +144,7 @@ void BooksViewer::createMenus()
     m_navActions << m_actionGotToPage;
     m_navActions << actionSeparator(this);
     m_navActions << m_bookInfoAct;
+    m_navActions << readHistoryAct;
 
     m_toolBars << m_toolBarGeneral;
     m_toolBars << m_toolBarNavigation;
@@ -170,6 +162,7 @@ void BooksViewer::createMenus()
     connect(m_actionLastPage, SIGNAL(triggered()), m_viewManager, SLOT(lastPage()));
     connect(m_actionGotToPage, SIGNAL(triggered()), m_viewManager, SLOT(goToPage()));
     connect(m_bookInfoAct, SIGNAL(triggered()), m_viewManager, SLOT(showBookInfo()));
+    connect(readHistoryAct, SIGNAL(triggered()), m_viewManager, SLOT(showBookHistory()));
 
     // Generale actions
     connect(m_actionIndexDock, SIGNAL(triggered()), SLOT(showIndexWidget()));
@@ -199,7 +192,7 @@ void BooksViewer::updateToolBars()
 QString BooksViewer::viewLink()
 {
     RichBookReader *bookReader = m_viewManager->activeBookReader();
-    ML_ASSERT_RET(bookReader, QString());
+    ml_return_val_on_fail(bookReader, QString());
 
     QString link = QString("moltaqa://open/");
     if(bookReader->bookInfo()->isQuran())
@@ -279,8 +272,8 @@ BookWidget *BooksViewer::openBook(int bookID, int pageID, CLuceneQuery *query)
                               tr("فتح كتاب"),
                               e.what());
 
-        ML_DELETE_CHECK(bookReader);
-        ML_DELETE_CHECK(bookWidget);
+        ml_delete_check(bookReader);
+        ml_delete_check(bookWidget);
     }
 
     return bookWidget;
@@ -295,7 +288,7 @@ void BooksViewer::openTafessir()
         int tafessirID = m_comboTafasir->itemData(m_comboTafasir->currentIndex(), ItemRole::idRole).toInt();
 
         LibraryBookPtr bookInfo = m_bookManager->getLibraryBook(tafessirID);
-        ML_ASSERT(bookInfo && bookInfo->isTafessir() && m_viewManager->activeBook()->isQuran());
+        ml_return_on_fail(bookInfo && bookInfo->isTafessir() && m_viewManager->activeBook()->isQuran());
 
         bookdb = new RichTafessirReader();
         bookdb->setBookInfo(bookInfo);
@@ -312,8 +305,8 @@ void BooksViewer::openTafessir()
 
         updateActions();
     } catch (BookException &e) {
-        ML_DELETE_CHECK(bookdb);
-        ML_DELETE_CHECK(bookWidget);
+        ml_delete_check(bookdb);
+        ml_delete_check(bookWidget);
 
         QMessageBox::warning(this,
                              tr("فتح التفسير"),
@@ -345,7 +338,7 @@ void BooksViewer::showIndexWidget()
 void BooksViewer::searchInBook()
 {
     LibraryBookPtr book = m_viewManager->activeBook();
-    ML_ASSERT(book);
+    ml_return_on_fail(book);
 
     MW->searchView()->newTab(SearchWidget::BookSearch, book->id);
     MW->showSearchView();

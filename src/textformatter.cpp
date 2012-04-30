@@ -22,11 +22,6 @@ void TextFormatter::setData(LibraryBookPtr book, BookPage *page)
 
 void TextFormatter::laodSettings()
 {
-    QDir styleDir(App::stylesDir());
-    styleDir.cd("default");
-
-    QString style = styleDir.filePath("default.css");
-    m_styleFile = QUrl::fromLocalFile(style).toString();
 }
 
 QString TextFormatter::getText()
@@ -41,15 +36,15 @@ void TextFormatter::insertText(QString text)
 
 QString TextFormatter::getHtmlView(const QString &text, const QString &jsCode)
 {
-    ML_ASSERT_RET2(m_book, "TextFormatter::getHtmlView book is null", QString());
-    ML_ASSERT_RET2(m_page, "TextFormatter::getHtmlView page is null", QString());
+    ml_return_val_on_fail2(m_book, "TextFormatter::getHtmlView book is null", QString());
+    ml_return_val_on_fail2(m_page, "TextFormatter::getHtmlView page is null", QString());
 
     HtmlHelper helper;
     helper.beginHtml();
 
     helper.beginHead();
     helper.setCharset("utf-8");
-    helper.addCSS(m_styleFile);
+    helper.addCSS("default.css");
 
     helper.endHead();
 

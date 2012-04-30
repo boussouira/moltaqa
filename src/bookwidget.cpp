@@ -78,7 +78,7 @@ void BookWidget::loadSettings()
     QSettings settings;
     settings.beginGroup("BookWidget");
     QByteArray sizes = settings.value("splitter").toByteArray();
-    if(!sizes.isEmpty())
+    if(sizes.size())
         m_splitter->restoreState(sizes);
     settings.endGroup();
 }
@@ -213,7 +213,7 @@ void BookWidget::openHaddit(int hadditNum)
 
 void BookWidget::scrollToCurrentAya(bool timer)
 {
-    ML_ASSERT(m_db->bookInfo()->isQuran());
+    ml_return_on_fail(m_db->bookInfo()->isQuran());
 
     if(timer)
         QTimer::singleShot(500, this, SLOT(scrollToCurrentAya()));
@@ -309,7 +309,7 @@ void BookWidget::showIndex()
 void BookWidget::showIndex(int tid)
 {
     QModelIndex index = Utils::Model::findModelIndex(m_indexWidget->indexModel(), tid);
-    ML_ASSERT(index.isValid());
+    ml_return_on_fail(index.isValid());
 
     QModelIndex child = index.child(0, 0);
 

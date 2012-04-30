@@ -1,11 +1,13 @@
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
+#include "utils.h"
 
 #include <qsettings.h>
 #include <qfile.h>
 #include <qmessagebox.h>
 #include <qfiledialog.h>
 #include <qthread.h>
+#include <qvariant.h>
 
 SettingsDialog::SettingsDialog(QWidget *parent) :
     QDialog(parent),
@@ -29,7 +31,7 @@ void SettingsDialog::loadSettings()
 {
     QSettings settings;
     QString booksPath = settings.value("library_dir").toString();
-    if(!booksPath.isEmpty())
+    if(booksPath.size())
         ui->lineBooksDir->setText(booksPath);
 
     settings.beginGroup("Search");
@@ -38,24 +40,53 @@ void SettingsDialog::loadSettings()
     ui->spinThreadCount->setMinimum(1);
     ui->spinThreadCount->setMaximum(QThread::idealThreadCount()*2);
 
-    ui->comboBox->addItem(tr("%1 ميغا").arg(100), 100);
-    ui->comboBox->addItem(tr("%1 ميغا").arg(200), 200);
-    ui->comboBox->addItem(tr("%1 ميغا").arg(300), 300);
-    ui->comboBox->addItem(tr("%1 ميغا").arg(500), 500);
-    ui->comboBox->addItem(tr("%1 جيغا").arg(1), 1000);
-    ui->comboBox->addItem(tr("%1 جيغا").arg(1.5), 1500);
-    ui->comboBox->addItem(tr("%1 جيغا").arg(2), 2000);
-    ui->comboBox->addItem(tr("%1 جيغا").arg(3), 3000);
+    ui->comboIndexingRam->addItem(tr("%1 ميغا").arg(100), 100);
+    ui->comboIndexingRam->addItem(tr("%1 ميغا").arg(200), 200);
+    ui->comboIndexingRam->addItem(tr("%1 ميغا").arg(300), 300);
+    ui->comboIndexingRam->addItem(tr("%1 ميغا").arg(500), 500);
+    ui->comboIndexingRam->addItem(tr("%1 جيغا").arg(1), 1000);
+    ui->comboIndexingRam->addItem(tr("%1 جيغا").arg(1.5), 1500);
+    ui->comboIndexingRam->addItem(tr("%1 جيغا").arg(2), 2000);
+    ui->comboIndexingRam->addItem(tr("%1 جيغا").arg(3), 3000);
 
     int currentSize = settings.value("ramSize", 100).toInt();
-    for(int i=0; i<ui->comboBox->count(); i++) {
-        if(ui->comboBox->itemData(i).toInt() == currentSize) {
-            ui->comboBox->setCurrentIndex(i);
+    for(int i=0; i<ui->comboIndexingRam->count(); i++) {
+        if(ui->comboIndexingRam->itemData(i).toInt() == currentSize) {
+            ui->comboIndexingRam->setCurrentIndex(i);
             break;
         }
     }
 
     settings.endGroup();
+
+    loadStyles();
+
+    QString currentStyle = settings.value("style", ML_DEFAULT_STYLE).toString();
+    for(int i=0; i<ui->comboStyles->count(); i++) {
+        if(ui->comboStyles->itemData(i).toHash().value("dir").toString() == currentStyle) {
+            ui->comboStyles->setCurrentIndex(i);
+            break;
+        }
+    }
+}
+
+void SettingsDialog::loadStyles()
+{
+    QDir dir(App::stylesDir());
+    foreach (QString style, dir.entryList(QDir::Dirs|QDir::NoDotAndDotDot)) {
+        QDir styleDir(dir.absoluteFilePath(style));
+        if(styleDir.exists("config.cfg")) {
+            QSettings cfg(styleDir.absoluteFilePath("config.cfg"), QSettings::IniFormat);
+            if(cfg.contains("name") && cfg.contains("description")) {
+                QHash<QString, QVariant> styleInfo;
+                styleInfo["name"] = QString::fromUtf8(cfg.value("name").toByteArray());
+                styleInfo["description"] = QString::fromUtf8(cfg.value("description").toByteArray());
+                styleInfo["dir"] = style;
+
+                ui->comboStyles->addItem(styleInfo["name"].toString(), styleInfo);
+            }
+        }
+    }
 }
 
 QString SettingsDialog::getFilePath()
@@ -74,7 +105,7 @@ QString SettingsDialog::getFolderPath(const QString &defaultPath)
                                                     defaultPath,
                                                     QFileDialog::ShowDirsOnly
                                                     |QFileDialog::DontResolveSymlinks);
-    if(!dirPath.isEmpty()) {
+    if(dirPath.size()) {
         QDir dir(dirPath);
         return dir.absolutePath();
     }
@@ -85,7 +116,7 @@ QString SettingsDialog::getFolderPath(const QString &defaultPath)
 void SettingsDialog::changeBooksDir()
 {
     QString filePath = getFolderPath(ui->lineBooksDir->text());
-    if(!filePath.isEmpty()) {
+    if(filePath.size()) {
         ui->lineBooksDir->setText(filePath);
     }
 }
@@ -96,11 +127,13 @@ void SettingsDialog::saveSettings()
     QString appPath = ui->lineBooksDir->text();
 
     settings.setValue("library_dir", appPath);
+    settings.setValue("style", ui->comboStyles->itemData(ui->comboStyles->currentIndex(),
+                                                         Qt::UserRole).toHash().value("dir"));
 
     settings.beginGroup("Search");
     settings.setValue("resultPeerPage", ui->spinResultPeerPage->value());
     settings.setValue("threadCount", ui->spinThreadCount->value());
-    settings.setValue("ramSize", ui->comboBox->itemData(ui->comboBox->currentIndex()));
+    settings.setValue("ramSize", ui->comboIndexingRam->itemData(ui->comboIndexingRam->currentIndex()));
     settings.endGroup();
 
     accept();

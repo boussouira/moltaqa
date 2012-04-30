@@ -4,7 +4,8 @@
 #include "libraryinfo.h"
 #include "utils.h"
 #include "librarybook.h"
-#include <stringutils.h>
+#include "stringutils.h"
+#include "xmlutils.h"
 
 #include <qsettings.h>
 #include <qdir.h>
@@ -82,9 +83,13 @@ int NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int par
 
 void NewBookWriter::addTitle(const QString &title, int tid, int level)
 {
-    QDomElement titleElement = m_titlesDoc.createElement("item");
+    QDomElement titleElement = m_titlesDoc.createElement("title");
     titleElement.setAttribute("pageID", tid);
-    titleElement.setAttribute("text", title);
+
+    QDomElement textElement = m_titlesDoc.createElement("text");
+    Utils::Xml::setElementText(textElement, m_titlesDoc, title);
+
+    titleElement.appendChild(textElement);
 
     QDomNode parentNode = m_levels.value(level-1, m_titlesElement);
     m_levels[level] = parentNode.appendChild(titleElement);
@@ -123,8 +128,6 @@ void NewBookWriter::startReading()
     m_pagesElemnent = m_pagesDoc.documentElement();
     m_titlesElement = m_titlesDoc.documentElement();
     m_lastTitlesElement = m_titlesElement;
-
-    //m_time.start();
 }
 
 void NewBookWriter::endReading()
@@ -153,6 +156,5 @@ void NewBookWriter::endReading()
 
     m_zip.close();
     // TODO: check if the close success
-    //qDebug("[*] Writting take %d ms", m_time.elapsed());
 }
 

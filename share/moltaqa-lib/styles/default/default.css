@@ -181,9 +181,6 @@ footnote a {
 .tafessir_quran .toggale_quran .quran_info {
     font-size: 0.9em;
 }
-.ayaDiv {
-    display: inline;
-}
 
 /* Search */
 
@@ -228,8 +225,12 @@ div.clear {
 }
 .result .resultInfo .bookInfo .bookName {
     color: #ED8E28;
+    cursor: pointer;
     font-weight: bold;
     margin-left: 7px;
+}
+.result .resultInfo .bookInfo .bookName:hover {
+    color: #FFB96A;
 }
 .result .resultInfo .pageInfo {
     float: left;
@@ -261,7 +262,7 @@ div.clear {
     border-bottom: 1px solid #D5D5D5;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
-    margin: 0 0 15px;
+    margin: 0;
 }
 .result .progSpan {
     background-color: #C3EBBC;

@@ -31,14 +31,14 @@ SearchFilterManager::SearchFilterManager(QObject *parent)
 
 SearchFilterManager::~SearchFilterManager()
 {
-    ML_DELETE_CHECK(m_filterModel);
-    ML_DELETE_CHECK(m_model);
-    ML_DELETE_CHECK(m_menu);
+    ml_delete_check(m_filterModel);
+    ml_delete_check(m_model);
+    ml_delete_check(m_menu);
 }
 
 void SearchFilterManager::setSourceModel(QStandardItemModel *model)
 {
-    ML_DELETE_CHECK(m_model);
+    ml_delete_check(m_model);
 
     m_model = model;
     m_filterModel->setSourceModel(m_model);
@@ -178,7 +178,7 @@ void SearchFilterManager::showUnSelected()
 
 void SearchFilterManager::selectChilds()
 {
-    ML_ASSERT(!m_treeView->selectionModel()->selectedIndexes().isEmpty());
+    ml_return_on_fail(m_treeView->selectionModel()->selectedIndexes().size());
 
     QModelIndex index = m_treeView->selectionModel()->selectedIndexes().first();
     if(index.isValid())
@@ -187,7 +187,7 @@ void SearchFilterManager::selectChilds()
 
 void SearchFilterManager::unSelectChilds()
 {
-    ML_ASSERT(!m_treeView->selectionModel()->selectedIndexes().isEmpty());
+    ml_return_on_fail(m_treeView->selectionModel()->selectedIndexes().size());
 
     QModelIndex index = m_treeView->selectionModel()->selectedIndexes().first();
     if(index.isValid())
@@ -201,7 +201,7 @@ void SearchFilterManager::clearFilter()
 
 void SearchFilterManager::enableCatSelection()
 {
-    ML_ASSERT(m_autoSelectParent);
+    ml_return_on_fail(m_autoSelectParent);
 
     bool catCheckable = m_filterModel->filterRegExp().isEmpty();
 

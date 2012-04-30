@@ -73,9 +73,9 @@ void BookIndexEditor::saveModel(QXmlStreamWriter *writer)
 
 void BookIndexEditor::writeItem(QStandardItem *item, QXmlStreamWriter *writer)
 {
-    writer->writeStartElement("item");
+    writer->writeStartElement("title");
     writer->writeAttribute("pageID", item->data(ItemRole::idRole).toString());
-    writer->writeAttribute("text", item->text());
+    writer->writeTextElement("text", item->text());
 
     if(item->hasChildren()) {
         for(int i=0; i<item->rowCount(); i++) {
@@ -111,7 +111,7 @@ void BookIndexEditor::addTitle()
     QString text = QInputDialog::getText(this, tr("عنوان جديد"),
                                          tr("العنوان الجديد:"), QLineEdit::Normal,
                                          m_editView->m_webView->selectedText(), &ok);
-    if(ok && !text.isEmpty()) {
+    if(ok && text.size()) {
         QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
         QStandardItem *title = new QStandardItem(text);
         title->setData(m_editView->m_currentPage->pageID, ItemRole::idRole);
@@ -127,7 +127,7 @@ void BookIndexEditor::addTitle()
 void BookIndexEditor::removeTitle()
 {
     QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
-    ML_ASSERT(index.isValid());
+    ml_return_on_fail(index.isValid());
 
     m_model->removeRow(index.row(), index.parent());
     ui->treeView->clearSelection();
@@ -156,7 +156,7 @@ void BookIndexEditor::moveLeft()
 void BookIndexEditor::linkTitle()
 {
     QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
-    ML_ASSERT(index.isValid());
+    ml_return_on_fail(index.isValid());
 
     m_editView->m_currentPage->titleID = m_editView->m_currentPage->pageID;
     ui->treeView->model()->setData(index, m_editView->m_currentPage->pageID, ItemRole::idRole);

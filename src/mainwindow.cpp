@@ -65,7 +65,7 @@ bool MainWindow::init()
 
     if(!Utils::Library::isValidLibrary(libDir)) {
         int ret;
-        if(!libDir.isEmpty()) {
+        if(libDir.size()) {
             // We have a path to the library but it is invalid
             ret = QMessageBox::question(this,
                                         App::name(),
@@ -100,7 +100,7 @@ bool MainWindow::init()
             QString path = QFileDialog::getExistingDirectory(this,
                                                              tr("اختر مجلد المكتبة"),
                                                              QDir::homePath());
-            if(!path.isEmpty() && Utils::Library::isValidLibrary(path)) {
+            if(path.size() && Utils::Library::isValidLibrary(path)) {
                 libDir = path;
                 settings.setValue("library_dir", libDir);
             } else {
@@ -177,16 +177,16 @@ bool MainWindow::init()
 
 MainWindow::~MainWindow()
 {
-    ML_DELETE_CHECK(m_booksList);
-    ML_DELETE_CHECK(m_welcomeWidget);
-    ML_DELETE_CHECK(m_bookView);
-    ML_DELETE_CHECK(m_searchView);
-    ML_DELETE_CHECK(m_libraryManager);
-    ML_DELETE_CHECK(m_libraryInfo);
-    ML_DELETE_CHECK(m_readerHelper);
-    ML_DELETE_CHECK(m_tarajemView);
-    ML_DELETE_CHECK(m_authorsView);
-    ML_DELETE_CHECK(m_indexTracker);
+    ml_delete_check(m_booksList);
+    ml_delete_check(m_welcomeWidget);
+    ml_delete_check(m_bookView);
+    ml_delete_check(m_searchView);
+    ml_delete_check(m_libraryManager);
+    ml_delete_check(m_libraryInfo);
+    ml_delete_check(m_readerHelper);
+    ml_delete_check(m_tarajemView);
+    ml_delete_check(m_authorsView);
+    ml_delete_check(m_indexTracker);
 
     delete ui;
 
@@ -239,7 +239,7 @@ void MainWindow::settingDialog()
 
 void MainWindow::openBook(int pBookID, int pageID)
 {
-    ML_ASSERT(m_bookView->openBook(pBookID, pageID));
+    ml_return_on_fail(m_bookView->openBook(pBookID, pageID));
 
     m_viewManager->setCurrentView(m_bookView);
 }

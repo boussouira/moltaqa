@@ -14,7 +14,7 @@ void EditWebView::setupEditor(const QString &text)
 {
     settings()->setAttribute(QWebSettings::JavascriptCanAccessClipboard, true);
 
-    QUrl style(QUrl::fromLocalFile(App::stylesDir() + "/default/default.css"));
+    QUrl style(QUrl::fromLocalFile(App::currentStyle("default.css")));
 
     HtmlHelper helper;
 

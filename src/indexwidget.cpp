@@ -7,31 +7,35 @@
 
 #include <qstandarditemmodel.h>
 #include "modelviewfilter.h"
+#include <qsettings.h>
 
 IndexWidget::IndexWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::IndexWidget)
 {
     ui->setupUi(this);
-    sendSignals = true;
 
+    sendSignals = true;
     m_filter = new ModelViewFilter(this);
 
-    QAction *actionOpenSoraInNewTab = new QAction(tr("فتح في تبويب جديد"), this);
-
-    ui->treeView->addAction(actionOpenSoraInNewTab);
     ui->treeView->setExpandsOnDoubleClick(false);
-    ui->treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
+
+    QSettings settings;
+    ui->toolSyncTitle->setChecked(settings.value("IndexWidget/updateTitle",
+                                                 true).toBool());
 
     connect(ui->treeView, SIGNAL(doubleClicked(QModelIndex)),
-            this, SLOT(listDoubleClicked(QModelIndex)));
-    connect(actionOpenSoraInNewTab, SIGNAL(triggered()),
-            this, SLOT(openPageInNewTab()));
-
+            SLOT(listDoubleClicked(QModelIndex)));
+    connect(ui->toolSyncTitle, SIGNAL(toggled(bool)),
+            SLOT(updateCurrentTitle(bool)));
 }
 
 IndexWidget::~IndexWidget()
 {
+    QSettings settings;
+    settings.setValue("IndexWidget/updateTitle",
+                      ui->toolSyncTitle->isChecked());
+
     delete ui;
 }
 
@@ -65,7 +69,8 @@ void IndexWidget::displayBookInfo()
         ui->spinAya->setValue(m_page->aya);
     }
 
-    selectTitle(m_page->titleID);
+    if(ui->toolSyncTitle->isChecked())
+        selectTitle(m_page->titleID);
 
     sendSignals = true;
 
@@ -81,6 +86,12 @@ void IndexWidget::setSelectedSora(int pSoraNumber)
     ui->treeView->scrollTo(itemToSelect);
 }
 
+void IndexWidget::updateCurrentTitle(bool checked)
+{
+    if(checked)
+        selectTitle(m_page->titleID);
+}
+
 void IndexWidget::listDoubleClicked(QModelIndex index)
 {
     if(sendSignals) {
@@ -88,19 +99,6 @@ void IndexWidget::listDoubleClicked(QModelIndex index)
             emit openSora(index.row()+1, 1);
         } else {
             emit openPage(index.data(ItemRole::idRole).toInt());
-        }
-    }
-}
-
-void IndexWidget::openPageInNewTab()
-{
-    QModelIndex index = ui->treeView->currentIndex();
-
-    if(sendSignals && index.isValid()) {
-        if(m_bookInfo->isQuran()) {
-            emit openSoraInNewTab(index.row()+1, 1);
-        } else {
-            emit openPageInNewTab(index.data(ItemRole::idRole).toInt());
         }
     }
 }
@@ -123,13 +121,13 @@ void IndexWidget::setCurrentPage(BookPage *page)
 
 void IndexWidget::selectTitle(int tid)
 {
-    ML_ASSERT2(m_model, "IndexWidget::selectTitle model is null");
+    ml_return_on_fail2(m_model, "IndexWidget::selectTitle model is null");
 
     QModelIndex index;
     QModelIndexList selected = ui->treeView->selectionModel()->selectedIndexes();
 
     // Check if the title is already selected
-    if(!selected.isEmpty()) {
+    if(selected.size()) {
         if(selected.at(0).data(ItemRole::idRole).toInt() == tid)
             index = selected.at(0);
     }

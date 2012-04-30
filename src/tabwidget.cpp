@@ -101,7 +101,7 @@ void TabWidget::showTabBarMenu(QPoint point)
         menu.addAction(closeAllAct);
     }
 
-    if(!m_tabBarActions.isEmpty()) {
+    if(m_tabBarActions.size()) {
         menu.addSeparator();
 
         foreach (QAction *act, m_tabBarActions) {
@@ -140,10 +140,10 @@ void TabWidget::showTabBarMenu(QPoint point)
 
 void TabWidget::closeTab(int index)
 {
-    ML_ASSERT(m_autoClose && (m_closeLastTab || count() > 1));
+    ml_return_on_fail(m_autoClose && (m_closeLastTab || count() > 1));
 
     QWidget *w = widget(index);
-    ML_ASSERT(w);
+    ml_return_on_fail(w);
 
     removeTab(index);
     delete w;

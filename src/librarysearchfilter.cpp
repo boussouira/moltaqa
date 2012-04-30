@@ -9,6 +9,7 @@
 #include "libraryenums.h"
 #include "librarymanager.h"
 #include "booklistmanager.h"
+#include "clucenequery.h"
 
 #include <qsqlquery.h>
 #include <qitemselectionmodel.h>
@@ -88,16 +89,15 @@ SearchFilter *LibrarySearchFilter::getFilterQuery()
 {
     generateLists();
 
-    SearchFilter *filter = new SearchFilter();
     int count = 0;
 
     // Every thing is selected we don't need a filter
     if(unSelecCount()==0 || selectedCount()==0 ) {
-        filter->filterQuery = 0;
-        return filter;
+        return 0;
     }
 
     QList<int> books;
+    SearchFilter *filter = new SearchFilter();
     BooleanQuery *q = new BooleanQuery();
     q->setMaxClauseCount(0x7FFFFFFFL);
 
@@ -118,7 +118,11 @@ SearchFilter *LibrarySearchFilter::getFilterQuery()
         count++;
     }
 
-    filter->filterQuery = count ? q : 0;
+    ml_warn_on_fail(count, "LibrarySearchFilter::getFilterQuery count is 0");
+
+    filter->query = q;
+    filter->selected = selectedCount();
+    filter->unSelected = unSelecCount();
 
     return filter;
 }

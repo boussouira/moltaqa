@@ -26,14 +26,23 @@ SearchView::SearchView(QWidget *parent) : AbstarctView(parent)
                                tr("تبويب بحث جديد"), this);
     QAction *actSwitchTab = new QAction(QIcon(":/images/switch.png"),
                                      tr("تنقل بين نافذة البحث والنتائج"), this);
+    QAction *actSearchAgain = new QAction(QIcon(":/images/refresh.png"),
+                                         tr("اعادة البحث"), this);
+    QAction *actSearchInfo = new QAction(QIcon(":/images/about.png"),
+                                          tr("نتائج البحث"), this);
+
     bar->addAction(actNewTab);
     bar->addAction(actSwitchTab);
+    bar->addAction(actSearchAgain);
+    bar->addAction(actSearchInfo);
 
     m_toolBars << bar;
     setLayout(m_layout);
 
     connect(actNewTab, SIGNAL(triggered()), SLOT(openNewTab()));
     connect(actSwitchTab, SIGNAL(triggered()), SLOT(switchSearchWidget()));
+    connect(actSearchAgain, SIGNAL(triggered()), SLOT(searchAgain()));
+    connect(actSearchInfo, SIGNAL(triggered()), SLOT(searchInfo()));
     connect(m_tabWidget, SIGNAL(lastTabClosed()), SIGNAL(hideMe()));
 }
 
@@ -64,9 +73,14 @@ bool SearchView::canSearch(bool showMessage)
     return true;
 }
 
+SearchWidget *SearchView::currentSearchWidget()
+{
+    return qobject_cast<SearchWidget*>(m_tabWidget->currentWidget());
+}
+
 void SearchView::newTab(SearchWidget::SearchType searchType, int bookID)
 {
-    ML_ASSERT(canSearch());
+    ml_return_on_fail(canSearch());
 
     SearchWidget *searchWidget = 0;
     if(searchType == SearchWidget::LibrarySearch) {
@@ -105,8 +119,8 @@ void SearchView::newTab(SearchWidget::SearchType searchType, int bookID)
 
 void SearchView::switchSearchWidget()
 {
-    SearchWidget *w = qobject_cast<SearchWidget*>(m_tabWidget->currentWidget());
-    ML_ASSERT(w);
+    SearchWidget *w = currentSearchWidget();
+    ml_return_on_fail(w);
 
     w->toggleWidget();
 }
@@ -114,4 +128,22 @@ void SearchView::switchSearchWidget()
 void SearchView::openNewTab()
 {
     newTab(SearchWidget::LibrarySearch);
+}
+
+void SearchView::searchAgain()
+{
+    SearchWidget *w = currentSearchWidget();
+    ml_return_on_fail(w);
+    ml_return_on_fail(w->currentWidget() == SearchWidget::Result);
+
+    w->search();
+}
+
+void SearchView::searchInfo()
+{
+    SearchWidget *w = currentSearchWidget();
+    ml_return_on_fail(w);
+    ml_return_on_fail(w->currentWidget() == SearchWidget::Result);
+
+    w->showSearchInfo();
 }

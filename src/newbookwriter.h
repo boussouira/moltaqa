@@ -43,7 +43,6 @@ protected:
     QDomElement m_lastTitlesElement;
 
     QHash<int, QDomNode> m_levels;
-    QTime m_time;
 };
 
 #endif // NEWBOOKWRITER_H

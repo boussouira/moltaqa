@@ -109,9 +109,8 @@ bool SearchResultReader::getSimpleBookPage(QuaZip *zip, LibraryBookPtr book, Boo
     }
 
     QDomElement titleElement = titlesDom->treeFindElement("pageID", page->titleID);
-    if(!titleElement.isNull()) {
-        page->title = titleElement.attribute("text");
-    }
+    if(!titleElement.isNull())
+        page->title = titleElement.firstChildElement("text").text();
 
     titleFile.close();
 
@@ -185,7 +184,7 @@ bool SearchResultReader::getTafessirPage(QuaZip *zip, LibraryBookPtr book, BookP
 
     QDomElement titleElement = titlesDom->treeFindElement("pageID", page->titleID);
     if(!titleElement.isNull()) {
-        page->title = titleElement.attribute("text");
+        page->title = titleElement.firstChildElement("text").text();
 
         if(page->title.size() < 9) {
             QuranSora *quranSora = m_readerHelper->getQuranSora(page->sora);

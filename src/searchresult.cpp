@@ -30,10 +30,10 @@ void SearchResult::generateHTML()
     helper.endDiv(); //div.resultHead
 
     helper.beginDiv(".resultText", QString("bookid='%1' rid='%2'").arg(book->id).arg(resultID));
-    helper.append(snippet.simplified());
+    helper.insertDiv(snippet, ".snippet");
     helper.endDiv();
 
-    helper.beginDiv(".resultInfo", QString("bookid='b%1'").arg(book->id));
+    helper.beginDiv(".resultInfo", QString("bookid='%1'").arg(book->id));
 
     helper.beginDiv(".bookInfo");
     helper.insertSpan(QObject::tr("كتاب:"), ".book");

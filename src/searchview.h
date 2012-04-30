@@ -19,12 +19,16 @@ public:
 
     bool canSearch(bool showMessage=true);
 
+    SearchWidget *currentSearchWidget();
+
 public slots:
     void newTab(SearchWidget::SearchType searchType, int bookID=0);
     void switchSearchWidget();
 
 protected slots:
     void openNewTab();
+    void searchAgain();
+    void searchInfo();
 
 signals:
     void lastTabClosed();

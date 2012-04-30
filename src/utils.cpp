@@ -15,7 +15,7 @@
 #include <qheaderview.h>
 
 static QString appRootPath;
-static uint m_randSlat = uint(QDateTime::currentDateTime().toMSecsSinceEpoch() & 0xFFFFFF);
+static uint m_randSlat = QDateTime::currentDateTime().toTime_t();
 
 namespace Utils {
 
@@ -65,7 +65,7 @@ QString fileName(QString path, bool fullPath, QString ext, QString namePrefix)
 
 QString string(int size)
 {
-    ML_ASSERT_RET2(size, "Rand::string size must be greater than 0", QString());
+    ml_return_val_on_fail2(size, "Rand::string size must be greater than 0", QString());
 
     Rand::srand();
 
@@ -108,7 +108,7 @@ void createDatabases(const QString &path)
         db.setDatabaseName(booksDbPath);
 
         if (!db.open()) {
-            LOG_DB_ERROR(db);
+            ml_warn_db_error(db);
         }
 
         QSqlQuery query(db);
@@ -160,7 +160,7 @@ void createDatabases(const QString &path)
         db.setDatabaseName(authorsDbPath);
 
         if (!db.open()) {
-            LOG_DB_ERROR(db);
+            ml_warn_db_error(db);
         }
 
         QSqlQuery query(db);
@@ -300,7 +300,8 @@ QStringList checkDir(bool showWarnings)
     QStringList missingFiles;
 
     missingFiles << checkFiles(QStringList()
-                               << "quran-meta.db",
+                               << "quran-meta.db"
+                               << "rowat.db",
                                dataDir(),
                                showWarnings);
 
@@ -320,6 +321,12 @@ QStringList checkDir(bool showWarnings)
     missingFiles << checkFiles(QStringList()
                                << "qt_ar.qm",
                                localeDir(),
+                               showWarnings);
+
+    missingFiles << checkFiles(QStringList()
+                               << ML_DEFAULT_STYLE "/config.cfg"
+                               << ML_DEFAULT_STYLE "/default.css",
+                               stylesDir(),
                                showWarnings);
 
     return  missingFiles;
@@ -351,11 +358,11 @@ QString appDir()
         QStringList missingFiles;
 
         missingFiles = checkDir(false);
-        if(!missingFiles.isEmpty()) {
+        if(missingFiles.size()) {
             appRootPath = QDir::currentPath();
 
             missingFiles = checkDir(false);
-            if(!missingFiles.isEmpty()) {
+            if(missingFiles.size()) {
                 QMessageBox::critical(0,
                                       App::name(),
                                       QObject::tr("لم يتم العثور على بعض الملفات في مجلد البرنامج""\n"
@@ -417,24 +424,31 @@ QString dataDir()
 
     return dir.absolutePath();
 }
-}
 
-namespace Sql {
-
-QString buildLikeQuery(QString text, QString column)
+QString currentStyle(const QString &fileName)
 {
-    QStringList list = text.split(" ", QString::SkipEmptyParts);
-    QString sql;
+    QSettings settings;
+    QString defaultStyle = ML_DEFAULT_STYLE;
+    QString currentStyle = settings.value("style", defaultStyle).toString();
 
-    for(int i=0; i < list.count(); i++) {
-        if(i>0)
-            sql.append(" AND ");
-
-        sql.append(QString("%1 LIKE '%%2%'").arg(column).arg(list.at(i)));
+    QDir dir(stylesDir());
+    if(!dir.cd(currentStyle)) {
+        qWarning("currentStyle: style directory %s not found", qPrintable(currentStyle));
+        if(!dir.cd(defaultStyle)) {
+            qFatal("currentStyle: %s style directory not found", qPrintable(defaultStyle));
+        }
     }
 
-    return sql;
+    if(fileName.size()) {
+        ml_warn_on_fail(dir.exists(fileName),
+                        "currentStyle: file" << fileName << "not found in" << dir.absolutePath());
+
+        return dir.absoluteFilePath(fileName);
+    }
+
+    return dir.absolutePath();
 }
+
 }
 
 namespace Log {

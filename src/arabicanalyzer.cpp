@@ -32,9 +32,9 @@ ArabicAnalyzer::~ArabicAnalyzer()
 TokenStream* ArabicAnalyzer::tokenStream(const TCHAR* /*fieldName*/, Reader* reader)
 {
     TokenStream* ret;
-    ret = _CLNEW ArabicTokenizer(reader);
-    ret = _CLNEW ArabicFilter(ret, true);
-    ret = _CLNEW WordTypeFilter(ret, true);
+    ret = new ArabicTokenizer(reader);
+    ret = new ArabicFilter(ret, true);
+    ret = new WordTypeFilter(ret, true);
 
     return ret;
 }
@@ -43,12 +43,12 @@ TokenStream* ArabicAnalyzer::reusableTokenStream(const TCHAR* /*fieldName*/, CL_
 {
     SavedStreams* streams = reinterpret_cast<SavedStreams*>(getPreviousTokenStream());
     if (streams == NULL) {
-        streams = _CLNEW SavedStreams();
+        streams = new SavedStreams();
         setPreviousTokenStream(streams);
 
-        streams->tokenStream = _CLNEW ArabicTokenizer(reader);
-        streams->filteredTokenStream = _CLNEW ArabicFilter(streams->tokenStream, true);
-        streams->filteredTokenStream = _CLNEW WordTypeFilter(streams->filteredTokenStream, true);
+        streams->tokenStream = new ArabicTokenizer(reader);
+        streams->filteredTokenStream = new ArabicFilter(streams->tokenStream, true);
+        streams->filteredTokenStream = new WordTypeFilter(streams->filteredTokenStream, true);
     } else {
         streams->tokenStream->reset(reader);
     }

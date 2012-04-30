@@ -27,8 +27,8 @@ public:
     ShamelaAuthorInfo(int aid, int adieYear, QString aname, QString afullName, QString ainfo):
         id(aid),
         dieYear(adieYear),
-        name(aname),
-        fullName(afullName),
+        name(aname.trimmed()),
+        fullName(afullName.trimmed()),
         info(ainfo) {}
 
     int id;
@@ -44,7 +44,7 @@ public:
         author->fullName = fullName;
         author->info = Utils::Html::format(info);
 
-        if(author->deathYear >= 2013)
+        if(dieYear >= 2013)
             author->isALive = true;
         else
             author->deathYear = dieYear;

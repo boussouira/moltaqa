@@ -87,7 +87,7 @@ ImportModel::ImportModel(QObject *parent)
 
 ImportModel::~ImportModel()
 {
-    ML_DELETE_CHECK(m_rootNode);
+    ml_delete_check(m_rootNode);
 }
 
 void ImportModel::setRootNode(ImportModelNode *node)
@@ -182,7 +182,7 @@ bool ImportModel::setData(const QModelIndex &index, const QVariant &value, int r
         return false;
     if(role == Qt::EditRole || role == Qt::DisplayRole) {
         if(index.column() == 0)
-            node->bookName = value.toString();
+            node->bookName = value.toString().trimmed();
         else if(index.column() == 1)
             node->authorName = value.toString();
         else if(index.column() == 2)
@@ -217,7 +217,7 @@ QVariant ImportModel::headerData(int section,
 void ImportModel::appendNode(ImportModelNode *pNode, const QModelIndex &index)
 {
     ImportModelNode *node = nodeFromIndex(index);
-    ML_ASSERT(node);
+    ml_return_on_fail(node);
 
     node->appendChild(pNode);
     layoutChanged();

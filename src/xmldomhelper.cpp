@@ -48,14 +48,14 @@ bool XmlDomHelper::needSave()
 
 void XmlDomHelper::load()
 {
-    ML_ASSERT(!m_domLoaded);
-    ML_ASSERT2(!m_filePath.isEmpty(), "XmlDomHelper::load empty file path");
+    ml_return_on_fail(!m_domLoaded);
+    ml_return_on_fail2(m_filePath.size(), "XmlDomHelper::load empty file path");
 
     if(m_needSave)
         qCritical("XmlDomHelper::load Dom need to be saved first");
 
     QFile file(m_filePath);
-    ML_ASSERT2(file.open(QIODevice::ReadOnly),
+    ml_return_on_fail2(file.open(QIODevice::ReadOnly),
                "XmlDomHelper::load open file error:" << file.errorString() << m_filePath);
 
     load(&file);
@@ -63,7 +63,7 @@ void XmlDomHelper::load()
 
 void XmlDomHelper::load(QIODevice *file)
 {
-    ML_ASSERT(!m_domLoaded);
+    ml_return_on_fail(!m_domLoaded);
 
     m_doc = Utils::Xml::getDomDocument(file);
     m_rootElement = m_doc.documentElement();
@@ -80,7 +80,7 @@ void XmlDomHelper::save()
 void XmlDomHelper::save(const QString &filePath)
 {
     QFile outFile(filePath);
-    ML_ASSERT2(outFile.open(QFile::WriteOnly | QFile::Truncate), "XmlDomHelper::save open error:" << filePath);
+    ml_return_on_fail2(outFile.open(QFile::WriteOnly | QFile::Truncate), "XmlDomHelper::save open error:" << filePath);
 
     QTextStream out(&outFile);
     m_doc.save(out, 4);
@@ -101,7 +101,7 @@ void XmlDomHelper::reload()
 void XmlDomHelper::create()
 {
     qDebug("XmlDomHelper::create Create empty File...");
-    ML_ASSERT2(!QFile::exists(m_filePath),
+    ml_return_on_fail2(!QFile::exists(m_filePath),
                "XmlDomHelper::create file already exists" << m_filePath);
 
     QString path = QFileInfo(m_filePath).path();
@@ -112,10 +112,10 @@ void XmlDomHelper::create()
     }
 
     QFile file(m_filePath);
-    ML_ASSERT2(file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate),
+    ml_return_on_fail2(file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate),
                "XmlDomHelper::create open file error:" << file.errorString());
 
-    ML_ASSERT(!m_documentName.isEmpty());
+    ml_return_on_fail(m_documentName.size());
     qDebug("XmlDomHelper::create Create XML File...");
 
     QTextStream out(&file);

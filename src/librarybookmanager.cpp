@@ -5,6 +5,7 @@
 #include "modelenums.h"
 #include "utils.h"
 #include "xmlutils.h"
+#include "timeutils.h"
 #include "authorsmanager.h"
 
 #include <qdir.h>
@@ -46,7 +47,7 @@ StandardItemModelPtr LibraryBookManager::getModel()
     QSqlQuery query(m_db);
     query.prepare("SELECT id, title FROM books ORDER BY id");
 
-    ML_QUERY_EXEC(query);
+    ml_query_exec(query);
 
     while(query.next()) {
         QStandardItem *item = new QStandardItem();
@@ -73,7 +74,7 @@ StandardItemModelPtr LibraryBookManager::getLastOpendModel()
                   "ON books.id = last_open.book "
                   "ORDER BY open_date DESC");
 
-    ML_QUERY_EXEC(query);
+    ml_query_exec(query);
 
     while(query.next()) {
         QStandardItem *item = new QStandardItem();
@@ -82,10 +83,42 @@ StandardItemModelPtr LibraryBookManager::getLastOpendModel()
         item->setData(query.value(0).toInt(), ItemRole::bookIdRole);
         item->setIcon(QIcon(":/images/book.png"));
 
-        model->appendRow(item);
+        QStandardItem *timeItem = new QStandardItem();
+        timeItem->setText(Utils::Time::elapsedTime(query.value(2).toInt()));
+
+        model->invisibleRootItem()->appendRow(QList<QStandardItem*>() << item << timeItem);
     }
 
-    model->setHorizontalHeaderLabels(QStringList() << tr("الكتب"));
+    model->setHorizontalHeaderLabels(QStringList() << tr("الكتب") << tr("اخر تصفح قبل"));
+
+    return StandardItemModelPtr(model);
+}
+
+StandardItemModelPtr LibraryBookManager::getBookHistoryModel(int bookID)
+{
+    QStandardItemModel *model = new QStandardItemModel();
+
+    QSqlQuery query(m_db);//0   1
+    query.prepare("SELECT page, open_date "
+                  "FROM history "
+                  "WHERE book = ? "
+                  "ORDER BY open_date DESC");
+    query.bindValue(0, bookID);
+
+    ml_query_exec(query);
+
+    while(query.next()) {
+        QStandardItem *item = new QStandardItem();
+        item->setText(tr("الصفحة %1").arg(query.value(0).toInt()));
+        item->setData(query.value(0).toInt(), ItemRole::idRole);
+
+        QStandardItem *timeItem = new QStandardItem();
+        timeItem->setText(Utils::Time::elapsedTime(query.value(1).toInt()));
+
+        model->invisibleRootItem()->appendRow(QList<QStandardItem*>() << item << timeItem);
+    }
+
+    model->setHorizontalHeaderLabels(QStringList() << tr("الصفحة") << tr("التاريخ"));
 
     return StandardItemModelPtr(model);
 }
@@ -102,7 +135,7 @@ LibraryBookPtr LibraryBookManager::getLibraryBook(int bookID)
                   "FROM books WHERE id = ?");
     query.bindValue(0, bookID);
 
-    ML_QUERY_EXEC(query);
+    ml_query_exec(query);
 
     if(query.next()) {
         LibraryBookPtr book(new LibraryBook());
@@ -150,7 +183,7 @@ LibraryBookPtr LibraryBookManager::getQuranBook()
     query.prepare("SELECT id FROM books WHERE type = ?");
     query.bindValue(0, LibraryBook::QuranBook);
 
-    ML_QUERY_EXEC(query);
+    ml_query_exec(query);
 
     if(query.next()) {
         m_quranBook = getLibraryBook(query.value(0).toInt());
@@ -189,7 +222,7 @@ int LibraryBookManager::addBook(LibraryBookPtr book)
     q.set("indexFlags", book->indexFlags);
     q.set("filename", book->fileName);
 
-    ML_ASSERT_RET(q.exec(query), 0);
+    ml_return_val_on_fail(q.exec(query), 0);
 
     m_books.insert(book->id, book);
     return book->id;
@@ -219,7 +252,7 @@ bool LibraryBookManager::updateBook(LibraryBookPtr book)
 
     q.where("id", book->id);
 
-    ML_ASSERT_RET(q.exec(query), false);
+    ml_return_val_on_fail(q.exec(query), false);
 
     m_books.insert(book->id, book);
     return true;
@@ -233,7 +266,7 @@ bool LibraryBookManager::removeBook(int bookID)
         m_books.remove(bookID);
         return true;
     } else {
-        LOG_SQL_ERROR(m_query);
+        ml_warn_query_error(m_query);
         return false;
     }
 }
@@ -251,7 +284,7 @@ QList<int> LibraryBookManager::getBooksWithIndexStat(LibraryBook::IndexFlags ind
             list << query.value(0).toInt();
         }
     } else {
-        LOG_SQL_ERROR(query);
+        ml_warn_query_error(query);
     }
 
     return list;
@@ -268,10 +301,10 @@ void LibraryBookManager::setBookIndexStat(int bookID, LibraryBook::IndexFlags in
     q.set("indexFlags", indexFlag);
     q.where("id", bookID);
 
-    ML_ASSERT(q.exec(query));
+    ml_return_on_fail(q.exec(query));
 
     LibraryBookPtr book = m_books.value(bookID);
-    ML_ASSERT2(book, "LibraryBookManager::setBookIndexStat No book with id" << bookID << "where found");
+    ml_return_on_fail2(book, "LibraryBookManager::setBookIndexStat No book with id" << bookID << "where found");
 
     book->indexFlags = indexFlag;
 }
@@ -284,7 +317,7 @@ QList<LibraryBookPtr> LibraryBookManager::getAuthorBooks(int authorID)
     query.prepare("SELECT id FROM books WHERE authorID = ?");
     query.bindValue(0, authorID);
 
-    ML_QUERY_EXEC(query);
+    ml_query_exec(query);
 
     while(query.next()) {
         LibraryBookPtr book = getLibraryBook(query.value(0).toInt());
@@ -299,7 +332,7 @@ void LibraryBookManager::addBookHistory(int bookID, int pageID)
 {
     QSqlQuery query(m_db);
 
-    qint64 t = QDateTime::currentDateTime().toMSecsSinceEpoch();
+    uint t = QDateTime::currentDateTime().toTime_t();
 
     QueryBuilder q;
     q.setTableName("history", QueryBuilder::Insert);

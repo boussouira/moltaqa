@@ -30,7 +30,7 @@ LibraryBookManagerWidget::LibraryBookManagerWidget(QWidget *parent) :
 
 LibraryBookManagerWidget::~LibraryBookManagerWidget()
 {
-    ML_DELETE_CHECK(m_model);
+    ml_delete_check(m_model);
 
     delete ui;
 }
@@ -42,7 +42,7 @@ QString LibraryBookManagerWidget::title()
 
 void LibraryBookManagerWidget::aboutToShow()
 {
-    ML_ASSERT(!m_webEdit);
+    ml_return_on_fail(!m_webEdit);
 
     m_webEdit = new EditWebView(this);
 
@@ -78,7 +78,7 @@ void LibraryBookManagerWidget::enableEditWidgets(bool enable)
 
 void LibraryBookManagerWidget::loadModel()
 {
-    ML_DELETE_CHECK(m_model);
+    ml_delete_check(m_model);
 
     m_model = Utils::Model::cloneModel(m_manager->getModel().data());
 
@@ -97,7 +97,7 @@ void LibraryBookManagerWidget::infoChanged()
 
 void LibraryBookManagerWidget::checkEditWebChange()
 {
-    ML_ASSERT(m_webEdit);
+    ml_return_on_fail(m_webEdit);
 
     if(m_webEdit->pageModified())
         infoChanged();
@@ -107,7 +107,7 @@ void LibraryBookManagerWidget::save()
 {
     saveCurrentBookInfo();
 
-    if(!m_editedBookInfo.isEmpty()) {
+    if(m_editedBookInfo.size()) {
         m_manager->transaction();
 
         foreach(LibraryBookPtr book, m_editedBookInfo.values()) {

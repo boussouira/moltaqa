@@ -23,7 +23,7 @@ TaffesirListManagerWidget::TaffesirListManagerWidget(QWidget *parent) :
 
 TaffesirListManagerWidget::~TaffesirListManagerWidget()
 {
-    ML_DELETE_CHECK(m_model);
+    ml_delete_check(m_model);
 
     delete ui;
 }

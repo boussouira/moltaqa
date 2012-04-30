@@ -80,7 +80,7 @@ bool ZipHelper::save()
 {
     QString newZip = zip();
     QString backupZip = m_zipPath + ".back";
-    if(!newZip.isEmpty()) {
+    if(newZip.size()) {
         if(QFile::exists(backupZip) && !QFile::remove(backupZip))
             qWarning() << "ZipHelper: Can't remove backup file:" << backupZip;
         if(QFile::rename(m_zipPath, backupZip)) {
@@ -120,7 +120,7 @@ QFilePtr ZipHelper::getFile(const QString &fileName, QIODevice::OpenModeFlag mod
         file = new QFile(filePath);
         if(!file->open(mode)) {
             qWarning("ZipHelper::getFile Can't open file for writing: %s", qPrintable(file->errorString()));
-            ML_DELETE(file);
+            ml_delete(file);
         }
     } else {
         qWarning("ZipHelper::getFile Zip file is not in Open stat");
@@ -198,9 +198,9 @@ XmlDomHelperPtr ZipHelper::getDomHelper(const QString &fileName, const QString &
 
 bool ZipHelper::unzip(const QString &zipPath, const QString &outPath)
 {
-    ML_ASSERT_RET2(QFile::exists(zipPath),
+    ml_return_val_on_fail2(QFile::exists(zipPath),
                    "ZipHelper::unzip zip file doesn't exists:" << zipPath, false);
-    ML_ASSERT_RET2(QFile::exists(outPath),
+    ml_return_val_on_fail2(QFile::exists(outPath),
                    "ZipHelper::unzip out path doesn't exists:" << outPath, false);
 
     QDir outDir(outPath);
@@ -208,7 +208,7 @@ bool ZipHelper::unzip(const QString &zipPath, const QString &outPath)
     QFile zipFile(zipPath);
     QuaZip zip(&zipFile);
 
-    ML_ASSERT_RET2(zip.open(QuaZip::mdUnzip),
+    ml_return_val_on_fail2(zip.open(QuaZip::mdUnzip),
                    "ZipHelper::unzip open zip error" << zip.getZipError(), false);
 
     QuaZipFileInfo info;

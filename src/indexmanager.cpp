@@ -34,9 +34,9 @@ bool IndexManager::openWriter()
         if(IndexReader::isLocked(qPrintable(m_library->indexDataDir())))
             IndexReader::unlock(qPrintable(m_library->indexDataDir()));
 
-        m_writer = _CLNEW IndexWriter( qPrintable(m_library->indexDataDir()), m_analyzer, false);
+        m_writer = new IndexWriter( qPrintable(m_library->indexDataDir()), m_analyzer, false);
     } else {
-        m_writer = _CLNEW IndexWriter( qPrintable(m_library->indexDataDir()), m_analyzer, true);
+        m_writer = new IndexWriter( qPrintable(m_library->indexDataDir()), m_analyzer, true);
     }
 
     m_writer->setUseCompoundFile(false);
@@ -51,12 +51,12 @@ bool IndexManager::openWriter()
 
 bool IndexManager::isIndexing()
 {
-    return !m_threads.isEmpty();
+    return m_threads.size();
 }
 
 void IndexManager::start()
 {
-    ML_ASSERT2(openWriter(), "IndexManager: Can't open IndexWriter");
+    ml_return_on_fail2(openWriter(), "IndexManager: Can't open IndexWriter");
 
     QSettings settings;
     m_threadCount = settings.value("Search/threadCount", QThread::idealThreadCount()).toInt();
@@ -105,15 +105,6 @@ void IndexManager::stop()
 
 void IndexManager::taskDone(IndexTask *task)
 {
-    qDebug() << "IndexManager::taskDone" << (task->task==IndexTask::Add
-                 ? "Add"
-                 : (task->task==IndexTask::Delete
-                    ? "Delete"
-                    : "Update"))
-             << task->book->id
-             << task->book->title;
-
-
     m_indexTracker->removeTask(task);
     emit progress(++m_indexedBookCount, m_taskIter->taskCount());
 }
@@ -123,11 +114,11 @@ void IndexManager::threadDoneIndexing()
     if(--m_threadCount <= 0) {
         if(m_writer) {
             m_writer->close();
-            ML_DELETE(m_writer);
+            ml_delete(m_writer);
         }
 
-        ML_DELETE_CHECK(m_analyzer);
-        ML_DELETE_CHECK(m_taskIter);
+        ml_delete_check(m_analyzer);
+        ml_delete_check(m_taskIter);
 
         qDebug() << "IndexManager:"
                  << tr("تمت الفهرسة خلال %1").arg(Utils::Time::secondsToString(m_indexingTime.elapsed()));

@@ -85,7 +85,7 @@ void ImportDialog::on_pushAddFile_clicked()
         addFile(file);
     }
 
-    if(!files.isEmpty())
+    if(files.size())
         settings.setValue("SavedPath/ImportDialog",
                           QFileInfo(files.first()).absolutePath());
 }
@@ -172,7 +172,7 @@ void ImportDialog::importBooks()
                                         tr("لم تقم باختيار أقسام بعض الكتب" "\n"
                                            "هل تريد المتابعة؟"),
                                         QMessageBox::Yes|QMessageBox::No, QMessageBox::No);
-        ML_ASSERT(rep != QMessageBox::No);
+        ml_return_on_fail(rep != QMessageBox::No);
     }
 
     setEnabled(false);

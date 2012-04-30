@@ -17,6 +17,7 @@ public:
     void setCloseLastTab(bool closeLast);
 
     void setTabBarActions(QList<QAction*> list);
+    QList<QAction*> tabActions() { return m_tabBarActions; }
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);

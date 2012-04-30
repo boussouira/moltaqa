@@ -9,6 +9,7 @@
 #include "stringutils.h"
 #include "webview.h"
 #include "htmlhelper.h"
+#include <qsettings.h>
 
 static AuthorsView *m_instance = 0;
 
@@ -33,8 +34,8 @@ AuthorsView::AuthorsView(QWidget *parent) :
 
 AuthorsView::~AuthorsView()
 {
-    ML_DELETE_CHECK(m_model);
-    ML_DELETE_CHECK(m_filter);
+    ml_delete_check(m_model);
+    ml_delete_check(m_filter);
 
     delete ui;
 
@@ -53,7 +54,7 @@ QString AuthorsView::title()
 
 QString AuthorsView::viewLink()
 {
-    ML_ASSERT_RET(m_currentAuthor, QString());
+    ml_return_val_on_fail(m_currentAuthor, QString());
 
     return QString("moltaqa://open/author?id=%1").arg(m_currentAuthor->id);
 }
@@ -71,12 +72,22 @@ void AuthorsView::aboutToShow()
 
     if(!ui->tabWidget->count())
         addTab(tr("المؤلف"));
+
+    QSettings settings;
+    if(settings.contains("AuthorsView/splitter"))
+        ui->splitter->restoreState(settings.value("AuthorsView/splitter").toByteArray());
+}
+
+void AuthorsView::aboutToHide()
+{
+    QSettings settings;
+    settings.setValue("AuthorsView/splitter", ui->splitter->saveState());
 }
 
 void AuthorsView::openAuthorInfo(int authorID)
 {
     AuthorInfoPtr info = m_manager->getAuthorInfo(authorID);
-    ML_ASSERT2(info, "AuthorsView::openAuthorInfo no author with id" << authorID);
+    ml_return_on_fail2(info, "AuthorsView::openAuthorInfo no author with id" << authorID);
 
     setCurrentAuth(info);
 
@@ -98,17 +109,13 @@ int AuthorsView::addTab(QString tabText)
 
 void AuthorsView::setCurrentAuth(AuthorInfoPtr info)
 {
-    QDir styleDir(App::stylesDir());
-    styleDir.cd("default");
-
-    QString style = QUrl::fromLocalFile(styleDir.filePath("default.css")).toString();
     QList<LibraryBookPtr> books = m_bookManager->getAuthorBooks(info->id);
 
     HtmlHelper html;
     html.beginHtml();
     html.beginHead();
     html.setCharset();
-    html.addCSS(style);
+    html.addCSS("default.css");
     html.setTitle(info->name);
     html.endHead();
 
@@ -118,17 +125,17 @@ void AuthorsView::setCurrentAuth(AuthorInfoPtr info)
 
     html.beginDiv(".nav");
 
-    if(!books.isEmpty())
+    if(books.size())
     html.insertLink(tr("الكتب "), "#books");
 
-    if(!info->info.isEmpty())
+    if(info->info.size())
         html.insertLink(tr("الترجمة"), "#tarejama");
 
     html.endDiv(); // .nav
 
     html.beginDiv("#info");
 
-    if(!info->name.isEmpty()) {
+    if(info->name.size()) {
         html.beginParagraph();
         html.insertSpan(tr("الاسم: "), ".pro-name");
 
@@ -140,21 +147,21 @@ void AuthorsView::setCurrentAuth(AuthorInfoPtr info)
         html.endParagraph();
     }
 
-    if(!info->fullName.isEmpty()) {
+    if(info->fullName.size()) {
         html.beginParagraph();
         html.insertSpan(tr("الاسم الكامل: "), ".pro-name");
         html.insertSpan(info->fullName, ".pro-value");
         html.endParagraph();
     }
 
-    if(!info->birthStr.isEmpty()) {
+    if(info->birthStr.size()) {
         html.beginParagraph();
         html.insertSpan(tr("الولادة: "), ".pro-name");
         html.insertSpan(info->birthStr, ".pro-value");
         html.endParagraph();
     }
 
-    if(!info->deathStr.isEmpty()) {
+    if(info->deathStr.size()) {
         html.beginParagraph();
         html.insertSpan(tr("الوفاة: "), ".pro-name");
         html.insertSpan(info->deathStr, ".pro-value");
@@ -164,7 +171,7 @@ void AuthorsView::setCurrentAuth(AuthorInfoPtr info)
     html.endDiv(); // #info
 
 
-    if(!books.isEmpty()) {
+    if(books.size()) {
         html.insertHead(4, tr("كتب المؤلف (%1)").arg(books.size()), "#books");
         HtmlHelper bookHtml;
 
@@ -182,7 +189,7 @@ void AuthorsView::setCurrentAuth(AuthorInfoPtr info)
         html.insertDiv(bookHtml.html(), ".head-info");
     }
 
-    if(!info->info.isEmpty()) {
+    if(info->info.size()) {
         html.insertHead(4, tr("الترجمة"), "#tarejama");
         html.insertDiv(info->info, ".head-info");
     }
@@ -211,13 +218,13 @@ void AuthorsView::setCurrentAuth(AuthorInfoPtr info)
 void AuthorsView::setCurrentTabHtml(QString title, QString html)
 {
     int index = ui->tabWidget->currentIndex();
-    ML_ASSERT(index != -1);
+    ml_return_on_fail(index != -1);
 
     QWidget *w = ui->tabWidget->widget(index);
-    ML_ASSERT(w);
+    ml_return_on_fail(w);
 
     WebView *view = w->findChild<WebView*>();
-    ML_ASSERT(view);
+    ml_return_on_fail(view);
 
     view->setHtml(html);
 
@@ -230,7 +237,7 @@ void AuthorsView::on_treeView_doubleClicked(const QModelIndex &index)
     int authID = index.data(ItemRole::authorIdRole).toInt();
 
     AuthorInfoPtr info = m_manager->getAuthorInfo(authID);
-    ML_ASSERT2(info, "AuthorsView::doubleClicked no author with id" << authID);
+    ml_return_on_fail2(info, "AuthorsView::doubleClicked no author with id" << authID);
 
     setCurrentAuth(info);
 }

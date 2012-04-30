@@ -16,6 +16,7 @@ public:
 
 protected:
     void loadSettings();
+    void loadStyles();
     QString getFilePath();
     QString getFolderPath(const QString &defaultPath = QString());
 

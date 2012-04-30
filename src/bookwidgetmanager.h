@@ -29,6 +29,8 @@ public:
     void closeBook(int bookID);
     BookWidget *getBookWidget(int bookID);
 
+    void addTabActions(QList<QAction *> tabActions);
+
 protected:
     void connectTab(TabWidget *tab);
     void reverseActiveTab();
@@ -41,6 +43,7 @@ public slots:
     void reverseSplitter();
     void addToFavouite();
     void showBookInfo();
+    void showBookHistory();
 
     void nextAya();
     void previousAya();

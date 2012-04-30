@@ -24,8 +24,6 @@ public:
     BooksViewer(LibraryManager *libraryManager, QWidget *parent=0);
     ~BooksViewer();
 
-    static BooksViewer *instance();
-
     void setLibraryManager(LibraryManager *libraryManager) { m_libraryManager = libraryManager;}
     QString title();
     QString viewLink();
@@ -34,6 +32,8 @@ public:
     int currentBookID();
     LibraryBookPtr currentBook();
     BookPage *currentPage();
+
+    BookWidgetManager *bookWidgetManager() { return m_viewManager; }
 
 public slots:
     BookWidget *openBook(int bookID, int pageID = -1, CLuceneQuery *query=0);

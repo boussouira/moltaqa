@@ -8,11 +8,14 @@
 #include "shemehandler.h"
 #include <QTime>
 
+class WebPage;
+
 class WebView : public QWebView
 {
     Q_OBJECT
 public:
     WebView(QWidget* parent = 0);
+    ~WebView();
 
     void scrollToAya(int pSoraNumber, int pAyaNumber);
     void scrollToSora(int soraNumber);
@@ -48,6 +51,7 @@ signals:
     void prevPage();
 
 protected:
+    WebPage *m_page;
     QWebFrame *m_frame;
     QPropertyAnimation *m_animation;
     ShemeHandler m_shemeHandler;

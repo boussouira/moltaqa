@@ -7,9 +7,14 @@ class SimpleBookIndexer : public TextBookIndexer
 {
 public:
     SimpleBookIndexer();
+    ~SimpleBookIndexer();
 
 protected:
     void indexPage(BookPage *page);
+
+protected:
+    wchar_t *m_authorDeath;
+    bool m_unknowAuthor;
 };
 
 #endif // SIMPLEBOOKINDEXER_H

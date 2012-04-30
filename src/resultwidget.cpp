@@ -3,14 +3,20 @@
 #include "utils.h"
 #include "webview.h"
 #include "booksviewer.h"
-#include "mainwindow.h"
+#include "librarybookmanager.h"
 #include "bookwidget.h"
 #include "htmlhelper.h"
+#include "bookinfodialog.h"
+#include "clconstants.h"
+#include "mainwindow.h"
+#include "richbookreader.h"
+
 #include <qdir.h>
 #include <qplaintextedit.h>
 #include <qboxlayout.h>
 #include <qsettings.h>
 #include <qtoolbutton.h>
+#include <qmenu.h>
 
 ResultWidget::ResultWidget(QWidget *parent) :
     QWidget(parent),
@@ -21,9 +27,13 @@ ResultWidget::ResultWidget(QWidget *parent) :
     m_view = new WebView(this);
     ui->verticalLayout->insertWidget(0, m_view);
 
+    m_moveToReaderViewAct = new QAction(tr("نقل الى نافذة عرض الكتب"), this);
+
     connect(m_view->page()->mainFrame(),
             SIGNAL(javaScriptWindowObjectCleared()),
             SLOT(populateJavaScriptWindowObject()));
+
+    connect(m_moveToReaderViewAct, SIGNAL(triggered()), SLOT(moveToReaderView()));
 
     setupWebView();
     setupBookReaderView();
@@ -62,6 +72,8 @@ void ResultWidget::setupBookReaderView()
     foreach(QToolBar *bar, m_readerview->toolBars()) {
         toolBarLayout->addWidget(bar);
     }
+
+    m_readerview->bookWidgetManager()->addTabActions(QList<QAction*>() << 0 << m_moveToReaderViewAct);
 
     // hide/maximize/minmize buttons
     QSpacerItem *horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -106,17 +118,11 @@ void ResultWidget::setupBookReaderView()
 
 void ResultWidget::setupWebView()
 {
-    QDir styleDir(App::stylesDir());
-    styleDir.cd("default");
-
-    QString style = styleDir.filePath("default.css");
-    QString  m_styleFile = QUrl::fromLocalFile(style).toString();
-
     HtmlHelper helper;
     helper.beginHtml();
     helper.beginHead();
     helper.setCharset("utf-8");
-    helper.addCSS(m_styleFile);
+    helper.addCSS("default.css");
     helper.endHead();
 
     helper.beginBody();
@@ -181,12 +187,20 @@ void ResultWidget::lastTabClosed()
     ensureReaderHidden(false);
 }
 
+void ResultWidget::moveToReaderView()
+{
+    RichBookReader *reader = m_readerview->bookWidgetManager()->activeBookReader();
+    ml_return_on_fail(reader);
+
+    MW->booksViewer()->openBook(reader->bookInfo()->id, reader->page()->pageID);
+}
+
 void ResultWidget::openResult(int resultID)
 {
     SearchResult *result = m_searcher->getResult(resultID);
     BookWidget *bookWidget = m_readerview->openBook(result->book->id,
-                                                        result->page->pageID,
-                                                        m_searcher->getSearchQuery());
+                                                    result->page->pageID,
+                                                    m_searcher->getSearchQuery());
 
     if(bookWidget) {
         ensureReaderVisible();
@@ -199,6 +213,66 @@ void ResultWidget::openResult(int resultID)
 void ResultWidget::goToPage(int page)
 {
     m_searcher->fetechResults(page);
+}
+
+void ResultWidget::showBookMenu(int bookID)
+{
+    LibraryBookPtr book = LibraryManager::instance()->bookManager()->getLibraryBook(bookID);
+    ml_return_on_fail2(book, "ResultWidget::showBookMenu no book with id" << bookID);
+
+    QMenu menu(this);
+    QAction *includeOnlyAct = new QAction(tr("بحث في هذا الكتاب فقط"), &menu);
+    QAction *excludeAct = new QAction(tr("حذف هذا الكتاب من البحث"), &menu);
+    QAction *bookInfoAct = new QAction(tr("بطاقة الكتاب"), &menu);
+
+    menu.addAction(includeOnlyAct);
+    menu.addAction(excludeAct);
+    menu.addAction(bookInfoAct);
+
+
+    QAction *ret = menu.exec(QCursor::pos());
+    if(ret) {
+        if(ret == includeOnlyAct || ret == excludeAct) {
+            CLuceneQuery *query = m_searcher->getSearchQuery();
+
+            wchar_t *idStr = Utils::CLucene::intToWChar(bookID);
+            Term *term = new Term(BOOK_ID_FIELD, idStr);
+            TermQuery *termQuery = new TermQuery(term);
+
+            BooleanQuery *q = new BooleanQuery();
+            q->add(termQuery, BooleanClause::SHOULD);
+
+            if(ret == excludeAct && query->resultFilter) {
+                if(query->resultFilter->clause == BooleanClause::MUST_NOT) {
+                    // Add previous exclude filter to the new one
+                    q->add(query->resultFilter->query, BooleanClause::SHOULD);
+
+                    query->resultFilter->unSelected++;
+                    query->resultFilter->selected = -1;
+                } else {
+                    query->resultFilter->selected = 1;
+                    query->resultFilter->unSelected = 1;
+                }
+            }
+
+            if(!query->resultFilter){
+                query->resultFilter = new SearchFilter();
+                query->resultFilter->selected = 1;
+                query->resultFilter->unSelected = 1;
+            }
+
+            query->resultFilter->query = q;
+            query->resultFilter->clause = ((ret == includeOnlyAct) ? BooleanClause::MUST : BooleanClause::MUST_NOT);
+
+            m_searcher->setQuery(query);
+            m_searcher->start();
+        } else if(ret == bookInfoAct) {
+            BookInfoDialog *dialog = new BookInfoDialog(0);
+            dialog->setLibraryBook(book);
+            dialog->setup();
+            dialog->show();
+        }
+    }
 }
 
 void ResultWidget::searchStarted()

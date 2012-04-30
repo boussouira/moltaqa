@@ -1,6 +1,7 @@
 #include "timeutils.h"
 #include "stringutils.h"
 #include <qobject.h>
+#include <qdatetime.h>
 
 namespace Utils {
 
@@ -47,6 +48,38 @@ QString secondsToString(int milsec, bool html)
     time.append(String::Arabic::plural(seconde, String::Arabic::SECOND, html));
 
     return time;
+}
+
+QString elapsedTime(uint timestamp)
+{
+    uint current = QDateTime::currentDateTime().toTime_t();
+    uint elapsed = current - timestamp;
+
+    QString str;
+    if(elapsed == 0) {
+        str = QObject::tr("الان");
+    } else if(elapsed < 60) {
+        str = Utils::String::Arabic::plural(elapsed, Utils::String::Arabic::SECOND);
+    } else if(elapsed < 3600) {
+        str = Utils::String::Arabic::plural((elapsed / 60), Utils::String::Arabic::MINUTE);
+    } else if(elapsed < 86400) {
+        str = Utils::String::Arabic::plural((elapsed / 3600), Utils::String::Arabic::HOUR);
+    }/* else if(elapsed < 2592000) {
+        str = Utils::String::Arabic::plural((elapsed / 86400), Utils::String::Arabic::DAY);
+    } else if(elapsed < 31104000) {
+        str = Utils::String::Arabic::plural((elapsed / 2592000), Utils::String::Arabic::MONTH);
+    } else if(elapsed < 31104000*30) {
+        str = Utils::String::Arabic::plural((elapsed / 31104000), Utils::String::Arabic::YEAR);
+    } else {
+        str = QString();
+    }*/
+
+    if(str.size())
+        return str;
+
+    QDateTime date;
+    date.setTime_t(timestamp);
+    return date.toString("hh:mm - dd/MM");
 }
 
 } // Time

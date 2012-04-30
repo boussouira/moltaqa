@@ -27,6 +27,7 @@ public:
 
     StandardItemModelPtr getModel();
     StandardItemModelPtr getLastOpendModel();
+    StandardItemModelPtr getBookHistoryModel(int bookID);
 
     LibraryBookPtr getLibraryBook(int bookID);
     LibraryBookPtr getQuranBook();

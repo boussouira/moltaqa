@@ -98,6 +98,21 @@ QString plural(int count, Words word, bool html)
              << QObject::tr("ساعتين")
              << QObject::tr("ساعات")
              << QObject::tr("ساعة");
+    else if(word == DAY)
+        list << QObject::tr("يوم")
+             << QObject::tr("يومين")
+             << QObject::tr("ايام")
+             << QObject::tr("يوما");
+    else if(word == MONTH)
+        list << QObject::tr("شهر")
+             << QObject::tr("شهرين")
+             << QObject::tr("اشهر")
+             << QObject::tr("شهرا");
+    else if(word == YEAR)
+        list << QObject::tr("عام")
+             << QObject::tr("عامين")
+             << QObject::tr("اعوام")
+             << QObject::tr("عاما");
     else if(word == BOOK)
         list << QObject::tr("كتاب واحد")
              << QObject::tr("كتابين")
@@ -118,6 +133,8 @@ QString plural(int count, Words word, bool html)
              << QObject::tr("ملفين")
              << QObject::tr("ملفات")
              << QObject::tr("ملفا");
+    else
+        qWarning("Utils::Arabic::plural word %d is not handled", word);
 
     if(count <= 1)
         str = list.at(0);

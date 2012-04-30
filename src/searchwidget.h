@@ -38,7 +38,10 @@ public:
     virtual void init(int bookID=0)=0;
 
     void setCurrentWidget(CurrentWidget index);
+    CurrentWidget currentWidget();
     void toggleWidget();
+
+    void showSearchInfo();
 
 protected:
     virtual lucene::search::Query *getSearchQuery(const wchar_t *searchField);

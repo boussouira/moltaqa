@@ -134,7 +134,7 @@ QString ShamelaImportDialog::getFolderPath(const QString &defaultPath)
                                                         QFileDialog::ShowDirsOnly
                                                         |QFileDialog::DontResolveSymlinks);
 
-    if(!dirPath.isEmpty()) {
+    if(dirPath.size()) {
         QDir dir(dirPath);
         return dir.absolutePath();
     } else {
@@ -150,7 +150,7 @@ void ShamelaImportDialog::selectShamela()
 
     QString path = getFolderPath(lastPath);
 
-    if(!path.isEmpty()){
+    if(path.size()){
         if(m_shamela->isShamelaPath(path)) {
             ui->lineShamelaDir->setText(QDir::toNativeSeparators(path));
             ui->groupImportOptions->setEnabled(true);
@@ -172,7 +172,7 @@ void ShamelaImportDialog::nextStep()
     int index = ui->stackedWidget->currentIndex();
 
     if(index == 0) {
-        if(!m_shamela->shamelaPath().isEmpty()) {
+        if(m_shamela->shamelaPath().size()) {
             showBooks();
             goPage();
         } else {

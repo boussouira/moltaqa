@@ -10,8 +10,8 @@ RCC_DIR += .rcc
 
 unix {
         DEFINES += USE_MDBTOOLS
-        HEADERS += mdbconverter.h mdbconvertermanager.h
-        SOURCES += mdbconverter.cpp mdbconvertermanager.cpp
+        HEADERS += mdbconverter.h
+        SOURCES += mdbconverter.cpp
 
         QMAKE_CXXFLAGS += $$system(pkg-config libmdb --cflags)
         LIBS += $$system(pkg-config libmdb --libs)
@@ -129,7 +129,8 @@ SOURCES += mainwindow.cpp \
     timeutils.cpp \
     bookinfodialog.cpp \
     searchresultreader.cpp \
-    aboutdialog.cpp
+    aboutdialog.cpp \
+    bookhistorydialog.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -246,7 +247,8 @@ HEADERS += mainwindow.h \
     timeutils.h \
     bookinfodialog.h \
     searchresultreader.h \
-    aboutdialog.h
+    aboutdialog.h \
+    bookhistorydialog.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \
@@ -270,7 +272,8 @@ FORMS += mainwindow.ui settingsdialog.ui \
     tarajemrowatmanagerwidget.ui \
     authorsview.ui \
     favouritesmanagerwidget.ui \
-    aboutdialog.ui
+    aboutdialog.ui \
+    bookhistorydialog.ui
 
 RESOURCES += ../share/moltaqa-lib/qt_rc.qrc
 win32:RC_FILE = ../share/moltaqa-lib/win_rc.rc

@@ -46,7 +46,7 @@ void NewLibraryDialog::on_toolSelectLibDir_clicked()
                                                     ui->lineLibDir->text(),
                                                     QFileDialog::ShowDirsOnly
                                                     |QFileDialog::DontResolveSymlinks);
-    if(!dirPath.isEmpty()) {
+    if(dirPath.size()) {
         if(Utils::Library::isValidLibrary(dirPath)) {
             int ret = QMessageBox::question(this,
                                             App::name(),
@@ -86,7 +86,7 @@ void NewLibraryDialog::createLibrary(QString name, QString path, QString descrip
     QString infoPath = libPath.filePath("info.xml");
 
     QFile info(infoPath);
-    ML_ASSERT2(info.open(QIODevice::WriteOnly | QIODevice::Text),
+    ml_return_on_fail2(info.open(QIODevice::WriteOnly | QIODevice::Text),
                "createLibrary: open file error:" << info.errorString());
 
     QTextStream out(&info);

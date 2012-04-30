@@ -29,6 +29,7 @@ protected:
 public slots:
     void openResult(int resultID);
     void goToPage(int page);
+    void showBookMenu(int bookID);
 
 private slots:
     void searchStarted();
@@ -44,6 +45,7 @@ private slots:
     void maximizeBookReader();
     void minimizeBookReader();
     void lastTabClosed();
+    void moveToReaderView();
 
 private:
     Ui::ResultWidget *ui;
@@ -51,6 +53,7 @@ private:
     QWidget *m_readerWidget;
     WebView *m_view;
     LibrarySearcher *m_searcher;
+    QAction *m_moveToReaderViewAct;
 };
 
 #endif // RESULTWIDGET_H
