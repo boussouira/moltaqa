@@ -41,7 +41,7 @@ void BookIndexEditor::setup()
 
 void BookIndexEditor::setModel(QStandardItemModel *model)
 {
-    ML_ASSERT2(model, "BookIndexEditor::setModel model is null");
+    ml_return_on_fail2(model, "BookIndexEditor::setModel model is null");
 
     m_model = model;
     ui->treeView->setModel(model);
@@ -57,7 +57,7 @@ void BookIndexEditor::setModel(QStandardItemModel *model)
 
 void BookIndexEditor::saveModel(QXmlStreamWriter *writer)
 {
-    ML_ASSERT2(m_model, "BookIndexEditor::setModel model is null");
+    ml_return_on_fail2(m_model, "BookIndexEditor::setModel model is null");
 
     writer->writeStartDocument();
     writer->writeStartElement("titles");
