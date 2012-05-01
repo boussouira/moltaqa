@@ -346,7 +346,7 @@ void ShamelaImportDialog::startImporting()
     ui->progressBar->setMaximum(m_manager->getBooksCount());
     ui->progressBar->setValue(0);
 
-    m_importThreadCount = ui->spinImportThreads->value();
+    m_importThreadCount = qMin(ui->spinImportThreads->value(), m_manager->getBooksCount());
 
     qDebug("ShamelaImportDialog: Start importing %d books using %d threads",
            m_manager->getBooksCount(),
