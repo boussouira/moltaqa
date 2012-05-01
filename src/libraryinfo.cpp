@@ -196,12 +196,6 @@ void LibraryInfo::checkDataFiles(QString dataDirPath)
     }
 }
 
-QString LibraryInfo::booksIndexPath()
-{
-    QDir dir(m_path);
-    return dir.filePath("books_index.db");
-}
-
 QString LibraryInfo::bookPath(QString bookName)
 {
     QDir dir(m_booksDir);

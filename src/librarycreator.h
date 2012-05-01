@@ -44,9 +44,6 @@ protected:
     void readTafessirBook(ShamelaBookInfo *book, QSqlQuery &query, NewBookWriter &writer, bool hno);
 
 protected:
-    DatabaseRemover m_remover;
-    QSqlDatabase m_bookDB;
-    QSqlQuery m_bookQuery;
     LibraryInfo *m_library;
     ShamelaManager *m_shamelaManager;
     ShamelaInfo *m_shamelaInfo;

@@ -49,22 +49,10 @@ LibraryCreator::LibraryCreator()
 
 LibraryCreator::~LibraryCreator()
 {
-    m_remover.removeDatabase(m_bookDB);
 }
 
 void LibraryCreator::openDB()
 {
-    if(!m_bookDB.isOpen()) {
-        m_bookDB = QSqlDatabase::addDatabase("QSQLITE", QString("newBookIndexDB_%1").arg(m_threadID));
-        m_bookDB.setDatabaseName(m_library->booksIndexPath());
-
-        if(!m_bookDB.open()) {
-            qDebug() << "LibraryCreator::openDB"
-                     << QObject::tr("لم يمكن فتح قاعدة البيانات: %1").arg(m_library->booksIndexPath());
-        }
-
-        m_bookQuery = QSqlQuery(m_bookDB);
-    }
 }
 
 void LibraryCreator::importCats()
@@ -277,13 +265,10 @@ void LibraryCreator::addQuran()
 
 void LibraryCreator::start()
 {
-    m_bookDB.transaction();
 }
 
 void LibraryCreator::done()
 {
-    if(!m_bookDB.commit())
-        qCritical("LibraryCreator::done Error when committing change to database");
 }
 
 void LibraryCreator::importBook(ShamelaBookInfo *shamelBook, QString path)

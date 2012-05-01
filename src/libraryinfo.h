@@ -54,11 +54,6 @@ public:
     void setBooksDir(QString dir);
 
     /**
-      Get books index databases full path
-      */
-    QString booksIndexPath();
-
-    /**
       Get book path
       @note This function doesn't check if the file exists
       @param bookName The name of book file
