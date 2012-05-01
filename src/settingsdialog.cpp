@@ -27,6 +27,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     connect(ui->pushBooksDir, SIGNAL(clicked()), this, SLOT(changeBooksDir()));
     connect(ui->pushSaveSettings, SIGNAL(clicked()), this, SLOT(saveSettings()));
     connect(ui->pushCancel, SIGNAL(clicked()), this, SLOT(reject()));
+    connect(ui->pushDeleteSavedSearch, SIGNAL(clicked()), SLOT(deleteSavedSearch()));
 }
 
 SettingsDialog::~SettingsDialog()
@@ -63,6 +64,8 @@ void SettingsDialog::loadSettings()
             break;
         }
     }
+
+    ui->checkSaveSearch->setChecked(settings.value("saveSearch", true).toBool());
 
     settings.endGroup();
 
@@ -178,6 +181,7 @@ void SettingsDialog::saveSettings()
     settings.setValue("threadCount", ui->spinThreadCount->value());
     settings.setValue("ramSize", ui->comboIndexingRam->itemData(ui->comboIndexingRam->currentIndex()));
     settings.setValue("defaultField", ui->comboSearchFields->itemData(ui->comboSearchFields->currentIndex()));
+    settings.setValue("saveSearch", ui->checkSaveSearch->isChecked());
     settings.endGroup();
 
     settings.beginGroup("Style");
@@ -194,6 +198,16 @@ void SettingsDialog::saveSettings()
                              ui->comboFontSize->currentText().toInt());
 
     accept();
+}
+
+void SettingsDialog::deleteSavedSearch()
+{
+    ml_return_on_fail(QMessageBox::question(this,
+                                            tr("عبارات البحث"),
+                                            tr("هل انت متأكد من انك تريد حذف كل عبارات البحث التي تم حفظها؟"),
+                                            QMessageBox::Yes|QMessageBox::No, QMessageBox::No)==QMessageBox::Yes);
+
+    LibraryManager::instance()->searchManager()->removeSavedQueries();
 }
 
 void SettingsDialog::hideCancelButton(bool hide)

@@ -15,12 +15,15 @@
 #include <qmessagebox.h>
 #include <qinputdialog.h>
 #include <qsettings.h>
+#include <QCompleter>
 
 SearchWidget::SearchWidget(QWidget *parent) :
     QWidget(parent),
     m_resultWidget(0),
     m_searcher(0),
     m_filterManager(0),
+    m_completerModel(0),
+    m_completer(0),
     ui(new Ui::SearchWidget)
 {
     ui->setupUi(this);
@@ -36,6 +39,7 @@ SearchWidget::SearchWidget(QWidget *parent) :
 
     setupCleanMenu();
     setCurrentWidget(Search);
+    loadSearchQuery();
 }
 
 SearchWidget::~SearchWidget()
@@ -51,6 +55,9 @@ SearchWidget::~SearchWidget()
 
     ml_delete_check(m_resultWidget);
     ml_delete_check(m_filterManager);
+
+    ml_delete_check(m_completerModel);
+    ml_delete_check(m_completer);
 
     delete ui;
 }
@@ -264,6 +271,40 @@ QString SearchWidget::getSearchField()
     return Utils::CLucene::WCharToString(field);
 }
 
+void SearchWidget::saveSearchQuery()
+{
+    QSettings settings;
+    ml_return_on_fail(settings.value("Search/saveSearch", true).toBool());
+
+    QStringList list;
+    list << ui->lineQueryMust->text().trimmed()
+         << ui->lineQueryShould->text().trimmed()
+         << ui->lineQueryShouldNot->text().trimmed();
+
+    LibraryManager::instance()->searchManager()->saveSearchQueries(list);
+
+    if(m_completerModel) {
+        foreach (QString q, list) {
+            m_completerModel->appendRow(new QStandardItem(q));
+        }
+    }
+}
+
+void SearchWidget::loadSearchQuery()
+{
+    QSettings settings;
+    ml_return_on_fail(settings.value("Search/saveSearch", true).toBool());
+
+    m_completerModel = LibraryManager::instance()->searchManager()->getSavedSearchModel();
+
+    if(!m_completer) {
+        m_completer = new QCompleter(m_completerModel, this);
+        ui->lineQueryMust->setCompleter(m_completer);
+        ui->lineQueryShould->setCompleter(m_completer);
+        ui->lineQueryShouldNot->setCompleter(m_completer);
+    }
+}
+
 void SearchWidget::search()
 {
     QString searchField = getSearchField();
@@ -295,6 +336,8 @@ void SearchWidget::search()
 
     m_resultWidget->search(m_searcher);
     setCurrentWidget(Result);
+
+    saveSearchQuery();
 }
 
 void SearchWidget::setupCleanMenu()

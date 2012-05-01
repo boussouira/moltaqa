@@ -116,3 +116,48 @@ void SearchManager::setFieldName(const QString &name, int fid)
     q.exec(query);
 }
 
+QStandardItemModel *SearchManager::getSavedSearchModel()
+{
+    QStandardItemModel *model = new QStandardItemModel();
+    QSqlQuery query(m_db);
+
+    query.prepare("SELECT query FROM savedSearch "
+                  "ORDER BY id");
+
+    ml_query_exec(query);
+
+    while(query.next())
+        model->appendRow(new QStandardItem(query.value(0).toString()));
+
+    return model;
+}
+
+void SearchManager::saveSearchQueries(QStringList list)
+{
+    ml_return_on_fail(list.size());
+
+    QSqlQuery query(m_db);
+
+    transaction();
+
+    foreach(QString str, list) {
+        if(str.isEmpty())
+            continue;
+
+        QueryBuilder q;
+        q.setTableName("savedSearch", QueryBuilder::Insert);
+        q.set("query", str);
+
+        q.exec(query);
+    }
+
+    commit();
+}
+
+void SearchManager::removeSavedQueries()
+{
+    QSqlQuery query(m_db);
+    query.prepare("DELETE FROM savedSearch");
+
+    ml_query_exec(query);
+}

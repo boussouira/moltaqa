@@ -26,6 +26,10 @@ public:
 
     void removeField(int fid);
     void setFieldName(const QString &name, int fid);
+
+    QStandardItemModel *getSavedSearchModel();
+    void saveSearchQueries(QStringList list);
+    void removeSavedQueries();
 };
 
 #endif // SEARCHMANAGER_H

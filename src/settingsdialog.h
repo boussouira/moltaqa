@@ -25,6 +25,7 @@ protected:
 protected slots:
     void changeBooksDir();
     void saveSettings();
+    void deleteSavedSearch();
 
 private:
     Ui::SettingsDialog *ui;

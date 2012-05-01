@@ -17,6 +17,8 @@ class ResultWidget;
 class SearchFilterManager;
 class LibrarySearcher;
 class SearchFilter;
+class QStandardItemModel;
+class QCompleter;
 
 class SearchWidget : public QWidget
 {
@@ -51,6 +53,9 @@ protected:
     virtual void loadDefaultSearchField();
     QString getSearchField();
 
+    void saveSearchQuery();
+    void loadSearchQuery();
+
 public slots:
     void search();
 
@@ -69,6 +74,8 @@ protected:
     ResultWidget *m_resultWidget;
     LibrarySearcher *m_searcher;
     SearchFilterManager *m_filterManager;
+    QStandardItemModel *m_completerModel;
+    QCompleter *m_completer;
     Ui::SearchWidget *ui;
 };
 

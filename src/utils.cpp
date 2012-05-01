@@ -221,6 +221,14 @@ void createDatabases(const QString &path)
         q.set("bookID", "INTEGER");
 
         q.exec(query);
+
+        q.setTableName("savedSearch", QueryBuilder::Create);
+        q.setIgnoreExistingTable(true);
+
+        q.set("id", "INTEGER PRIMARY KEY NOT NULL");
+        q.set("query", "TEXT");
+
+        q.exec(query);
     }
 
     QSqlDatabase::removeDatabase("createDB.books");
