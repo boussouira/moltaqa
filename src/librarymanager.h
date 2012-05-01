@@ -23,6 +23,7 @@ class BookListManager;
 class AuthorsManager;
 class TarajemRowatManager;
 class FavouritesManager;
+class SearchManager;
 
 class LibraryManager : public DatabaseManager
 {
@@ -48,6 +49,7 @@ public:
     AuthorsManager *authorsManager();
     TarajemRowatManager *rowatManager();
     FavouritesManager *favouritesManager();
+    SearchManager *searchManager();
 
 protected:
     LibraryInfo *m_libraryInfo;
@@ -58,6 +60,7 @@ protected:
     AuthorsManager *m_authorsManager;
     TarajemRowatManager *m_rowatManager;
     FavouritesManager *m_favourites;
+    SearchManager *m_searchManager;
 };
 
 #endif // LIBRARYMANAGER_H

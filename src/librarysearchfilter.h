@@ -12,6 +12,9 @@ public:
     void loadModel();
     SearchFilter *getFilterQuery();
 
+    void setSelectedItems(const QList<int> &ids);
+    QList<int> getSelectedItems();
+
 protected:
     void generateLists();
     void getBooks(const QModelIndex &index);
@@ -22,6 +25,8 @@ protected:
 
     int selectedCount();
     int unSelecCount();
+
+    void selectItem(QStandardItem *item, const QList<int> &ids);
 
 protected:
     QList<int> m_selectedBooks;

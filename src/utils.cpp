@@ -100,6 +100,7 @@ void createDatabases(const QString &path)
 
     QString booksDbPath = dir.filePath("books.db");
     QString authorsDbPath = dir.filePath("authors.db");
+    QString searchDbPath = dir.filePath("search.db");
 
     {
         if(QFile::exists(booksDbPath))
@@ -188,9 +189,43 @@ void createDatabases(const QString &path)
 
         q.exec(query);
     }
+    {
+        if(QFile::exists(searchDbPath))
+            qDebug("createDatabases: check search database...");
+        else
+            qDebug("createDatabases: create search database...");
+
+        QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "createDB.search");
+        db.setDatabaseName(searchDbPath);
+
+        if (!db.open()) {
+            ml_warn_db_error(db);
+        }
+
+        QSqlQuery query(db);
+
+        QueryBuilder q;
+        q.setTableName("fields", QueryBuilder::Create);
+        q.setIgnoreExistingTable(true);
+
+        q.set("id", "INTEGER PRIMARY KEY NOT NULL");
+        q.set("name", "TEXT");
+        q.set("info", "TEXT");
+
+        q.exec(query);
+
+        q.setTableName("fieldsBooks", QueryBuilder::Create);
+        q.setIgnoreExistingTable(true);
+
+        q.set("field", "INTEGER");
+        q.set("bookID", "INTEGER");
+
+        q.exec(query);
+    }
 
     QSqlDatabase::removeDatabase("createDB.books");
     QSqlDatabase::removeDatabase("createDB.authors");
+    QSqlDatabase::removeDatabase("createDB.search");
 }
 }
 

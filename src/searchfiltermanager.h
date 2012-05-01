@@ -40,6 +40,9 @@ public:
 
     virtual SearchFilter *getFilterQuery()=0;
 
+    virtual void setSelectedItems(const QList<int> &ids)=0;
+    virtual QList<int> getSelectedItems()=0;
+
 protected:
     void setupMenu();
 

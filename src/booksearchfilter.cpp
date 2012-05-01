@@ -59,6 +59,20 @@ SearchFilter *BookSearchFilter::getFilterQuery()
         return getSimpleBookFilterQuery();
 }
 
+void BookSearchFilter::setSelectedItems(const QList<int> &ids)
+{
+    ml_warn_on_fail(ids.isEmpty() && ids.size(),
+                    "BookSearchFilter::setSelectedItems not implemented")
+}
+
+QList<int> BookSearchFilter::getSelectedItems()
+{
+    if(m_book->isQuran())
+        return getSelectedSowar();
+    else
+        return getSelectedTitles();
+}
+
 SearchFilter *BookSearchFilter::getQuranFilterQuery()
 {
     QList<int> sowar = getSelectedSowar();

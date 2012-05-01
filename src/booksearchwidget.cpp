@@ -9,6 +9,7 @@ BookSearchWidget::BookSearchWidget(QWidget *parent) :
     SearchWidget(parent)
 {
     m_bookManager = LibraryManager::instance()->bookManager();
+    ui->labelSearchField->hide();
 }
 
 BookSearchWidget::~BookSearchWidget()

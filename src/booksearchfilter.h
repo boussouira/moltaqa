@@ -21,6 +21,9 @@ public:
     void loadModel();
     SearchFilter *getFilterQuery();
 
+    void setSelectedItems(const QList<int> &ids);
+    QList<int> getSelectedItems();
+
 protected:
     void open();
     void close();

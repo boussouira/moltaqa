@@ -85,6 +85,18 @@ int LibrarySearchFilter::unSelecCount()
     return m_unSelectedBooks.count();
 }
 
+void LibrarySearchFilter::selectItem(QStandardItem *item, const QList<int> &ids)
+{
+    ml_return_on_fail(item);
+
+    item->setCheckState(ids.contains(item->data(ItemRole::idRole).toInt())
+                        ? Qt::Checked : Qt::Unchecked);
+
+    for(int i=0; i<item->rowCount(); i++) {
+        selectItem(item->child(i), ids);
+    }
+}
+
 SearchFilter *LibrarySearchFilter::getFilterQuery()
 {
     generateLists();
@@ -125,4 +137,18 @@ SearchFilter *LibrarySearchFilter::getFilterQuery()
     filter->unSelected = unSelecCount();
 
     return filter;
+}
+
+void LibrarySearchFilter::setSelectedItems(const QList<int> &ids)
+{
+    QStandardItem *item = m_model->invisibleRootItem();
+    for(int i=0; i<item->rowCount(); i++) {
+        selectItem(item->child(i), ids);
+    }
+}
+
+QList<int> LibrarySearchFilter::getSelectedItems()
+{
+    generateLists();
+    return m_selectedBooks;
 }

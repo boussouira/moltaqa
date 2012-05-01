@@ -166,7 +166,7 @@ void LibraryInfo::checkDataFiles(QString dataDirPath)
     }
 
     QStringList dbs;
-    dbs << "authors.db" << "books.db";
+    dbs << "authors.db" << "books.db" << "search.db";
 
     foreach (QString db, dbs) {
         if(!dataDir.exists(db)) {

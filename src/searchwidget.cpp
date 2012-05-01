@@ -10,7 +10,10 @@
 #include "booksearchfilter.h"
 #include "clucenequery.h"
 #include "utils.h"
+#include "searchmanager.h"
+#include "searchfieldsdialog.h"
 #include <qmessagebox.h>
+#include <qinputdialog.h>
 
 SearchWidget::SearchWidget(QWidget *parent) :
     QWidget(parent),
@@ -27,6 +30,8 @@ SearchWidget::SearchWidget(QWidget *parent) :
     connect(ui->pushSearch, SIGNAL(clicked()), SLOT(search()));
     connect(ui->labelTools, SIGNAL(linkActivated(QString)),
             SLOT(showFilterTools()));
+    connect(ui->labelSearchField, SIGNAL(linkActivated(QString)),
+            SLOT(showSearchFieldMenu()));
 
     setupCleanMenu();
     setCurrentWidget(Search);
@@ -323,6 +328,71 @@ void SearchWidget::showFilterTools()
     menu.addAction(tr("ضغط الشجرة"), m_filterManager, SLOT(collapseFilterView()));
 
     menu.exec(QCursor::pos());
+}
+
+void SearchWidget::showSearchFieldMenu()
+{
+    QMenu menu(this);
+
+    menu.addAction(tr("حفظ الكتب المحددة"), this, SLOT(saveSelectedField()));
+    menu.addAction(tr("تعديل مجالات البحث..."), this, SLOT(searchfieldsDialog()));
+    menu.addSeparator();
+    QMenu *sub = menu.addMenu(tr("تغيير مجال البحث"));
+
+    QList<SearchFieldInfo> fields = LibraryManager::instance()->searchManager()->getFieldNames();
+    foreach(SearchFieldInfo info, fields) {
+        QAction *act = sub->addAction(info.name);
+        act->setData(info.fieldID);
+
+        connect(act, SIGNAL(triggered()), this, SLOT(changeSearchfield()));
+    }
+
+    if(fields.isEmpty()) {
+        QAction *act = sub->addAction(tr("(لا يوجد اي مجال بحث)"));
+        act->setEnabled(false);
+    }
+
+    menu.exec(QCursor::pos());
+}
+
+void SearchWidget::saveSelectedField()
+{
+    QList<int> selectBooks = m_filterManager->getSelectedItems();
+    if(!selectBooks.isEmpty()) {
+        QString name = QInputDialog::getText(this,
+                                             tr("حفظ مجال البحث"),
+                                             tr("اسم مجال البحث:")).trimmed();
+        if(name.isEmpty()) {
+            QMessageBox::warning(this,
+                                 tr("حفظ مجال البحث"),
+                                 tr("يجب ان تختار اسما لمجال البحث"));
+        } else {
+            if(LibraryManager::instance()->searchManager()->addField(name, selectBooks)) {
+                QMessageBox::information(this,
+                                     tr("حفظ مجال البحث"),
+                                     tr("تم حفظ مجال البحث"));
+            }
+        }
+    } else {
+        QMessageBox::warning(this,
+                             tr("حفظ مجال البحث"),
+                             tr("لم تقم باختيار اي كتاب!"));
+    }
+}
+
+void SearchWidget::searchfieldsDialog()
+{
+    SearchFieldsDialog dialog(this);
+    dialog.exec();
+}
+
+void SearchWidget::changeSearchfield()
+{
+    QAction *act = qobject_cast<QAction*>(sender());
+    ml_return_on_fail2(act, "SearchWidget::changeSearchfield sender action is null");
+
+    QList<int> selectBooks = LibraryManager::instance()->searchManager()->getFieldBooks(act->data().toInt());
+    m_filterManager->setSelectedItems(selectBooks);
 }
 
 void SearchWidget::clearSpecialChar()

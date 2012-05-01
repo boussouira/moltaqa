@@ -13,6 +13,7 @@
 #include "bookeditor.h"
 #include "tarajemrowatmanager.h"
 #include "favouritesmanager.h"
+#include "searchmanager.h"
 
 #include <qdebug.h>
 #include <qsqlquery.h>
@@ -44,12 +45,9 @@ LibraryManager::LibraryManager(LibraryInfo *info, QObject *parent) :
 
 LibraryManager::~LibraryManager()
 {
-    ml_delete_check(m_bookmanager);
-    ml_delete_check(m_bookListManager);
-    ml_delete_check(m_taffesirManager);
-    ml_delete_check(m_authorsManager);
-    ml_delete_check(m_rowatManager);
-    ml_delete_check(m_favourites);
+    foreach (ListManager *manager, m_managers) {
+        ml_delete_check(manager);
+    }
 
     m_instance = 0;
 }
@@ -75,6 +73,7 @@ void LibraryManager::openManagers()
     m_bookListManager = new BookListManager(this);
     m_taffesirManager = new TaffesirListManager(this);
     m_rowatManager = new TarajemRowatManager(this);
+    m_searchManager = new SearchManager(this);
 
     m_managers.clear();
 
@@ -83,7 +82,8 @@ void LibraryManager::openManagers()
                << m_bookmanager
                << m_bookListManager
                << m_taffesirManager
-               << m_rowatManager;
+               << m_rowatManager
+               << m_searchManager;
 
     foreach (ListManager *manager, m_managers)
         manager->loadModels();
@@ -150,4 +150,9 @@ TarajemRowatManager *LibraryManager::rowatManager()
 FavouritesManager *LibraryManager::favouritesManager()
 {
     return m_favourites;
+}
+
+SearchManager *LibraryManager::searchManager()
+{
+    return m_searchManager;
 }

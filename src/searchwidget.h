@@ -58,6 +58,11 @@ protected slots:
     void clearSpecialChar();
     void clearLineText();
     void showFilterTools();
+    void showSearchFieldMenu();
+
+    void saveSelectedField();
+    void searchfieldsDialog();
+    void changeSearchfield();
 
 protected:
     ResultWidget *m_resultWidget;
