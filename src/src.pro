@@ -73,7 +73,7 @@ LIBS += -lclucene-core$$CLUCENE_LIB_SUFFIX \
 unix {
 
     isEmpty(PREFIX) {
-        PREFIX = /usr/local
+        PREFIX = /usr
     }
 
     BINDIR = $$PREFIX/bin
