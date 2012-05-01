@@ -8,6 +8,7 @@
 #include "xmlutils.h"
 #include "librarybookmanager.h"
 #include "utils.h"
+#include "stringutils.h"
 
 #include <qstringlist.h>
 #include <qdebug.h>
@@ -60,6 +61,9 @@ void RichTafessirReader::setCurrentPage(QDomElement pageNode)
     }
 
     QString pageText = getPageText(m_currentPage->pageID);
+    if(m_removeTashekil)
+        pageText = Utils::String::Arabic::removeTashekil(pageText);
+
     if(m_query && m_highlightPageID == m_currentPage->pageID)
         m_textFormat->insertText(Utils::CLucene::highlightText(pageText, m_query, false));
     else

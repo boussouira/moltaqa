@@ -45,6 +45,7 @@ protected:
     LibraryBookManager *m_bookmanager;
     QList<int> m_pageTitles;
     int m_highlightPageID;
+    bool m_removeTashekil;
 };
 
 #endif // RICHBOOKREADER_H

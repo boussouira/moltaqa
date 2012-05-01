@@ -18,6 +18,9 @@ RichBookReader::RichBookReader(QObject *parent) : AbstractBookReader(parent)
 
     m_bookmanager = m_libraryManager->bookManager();
 
+    QSettings settings;
+    m_removeTashekil = settings.value("Style/removeTashekil", false).toBool();
+
     connect(this, SIGNAL(textChanged()), SLOT(updateHistory()));
 }
 

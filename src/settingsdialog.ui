@@ -311,6 +311,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QCheckBox" name="checkRemoveTashekil">
+         <property name="text">
+          <string>حذف التشكيل من صفحات الكتب</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="verticalSpacer_3">
          <property name="orientation">
           <enum>Qt::Vertical</enum>

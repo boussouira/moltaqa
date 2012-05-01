@@ -97,6 +97,8 @@ void SettingsDialog::loadSettings()
     ui->fontComboBox->setCurrentFont(font);
     ui->comboFontSize->setCurrentIndex(ui->comboFontSize->findText(QString::number(fontSize)));
 
+    ui->checkRemoveTashekil->setChecked(settings.value("removeTashekil", false).toBool());
+
     loadSearchFields();
 }
 
@@ -193,6 +195,9 @@ void SettingsDialog::saveSettings()
                                                         Qt::UserRole).toHash().value("dir"));
     settings.setValue("fontFamily", ui->fontComboBox->currentFont().toString());
     settings.setValue("fontSize", ui->comboFontSize->currentText());
+
+    settings.setValue("removeTashekil", ui->checkRemoveTashekil->isChecked());
+
     settings.endGroup();
 
     QWebSettings *webSettings = QWebSettings::globalSettings();
