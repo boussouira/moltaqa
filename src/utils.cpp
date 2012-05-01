@@ -102,7 +102,10 @@ void createDatabases(const QString &path)
     QString authorsDbPath = dir.filePath("authors.db");
 
     {
-        qDebug("createDatabases: create books database...");
+        if(QFile::exists(booksDbPath))
+            qDebug("createDatabases: check books database...");
+        else
+            qDebug("createDatabases: create books database...");
 
         QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "createDB.books");
         db.setDatabaseName(booksDbPath);
@@ -154,7 +157,10 @@ void createDatabases(const QString &path)
     }
 
     {
-        qDebug("createDatabases: create authors database...");
+        if(QFile::exists(authorsDbPath))
+            qDebug("createDatabases: check authors database...");
+        else
+            qDebug("createDatabases: create authors database...");
 
         QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "createDB.authors");
         db.setDatabaseName(authorsDbPath);
