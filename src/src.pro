@@ -80,7 +80,7 @@ unix {
     LIBDIR = $$PREFIX/lib
     DATADIR = $$PREFIX/share
 
-    INSTALLS += target script share
+    INSTALLS += target script share data js locale styles
 
     target.path = $$BINDIR
 
@@ -92,8 +92,16 @@ unix {
     share.files += ../share/app-install
     share.files += ../share/applications
     share.files += ../share/pixmaps
-    share.files += ../share/$$APPNAME/data
-    share.files += ../share/$$APPNAME/js
-    share.files += ../share/$$APPNAME/locale
-    share.files += ../share/$$APPNAME/styles
+
+    data.path = $$DATADIR/$$APPNAME
+    data.files += ../share/$$APPNAME/data
+
+    js.path = $$DATADIR/$$APPNAME
+    js.files += ../share/$$APPNAME/js
+
+    locale.path = $$DATADIR/$$APPNAME
+    locale.files += ../share/$$APPNAME/locale
+
+    styles.path = $$DATADIR/$$APPNAME
+    styles.files += ../share/$$APPNAME/styles
 }
