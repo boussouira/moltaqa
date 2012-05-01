@@ -13,6 +13,7 @@
 #include <qdebug.h>
 #include <qlineedit.h>
 #include <qtextedit.h>
+#include <qsettings.h>
 
 LibraryBookManagerWidget::LibraryBookManagerWidget(QWidget *parent) :
     ControlCenterWidget(parent),
@@ -50,6 +51,16 @@ void LibraryBookManagerWidget::aboutToShow()
 
     QVBoxLayout *layout = new QVBoxLayout(ui->tabBookInfo);
     layout->addWidget(m_webEdit);
+
+    QSettings settings;
+    if(settings.contains("BookManagerWidget/splitter"))
+        ui->splitter->restoreState(settings.value("BookManagerWidget/splitter").toByteArray());
+}
+
+void LibraryBookManagerWidget::aboutToHide()
+{
+    QSettings settings;
+    settings.setValue("BookManagerWidget/splitter", ui->splitter->saveState());
 }
 
 void LibraryBookManagerWidget::setupActions()

@@ -29,6 +29,7 @@ public:
     void save();
 
     void aboutToShow();
+    void aboutToHide();
 
 protected:
     void setupActions();

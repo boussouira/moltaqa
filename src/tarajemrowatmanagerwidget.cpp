@@ -11,6 +11,7 @@
 #include <qstandarditemmodel.h>
 #include <qinputdialog.h>
 #include <qmessagebox.h>
+#include <qsettings.h>
 
 TarajemRowatManagerWidget::TarajemRowatManagerWidget(QWidget *parent) :
     ControlCenterWidget(parent),
@@ -63,6 +64,16 @@ void TarajemRowatManagerWidget::aboutToShow()
         QVBoxLayout *layout = new QVBoxLayout(widgets[i]);
         layout->addWidget(edits[i]);
     }
+
+    QSettings settings;
+    if(settings.contains("RowatManagerWidget/splitter"))
+        ui->splitter->restoreState(settings.value("RowatManagerWidget/splitter").toByteArray());
+}
+
+void TarajemRowatManagerWidget::aboutToHide()
+{
+    QSettings settings;
+    settings.setValue("RowatManagerWidget/splitter", ui->splitter->saveState());
 }
 
 void TarajemRowatManagerWidget::save()
