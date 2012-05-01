@@ -10,6 +10,7 @@
 #include "utils.h"
 #include "timeutils.h"
 #include "clconstants.h"
+#include "bookexception.h"
 
 IndexManager::IndexManager(QObject *parent) :
     QObject(parent)
@@ -23,6 +24,8 @@ IndexManager::IndexManager(QObject *parent) :
 
 bool IndexManager::openWriter()
 {
+    ml_return_val_on_fail2(!m_writer, "IndexManager::openWriter already open", false);
+
     QDir dir;
     QSettings settings;
     m_analyzer = new ArabicAnalyzer();
@@ -130,5 +133,21 @@ void IndexManager::threadDoneIndexing()
         m_indexTracker->save();
 
         emit done();
+    }
+}
+
+void IndexManager::optimize()
+{
+    ml_return_on_fail2(isIndexing(), "IndexManager::optimize can't optimize when indexing")
+    ml_return_on_fail2(openWriter(), "IndexManager::optimize Can't open IndexWriter");
+
+    try {
+        m_writer->optimize();
+    } catch(CLuceneError &err) {
+        qCritical("IndexManager::optimize CLucene Error: %s", err.what());
+    } catch(std::exception &err){
+        qCritical("IndexManager::optimize STD error: %s", err.what());
+    } catch(...){
+        qCritical("IndexManager::optimize Unkonw error");
     }
 }

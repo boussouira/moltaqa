@@ -4,6 +4,9 @@
 #include "clconstants.h"
 #include "librarymanager.h"
 #include "searchmanager.h"
+#include "indexmanager.h"
+#include "mainwindow.h"
+#include "timeutils.h"
 
 #include <qsettings.h>
 #include <qfile.h>
@@ -28,6 +31,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     connect(ui->pushSaveSettings, SIGNAL(clicked()), this, SLOT(saveSettings()));
     connect(ui->pushCancel, SIGNAL(clicked()), this, SLOT(reject()));
     connect(ui->pushDeleteSavedSearch, SIGNAL(clicked()), SLOT(deleteSavedSearch()));
+    connect(ui->pushOptimizeIndex, SIGNAL(clicked()), SLOT(optimizeIndex()));
 }
 
 SettingsDialog::~SettingsDialog()
@@ -208,6 +212,25 @@ void SettingsDialog::deleteSavedSearch()
                                             QMessageBox::Yes|QMessageBox::No, QMessageBox::No)==QMessageBox::Yes);
 
     LibraryManager::instance()->searchManager()->removeSavedQueries();
+}
+
+void SettingsDialog::optimizeIndex()
+{
+    ml_return_on_fail(QMessageBox::question(this,
+                                            tr("ضغط الفهرس"),
+                                            tr("هل انت متأكد من انك تريد تريد ضغط فهرس؟"
+                                               "<br>"
+                                               "هذه العملية قد تأخذ بعض الوقت وقد يتجمد البرنامج."),
+                                            QMessageBox::Yes|QMessageBox::No, QMessageBox::No)==QMessageBox::Yes);
+
+    QTime time;
+    time.start();
+
+    MW->indexManager()->optimize();
+
+    QMessageBox::information(this,
+                             tr("ضغط الفهرس"),
+                             tr("تم ضغط الفهرس خلال %1").arg(Utils::Time::secondsToString(time.elapsed(), true)));
 }
 
 void SettingsDialog::hideCancelButton(bool hide)
