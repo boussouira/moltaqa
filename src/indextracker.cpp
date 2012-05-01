@@ -135,7 +135,9 @@ void IndexTracker::removeTask(IndexTask *task)
                 m_dom.setNeedSave(true);
                 deleteTask(task);
 
-                m_bookManager->setBookIndexStat(task->bookID, LibraryBook::Indexed);
+                if(task->task != IndexTask::Delete)
+                    m_bookManager->setBookIndexStat(task->bookID, LibraryBook::Indexed);
+
                 break;
             }
         }

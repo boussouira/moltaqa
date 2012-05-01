@@ -49,27 +49,25 @@ void BookIndexer::startIndexing()
             if(!task->book && task->task != IndexTask::Delete)
                 throw BookException(QString("No book with id %1").arg(task->bookID));
 
-            if(task->book) {
-                switch (task->task) {
-                case IndexTask::Add:
-                    indexBook(task);
-                    break;
+            switch (task->task) {
+            case IndexTask::Add:
+                indexBook(task);
+                break;
 
-                case IndexTask::Delete:
-                    deleteBook(task);
-                    break;
+            case IndexTask::Delete:
+                deleteBook(task);
+                break;
 
-                case IndexTask::Update:
-                    updateBook(task);
-                    break;
+            case IndexTask::Update:
+                updateBook(task);
+                break;
 
-                default:
-                    qWarning("BookIndexer: Unknow task");
-                    break;
-                }
-
-                emit taskDone(task);
+            default:
+                qWarning("BookIndexer: Unknow task");
+                break;
             }
+
+            emit taskDone(task);
         } catch (BookException &e) {
             qCritical() << "BookIndexer: Indexing error:" << e.what();
         } catch (std::exception &e) {
