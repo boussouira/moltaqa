@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>722</width>
-    <height>467</height>
+    <width>712</width>
+    <height>259</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,22 +19,25 @@
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <widget class="QSplitter" name="splitter">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QTreeView" name="treeView">
-      <property name="editTriggers">
-       <set>QAbstractItemView::NoEditTriggers</set>
-      </property>
-      <property name="sortingEnabled">
-       <bool>true</bool>
-      </property>
+     <widget class="QWidget" name="">
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="FancyLineEdit" name="lineFilter"/>
+       </item>
+       <item>
+        <widget class="QTreeView" name="treeView">
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
@@ -194,6 +197,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>FancyLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>fancylineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../share/moltaqa-lib/qt_rc.qrc"/>
  </resources>

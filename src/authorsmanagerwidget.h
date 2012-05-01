@@ -13,6 +13,7 @@ class QStandardItemModel;
 class QModelIndex;
 class AuthorsManager;
 class EditWebView;
+class ModelViewFilter;
 
 class AuthorsManagerWidget : public ControlCenterWidget
 {
@@ -50,6 +51,7 @@ private:
     EditWebView *m_webEdit;
     QHash<int, AuthorInfoPtr> m_editedAuthInfo;
     AuthorInfoPtr m_currentAuthor;
+    ModelViewFilter *m_filter;
 };
 
 #endif // AUTHORSMANAGERWIDGET_H

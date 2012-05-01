@@ -8,6 +8,7 @@
 #include "utils.h"
 #include "editwebview.h"
 #include "modelutils.h"
+#include "modelviewfilter.h"
 
 #include <qdebug.h>
 #include <qlineedit.h>
@@ -23,6 +24,7 @@ LibraryBookManagerWidget::LibraryBookManagerWidget(QWidget *parent) :
     ui->setupUi(this);
 
     m_manager = LibraryManager::instance()->bookManager();
+    m_filter = new ModelViewFilter(this);
 
     enableEditWidgets(false);
     setupActions();
@@ -82,7 +84,11 @@ void LibraryBookManagerWidget::loadModel()
 
     m_model = Utils::Model::cloneModel(m_manager->getModel().data());
 
-    ui->treeView->setModel(m_model);
+    m_filter->setSourceModel(m_model);
+    m_filter->setLineEdit(ui->lineFilter);
+    m_filter->setTreeView(ui->treeView);
+    m_filter->setup();
+
     ui->treeView->resizeColumnToContents(0);
 }
 

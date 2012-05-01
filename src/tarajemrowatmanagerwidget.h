@@ -10,6 +10,8 @@ namespace Ui {
 class TarajemRowatManagerWidget;
 }
 
+class ModelViewFilter;
+
 class TarajemRowatManagerWidget : public ControlCenterWidget
 {
     Q_OBJECT
@@ -48,6 +50,7 @@ protected:
     EditWebView *m_webEditTarjama;
     QHash<int, RawiInfoPtr> m_editedRawiInfo;
     RawiInfoPtr m_currentRawi;
+    ModelViewFilter *m_filter;
 };
 
 #endif // TARAJEMROWATMANAGERWIDGET_H

@@ -6,6 +6,8 @@
 #include "modelutils.h"
 #include "timeutils.h"
 #include "editwebview.h"
+#include "modelviewfilter.h"
+
 #include <qstandarditemmodel.h>
 #include <qinputdialog.h>
 #include <qmessagebox.h>
@@ -19,6 +21,7 @@ AuthorsManagerWidget::AuthorsManagerWidget(QWidget *parent) :
     ui->setupUi(this);
 
     m_authorsManager = LibraryManager::instance()->authorsManager();
+    m_filter = new ModelViewFilter(this);
 
     setupActions();
     enableEditWidgets(false);
@@ -61,7 +64,11 @@ void AuthorsManagerWidget::setupActions()
 void AuthorsManagerWidget::loadModel()
 {
     m_model = m_authorsManager->authorsModel();
-    ui->treeView->setModel(m_model);
+
+    m_filter->setSourceModel(m_model);
+    m_filter->setLineEdit(ui->lineFilter);
+    m_filter->setTreeView(ui->treeView);
+    m_filter->setup();
 }
 
 void AuthorsManagerWidget::infoChanged()
