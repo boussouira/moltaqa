@@ -86,7 +86,7 @@ void UtilsTest::arCompare()
     QVERIFY(Utils::String::Arabic::compare(u("وَتَرَى الْفُلْكَ مَوَاخِرَ فِيهِ وَلِتَبْتَغُوا مِنْ فَضْلِهِ وَلَعَلَّكُمْ تَشْكُرُونَ"),
                               u("وتري الفلك مواخر فيه ولتبتغوا من فضله ولعلكم تشكرون")));
     QVERIFY(Utils::String::Arabic::compare(u("قُلْ هُوَ اللَّهُ أَحَدٌ"),
-                             u("قل هُوَ الله     احد")));
+                             u("قل هُوَ الله احد")));
 }
 
 void UtilsTest::arContains()

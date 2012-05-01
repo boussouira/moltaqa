@@ -152,7 +152,7 @@ QString plural(int count, Words word, bool html)
 
 QString clean(QString text)
 {
-    text = text.simplified();
+    text = text.trimmed();
     text.replace(QRegExp("[\\x0622\\x0623\\x0625]"), QChar(0x0627));//ALEFs
     text.replace(QChar(0x0629), QChar(0x0647)); //TAH_MARBUTA -> HEH
     text.replace(QChar(0x0649), QChar(0x064A)); //YAH -> ALEF MAKSOURA
