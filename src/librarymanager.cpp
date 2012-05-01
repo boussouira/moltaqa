@@ -14,6 +14,7 @@
 #include "tarajemrowatmanager.h"
 #include "favouritesmanager.h"
 #include "searchmanager.h"
+#include "indextracker.h"
 
 #include <qdebug.h>
 #include <qsqlquery.h>
@@ -120,6 +121,14 @@ void LibraryManager::addBook(LibraryBookPtr book, int catID)
 {
     m_bookmanager->addBook(book);
     m_bookListManager->addBook(book, catID);
+}
+
+void LibraryManager::removeBook(int bookID)
+{
+    ml_return_on_fail2(m_bookmanager->removeBook(bookID),
+                       "LibraryManager::removeBook can't remove book" << bookID);
+
+    IndexTracker::instance()->addTask(bookID, IndexTask::Delete, true);
 }
 
 TaffesirListManager *LibraryManager::taffesirListManager()

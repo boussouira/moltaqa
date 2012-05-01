@@ -43,6 +43,8 @@ public:
     int addBook(ImportModelNode *node);
     void addBook(LibraryBookPtr book, int catID);
 
+    void removeBook(int bookID);
+
     TaffesirListManager *taffesirListManager();
     BookListManager *bookListManager();
     LibraryBookManager *bookManager();

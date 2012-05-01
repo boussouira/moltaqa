@@ -14,6 +14,7 @@
 #include <qlineedit.h>
 #include <qtextedit.h>
 #include <qsettings.h>
+#include <qmessagebox.h>
 
 LibraryBookManagerWidget::LibraryBookManagerWidget(QWidget *parent) :
     ControlCenterWidget(parent),
@@ -82,6 +83,7 @@ void LibraryBookManagerWidget::setupActions()
      }
 
      connect(ui->tabWidget, SIGNAL(currentChanged(int)), SLOT(checkEditWebChange()));
+     connect(ui->toolDelete, SIGNAL(clicked()), SLOT(removeBook()));
 }
 
 void LibraryBookManagerWidget::enableEditWidgets(bool enable)
@@ -118,6 +120,29 @@ void LibraryBookManagerWidget::checkEditWebChange()
 
     if(m_webEdit->pageModified())
         infoChanged();
+}
+
+void LibraryBookManagerWidget::removeBook()
+{
+    QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
+    if(index.isValid()) {
+        if(QMessageBox::question(this,
+                                 tr("حذف كتاب"),
+                                 tr("هل انت متأكد من انك تريد حذف '%1'؟")
+                                 .arg(index.data().toString()),
+                                 QMessageBox::Yes|QMessageBox::No,
+                                 QMessageBox::No)==QMessageBox::Yes) {
+            int bookId = index.data(ItemRole::idRole).toInt();
+            QModelIndex sourceIndex = m_filter->filterModel()->mapToSource(index);
+            m_model->removeRow(sourceIndex.row(), sourceIndex.parent());
+
+            m_libraryManager->removeBook(bookId);
+        }
+    } else {
+        QMessageBox::warning(this,
+                             tr("حذف كتاب"),
+                             tr("لم تقم باختيار اي كتاب"));
+    }
 }
 
 void LibraryBookManagerWidget::save()
