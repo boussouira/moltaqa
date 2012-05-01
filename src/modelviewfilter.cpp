@@ -1,4 +1,6 @@
 #include "modelviewfilter.h"
+#include "stringutils.h"
+
 #include <qicon.h>
 #include <qheaderview.h>
 
@@ -77,11 +79,7 @@ SortFilterProxyModel *ModelViewFilter::filterModel()
 
 void ModelViewFilter::setFilterText(QString text)
 {
-    text.replace(QRegExp("[\\x0627\\x0622\\x0623\\x0625]"), "[\\x0627\\x0622\\x0623\\x0625]");//ALEFs
-    text.replace(QRegExp("[\\x0647\\x0629]"), "[\\x0647\\x0629]"); //TAH_MARBUTA, HEH
-    text.replace(QRegExp("[\\x064A\\x0649]"), "[\\x064A\\x0649]"); //YAH, ALEF MAKSOURA
-
-    m_filterModel->setFilterRegExp(text);
+    m_filterModel->setArabicFilterRegexp(text);
     m_filterModel->setFilterKeyColumn(m_filterColumn);
     m_filterModel->setFilterRole(m_role);
 

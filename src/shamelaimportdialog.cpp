@@ -234,7 +234,7 @@ void ShamelaImportDialog::showBooks()
     LibraryBookPtr quranBook = LibraryManager::instance()->bookManager()->getQuranBook();
     ui->checkImportQuran->setChecked(!quranBook || quranBook->id == -1);
 
-    connect(ui->lineBookSearch, SIGNAL(textChanged(QString)), filterModel, SLOT(setFilterRegExp(QString)));
+    connect(ui->lineBookSearch, SIGNAL(textChanged(QString)), filterModel, SLOT(setArabicFilterRegexp(QString)));
     connect(ui->lineBookSearch, SIGNAL(textChanged(QString)), ui->treeView, SLOT(expandAll()));
     connect(m_booksModel, SIGNAL(itemChanged(QStandardItem*)), SLOT(itemChanged(QStandardItem*)));
 

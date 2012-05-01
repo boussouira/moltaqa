@@ -29,7 +29,7 @@ selectCatDialog::selectCatDialog(QWidget *parent) :
     ui->treeView->setColumnHidden(1, true);
     ui->treeView->resizeColumnToContents(0);
 
-    connect(ui->lineSearch, SIGNAL(textChanged(QString)), m_filter, SLOT(setFilterRegExp(QString)));
+    connect(ui->lineSearch, SIGNAL(textChanged(QString)), m_filter, SLOT(setArabicFilterRegexp(QString)));
     connect(ui->lineSearch, SIGNAL(textChanged(QString)), ui->treeView, SLOT(expandAll()));
     connect(ui->pushSelect, SIGNAL(clicked()), SLOT(selectCat()));
     connect(ui->pushCancel, SIGNAL(clicked()), SLOT(cancel()));

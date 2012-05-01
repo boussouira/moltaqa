@@ -26,7 +26,7 @@ selectAuthorDialog::selectAuthorDialog(QWidget *parent) :
 
     m_authorID = 0;
 
-    connect(ui->lineSearch, SIGNAL(textChanged(QString)), m_filter, SLOT(setFilterRegExp(QString)));
+    connect(ui->lineSearch, SIGNAL(textChanged(QString)), m_filter, SLOT(setArabicFilterRegexp(QString)));
     connect(ui->pushSelect, SIGNAL(clicked()), SLOT(selectAuthor()));
     connect(ui->pushCancel, SIGNAL(clicked()), SLOT(cancel()));
 }

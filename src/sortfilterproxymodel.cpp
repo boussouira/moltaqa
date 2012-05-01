@@ -45,7 +45,7 @@ bool SortFilterProxyModel::filterAcceptsRowItself(int source_row, const QModelIn
     if (!source_index.isValid()) // the column may not exist
         return true;
     QString key = sourceModel()->data(source_index, filterRole()).toString();
-    key = Utils::String::Arabic::removeTashekil(key);
+    key = Utils::String::Arabic::clean(key);
 
     return key.contains(filterRegExp());
 }
@@ -72,4 +72,9 @@ bool SortFilterProxyModel::hasAcceptedChildren(int source_row, const QModelIndex
     }
 
     return false;
+}
+
+void SortFilterProxyModel::setArabicFilterRegexp(QString text)
+{
+    setFilterRegExp(Utils::String::Arabic::clean(text));
 }

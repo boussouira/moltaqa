@@ -6,6 +6,7 @@
 #include "clconstants.h"
 #include "clutils.h"
 #include "libraryenums.h"
+#include "stringutils.h"
 
 #include <qsqlquery.h>
 #include <qitemselectionmodel.h>
@@ -126,11 +127,7 @@ void SearchFilterManager::setAutoSelectParent(bool autoSelect)
 void SearchFilterManager::setFilterText(QString text)
 {
     if(text.size() > 1) {
-        text.replace(QRegExp("[\\x0627\\x0622\\x0623\\x0625]"), "[\\x0627\\x0622\\x0623\\x0625]");//ALEFs
-        text.replace(QRegExp("[\\x0647\\x0629]"), "[\\x0647\\x0629]"); //TAH_MARBUTA, HEH
-        text.replace(QRegExp("[\\x064A\\x0649]"), "[\\x064A\\x0649]"); //YAH, ALEF MAKSOURA
-
-        m_filterModel->setFilterRegExp(text);
+        m_filterModel->setArabicFilterRegexp(text);
         m_treeView->expandAll();
 
         enableCatSelection();
