@@ -360,6 +360,19 @@ p, li { white-space: pre-wrap; }
    <header>fancylineedit.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>lineQueryMust</tabstop>
+  <tabstop>checkQueryMust</tabstop>
+  <tabstop>lineQueryShould</tabstop>
+  <tabstop>checkQueryShould</tabstop>
+  <tabstop>lineQueryShouldNot</tabstop>
+  <tabstop>checkQueryShouldNot</tabstop>
+  <tabstop>treeView</tabstop>
+  <tabstop>lineFilter</tabstop>
+  <tabstop>comboSortSearch</tabstop>
+  <tabstop>comboSearchField</tabstop>
+  <tabstop>pushSearch</tabstop>
+ </tabstops>
  <resources>
   <include location="../share/moltaqa-lib/qt_rc.qrc"/>
  </resources>
