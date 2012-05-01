@@ -48,6 +48,7 @@ public:
 protected:
     virtual lucene::search::Query *getSearchQuery(const wchar_t *searchField);
     virtual SearchFilter *getSearchFilterQuery()=0;
+    virtual void loadDefaultSearchField();
     QString getSearchField();
 
 public slots:

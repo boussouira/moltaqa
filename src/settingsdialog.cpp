@@ -2,6 +2,8 @@
 #include "ui_settingsdialog.h"
 #include "utils.h"
 #include "clconstants.h"
+#include "librarymanager.h"
+#include "searchmanager.h"
 
 #include <qsettings.h>
 #include <qfile.h>
@@ -87,6 +89,8 @@ void SettingsDialog::loadSettings()
 
     ui->fontComboBox->setCurrentFont(font);
     ui->comboFontSize->setCurrentIndex(ui->comboFontSize->findText(QString::number(fontSize)));
+
+    loadSearchFields();
 }
 
 void SettingsDialog::loadStyles()
@@ -104,6 +108,28 @@ void SettingsDialog::loadStyles()
 
                 ui->comboStyles->addItem(styleInfo["name"].toString(), styleInfo);
             }
+        }
+    }
+}
+
+void SettingsDialog::loadSearchFields()
+{
+    ui->comboSearchFields->clear();
+    ui->comboSearchFields->addItem(tr("لا شيء"),
+                                   -1);
+    ui->comboSearchFields->addItem(tr("كل الكتب"),
+                                   -2);
+
+    foreach(SearchFieldInfo info, LibraryManager::instance()->searchManager()->getFieldNames()) {
+        ui->comboSearchFields->addItem(info.name, info.fieldID);
+    }
+
+    QSettings settings;
+    int currentField = settings.value("Search/defaultField", -1).toInt();
+    for(int i=0; i<ui->comboSearchFields->count(); i++) {
+        if(ui->comboSearchFields->itemData(i).toInt() == currentField) {
+            ui->comboSearchFields->setCurrentIndex(i);
+            break;
         }
     }
 }
@@ -151,6 +177,7 @@ void SettingsDialog::saveSettings()
     settings.setValue("resultPeerPage", ui->spinResultPeerPage->value());
     settings.setValue("threadCount", ui->spinThreadCount->value());
     settings.setValue("ramSize", ui->comboIndexingRam->itemData(ui->comboIndexingRam->currentIndex()));
+    settings.setValue("defaultField", ui->comboSearchFields->itemData(ui->comboSearchFields->currentIndex()));
     settings.endGroup();
 
     settings.beginGroup("Style");

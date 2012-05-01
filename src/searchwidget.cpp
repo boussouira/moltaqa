@@ -14,6 +14,7 @@
 #include "searchfieldsdialog.h"
 #include <qmessagebox.h>
 #include <qinputdialog.h>
+#include <qsettings.h>
 
 SearchWidget::SearchWidget(QWidget *parent) :
     QWidget(parent),
@@ -219,6 +220,21 @@ Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
         ml_delete(q);
 
         return 0;
+    }
+}
+
+void SearchWidget::loadDefaultSearchField()
+{
+    QSettings settings;
+    int currentField = settings.value("Search/defaultField", -1).toInt();
+    if(currentField == -2) {
+        m_filterManager->selectAll();
+    } else if(currentField != -1) {
+        QList<int> selectBooks = LibraryManager::instance()->searchManager()->getFieldBooks(currentField);
+        ml_return_on_fail2(selectBooks.size(),
+                           "SearchWidget::loadDefaultSearchField field" << currentField << "doesn't have any book");
+
+        m_filterManager->setSelectedItems(selectBooks);
     }
 }
 

@@ -40,6 +40,8 @@ void LibrarySearchWidget::init(int bookID)
                            QList<int>() << 350 << 200);
 
     m_filterManager = filter;
+
+    loadDefaultSearchField();
 }
 
 SearchFilter *LibrarySearchWidget::getSearchFilterQuery()
