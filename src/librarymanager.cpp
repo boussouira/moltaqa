@@ -24,7 +24,7 @@
 static LibraryManager *m_instance = 0;
 
 LibraryManager::LibraryManager(LibraryInfo *info, QObject *parent) :
-    QObject(parent),
+    DatabaseManager(parent),
     m_libraryInfo(info),
     m_bookmanager(0),
     m_taffesirManager(0),
@@ -33,9 +33,13 @@ LibraryManager::LibraryManager(LibraryInfo *info, QObject *parent) :
     m_rowatManager(0),
     m_favourites(0)
 {
-    m_connName = "BooksIndexDB";
-
     m_instance = this;
+
+    QDir dataDir(info->dataDir());
+    setDatabasePath(dataDir.filePath("library.db"));
+
+    //openDatabase();
+    openManagers();
 }
 
 LibraryManager::~LibraryManager()
@@ -55,9 +59,12 @@ LibraryManager *LibraryManager::instance()
     return m_instance;
 }
 
-void LibraryManager::open()
+void LibraryManager::loadModels()
 {
-    openManagers();
+}
+
+void LibraryManager::clear()
+{
 }
 
 void LibraryManager::openManagers()

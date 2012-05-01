@@ -1,15 +1,14 @@
 #ifndef LIBRARYMANAGER_H
 #define LIBRARYMANAGER_H
 
-#include <qobject.h>
-#include <qsqldatabase.h>
 #include <qcoreapplication.h>
 #include <qhash.h>
-#include <QtConcurrentRun>
+#include <qtconcurrentrun.h>
 #include <qfuture.h>
 #include <qfuturewatcher.h>
 #include <qstandarditemmodel.h>
-#include <QTime>
+#include <qdatetime.h>
+#include "databasemanager.h"
 #include "librarybook.h"
 
 class QDomElement;
@@ -25,7 +24,7 @@ class AuthorsManager;
 class TarajemRowatManager;
 class FavouritesManager;
 
-class LibraryManager : public QObject
+class LibraryManager : public DatabaseManager
 {
     Q_OBJECT
 public:
@@ -33,13 +32,11 @@ public:
     ~LibraryManager();
 
     static LibraryManager *instance();
-    /**
-      Open the index database
-      @throw BookException
-      */
-    void open();
-    void openManagers();
 
+    void loadModels();
+    void clear();
+
+    void openManagers();
     void reloadManagers();
 
     int addBook(ImportModelNode *node);
@@ -54,9 +51,6 @@ public:
 
 protected:
     LibraryInfo *m_libraryInfo;
-    QSqlDatabase m_indexDB;
-    QString m_connName;
-    QMutex m_mutex;
     QList<ListManager*> m_managers;
     LibraryBookManager *m_bookmanager;
     TaffesirListManager *m_taffesirManager;
