@@ -13,18 +13,22 @@
 #include "bookexception.h"
 
 IndexManager::IndexManager(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    m_library(MW->libraryInfo()),
+    m_writer(0),
+    m_indexTracker(IndexTracker::instance()),
+    m_taskIter(0),
+    m_analyzer(0),
+    m_booksCount(0),
+    m_indexedBooks(0),
+    m_threadCount(0),
+    m_indexedBookCount(0)
 {
-    m_indexTracker = IndexTracker::instance();
-    m_library = MW->libraryInfo();
-
-    m_taskIter = 0;
-    m_analyzer = 0;
 }
 
 bool IndexManager::openWriter()
 {
-    ml_return_val_on_fail2(!m_writer, "IndexManager::openWriter already open", false);
+    ml_return_val_on_fail2(!m_writer, "IndexManager::openWriter already open", true);
 
     QDir dir;
     QSettings settings;
