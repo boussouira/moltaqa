@@ -46,7 +46,7 @@ void BookIndexer::startIndexing()
         try {
             task->book = m_bookManager->getLibraryBook(task->bookID);
 
-            if(!task->book)
+            if(!task->book && task->task != IndexTask::Delete)
                 throw BookException(QString("No book with id %1").arg(task->bookID));
 
             if(task->book) {
