@@ -18,8 +18,8 @@ public:
     void setDatabasePath(const QString &path);
     void openDatabase();
     
-    void transaction();
-    void commit();
+    bool transaction();
+    bool commit();
 
 protected:
     QString m_path; ///< SQLite database path

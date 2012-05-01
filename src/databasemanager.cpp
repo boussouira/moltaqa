@@ -33,14 +33,20 @@ void DatabaseManager::openDatabase()
     m_query = QSqlQuery(m_db);
 }
 
-void DatabaseManager::transaction()
+bool DatabaseManager::transaction()
 {
-    ml_return_on_fail2(m_db.transaction(),
-               "DatabaseManager: Error on transaction:" << m_db.lastError().text());
+    ml_return_val_on_fail2(m_db.transaction(),
+                           "DatabaseManager: Error on transaction:" << m_db.lastError().text(),
+                           false);
+
+    return true;
 }
 
-void DatabaseManager::commit()
+bool DatabaseManager::commit()
 {
-    ml_return_on_fail2(m_db.commit(),
-               "DatabaseManager: Error on commit:" << m_db.lastError().text());
+    ml_return_val_on_fail2(m_db.commit(),
+                           "DatabaseManager: Error on commit:" << m_db.lastError().text(),
+                           false);
+
+    return true;
 }
