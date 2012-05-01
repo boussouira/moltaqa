@@ -1,4 +1,5 @@
 #include "sortfilterproxymodel.h"
+#include "stringutils.h"
 
 SortFilterProxyModel::SortFilterProxyModel(QObject *parent) : QSortFilterProxyModel(parent)
 {
@@ -27,7 +28,26 @@ bool SortFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex &s
 
 bool SortFilterProxyModel::filterAcceptsRowItself(int source_row, const QModelIndex &source_parent) const
 {
-    return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+    if (filterRegExp().isEmpty())
+        return true;
+    if (filterKeyColumn() == -1) {
+        int column_count = sourceModel()->columnCount(source_parent);
+        for (int column = 0; column < column_count; ++column) {
+            QModelIndex source_index = sourceModel()->index(source_row, column, source_parent);
+            QString key = sourceModel()->data(source_index, filterRole()).toString();
+            if (key.contains(filterRegExp()))
+                return true;
+        }
+        return false;
+    }
+
+    QModelIndex source_index = sourceModel()->index(source_row, filterKeyColumn(), source_parent);
+    if (!source_index.isValid()) // the column may not exist
+        return true;
+    QString key = sourceModel()->data(source_index, filterRole()).toString();
+    key = Utils::String::Arabic::removeTashekil(key);
+
+    return key.contains(filterRegExp());
 }
 
 bool SortFilterProxyModel::hasAcceptedChildren(int source_row, const QModelIndex &source_parent) const
