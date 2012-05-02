@@ -419,6 +419,10 @@ void ShamelaImportDialog::doneImporting()
         MdbConverter::removeAllConvertedDB();
 #endif
 
+        QSettings settings;
+        settings.setValue("ShamelaImportDialog/threadCount",
+                          ui->spinImportThreads->value());
+
         QMessageBox::information(this,
                                  tr("الاستيراد من الشاملة"),
                                  tr("سيتم فهرسة الكتب التي تم استيرادها بعد اعادة تشغيل البرنامج"));
