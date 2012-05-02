@@ -96,7 +96,7 @@ QString QueryBuilder::query()
 {
     ml_return_val_on_fail2(m_type != None, "QueryBuilder::query Query type is not set", QString());
     ml_return_val_on_fail2(m_tableName.size(), "QueryBuilder::query Table name is not set", QString());
-    ml_return_val_on_fail2(m_type == Select || m_values.size() == m_colums.size(),
+    ml_return_val_on_fail2(m_type == Select || m_type == Delete || m_values.size() == m_colums.size(),
                    "QueryBuilder::query Columns and values doesn't match", QString());
 
     if(m_whereColums.size()) {
@@ -223,6 +223,21 @@ QString QueryBuilder::query()
         if(m_limit != -1)
             sql += QString(" LIMIT %1").arg(m_limit);
 
+    } else if (m_type == Delete){
+        sql = "DELETE FROM ";
+        sql += m_tableName;
+
+        if(m_whereColums.size()) {
+            sql += " WHERE ";
+            for(int i=0; i<m_whereColums.size(); i++) {
+                if(i)
+                    sql += " AND ";
+
+                sql += m_whereColums[i];
+                sql += " = ";
+                sql += '?';
+            }
+        }
     } else {
         qWarning("QueryBuilder: Query type %d is not handled", m_type);
     }
@@ -234,7 +249,7 @@ void QueryBuilder::prepare(QSqlQuery &q)
 {
     ml_return_on_fail2(m_type != None, "QueryBuilder::prepare Query type is not set");
     ml_return_on_fail2(m_tableName.size(), "QueryBuilder::prepare Table name is not set");
-    ml_return_on_fail2(m_type == Select || m_values.size() == m_colums.size(),
+    ml_return_on_fail2(m_type == Select || m_type == Delete || m_values.size() == m_colums.size(),
                "QueryBuilder::prepare Columns and values doesn't match");
 
     QString sql;
@@ -245,10 +260,12 @@ void QueryBuilder::prepare(QSqlQuery &q)
     q.prepare(sql);
 
     if(m_type != Create) {
-        for(int i=0; i<m_values.size(); i++)
-            q.bindValue(i, m_values[i]);
+        if(m_type != Delete) {
+            for(int i=0; i<m_values.size(); i++)
+                q.bindValue(i, m_values[i]);
+        }
 
-        if(m_type == Update || m_type == Select) {
+        if(m_type == Update || m_type == Select || m_type == Delete) {
             for(int i=0; i<m_whereValues.size(); i++)
                 q.bindValue(i+m_values.size(), m_whereValues[i]);
         }

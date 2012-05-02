@@ -36,7 +36,8 @@ public:
         Create,
         Insert,
         Update,
-        Replace
+        Replace,
+        Delete
     };
 
     enum Order {
