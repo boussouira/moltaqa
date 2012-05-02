@@ -24,6 +24,7 @@ class AuthorsManager;
 class TarajemRowatManager;
 class FavouritesManager;
 class SearchManager;
+class QAction;
 
 class LibraryManager : public DatabaseManager
 {
@@ -44,6 +45,11 @@ public:
     void addBook(LibraryBookPtr book, int catID);
 
     void removeBook(int bookID);
+
+    QHash<int, QAction *> textRefersActions();
+    void addTextRefers(const QString &name, const QString &referText);
+    void editRefers(int rid, const QString &name, const QString &referText);
+    void deleteRefer(int rid);
 
     TaffesirListManager *taffesirListManager();
     BookListManager *bookListManager();

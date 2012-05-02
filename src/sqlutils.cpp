@@ -282,6 +282,12 @@ bool QueryBuilder::exec(QSqlQuery &q)
     return true;
 }
 
+bool QueryBuilder::exec(QSqlDatabase &db)
+{
+    QSqlQuery query(db);
+    return exec(query);
+}
+
 void QueryBuilder::clear()
 {
     m_type = None;

@@ -80,7 +80,7 @@
       <attribute name="title">
        <string>العرض</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_8">
+      <layout class="QVBoxLayout" name="verticalLayout_11">
        <item>
         <widget class="QGroupBox" name="groupBox_3">
          <property name="title">
@@ -315,6 +315,52 @@
          <property name="text">
           <string>حذف التشكيل من صفحات الكتب</string>
          </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_7">
+         <property name="title">
+          <string>ادواة</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_8">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_11">
+            <item>
+             <spacer name="horizontalSpacer_11">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushEditRefer">
+              <property name="text">
+               <string>تعديل العزو</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_12">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
         </widget>
        </item>
        <item>

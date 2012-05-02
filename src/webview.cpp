@@ -11,6 +11,8 @@
 #include <qevent.h>
 #include <qmenu.h>
 #include <qdesktopservices.h>
+#include <qclipboard.h>
+#include <qapplication.h>
 
 WebView::WebView(QWidget *parent) :
     QWebView(parent)
@@ -259,6 +261,30 @@ void WebView::searchInLibrary()
     MW->showSearchView();
 }
 
+void WebView::copyWithRefer()
+{
+    QAction *act = qobject_cast<QAction*>(sender());
+    ml_return_on_fail(act);
+
+    ml_return_on_fail2(parent(), "WebView::copyWithRefer parent is null");
+
+    BookWidget *bookWidget = qobject_cast<BookWidget*>(parent()->parent());
+    ml_return_on_fail2(bookWidget, "WebView::copyWithRefer book widget is null");
+
+    RichBookReader *reader = bookWidget->bookReader();
+
+    QString referText = act->data().toString();
+    referText.replace(QString::fromUtf8("*النص*"),   selectedText());
+    referText.replace(QString::fromUtf8("*المؤلف*"), reader->bookInfo()->authorName);
+    referText.replace(QString::fromUtf8("*الكتاب*"), reader->bookInfo()->title);
+    referText.replace(QString::fromUtf8("*الصفحة*"), QString::number(reader->page()->page));
+    referText.replace(QString::fromUtf8("*الجزء*"),  QString::number(reader->page()->part));
+    referText.replace(QString::fromUtf8("*الحديث*"), QString::number(reader->page()->haddit));
+
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(referText);
+}
+
 void WebView::wheelEvent(QWheelEvent *event)
 {
     if(m_animation->state() == QPropertyAnimation::Running)
@@ -300,21 +326,35 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(pageAction(QWebPage::CopyLinkToClipboard));
     }
 
-    if(selectedText().size() && parent()) {
+    if(selectedText().size()) {
+        BookWidget *bookWidget = 0;
+        if(parent())
+            bookWidget = qobject_cast<BookWidget*>(parent()->parent()); // QSplitter > BookWidget
+
 //        QString text = Utils::String::Arabic::removeTashekil(selectedText().simplified());
 //        text = Utils::String::abbreviate(text, 120);
 //        QMenu *sub = menu.addMenu(tr("بحث عن '%1' في").arg(text));
 
-        QMenu *sub = menu.addMenu(tr("بحث عن النص المحدد في"));
-        BookWidget *p = qobject_cast<BookWidget*>(parent()->parent()); // QSplitter > BookWidget
-        if(p)
-            sub->addAction(tr("الكتاب الحالي"), this, SLOT(searchInCurrentBook()));
+        QMenu *searchMenu = menu.addMenu(tr("بحث عن النص المحدد في"));
+
+        if(bookWidget)
+            searchMenu->addAction(tr("الكتاب الحالي"), this, SLOT(searchInCurrentBook()));
 
         if(LibraryManager::instance()->bookManager()->getQuranBook())
-            sub->addAction(tr("القرآن الكريم"), this, SLOT(searchInQuran()));
+            searchMenu->addAction(tr("القرآن الكريم"), this, SLOT(searchInQuran()));
 
-        sub->addAction(tr("كل الكتب"), this, SLOT(searchInLibrary()));
+        searchMenu->addAction(tr("كل الكتب"), this, SLOT(searchInLibrary()));
         menu.addSeparator();
+
+        if(bookWidget) {
+            QMenu *referMenu = menu.addMenu(tr("نسخ النص مع العزو"));
+            foreach(QAction *act, LibraryManager::instance()->textRefersActions()) {
+                referMenu->addAction(act);
+                connect(act, SIGNAL(triggered()), SLOT(copyWithRefer()));
+            }
+
+            menu.addSeparator();
+        }
 
         menu.addAction(pageAction(QWebPage::Copy));
     }

@@ -22,6 +22,7 @@
 #include <qdir.h>
 #include <qsqlerror.h>
 #include <qdatetime.h>
+#include <qaction.h>
 
 static LibraryManager *m_instance = 0;
 
@@ -40,7 +41,7 @@ LibraryManager::LibraryManager(LibraryInfo *info, QObject *parent) :
     QDir dataDir(info->dataDir());
     setDatabasePath(dataDir.filePath("library.db"));
 
-    //openDatabase();
+    openDatabase();
     openManagers();
 }
 
@@ -129,6 +130,51 @@ void LibraryManager::removeBook(int bookID)
                        "LibraryManager::removeBook can't remove book" << bookID);
 
     IndexTracker::instance()->addTask(bookID, IndexTask::Delete, true);
+}
+
+QHash<int, QAction *> LibraryManager::textRefersActions()
+{
+    QSqlQuery query(m_db);
+    query.prepare("SELECT id, name, referText FROM refers");
+    ml_query_exec(query);
+
+    QHash<int, QAction *> hash;
+    while(query.next()) {
+        QAction *act = new QAction(this);
+        act->setText(query.value(1).toString());
+        act->setData(query.value(2).toString());
+
+        hash[query.value(0).toInt()] = act;
+    }
+
+    return hash;
+}
+
+void LibraryManager::addTextRefers(const QString &name, const QString &referText)
+{
+    QueryBuilder q;
+    q.setTableName("refers", QueryBuilder::Insert);
+    q.set("name", name);
+    q.set("referText", referText);
+    q.exec(m_db);
+}
+
+void LibraryManager::editRefers(int rid, const QString &name, const QString &referText)
+{
+    QueryBuilder q;
+    q.setTableName("refers", QueryBuilder::Update);
+    q.set("name", name);
+    q.set("referText", referText);
+    q.where("id", rid);
+    q.exec(m_db);
+}
+
+void LibraryManager::deleteRefer(int rid)
+{
+    QueryBuilder q;
+    q.setTableName("refers", QueryBuilder::Delete);
+    q.where("id", rid);
+    q.exec(m_db);
 }
 
 TaffesirListManager *LibraryManager::taffesirListManager()

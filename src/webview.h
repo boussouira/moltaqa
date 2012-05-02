@@ -49,6 +49,7 @@ protected slots:
     void searchInCurrentBook();
     void searchInQuran();
     void searchInLibrary();
+    void copyWithRefer();
 
 signals:
     void textChanged();

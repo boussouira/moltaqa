@@ -28,6 +28,9 @@ protected slots:
     void deleteSavedSearch();
     void optimizeIndex();
 
+private slots:
+    void on_pushEditRefer_clicked();
+
 private:
     Ui::SettingsDialog *ui;
 };

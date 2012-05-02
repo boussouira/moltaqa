@@ -60,6 +60,7 @@ public:
 
     void prepare(QSqlQuery &q);
     bool exec(QSqlQuery &q);
+    bool exec(QSqlDatabase &db);
 
     void clear();
 

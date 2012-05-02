@@ -7,6 +7,7 @@
 #include "indexmanager.h"
 #include "mainwindow.h"
 #include "timeutils.h"
+#include "bookreferedialog.h"
 
 #include <qsettings.h>
 #include <qfile.h>
@@ -243,4 +244,10 @@ void SettingsDialog::optimizeIndex()
 void SettingsDialog::hideCancelButton(bool hide)
 {
     ui->pushCancel->setHidden(hide);
+}
+
+void SettingsDialog::on_pushEditRefer_clicked()
+{
+    BookRefereDialog dialog(this);
+    dialog.exec();
 }

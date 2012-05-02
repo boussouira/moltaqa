@@ -101,6 +101,7 @@ void createDatabases(const QString &path)
     QString booksDbPath = dir.filePath("books.db");
     QString authorsDbPath = dir.filePath("authors.db");
     QString searchDbPath = dir.filePath("search.db");
+    QString libraryDbPath = dir.filePath("library.db");
 
     {
         if(QFile::exists(booksDbPath))
@@ -230,10 +231,44 @@ void createDatabases(const QString &path)
 
         q.exec(query);
     }
+    {
+        if(QFile::exists(libraryDbPath))
+            qDebug("createDatabases: check library database...");
+        else
+            qDebug("createDatabases: create library database...");
+
+        QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "createDB.library");
+        db.setDatabaseName(libraryDbPath);
+
+        if (!db.open()) {
+            ml_warn_db_error(db);
+        }
+
+        QSqlQuery query(db);
+
+        QueryBuilder q;
+        q.setTableName("refers", QueryBuilder::Create);
+        q.setIgnoreExistingTable(true);
+
+        q.set("id", "INTEGER PRIMARY KEY NOT NULL");
+        q.set("name", "TEXT");
+        q.set("referText", "TEXT");
+
+        q.exec(query);
+
+        q.setTableName("refers", QueryBuilder::Replace);
+
+        q.set("name", QObject::tr("افتراضي"));
+        q.set("referText", QString::fromUtf8("قال *المؤلف*: «*النص*» (*الكتاب* *الصفحة*/*الجزء*)"));
+        q.where("id", 1);
+
+        q.exec(query);
+    }
 
     QSqlDatabase::removeDatabase("createDB.books");
     QSqlDatabase::removeDatabase("createDB.authors");
     QSqlDatabase::removeDatabase("createDB.search");
+    QSqlDatabase::removeDatabase("createDB.library");
 }
 }
 
