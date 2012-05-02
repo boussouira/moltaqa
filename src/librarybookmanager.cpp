@@ -263,20 +263,29 @@ bool LibraryBookManager::removeBook(int bookID)
     LibraryBookPtr book = getLibraryBook(bookID);
     ml_return_val_on_fail2(book, "LibraryBookManager::removeBook can't find book" << bookID, false);
 
-    m_query.prepare("DELETE FROM books WHERE id = ?");
-    m_query.bindValue(0, bookID);
-    if(m_query.exec()) {
-        ml_warn_on_fail(QFile::remove(book->path),
-                        "LibraryBookManager::removeBook can't remove file" << book->path);
-
-        m_books.remove(bookID);
-        //FIXME: what if this book is opened?
-
-        return true;
-    } else {
-        ml_warn_query_error(m_query);
+    QSqlQuery query(m_db);
+    query.prepare("DELETE FROM books WHERE id = ?");
+    query.bindValue(0, bookID);
+    if(!query.exec()) {
+        ml_warn_query_error(query);
         return false;
     }
+
+    //FIXME: what if this book is opened?
+    ml_warn_on_fail(QFile::remove(book->path),
+                    "LibraryBookManager::removeBook can't remove file" << book->path);
+
+    m_books.remove(bookID);
+
+    query.prepare("DELETE FROM history WHERE book = ?");
+    query.bindValue(0, bookID);
+    ml_warn_query_error(query);
+
+    query.prepare("DELETE FROM last_open WHERE book = ?");
+    query.bindValue(0, bookID);
+    ml_warn_query_error(query);
+
+    return true;
 }
 
 QList<int> LibraryBookManager::getBooksWithIndexStat(LibraryBook::IndexFlags indexFlag)
