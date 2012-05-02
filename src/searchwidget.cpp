@@ -334,6 +334,8 @@ void SearchWidget::search()
     m_searcher = new LibrarySearcher(this);
     m_searcher->setQuery(query);
 
+    connect(m_searcher, SIGNAL(startFeteching()), SLOT(showMessageAfterSearch()));
+
     m_resultWidget->search(m_searcher);
     setCurrentWidget(Result);
 
@@ -412,6 +414,13 @@ void SearchWidget::showSearchFieldMenu()
     }
 
     menu.exec(QCursor::pos());
+}
+
+void SearchWidget::showMessageAfterSearch()
+{
+    QSettings settings;
+    if(settings.value("Search/showMessageAfterSearch", false).toBool())
+        showSearchInfo();
 }
 
 void SearchWidget::saveSelectedField()

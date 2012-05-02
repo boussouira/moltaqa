@@ -539,6 +539,13 @@
             </item>
            </layout>
           </item>
+          <item>
+           <widget class="QCheckBox" name="checkShowMessageAfterSearch">
+            <property name="text">
+             <string>عرض رسالة عند انتهاء البحث</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>

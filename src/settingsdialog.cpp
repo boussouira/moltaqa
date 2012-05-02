@@ -70,6 +70,7 @@ void SettingsDialog::loadSettings()
     }
 
     ui->checkSaveSearch->setChecked(settings.value("saveSearch", true).toBool());
+    ui->checkShowMessageAfterSearch->setChecked(settings.value("showMessageAfterSearch", false).toBool());
 
     settings.endGroup();
 
@@ -188,6 +189,7 @@ void SettingsDialog::saveSettings()
     settings.setValue("ramSize", ui->comboIndexingRam->itemData(ui->comboIndexingRam->currentIndex()));
     settings.setValue("defaultField", ui->comboSearchFields->itemData(ui->comboSearchFields->currentIndex()));
     settings.setValue("saveSearch", ui->checkSaveSearch->isChecked());
+    settings.setValue("showMessageAfterSearch", ui->checkShowMessageAfterSearch->isChecked());
     settings.endGroup();
 
     settings.beginGroup("Style");
