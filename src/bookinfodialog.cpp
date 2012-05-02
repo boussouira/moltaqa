@@ -122,14 +122,12 @@ void BookInfoDialog::setup()
         html.endParagraph();
     }
 
-    /*
-    if(m_book->comment.size()) {
-        html.beginParagraphTag();
-        html.insertSpanTag(tr("ملاحظات:"), ".pro-name");
-        html.insertSpanTag(m_book->comment, ".pro-value");
-        html.endParagraphTag();
+    if(m_book->comment.size() && !m_book->comment.contains(tr("[مؤخود من الشاملة]"))) {
+        html.beginParagraph();
+        html.insertSpan(tr("ملاحظات:"), ".pro-name");
+        html.insertSpan(m_book->comment, ".pro-value");
+        html.endParagraph();
     }
-    */
 
     html.endDiv(); // #info
 
