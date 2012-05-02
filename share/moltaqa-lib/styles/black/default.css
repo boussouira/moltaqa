@@ -480,3 +480,8 @@ sheer {
     color: #FFFFFF;
     margin-left: 7px;
 }
+
+hr.fns {
+    width: 20%;
+    float: right;
+}

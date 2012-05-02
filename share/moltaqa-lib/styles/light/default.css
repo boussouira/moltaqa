@@ -559,3 +559,8 @@ sheer {
     margin-left: 7px;
     /*font-weight: bold;*/
 }
+
+hr.fns {
+    width: 20%;
+    float: right;
+}

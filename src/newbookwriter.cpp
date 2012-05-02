@@ -106,7 +106,31 @@ QString NewBookWriter::processPageText(QString text)
     QRegExp rxSheer("^([^\\.]+ \\.\\.\\. [^\\.]+)$");
     rxSheer.setMinimal(true);
 
-    QStringList paragraphs = text.split(QRegExp("[\\r\\n]+"));
+    // Separete footnote
+    QRegExp footnoteSep("_{6,}");
+    QStringList pageTextList = text.split(footnoteSep, QString::SkipEmptyParts);
+    if(pageTextList.isEmpty())
+        return htmlText;
+
+    if(pageTextList.size() == 2) {
+        QString pageText = pageTextList.first();
+        QString footnoteText = pageTextList.last().trimmed();
+
+        pageText.replace(QRegExp(QString::fromUtf8("\\(¬?([0-9]{1,2})\\)")),
+                             "<sup class=\"fnn\"><a class=\"footn\" id=\"fnb\\1\" href=\"#fn\\1\">(\\1)</a></sup>");
+
+        footnoteText.replace(QRegExp(QString::fromUtf8("\\(¬?([0-9]{1,2})\\)")),
+                             "<sup class=\"fnb\"><a href=\"#fnb\\1\" id=\"fn\\1\">(\\1)</a></sup>");
+        footnoteText.replace(QRegExp("[\\r\\n]+"), "<br />");
+
+        footnoteText.prepend("<hr class=\"fns\"/><div class=\"clear\"><footnote>");
+        footnoteText.append("</footnote>");
+
+        pageTextList[0] = pageText;
+        pageTextList[1] = footnoteText;
+    }
+
+    QStringList paragraphs = pageTextList[0].split(QRegExp("[\\r\\n]+"), QString::SkipEmptyParts);
     foreach(QString p, paragraphs) {
         htmlText.append("<p>");
 
@@ -116,6 +140,9 @@ QString NewBookWriter::processPageText(QString text)
 
         htmlText.append("</p>");
     }
+
+    if(pageTextList.size() == 2)
+        htmlText.append(pageTextList[1]);
 
     return htmlText;
 }
