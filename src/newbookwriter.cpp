@@ -103,7 +103,7 @@ QString NewBookWriter::processPageText(QString text)
     QRegExp rxMateen(QString::fromUtf8("§([^\"»]+)([»\"])"));
     rxMateen.setMinimal(true);
 
-    QRegExp rxSheer("^([^\\.]+ \\.\\.\\. [^\\.]+)$");
+    QRegExp rxSheer("^(.{15,50} [\\.\\*]{3} .{15,50})$");
     rxSheer.setMinimal(true);
 
     // Separete footnote

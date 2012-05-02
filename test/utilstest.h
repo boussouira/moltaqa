@@ -28,6 +28,8 @@ private slots:
 
     void queryBuilder();
 
+    void sheerRegExp();
+
     void cleanupTestCase();
 
 protected:
