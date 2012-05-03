@@ -40,9 +40,6 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
           }
     }
 
-    QTime timer;
-    timer.start();
-
     QString convert_path;
     if(sql_path.size()){
         convert_path = sql_path;
@@ -80,8 +77,6 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
 
     m_bookQuery = QSqlQuery(m_bookDB);
 
-    QFileInfo info(mdb_path);
-
     // loop over each entry in the catalog
     MdbCatalogEntry *entry;
     unsigned int num_catalog = mdb->num_catalog;
@@ -97,8 +92,6 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
         getTableContent(mdb, entry, false);
         m_bookDB.commit();
     }
-
-    qDebug() << "MdbConverter: Converting" << info.fileName() << "take" << timer.elapsed() << "ms";
 
     mdb_close(mdb);
 
