@@ -2,10 +2,13 @@
 #include "ui_booklistmanagerwidget.h"
 #include "mainwindow.h"
 #include "selectcatdialog.h"
+#include "selectbooksdialog.h"
 #include "booklistmanager.h"
+#include "authorsmanager.h"
 #include "modelutils.h"
 #include "modelenums.h"
 #include "utils.h"
+#include "timeutils.h"
 
 #include <qabstractitemmodel.h>
 #include <qmessagebox.h>
@@ -27,7 +30,7 @@ BookListManagerWidget::BookListManagerWidget(QWidget *parent) :
 
     updateActions();
 
-    connect(ui->toolAddCat, SIGNAL(clicked()), SLOT(addCat()));
+    connect(ui->toolAddCat, SIGNAL(clicked()), SLOT(addToBookList()));
     connect(ui->toolRemoveCat, SIGNAL(clicked()), SLOT(removeCat()));
     connect(ui->toolMoveUp, SIGNAL(clicked()), SLOT(moveUp()));
     connect(ui->toolMoveDown, SIGNAL(clicked()), SLOT(moveDown()));
@@ -149,6 +152,14 @@ void BookListManagerWidget::moveLeft()
     Utils::Model::moveLeft(m_model, ui->treeView);
 }
 
+void BookListManagerWidget::addToBookList()
+{
+    QMenu menu(this);
+    menu.addAction(tr("اضافة قسم"), this, SLOT(addCat()));
+    menu.addAction(tr("اضافة كتب"), this, SLOT(addBooks()));
+    menu.exec(QCursor::pos());
+}
+
 void BookListManagerWidget::addCat()
 {
     QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
@@ -172,6 +183,41 @@ void BookListManagerWidget::addCat()
     }
 }
 
+void BookListManagerWidget::addBooks()
+{
+    selectBooksDialog dialog(this);
+    if(dialog.exec() == QDialog::Accepted) {
+        QList<int> books = dialog.selectedBooks();
+        int parentID = 0;
+
+        QModelIndex parent = Utils::Model::selectedIndex(ui->treeView);
+        while(parent.isValid()) {
+            if(parent.data(ItemRole::itemTypeRole).toInt() == ItemType::CategorieItem) {
+                parentID = parent.data(ItemRole::idRole).toInt();
+                break;
+            }
+
+            parent = parent.parent();
+        }
+
+        foreach (int bookID, books) {
+            LibraryBookPtr book = LibraryManager::instance()->bookManager()->getLibraryBook(bookID);
+            if(!book)
+                continue;
+
+            addBookItem(book, parent);
+
+            if(parent.isValid()) {
+                QStandardItem *item = Utils::Model::itemFromIndex(m_model, parent);
+                if(item)
+                    Utils::Model::selectIndex(ui->treeView, parent.child(item->rowCount()-1, 0));
+            } else {
+                Utils::Model::selectIndex(ui->treeView, m_model->index(m_model->rowCount()-1, 0));
+            }
+        }
+    }
+}
+
 void BookListManagerWidget::removeCat()
 {
     QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
@@ -181,7 +227,7 @@ void BookListManagerWidget::removeCat()
 
     int rep = QMessageBox::question(this,
                                 title(),
-                                tr("هل انت متأكد من أنك تريد حذف '%1'").arg(item->text()),
+                                tr("هل انت متأكد من أنك تريد حذف '%1'؟").arg(item->text()),
                                 QMessageBox::Yes|QMessageBox::No, QMessageBox::No);
 
 
@@ -234,6 +280,56 @@ void BookListManagerWidget::updateActions()
     ui->toolRemoveCat->setEnabled(index.isValid());
     ui->toolMoveRight->setEnabled(index.parent().isValid());
     ui->toolMoveLeft->setEnabled(index.sibling(index.row()-1, 0).isValid());
+}
+
+void BookListManagerWidget::addBookItem(LibraryBookPtr book, const QModelIndex &parent)
+{
+    QList<QStandardItem*> rows;
+
+    QStandardItem *nameItem = new QStandardItem();
+    nameItem->setText(book->title);
+    nameItem->setToolTip(book->comment);
+    nameItem->setIcon(QIcon(":/images/book.png"));
+    nameItem->setData(book->id, ItemRole::idRole);
+    nameItem->setData(ItemType::BookItem, ItemRole::itemTypeRole);
+    nameItem->setData(book->type, ItemRole::typeRole);
+
+    rows << nameItem;
+
+    if(book->type != LibraryBook::QuranBook) {
+        AuthorInfoPtr auth = LibraryManager::instance()->authorsManager()->getAuthorInfo(book->authorID);
+        QString authName;
+        int deathYear = 999999;
+        QString deathStr;
+
+        if(auth) {
+            authName = auth->name;
+
+            if(auth->unknowDeath) {
+                deathStr = tr("مجهول");
+                deathYear = Utils::Time::unknowDeathYear();
+            } else if(auth->isALive) {
+                deathStr = tr("معاصر");
+                deathYear = Utils::Time::aliveDeathYear();
+            } else {
+                deathYear = auth->deathYear;
+                deathStr = auth->deathStr;
+            }
+        }
+
+        QStandardItem *authItem = new QStandardItem();
+        authItem->setText(authName);
+        authItem->setData(book->authorID, ItemRole::authorIdRole);
+        rows << authItem;
+
+        QStandardItem *authDeathItem = new QStandardItem();
+        authDeathItem->setText(deathStr);
+        authDeathItem->setData(deathYear, ItemRole::authorDeathRole);
+        rows << authDeathItem;
+    }
+
+    QStandardItem *item = Utils::Model::itemFromIndex(m_model, parent);
+    item->appendRow(rows);
 }
 
 void BookListManagerWidget::modelEdited()

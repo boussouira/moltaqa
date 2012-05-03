@@ -40,7 +40,7 @@ void LibraryBookManager::clear()
     m_books.clear();
 }
 
-StandardItemModelPtr LibraryBookManager::getModel()
+StandardItemModelPtr LibraryBookManager::getModel(bool bookIcon)
 {
     QStandardItemModel *model = new QStandardItemModel();
 
@@ -53,7 +53,9 @@ StandardItemModelPtr LibraryBookManager::getModel()
         QStandardItem *item = new QStandardItem();
         item->setText(query.value(1).toString());
         item->setData(query.value(0).toInt(), ItemRole::idRole);
-        item->setIcon(QIcon(":/images/book.png"));
+
+        if(bookIcon)
+            item->setIcon(QIcon(":/images/book.png"));
 
         model->appendRow(item);
     }

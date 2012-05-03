@@ -100,7 +100,7 @@ QModelIndex selectedIndex(QTreeView *tree)
     return selection.isEmpty() ? QModelIndex() : selection.first();
 }
 
-void selectIndex(QTreeView *tree, QModelIndex index)
+void selectIndex(QTreeView *tree, const QModelIndex &index)
 {
     if(index.isValid()) {
         tree->scrollTo(index, QAbstractItemView::EnsureVisible);

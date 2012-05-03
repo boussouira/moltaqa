@@ -25,7 +25,7 @@ public:
     void loadModels();
     void clear();
 
-    StandardItemModelPtr getModel();
+    StandardItemModelPtr getModel(bool bookIcon=true);
     StandardItemModelPtr getLastOpendModel();
     StandardItemModelPtr getBookHistoryModel(int bookID);
 

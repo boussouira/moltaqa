@@ -30,12 +30,17 @@ protected slots:
     void moveDown();
     void moveRight();
     void moveLeft();
+    void addToBookList();
     void addCat();
+    void addBooks();
     void removeCat();
     void modelEdited();
 
     void menuRequested(QPoint);
     void updateActions();
+
+protected:
+    void addBookItem(LibraryBookPtr book, const QModelIndex &parent);
 
 protected:
     QStandardItemModel *m_model;
