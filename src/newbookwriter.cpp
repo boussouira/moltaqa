@@ -184,6 +184,9 @@ void NewBookWriter::endReading()
     }
 
     m_zip.close();
-    // TODO: check if the close success
+
+    ml_warn_on_fail(m_zip.getZipError()==0,
+                    "NewBookWriter::endReading zip error" << m_zip.getZipError()
+                    << "file" << m_zip.getZipName());
 }
 
