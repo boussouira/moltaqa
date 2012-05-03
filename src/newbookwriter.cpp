@@ -106,6 +106,7 @@ QString NewBookWriter::processPageText(QString text)
     QRegExp rxSheer("^(.{15,50} [\\.\\*]{3} .{15,50})$");
     rxSheer.setMinimal(true);
 
+    QString specialChar(QString::fromUtf8("§"));
     // Separete footnote
     QRegExp footnoteSep("_{6,}");
     QStringList pageTextList = text.split(footnoteSep, QString::SkipEmptyParts);
@@ -136,7 +137,8 @@ QString NewBookWriter::processPageText(QString text)
 
         htmlText.append(p.simplified()
                         .replace(rxMateen, "<mateen>\\1</mateen>\\2")
-                        .replace(rxSheer, "<sheer>\\1</sheer>"));
+                        .replace(rxSheer, "<sheer>\\1</sheer>")
+                        .remove(specialChar));
 
         htmlText.append("</p>");
     }
