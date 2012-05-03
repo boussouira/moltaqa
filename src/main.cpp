@@ -13,6 +13,9 @@
 #include <qsettings.h>
 #include <qdatetime.h>
 #include <qdebug.h>
+#include <qdesktopservices.h>
+#include <qmessagebox.h>
+#include <qmutex.h>
 
 #ifdef Q_OS_WIN
 #include <Windows.h>
@@ -29,17 +32,84 @@ void setArabicKeyboardLayout()
 
 #endif
 
+QMutex mutex;
+QString logFilePath;
+
+
+void debugMessageHandler(QtMsgType type, const char *msg)
+{
+    QMutexLocker locker(&mutex);
+
+    QDir dir(QDesktopServices::storageLocation(QDesktopServices::DataLocation));
+    QFile debugFile(dir.filePath("application.log"));
+    if(!debugFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) {
+        fprintf(stderr, "debugMessageHandler: can't open file %s: %s\n",
+                qPrintable(dir.filePath("application.log")),
+                qPrintable(debugFile.errorString()));
+        return;
+    }
+
+    QTextStream out(&debugFile);
+    out.setCodec("utf-8");
+
+    QString dateTime = QDateTime::currentDateTime().toString("[dd/MM/yyyy] [hh:mm:ss:zzz] ");
+    QString text = QString::fromUtf8(msg);
+
+    if(text.startsWith("X Error:")) {
+        fprintf(stderr, "%s", msg);
+        return;
+    }
+
+    switch (type) {
+    case QtDebugMsg:
+        out << dateTime << "[DEBUG] " << text << "\n";
+        break;
+    case QtWarningMsg:
+        out << dateTime << "[WARNING] " << text << "\n";
+        break;
+    case QtCriticalMsg:
+        out << dateTime << "[CRITICAL] " << text << "\n";
+        break;
+    case QtFatalMsg:
+        out << dateTime << "[FATAL] " << text << "\n";
+        QMessageBox::critical(0, "Fatal error", msg);
+        debugFile.close();
+        exit(-1);
+    }
+}
+
+void createLogFileDir()
+{
+    QDir dir(QDesktopServices::storageLocation(QDesktopServices::DataLocation));
+    logFilePath = dir.filePath("application.log");
+
+    QFileInfo logInfo(logFilePath);
+    if(!QFile::exists(logInfo.path())) {
+        if(!dir.mkpath(logInfo.path())) {
+            return;
+        }
+    }
+
+    qInstallMsgHandler(debugMessageHandler);
+}
+
+void showHelp()
+{
+    qDebug() << "Usage: moltaqa-lib [ options ... ]";
+    qDebug() << "Where options include:";
+    qDebug() << "  --debug" << "\t" << "Print debug messages to standard output.";
+    qDebug() << "  --help" << "\t" << "Show this help message and exit.";
+}
+
 int main(int argc, char *argv[])
 {
     QtSingleApplication app(argc, argv);
-
-    QString message;
-    for (int a = 1; a < argc; ++a) {
-        message += argv[a];
-        if (a < argc-1)
-            message += " ";
+    if(app.arguments().contains("--help")) {
+        showHelp();
+        return 0;
     }
-    if (app.sendMessage(message))
+
+    if (app.sendMessage("Activate!"))
         return 0;
 
     app.setLayoutDirection(Qt::RightToLeft);
@@ -59,6 +129,9 @@ int main(int argc, char *argv[])
     app.setOrganizationDomain("ahlalhdeeth.com");
     app.setApplicationName("Moltaqa-Library");
     app.setApplicationVersion("0.5");
+
+    if(!app.arguments().contains("--debug"))
+        createLogFileDir();
 
     Utils::Rand::srand();
 

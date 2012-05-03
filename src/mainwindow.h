@@ -20,6 +20,7 @@ class IndexTracker;
 class IndexManager;
 class BookReaderHelper;
 class QProgressBar;
+class LogDialog;
 
 namespace Ui
 {
@@ -73,6 +74,7 @@ protected slots:
     void startIndexing();
     void stopIndexing();
     void indexProgress(int value, int max);
+    void showLogDialog();
 
 private:
     Ui::MainWindow *ui;
@@ -90,6 +92,7 @@ private:
     BookEditorView *m_editorView;
     TarajemRowatView *m_tarajemView;
     AuthorsView *m_authorsView;
+    LogDialog *m_logDialog;
 };
 
 #endif // MAINWINDOW_H

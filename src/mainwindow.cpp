@@ -21,6 +21,7 @@
 #include "tarajemrowatview.h"
 #include "authorsview.h"
 #include "aboutdialog.h"
+#include "logdialog.h"
 
 #include <qmessagebox.h>
 #include <qsettings.h>
@@ -54,8 +55,12 @@ MainWindow::MainWindow(QWidget *parent):
     ui->setupUi(this);
     m_instance = this;
 
+    m_logDialog = new LogDialog(this);
+
     setWindowTitle(App::name());
     loadSettings();
+
+    connect(ui->actionLogDialog, SIGNAL(triggered()), SLOT(showLogDialog()));
 }
 
 bool MainWindow::init()
@@ -187,6 +192,7 @@ MainWindow::~MainWindow()
     ml_delete_check(m_tarajemView);
     ml_delete_check(m_authorsView);
     ml_delete_check(m_indexTracker);
+    ml_delete_check(m_logDialog);
 
     delete ui;
 
@@ -394,4 +400,10 @@ void MainWindow::indexProgress(int value, int max)
 {
     m_indexBar->setMaximum(max);
     m_indexBar->setValue(value);
+}
+
+void MainWindow::showLogDialog()
+{
+    m_logDialog->startWatching();
+    m_logDialog->show();
 }
