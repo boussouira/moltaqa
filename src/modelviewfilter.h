@@ -27,12 +27,14 @@ public:
 
     SortFilterProxyModel *filterModel();
 
+public slots:
+    void clearFilter();
+
 protected slots:
     void setFilterText(QString text);
     void sortChanged(int logicalIndex, Qt::SortOrder);
     void filterTextChanged();
     void lineReturnPressed();
-    void clearFilter();
 
 protected:
     QTreeView *m_treeView;
