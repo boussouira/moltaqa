@@ -7,9 +7,8 @@ namespace Ui {
     class selectAuthorDialog;
 }
 
-class LibraryManager;
 class QStandardItemModel;
-class SortFilterProxyModel;
+class ModelViewFilter;
 class QModelIndex;
 
 class selectAuthorDialog : public QDialog
@@ -34,7 +33,7 @@ signals:
 protected:
     Ui::selectAuthorDialog *ui;
     QStandardItemModel *m_model;
-    SortFilterProxyModel *m_filter;
+    ModelViewFilter *m_filter;
     QString m_authorName;
     int m_authorID;
 };

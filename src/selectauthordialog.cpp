@@ -1,11 +1,11 @@
 #include "selectauthordialog.h"
 #include "ui_selectauthordialog.h"
-#include "mainwindow.h"
 #include "librarymanager.h"
-#include "sortfilterproxymodel.h"
+#include "modelviewfilter.h"
 #include "authorsmanager.h"
 #include "modelenums.h"
 #include "modelutils.h"
+#include "utils.h"
 
 #include <qstandarditemmodel.h>
 #include <qmessagebox.h>
@@ -18,21 +18,22 @@ selectAuthorDialog::selectAuthorDialog(QWidget *parent) :
 
     m_model = LibraryManager::instance()->authorsManager()->authorsModel();
 
-    m_filter = new SortFilterProxyModel(this);
+    m_filter = new ModelViewFilter(this);
     m_filter->setSourceModel(m_model);
-
-    ui->treeView->setModel(m_filter);
-    ui->treeView->resizeColumnToContents(0);
+    m_filter->setTreeView(ui->treeView);
+    m_filter->setLineEdit(ui->lineSearch);
+    m_filter->setup();
 
     m_authorID = 0;
 
-    connect(ui->lineSearch, SIGNAL(textChanged(QString)), m_filter, SLOT(setArabicFilterRegexp(QString)));
     connect(ui->pushSelect, SIGNAL(clicked()), SLOT(selectAuthor()));
     connect(ui->pushCancel, SIGNAL(clicked()), SLOT(cancel()));
 }
 
 selectAuthorDialog::~selectAuthorDialog()
 {
+    ml_delete_check(m_model);
+    ml_delete_check(m_filter);
     delete ui;
 }
 

@@ -10,7 +10,7 @@ namespace Ui {
 class LibraryManager;
 class QStandardItemModel;
 class QStandardItem;
-class SortFilterProxyModel;
+class ModelViewFilter;
 
 class selectCatDialog : public QDialog
 {
@@ -28,16 +28,14 @@ protected slots:
     void selectCat();
     void cancel();
 
-protected:
-    LibraryManager *m_libraryManager;
-    QStandardItemModel *m_model;
-    SortFilterProxyModel *m_filter;
-    QStandardItem *m_selectedItem;
-
 signals:
     void catSelected();
 
 private:
+    LibraryManager *m_libraryManager;
+    QStandardItemModel *m_model;
+    ModelViewFilter *m_filter;
+    QStandardItem *m_selectedItem;
     Ui::selectCatDialog *ui;
 };
 
