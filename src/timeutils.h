@@ -7,6 +7,10 @@ namespace Utils {
 
 namespace Time {
 
+inline int maxDeathYear() { return 1433; }
+inline int unknowDeathYear() { return maxDeathYear() + 200; }
+inline int aliveDeathYear() { return maxDeathYear() + 100; }
+
 int hijriToGregorian(int hYear);
 int gregorianToHijri(int gYear);
 

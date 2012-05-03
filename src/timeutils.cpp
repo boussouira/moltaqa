@@ -21,7 +21,7 @@ QString hijriYear(int hYear)
 {
     if(hYear <= 0)
         return QObject::tr("%1 م").arg(Utils::Time::hijriToGregorian(hYear));
-    else if(hYear >= 99999)
+    else if(hYear >= aliveDeathYear())
         return QObject::tr("معاصر");
     else
         return QObject::tr("%1 هـ").arg(hYear);
