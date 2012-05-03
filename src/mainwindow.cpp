@@ -297,6 +297,10 @@ void MainWindow::loadSettings()
     webSettings->setFontSize(QWebSettings::DefaultFontSize, fontSize);
 }
 
+void MainWindow::handleMessage(const QString &)
+{
+}
+
 LibraryInfo *MainWindow::libraryInfo()
 {
     Q_CHECK_PTR(m_libraryInfo);

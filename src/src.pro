@@ -12,6 +12,7 @@ CODECFORTR  = UTF-8
 
 include(src.pri)
 include(quazip/quazip.pri)
+include(qtsingleapplication/qtsingleapplication.pri)
 
 SOURCES += main.cpp
 DESTDIR = ../bin

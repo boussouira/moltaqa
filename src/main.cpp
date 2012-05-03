@@ -5,6 +5,7 @@
 #include "mdbconverter.h"
 #endif
 
+#include <qtsingleapplication.h>
 #include <qapplication.h>
 #include <qtranslator.h>
 #include <qlocale.h>
@@ -30,7 +31,17 @@ void setArabicKeyboardLayout()
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+    QtSingleApplication app(argc, argv);
+
+    QString message;
+    for (int a = 1; a < argc; ++a) {
+        message += argv[a];
+        if (a < argc-1)
+            message += " ";
+    }
+    if (app.sendMessage(message))
+        return 0;
+
     app.setLayoutDirection(Qt::RightToLeft);
     QTextCodec::setCodecForTr(QTextCodec::codecForName("utf-8"));
 
@@ -68,6 +79,12 @@ int main(int argc, char *argv[])
     if(w.init()) {
         w.setLayoutDirection(Qt::RightToLeft);
         w.show();
+
+        QObject::connect(&app, SIGNAL(messageReceived(QString)),
+                         &w, SLOT(handleMessage(QString)));
+
+        app.setActivationWindow(&w);
+
         ret = app.exec();
     }
 

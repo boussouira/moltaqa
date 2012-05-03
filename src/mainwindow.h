@@ -53,6 +53,8 @@ protected:
     void loadSettings();
 
 public slots:
+    void handleMessage(const QString&);
+
     void openBook(int pBookID, int pageID = -1);
 
     void showSearchView();
