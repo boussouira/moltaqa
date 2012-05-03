@@ -15,12 +15,12 @@ ControlCenterDialog::ControlCenterDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    addControlWidget(new BookListManagerWidget(this));
-    addControlWidget(new FavouritesManagerWidget(this));
-    addControlWidget(new TaffesirListManagerWidget(this));
     addControlWidget(new LibraryBookManagerWidget(this));
     addControlWidget(new AuthorsManagerWidget(this));
     addControlWidget(new TarajemRowatManagerWidget(this));
+    addControlWidget(new BookListManagerWidget(this));
+    addControlWidget(new FavouritesManagerWidget(this));
+    addControlWidget(new TaffesirListManagerWidget(this));
 
     ui->listWidget->setCurrentRow(0);
     setCurrentRow(0);
