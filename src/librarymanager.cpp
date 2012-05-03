@@ -129,6 +129,9 @@ void LibraryManager::removeBook(int bookID)
     ml_return_on_fail2(m_bookmanager->removeBook(bookID),
                        "LibraryManager::removeBook can't remove book" << bookID);
 
+    m_bookListManager->removeBook(bookID);
+    m_favourites->removeBook(bookID);
+
     IndexTracker::instance()->addTask(bookID, IndexTask::Delete, true);
 }
 
