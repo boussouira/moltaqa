@@ -127,7 +127,7 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
         if(infoCol != -1)
             node->bookInfo = Utils::Html::format(bookQuery.value(infoCol).toString());
 
-         AuthorInfoPtr foundAuth = m_authorsManager->findAuthor(bookQuery.value(authCol).toString());
+         AuthorInfoPtr foundAuth = m_authorsManager->findAuthor(bookQuery.value(authCol).toString(), false);
          if(foundAuth)
              node->setAuthor(foundAuth->id, foundAuth->name);
          else

@@ -57,7 +57,7 @@ public:
     bool hasAuthorInfo(int authorID);
     QString getAuthorName(int authorID);
 
-    AuthorInfoPtr findAuthor(QString name);
+    AuthorInfoPtr findAuthor(QString name, bool fazzySearch);
 
     void updateAuthor(AuthorInfoPtr auth);
 
