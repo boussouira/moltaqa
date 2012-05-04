@@ -6,6 +6,7 @@
 #include "librarymanager.h"
 #include "librarybookmanager.h"
 #include "librarybook.h"
+#include "shamelaimportdialog.h"
 
 #ifdef USE_MDBTOOLS
 #include"mdbconverter.h"
@@ -369,7 +370,7 @@ QList<int> ShamelaManager::getBookShorooh(int shamelaID)
     return ret.toList();
 }
 
-void ShamelaManager::importShorooh()
+void ShamelaManager::importShorooh(ShamelaImportDialog *dialog)
 {
     QHash<int, int> booksMap = m_mapper->booksMap();
     QHash<int, int>::const_iterator i = booksMap.constBegin();
@@ -441,6 +442,12 @@ void ShamelaManager::importShorooh()
 
                 LibraryBookPtr mi = bookManager->getLibraryBook(mateen_libID);
                 LibraryBookPtr si = bookManager->getLibraryBook(shareeh_LibID);
+
+                if(mi && si) {
+                    dialog->addDebugInfo(QObject::tr("ربط المتن '%1' بالشرح '%2'")
+                                         .arg(mi->title)
+                                         .arg(si->title));
+                }
 
                 qDebug() << "ShamelaManager::importShorooh"
                          << "Mateen:" <<(mi ? mi->title : "????")

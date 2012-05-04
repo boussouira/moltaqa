@@ -462,7 +462,7 @@ void ShamelaImportDialog::importShorooh()
 {
     addDebugInfo(tr("استيراد الشروح..."));
 
-    m_manager->importShorooh();
+    m_manager->importShorooh(this);
 }
 
 void ShamelaImportDialog::itemChanged(QStandardItem *item)

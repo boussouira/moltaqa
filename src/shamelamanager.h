@@ -17,6 +17,8 @@
 
 typedef QList<QPair<QString, QString> > ShoortsList;
 
+class ShamelaImportDialog;
+
 class ShamelaManager
 {
 public:
@@ -48,7 +50,7 @@ public:
     ShamelaBookInfo *nextBook();
     ShamelaBookInfo *nextFiltredBook();
 
-    void importShorooh();
+    void importShorooh(ShamelaImportDialog *dialog);
     QList<int> getBookShorooh(int shamelaID);
 
     static QString mdbTable(QString table);
