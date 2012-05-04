@@ -274,9 +274,10 @@ void WebView::copyWithRefer()
     RichBookReader *reader = bookWidget->bookReader();
 
     QString referText = act->data().toString();
-    referText.replace(QString::fromUtf8("*النص*"),   selectedText());
+    referText.replace(QString::fromUtf8("*النص*"),   selectedText().trimmed());
     referText.replace(QString::fromUtf8("*المؤلف*"), reader->bookInfo()->authorName);
     referText.replace(QString::fromUtf8("*الكتاب*"), reader->bookInfo()->title);
+    referText.replace(QString::fromUtf8("*العنوان*"), reader->page()->title);
     referText.replace(QString::fromUtf8("*الصفحة*"), QString::number(reader->page()->page));
     referText.replace(QString::fromUtf8("*الجزء*"),  QString::number(reader->page()->part));
     referText.replace(QString::fromUtf8("*الحديث*"), QString::number(reader->page()->haddit));
@@ -326,7 +327,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         menu.addAction(pageAction(QWebPage::CopyLinkToClipboard));
     }
 
-    if(selectedText().size()) {
+    if(selectedText().trimmed().size()) {
         BookWidget *bookWidget = 0;
         if(parent())
             bookWidget = qobject_cast<BookWidget*>(parent()->parent()); // QSplitter > BookWidget
