@@ -40,11 +40,10 @@ void debugMessageHandler(QtMsgType type, const char *msg)
 {
     QMutexLocker locker(&mutex);
 
-    QDir dir(QDesktopServices::storageLocation(QDesktopServices::DataLocation));
-    QFile debugFile(dir.filePath("application.log"));
+    QFile debugFile(logFilePath);
     if(!debugFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) {
         fprintf(stderr, "debugMessageHandler: can't open file %s: %s\n",
-                qPrintable(dir.filePath("application.log")),
+                qPrintable(logFilePath),
                 qPrintable(debugFile.errorString()));
         return;
     }
