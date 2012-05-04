@@ -44,7 +44,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPlainTextEdit" name="plainTextEdit"/>
+      <widget class="QTextEdit" name="textEdit"/>
      </item>
     </layout>
    </item>
@@ -105,7 +105,7 @@
  </widget>
  <tabstops>
   <tabstop>lineEdit</tabstop>
-  <tabstop>plainTextEdit</tabstop>
+  <tabstop>textEdit</tabstop>
   <tabstop>pushButton_2</tabstop>
   <tabstop>pushButton</tabstop>
  </tabstops>

@@ -56,7 +56,7 @@ void BookRefereDialog::on_toolAdd_clicked()
 
     if(dialog.exec() == QDialog::Accepted) {
         QString name = ui2.lineEdit->text().trimmed();
-        QString refer = ui2.plainTextEdit->toPlainText();
+        QString refer = ui2.textEdit->toPlainText();
 
         ml_return_on_fail2(name.size(), "BookRefereDialog: name is empty");
         ml_return_on_fail2(refer.size(), "BookRefereDialog: refer text is empty");
@@ -80,11 +80,11 @@ void BookRefereDialog::on_toolEdit_clicked()
         ui2.setupUi(&dialog);
 
         ui2.lineEdit->setText(name);
-        ui2.plainTextEdit->setPlainText(referText);
+        ui2.textEdit->setPlainText(referText);
 
         if(dialog.exec() == QDialog::Accepted) {
             name = ui2.lineEdit->text().trimmed();
-            referText = ui2.plainTextEdit->toPlainText();
+            referText = ui2.textEdit->toPlainText();
 
             LibraryManager::instance()->editRefers(rid, name, referText);
             loadModel();
