@@ -32,18 +32,18 @@ void setArabicKeyboardLayout()
 
 #endif
 
-QMutex mutex;
-QString logFilePath;
+QMutex m_mutex;
+QString m_logFilePath;
 
 
 void debugMessageHandler(QtMsgType type, const char *msg)
 {
-    QMutexLocker locker(&mutex);
+    QMutexLocker locker(&m_mutex);
 
-    QFile debugFile(logFilePath);
+    QFile debugFile(m_logFilePath);
     if(!debugFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) {
         fprintf(stderr, "debugMessageHandler: can't open file %s: %s\n",
-                qPrintable(logFilePath),
+                qPrintable(m_logFilePath),
                 qPrintable(debugFile.errorString()));
         return;
     }
@@ -80,9 +80,9 @@ void debugMessageHandler(QtMsgType type, const char *msg)
 void createLogFileDir()
 {
     QDir dir(QDesktopServices::storageLocation(QDesktopServices::DataLocation));
-    logFilePath = dir.filePath("application.log");
+    m_logFilePath = dir.filePath("application.log");
 
-    QFileInfo logInfo(logFilePath);
+    QFileInfo logInfo(m_logFilePath);
     if(!QFile::exists(logInfo.path())) {
         if(!dir.mkpath(logInfo.path())) {
             return;
