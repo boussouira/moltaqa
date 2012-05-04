@@ -163,6 +163,11 @@ void IndexTracker::save()
 
 void IndexTracker::findTasks()
 {
+    if(QDir(m_libraryInfo->indexDataDir()).entryList(QDir::Files|QDir::NoDotAndDotDot).isEmpty()) {
+        qWarning("IndexTracker::findTasks index data directory is empty");
+        m_bookManager->setBookIndexStat(-1, LibraryBook::NotIndexed);
+    }
+
     QThreadPool::globalInstance()->start(this);
 }
 

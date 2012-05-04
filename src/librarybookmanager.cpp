@@ -320,14 +320,18 @@ void LibraryBookManager::setBookIndexStat(int bookID, LibraryBook::IndexFlags in
     q.setQueryType(QueryBuilder::Update);
 
     q.set("indexFlags", indexFlag);
-    q.where("id", bookID);
+
+    if(bookID != -1)
+        q.where("id", bookID);
 
     ml_return_on_fail(q.exec(query));
 
-    LibraryBookPtr book = m_books.value(bookID);
-    ml_return_on_fail2(book, "LibraryBookManager::setBookIndexStat No book with id" << bookID << "where found");
+    if(bookID != -1) {
+        LibraryBookPtr book = m_books.value(bookID);
+        ml_return_on_fail2(book, "LibraryBookManager::setBookIndexStat No book with id" << bookID << "where found");
 
-    book->indexFlags = indexFlag;
+        book->indexFlags = indexFlag;
+    }
 }
 
 QList<LibraryBookPtr> LibraryBookManager::getAuthorBooks(int authorID)
