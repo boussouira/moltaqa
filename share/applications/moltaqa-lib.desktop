@@ -7,5 +7,5 @@ Exec=moltaqa-lib
 Terminal=false
 StartupNotify=true
 Type=Application
-Categories=Education;
+Categories=Education;X-Islamic-Software;
 Icon=moltaqa-lib
