@@ -52,7 +52,7 @@ void debugMessageHandler(QtMsgType type, const char *msg)
     QTextStream out(&debugFile);
     out.setCodec("utf-8");
 
-    QString dateTime = QDateTime::currentDateTime().toString("[dd/MM/yyyy] [hh:mm:ss:zzz] ");
+    QString dateTime = QDateTime::currentDateTime().toString("[dd/MM/yyyy] [hh:mm:ss] ");
     QString text = QString::fromUtf8(msg);
 
     if(text.startsWith("X Error:")) {
