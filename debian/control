@@ -1,8 +1,7 @@
 Source: moltaqa-lib
 Section: universe/text
 Priority: extra
-Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
-XSBC-Original-Maintainer: Ahmed Saidi <ahmed7saidi@gmail.com>
+Maintainer: Ahmed Saidi <ahmed7saidi@gmail.com>
 Build-Depends: debhelper (>= 7.0.50~), libqtcore4 (>= 4.7.0), libqtgui4 (>= 4.7.0), libqtwebkit4, libqt4-sql-sqlite (>= 4.7.0), libmdbtools
 Standards-Version: 3.9.1
 Homepage: http://ahlalhdeeth.com
