@@ -277,7 +277,6 @@ void WebView::copyWithRefer()
     referText.replace(QString::fromUtf8("*النص*"),   selectedText().trimmed());
     referText.replace(QString::fromUtf8("*المؤلف*"), reader->bookInfo()->authorName);
     referText.replace(QString::fromUtf8("*الكتاب*"), reader->bookInfo()->title);
-    referText.replace(QString::fromUtf8("*العنوان*"), reader->page()->title);
     referText.replace(QString::fromUtf8("*الصفحة*"), QString::number(reader->page()->page));
     referText.replace(QString::fromUtf8("*الجزء*"),  QString::number(reader->page()->part));
     referText.replace(QString::fromUtf8("*الحديث*"), QString::number(reader->page()->haddit));
