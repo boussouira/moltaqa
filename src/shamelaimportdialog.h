@@ -16,6 +16,7 @@ class QStandardItemModel;
 class QStandardItem;
 class LibraryManager;
 class BookListManager;
+class ModelViewFilter;
 
 class ShamelaImportDialog : public QDialog
 {
@@ -75,6 +76,7 @@ private:
     ShamelaInfo *m_shamela;
     ShamelaManager *m_manager;
     QStandardItemModel *m_booksModel;
+    ModelViewFilter *m_bookFilter;
     QList<ShamelaImportThread*> m_importThreads;
     Ui::ShamelaImportDialog *ui;
     QTime m_importTime;

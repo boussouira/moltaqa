@@ -16,6 +16,7 @@
 #include "librarybookmanager.h"
 #include "modelenums.h"
 #include "bookeditor.h"
+#include "modelviewfilter.h"
 
 #ifdef USE_MDBTOOLS
 #include "mdbconverter.h"
@@ -47,6 +48,8 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
     m_libraryManager = LibraryManager::instance();
     m_bookListManager = m_libraryManager->bookListManager();
     m_library = MW->libraryInfo();
+
+    m_bookFilter = new ModelViewFilter(this);
 
     m_importedBooksCount = 0;
     m_proccessItemChange = true;
@@ -225,18 +228,15 @@ void ShamelaImportDialog::goPage(int index)
 void ShamelaImportDialog::showBooks()
 {
     m_booksModel = m_manager->getBooksListModel();
-    SortFilterProxyModel *filterModel = new SortFilterProxyModel(this);
 
-    filterModel->setSourceModel(m_booksModel);
-    ui->treeView->setModel(filterModel);
-
-    m_booksModel->setHeaderData(0, Qt::Horizontal, tr("لائحة الكتب"), Qt::DisplayRole);
+    m_bookFilter->setSourceModel(m_booksModel);
+    m_bookFilter->setTreeView(ui->treeView);
+    m_bookFilter->setLineEdit(ui->lineBookSearch);
+    m_bookFilter->setup();
 
     LibraryBookPtr quranBook = LibraryManager::instance()->bookManager()->getQuranBook();
     ui->checkImportQuran->setChecked(!quranBook || quranBook->id == -1);
 
-    connect(ui->lineBookSearch, SIGNAL(textChanged(QString)), filterModel, SLOT(setArabicFilterRegexp(QString)));
-    connect(ui->lineBookSearch, SIGNAL(textChanged(QString)), ui->treeView, SLOT(expandAll()));
     connect(m_booksModel, SIGNAL(itemChanged(QStandardItem*)), SLOT(itemChanged(QStandardItem*)));
 
     if(m_bookListManager->booksCount() < m_manager->getBooksCount())

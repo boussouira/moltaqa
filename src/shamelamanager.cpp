@@ -124,6 +124,8 @@ QStandardItemModel *ShamelaManager::getBooksListModel()
         booksCat(item, query.value(0).toInt());
     }
 
+    model->setHorizontalHeaderLabels(QStringList() << QObject::tr("لائحة الكتب"));
+
     return model;
 }
 
