@@ -27,7 +27,7 @@ public:
     void aboutToShow();
     void aboutToHide();
 
-    void openAuthorInfo(int authorID);
+    bool openAuthorInfo(int authorID);
 
 protected:
     int addTab(QString tabText=QString());
@@ -36,6 +36,7 @@ protected:
 
 private slots:
     void on_treeView_doubleClicked(const QModelIndex &index);
+    void lastTabClosed();
 
 protected:
     Ui::AuthorsView *ui;

@@ -32,7 +32,7 @@ TarajemRowatView::TarajemRowatView(QWidget *parent) :
 
     Q_CHECK_PTR(m_rowatManager);
 
-    connect(ui->tabWidget, SIGNAL(lastTabClosed()), SIGNAL(hideMe()));
+    connect(ui->tabWidget, SIGNAL(lastTabClosed()), SLOT(lastTabClosed()));
 }
 
 TarajemRowatView::~TarajemRowatView()
@@ -78,6 +78,12 @@ void TarajemRowatView::aboutToShow()
     QSettings settings;
     if(settings.contains("RowatView/splitter"))
         ui->splitter->restoreState(settings.value("RowatView/splitter").toByteArray());
+
+    if(!m_currentRawi) {
+        if(!openRawiInfo(settings.value("RowatView/last").toInt())) {
+            on_treeView_doubleClicked(m_model->index(0, 0));
+        }
+    }
 }
 
 void TarajemRowatView::aboutToHide()
@@ -86,14 +92,16 @@ void TarajemRowatView::aboutToHide()
     settings.setValue("RowatView/splitter", ui->splitter->saveState());
 }
 
-void TarajemRowatView::openRawiInfo(int rawiID)
+bool TarajemRowatView::openRawiInfo(int rawiID)
 {
     RawiInfoPtr info = m_rowatManager->getRawiInfo(rawiID);
-    ml_return_on_fail2(info, "TarajemRowatView::openRawiInfo no rawi with id" << rawiID);
+    ml_return_val_on_fail2(info, "TarajemRowatView::openRawiInfo no rawi with id" << rawiID, false);
 
     setCurrentRawi(info);
 
     emit showMe();
+
+    return true;
 }
 
 int TarajemRowatView::addTab(QString tabText)
@@ -235,4 +243,16 @@ void TarajemRowatView::on_treeView_doubleClicked(const QModelIndex &index)
     ml_return_on_fail(info);
 
     setCurrentRawi(info);
+}
+
+void TarajemRowatView::lastTabClosed()
+{
+    if(m_currentRawi) {
+        QSettings settings;
+        settings.setValue("RowatView/last", m_currentRawi->id);
+
+        m_currentRawi.clear();
+    }
+
+    emit hideMe();
 }

@@ -26,7 +26,7 @@ public:
     void aboutToShow();
     void aboutToHide();
 
-    void openRawiInfo(int rawiID);
+    bool openRawiInfo(int rawiID);
 
 protected:
     int addTab(QString tabText=QString());
@@ -35,6 +35,7 @@ protected:
 
 private slots:
     void on_treeView_doubleClicked(const QModelIndex &index);
+    void lastTabClosed();
 
 private:
     TarajemRowatManager *m_rowatManager;

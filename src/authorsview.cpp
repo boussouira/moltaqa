@@ -29,7 +29,7 @@ AuthorsView::AuthorsView(QWidget *parent) :
 
     m_filter = new ModelViewFilter(this);
 
-    connect(ui->tabWidget, SIGNAL(lastTabClosed()), SIGNAL(hideMe()));
+    connect(ui->tabWidget, SIGNAL(lastTabClosed()), SLOT(lastTabClosed()));
 }
 
 AuthorsView::~AuthorsView()
@@ -76,6 +76,12 @@ void AuthorsView::aboutToShow()
     QSettings settings;
     if(settings.contains("AuthorsView/splitter"))
         ui->splitter->restoreState(settings.value("AuthorsView/splitter").toByteArray());
+
+    if(!m_currentAuthor) {
+        if(!openAuthorInfo(settings.value("AuthorsView/last").toInt())) {
+            on_treeView_doubleClicked(m_model->index(0, 0));
+        }
+    }
 }
 
 void AuthorsView::aboutToHide()
@@ -84,14 +90,16 @@ void AuthorsView::aboutToHide()
     settings.setValue("AuthorsView/splitter", ui->splitter->saveState());
 }
 
-void AuthorsView::openAuthorInfo(int authorID)
+bool AuthorsView::openAuthorInfo(int authorID)
 {
     AuthorInfoPtr info = m_manager->getAuthorInfo(authorID);
-    ml_return_on_fail2(info, "AuthorsView::openAuthorInfo no author with id" << authorID);
+    ml_return_val_on_fail2(info, "AuthorsView::openAuthorInfo no author with id" << authorID, false);
 
     setCurrentAuth(info);
 
     emit showMe();
+
+    return true;
 }
 
 int AuthorsView::addTab(QString tabText)
@@ -240,4 +248,16 @@ void AuthorsView::on_treeView_doubleClicked(const QModelIndex &index)
     ml_return_on_fail2(info, "AuthorsView::doubleClicked no author with id" << authID);
 
     setCurrentAuth(info);
+}
+
+void AuthorsView::lastTabClosed()
+{
+    if(m_currentAuthor) {
+        QSettings settings;
+        settings.setValue("AuthorsView/last", m_currentAuthor->id);
+
+        m_currentAuthor.clear();
+    }
+
+    emit hideMe();
 }
