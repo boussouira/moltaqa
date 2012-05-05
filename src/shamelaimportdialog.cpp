@@ -404,6 +404,7 @@ void ShamelaImportDialog::doneImporting()
         ui->pushCancel->hide();
         ui->pushDone->show();
 
+        ui->progressBar->setMaximum(m_importedBooksCount);
         ui->progressBar->setValue(ui->progressBar->maximum());
 
         if(m_importedBooksCount > 0) {
