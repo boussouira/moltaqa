@@ -1,5 +1,6 @@
 #include "modelviewfilter.h"
 #include "stringutils.h"
+#include "utils.h"
 
 #include <qicon.h>
 #include <qheaderview.h>
@@ -52,7 +53,12 @@ void ModelViewFilter::setColumnSortRole(int column, int role)
 
 void ModelViewFilter::setup()
 {
-    m_lineEdit->setPixmap(QIcon::fromTheme("edit-clear-locationbar-ltr", QIcon(":/images/clear.png")).pixmap(16, 16));
+    ml_return_on_fail2(m_treeView, "ModelViewFilter::setup tree view is not set");
+    ml_return_on_fail2(m_model, "ModelViewFilter::setup model is not set");
+    ml_return_on_fail2(m_lineEdit, "ModelViewFilter::setup line edit is not set");
+
+    m_lineEdit->setPixmap(QIcon::fromTheme("edit-clear-locationbar-ltr",
+                                           QIcon(":/images/clear.png")).pixmap(16, 16));
 
     if(m_defaultRole != -1)
         m_filterModel->setSortRole(m_defaultRole);
