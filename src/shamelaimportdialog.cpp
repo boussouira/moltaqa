@@ -70,7 +70,6 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
     connect(ui->pushCancel, SIGNAL(clicked()), SLOT(cancel()));
     connect(ui->pushDone, SIGNAL(clicked()), SLOT(accept()));
     connect(ui->buttonSelectShamela, SIGNAL(clicked()), SLOT(selectShamela()));
-    connect(this, SIGNAL(setProgress(int)), ui->progressBar, SLOT(setValue(int)));
     connect(ui->pushSelectAll, SIGNAL(clicked()), SLOT(selectAllBooks()));
     connect(ui->pushUnSelectAll, SIGNAL(clicked()), SLOT(unSelectAllBooks()));
 }

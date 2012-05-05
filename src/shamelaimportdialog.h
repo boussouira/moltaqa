@@ -64,9 +64,6 @@ private slots:
     void selectAllBooks();
     void unSelectAllBooks();
 
-signals:
-    void setProgress(int value);
-
 private:
     int m_importThreadCount;
     int m_importedBooksCount;
