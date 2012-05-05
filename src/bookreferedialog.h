@@ -5,6 +5,7 @@
 
 namespace Ui {
 class BookRefereDialog;
+class AddBookReferDialog;
 }
 
 class QStandardItemModel;
@@ -19,16 +20,17 @@ public:
     
 protected:
     void loadModel();
+    void setupRefererEditor(Ui::AddBookReferDialog *editor);
 
 private slots:
     void on_toolAdd_clicked();
-
     void on_toolEdit_clicked();
-
     void on_toolDelete_clicked();
+    void addReferToEditor(QString href);
 
 private:
     QStandardItemModel *m_model;
+    Ui::AddBookReferDialog *m_referEditor;
     Ui::BookRefereDialog *ui;
 };
 

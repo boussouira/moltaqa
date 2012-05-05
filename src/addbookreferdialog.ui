@@ -49,15 +49,17 @@
     </layout>
    </item>
    <item>
-    <widget class="QLabel" name="label_3">
+    <widget class="QLabel" name="labelHelp">
      <property name="text">
-      <string>سيتم تغيير العبارات التالية:
-*النص* النص الذي تم تحديده
-*الكتاب* عنوان الكتاب
-*المؤلف* اسم المؤلف
-*الصفحة* رقم الصفحة
-*الجزء* رقم الجزء
-*الحديث* رقم الحديث</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body dir=&quot;rtl&quot; style=&quot;direction:rtl;&quot;&gt;
+&lt;p&gt;سيتم تغيير العبارات التالية:&lt;/p&gt;
+&lt;a href=&quot;#nass&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0057ae;&quot;&gt;*النص*&lt;/span&gt;&lt;/a&gt; النص الذي تم تحديده&lt;br/&gt;
+&lt;a href=&quot;#book&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0057ae;&quot;&gt;*الكتاب*&lt;/span&gt;&lt;/a&gt; عنوان الكتاب&lt;br/&gt;
+&lt;a href=&quot;#author&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0057ae;&quot;&gt;*المؤلف* &lt;/span&gt;&lt;/a&gt; اسم المؤلف&lt;br/&gt;
+&lt;a href=&quot;#page&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0057ae;&quot;&gt;*الصفحة*&lt;/span&gt;&lt;/a&gt; رقم الصفحة&lt;br/&gt;
+&lt;a href=&quot;#part&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0057ae;&quot;&gt;*الجزء*&lt;/span&gt;&lt;/a&gt; رقم الجزء&lt;br/&gt;
+&lt;a href=&quot;#haddit&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0057ae;&quot;&gt;*الحديث*&lt;/span&gt;&lt;/a&gt; رقم الحديث&lt;br/&gt;
+&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>

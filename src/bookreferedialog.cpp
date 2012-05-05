@@ -15,6 +15,7 @@ static int ReferTextRole = Qt::UserRole + 100;
 BookRefereDialog::BookRefereDialog(QWidget *parent) :
     QDialog(parent),
     m_model(0),
+    m_referEditor(0),
     ui(new Ui::BookRefereDialog)
 {
     ui->setupUi(this);
@@ -48,11 +49,20 @@ void BookRefereDialog::loadModel()
     ui->treeView->setModel(m_model);
 }
 
+void BookRefereDialog::setupRefererEditor(Ui::AddBookReferDialog *editor)
+{
+    m_referEditor = editor;
+    connect(editor->labelHelp, SIGNAL(linkActivated(QString)),
+            SLOT(addReferToEditor(QString)));
+}
+
 void BookRefereDialog::on_toolAdd_clicked()
 {
     Ui::AddBookReferDialog ui2;
     QDialog dialog(this);
     ui2.setupUi(&dialog);
+
+    setupRefererEditor(&ui2);
 
     if(dialog.exec() == QDialog::Accepted) {
         QString name = ui2.lineEdit->text().trimmed();
@@ -78,6 +88,8 @@ void BookRefereDialog::on_toolEdit_clicked()
         Ui::AddBookReferDialog ui2;
         QDialog dialog(this);
         ui2.setupUi(&dialog);
+
+        setupRefererEditor(&ui2);
 
         ui2.lineEdit->setText(name);
         ui2.textEdit->setPlainText(referText);
@@ -116,5 +128,31 @@ void BookRefereDialog::on_toolDelete_clicked()
         QMessageBox::warning(this,
                              tr("حذف العزو"),
                              tr("لم تقم باختيار اي عزو"));
+    }
+}
+
+void BookRefereDialog::addReferToEditor(QString href)
+{
+    ml_return_on_fail(m_referEditor);
+
+    QString text;
+    if(href == "#nass")
+        text = tr("النص");
+    else if(href == "#author")
+        text = tr("المؤلف");
+    else if(href == "#book")
+        text = tr("الكتاب");
+    else if(href == "#page")
+        text = tr("الصفحة");
+    else if(href == "#author")
+        text = tr("المؤلف");
+    else if(href == "#part")
+        text = tr("الجزء");
+    else if(href == "#haddit")
+        text = tr("الحديث");
+
+    if(text.size()) {
+        m_referEditor->textEdit->textCursor().insertText('*' + text + '*');
+        m_referEditor->textEdit->setFocus();
     }
 }
