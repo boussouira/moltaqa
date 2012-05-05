@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../share/moltaqa-lib/qt_rc.qrc">
-    <normaloff>:/images/main.ico</normaloff>:/images/main.ico</iconset>
+    <normaloff>:/images/moltaqa-lib.png</normaloff>:/images/moltaqa-lib.png</iconset>
   </property>
   <property name="layoutDirection">
    <enum>Qt::RightToLeft</enum>
