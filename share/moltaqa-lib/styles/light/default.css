@@ -156,6 +156,11 @@ footnote a {
     font-size: 17px;
 }
 
+footnote p {
+    margin: 0;
+    padding: 0;
+}
+
 .footn {
     color: green;
     font-size: 20px;
