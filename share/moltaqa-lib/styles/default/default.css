@@ -87,17 +87,17 @@ a {
     color: #184388;
 }
 
-#simpleBook ul.bookIndex {
+#simpleBook .bookIndex {
     padding: 5px 10px;
 }
 
-#simpleBook ul.bookIndex li {
-    cursor: pointer;
-    list-style: none;
+#simpleBook .bookIndex a:hover {
+    color: #184388;
 }
 
-#simpleBook ul.bookIndex li:hover {
-    color: #184388;
+#simpleBook .bookIndex img {
+    cursor:pointer;
+    padding: 0 10px;
 }
 
 #simpleBook #shorooh {

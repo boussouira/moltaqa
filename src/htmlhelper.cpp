@@ -31,11 +31,16 @@ void HtmlHelper::insertLink(const QString &text, const QString &href, const QStr
     endHtmlTag();
 }
 
-void HtmlHelper::insertImage(const QString &src)
+void HtmlHelper::insertImage(const QString &src, const QString &selector, const QString &attr)
 {
     m_html.append("<img src=\"");
     m_html.append(src);
-    m_html.append("\" />");
+    m_html.append("\"");
+
+    addSelector(selector);
+    addExtraAttr(attr);
+
+    m_html.append(" />");
 }
 
 void HtmlHelper::beginHtmlTag(const QString &tag, const QString &selector, const QString &attr)

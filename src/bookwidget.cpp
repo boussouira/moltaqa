@@ -292,16 +292,17 @@ void BookWidget::showIndex()
     QStandardItemModel *model = m_indexWidget->indexModel();
 
     HtmlHelper helper;
-    helper.beginHtmlTag("ul", ".bookIndex");
+    helper.beginDiv(".bookIndex");
 
     for(int i=0; i<model->rowCount(); i++) {
         QStandardItem *item = model->item(i);
-
-        helper.insertHtmlTag("li", item->text(), "",
-                             QString("tid='%1'").arg(item->data(ItemRole::idRole).toInt()));
+        int tid = item->data(ItemRole::idRole).toInt();
+        helper.insertHtmlTag("a", item->text(), "", QString("href='#' tid='%1' id='t%1'").arg(tid));
+        helper.insertImage("qrc:/images/arrow-left.png", "", QString("tid='%1'").arg(tid));
+        helper.insertBr();
     }
 
-    helper.endHtmlTag();
+    helper.endDiv();
 
     m_view->execJS(QString("setPageText('%1', '', '')").arg(HtmlHelper::jsEscape(helper.html())));
 }
@@ -318,8 +319,12 @@ void BookWidget::showIndex(int tid)
         helper.beginHtmlTag("ul", ".bookIndex");
 
         while(child.isValid()) {
-            helper.insertHtmlTag("li", child.data(Qt::DisplayRole).toString(), "",
-                                 QString("tid='%1'").arg(child.data(ItemRole::idRole).toInt()));
+            int tid = child.data(ItemRole::idRole).toInt();
+            QString text = child.data(Qt::DisplayRole).toString();
+
+            helper.insertHtmlTag("a", text, "", QString("href='#' tid='%1' id='t%1'").arg(tid));
+            helper.insertImage("qrc:/images/arrow-left.png", "", QString("tid='%1'").arg(tid));
+            helper.insertBr();
 
             child = child.sibling(child.row()+1, 0);
         }

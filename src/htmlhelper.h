@@ -18,7 +18,7 @@ public:
     void endAll();
 
     void insertLink(const QString &text, const QString &href, const QString &selector="");
-    void insertImage(const QString &src);
+    void insertImage(const QString &src, const QString &selector="", const QString &attr="");
 
     void addCSS(QString cssFile, bool fullPath=false);
     void addJS(QString jsFile, bool fullPath=false);

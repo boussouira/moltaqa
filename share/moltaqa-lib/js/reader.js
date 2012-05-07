@@ -27,10 +27,12 @@ $('#simpleBook #pageHeader .bookName').click(function(){
 
 function indexReading()
 {
-    $('ul.bookIndex > li, .breadcrumbs > span').click(function(){
-        tid = $(this).attr('tid');
-        //alert("ID: " + tid);
-        bookWidget.showIndex(tid);
+    $('.bookIndex > a, .breadcrumbs > span').click(function(){
+        bookWidget.showIndex($(this).attr('tid'));
+    });
+
+    $('.bookIndex > img').click(function(){
+        bookWidget.openPage($(this).attr('tid'));
     });
 }
 
