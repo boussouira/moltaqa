@@ -171,9 +171,11 @@ AuthorInfoPtr AuthorsManager::findAuthor(QString name, bool fazzySearch)
     AuthorInfoPtr auth;
     QHash<int, AuthorInfoPtr>::const_iterator i = m_authors.constBegin();
 
+    QString cleanName = Utils::String::Arabic::clean(name);
+
     while (i != m_authors.constEnd()) {
         QString authorName = i.value()->name;
-        if(Utils::String::Arabic::compare(authorName, name)) {
+        if(cleanName == Utils::String::Arabic::clean(authorName)) {
             auth = i.value();
             break;
         } else if(fazzySearch && Utils::String::Arabic::contains(authorName, name)) {
