@@ -184,6 +184,16 @@ p, li { white-space: pre-wrap; }
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
          <item>
+          <widget class="QPushButton" name="pushSelectNew">
+           <property name="toolTip">
+            <string>اختيار الكتب الجديدة فقط</string>
+           </property>
+           <property name="text">
+            <string>الكتب الجديدة</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <spacer name="horizontalSpacer_2">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>

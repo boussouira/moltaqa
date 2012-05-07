@@ -47,6 +47,7 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
     m_manager = new ShamelaManager(m_shamela);
     m_libraryManager = LibraryManager::instance();
     m_bookListManager = m_libraryManager->bookListManager();
+    m_bookManager = m_libraryManager->bookManager();
     m_library = MW->libraryInfo();
 
     m_bookFilter = new ModelViewFilter(this);
@@ -71,6 +72,7 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
     connect(ui->pushDone, SIGNAL(clicked()), SLOT(accept()));
     connect(ui->buttonSelectShamela, SIGNAL(clicked()), SLOT(selectShamela()));
     connect(ui->pushSelectAll, SIGNAL(clicked()), SLOT(selectAllBooks()));
+    connect(ui->pushSelectNew, SIGNAL(clicked()), SLOT(selectNewBooks()));
     connect(ui->pushUnSelectAll, SIGNAL(clicked()), SLOT(unSelectAllBooks()));
 }
 
@@ -518,6 +520,41 @@ void ShamelaImportDialog::unSelectAllBooks()
     foreach (QModelIndex index, selection.indexes()) {
         m_booksModel->setData(index, Qt::Unchecked, Qt::CheckStateRole);
     }
+}
+
+void ShamelaImportDialog::selectNewBooks()
+{
+    int selectedCount = 0;
+    QStandardItem *item = m_booksModel->invisibleRootItem();
+    for(int i=0; i<item->rowCount(); i++)
+        selectedCount += selectNewBook(item->child(i, 0));
+
+    QMessageBox::information(this,
+                             tr("الكتب الجديدة"),
+                             tr("عدد الكتب الجديدة %1""<br/>"
+                                "عدد الكتب المكررة %2")
+                             .arg(Utils::String::Arabic::plural(selectedCount, Utils::String::Arabic::BOOK, true))
+                             .arg(Utils::String::Arabic::plural(m_manager->getBooksCount() - selectedCount,
+                                                                Utils::String::Arabic::BOOK, true)));
+}
+
+int ShamelaImportDialog::selectNewBook(QStandardItem *item)
+{
+    int selectedCount = 0;
+
+    if(item->data(ItemRole::typeRole).toInt() == ItemType::BookItem) {
+        if(m_bookManager->findBook(item->text().trimmed())) {
+            item->setCheckState(Qt::Unchecked);
+        } else {
+            item->setCheckState(Qt::Checked);
+            selectedCount++;
+        }
+    }
+
+    for(int i=0; i<item->rowCount(); i++)
+        selectedCount += selectNewBook(item->child(i, 0));
+
+    return selectedCount;
 }
 
 bool ShamelaImportDialog::categorieLinked()

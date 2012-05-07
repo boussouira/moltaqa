@@ -80,6 +80,21 @@ void QueryBuilder::where(const QString &colName, const QVariant &colValue)
     m_whereValues.append(colValue);
 }
 
+void QueryBuilder::like(const QString &colName, const QString &colValue)
+{
+    QStringList list = colValue.split(" ", QString::SkipEmptyParts);
+    QString sql;
+
+    for(int i=0; i < list.count(); i++) {
+        if(i>0)
+            sql.append(" AND ");
+
+        sql.append(QString("%1 LIKE '%%2%'").arg(colName).arg(list.at(i)));
+    }
+
+    m_likeValues.append(sql);
+}
+
 void QueryBuilder::orderBy(const QString &colName, QueryBuilder::Order order)
 {
     m_orderColumns.append(QString("%1 %2")
@@ -197,8 +212,10 @@ QString QueryBuilder::query()
         sql += " FROM ";
         sql += m_tableName;
 
-        if(m_whereColums.size()) {
+        if(m_whereColums.size() || m_likeValues.size())
             sql += " WHERE ";
+
+        if(m_whereColums.size()) {
             for(int i=0; i<m_whereColums.size(); i++) {
                 if(i)
                     sql += " AND ";
@@ -206,6 +223,18 @@ QString QueryBuilder::query()
                 sql += m_whereColums[i];
                 sql += " = ";
                 sql += '?';
+            }
+        }
+
+        if(m_likeValues.size()) {
+            if(m_whereColums.size())
+                sql += " AND ";
+
+            for(int i=0; i<m_likeValues.size(); i++) {
+                if(i)
+                    sql += " AND ";
+
+                sql += m_likeValues[i];
             }
         }
 

@@ -53,6 +53,7 @@ public:
     void select(const QString &colName);
     void set(const QString &colName, const QVariant &colValue);
     void where(const QString &colName, const QVariant &colValue);
+    void like(const QString &colName, const QString &colValue);
     void orderBy(const QString &colName, Order order=Asc);
     void limit(int _limit);
 
@@ -71,6 +72,7 @@ protected:
     QList<QVariant> m_values;
     QList<QString> m_whereColums;
     QList<QVariant> m_whereValues;
+    QList<QString> m_likeValues;
     QList<QString> m_orderColumns;
     bool m_igonreExisting;
     bool m_dropExisting;

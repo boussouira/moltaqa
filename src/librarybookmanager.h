@@ -32,6 +32,7 @@ public:
     LibraryBookPtr getLibraryBook(int bookID);
     LibraryBookPtr getQuranBook();
 
+    LibraryBookPtr findBook(QString bookName);
     int booksCount();
 
     int addBook(LibraryBookPtr book);

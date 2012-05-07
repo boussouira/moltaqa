@@ -197,6 +197,20 @@ LibraryBookPtr LibraryBookManager::getQuranBook()
     return LibraryBookPtr();
 }
 
+LibraryBookPtr LibraryBookManager::findBook(QString bookName)
+{
+    QueryBuilder q;
+    q.setTableName("books", QueryBuilder::Select);
+    q.select("id");
+    q.like("title", bookName);
+
+    QSqlQuery query(m_db);
+    if(q.exec(query) && query.next())
+        return getLibraryBook(query.value(0).toInt());
+
+    return LibraryBookPtr();
+}
+
 int LibraryBookManager::booksCount()
 {
     QSqlQuery query(m_db);

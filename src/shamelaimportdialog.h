@@ -15,6 +15,7 @@ class ShamelaImportThread;
 class QStandardItemModel;
 class QStandardItem;
 class LibraryManager;
+class LibraryBookManager;
 class BookListManager;
 class ModelViewFilter;
 
@@ -63,6 +64,8 @@ private slots:
     void itemChanged(QStandardItem *item);
     void selectAllBooks();
     void unSelectAllBooks();
+    void selectNewBooks();
+    int selectNewBook(QStandardItem *item);
 
 private:
     int m_importThreadCount;
@@ -70,6 +73,7 @@ private:
     LibraryInfo *m_library;
     LibraryManager *m_libraryManager;
     BookListManager *m_bookListManager;
+    LibraryBookManager *m_bookManager;
     ShamelaInfo *m_shamela;
     ShamelaManager *m_manager;
     QStandardItemModel *m_booksModel;
