@@ -18,6 +18,7 @@ class LibraryManager;
 class LibraryBookManager;
 class BookListManager;
 class ModelViewFilter;
+class QProgressDialog;
 
 class ShamelaImportDialog : public QDialog
 {
@@ -65,7 +66,7 @@ private slots:
     void selectAllBooks();
     void unSelectAllBooks();
     void selectNewBooks();
-    int selectNewBook(QStandardItem *item);
+    int selectNewBook(QStandardItem *item, QProgressDialog *progress);
 
 private:
     int m_importThreadCount;

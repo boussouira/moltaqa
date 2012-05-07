@@ -32,6 +32,7 @@
 #include <qevent.h>
 #include <qsettings.h>
 #include <qscrollbar.h>
+#include <qprogressdialog.h>
 
 static ShamelaImportDialog* m_instance=0;
 
@@ -524,10 +525,16 @@ void ShamelaImportDialog::unSelectAllBooks()
 
 void ShamelaImportDialog::selectNewBooks()
 {
+    QProgressDialog dialog(this);
+    dialog.setWindowTitle(tr("الكتب الجديدة"));
+    dialog.setLabelText(tr("جاري البحث عن الكتب الجديدة..."));
+    dialog.setMaximum(m_manager->getBooksCount());
+    dialog.setCancelButton(0);
+
     int selectedCount = 0;
     QStandardItem *item = m_booksModel->invisibleRootItem();
     for(int i=0; i<item->rowCount(); i++)
-        selectedCount += selectNewBook(item->child(i, 0));
+        selectedCount += selectNewBook(item->child(i, 0), &dialog);
 
     QMessageBox::information(this,
                              tr("الكتب الجديدة"),
@@ -538,7 +545,7 @@ void ShamelaImportDialog::selectNewBooks()
                                                                 Utils::String::Arabic::BOOK, true)));
 }
 
-int ShamelaImportDialog::selectNewBook(QStandardItem *item)
+int ShamelaImportDialog::selectNewBook(QStandardItem *item, QProgressDialog *progress)
 {
     int selectedCount = 0;
 
@@ -549,10 +556,14 @@ int ShamelaImportDialog::selectNewBook(QStandardItem *item)
             item->setCheckState(Qt::Checked);
             selectedCount++;
         }
+
+        progress->setValue(progress->value()+1);
     }
 
     for(int i=0; i<item->rowCount(); i++)
-        selectedCount += selectNewBook(item->child(i, 0));
+        selectedCount += selectNewBook(item->child(i, 0), progress);
+
+    qApp->processEvents();
 
     return selectedCount;
 }
