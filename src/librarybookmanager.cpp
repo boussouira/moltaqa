@@ -197,6 +197,16 @@ LibraryBookPtr LibraryBookManager::getQuranBook()
     return LibraryBookPtr();
 }
 
+int LibraryBookManager::booksCount()
+{
+    QSqlQuery query(m_db);
+    query.prepare("SELECT COUNT(*) FROM books");
+    if(query.exec() && query.next())
+        return query.value(0).toInt();
+
+    return 0;
+}
+
 int LibraryBookManager::addBook(LibraryBookPtr book)
 {
     QMutexLocker locker(&m_mutex);

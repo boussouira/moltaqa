@@ -32,6 +32,8 @@ public:
     LibraryBookPtr getLibraryBook(int bookID);
     LibraryBookPtr getQuranBook();
 
+    int booksCount();
+
     int addBook(LibraryBookPtr book);
 
     bool updateBook(LibraryBookPtr book);
