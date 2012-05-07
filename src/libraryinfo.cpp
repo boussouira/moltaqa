@@ -2,6 +2,8 @@
 #include "bookexception.h"
 #include "xmlutils.h"
 #include "utils.h"
+#include "ziputils.h"
+
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qdir.h>
@@ -166,7 +168,7 @@ void LibraryInfo::checkDataFiles(QString dataDirPath)
     }
 
     QStringList dbs;
-    dbs << "authors.db" << "books.db" << "search.db" << "library.db";
+    dbs << "books.db" << "search.db" << "library.db";
 
     foreach (QString db, dbs) {
         if(!dataDir.exists(db)) {
@@ -178,20 +180,26 @@ void LibraryInfo::checkDataFiles(QString dataDirPath)
 
     dataDir.setPath(dataDirPath);
 
-    QString rowatDB  = "rowat.db";
-    if(!dataDir.exists(rowatDB)) {
-        QDir appDataDir(App::dataDir());
+    QStringList zipFiles;
+    zipFiles << "rowat" << "authors";
+    foreach(QString file, zipFiles) {
+        QString dbFile = file + ".db";
 
-        if(QFile::copy(appDataDir.absoluteFilePath(rowatDB), dataDir.absoluteFilePath(rowatDB))) {
-            qDebug() << "checkDataFiles: copy"
-                     << appDataDir.absoluteFilePath(rowatDB)
-                     << "->"
-                     << dataDir.absoluteFilePath(rowatDB);
-        } else {
-            qWarning() << "LibraryInfo::checkDataFiles can't copy"
-                       << appDataDir.absoluteFilePath(rowatDB)
-                       << "->"
-                       << dataDir.absoluteFilePath(rowatDB);
+        if(!dataDir.exists(dbFile)) {
+            QDir appDataDir(App::dataDir());
+
+            QString zipFile = file + ".zip";
+            if(Utils::Zip::unzip(appDataDir.absoluteFilePath(zipFile), dataDir.absolutePath())) {
+                qDebug() << "checkDataFiles: unzip"
+                         << appDataDir.absoluteFilePath(zipFile)
+                         << "to"
+                         << dataDir.absolutePath();
+            } else {
+                qWarning() << "LibraryInfo::checkDataFiles can't unzip"
+                           << appDataDir.absoluteFilePath(zipFile)
+                           << "to"
+                           << dataDir.absolutePath();
+            }
         }
     }
 }

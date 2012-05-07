@@ -99,7 +99,6 @@ void createDatabases(const QString &path)
     dir.cd("data");
 
     QString booksDbPath = dir.filePath("books.db");
-    QString authorsDbPath = dir.filePath("authors.db");
     QString searchDbPath = dir.filePath("search.db");
     QString libraryDbPath = dir.filePath("library.db");
 
@@ -154,39 +153,6 @@ void createDatabases(const QString &path)
         q.set("book", "INTEGER PRIMARY KEY NOT NULL");
         q.set("page", "INT");
         q.set("open_date", "INT");
-
-        q.exec(query);
-    }
-
-    {
-        if(QFile::exists(authorsDbPath))
-            qDebug("createDatabases: check authors database...");
-        else
-            qDebug("createDatabases: create authors database...");
-
-        QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "createDB.authors");
-        db.setDatabaseName(authorsDbPath);
-
-        if (!db.open()) {
-            ml_warn_db_error(db);
-        }
-
-        QSqlQuery query(db);
-
-        QueryBuilder q;
-        q.setTableName("authors");
-        q.setIgnoreExistingTable(true);
-        q.setQueryType(QueryBuilder::Create);
-
-        q.set("id", "INTEGER PRIMARY KEY NOT NULL");
-        q.set("name", "TEXT");
-        q.set("full_name", "TEXT");
-        q.set("info", "TEXT");
-        q.set("birth_year", "INTEGER");
-        q.set("birth", "TEXT");
-        q.set("death_year", "INTEGER");
-        q.set("death", "TEXT");
-        q.set("flags", "INTEGER");
 
         q.exec(query);
     }
@@ -266,7 +232,6 @@ void createDatabases(const QString &path)
     }
 
     QSqlDatabase::removeDatabase("createDB.books");
-    QSqlDatabase::removeDatabase("createDB.authors");
     QSqlDatabase::removeDatabase("createDB.search");
     QSqlDatabase::removeDatabase("createDB.library");
 }
@@ -385,7 +350,8 @@ QStringList checkDir(bool showWarnings)
 
     missingFiles << checkFiles(QStringList()
                                << "quran-meta.db"
-                               << "rowat.db",
+                               << "rowat.zip"
+                               << "authors.zip",
                                dataDir(),
                                showWarnings);
 
