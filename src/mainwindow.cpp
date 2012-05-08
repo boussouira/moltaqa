@@ -68,23 +68,23 @@ bool MainWindow::init()
     // TODO: re-code this properly
     QSettings settings;
     QString libDir = settings.value("library_dir").toString();
+    QString message;
 
     if(!Utils::Library::isValidLibrary(libDir)) {
         int ret;
         if(libDir.size()) {
             // We have a path to the library but it is invalid
-            ret = QMessageBox::question(this,
-                                        App::name(),
-                                        tr("لم يتم العثور على المكتبة في المجلد:" "<br>")
-                                        + QDir(libDir).absolutePath() + "<br>" +
-                                        tr("ما الذي تريد القيام به؟"),
-                                        tr("تحديث مجلد المكتبة"), tr("انشاء مكتبة مفرغة"), tr("خروج"),
-                                        2);
+            message = tr("لم يتم العثور على المكتبة في المجلد:") + QDir(libDir).absolutePath() + "<br>";
         } else {
-            // We should create a empty library
-            ret = 1;
+            message = tr("لم يتم بانشاء مكتبة بعد،") + " ";
         }
 
+        ret = QMessageBox::question(this,
+                                    App::name(),
+                                    message +
+                                    tr("ما الذي تريد القيام به؟"),
+                                    tr("تغيير مجلد المكتبة"), tr("انشاء مكتبة مفرغة"), tr("خروج"),
+                                    2);
         if(ret == 2) {
             // Exist
             return false;
