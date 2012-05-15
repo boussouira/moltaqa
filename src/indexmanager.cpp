@@ -38,23 +38,37 @@ bool IndexManager::openWriter()
 
     if(!dir.exists(m_library->indexDataDir()))
         dir.mkdir(m_library->indexDataDir());
-    if(IndexReader::indexExists(qPrintable(m_library->indexDataDir()))) {
-        if(IndexReader::isLocked(qPrintable(m_library->indexDataDir())))
-            IndexReader::unlock(qPrintable(m_library->indexDataDir()));
 
-        m_writer = new IndexWriter( qPrintable(m_library->indexDataDir()), m_analyzer, false);
-    } else {
-        m_writer = new IndexWriter( qPrintable(m_library->indexDataDir()), m_analyzer, true);
+    try {
+        if(IndexReader::indexExists(qPrintable(m_library->indexDataDir()))) {
+            if(IndexReader::isLocked(qPrintable(m_library->indexDataDir())))
+                IndexReader::unlock(qPrintable(m_library->indexDataDir()));
+
+            m_writer = new IndexWriter( qPrintable(m_library->indexDataDir()), m_analyzer, false);
+        } else {
+            m_writer = new IndexWriter( qPrintable(m_library->indexDataDir()), m_analyzer, true);
+        }
+
+        m_writer->setUseCompoundFile(false);
+        m_writer->setMaxFieldLength(IndexWriter::DEFAULT_MAX_FIELD_LENGTH);
+        m_writer->setRAMBufferSizeMB(ramSize);
+        m_writer->setMergeFactor(25);
+
+        qDebug("IndexManager: open writer using %d MB", ramSize);
+
+        return true;
+    } catch(CLuceneError &e) {
+        qCritical("IndexManager::openWriter CLucene exception %s", e.what());
+        return false;
+    } catch(std::exception &e){
+        qCritical("IndexManager::openWriter STD exception %s", e.what());
+        return false;
+    } catch(...) {
+        qCritical() << "IndexManager::openWriter Unknow exception when opening index"
+                    << m_library->indexDataDir();
+
+        return false;
     }
-
-    m_writer->setUseCompoundFile(false);
-    m_writer->setMaxFieldLength(IndexWriter::DEFAULT_MAX_FIELD_LENGTH);
-    m_writer->setRAMBufferSizeMB(ramSize);
-    m_writer->setMergeFactor(25);
-
-    qDebug("IndexManager: open writer using %d MB", ramSize);
-
-    return true;
 }
 
 bool IndexManager::isIndexing()
