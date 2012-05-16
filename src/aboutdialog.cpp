@@ -22,6 +22,22 @@ AboutDialog::AboutDialog(QWidget *parent) :
     ui->labelRevision->setText(info);
 }
 
+void AboutDialog::printVersion()
+{
+    qDebug("Moltaqa library: %s"
+#ifdef GITVERSION
+           " (%s)"
+#endif
+           , App::version()
+#ifdef GITVERSION
+           , GITVERSION
+#endif
+           );
+
+    qDebug("\t" "Qt: %s", QT_VERSION_STR);
+    qDebug("\t" "CLucene: %s", _CL_VERSION);
+}
+
 AboutDialog::~AboutDialog()
 {
     delete ui;

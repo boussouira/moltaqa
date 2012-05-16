@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "utils.h"
+#include "aboutdialog.h"
 
 #ifdef USE_MDBTOOLS
 #include "mdbconverter.h"
@@ -96,8 +97,9 @@ void showHelp()
 {
     qDebug() << "Usage: moltaqa-lib [ options ... ]";
     qDebug() << "Where options include:";
-    qDebug() << "  --debug" << "\t" << "Print debug messages to standard output.";
-    qDebug() << "  --help" << "\t" << "Show this help message and exit.";
+    qDebug() << "  --version" << "\t" << "Print application version information.";
+    qDebug() << "  --debug  " << "\t" << "Print debug messages to standard output.";
+    qDebug() << "  --help   " << "\t" << "Show this help message and exit.";
 }
 
 int main(int argc, char *argv[])
@@ -105,6 +107,11 @@ int main(int argc, char *argv[])
     QtSingleApplication app(argc, argv);
     if(app.arguments().contains("--help")) {
         showHelp();
+        return 0;
+    }
+
+    if(app.arguments().contains("--version")) {
+        AboutDialog::printVersion();
         return 0;
     }
 
