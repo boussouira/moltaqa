@@ -70,6 +70,8 @@ int NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int par
     if(outFile.open(QIODevice::WriteOnly,
                      QuaZipNewInfo(QString("pages/p%1.html").arg(pageID)))) {
         QTextStream out(&outFile);
+        out.setCodec("utf-8");
+
         out << processPageText(text);
     } else {
         qCritical("NewBookWriter::addPage error %d when writing to pages/p%d.html",

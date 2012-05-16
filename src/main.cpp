@@ -114,10 +114,6 @@ int main(int argc, char *argv[])
     app.setLayoutDirection(Qt::RightToLeft);
     QTextCodec::setCodecForTr(QTextCodec::codecForName("utf-8"));
 
-#ifdef Q_OS_WIN
-    QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf-8"));
-#endif
-
     QSettings::setDefaultFormat(QSettings::IniFormat);
 
     QTranslator translator;
