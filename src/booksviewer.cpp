@@ -99,8 +99,9 @@ void BooksViewer::createMenus()
     m_actionLastPage = new QAction(QIcon::fromTheme("go-first", QIcon(":/images/go-first.png")),
                                  tr("الصفحة الاخيرة"),
                                  this);
-    m_actionGotToPage = new QAction(QIcon::fromTheme("go-jump"), tr("انتقل الى..."),
-                                  this);
+    m_actionGotToPage = new QAction(QIcon::fromTheme("go-jump", QIcon(":/images/go-jump.png")),
+                                    tr("انتقل الى..."),
+                                    this);
 
     m_bookInfoAct = new QAction(tr("بطاقة الكتاب"), this);
     QAction *readHistoryAct = new QAction(tr("تاريخ تصفح الكتاب"), this);
