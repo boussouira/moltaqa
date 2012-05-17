@@ -24,22 +24,23 @@ enum {
 
 BooksListBrowser::BooksListBrowser(QWidget *parent) :
     QDialog(parent),
+    m_bookListManager(LibraryManager::instance()->bookListManager()),
+    m_favouritesManager(LibraryManager::instance()->favouritesManager()),
+    m_bookManager(LibraryManager::instance()->bookManager()),
+    m_bookListModel(0),
+    m_favouritesModel(0),
+    m_lastReadedModel(0),
+    m_bookListFilter(new ModelViewFilter(this)),
+    m_favouritesListFilter(new ModelViewFilter(this)),
     ui(new Ui::BooksListBrowser)
 {
     ui->setupUi(this);
 
     loadSettings();
-    m_bookListManager = LibraryManager::instance()->bookListManager();
-    m_favouritesManager = LibraryManager::instance()->favouritesManager();
-
-    m_bookListModel = 0;
-    m_favouritesModel = 0;
-
-    m_bookListFilter = new ModelViewFilter(this);
-    m_favouritesListFilter = new ModelViewFilter(this);
 
     readBookListModel();
     readFavouritesModel();
+    lastReadBooksModel();
 
     connect(m_bookListManager, SIGNAL(ModelsReady()), SLOT(readBookListModel()));
     connect(m_favouritesManager, SIGNAL(ModelsReady()), SLOT(readFavouritesModel()));
@@ -48,6 +49,11 @@ BooksListBrowser::BooksListBrowser(QWidget *parent) :
             SLOT(itemClicked(QModelIndex)));
     connect(ui->treeFavouritesList, SIGNAL(doubleClicked(QModelIndex)),
             SLOT(itemClicked(QModelIndex)));
+    connect(ui->treeLastBook, SIGNAL(doubleClicked(QModelIndex)),
+            SLOT(lastOpenedItemClicked(QModelIndex)));
+
+    connect(ui->tabWidget, SIGNAL(currentChanged(int)),
+            SLOT(lastReadBooksModel()));
 
     connect(ui->treeBookList, SIGNAL(customContextMenuRequested(QPoint)),
             SLOT(bookListMenu(QPoint)));
@@ -57,6 +63,7 @@ BooksListBrowser::~BooksListBrowser()
 {
     ml_delete_check(m_bookListModel);
     ml_delete_check(m_favouritesModel);
+    ml_delete_check(m_lastReadedModel);
 
     delete ui;
 }
@@ -123,6 +130,20 @@ void BooksListBrowser::readFavouritesModel()
                            QList<int>() << 350 << 200);
 }
 
+void BooksListBrowser::lastReadBooksModel()
+{
+    ml_delete_check(m_lastReadedModel);
+
+    m_lastReadedModel = Utils::Model::cloneModel(m_bookManager->getLastOpendModel().data());
+    ml_return_on_fail2(m_lastReadedModel, "BooksListBrowser::lastReadBooksModel model is null");
+
+    ui->treeLastBook->setModel(m_lastReadedModel);
+
+    Utils::Widget::restore(ui->treeLastBook,
+                           "BooksListBrowser.lastBook",
+                           QList<int>() << 350);
+}
+
 void BooksListBrowser::itemClicked(QModelIndex index)
 {
     int bookType = index.sibling(index.row(), 0).data(ItemRole::itemTypeRole).toInt();
@@ -130,6 +151,14 @@ void BooksListBrowser::itemClicked(QModelIndex index)
 
     if(bookType != ItemType::CategorieItem)
         emit bookSelected(bookID);
+}
+
+void BooksListBrowser::lastOpenedItemClicked(QModelIndex index)
+{
+    int book = index.sibling(index.row(), 0).data(ItemRole::bookIdRole).toInt();
+    int page = index.sibling(index.row(), 0).data(ItemRole::idRole).toInt();
+
+    MW->openBook(book, page);
 }
 
 void BooksListBrowser::bookListMenu(QPoint /*point*/)

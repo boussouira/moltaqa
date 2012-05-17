@@ -7,6 +7,7 @@
 class BookListManager;
 class LibraryManager;
 class FavouritesManager;
+class LibraryBookManager;
 class ModelViewFilter;
 class SortFilterProxyModel;
 
@@ -29,7 +30,9 @@ protected:
 protected slots:
     void readBookListModel();
     void readFavouritesModel();
+    void lastReadBooksModel();
     void itemClicked(QModelIndex index);
+    void lastOpenedItemClicked(QModelIndex index);
     void bookListMenu(QPoint);
 
 signals:
@@ -38,8 +41,10 @@ signals:
 private:
     BookListManager *m_bookListManager;
     FavouritesManager *m_favouritesManager;
+    LibraryBookManager *m_bookManager;
     QStandardItemModel *m_bookListModel;
     QStandardItemModel *m_favouritesModel;
+    QStandardItemModel *m_lastReadedModel;
     ModelViewFilter *m_bookListFilter;
     ModelViewFilter *m_favouritesListFilter;
     Ui::BooksListBrowser *ui;
