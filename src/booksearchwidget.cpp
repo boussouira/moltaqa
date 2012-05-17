@@ -34,6 +34,9 @@ void BookSearchWidget::init(int bookID)
     ui->treeView->setSortingEnabled(false);
     ui->treeView->setModel(filter->filterModel());
 
+    ui->widgetResultSort->setVisible(!m_bookInfo->isQuran());
+    ui->widgetSearchField->setVisible(!m_bookInfo->isQuran());
+
     m_filterManager = filter;
 }
 
