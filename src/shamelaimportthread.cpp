@@ -19,9 +19,6 @@ ShamelaImportThread::ShamelaImportThread(QObject *parent) :
 void ShamelaImportThread::run()
 {
     m_threadID = (int)currentThreadId();
-
-    qDebug("ShamelaImportThread::run starting thread %d", m_threadID);
-
     m_creator.setThreadID(m_threadID);
     m_creator.openDB();
 
