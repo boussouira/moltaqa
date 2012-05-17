@@ -318,6 +318,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QCheckBox" name="checkShowQuranFirst">
+         <property name="text">
+          <string>عرض القرآن الكريم في مقدمة لائحة الكتب</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QGroupBox" name="groupBox_7">
          <property name="title">
           <string>ادواة</string>

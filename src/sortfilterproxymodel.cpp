@@ -1,8 +1,13 @@
 #include "sortfilterproxymodel.h"
 #include "stringutils.h"
+#include "modelenums.h"
+#include "librarybook.h"
+#include <qsettings.h>
 
 SortFilterProxyModel::SortFilterProxyModel(QObject *parent) : QSortFilterProxyModel(parent)
 {
+    QSettings settings;
+    m_showQuranFirst = settings.value("Style/showQuranFirst", true).toBool();
 }
 
 bool SortFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
@@ -72,6 +77,25 @@ bool SortFilterProxyModel::hasAcceptedChildren(int source_row, const QModelIndex
     }
 
     return false;
+}
+
+bool SortFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
+{
+    if(m_showQuranFirst) {
+        int leftType = left.model() ? left.model()->data(left, ItemRole::typeRole).toInt() : 0;
+        int rightType = right.model() ? right.model()->data(right, ItemRole::typeRole).toInt() : 0;
+
+        if(leftType == LibraryBook::QuranBook
+                || rightType == LibraryBook::QuranBook) {
+            if(leftType == LibraryBook::QuranBook) {
+                return sortOrder()==Qt::AscendingOrder ? true : false;
+            } else if(rightType == LibraryBook::QuranBook) {
+                return sortOrder()==Qt::AscendingOrder ? false : true;
+            }
+        }
+    }
+
+    return QSortFilterProxyModel::lessThan(left, right);
 }
 
 void SortFilterProxyModel::setArabicFilterRegexp(QString text)

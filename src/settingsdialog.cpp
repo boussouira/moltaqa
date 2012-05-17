@@ -100,6 +100,7 @@ void SettingsDialog::loadSettings()
     ui->comboFontSize->setCurrentIndex(ui->comboFontSize->findText(QString::number(fontSize)));
 
     ui->checkRemoveTashekil->setChecked(settings.value("removeTashekil", false).toBool());
+    ui->checkShowQuranFirst->setChecked(settings.value("showQuranFirst", true).toBool());
 
     loadSearchFields();
 }
@@ -200,6 +201,7 @@ void SettingsDialog::saveSettings()
     settings.setValue("fontSize", ui->comboFontSize->currentText());
 
     settings.setValue("removeTashekil", ui->checkRemoveTashekil->isChecked());
+    settings.setValue("showQuranFirst", ui->checkShowQuranFirst->isChecked());
 
     settings.endGroup();
 

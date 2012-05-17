@@ -15,8 +15,13 @@ protected:
     bool filterAcceptsRowItself(int source_row, const QModelIndex &source_parent) const;
     bool hasAcceptedChildren(int source_row, const QModelIndex &source_parent) const;
 
+    bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
+
 public slots:
     void setArabicFilterRegexp(QString text);
+
+protected:
+    bool m_showQuranFirst;
 };
 
 #endif // SORTFILTERPROXYMODEL_H
