@@ -8,6 +8,8 @@
 #include "favouritesmanager.h"
 #include "modelviewfilter.h"
 #include "utils.h"
+#include "bookinfodialog.h"
+#include "librarybookmanager.h"
 
 #include <qevent.h>
 #include <qsettings.h>
@@ -145,6 +147,10 @@ void BooksListBrowser::bookListMenu(QPoint /*point*/)
     QAction *addToFavouriteAct = 0;
     QAction *removeFromFavouriteAct = 0;
 
+    QAction *bookInfoAct = menu.addAction(QIcon(":/images/about.png"),
+                                       tr("بطاقة الكتاب"));
+    menu.addSeparator();
+
     if(!m_favouritesManager->containsBook(bookID)) {
         addToFavouriteAct = new QAction(QIcon::fromTheme("bookmark-new", QIcon(":/images/bookmark-new.png")),
                                         tr("اضافة الى المفضلة"),
@@ -158,6 +164,9 @@ void BooksListBrowser::bookListMenu(QPoint /*point*/)
         menu.addAction(removeFromFavouriteAct);
     }
 
+    QAction *searchInBookAct = menu.addAction(QIcon::fromTheme("edit-find", QIcon(":/images/find.png")),
+                                           tr("بحث في الكتاب"));
+
     QAction *ret = menu.exec(QCursor::pos());
     if(ret) {
         if(ret == addToFavouriteAct) {
@@ -166,6 +175,17 @@ void BooksListBrowser::bookListMenu(QPoint /*point*/)
         } else if(ret == removeFromFavouriteAct) {
             m_favouritesManager->removeBook(bookID);
             m_favouritesManager->reloadModels();
+        } else if (ret == searchInBookAct) {
+            MW->searchView()->newTab(SearchWidget::BookSearch, bookID);
+            MW->showSearchView();
+        } else if (ret == bookInfoAct) {
+            LibraryBookPtr book = LibraryManager::instance()->bookManager()->getLibraryBook(bookID);
+            ml_return_on_fail(book);
+
+            BookInfoDialog *dialog = new BookInfoDialog(0);
+            dialog->setLibraryBook(book);
+            dialog->setup();
+            dialog->show();
         }
     }
 }
