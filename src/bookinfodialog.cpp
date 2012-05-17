@@ -42,21 +42,23 @@ void BookInfoDialog::setup()
     html.insertSpan(m_book->title, ".pro-value");
     html.endParagraph();
 
-    QString authorDeath;
-    AuthorInfoPtr author = LibraryManager::instance()->authorsManager()->getAuthorInfo(m_book->authorID);
-    if(author) {
-        if(author->isALive)
-            authorDeath = tr("(معاصر)");
-        else if(!author->unknowDeath)
-            authorDeath = tr("(%1)").arg(author->deathStr);
-    }
+    if(!m_book->isQuran()) {
+        QString authorDeath;
+        AuthorInfoPtr author = LibraryManager::instance()->authorsManager()->getAuthorInfo(m_book->authorID);
+        if(author) {
+            if(author->isALive)
+                authorDeath = tr("(معاصر)");
+            else if(!author->unknowDeath)
+                authorDeath = tr("(%1)").arg(author->deathStr);
+        }
 
-    html.beginParagraph();
-    html.insertSpan(tr("المؤلف:"), ".pro-name");
-    html.beginSpan(".pro-value");
-    html.insertAuthorLink(m_book->authorName + " " + authorDeath, m_book->authorID);
-    html.endSpan();
-    html.endParagraph();
+        html.beginParagraph();
+        html.insertSpan(tr("المؤلف:"), ".pro-name");
+        html.beginSpan(".pro-value");
+        html.insertAuthorLink(m_book->authorName + " " + authorDeath, m_book->authorID);
+        html.endSpan();
+        html.endParagraph();
+    }
 
     if(m_book->edition.size()) {
         html.beginParagraph();
