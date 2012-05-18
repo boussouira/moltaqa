@@ -27,7 +27,7 @@ public slots:
     void taskDone(IndexTask *task);
     void threadDoneIndexing();
 
-    void optimize();
+    bool optimize();
 
 signals:
     void started();

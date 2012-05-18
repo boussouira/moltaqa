@@ -154,18 +154,22 @@ void IndexManager::threadDoneIndexing()
     }
 }
 
-void IndexManager::optimize()
+bool IndexManager::optimize()
 {
-    ml_return_on_fail2(!isIndexing(), "IndexManager::optimize can't optimize when indexing")
-    ml_return_on_fail2(openWriter(), "IndexManager::optimize Can't open IndexWriter");
+    ml_return_val_on_fail2(!isIndexing(), "IndexManager::optimize can't optimize when indexing", false);
+    ml_return_val_on_fail2(openWriter(), "IndexManager::optimize Can't open IndexWriter", false);
 
     try {
         m_writer->optimize();
+        return true;
     } catch(CLuceneError &err) {
         qCritical("IndexManager::optimize CLucene Error: %s", err.what());
+        return false;
     } catch(std::exception &err){
         qCritical("IndexManager::optimize STD error: %s", err.what());
+        return false;
     } catch(...){
         qCritical("IndexManager::optimize Unkonw error");
+        return false;
     }
 }

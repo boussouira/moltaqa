@@ -236,11 +236,15 @@ void SettingsDialog::optimizeIndex()
     QTime time;
     time.start();
 
-    MW->indexManager()->optimize();
-
-    QMessageBox::information(this,
+    if(MW->indexManager()->optimize()) {
+        QMessageBox::information(this,
+                                 tr("ضغط الفهرس"),
+                                 tr("تم ضغط الفهرس خلال %1").arg(Utils::Time::secondsToString(time.elapsed(), true)));
+    } else {
+        QMessageBox::warning(this,
                              tr("ضغط الفهرس"),
-                             tr("تم ضغط الفهرس خلال %1").arg(Utils::Time::secondsToString(time.elapsed(), true)));
+                             tr("حدث خطأ اثناء ضغط الفهرس"));
+    }
 }
 
 void SettingsDialog::hideCancelButton(bool hide)
