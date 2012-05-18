@@ -4,6 +4,7 @@
 
 #include <qicon.h>
 #include <qheaderview.h>
+#include <qevent.h>
 
 ModelViewFilter::ModelViewFilter(QObject *parent) :
     QObject(parent),
@@ -76,11 +77,31 @@ void ModelViewFilter::setup()
     connect(m_treeView->header(),
             SIGNAL(sortIndicatorChanged(int,Qt::SortOrder)),
             SLOT(sortChanged(int,Qt::SortOrder)));
+
+    m_treeView->installEventFilter(this);
 }
 
 SortFilterProxyModel *ModelViewFilter::filterModel()
 {
     return m_filterModel;
+}
+
+bool ModelViewFilter::eventFilter(QObject *obj, QEvent *event)
+{
+    if (obj == m_treeView && event->type() == QEvent::KeyPress) {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        if((keyEvent->modifiers() & Qt::ControlModifier)) {
+            if(keyEvent->key() == Qt::Key_Plus) {
+                m_treeView->expandAll();
+                return true;
+            } else if(keyEvent->key() == Qt::Key_Minus) {
+                m_treeView->collapseAll();
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 void ModelViewFilter::setFilterText(QString text)
