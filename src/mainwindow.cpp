@@ -250,10 +250,13 @@ void MainWindow::openBook(int pBookID, int pageID)
     m_viewManager->setCurrentView(m_bookView);
 }
 
-void MainWindow::showBooksList()
+void MainWindow::showBooksList(int tabIndex)
 {
     m_booksList->show();
     m_booksList->activateWindow();
+
+    if(tabIndex != -1)
+        m_booksList->setCurrentTab(tabIndex);
 }
 
 void MainWindow::showSearchView()

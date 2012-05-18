@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>556</width>
-    <height>300</height>
+    <width>500</width>
+    <height>328</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,115 +17,25 @@
    <enum>Qt::RightToLeft</enum>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
+   <property name="margin">
+    <number>0</number>
+   </property>
    <item>
-    <widget class="QTabWidget" name="tabWidget">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+    <widget class="QWebView" name="webView">
+     <property name="url">
+      <url>
+       <string>about:blank</string>
+      </url>
      </property>
-     <property name="tabShape">
-      <enum>QTabWidget::Rounded</enum>
-     </property>
-     <property name="currentIndex">
-      <number>0</number>
-     </property>
-     <property name="documentMode">
-      <bool>false</bool>
-     </property>
-     <widget class="QWidget" name="tab">
-      <attribute name="title">
-       <string>لائحة الكتب</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QTreeView" name="treeBookList">
-         <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
-         </property>
-         <property name="sortingEnabled">
-          <bool>true</bool>
-         </property>
-         <property name="animated">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="FancyLineEdit" name="lineFilterBookList">
-         <property name="maximumSize">
-          <size>
-           <width>300</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="placeholderText">
-          <string>بحث عن كتاب</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tab_2">
-      <attribute name="title">
-       <string>المفضلة</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QTreeView" name="treeFavouritesList">
-         <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
-         </property>
-         <property name="sortingEnabled">
-          <bool>true</bool>
-         </property>
-         <property name="animated">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="FancyLineEdit" name="lineFilterFavourites">
-         <property name="maximumSize">
-          <size>
-           <width>300</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="placeholderText">
-          <string>بحث عن كتاب</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tab_3">
-      <attribute name="title">
-       <string>اخر الكتب</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <widget class="QTreeView" name="treeLastBook">
-         <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
-         </property>
-         <property name="animated">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
     </widget>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>FancyLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>fancylineedit.h</header>
+   <class>QWebView</class>
+   <extends>QWidget</extends>
+   <header>QtWebKit/QWebView</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -22,6 +22,8 @@ public:
     BooksListBrowser(QWidget *parent = 0);
     ~BooksListBrowser();
 
+    void setCurrentTab(int index);
+
 protected:
     void closeEvent(QCloseEvent *event);
     void loadSettings();

@@ -1,0 +1,56 @@
+body {
+    direction: rtl;
+}
+
+#vertical-wrapper {
+    display:table;
+    height: 60%;
+    width: 100%;
+}
+
+#vertical-wrapper #v-cell {
+    display:table-cell; 
+    vertical-align:middle;
+}
+
+#welcome {
+    text-align: center;
+}
+
+#welcome a:visited {
+    color: blue;
+}
+
+#welcome #title {
+    margin: 0 25px;
+}
+
+#welcome #title img{
+    cursor: pointer;
+}
+
+#welcome #icons{
+    margin: 20px 0;
+}
+#welcome #icons p{
+    padding: 0;
+    margin: 0;
+}
+
+#welcome #icons .icon{
+    border: 1px solid #CCCCCC;
+    cursor: pointer;
+    padding: 5px;
+    margin: 0 3px;
+    display: inline-block;
+    min-width: 100px;
+    border-radius: 5px;
+}
+
+#welcome #icons .icon img{
+    margin-bottom: 5px;
+}
+
+#welcome #icons .icon p{
+    color: blue;
+}

@@ -351,7 +351,10 @@ QStringList checkDir(bool showWarnings)
     missingFiles << checkFiles(QStringList()
                                << "quran-meta.db"
                                << "rowat.zip"
-                               << "authors.zip",
+                               << "authors.zip"
+                               << "welcome/welcome.html"
+                               << "welcome/welcome.css"
+                               << "welcome/images",
                                dataDir(),
                                showWarnings);
 

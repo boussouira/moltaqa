@@ -1,0 +1,69 @@
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <link href= "welcome.css" rel="stylesheet" type="text/css" />
+        <script src="../../js/jquery.js"></script>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <title>Welcome</title>
+    </head>
+    <body>
+        <div id="vertical-wrapper">
+            <div id="v-cell">
+                <div id="welcome">
+                    <div id="title">
+                        <p><img id="moltaqa-lib" src="images/moltaqa-lib.png" /></p>
+                    </div>
+                    <div id="icons">
+                        <div class="icon" id="quran">
+                            <div class="img">
+                                <p><img src="images/quran.png" /></p>
+                                <p class="desc">القرأن الكريم</p>
+                            </div>
+                        </div>
+                        <div class="icon" id="bookslist">
+                            <div class="img">
+                                <p><img src="images/bookslist.png" /></p>
+                                <p class="desc">لائحة الكتب</p>
+                            </div>
+                        </div>
+                        <div class="icon" id="favourites">
+                            <div class="img">
+                                <p><img src="images/favourites.png" /></p>
+                                <p class="desc">المفضلة</p>
+                            </div>
+                        </div>
+                        <div class="icon" id="lastbooks">
+                            <div class="img">
+                                <p><img src="images/lastbooks.png" /></p>
+                                <p class="desc">اخر الكتب</p>
+                            </div>
+                        </div>
+                        <div class="icon" id="search">
+                            <div class="img">
+                                <p><img src="images/search.png" /></p>
+                                <p class="desc">بحث في المكتبة</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            $('#welcome #icons .icon').mouseenter(function(){
+                $("img", this).animate({opacity: 0.5}, 200);
+            }).mouseleave(function(){
+                $("img", this).animate({opacity: 1.0}, 200);
+            });
+
+            $('#welcome #title img').mouseenter(function(){
+                $(this).animate({opacity: 0.8}, 200);
+            }).mouseleave(function(){
+                $(this).animate({opacity: 1.0}, 200);
+            });
+
+            $('#welcome #icons .icon, #welcome #title img').click(function() {
+                welcome.open($(this).attr('id'));
+            });
+        </script>
+    </body>
+</html>

@@ -68,6 +68,11 @@ BooksListBrowser::~BooksListBrowser()
     delete ui;
 }
 
+void BooksListBrowser::setCurrentTab(int index)
+{
+    ui->tabWidget->setCurrentIndex(index);
+}
+
 void BooksListBrowser::closeEvent(QCloseEvent *event)
 {
     saveSettings();
