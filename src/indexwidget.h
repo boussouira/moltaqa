@@ -35,7 +35,7 @@ public slots:
     void updateCurrentTitle(bool checked);
 
 private slots:
-    void listDoubleClicked(QModelIndex pIndex);
+    void listClicked(QModelIndex index);
 
 signals:
     void openSora(int sora, int aya);

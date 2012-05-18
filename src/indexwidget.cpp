@@ -24,8 +24,14 @@ IndexWidget::IndexWidget(QWidget *parent) :
     ui->toolSyncTitle->setChecked(settings.value("IndexWidget/updateTitle",
                                                  true).toBool());
 
-    connect(ui->treeView, SIGNAL(doubleClicked(QModelIndex)),
-            SLOT(listDoubleClicked(QModelIndex)));
+    if(settings.value("Style/singleIndexClick", false).toBool()) {
+        connect(ui->treeView, SIGNAL(clicked(QModelIndex)),
+                SLOT(listClicked(QModelIndex)));
+    } else {
+        connect(ui->treeView, SIGNAL(doubleClicked(QModelIndex)),
+                SLOT(listClicked(QModelIndex)));
+    }
+
     connect(ui->toolSyncTitle, SIGNAL(toggled(bool)),
             SLOT(updateCurrentTitle(bool)));
 }
@@ -92,7 +98,7 @@ void IndexWidget::updateCurrentTitle(bool checked)
         selectTitle(m_page->titleID);
 }
 
-void IndexWidget::listDoubleClicked(QModelIndex index)
+void IndexWidget::listClicked(QModelIndex index)
 {
     if(sendSignals) {
         if(m_bookInfo->isQuran()) {

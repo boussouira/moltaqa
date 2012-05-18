@@ -99,6 +99,7 @@ void SettingsDialog::loadSettings()
     ui->fontComboBox->setCurrentFont(font);
     ui->comboFontSize->setCurrentIndex(ui->comboFontSize->findText(QString::number(fontSize)));
 
+    ui->checkSingleIndexClick->setChecked(settings.value("singleIndexClick", false).toBool());
     ui->checkRemoveTashekil->setChecked(settings.value("removeTashekil", false).toBool());
     ui->checkShowQuranFirst->setChecked(settings.value("showQuranFirst", true).toBool());
 
@@ -200,6 +201,7 @@ void SettingsDialog::saveSettings()
     settings.setValue("fontFamily", ui->fontComboBox->currentFont().toString());
     settings.setValue("fontSize", ui->comboFontSize->currentText());
 
+    settings.setValue("singleIndexClick", ui->checkSingleIndexClick->isChecked());
     settings.setValue("removeTashekil", ui->checkRemoveTashekil->isChecked());
     settings.setValue("showQuranFirst", ui->checkShowQuranFirst->isChecked());
 

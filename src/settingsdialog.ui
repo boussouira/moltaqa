@@ -311,6 +311,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QCheckBox" name="checkSingleIndexClick">
+         <property name="text">
+          <string>فتح الصفحة عند الضغط مرة واحد على العنوان في فهرس الكتاب</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QCheckBox" name="checkRemoveTashekil">
          <property name="text">
           <string>حذف التشكيل من صفحات الكتب</string>
