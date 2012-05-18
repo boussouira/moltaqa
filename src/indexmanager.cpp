@@ -156,7 +156,7 @@ void IndexManager::threadDoneIndexing()
 
 void IndexManager::optimize()
 {
-    ml_return_on_fail2(isIndexing(), "IndexManager::optimize can't optimize when indexing")
+    ml_return_on_fail2(!isIndexing(), "IndexManager::optimize can't optimize when indexing")
     ml_return_on_fail2(openWriter(), "IndexManager::optimize Can't open IndexWriter");
 
     try {
