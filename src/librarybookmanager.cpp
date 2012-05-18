@@ -82,8 +82,9 @@ StandardItemModelPtr LibraryBookManager::getLastOpendModel()
     while(query.next()) {
         QStandardItem *item = new QStandardItem();
         item->setText(query.value(3).toString());
-        item->setData(query.value(1).toInt(), ItemRole::idRole);
-        item->setData(query.value(0).toInt(), ItemRole::bookIdRole);
+        item->setData(query.value(1).toInt(), ItemRole::pageIdRole);
+        item->setData(query.value(0).toInt(), ItemRole::idRole);
+        item->setData(ItemType::BookItem, ItemRole::itemTypeRole);
         item->setIcon(QIcon(":/images/book.png"));
 
         QStandardItem *timeItem = new QStandardItem();

@@ -57,6 +57,10 @@ BooksListBrowser::BooksListBrowser(QWidget *parent) :
 
     connect(ui->treeBookList, SIGNAL(customContextMenuRequested(QPoint)),
             SLOT(bookListMenu(QPoint)));
+    connect(ui->treeFavouritesList, SIGNAL(customContextMenuRequested(QPoint)),
+            SLOT(bookListMenu(QPoint)));
+    connect(ui->treeLastBook, SIGNAL(customContextMenuRequested(QPoint)),
+            SLOT(bookListMenu(QPoint)));
 }
 
 BooksListBrowser::~BooksListBrowser()
@@ -160,15 +164,18 @@ void BooksListBrowser::itemClicked(QModelIndex index)
 
 void BooksListBrowser::lastOpenedItemClicked(QModelIndex index)
 {
-    int book = index.sibling(index.row(), 0).data(ItemRole::bookIdRole).toInt();
-    int page = index.sibling(index.row(), 0).data(ItemRole::idRole).toInt();
+    int book = index.sibling(index.row(), 0).data(ItemRole::idRole).toInt();
+    int page = index.sibling(index.row(), 0).data(ItemRole::pageIdRole).toInt();
 
     MW->openBook(book, page);
 }
 
 void BooksListBrowser::bookListMenu(QPoint /*point*/)
 {
-    QModelIndex index = Utils::Model::selectedIndex(ui->treeBookList);
+    QTreeView *treeView = qobject_cast<QTreeView*>(sender());
+    ml_return_on_fail(treeView);
+
+    QModelIndex index = Utils::Model::selectedIndex(treeView);
     ml_return_on_fail(index.isValid());
 
     int bookType = index.sibling(index.row(), 0).data(ItemRole::itemTypeRole).toInt();

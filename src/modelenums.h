@@ -13,7 +13,8 @@ namespace ItemRole {
         authorDeathRole,
         authorIdRole,
         itemTypeRole,
-        bookIdRole
+        bookIdRole,
+        pageIdRole
     };
 }
 
