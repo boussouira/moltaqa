@@ -82,7 +82,7 @@
      </widget>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">
-       <string>اخر الكتب</string>
+       <string>الأحدث تصفحا</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
