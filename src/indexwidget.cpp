@@ -101,11 +101,13 @@ void IndexWidget::updateCurrentTitle(bool checked)
 void IndexWidget::listClicked(QModelIndex index)
 {
     if(sendSignals) {
-        if(m_bookInfo->isQuran()) {
-            emit openSora(index.row()+1, 1);
-        } else {
-            emit openPage(index.data(ItemRole::idRole).toInt());
-        }
+        int id = index.data(ItemRole::idRole).toInt();
+
+        if(m_bookInfo->isQuran())
+            emit openSora(id, 1);
+        else
+            emit openPage(id);
+
     }
 }
 
