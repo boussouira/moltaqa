@@ -422,7 +422,8 @@ bool LibraryBookManager::deleteBookHistory(int bookID)
     QueryBuilder q;
     q.setTableName("history", QueryBuilder::Delete);
 
-    q.where("book", bookID);
+    if(bookID != -1)
+        q.where("book", bookID);
 
     return q.exec(m_db);
 }
@@ -432,7 +433,8 @@ bool LibraryBookManager::deleteBookFromLastOpen(int bookID)
     QueryBuilder q;
     q.setTableName("last_open", QueryBuilder::Delete);
 
-    q.where("book", bookID);
+    if(bookID != -1)
+        q.where("book", bookID);
 
     return q.exec(m_db);
 }

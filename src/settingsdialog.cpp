@@ -8,6 +8,7 @@
 #include "mainwindow.h"
 #include "timeutils.h"
 #include "bookreferedialog.h"
+#include "librarybookmanager.h"
 
 #include <qsettings.h>
 #include <qfile.h>
@@ -33,6 +34,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     connect(ui->pushCancel, SIGNAL(clicked()), this, SLOT(reject()));
     connect(ui->pushDeleteSavedSearch, SIGNAL(clicked()), SLOT(deleteSavedSearch()));
     connect(ui->pushOptimizeIndex, SIGNAL(clicked()), SLOT(optimizeIndex()));
+    connect(ui->pushClearBooksHistory, SIGNAL(clicked()), SLOT(deleteBooksHistory()));
+    connect(ui->pushClearLastOpenedBooks, SIGNAL(clicked()), SLOT(deleteLastOpenedBooks()));
 }
 
 SettingsDialog::~SettingsDialog()
@@ -224,6 +227,42 @@ void SettingsDialog::deleteSavedSearch()
                                             QMessageBox::Yes|QMessageBox::No, QMessageBox::No)==QMessageBox::Yes);
 
     LibraryManager::instance()->searchManager()->removeSavedQueries();
+}
+
+void SettingsDialog::deleteLastOpenedBooks()
+{
+    ml_return_on_fail(QMessageBox::question(this,
+                                            tr("أحدث الكتب تصفحا"),
+                                            tr("هل انت متأكد من انك تريد حذف كل الكتب من قائمة 'الأحدث تصفحا'؟"),
+                                            QMessageBox::Yes|QMessageBox::No, QMessageBox::No)==QMessageBox::Yes);
+
+    if(LibraryManager::instance()->bookManager()->deleteBookFromLastOpen()) {
+        QMessageBox::information(this,
+                                 tr("أحدث الكتب تصفحا"),
+                                 tr("تم افراغ قائمة قائمة 'الأحدث تصفحا'"));
+    } else {
+        QMessageBox::warning(this,
+                             tr("أحدث الكتب تصفحا"),
+                             tr("حدث خطأ أثناء افراغ قائمة قائمة 'الأحدث تصفحا'"));
+    }
+}
+
+void SettingsDialog::deleteBooksHistory()
+{
+    ml_return_on_fail(QMessageBox::question(this,
+                                            tr("تاريخ تصفح الكتب"),
+                                            tr("هل انت متأكد من انك تريد حذف تاريخ تصفح كل الكتب؟"),
+                                            QMessageBox::Yes|QMessageBox::No, QMessageBox::No)==QMessageBox::Yes);
+
+    if(LibraryManager::instance()->bookManager()->deleteBookHistory()) {
+        QMessageBox::information(this,
+                                 tr("تاريخ تصفح الكتب"),
+                                 tr("تم حذف تاريخ تصفح كل الكتب"));
+    } else {
+        QMessageBox::warning(this,
+                             tr("تاريخ تصفح الكتب"),
+                             tr("حدث خطأ أثناء حذف تاريخ تصفح كل الكتب"));
+    }
 }
 
 void SettingsDialog::optimizeIndex()

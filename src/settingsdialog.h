@@ -26,6 +26,8 @@ protected slots:
     void changeBooksDir();
     void saveSettings();
     void deleteSavedSearch();
+    void deleteLastOpenedBooks();
+    void deleteBooksHistory();
     void optimizeIndex();
 
 private slots:
