@@ -417,6 +417,26 @@ int LibraryBookManager::bookLastPageID(int bookID)
     return query.next() ? query.value(0).toInt() : -1;
 }
 
+bool LibraryBookManager::deleteBookHistory(int bookID)
+{
+    QueryBuilder q;
+    q.setTableName("history", QueryBuilder::Delete);
+
+    q.where("book", bookID);
+
+    return q.exec(m_db);
+}
+
+bool LibraryBookManager::deleteBookFromLastOpen(int bookID)
+{
+    QueryBuilder q;
+    q.setTableName("last_open", QueryBuilder::Delete);
+
+    q.where("book", bookID);
+
+    return q.exec(m_db);
+}
+
 int LibraryBookManager::getNewBookID()
 {
     int bookID =  0;

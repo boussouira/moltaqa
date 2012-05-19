@@ -49,6 +49,9 @@ public:
     /// Get the last readed for the given book
     int bookLastPageID(int bookID);
 
+    bool deleteBookHistory(int bookID);
+    bool deleteBookFromLastOpen(int bookID);
+
 protected:
     int getNewBookID();
 

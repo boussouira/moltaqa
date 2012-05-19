@@ -24,6 +24,7 @@ public:
 
 private slots:
     void on_treeView_doubleClicked(const QModelIndex &index);
+    void deleteBookHistory();
 
 signals:
     void openPage(int pageID);

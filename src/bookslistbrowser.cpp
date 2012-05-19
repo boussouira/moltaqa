@@ -14,6 +14,7 @@
 #include <qevent.h>
 #include <qsettings.h>
 #include <qmenu.h>
+#include <qmessagebox.h>
 
 enum {
     BookNameCol,
@@ -187,6 +188,7 @@ void BooksListBrowser::bookListMenu(QPoint /*point*/)
 
     QAction *addToFavouriteAct = 0;
     QAction *removeFromFavouriteAct = 0;
+    QAction *removeFromLastOpenedAct = 0;
 
     QAction *bookInfoAct = menu.addAction(QIcon(":/images/about.png"),
                                        tr("بطاقة الكتاب"));
@@ -199,14 +201,20 @@ void BooksListBrowser::bookListMenu(QPoint /*point*/)
 
         menu.addAction(addToFavouriteAct);
     } else {
-        removeFromFavouriteAct = new QAction(QIcon(":/images/remove.png"),
-                                             tr("حذف من المفضلة"),
+        removeFromFavouriteAct = new QAction(tr("حذف من المفضلة"),
                                              &menu);
         menu.addAction(removeFromFavouriteAct);
     }
 
     QAction *searchInBookAct = menu.addAction(QIcon::fromTheme("edit-find", QIcon(":/images/find.png")),
                                            tr("بحث في الكتاب"));
+
+    if(treeView == ui->treeLastBook) {
+        menu.addSeparator();
+
+        removeFromLastOpenedAct = menu.addAction(QIcon(":/images/remove.png"),
+                                                 tr("حذف من قائمة أحدث الكتب تصفحا"));
+    }
 
     QAction *ret = menu.exec(QCursor::pos());
     if(ret) {
@@ -227,6 +235,14 @@ void BooksListBrowser::bookListMenu(QPoint /*point*/)
             dialog->setLibraryBook(book);
             dialog->setup();
             dialog->show();
+        } else if(ret == removeFromLastOpenedAct) {
+            if(m_bookManager->deleteBookFromLastOpen(bookID)) {
+                lastReadBooksModel();
+            } else {
+                QMessageBox::warning(this,
+                                     tr("أحدث الكتب تصفحا"),
+                                     tr("حدث خطأ أثناء حذف الكتاب من القائمة"));
+            }
         }
     }
 }
