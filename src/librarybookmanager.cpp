@@ -306,13 +306,8 @@ bool LibraryBookManager::removeBook(int bookID)
 
     m_books.remove(bookID);
 
-    query.prepare("DELETE FROM history WHERE book = ?");
-    query.bindValue(0, bookID);
-    ml_warn_query_error(query);
-
-    query.prepare("DELETE FROM last_open WHERE book = ?");
-    query.bindValue(0, bookID);
-    ml_warn_query_error(query);
+    deleteBookFromLastOpen(bookID);
+    deleteBookHistory(bookID);
 
     return true;
 }
