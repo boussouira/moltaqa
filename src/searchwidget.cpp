@@ -334,7 +334,7 @@ void SearchWidget::search()
     m_searcher = new LibrarySearcher(this);
     m_searcher->setQuery(query);
 
-    connect(m_searcher, SIGNAL(startFeteching()), SLOT(showMessageAfterSearch()));
+    connect(m_searcher, SIGNAL(doneSearching()), SLOT(showMessageAfterSearch()));
 
     m_resultWidget->search(m_searcher);
     setCurrentWidget(Result);
