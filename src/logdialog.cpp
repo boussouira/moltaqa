@@ -1,6 +1,7 @@
 #include "logdialog.h"
 #include "ui_logdialog.h"
 #include "loghighlighter.h"
+#include "utils.h"
 
 #include <qdesktopservices.h>
 #include <qfilesystemwatcher.h>
@@ -25,6 +26,8 @@ LogDialog::LogDialog(QWidget *parent) :
     connect(ui->pushClearLog, SIGNAL(clicked()), SLOT(clearLog()));
 
     fileChanged(m_logPath);
+
+    Utils::Widget::restore(this, "LogDialog");
 }
 
 LogDialog::~LogDialog()
@@ -60,6 +63,8 @@ void LogDialog::clearLog()
 
 void LogDialog::closeEvent(QCloseEvent *event)
 {
+    Utils::Widget::save(this, "LogDialog");
+
     hideDialog();
     event->ignore();
 }
