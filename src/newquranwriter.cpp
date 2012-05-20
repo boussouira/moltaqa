@@ -50,7 +50,9 @@ void newQuranWriter::endReading()
     QuaZipFile pagesFile(&m_zip);
     if(pagesFile.open(QIODevice::WriteOnly, QuaZipNewInfo("pages.xml"))) {
         QTextStream out(&pagesFile);
-        out << m_pagesDoc.toString(-1);
+        out.setCodec("utf-8");
+
+        m_pagesDoc.save(out, 1);
     } else {
         qCritical("newQuranWriter::endReading error %d when writing to pages.xml",
                   pagesFile.getZipError());
