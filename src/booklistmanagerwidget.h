@@ -22,6 +22,7 @@ public:
     void save();
 
 protected slots:
+    void reloadModel();
     void copyNode();
     void cutNode();
     void pastNode();

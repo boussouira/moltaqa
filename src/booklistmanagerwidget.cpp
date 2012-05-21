@@ -36,6 +36,7 @@ BookListManagerWidget::BookListManagerWidget(QWidget *parent) :
     connect(ui->toolMoveDown, SIGNAL(clicked()), SLOT(moveDown()));
     connect(ui->toolMoveRight, SIGNAL(clicked()), SLOT(moveRight()));
     connect(ui->toolMoveLeft, SIGNAL(clicked()), SLOT(moveLeft()));
+    connect(m_manager, SIGNAL(ModelsReady()), SLOT(reloadModel()));
 
     connect(ui->treeView, SIGNAL(customContextMenuRequested(QPoint)),
             SLOT(menuRequested(QPoint)));
@@ -55,6 +56,8 @@ QString BookListManagerWidget::title()
 
 void BookListManagerWidget::loadModel()
 {
+    ml_delete_check(m_model);
+
     m_model = Utils::Model::cloneModel(m_manager->bookListModel());
 
     ui->treeView->setModel(m_model);
@@ -70,6 +73,11 @@ void BookListManagerWidget::loadModel()
 void BookListManagerWidget::save()
 {
     m_manager->save(m_model);
+}
+
+void BookListManagerWidget::reloadModel()
+{
+    loadModel();
 }
 
 void BookListManagerWidget::copyNode()

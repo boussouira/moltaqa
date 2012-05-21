@@ -43,6 +43,7 @@ private slots:
     void setupEdit(LibraryBookPtr info);
     void infoChanged();
     void checkEditWebChange();
+    void createNewBook();
     void removeBook();
 
 protected:

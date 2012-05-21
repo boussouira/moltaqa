@@ -9,12 +9,16 @@
 #include "editwebview.h"
 #include "modelutils.h"
 #include "modelviewfilter.h"
+#include "newbookwriter.h"
+#include "mainwindow.h"
+#include "booklistmanager.h"
 
 #include <qdebug.h>
 #include <qlineedit.h>
 #include <qtextedit.h>
 #include <qsettings.h>
 #include <qmessagebox.h>
+#include <QInputDialog>
 
 LibraryBookManagerWidget::LibraryBookManagerWidget(QWidget *parent) :
     ControlCenterWidget(parent),
@@ -83,6 +87,7 @@ void LibraryBookManagerWidget::setupActions()
      }
 
      connect(ui->tabWidget, SIGNAL(currentChanged(int)), SLOT(checkEditWebChange()));
+     connect(ui->toolAdd, SIGNAL(clicked()), SLOT(createNewBook()));
      connect(ui->toolDelete, SIGNAL(clicked()), SLOT(removeBook()));
 }
 
@@ -120,6 +125,59 @@ void LibraryBookManagerWidget::checkEditWebChange()
 
     if(m_webEdit->pageModified())
         infoChanged();
+}
+
+void LibraryBookManagerWidget::createNewBook()
+{
+    bool ok;
+    QString title = QInputDialog::getText(this,
+                                          tr("كتاب جديد"),
+                                          tr("عنوان الكتاب الجديد:"),
+                                          QLineEdit::Normal, QString(), &ok).trimmed();
+    ml_return_on_fail(ok);
+
+    if(title.isEmpty()) {
+        QMessageBox::warning(this,
+                             tr("كتاب جديد"),
+                             tr("لم تقم باختيار عنوان الكتاب"));
+
+        return;
+    }
+
+    LibraryBookPtr book(new LibraryBook());
+    book->title = title;
+    book->type = LibraryBook::NormalBook;
+
+    selectAuthorDialog authorDialog(this);
+    if(authorDialog.exec() == QDialog::Accepted) {
+        book->authorID = authorDialog.selectedAuthorID();
+        book->authorName = authorDialog.selectedAuthorName();
+    }
+
+    NewBookWriter bookWrite;
+    bookWrite.createNewBook(Utils::Rand::fileName(MW->libraryInfo()->booksDir(), true));
+
+    bookWrite.startReading();
+    bookWrite.addPage(title, 1, 1, 1);
+    bookWrite.addTitle(title, 1, 0);
+    bookWrite.endReading();
+
+
+    book->path = bookWrite.bookPath();
+    book->fileName = QFileInfo(book->path).fileName();
+
+    m_libraryManager->addBook(book, 0);
+    m_libraryManager->bookListManager()->reloadModels();
+
+    QStandardItem *item = new QStandardItem(book->title);
+    item->setData(book->id, ItemRole::idRole);
+    m_model->appendRow(item);
+
+    //Utils::Model::selectIndex(ui->treeView, m_model->indexFromItem(item));
+
+    QMessageBox::information(this,
+                             tr("كتاب جديد"),
+                             tr("تم انشاء الكتاب الجديد"));
 }
 
 void LibraryBookManagerWidget::removeBook()
