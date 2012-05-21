@@ -48,6 +48,7 @@ BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_
     displayInfo();
 
     m_viewInitialized = false;
+    m_indexReading = false;
 
     connect(m_indexWidget, SIGNAL(openPage(int)), this, SLOT(openPage(int)));
     connect(m_indexWidget, SIGNAL(openSora(int,int)), SLOT(openSora(int,int)));
@@ -58,8 +59,8 @@ BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_
     connect(m_view->page()->action(QWebPage::Reload), SIGNAL(triggered()), SLOT(reloadCurrentPage()));
 
     if(!m_db->bookInfo()->isQuran()) {
-        connect(m_view, SIGNAL(nextPage()), SLOT(nextPage()));
-        connect(m_view, SIGNAL(prevPage()), SLOT(prevPage()));
+        connect(m_view, SIGNAL(nextPage()), SLOT(wheelNextPage()));
+        connect(m_view, SIGNAL(prevPage()), SLOT(wheelPrevPage()));
     }
 
     setFocusPolicy(Qt::StrongFocus);
@@ -152,6 +153,18 @@ void BookWidget::prevPage()
         m_db->prevPage();
         scrollToCurrentAya(true);
     }
+}
+
+void BookWidget::wheelNextPage()
+{
+    if(!m_indexReading)
+        nextPage();
+}
+
+void BookWidget::wheelPrevPage()
+{
+    if(!m_indexReading)
+        prevPage();
 }
 
 void BookWidget::scrollDown()
@@ -280,6 +293,7 @@ void BookWidget::readerTextChanged()
             QTimer::singleShot(800, m_view, SLOT(scrollToSearch()));
     }
 
+    m_indexReading = false;
 }
 
 void BookWidget::reloadCurrentPage()
@@ -303,6 +317,8 @@ void BookWidget::showIndex()
     }
 
     helper.endDiv();
+
+    m_indexReading = true;
 
     m_view->execJS(QString("setPageText('%1', '', '')").arg(HtmlHelper::jsEscape(helper.html())));
 }
@@ -332,6 +348,8 @@ void BookWidget::showIndex(int tid)
         helper.endHtmlTag();
 
         m_db->page()->titleID = tid;
+
+        m_indexReading = true;
 
         m_view->execJS(QString("setPageText('%1', '', '')").arg(HtmlHelper::jsEscape(helper.html())));
         m_indexWidget->selectTitle(tid);

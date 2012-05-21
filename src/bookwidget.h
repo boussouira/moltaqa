@@ -37,6 +37,9 @@ public slots:
     void nextPage();
     void prevPage();
 
+    void wheelNextPage();
+    void wheelPrevPage();
+
     void scrollDown();
     void scrollUp();
 
@@ -70,6 +73,7 @@ protected:
     RichBookReader *m_db;
     LibraryBookManager *m_bookManager;
     bool m_viewInitialized;
+    bool m_indexReading;
 };
 
 #endif // BOOKWIDGET_H
