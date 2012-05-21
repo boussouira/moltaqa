@@ -216,7 +216,6 @@ void MainWindow::setupActions()
     connect(ui->actionImport, SIGNAL(triggered()), SLOT(importBookDialog()));
     connect(ui->actionShamelaImport, SIGNAL(triggered()), SLOT(importFromShamela()));
 
-    //TODO: open Quran quickly
     connect(m_welcomeWidget, SIGNAL(bookSelected(int)), SLOT(openBook(int)));
     connect(m_booksList, SIGNAL(bookSelected(int)), SLOT(openBook(int)));
     connect(ui->actionBooksList, SIGNAL(triggered()), SLOT(showBooksList()));
