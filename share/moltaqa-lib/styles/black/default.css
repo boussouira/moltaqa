@@ -82,6 +82,9 @@ a {
 #simpleBook .bookIndex a:hover {
     color: #184388;
 }
+#simpleBook .bookIndex a:visited {
+    color: #4777DD;
+}
 #simpleBook .bookIndex img {
     cursor:pointer;
     padding: 0 10px;

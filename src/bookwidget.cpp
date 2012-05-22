@@ -332,7 +332,7 @@ void BookWidget::showIndex(int tid)
 
     if(child.isValid()) {
         HtmlHelper helper;
-        helper.beginHtmlTag("ul", ".bookIndex");
+        helper.beginDiv(".bookIndex");
 
         while(child.isValid()) {
             int tid = child.data(ItemRole::idRole).toInt();
@@ -345,7 +345,7 @@ void BookWidget::showIndex(int tid)
             child = child.sibling(child.row()+1, 0);
         }
 
-        helper.endHtmlTag();
+        helper.endDiv();
 
         m_db->page()->titleID = tid;
 

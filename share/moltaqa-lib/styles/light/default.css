@@ -101,6 +101,10 @@ a {
     color: #184388;
 }
 
+#simpleBook .bookIndex a:visited {
+    color: blue;
+}
+
 #simpleBook .bookIndex img {
     cursor:pointer;
     padding: 0 10px;
