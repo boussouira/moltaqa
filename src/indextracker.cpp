@@ -2,6 +2,7 @@
 #include "mainwindow.h"
 #include "bookexception.h"
 #include "librarybookmanager.h"
+#include "utils.h"
 #include "xmlutils.h"
 
 #include <qfile.h>
@@ -33,7 +34,7 @@ IndexTracker::IndexTracker(QObject *parent) :
         qCritical() << "IndexTracker: error" << e.what();
     }
 
-    m_instance = this;
+    ml_set_instance(m_instance, this);
 }
 
 IndexTracker::~IndexTracker()

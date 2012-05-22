@@ -36,7 +36,7 @@ LibraryManager::LibraryManager(LibraryInfo *info, QObject *parent) :
     m_rowatManager(0),
     m_favourites(0)
 {
-    m_instance = this;
+    ml_set_instance(m_instance, this);
 
     QDir dataDir(info->dataDir());
     setDatabasePath(dataDir.filePath("library.db"));

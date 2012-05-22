@@ -42,7 +42,7 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    m_instance = this;
+    ml_set_instance(m_instance, this);
 
     m_shamela = new ShamelaInfo();
     m_manager = new ShamelaManager(m_shamela);

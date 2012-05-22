@@ -94,6 +94,8 @@ void DatabaseError(const QSqlDatabase &db, const char *file, int line);
 
 #define ml_warn_on_fail(con, msg) if(!(con)) {qWarning() << msg ;}
 
+#define ml_set_instance(name, val) ml_warn_on_fail(!name, qPrintable(QString("[%1:%2]").arg(QFileInfo(__FILE__).fileName()).arg(__LINE__)) << #name " is already set"); name = val;
+
 #define ml_delete(p) delete p; p=0;
 #define ml_delete_check(p) if(p) { delete p; p=0; }
 

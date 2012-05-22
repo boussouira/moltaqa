@@ -53,7 +53,7 @@ MainWindow::MainWindow(QWidget *parent):
     m_authorsView(0)
 {
     ui->setupUi(this);
-    m_instance = this;
+    ml_set_instance(m_instance, this);
 
     m_logDialog = new LogDialog(this);
 

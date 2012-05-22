@@ -24,7 +24,7 @@ TarajemRowatView::TarajemRowatView(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    m_instance = this;
+    ml_set_instance(m_instance, this);
     ui->tabWidget->setAutoTabClose(true);
 
     m_filter = new ModelViewFilter(this);

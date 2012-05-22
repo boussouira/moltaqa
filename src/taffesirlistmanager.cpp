@@ -18,7 +18,7 @@ TaffesirListManager::TaffesirListManager(QObject *parent) : XmlManager(parent)
     m_dom.setFilePath(dataDir.filePath("taffesirlist.xml"));
     m_model = 0;
 
-    m_instance = this;
+    ml_set_instance(m_instance, this);
 }
 
 TaffesirListManager::~TaffesirListManager()

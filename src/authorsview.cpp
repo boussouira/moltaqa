@@ -20,7 +20,7 @@ AuthorsView::AuthorsView(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    m_instance = this;
+    ml_set_instance(m_instance, this);
 
     ui->tabWidget->setAutoTabClose(true);
 
