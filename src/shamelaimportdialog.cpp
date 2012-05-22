@@ -346,18 +346,23 @@ void ShamelaImportDialog::startImporting()
 {
     m_importTime.start();
 
-    ui->progressBar->setMaximum(m_manager->getBooksCount());
+    bool addQuarn = ui->checkImportQuran->isChecked();
+    int booksCount = m_manager->getBooksCount();
+
+    if(addQuarn)
+        booksCount++;
+
+    ui->progressBar->setMaximum(booksCount);
     ui->progressBar->setValue(0);
 
-    m_importThreadCount = qMin(ui->spinImportThreads->value(), m_manager->getBooksCount());
+    m_importThreadCount = qMin(ui->spinImportThreads->value(), booksCount);
 
     qDebug("ShamelaImportDialog: Start importing %d books using %d threads",
-           m_manager->getBooksCount(),
+           booksCount,
            m_importThreadCount);
 
     m_manager->selectBooks();
 
-    bool addQuarn = ui->checkImportQuran->isChecked();
     for(int i=0; i<m_importThreadCount; i++) {
         ShamelaImportThread *thread = new ShamelaImportThread(this);
         connect(thread, SIGNAL(bookImported(QString)), SLOT(bookImported(QString)));
