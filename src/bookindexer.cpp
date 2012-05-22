@@ -67,12 +67,13 @@ void BookIndexer::startIndexing()
                 break;
             }
 
-            emit taskDone(task);
         } catch (BookException &e) {
             qCritical() << "BookIndexer: Indexing error:" << e.what();
         } catch (std::exception &e) {
             qCritical() << "BookIndexer: Indexing std error:" << e.what();
         }
+
+        emit taskDone(task);
 
         task = m_trackerIter->next();
     }
