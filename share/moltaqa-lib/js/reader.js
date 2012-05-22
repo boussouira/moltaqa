@@ -13,8 +13,13 @@ function setPageText(text, page, part)
 {
     $('#pageText').fadeOut('fast', function() {
                                $(this).html(text);
-                               $('#pageHeader #currentPage .page .val').text(page);
-                               $('#pageHeader #currentPage .part .val').text(part);
+
+                               if(page)
+                                   $('#pageHeader #currentPage .page .val').text(page);
+
+                               if(part)
+                                   $('#pageHeader #currentPage .part .val').text(part);
+
                                $(this).fadeIn('fast', function() {
                                                   pageTextChanged();
                                               });
