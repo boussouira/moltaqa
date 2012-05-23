@@ -27,7 +27,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     setModal(true);
     loadSettings();
 
-    ui->tabWidget->setCurrentIndex(0);
+    QSettings settings;
+    ui->tabWidget->setCurrentIndex(settings.value("SettingsDialog/tabIndex", 0).toInt());
 
     connect(ui->pushBooksDir, SIGNAL(clicked()), this, SLOT(changeBooksDir()));
     connect(ui->pushSaveSettings, SIGNAL(clicked()), this, SLOT(saveSettings()));
@@ -40,6 +41,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 
 SettingsDialog::~SettingsDialog()
 {
+    QSettings settings;
+    settings.setValue("SettingsDialog/tabIndex", ui->tabWidget->currentIndex());
+
     delete ui;
 }
 
