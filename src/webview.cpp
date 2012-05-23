@@ -346,7 +346,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         searchMenu->addAction(tr("كل الكتب"), this, SLOT(searchInLibrary()));
         menu.addSeparator();
 
-        if(bookWidget) {
+        if(bookWidget && !bookWidget->bookReader()->bookInfo()->isQuran()) {
             QMenu *referMenu = menu.addMenu(tr("نسخ النص مع العزو"));
             foreach(QAction *act, LibraryManager::instance()->textRefersActions()) {
                 referMenu->addAction(act);
