@@ -1,5 +1,7 @@
 body {
     direction: rtl;
+    background: url("images/bg.png") repeat scroll 0 0 transparent;
+    font-size: 15px;
 }
 
 #vertical-wrapper {
@@ -38,7 +40,10 @@ body {
 }
 
 #welcome #icons .icon{
+    background-image: -moz-linear-gradient(#FFFFFF, #E1E1E1);
+    background-image: -webkit-linear-gradient(#FFFFFF, #E1E1E1);
     border: 1px solid #CCCCCC;
+    box-shadow: 0 0 5px 0 #CCCCCC;
     cursor: pointer;
     padding: 5px;
     margin: 0 3px;
