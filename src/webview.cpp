@@ -362,3 +362,22 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
     QWebView::contextMenuEvent(event);
 }
+
+void WebView::keyPressEvent(QKeyEvent *event)
+{
+    if((event->modifiers() & Qt::ControlModifier)) {
+        qreal zoom = zoomFactor();
+        if(event->key() == Qt::Key_Plus)
+            zoom += 0.1;
+        else if(event->key() == Qt::Key_Minus)
+            zoom -= 0.1;
+        else if(event->key() == Qt::Key_0)
+            zoom = 1.0;
+
+        if(zoom != zoomFactor() && 0.1 < zoom && zoom < 5.0) {
+            setZoomFactor(zoom);
+        }
+    }
+
+    QWebView::keyPressEvent(event);
+}

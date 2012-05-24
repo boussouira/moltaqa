@@ -35,6 +35,7 @@ public:
 protected:
     void wheelEvent(QWheelEvent *event);
     void contextMenuEvent(QContextMenuEvent *event);
+    void keyPressEvent(QKeyEvent *event);
 
 public slots:
     void setText(const QString &text);
