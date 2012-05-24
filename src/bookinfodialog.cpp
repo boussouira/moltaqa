@@ -12,6 +12,7 @@ BookInfoDialog::BookInfoDialog(QWidget *parent) : QWidget(parent)
     m_view = new WebView(this);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->setMargin(0);
     layout->addWidget(m_view);
 
     Utils::Widget::restore(this, "BookInfoDialog");
