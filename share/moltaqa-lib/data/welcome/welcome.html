@@ -64,6 +64,15 @@
             $('#welcome #icons .icon, #welcome #title img').click(function() {
                 welcome.open($(this).attr('id'));
             });
+
+            bg = Math.round(Math.random(1, 4)*4);
+            if(bg < 1)
+                bg = 1;
+            if(bg > 4)
+                bg = 4;
+
+            if(bg != 1)
+                $('body').css('background', 'url("images/bg_0' + bg + '.png") repeat scroll 0 0 transparent');
         </script>
     </body>
 </html>
