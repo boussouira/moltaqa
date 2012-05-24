@@ -12,7 +12,6 @@
 #include "librarybookmanager.h"
 
 #include <qevent.h>
-#include <qsettings.h>
 #include <qmenu.h>
 #include <qmessagebox.h>
 

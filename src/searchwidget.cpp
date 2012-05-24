@@ -14,8 +14,7 @@
 #include "searchfieldsdialog.h"
 #include <qmessagebox.h>
 #include <qinputdialog.h>
-#include <qsettings.h>
-#include <QCompleter>
+#include <qcompleter.h>
 
 SearchWidget::SearchWidget(QWidget *parent) :
     QWidget(parent),
@@ -232,8 +231,7 @@ Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
 
 void SearchWidget::loadDefaultSearchField()
 {
-    QSettings settings;
-    int currentField = settings.value("Search/defaultField", -1).toInt();
+    int currentField = Utils::Settings::get("Search/defaultField", -1).toInt();
     if(currentField == -2) {
         m_filterManager->selectAll();
     } else if(currentField != -1) {
@@ -273,8 +271,7 @@ QString SearchWidget::getSearchField()
 
 void SearchWidget::saveSearchQuery()
 {
-    QSettings settings;
-    ml_return_on_fail(settings.value("Search/saveSearch", true).toBool());
+    ml_return_on_fail(Utils::Settings::get("Search/saveSearch", true).toBool());
 
     QStringList list;
     list << ui->lineQueryMust->text().trimmed()
@@ -292,8 +289,7 @@ void SearchWidget::saveSearchQuery()
 
 void SearchWidget::loadSearchQuery()
 {
-    QSettings settings;
-    ml_return_on_fail(settings.value("Search/saveSearch", true).toBool());
+    ml_return_on_fail(Utils::Settings::get("Search/saveSearch", true).toBool());
 
     m_completerModel = LibraryManager::instance()->searchManager()->getSavedSearchModel();
 
@@ -418,8 +414,7 @@ void SearchWidget::showSearchFieldMenu()
 
 void SearchWidget::showMessageAfterSearch()
 {
-    QSettings settings;
-    if(settings.value("Search/showMessageAfterSearch", false).toBool())
+    if(Utils::Settings::get("Search/showMessageAfterSearch", false).toBool())
         showSearchInfo();
 }
 

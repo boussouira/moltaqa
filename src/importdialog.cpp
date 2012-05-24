@@ -30,7 +30,6 @@
 #include <qurl.h>
 #include <QTime>
 #include <qtconcurrentrun.h>
-#include <qsettings.h>
 
 ImportDialog::ImportDialog(QWidget *parent) :
     QDialog(parent),
@@ -74,8 +73,7 @@ void ImportDialog::on_pushCancel_clicked()
 
 void ImportDialog::on_pushAddFile_clicked()
 {
-    QSettings settings;
-    QString lastPath = settings.value("SavedPath/ImportDialog").toString();
+    QString lastPath = Utils::Settings::get("SavedPath/ImportDialog").toString();
 
     QStringList files = QFileDialog::getOpenFileNames(this,
                                                       tr("اختر الكتب التي تريد استيرادها:"),
@@ -86,8 +84,8 @@ void ImportDialog::on_pushAddFile_clicked()
     }
 
     if(files.size())
-        settings.setValue("SavedPath/ImportDialog",
-                          QFileInfo(files.first()).absolutePath());
+        Utils::Settings::set("SavedPath/ImportDialog",
+                             QFileInfo(files.first()).absolutePath());
 }
 
 void ImportDialog::on_pushDeleteFile_clicked()

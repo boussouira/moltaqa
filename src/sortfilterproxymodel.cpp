@@ -2,12 +2,11 @@
 #include "stringutils.h"
 #include "modelenums.h"
 #include "librarybook.h"
-#include <qsettings.h>
+#include "utils.h"
 
 SortFilterProxyModel::SortFilterProxyModel(QObject *parent) : QSortFilterProxyModel(parent)
 {
-    QSettings settings;
-    m_showQuranFirst = settings.value("Style/showQuranFirst", true).toBool();
+    m_showQuranFirst = Utils::Settings::get("Style/showQuranFirst", true).toBool();
 }
 
 bool SortFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const

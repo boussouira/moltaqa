@@ -11,7 +11,6 @@
 
 #include <qdatetime.h>
 #include <qsqlquery.h>
-#include <qsettings.h>
 
 LibrarySearcher::LibrarySearcher(QObject *parent)
     : QThread(parent),
@@ -27,8 +26,7 @@ LibrarySearcher::LibrarySearcher(QObject *parent)
     m_resultReader = new SearchResultReader(this);
     m_sort = new Sort();
 
-    QSettings settings;
-    m_resultParPage = settings.value("Search/resultPeerPage", 10).toInt();
+    m_resultParPage = Utils::Settings::get("Search/resultPeerPage", 10).toInt();
 }
 
 LibrarySearcher::~LibrarySearcher()

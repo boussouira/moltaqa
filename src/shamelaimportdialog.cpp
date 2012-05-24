@@ -30,7 +30,6 @@
 #include <qstandarditemmodel.h>
 #include <qmessagebox.h>
 #include <qevent.h>
-#include <qsettings.h>
 #include <qscrollbar.h>
 #include <qprogressdialog.h>
 
@@ -61,10 +60,9 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
     ui->stackedWidget->setCurrentIndex(0);
     ui->pushDone->hide();
 
-    QSettings settings;
     ui->spinImportThreads->setMaximum(QThread::idealThreadCount() * 5);
-    ui->spinImportThreads->setValue(settings.value("ShamelaImportDialog/threadCount",
-                                                   QThread::idealThreadCount()).toInt());
+    ui->spinImportThreads->setValue(Utils::Settings::get("ShamelaImportDialog/threadCount",
+                                                         QThread::idealThreadCount()).toInt());
 
     Utils::Widget::restore(this, "ShamelaImportDialog");
 
@@ -96,9 +94,8 @@ void ShamelaImportDialog::closeEvent(QCloseEvent *event)
 
         Utils::Widget::save(this, "ShamelaImportDialog");
 
-        QSettings settings;
-        settings.setValue("ShamelaImportDialog/threadCount",
-                          ui->spinImportThreads->value());
+        Utils::Settings::set("ShamelaImportDialog/threadCount",
+                             ui->spinImportThreads->value());
 
         event->accept();
     } else {
@@ -150,9 +147,8 @@ QString ShamelaImportDialog::getFolderPath(const QString &defaultPath)
 
 void ShamelaImportDialog::selectShamela()
 {
-    QSettings settings;
-    QString lastPath = settings.value("SavedPath/ShamelaImportDialog",
-                                      ui->lineShamelaDir->text()).toString();
+    QString lastPath = Utils::Settings::get("SavedPath/ShamelaImportDialog",
+                                            ui->lineShamelaDir->text()).toString();
 
     QString path = getFolderPath(lastPath);
 
@@ -164,7 +160,7 @@ void ShamelaImportDialog::selectShamela()
             m_manager->close();
             m_shamela->setShamelaPath(path);
 
-            settings.setValue("SavedPath/ShamelaImportDialog", path);
+            Utils::Settings::set("SavedPath/ShamelaImportDialog", path);
         } else {
             QMessageBox::warning(this,
                                  tr("الاستيراد من الشاملة"),
@@ -433,8 +429,7 @@ void ShamelaImportDialog::doneImporting()
         MdbConverter::removeAllConvertedDB();
 #endif
 
-        QSettings settings;
-        settings.setValue("ShamelaImportDialog/threadCount",
+        Utils::Settings::set("ShamelaImportDialog/threadCount",
                           ui->spinImportThreads->value());
 
         QMessageBox::information(this,

@@ -28,7 +28,6 @@
 #include <qapplication.h>
 #include <qclipboard.h>
 #include <qstatusbar.h>
-#include <qsettings.h>
 
 BookWidgetManager::BookWidgetManager(QWidget *parent) :
     QWidget(parent)
@@ -45,9 +44,8 @@ BookWidgetManager::BookWidgetManager(QWidget *parent) :
     m_splitter->addWidget(m_topTab);
     m_splitter->addWidget(m_bottomTab);
 
-    QSettings settings;
-    Qt::Orientation orientation = static_cast<Qt::Orientation>(settings.value("BookWidgetManager/splitter",
-                                                                              Qt::Vertical).toInt());
+    Qt::Orientation orientation = static_cast<Qt::Orientation>(Utils::Settings::get("BookWidgetManager/splitter",
+                                                                                    Qt::Vertical).toInt());
     m_splitter->setOrientation(orientation);
 
     m_moveAct = new QAction(tr("نقل الى نافذة اخرى"), this);
@@ -227,8 +225,7 @@ void BookWidgetManager::reverseSplitter()
     m_splitter->setOrientation((m_splitter->orientation()==Qt::Horizontal) ?
                                    Qt::Vertical : Qt::Horizontal);
 
-    QSettings settings;
-    settings.setValue("BookWidgetManager/splitter", m_splitter->orientation());
+    Utils::Settings::set("BookWidgetManager/splitter", m_splitter->orientation());
 }
 
 void BookWidgetManager::addToFavouite()

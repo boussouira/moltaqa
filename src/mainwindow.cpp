@@ -66,8 +66,7 @@ MainWindow::MainWindow(QWidget *parent):
 bool MainWindow::init()
 {
     // TODO: re-code this properly
-    QSettings settings;
-    QString libDir = settings.value("library_dir").toString();
+    QString libDir = Utils::Settings::get("library_dir").toString();
     QString message;
 
     if(!Utils::Library::isValidLibrary(libDir)) {
@@ -93,7 +92,7 @@ bool MainWindow::init()
             NewLibraryDialog dialog(this);
             if(dialog.exec() == QDialog::Accepted) {
                 libDir = dialog.libraryDir();
-                settings.setValue("library_dir", libDir);
+                Utils::Settings::set("library_dir", libDir);
             } else {
                 QMessageBox::critical(this,
                                       App::name(),
@@ -108,7 +107,7 @@ bool MainWindow::init()
                                                              QDir::homePath());
             if(path.size() && Utils::Library::isValidLibrary(path)) {
                 libDir = path;
-                settings.setValue("library_dir", libDir);
+                Utils::Settings::set("library_dir", libDir);
             } else {
                 QMessageBox::critical(this,
                                       App::name(),

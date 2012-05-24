@@ -7,8 +7,11 @@ namespace Ui {
     class SettingsDialog;
 }
 
+class QSettings;
+
 class SettingsDialog : public QDialog {
     Q_OBJECT
+
 public:
     SettingsDialog(QWidget *parent = 0);
     ~SettingsDialog();
@@ -21,6 +24,8 @@ protected:
 
     QString getFilePath();
     QString getFolderPath(const QString &defaultPath = QString());
+
+    void saveSetting(QSettings &settings, const QString &group, const QString &key, const QVariant &value, bool needRestart=false);
 
 protected slots:
     void changeBooksDir();
@@ -35,6 +40,7 @@ private slots:
 
 private:
     Ui::SettingsDialog *ui;
+    bool m_needAppRestart;
 };
 
 #endif // SETTINGSDIALOG_H
