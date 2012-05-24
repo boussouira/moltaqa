@@ -1,9 +1,4 @@
 #include "indexmanager.h"
-#include <qsettings.h>
-#include <qdir.h>
-#include <qthread.h>
-#include <qvariant.h>
-
 #include "mainwindow.h"
 #include "arabicanalyzer.h"
 #include "bookindexer.h"
@@ -11,6 +6,10 @@
 #include "timeutils.h"
 #include "clconstants.h"
 #include "bookexception.h"
+
+#include <qdir.h>
+#include <qthread.h>
+#include <qvariant.h>
 
 IndexManager::IndexManager(QObject *parent) :
     QObject(parent),
@@ -31,10 +30,9 @@ bool IndexManager::openWriter()
     ml_return_val_on_fail2(!m_writer, "IndexManager::openWriter already open", true);
 
     QDir dir;
-    QSettings settings;
     m_analyzer = new ArabicAnalyzer();
 
-    int ramSize = settings.value("Search/ramSize", DEFAULT_INDEXING_RAM).toInt();
+    int ramSize = Utils::Settings::get("Search/ramSize", DEFAULT_INDEXING_RAM).toInt();
 
     if(!dir.exists(m_library->indexDataDir()))
         dir.mkdir(m_library->indexDataDir());
@@ -80,8 +78,7 @@ void IndexManager::start()
 {
     ml_return_on_fail2(openWriter(), "IndexManager: Can't open IndexWriter");
 
-    QSettings settings;
-    m_threadCount = settings.value("Search/threadCount", QThread::idealThreadCount()).toInt();
+    m_threadCount = Utils::Settings::get("Search/threadCount", QThread::idealThreadCount()).toInt();
     m_taskIter = m_indexTracker->getTaskIter();
     m_indexedBookCount = 0;
 

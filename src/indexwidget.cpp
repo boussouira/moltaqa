@@ -4,10 +4,9 @@
 #include "bookpage.h"
 #include "modelutils.h"
 #include "utils.h"
+#include "modelviewfilter.h"
 
 #include <qstandarditemmodel.h>
-#include "modelviewfilter.h"
-#include <qsettings.h>
 
 IndexWidget::IndexWidget(QWidget *parent) :
     QWidget(parent),
@@ -20,11 +19,10 @@ IndexWidget::IndexWidget(QWidget *parent) :
 
     ui->treeView->setExpandsOnDoubleClick(false);
 
-    QSettings settings;
-    ui->toolSyncTitle->setChecked(settings.value("IndexWidget/updateTitle",
-                                                 true).toBool());
+    ui->toolSyncTitle->setChecked(Utils::Settings::get("IndexWidget/updateTitle",
+                                                       true).toBool());
 
-    if(settings.value("Style/singleIndexClick", false).toBool()) {
+    if(Utils::Settings::get("Style/singleIndexClick", false).toBool()) {
         connect(ui->treeView, SIGNAL(clicked(QModelIndex)),
                 SLOT(listClicked(QModelIndex)));
     } else {
@@ -38,9 +36,8 @@ IndexWidget::IndexWidget(QWidget *parent) :
 
 IndexWidget::~IndexWidget()
 {
-    QSettings settings;
-    settings.setValue("IndexWidget/updateTitle",
-                      ui->toolSyncTitle->isChecked());
+    Utils::Settings::set("IndexWidget/updateTitle",
+                         ui->toolSyncTitle->isChecked());
 
     delete ui;
 }

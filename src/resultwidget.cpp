@@ -14,7 +14,6 @@
 #include <qdir.h>
 #include <qplaintextedit.h>
 #include <qboxlayout.h>
-#include <qsettings.h>
 #include <qtoolbutton.h>
 #include <qmenu.h>
 
@@ -298,8 +297,7 @@ void ResultWidget::fetechStarted()
     m_view->execJS("fetechStarted();");
     showProgressBar(true);
 
-    QSettings settings;
-    ui->progressBar->setMaximum(settings.value("Search/resultPeerPage", 10).toInt());
+    ui->progressBar->setMaximum(Utils::Settings::get("Search/resultPeerPage", 10).toInt());
     ui->progressBar->setValue(0);
 }
 

@@ -5,6 +5,7 @@
 #include <qfile.h>
 #include <qdatetime.h>
 #include <qdebug.h>
+#include <qvariant.h>
 
 #define APP_VERSION_STR "0.9.0"
 #define APP_VERSION 0x000900
@@ -46,6 +47,11 @@ namespace Files {
 void removeDir(const QString &path);
 }
 
+namespace Settings {
+QVariant get(const QString &key, const QVariant &defaultValue=QVariant());
+void set(const QString &key, const QVariant &defaultValue);
+bool contains(const QString &key);
+}
 }
 
 namespace App {

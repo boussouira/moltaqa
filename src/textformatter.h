@@ -4,7 +4,6 @@
 #include <qobject.h>
 #include <qstring.h>
 #include <qregexp.h>
-#include <qsettings.h>
 #include <qstack.h>
 
 #include "htmlhelper.h"

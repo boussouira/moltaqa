@@ -76,20 +76,14 @@ BookWidget::~BookWidget()
 
 void BookWidget::loadSettings()
 {
-    QSettings settings;
-    settings.beginGroup("BookWidget");
-    QByteArray sizes = settings.value("splitter").toByteArray();
+    QByteArray sizes = Utils::Settings::get("BookWidget/splitter").toByteArray();
     if(sizes.size())
         m_splitter->restoreState(sizes);
-    settings.endGroup();
 }
 
 void BookWidget::saveSettings()
 {
-    QSettings settings;
-    settings.beginGroup("BookWidget");
-    settings.setValue("splitter", m_splitter->saveState());
-    settings.endGroup();
+    Utils::Settings::set("BookWidget/splitter", m_splitter->saveState());
 }
 
 bool BookWidget::eventFilter(QObject *obj, QEvent *event)

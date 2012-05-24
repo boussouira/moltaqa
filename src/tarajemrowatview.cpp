@@ -7,12 +7,12 @@
 #include "utils.h"
 #include "stringutils.h"
 #include "modelviewfilter.h"
+
 #include <qstandarditemmodel.h>
 #include <qdir.h>
 #include <qurl.h>
 #include <qdebug.h>
 #include <qwebview.h>
-#include <qsettings.h>
 
 static TarajemRowatView *m_instance = 0;
 
@@ -75,12 +75,11 @@ void TarajemRowatView::aboutToShow()
     if(!ui->tabWidget->count())
         addTab(tr("الراوي"));
 
-    QSettings settings;
-    if(settings.contains("RowatView/splitter"))
-        ui->splitter->restoreState(settings.value("RowatView/splitter").toByteArray());
+    if(Utils::Settings::contains("RowatView/splitter"))
+        ui->splitter->restoreState(Utils::Settings::get("RowatView/splitter").toByteArray());
 
     if(!m_currentRawi) {
-        if(!openRawiInfo(settings.value("RowatView/last").toInt())) {
+        if(!openRawiInfo(Utils::Settings::get("RowatView/last").toInt())) {
             on_treeView_doubleClicked(m_model->index(0, 0));
         }
     }
@@ -88,8 +87,7 @@ void TarajemRowatView::aboutToShow()
 
 void TarajemRowatView::aboutToHide()
 {
-    QSettings settings;
-    settings.setValue("RowatView/splitter", ui->splitter->saveState());
+    Utils::Settings::set("RowatView/splitter", ui->splitter->saveState());
 }
 
 bool TarajemRowatView::openRawiInfo(int rawiID)
@@ -248,8 +246,7 @@ void TarajemRowatView::on_treeView_doubleClicked(const QModelIndex &index)
 void TarajemRowatView::lastTabClosed()
 {
     if(m_currentRawi) {
-        QSettings settings;
-        settings.setValue("RowatView/last", m_currentRawi->id);
+        Utils::Settings::set("RowatView/last", m_currentRawi->id);
 
         m_currentRawi.clear();
     }

@@ -7,7 +7,6 @@
 #include "stringutils.h"
 #include "xmlutils.h"
 
-#include <qsettings.h>
 #include <qdir.h>
 #include <qdatetime.h>
 #include <qdebug.h>

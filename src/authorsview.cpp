@@ -9,7 +9,6 @@
 #include "stringutils.h"
 #include "webview.h"
 #include "htmlhelper.h"
-#include <qsettings.h>
 
 static AuthorsView *m_instance = 0;
 
@@ -73,12 +72,11 @@ void AuthorsView::aboutToShow()
     if(!ui->tabWidget->count())
         addTab(tr("المؤلف"));
 
-    QSettings settings;
-    if(settings.contains("AuthorsView/splitter"))
-        ui->splitter->restoreState(settings.value("AuthorsView/splitter").toByteArray());
+    if(Utils::Settings::contains("AuthorsView/splitter"))
+        ui->splitter->restoreState(Utils::Settings::get("AuthorsView/splitter").toByteArray());
 
     if(!m_currentAuthor) {
-        if(!openAuthorInfo(settings.value("AuthorsView/last").toInt())) {
+        if(!openAuthorInfo(Utils::Settings::get("AuthorsView/last").toInt())) {
             on_treeView_doubleClicked(m_model->index(0, 0));
         }
     }
@@ -86,8 +84,7 @@ void AuthorsView::aboutToShow()
 
 void AuthorsView::aboutToHide()
 {
-    QSettings settings;
-    settings.setValue("AuthorsView/splitter", ui->splitter->saveState());
+    Utils::Settings::set("AuthorsView/splitter", ui->splitter->saveState());
 }
 
 bool AuthorsView::openAuthorInfo(int authorID)
@@ -253,8 +250,7 @@ void AuthorsView::on_treeView_doubleClicked(const QModelIndex &index)
 void AuthorsView::lastTabClosed()
 {
     if(m_currentAuthor) {
-        QSettings settings;
-        settings.setValue("AuthorsView/last", m_currentAuthor->id);
+        Utils::Settings::set("AuthorsView/last", m_currentAuthor->id);
 
         m_currentAuthor.clear();
     }

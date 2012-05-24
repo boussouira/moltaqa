@@ -11,7 +11,6 @@
 #include <qstandarditemmodel.h>
 #include <qinputdialog.h>
 #include <qmessagebox.h>
-#include <qsettings.h>
 
 AuthorsManagerWidget::AuthorsManagerWidget(QWidget *parent) :
     ControlCenterWidget(parent),
@@ -275,13 +274,11 @@ void AuthorsManagerWidget::aboutToShow()
     QVBoxLayout *layout = new QVBoxLayout(ui->tabTarjama);
     layout->addWidget(m_webEdit);
 
-    QSettings settings;
-    if(settings.contains("AuthorsManagerWidget/splitter"))
-        ui->splitter->restoreState(settings.value("AuthorsManagerWidget/splitter").toByteArray());
+    if(Utils::Settings::contains("AuthorsManagerWidget/splitter"))
+        ui->splitter->restoreState(Utils::Settings::get("AuthorsManagerWidget/splitter").toByteArray());
 }
 
 void AuthorsManagerWidget::aboutToHide()
 {
-    QSettings settings;
-    settings.setValue("AuthorsManagerWidget/splitter", ui->splitter->saveState());
+    Utils::Settings::set("AuthorsManagerWidget/splitter", ui->splitter->saveState());
 }

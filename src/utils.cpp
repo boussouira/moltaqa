@@ -326,6 +326,26 @@ void removeDir(const QString &path)
 }
 } // Files
 
+namespace Settings {
+QVariant get(const QString &key, const QVariant &defaultValue)
+{
+    QSettings settings;
+    return settings.value(key, defaultValue);
+}
+
+void set(const QString &key, const QVariant &defaultValue)
+{
+    QSettings settings;
+    settings.setValue(key, defaultValue);
+}
+
+bool contains(const QString &key)
+{
+    QSettings settings;
+    return settings.contains(key);
+}
+} // Settings
+
 }
 
 namespace App {
