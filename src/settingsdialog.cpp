@@ -27,6 +27,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     setModal(true);
     loadSettings();
 
+    m_needAppRestart = false;
+
     QSettings settings;
     ui->tabWidget->setCurrentIndex(settings.value("SettingsDialog/tabIndex", 0).toInt());
 
@@ -178,6 +180,23 @@ QString SettingsDialog::getFolderPath(const QString &defaultPath)
     return QString();
 }
 
+void SettingsDialog::saveSetting(QSettings &settings, const QString &group, const QString &key, const QVariant &value, bool needRestart)
+{
+    if(group.size())
+        settings.beginGroup(group);
+
+    if(needRestart && !m_needAppRestart) {
+        if(settings.value(key) != value)
+            m_needAppRestart = true;
+    }
+
+    settings.setValue(key, value);
+
+    if(group.size())
+        settings.endGroup();
+
+}
+
 void SettingsDialog::changeBooksDir()
 {
     QString filePath = getFolderPath(ui->lineBooksDir->text());
@@ -191,34 +210,36 @@ void SettingsDialog::saveSettings()
     QSettings settings;
     QString appPath = ui->lineBooksDir->text();
 
-    settings.setValue("library_dir", appPath);
+    saveSetting(settings, QString(), "library_dir", appPath, true);
 
-    settings.beginGroup("Search");
-    settings.setValue("resultPeerPage", ui->spinResultPeerPage->value());
-    settings.setValue("threadCount", ui->spinThreadCount->value());
-    settings.setValue("ramSize", ui->comboIndexingRam->itemData(ui->comboIndexingRam->currentIndex()));
-    settings.setValue("defaultField", ui->comboSearchFields->itemData(ui->comboSearchFields->currentIndex()));
-    settings.setValue("saveSearch", ui->checkSaveSearch->isChecked());
-    settings.setValue("showMessageAfterSearch", ui->checkShowMessageAfterSearch->isChecked());
-    settings.endGroup();
+    saveSetting(settings, "Search", "resultPeerPage", ui->spinResultPeerPage->value());
+    saveSetting(settings, "Search", "threadCount", ui->spinThreadCount->value());
+    saveSetting(settings, "Search", "ramSize", ui->comboIndexingRam->itemData(ui->comboIndexingRam->currentIndex()));
+    saveSetting(settings, "Search", "defaultField", ui->comboSearchFields->itemData(ui->comboSearchFields->currentIndex()));
+    saveSetting(settings, "Search", "saveSearch", ui->checkSaveSearch->isChecked());
+    saveSetting(settings, "Search", "showMessageAfterSearch", ui->checkShowMessageAfterSearch->isChecked());
 
-    settings.beginGroup("Style");
-    settings.setValue("name", ui->comboStyles->itemData(ui->comboStyles->currentIndex(),
-                                                        Qt::UserRole).toHash().value("dir"));
-    settings.setValue("fontFamily", ui->fontComboBox->currentFont().toString());
-    settings.setValue("fontSize", ui->comboFontSize->currentText());
+    saveSetting(settings, "Style", "name", ui->comboStyles->itemData(ui->comboStyles->currentIndex(),
+                                                        Qt::UserRole).toHash().value("dir"), true);
+    saveSetting(settings, "Style", "fontFamily", ui->fontComboBox->currentFont().toString());
+    saveSetting(settings, "Style", "fontSize", ui->comboFontSize->currentText());
 
-    settings.setValue("singleIndexClick", ui->checkSingleIndexClick->isChecked());
-    settings.setValue("removeTashekil", ui->checkRemoveTashekil->isChecked());
-    settings.setValue("showQuranFirst", ui->checkShowQuranFirst->isChecked());
+    saveSetting(settings, "Style", "singleIndexClick", ui->checkSingleIndexClick->isChecked(), true);
+    saveSetting(settings, "Style", "removeTashekil", ui->checkRemoveTashekil->isChecked(), true);
+    saveSetting(settings, "Style", "showQuranFirst", ui->checkShowQuranFirst->isChecked(), true);
 
-    settings.endGroup();
 
     QWebSettings *webSettings = QWebSettings::globalSettings();
     webSettings->setFontFamily(QWebSettings::StandardFont,
                                ui->fontComboBox->currentFont().toString());
     webSettings->setFontSize(QWebSettings::DefaultFontSize,
                              ui->comboFontSize->currentText().toInt());
+
+    if(m_needAppRestart) {
+        QMessageBox::information(this,
+                                 windowTitle(),
+                                 tr("يجب إعادة تشغيل البرنامج لتطبيق التغييرات"));
+    }
 
     accept();
 }
