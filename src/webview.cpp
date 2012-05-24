@@ -331,10 +331,6 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         if(parent())
             bookWidget = qobject_cast<BookWidget*>(parent()->parent()); // QSplitter > BookWidget
 
-//        QString text = Utils::String::Arabic::removeTashekil(selectedText().simplified());
-//        text = Utils::String::abbreviate(text, 120);
-//        QMenu *sub = menu.addMenu(tr("بحث عن '%1' في").arg(text));
-
         QMenu *searchMenu = menu.addMenu(tr("بحث عن النص المحدد في"));
 
         if(bookWidget)
