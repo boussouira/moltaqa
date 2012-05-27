@@ -55,11 +55,15 @@ QString BookEditorView::title()
 void BookEditorView::setupView()
 {
     ui->tabWidget->setTabsClosable(true);
+    ui->tabWidget->setDocumentMode(true);
 
     QWidget *w = new QWidget(this);
     QVBoxLayout *webLayout = new QVBoxLayout(w);
+    webLayout->setMargin(0);
+
     m_webView = new EditWebView(this);
     webLayout->addWidget(m_webView);
+
     w->setLayout(webLayout);
 
     m_indexEditor = new BookIndexEditor(this);
