@@ -15,7 +15,7 @@ ViewManager::ViewManager(QWidget *parent) :
      m_defautView(0),
      m_currentView(0)
 {
-    m_copyLinkAction = new QAction(tr("نسخ رابط الصفحة"), this);
+    m_copyLinkAction = new QAction(tr("نسخ رابط الشاشة"), this);
 
     connect(m_copyLinkAction, SIGNAL(triggered()), SLOT(copyViewLink()));
 }
@@ -145,7 +145,7 @@ void ViewManager::copyViewLink()
 {
     QString link = m_currentView->viewLink();
     if(link.isEmpty()) {
-        m_mainWindow->statusBar()->showMessage(tr("لا يمكن نسخ رابط هذه الصفحة"),
+        m_mainWindow->statusBar()->showMessage(tr("لا يمكن نسخ رابط هذه الشاشة"),
                                                2500);
     } else {
         QClipboard *clipboard = QApplication::clipboard();

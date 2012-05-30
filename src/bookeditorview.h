@@ -14,6 +14,7 @@ class EditWebView;
 class RichBookReader;
 class QTabWidget;
 class BookIndexEditor;
+class QSplitter;
 
 class BookEditorView : public AbstarctView
 {
@@ -21,11 +22,11 @@ class BookEditorView : public AbstarctView
 public:
     BookEditorView(QWidget *parent = 0);
     ~BookEditorView();
-    
+
     QString title();
     void editBook(LibraryBookPtr book, int pageID=0);
     bool maySave(bool canCancel=true);
-    
+
 protected:
     void setupView();
     void setupToolBar();
@@ -69,6 +70,7 @@ protected:
     QAction *m_actionFirstPage;
     QAction *m_actionLastPage;
     QAction *m_actionGotToPage;
+    QSplitter *m_splitter;
     EditWebView *m_webView;
     RichBookReader *m_bookReader;
     BookEditor *m_bookEditor;

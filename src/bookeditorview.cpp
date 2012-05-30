@@ -28,6 +28,7 @@
 BookEditorView::BookEditorView(QWidget *parent) :
     AbstarctView(parent),
     ui(new Ui::BookEditorView),
+    m_splitter(0),
     m_bookReader(0),
     m_currentPage(0),
     m_indexEdited(false)
@@ -42,6 +43,8 @@ BookEditorView::BookEditorView(QWidget *parent) :
 
 BookEditorView::~BookEditorView()
 {
+    Utils::Settings::set("BookEditorView/splitter", m_splitter->saveState());
+
     ml_delete_check(m_bookReader);
 
     delete ui;
@@ -55,20 +58,27 @@ QString BookEditorView::title()
 void BookEditorView::setupView()
 {
     ui->tabWidget->setTabsClosable(true);
+    ui->tabWidget->setDocumentMode(true);
 
     QWidget *w = new QWidget(this);
     QVBoxLayout *webLayout = new QVBoxLayout(w);
+    webLayout->setMargin(0);
+
     m_webView = new EditWebView(this);
     webLayout->addWidget(m_webView);
+
     w->setLayout(webLayout);
 
     m_indexEditor = new BookIndexEditor(this);
 
-    QSplitter *splitter = new QSplitter(this);
-    splitter->addWidget(m_indexEditor);
-    splitter->addWidget(w);
+    m_splitter = new QSplitter(this);
+    m_splitter->addWidget(m_indexEditor);
+    m_splitter->addWidget(w);
 
-    ui->tabWidget->addTab(splitter, QString());
+    ui->tabWidget->addTab(m_splitter, QString());
+
+    if(Utils::Settings::contains("BookEditorView/splitter"))
+        m_splitter->restoreState(Utils::Settings::get("BookEditorView/splitter").toByteArray());
 
     m_timer = new QTimer(this);
     m_timer->setInterval(500);
