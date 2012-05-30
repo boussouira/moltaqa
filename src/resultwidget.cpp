@@ -10,6 +10,7 @@
 #include "clconstants.h"
 #include "mainwindow.h"
 #include "richbookreader.h"
+#include "stringutils.h"
 
 #include <qdir.h>
 #include <qplaintextedit.h>
@@ -319,7 +320,7 @@ void ResultWidget::fetechFinnished()
 void ResultWidget::gotResult(SearchResult *result)
 {
     result->generateHTML();
-    m_view->execJS(QString("addResult('%1')").arg(HtmlHelper::jsEscape(result->toHtml())));
+    m_view->execJS(QString("addResult('%1')").arg(Utils::Html::jsEscape(result->toHtml())));
 
     ui->progressBar->setValue(ui->progressBar->value()+1);
 }
@@ -344,8 +345,8 @@ void ResultWidget::gotException(QString what, int id)
     }
 
     m_view->execJS(QString("showError('%1', '%2');")
-                   .arg(HtmlHelper::jsEscape(errorTitle))
-                   .arg(HtmlHelper::jsEscape(errorDesc)));
+                   .arg(Utils::Html::jsEscape(errorTitle))
+                   .arg(Utils::Html::jsEscape(errorDesc)));
 
     showProgressBar(false);
 }

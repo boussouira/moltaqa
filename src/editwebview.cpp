@@ -3,6 +3,8 @@
 #include "bookpage.h"
 #include "bookeditorview.h"
 #include "htmlhelper.h"
+#include "stringutils.h"
+
 #include <QDebug>
 
 EditWebView::EditWebView(QWidget *parent) : WebView(parent)
@@ -48,7 +50,7 @@ void EditWebView::setupEditor(const QString &text)
 
 void EditWebView::setEditorText(QString text)
 {
-    execJS(QString("setEditorText('%1')").arg(HtmlHelper::jsEscape(text)));
+    execJS(QString("setEditorText('%1')").arg(Utils::Html::jsEscape(text)));
     resetUndo();
 }
 

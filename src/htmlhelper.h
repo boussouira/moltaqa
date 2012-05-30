@@ -86,8 +86,6 @@ public:
 
     void insertAuthorLink(const QString &authorName, int authorID);
 
-    static QString jsEscape(QString text);
-
 protected:
     void addSelector(QString selector);
     void addExtraAttr(QString attr);

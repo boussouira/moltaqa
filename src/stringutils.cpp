@@ -5,6 +5,16 @@ namespace Utils {
 
 namespace Html {
 
+QString jsEscape(QString text)
+{
+    return text.replace('\\', "\\\\")
+            .replace('"', "\\\"")
+            .replace('\'', "\\'")
+            .replace('\t', "\\t")
+            .replace('\n', "\\n")
+            .replace('\r', "\\r");
+}
+
 QString specialCharsEncode(QString text)
 {
      text.replace('&', "&amp;");

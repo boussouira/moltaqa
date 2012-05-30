@@ -18,6 +18,8 @@ inline QString removeTags(QString text)
             : text;
 }
 
+QString jsEscape(QString text);
+
 QString specialCharsEncode(QString text);
 QString getTagsText(const QString &text, const QString &tag);
 

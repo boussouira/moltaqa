@@ -11,6 +11,7 @@
 #include "librarybookmanager.h"
 #include "booksviewer.h"
 #include "utils.h"
+#include "stringutils.h"
 
 #include <qsplitter.h>
 #include <qboxlayout.h>
@@ -263,7 +264,7 @@ void BookWidget::readerTextChanged()
                 continue;
 
             js += "{";
-            js += QString("'bookName' : '%1', ").arg(HtmlHelper::jsEscape(book->title));
+            js += QString("'bookName' : '%1', ").arg(Utils::Html::jsEscape(book->title));
             js += QString("'bookID' : '%1', ").arg(shareeh.bookID);
             js += QString("'pageID' : '%1'").arg(shareeh.pageID);
             js += "},";
@@ -274,7 +275,7 @@ void BookWidget::readerTextChanged()
 
     if(m_viewInitialized) {
         m_view->execJS(QString("setPageText('%1', %2, %3)")
-                       .arg(HtmlHelper::jsEscape(m_db->page()->text))
+                       .arg(Utils::Html::jsEscape(m_db->page()->text))
                        .arg(m_db->page()->page)
                        .arg(m_db->page()->part));
 
@@ -314,7 +315,7 @@ void BookWidget::showIndex()
 
     m_indexReading = true;
 
-    m_view->execJS(QString("setPageText('%1', '', '')").arg(HtmlHelper::jsEscape(helper.html())));
+    m_view->execJS(QString("setPageText('%1', '', '')").arg(Utils::Html::jsEscape(helper.html())));
 }
 
 void BookWidget::showIndex(int tid)
@@ -345,7 +346,7 @@ void BookWidget::showIndex(int tid)
 
         m_indexReading = true;
 
-        m_view->execJS(QString("setPageText('%1', '', '')").arg(HtmlHelper::jsEscape(helper.html())));
+        m_view->execJS(QString("setPageText('%1', '', '')").arg(Utils::Html::jsEscape(helper.html())));
         m_indexWidget->selectTitle(tid);
     } else {
         m_db->goToPage(tid);
