@@ -66,6 +66,10 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
 
     Utils::Widget::restore(this, "ShamelaImportDialog");
 
+#ifndef USE_MDBTOOLS
+    ui->labelShamelaArchive->hide();
+#endif
+
     connect(ui->pushNext, SIGNAL(clicked()), SLOT(nextStep()));
     connect(ui->pushCancel, SIGNAL(clicked()), SLOT(cancel()));
     connect(ui->pushDone, SIGNAL(clicked()), SLOT(accept()));
