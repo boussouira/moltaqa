@@ -45,12 +45,11 @@ QString getTagsText(const QString &text, const QString &tag)
     return result;
 }
 
-QString format(QString text)
+QString nl2br(QString text)
 {
     QString htmlText;
-    text = specialCharsEncode(text);
-
     QStringList paragraphs = text.split(QRegExp("[\\r\\n]{2,}"), QString::SkipEmptyParts);
+
     foreach(QString p, paragraphs) {
         QStringList lines = p.split(QRegExp("[\\r\\n]"), QString::SkipEmptyParts);
 
@@ -69,6 +68,20 @@ QString format(QString text)
     return htmlText;
 }
 
+QString format(QString text)
+{
+    QString htmlText = text;
+    htmlText = specialCharsEncode(htmlText);
+    htmlText = nl2br(htmlText);
+
+    return htmlText;
+}
+
+QString removeHTMLFormat(QString text)
+{
+    text = text.replace(QRegExp("(</p>|<br ?/?>)"), "\n");
+    return removeTags(text);
+}
 } //Html
 
 namespace String {

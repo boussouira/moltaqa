@@ -22,10 +22,10 @@ namespace CLucene {
 
 wchar_t* QStringToWChar(const QString &str);
 wchar_t* intToWChar(int num, int radix=10);
-QString highlightText(const QString &orignalText, lucene::search::Query *query,
+QString highlightText(QString orignalText, lucene::search::Query *query,
                       const wchar_t* field, bool fragment);
 
-QString highlightText(const QString &orignalText, CLuceneQuery *query, bool fragment);
+QString highlightText(QString orignalText, CLuceneQuery *query, bool fragment);
 QString clearSpecialChars(const QString &text);
 
 inline wchar_t* intToWChar(int num, wchar_t *dest, int radix)

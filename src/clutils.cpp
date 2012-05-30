@@ -4,6 +4,8 @@
 #include "arabicanalyzer.h"
 #include "cssformatter.h"
 #include "clucenequery.h"
+#include "stringutils.h"
+
 #include <stdlib.h>
 #include <qregexp.h>
 
@@ -25,7 +27,7 @@ wchar_t* intToWChar(int num, int radix)
     return intToWChar(num, str, radix);
 }
 
-QString highlightText(const QString &orignalText, lucene::search::Query *query,
+QString highlightText(QString orignalText, lucene::search::Query *query,
                       const wchar_t *field, bool fragment)
 {
     // Highlight the text
@@ -41,7 +43,12 @@ QString highlightText(const QString &orignalText, lucene::search::Query *query,
     SimpleFragmenter frag(fragmentSize);
     highlighter.setTextFragmenter(&frag);
 
+    if(fragment) {
+        orignalText = Utils::Html::removeHTMLFormat(orignalText);
+    }
+
     wchar_t* text = QStringToWChar(orignalText);
+
     StringReader reader(text);
     CachingTokenFilter tokenStream(analyzer.tokenStream(field, &reader), true);
     scorer.init(query, field, &tokenStream);
@@ -58,10 +65,10 @@ QString highlightText(const QString &orignalText, lucene::search::Query *query,
     _CLDELETE_CARRAY(highlighterResult)
     _CLDELETE_CARRAY(text);
 
-    return highlightedText;
+    return fragment ? Utils::Html::nl2br(highlightedText) : highlightedText;
 }
 
-QString highlightText(const QString &orignalText, CLuceneQuery *query, bool fragment)
+QString highlightText(QString orignalText, CLuceneQuery *query, bool fragment)
 {
     return highlightText(orignalText, query->searchQuery, query->searchFieldW, fragment);
 }

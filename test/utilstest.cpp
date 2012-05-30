@@ -313,6 +313,24 @@ void UtilsTest::sheerRegExp()
     }
 }
 
+void UtilsTest::removeHTMLFormat()
+{
+    QStringList origins;
+    QStringList excpected;
+
+    origins << "<p>The head</p><p>Small paragraph<br />An other one</p><p>SecondHead</p>"
+            << "<p>Line one<br />Line Two<br />Line Tree</p>"
+            << "<p>The aya number<span class=\"ayanumber\"> (50) </span></span>"
+               ":<span class=\"aya\"><br><span class=\"ayatxt\" id=\"s34a51\">aya</span></span></p>";
+
+    excpected << "The head\n Small paragraph\nAn other one\n SecondHead"
+              << "Line one\nLine Two\nLine Tree"
+              << "The aya number  (50)   : \n aya";
+
+    for(int i=0; i<origins.size(); i++)
+        QCOMPARE(excpected[i], Utils::Html::removeHTMLFormat(origins[i]));
+}
+
 void UtilsTest::cleanupTestCase()
 {
     QSqlDatabase::removeDatabase("TestQueryBuilder");

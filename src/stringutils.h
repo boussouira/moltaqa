@@ -23,7 +23,9 @@ QString jsEscape(QString text);
 QString specialCharsEncode(QString text);
 QString getTagsText(const QString &text, const QString &tag);
 
+QString nl2br(QString text);
 QString format(QString text);
+QString removeHTMLFormat(QString text);
 
 } //Html
 

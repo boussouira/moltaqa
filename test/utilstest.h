@@ -30,6 +30,7 @@ private slots:
 
     void sheerRegExp();
 
+    void removeHTMLFormat();
     void cleanupTestCase();
 
 protected:
