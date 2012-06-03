@@ -44,20 +44,3 @@ SearchFilter *BookSearchWidget::getSearchFilterQuery()
 {
     return m_filterManager->getFilterQuery();
 }
-
-void BookSearchWidget::loadModel()
-{
-    QString m_connectionName = QString("book_i%1_").arg(m_bookInfo->id);
-    while(QSqlDatabase::contains(m_connectionName))
-        m_connectionName.append("_");
-
-    m_bookDB = QSqlDatabase::addDatabase("QSQLITE", m_connectionName);
-    m_bookDB.setDatabaseName(m_bookInfo->path);
-
-    if (!m_bookDB.open()) {
-        ml_warn_db_error(m_bookDB);
-        return;
-    }
-    m_bookQuery = QSqlQuery(m_bookDB);
-
-}

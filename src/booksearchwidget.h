@@ -21,12 +21,9 @@ public:
 
 protected:
     SearchFilter *getSearchFilterQuery();
-    void loadModel();
 
 protected:
     LibraryBookPtr m_bookInfo;
-    QSqlDatabase m_bookDB;
-    QSqlQuery m_bookQuery;
     LibraryBookManager *m_bookManager;
 };
 
