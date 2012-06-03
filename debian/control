@@ -2,13 +2,13 @@ Source: moltaqa-lib
 Section: universe/text
 Priority: extra
 Maintainer: Ahmed Saidi <ahmed7saidi@gmail.com>
-Build-Depends: debhelper (>= 7.0.50~), libqtcore4 (>= 4.7.0), libqtgui4 (>= 4.7.0), libqtwebkit4, libqt4-sql-sqlite (>= 4.7.0), libmdbtools
+Build-Depends: debhelper (>= 7.0.50~)
 Standards-Version: 3.9.1
 Homepage: http://ahlalhdeeth.com
 
 Package: moltaqa-lib
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: libqtcore4 (>= 4.7.0), libqtgui4 (>= 4.7.0), libqtwebkit4, libqt4-sql-sqlite (>= 4.7.0), libmdbtools
 Description: Moltaqa Library is an Arabic and Islamic Library
  Moltaqa Library is an arabic library, it can help in reading and
  searching in thousnd of islamic books, mean features:
