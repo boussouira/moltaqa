@@ -65,26 +65,6 @@ void LibrarySearchFilter::addBook(const QModelIndex &index)
     }
 }
 
-QList<int> LibrarySearchFilter::selectedID()
-{
-    return m_selectedBooks;
-}
-
-QList<int> LibrarySearchFilter::unSelectedID()
-{
-    return m_unSelectedBooks;
-}
-
-int LibrarySearchFilter::selectedCount()
-{
-    return m_selectedBooks.count();
-}
-
-int LibrarySearchFilter::unSelecCount()
-{
-    return m_unSelectedBooks.count();
-}
-
 void LibrarySearchFilter::selectItem(QStandardItem *item, const QList<int> &ids)
 {
     ml_return_on_fail(item);

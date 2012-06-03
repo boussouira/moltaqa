@@ -20,11 +20,11 @@ protected:
     void getBooks(const QModelIndex &index);
     void addBook(const QModelIndex &index);
 
-    QList<int> selectedID();
-    QList<int> unSelectedID();
+    inline QList<int> selectedID() { return m_selectedBooks; }
+    inline QList<int> unSelectedID() { return m_unSelectedBooks; }
 
-    int selectedCount();
-    int unSelecCount();
+    inline int selectedCount() { return m_selectedBooks.count(); }
+    inline int unSelecCount() { return m_unSelectedBooks.count(); }
 
     void selectItem(QStandardItem *item, const QList<int> &ids);
 
