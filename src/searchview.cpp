@@ -1,6 +1,7 @@
 #include "searchview.h"
 #include "tabwidget.h"
 #include "librarysearchwidget.h"
+#include "favouritessearchwidget.h"
 #include "booksearchwidget.h"
 #include "mainwindow.h"
 #include "indexmanager.h"
@@ -85,6 +86,8 @@ SearchWidget *SearchView::newTab(SearchWidget::SearchType searchType, int bookID
     SearchWidget *searchWidget = 0;
     if(searchType == SearchWidget::LibrarySearch) {
         searchWidget = new LibrarySearchWidget(this);
+    } else if(searchType == SearchWidget::FavouritesSearch) {
+        searchWidget = new FavouritesSearchWidget(this);
     } else if(searchType == SearchWidget::BookSearch) {
         searchWidget = new BookSearchWidget(this);
     } else {

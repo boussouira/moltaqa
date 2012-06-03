@@ -15,6 +15,8 @@ public:
     void setSelectedItems(const QList<int> &ids);
     QList<int> getSelectedItems();
 
+    void setForceFilter(bool force);
+
 protected:
     void generateLists();
     void getBooks(const QModelIndex &index);
@@ -31,6 +33,7 @@ protected:
 protected:
     QList<int> m_selectedBooks;
     QList<int> m_unSelectedBooks;
+    bool m_forceFilter; ///< Create filter even if no book or all books are selected
 };
 
 #endif // LIBRARYSEARCHFILTER_H

@@ -62,6 +62,8 @@ public slots:
     void showTarajemRowatView();
     void showAuthorsView();
 
+    void searchInFavourites();
+
     void showBooksList(int tabIndex=-1);
     void aboutdDialog();
     void settingDialog();

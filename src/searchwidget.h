@@ -34,7 +34,8 @@ public:
 
     enum SearchType {
         LibrarySearch,
-        BookSearch
+        BookSearch,
+        FavouritesSearch
     };
 
     virtual void init(int bookID=0)=0;

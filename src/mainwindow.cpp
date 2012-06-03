@@ -219,6 +219,7 @@ void MainWindow::setupActions()
     connect(m_booksList, SIGNAL(bookSelected(int)), SLOT(openBook(int)));
     connect(ui->actionBooksList, SIGNAL(triggered()), SLOT(showBooksList()));
     connect(ui->actionSearchView, SIGNAL(triggered()), SLOT(showSearchView()));
+    connect(ui->actionSearchFavourites, SIGNAL(triggered()), SLOT(searchInFavourites()));
     connect(ui->actionSearchInBook, SIGNAL(triggered()), m_bookView, SLOT(searchInBook()));
     connect(ui->actionTarajemRowat, SIGNAL(triggered()), SLOT(showTarajemRowatView()));
     connect(ui->actionAuthorsView, SIGNAL(triggered()), SLOT(showAuthorsView()));
@@ -270,6 +271,12 @@ void MainWindow::showTarajemRowatView()
 void MainWindow::showAuthorsView()
 {
     m_viewManager->setCurrentView(m_authorsView);
+}
+
+void MainWindow::searchInFavourites()
+{
+    m_searchView->newTab(SearchWidget::FavouritesSearch);
+    m_viewManager->setCurrentView(m_searchView);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

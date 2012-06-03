@@ -18,6 +18,7 @@
 LibrarySearchFilter::LibrarySearchFilter(QObject *parent) :
     SearchFilterManager(parent)
 {
+    m_forceFilter = false;
 }
 
 void LibrarySearchFilter::loadModel()
@@ -84,7 +85,7 @@ SearchFilter *LibrarySearchFilter::getFilterQuery()
     int count = 0;
 
     // Every thing is selected we don't need a filter
-    if(unSelecCount()==0 || selectedCount()==0 ) {
+    if(!m_forceFilter && (!unSelecCount() || !selectedCount())) {
         return 0;
     }
 
@@ -93,12 +94,19 @@ SearchFilter *LibrarySearchFilter::getFilterQuery()
     BooleanQuery *q = new BooleanQuery();
     q->setMaxClauseCount(0x7FFFFFFFL);
 
-    if(selectedCount() <= unSelecCount()) {
-        books = selectedID();
+    if(m_forceFilter && (!selectedCount() || !unSelecCount())) {
+        books = selectedCount() ? selectedID() : unSelectedID();
         filter->clause = BooleanClause::MUST;
-    } else {
-        books = unSelectedID();
-        filter->clause = BooleanClause::MUST_NOT;
+    }
+
+    if(books.isEmpty()) {
+        if(selectedCount() <= unSelecCount()) {
+            books = selectedID();
+            filter->clause = BooleanClause::MUST;
+        } else {
+            books = unSelectedID();
+            filter->clause = BooleanClause::MUST_NOT;
+        }
     }
 
     foreach(int id, books) {
@@ -131,4 +139,9 @@ QList<int> LibrarySearchFilter::getSelectedItems()
 {
     generateLists();
     return m_selectedBooks;
+}
+
+void LibrarySearchFilter::setForceFilter(bool force)
+{
+    m_forceFilter = force;
 }

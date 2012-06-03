@@ -101,6 +101,7 @@
      <string>بحث</string>
     </property>
     <addaction name="actionSearchInBook"/>
+    <addaction name="actionSearchFavourites"/>
     <addaction name="actionSearchView"/>
    </widget>
    <addaction name="menuLibrary"/>
@@ -193,6 +194,11 @@
   <action name="actionLogDialog">
    <property name="text">
     <string>نافذة الاخطاء</string>
+   </property>
+  </action>
+  <action name="actionSearchFavourites">
+   <property name="text">
+    <string>في المفضلة</string>
    </property>
   </action>
  </widget>

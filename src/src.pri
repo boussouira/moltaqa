@@ -137,7 +137,9 @@ SOURCES += mainwindow.cpp \
     selectbooksdialog.cpp \
     loghighlighter.cpp \
     logdialog.cpp \
-    ziputils.cpp
+    ziputils.cpp \
+    favouritessearchwidget.cpp \
+    favouritessearchfilter.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -262,7 +264,9 @@ HEADERS += mainwindow.h \
     selectbooksdialog.h \
     loghighlighter.h \
     logdialog.h \
-    ziputils.h
+    ziputils.h \
+    favouritessearchwidget.h \
+    favouritessearchfilter.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \
