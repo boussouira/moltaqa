@@ -248,7 +248,9 @@ void SearchWidget::saveSearchQuery()
         }
     }
 
-    qDebug() << "Search: Query" << queryStr.trimmed();
+    qDebug() << "Search: Query" << queryStr.trimmed()
+             << "take" << m_searcher->searchTime() << "ms,"
+             << "result count" << m_searcher->resultsCount();
 
     if(m_completerModel) {
         foreach (QString q, list) {
@@ -301,12 +303,10 @@ void SearchWidget::search()
     m_searcher = new LibrarySearcher(this);
     m_searcher->setQuery(query);
 
-    connect(m_searcher, SIGNAL(doneSearching()), SLOT(showMessageAfterSearch()));
+    connect(m_searcher, SIGNAL(doneSearching()), SLOT(doneSearching()));
 
     m_resultWidget->search(m_searcher);
     setCurrentWidget(Result);
-
-    saveSearchQuery();
 }
 
 void SearchWidget::setupCleanMenu()
@@ -371,10 +371,12 @@ void SearchWidget::showSearchFieldMenu()
     menu.exec(QCursor::pos());
 }
 
-void SearchWidget::showMessageAfterSearch()
+void SearchWidget::doneSearching()
 {
     if(Utils::Settings::get("Search/showMessageAfterSearch", false).toBool())
         showSearchInfo();
+
+    saveSearchQuery();
 }
 
 void SearchWidget::saveSelectedField()

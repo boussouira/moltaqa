@@ -65,7 +65,7 @@ protected slots:
     void clearSpecialChar();
     void showFilterTools();
     void showSearchFieldMenu();
-    void showMessageAfterSearch();
+    void doneSearching();
 
     void saveSelectedField();
     void searchfieldsDialog();
