@@ -145,6 +145,13 @@ void SearchManager::saveSearchQueries(QStringList list)
             continue;
 
         QueryBuilder q;
+        q.setTableName("savedSearch", QueryBuilder::Select);
+        q.where("query", str);
+        q.exec(query);
+
+        if(query.next())
+            continue;
+
         q.setTableName("savedSearch", QueryBuilder::Insert);
         q.set("query", str);
 
