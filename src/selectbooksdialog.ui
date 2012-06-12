@@ -25,7 +25,7 @@
     </widget>
    </item>
    <item row="0" column="1" colspan="3">
-    <widget class="FancyLineEdit" name="lineSearch">
+    <widget class="FilterLineEdit" name="lineSearch">
      <property name="placeholderText">
       <string>بحث عن كتاب</string>
      </property>
@@ -78,9 +78,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>FancyLineEdit</class>
+   <class>FilterLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>fancylineedit.h</header>
+   <header>filterlineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

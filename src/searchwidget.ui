@@ -82,11 +82,7 @@ p, li { white-space: pre-wrap; }
              </widget>
             </item>
             <item row="2" column="1">
-             <widget class="FancyLineEdit" name="lineQueryShouldNot">
-              <property name="pixmap" stdset="0">
-               <pixmap resource="../share/moltaqa-lib/qt_rc.qrc">:/images/clear.png</pixmap>
-              </property>
-             </widget>
+             <widget class="FilterLineEdit" name="lineQueryShouldNot"/>
             </item>
             <item row="2" column="2">
              <widget class="QCheckBox" name="checkQueryShouldNot">
@@ -96,18 +92,12 @@ p, li { white-space: pre-wrap; }
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="FancyLineEdit" name="lineQueryMust">
+             <widget class="FilterLineEdit" name="lineQueryMust">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
-              </property>
-              <property name="pixmap" stdset="0">
-               <pixmap resource="../share/moltaqa-lib/qt_rc.qrc">:/images/clear.png</pixmap>
-              </property>
-              <property name="extraPadding" stdset="0">
-               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -119,11 +109,7 @@ p, li { white-space: pre-wrap; }
              </widget>
             </item>
             <item row="1" column="1">
-             <widget class="FancyLineEdit" name="lineQueryShould">
-              <property name="pixmap" stdset="0">
-               <pixmap resource="../share/moltaqa-lib/qt_rc.qrc">:/images/clear.png</pixmap>
-              </property>
-             </widget>
+             <widget class="FilterLineEdit" name="lineQueryShould"/>
             </item>
            </layout>
           </item>
@@ -159,14 +145,7 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item>
-          <widget class="FancyLineEdit" name="lineFilter">
-           <property name="pixmap" stdset="0">
-            <pixmap resource="../share/moltaqa-lib/qt_rc.qrc">:/images/magnifier.png</pixmap>
-           </property>
-           <property name="extraPadding" stdset="0">
-            <bool>true</bool>
-           </property>
-          </widget>
+          <widget class="FilterLineEdit" name="lineFilter"/>
          </item>
          <item>
           <spacer name="horizontalSpacer">
@@ -365,9 +344,9 @@ p, li { white-space: pre-wrap; }
  </widget>
  <customwidgets>
   <customwidget>
-   <class>FancyLineEdit</class>
+   <class>FilterLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>fancylineedit.h</header>
+   <header>filterlineedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -383,8 +362,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>comboSearchField</tabstop>
   <tabstop>pushSearch</tabstop>
  </tabstops>
- <resources>
-  <include location="../share/moltaqa-lib/qt_rc.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

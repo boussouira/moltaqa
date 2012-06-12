@@ -65,10 +65,10 @@ void SearchFilterManager::setTreeView(QTreeView *view)
     }
 }
 
-void SearchFilterManager::setLineEdit(FancyLineEdit *edit)
+void SearchFilterManager::setLineEdit(FilterLineEdit *edit)
 {
     m_lineEdit = edit;
-    m_lineEdit->setMenu(m_menu);
+    m_lineEdit->setFilterMenu(m_menu);
 
     connect(m_lineEdit, SIGNAL(textChanged(QString)),
             SLOT(setFilterText(QString)));
@@ -78,7 +78,6 @@ void SearchFilterManager::setupMenu()
 {
     m_menu = new QMenu(0);
 
-    m_menu->addAction(tr("مسح النص"), this, SLOT(clearFilter()));
     m_menu->addAction(tr("عرض ما تم اختياره"), this, SLOT(showSelected()));
     m_menu->addSeparator();
 
@@ -101,7 +100,7 @@ void SearchFilterManager::setupMenu()
     }
 
     if(m_lineEdit)
-        m_lineEdit->setMenu(m_menu);
+        m_lineEdit->setFilterMenu(m_menu);
 }
 
 SortFilterProxyModel *SearchFilterManager::filterModel()

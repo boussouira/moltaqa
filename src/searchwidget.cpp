@@ -340,32 +340,20 @@ void SearchWidget::search()
 
 void SearchWidget::setupCleanMenu()
 {
-    QList<FancyLineEdit*> lines;
+    QList<FilterLineEdit*> lines;
     lines << ui->lineQueryMust;
     lines << ui->lineQueryShould;
     lines << ui->lineQueryShouldNot;
 
-    foreach(FancyLineEdit *line, lines) {
+    foreach(FilterLineEdit *line, lines) {
         QMenu *menu = new QMenu(line);
-        QAction *clearTextAct = new QAction(tr("مسح النص"), line);
         QAction *clearSpecialCharAct = new QAction(tr("ابطال مفعول الاقواس وغيرها"), line);
 
-        menu->addAction(clearTextAct);
         menu->addAction(clearSpecialCharAct);
 
-        connect(clearTextAct, SIGNAL(triggered()), SLOT(clearLineText()));
         connect(clearSpecialCharAct, SIGNAL(triggered()), SLOT(clearSpecialChar()));
 
-        line->setMenu(menu);
-    }
-}
-
-void SearchWidget::clearLineText()
-{
-    FancyLineEdit *edit = qobject_cast<FancyLineEdit*>(sender()->parent());
-
-    if(edit) {
-        edit->clear();
+        line->setFilterMenu(menu);
     }
 }
 
@@ -460,7 +448,7 @@ void SearchWidget::changeSearchfield()
 
 void SearchWidget::clearSpecialChar()
 {
-    FancyLineEdit *edit = qobject_cast<FancyLineEdit*>(sender()->parent());
+    FilterLineEdit *edit = qobject_cast<FilterLineEdit*>(sender()->parent());
 
     if(edit) {
         edit->setText(Utils::CLucene::clearSpecialChars(edit->text()));

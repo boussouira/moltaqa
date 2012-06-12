@@ -180,7 +180,7 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item>
-          <widget class="FancyLineEdit" name="lineBookSearch"/>
+          <widget class="FilterLineEdit" name="lineBookSearch"/>
          </item>
         </layout>
        </item>
@@ -351,9 +351,9 @@ p, li { white-space: pre-wrap; }
  </widget>
  <customwidgets>
   <customwidget>
-   <class>FancyLineEdit</class>
+   <class>FilterLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>fancylineedit.h</header>
+   <header>filterlineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

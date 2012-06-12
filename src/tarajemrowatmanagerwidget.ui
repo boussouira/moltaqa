@@ -31,7 +31,7 @@
      <widget class="QWidget" name="">
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="FancyLineEdit" name="lineFilter"/>
+        <widget class="FilterLineEdit" name="lineFilter"/>
        </item>
        <item>
         <widget class="QTreeView" name="treeView">
@@ -337,9 +337,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>FancyLineEdit</class>
+   <class>FilterLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>fancylineedit.h</header>
+   <header>filterlineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources>

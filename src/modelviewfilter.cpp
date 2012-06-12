@@ -26,7 +26,7 @@ void ModelViewFilter::setSourceModel(QStandardItemModel *model)
     m_model = model;
 }
 
-void ModelViewFilter::setLineEdit(FancyLineEdit *edit)
+void ModelViewFilter::setLineEdit(FilterLineEdit *edit)
 {
     m_lineEdit = edit;
 }
@@ -58,9 +58,6 @@ void ModelViewFilter::setup()
     ml_return_on_fail2(m_model, "ModelViewFilter::setup model is not set");
     ml_return_on_fail2(m_lineEdit, "ModelViewFilter::setup line edit is not set");
 
-    m_lineEdit->setPixmap(QIcon::fromTheme("edit-clear-locationbar-ltr",
-                                           QIcon(":/images/clear.png")).pixmap(16, 16));
-
     if(m_defaultRole != -1)
         m_filterModel->setSortRole(m_defaultRole);
 
@@ -73,7 +70,6 @@ void ModelViewFilter::setup()
 
     connect(m_lineEdit, SIGNAL(textChanged(QString)), SLOT(filterTextChanged()));
     connect(m_lineEdit, SIGNAL(returnPressed()), SLOT(lineReturnPressed()));
-    connect(m_lineEdit, SIGNAL(buttonClicked()), m_lineEdit, SLOT(clear()));
     connect(m_treeView->header(),
             SIGNAL(sortIndicatorChanged(int,Qt::SortOrder)),
             SLOT(sortChanged(int,Qt::SortOrder)));

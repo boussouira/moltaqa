@@ -2,7 +2,7 @@
 #define SEARCHFILTERMANAGER_H
 
 #include "sortfilterproxymodel.h"
-#include "fancylineedit.h"
+#include "filterlineedit.h"
 #include "libraryinfo.h"
 #include <qstandarditemmodel.h>
 #include <qmenu.h>
@@ -32,7 +32,7 @@ public:
 
     void setSourceModel(QStandardItemModel *model);
     void setTreeView(QTreeView *view);
-    void setLineEdit(FancyLineEdit *edit);
+    void setLineEdit(FilterLineEdit *edit);
     SortFilterProxyModel *filterModel();
 
     void setChangeFilterColumn(bool changeFilter);
@@ -75,7 +75,7 @@ protected:
     SortFilterProxyModel *m_filterModel;
     QStandardItemModel *m_model;
     QTreeView *m_treeView;
-    FancyLineEdit *m_lineEdit;
+    FilterLineEdit *m_lineEdit;
     LibraryInfo *m_libraryInfo;
     QSqlDatabase m_indexDB;
     QMenu *m_menu;

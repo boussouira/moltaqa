@@ -25,7 +25,7 @@
      <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="FancyLineEdit" name="lineFilter">
+        <widget class="FilterLineEdit" name="lineFilter">
          <property name="placeholderText">
           <string>بحث عن راوي</string>
          </property>
@@ -54,9 +54,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>FancyLineEdit</class>
+   <class>FilterLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>fancylineedit.h</header>
+   <header>filterlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>TabWidget</class>

@@ -63,7 +63,6 @@ public slots:
 protected slots:
     void setupCleanMenu();
     void clearSpecialChar();
-    void clearLineText();
     void showFilterTools();
     void showSearchFieldMenu();
     void showMessageAfterSearch();
