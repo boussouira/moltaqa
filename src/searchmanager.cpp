@@ -140,19 +140,21 @@ void SearchManager::saveSearchQueries(QStringList list)
 
     transaction();
 
+    QueryBuilder q;
+    q.setTableName("savedSearch");
+
     foreach(QString str, list) {
         if(str.isEmpty())
             continue;
 
-        QueryBuilder q;
-        q.setTableName("savedSearch", QueryBuilder::Select);
+        q.setQueryType(QueryBuilder::Select);
         q.where("query", str);
         q.exec(query);
 
         if(query.next())
             continue;
 
-        q.setTableName("savedSearch", QueryBuilder::Insert);
+        q.setQueryType(QueryBuilder::Insert);
         q.set("query", str);
 
         q.exec(query);
