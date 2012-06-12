@@ -16,6 +16,10 @@
 #include <qinputdialog.h>
 #include <qcompleter.h>
 
+#define ADD_QUERY(text, andOperator, clause) { \
+    Query *sq = Utils::CLucene::parse(&queryPareser, text, ui->andOperator->isChecked()); \
+    if(sq) q->add(sq, true, BooleanClause::clause);}
+
 SearchWidget::SearchWidget(QWidget *parent) :
     QWidget(parent),
     m_resultWidget(0),
@@ -124,21 +128,23 @@ void SearchWidget::setSearchText(QString mustQuery, QString shouldQuery, QString
 
 Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
 {
-    if(ui->lineQueryMust->text().isEmpty()){
-        if(ui->lineQueryShould->text().size()){
+    if(ui->lineQueryMust->text().trimmed().isEmpty()) {
+        if(ui->lineQueryShould->text().trimmed().size()) {
             ui->lineQueryMust->setText(ui->lineQueryShould->text());
             ui->lineQueryShould->clear();
-        } else {
+        }
+    }
+
+    QString mustQureyStr = ui->lineQueryMust->text().trimmed();
+    QString shouldQureyStr = ui->lineQueryShould->text().trimmed();
+    QString shouldNotQureyStr = ui->lineQueryShouldNot->text().trimmed();
+
+    if(mustQureyStr.isEmpty()){
             QMessageBox::warning(this,
                                  tr("البحث"),
                                  tr("يجب ملء حقل العبارات التي يجب ان تظهر في النتائج"));
             return 0;
-        }
     }
-
-    QString mustQureyStr = ui->lineQueryMust->text();
-    QString shouldQureyStr = ui->lineQueryShould->text();
-    QString shouldNotQureyStr = ui->lineQueryShouldNot->text();
 
     ArabicAnalyzer analyzer;
     BooleanQuery *q = new BooleanQuery;
@@ -147,56 +153,9 @@ Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
     queryPareser.setAllowLeadingWildcard(true);
 
     try {
-        if(mustQureyStr.size()) {
-            if(ui->checkQueryMust->isChecked())
-                queryPareser.setDefaultOperator(QueryParser::AND_OPERATOR);
-            else
-                queryPareser.setDefaultOperator(QueryParser::OR_OPERATOR);
-
-            wchar_t *queryText = Utils::CLucene::QStringToWChar(mustQureyStr);
-            Query *mq = queryPareser.parse(queryText);
-            q->add(mq, true, BooleanClause::MUST);
-
-            free(queryText);
-        }
-
-        if(shouldQureyStr.size()) {
-            if(ui->checkQueryShould->isChecked())
-                queryPareser.setDefaultOperator(QueryParser::AND_OPERATOR);
-            else
-                queryPareser.setDefaultOperator(QueryParser::OR_OPERATOR);
-
-            wchar_t *queryText = Utils::CLucene::QStringToWChar(shouldQureyStr);
-            Query *mq = queryPareser.parse(queryText);
-            q->add(mq, true, BooleanClause::SHOULD);
-
-            free(queryText);
-        }
-
-        if(shouldNotQureyStr.size()) {
-            if(ui->checkQueryShouldNot->isChecked())
-                queryPareser.setDefaultOperator(QueryParser::AND_OPERATOR);
-            else
-                queryPareser.setDefaultOperator(QueryParser::OR_OPERATOR);
-
-            wchar_t *queryText = Utils::CLucene::QStringToWChar(shouldNotQureyStr);
-            Query *mq = queryPareser.parse(queryText);
-            q->add(mq, BooleanClause::MUST_NOT);
-
-            free(queryText);
-        }
-
-        QString queryStr;
-        if(mustQureyStr.size())
-            queryStr += "+(" + mustQureyStr + ") ";
-
-        if(shouldQureyStr.size())
-            queryStr += "(" + shouldQureyStr + ") ";
-
-        if(shouldNotQureyStr.size())
-            queryStr += "-(" + shouldNotQureyStr + ") ";
-
-        qDebug() << "Search: Query" << queryStr.trimmed();
+        ADD_QUERY(mustQureyStr, checkQueryMust, MUST);
+        ADD_QUERY(shouldQureyStr, checkQueryShould, SHOULD);
+        ADD_QUERY(shouldNotQureyStr, checkQueryShouldNot, MUST_NOT);
 
         return q;
 
@@ -280,9 +239,21 @@ void SearchWidget::saveSearchQuery()
 
     LibraryManager::instance()->searchManager()->saveSearchQueries(list);
 
+    QString queryStr;
+    for(int i=0; i<list.size(); i++) {
+        if(list[i].size()) {
+            queryStr += ((i==0) ? "+(" : ((i==2) ? "-(" : "("));
+            queryStr += list[i];
+            queryStr += ") ";
+        }
+    }
+
+    qDebug() << "Search: Query" << queryStr.trimmed();
+
     if(m_completerModel) {
         foreach (QString q, list) {
-            m_completerModel->appendRow(new QStandardItem(q));
+            if(q.size())
+                m_completerModel->appendRow(new QStandardItem(q));
         }
     }
 }

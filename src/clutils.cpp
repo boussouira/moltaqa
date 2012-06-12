@@ -5,6 +5,7 @@
 #include "cssformatter.h"
 #include "clucenequery.h"
 #include "stringutils.h"
+#include "utils.h"
 
 #include <stdlib.h>
 #include <qregexp.h>
@@ -86,5 +87,28 @@ QString clearSpecialChars(const QString &text)
     return clearText;
 }
 
+lucene::search::Query *parse(lucene::queryParser::QueryParser *queryPareser,
+                             const QString &text, bool andOperator)
+{
+    ml_return_val_on_fail(text.size(), 0);
+
+    queryPareser->setDefaultOperator(andOperator ? QueryParser::AND_OPERATOR
+                                                 : QueryParser::OR_OPERATOR);
+
+    Query *query = 0;
+    wchar_t *queryText = Utils::CLucene::QStringToWChar(text);
+    try {
+        query = queryPareser->parse(queryText);
+    } catch(CLuceneError &e) {
+        free(queryText);
+
+        queryText = Utils::CLucene::QStringToWChar(Utils::CLucene::clearSpecialChars(text));
+        query = queryPareser->parse(queryText);
+        free(queryText);
+    }
+
+
+    return query;
+}
 }
 }

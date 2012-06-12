@@ -9,6 +9,10 @@ namespace lucene {
     namespace search {
         class Query;
     }
+
+    namespace queryParser {
+        class QueryParser;
+    }
 }
 
 class CLuceneQuery;
@@ -43,6 +47,8 @@ inline int WCharToInt(const wchar_t *str)
     return _wtoi(str);
 }
 
+lucene::search::Query *parse(lucene::queryParser::QueryParser *queryPareser,
+                             const QString &text, bool andOperator);
 }
 }
 
