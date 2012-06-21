@@ -96,21 +96,51 @@ void HtmlHelper::addJSCode(const QString &jsCode)
     m_html.append("</script>");
 }
 
+/**
+ * @brief Add CSS attribute to current html tag.
+ * Each attribute should start with (.) or (#) to specify a class or id
+ * attribute, (.) for classes and (#) for ids.
+ * To combine CSS selector use (|) or a space.
+ * if you use (|) it will create a new html attribute for each CSS selector.
+ * if you use a space it will combine class selector in a one class attribute.
+ * example:
+ *  "#search|.next|.current" => id="search" class="next" class="current"
+ *  "#search .next .current" => id="search" class="next current"
+ *
+ *@param selector CSS selector
+ */
+
 void HtmlHelper::addSelector(QString selector)
 {
     ml_return_on_fail(selector.size());
 
-    if(!selector.contains('|')) {
-        if(selector.startsWith('#'))
-            m_html.append(QString(" id=\"%1\"").arg(selector.remove(0, 1)));
-        else if(selector.startsWith('.'))
-            m_html.append(QString(" class=\"%1\"").arg(selector.remove(0, 1)));
-        else
-            qDebug("HtmlHelper::addSelector Unknow selector: %s", qPrintable(selector));
-    } else {
+    if(selector.contains('|')) {
         foreach (QString sel, selector.split('|', QString::SkipEmptyParts)) {
-            addSelector(sel);
+
+            if(sel.startsWith('#'))
+                m_html.append(QString(" id=\"%1\"").arg(sel.remove(0, 1)));
+            else if(sel.startsWith('.'))
+                m_html.append(QString(" class=\"%1\"").arg(sel.remove(0, 1)));
+            else
+                qDebug("HtmlHelper::addSelector Unknow selector: %s", qPrintable(sel));
         }
+    } else {
+        QString idAttr;
+        QString classAttr;
+        foreach (QString sel, selector.split(' ', QString::SkipEmptyParts)) {
+            if(selector.startsWith('#'))
+                idAttr.append(sel.remove(0, 1) + ' ');
+            else if(selector.startsWith('.'))
+                classAttr.append(sel.remove(0, 1) + ' ');
+            else
+                qDebug("HtmlHelper::addSelector Unknow selector: %s", qPrintable(sel));
+        }
+
+        if(idAttr.size())
+            m_html.append(QString(" id=\"%1\"").arg(idAttr.trimmed()));
+
+        if(classAttr.size())
+            m_html.append(QString(" class=\"%1\"").arg(classAttr.trimmed()));
     }
 }
 
