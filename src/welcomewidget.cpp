@@ -10,11 +10,48 @@
 #include "librarybookmanager.h"
 #include "utils.h"
 #include "htmlhelper.h"
+#include "authorsmanager.h"
+#include "tarajemrowatmanager.h"
 
 #include <qsettings.h>
 #include <qmenu.h>
 #include <qurl.h>
 #include <qwebframe.h>
+#include <qrunnable.h>
+#include <qtimer.h>
+#include "webpage.h"
+
+class LibraryInfoThread : public QRunnable {
+public:
+    LibraryInfoThread(QWebView *_view) :
+        view(_view),
+        booksCount(0),
+        authorsCount(0),
+        rowatCount(0) {}
+
+    void run()
+    {
+        if(LibraryManager::instance()->bookManager())
+            booksCount = LibraryManager::instance()->bookManager()->booksCount();
+
+        if(LibraryManager::instance()->authorsManager())
+            authorsCount = LibraryManager::instance()->authorsManager()->authorsCount();
+
+        if(LibraryManager::instance()->rowatManager())
+            rowatCount = LibraryManager::instance()->rowatManager()->rowatCount();
+
+        QMetaObject::invokeMethod(view->page()->mainFrame(), "evaluateJavaScript",
+                                  Q_ARG(QString, QString("showStatistics(%1, %2, %3)")
+                                  .arg(booksCount)
+                                  .arg(authorsCount)
+                                  .arg(rowatCount)));
+    }
+
+    QWebView *view;
+    int booksCount;
+    int authorsCount;
+    int rowatCount;
+};
 
 WelcomeWidget::WelcomeWidget(QWidget *parent) :
     AbstarctView(parent),
@@ -23,8 +60,11 @@ WelcomeWidget::WelcomeWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->webView->setPage(new WebPage(ui->webView));
+
     connect(ui->webView->page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()),
             SLOT(jsCleared()));
+
     setupHTML();
 }
 
@@ -83,4 +123,12 @@ void WelcomeWidget::open(QString vid)
 void WelcomeWidget::jsCleared()
 {
     ui->webView->page()->mainFrame()->addToJavaScriptWindowObject("welcome", this);
+
+    QTimer::singleShot(3000, this, SLOT(showStatistics()));
 }
+
+void WelcomeWidget::showStatistics()
+{
+    QThreadPool::globalInstance()->start(new LibraryInfoThread(ui->webView));
+}
+

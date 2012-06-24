@@ -46,6 +46,22 @@
                         </div>
                     </div>
                 </div>
+                <div id="statistics">
+                    <table cellpadding="1" border="0" cellspacing="0">
+                        <tr class="booksCol">
+                            <td class="name">عدد الكتب:</td>
+                            <td class="value books">0</td>
+                        </tr>
+                        <tr class="authorsCol">
+                            <td class="name">تراجم المؤلفين:</td>
+                            <td class="value authors">0</td>
+                        </tr>
+                        <tr class="rowatCol">
+                            <td class="name">تراجم الرواة:</td>
+                            <td class="value rowat">0</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
         <script>
@@ -73,6 +89,26 @@
 
             if(bg != 1)
                 $('body').css('background', 'url("images/bg_0' + bg + '.png") repeat scroll 0 0 transparent');
+
+            function showStatistics(books, authors, rowat) {
+                if(books)
+                    $('#statistics .books').text(books);
+                else
+                    $('#statistics .booksCol').hide();
+
+                if(authors)
+                    $('#statistics .authors').text(authors);
+                else
+                    $('#statistics .authorsCol').hide();
+
+                if(rowat)
+                    $('#statistics .rowat').text(rowat);
+                else
+                    $('#statistics .rowatCol').hide();
+
+                if(books || authors || rowat)
+                    $('#statistics').fadeIn('slow');
+            }
         </script>
     </body>
 </html>

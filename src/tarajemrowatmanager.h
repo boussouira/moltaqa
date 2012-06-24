@@ -51,6 +51,7 @@ public:
     void reloadModels();
 
     QStandardItemModel *getRowatModel();
+    int rowatCount();
 
     RawiInfoPtr getRawiInfo(int rawiID);
 

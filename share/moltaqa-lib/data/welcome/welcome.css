@@ -59,3 +59,27 @@ body {
 #welcome #icons .icon p{
     color: blue;
 }
+
+#statistics {
+    display: none;
+    margin-top: 30px;
+    text-align: center;
+    font-size: 15px;
+}
+
+#statistics p {
+    padding: 0;
+    margin: 0;
+}
+
+#statistics table {
+    background-image: -moz-linear-gradient(#FFFFFF, #E8E8E8, #FFFFFF);
+    background-image: -webkit-linear-gradient(#FFFFFF, #E8E8E8, #FFFFFF);
+    border: 1px solid #DADADA;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 0 5px 1px #CCCCCC, 0 0 3px 0 #CCCCCC inset;
+    display: inline-table;
+    padding: 15px;
+    font-size: 15px;
+}
+

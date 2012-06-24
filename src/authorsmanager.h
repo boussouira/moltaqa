@@ -49,6 +49,7 @@ public:
     void clear();
 
     QStandardItemModel *authorsModel();
+    int authorsCount();
 
     int addAuthor(AuthorInfoPtr auth);
     void removeAuthor(int authorID);

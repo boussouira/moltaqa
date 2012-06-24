@@ -29,6 +29,7 @@ public slots:
 
 protected slots:
     void jsCleared();
+    void showStatistics();
 
 signals:
     void bookSelected(int bookID);

@@ -88,6 +88,16 @@ QStandardItemModel *AuthorsManager::authorsModel()
     return model;
 }
 
+int AuthorsManager::authorsCount()
+{
+    QSqlQuery query(m_db);
+    query.prepare("SELECT COUNT(*) FROM authors");
+    if(query.exec() && query.next())
+        return query.value(0).toInt();
+
+    return 0;
+}
+
 int AuthorsManager::addAuthor(AuthorInfoPtr auth)
 {
     QMutexLocker locker(&m_mutex);

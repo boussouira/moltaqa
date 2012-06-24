@@ -63,6 +63,16 @@ QStandardItemModel *TarajemRowatManager::getRowatModel()
     return model;
 }
 
+int TarajemRowatManager::rowatCount()
+{
+    QSqlQuery query(m_db);
+    query.prepare("SELECT COUNT(*) FROM rowat");
+    if(query.exec() && query.next())
+        return query.value(0).toInt();
+
+    return 0;
+}
+
 RawiInfoPtr TarajemRowatManager::getRawiInfo(int rawiID)
 {
     RawiInfoPtr rawi = m_rowat.value(rawiID);
