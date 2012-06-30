@@ -5,8 +5,9 @@
 #include <qwebframe.h>
 #include <qwebelement.h>
 #include <qpropertyanimation.h>
-#include "shemehandler.h"
 #include <QTime>
+#include "shemehandler.h"
+#include "webviewsearcher.h"
 
 class WebPage;
 
@@ -31,6 +32,8 @@ public:
     QVariant execJS(const QString &js);
     void addObject(const QString &name, QObject *object);
     QString toHtml();
+
+    WebViewSearcher *searcher() { return m_searcher; }
 
 protected:
     void wheelEvent(QWheelEvent *event);
@@ -66,6 +69,7 @@ protected:
     QPoint m_lastMenuPos;
     bool m_scrollToBottom;
     bool m_stopScrolling;
+    WebViewSearcher *m_searcher;
 };
 
 #endif // KWEBVIEW_H

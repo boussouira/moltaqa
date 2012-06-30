@@ -13,12 +13,15 @@ public:
 
 signals:
     void filterChanged(const QString &);
+    void delayFilterChanged();
+    void filterClear();
 
 private slots:
     void slotTextChanged();
 
 private:
     QString m_lastFilterText;
+    QTimer *m_filterTimer;
 };
 
 #endif // FILTERLINEEDIT_H

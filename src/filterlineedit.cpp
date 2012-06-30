@@ -1,4 +1,5 @@
 #include "filterlineedit.h"
+#include <qtimer.h>
 
 /*!
     \class Utils::FilterLineEdit
@@ -8,7 +9,8 @@
 
 FilterLineEdit::FilterLineEdit(QWidget *parent) :
    FancyLineEdit(parent),
-   m_lastFilterText(text())
+   m_lastFilterText(text()),
+   m_filterTimer(0)
 {
     // KDE has custom icons for this. Notice that icon namings are counter intuitive.
     // If these icons are not available we use the freedesktop standard name before
@@ -31,6 +33,7 @@ FilterLineEdit::FilterLineEdit(QWidget *parent) :
 
     connect(this, SIGNAL(rightButtonClicked()), this, SLOT(clear()));
     connect(this, SIGNAL(textChanged(QString)), this, SLOT(slotTextChanged()));
+    connect(this, SIGNAL(returnPressed()), SIGNAL(delayFilterChanged()));
 }
 
 void FilterLineEdit::setFilterMenu(QMenu *menu)
@@ -41,9 +44,23 @@ void FilterLineEdit::setFilterMenu(QMenu *menu)
 
 void FilterLineEdit::slotTextChanged()
 {
-    const QString newlyTypedText = text();
+    const QString newlyTypedText = text().trimmed();
+
+    if(newlyTypedText.isEmpty())
+        emit filterClear();
+
     if (newlyTypedText != m_lastFilterText) {
         m_lastFilterText = newlyTypedText;
         emit filterChanged(m_lastFilterText);
+
+        if (!m_filterTimer) {
+            m_filterTimer = new QTimer(this);
+            m_filterTimer->setSingleShot(true);
+            m_filterTimer->setInterval(500);
+            connect(m_filterTimer, SIGNAL(timeout()),
+                    SIGNAL(delayFilterChanged()));
+        }
+
+        m_filterTimer->start();
     }
 }

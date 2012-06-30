@@ -338,6 +338,40 @@ void UtilsTest::cleanupTestCase()
     QVERIFY(QFile::remove(QDir::current().absoluteFilePath("test.db")));
 }
 
+void UtilsTest::findArabic()
+{
+
+    QStringList list1 = Utils::String::Arabic::getMatchString(u("واترك ما حرم الله عليك واترك ما حرم الله عليك"),
+                                                              u("الله"));
+    QCOMPARE(list1.size(), 2);
+    QCOMPARE(list1[0], u("الله"));
+    QCOMPARE(list1[1], u("الله"));
+
+    QStringList list2 = Utils::String::Arabic::getMatchString(u("الَّذِي جَعَلَ مَعَ اللَّهِ إِلَهًا آخَرَ "),
+                                                              u("الله"));
+    QCOMPARE(list2.size(), 1);
+    QCOMPARE(list2[0], u("اللَّهِ"));
+
+    QStringList list3 = Utils::String::Arabic::getMatchString(u("وَجَاءَتْ سَكْرَةُ الْمَوْتِ بِالْحَقِّ ذَلِكَ مَا كُنْتَ مِنْهُ تَحِيدُ"),
+                                                              u("كنت منه تحيد"));
+
+    QCOMPARE(list3.size(), 1);
+    QCOMPARE(list3[0], u("كُنْتَ مِنْهُ تَحِيدُ"));
+
+    QStringList list4 = Utils::String::Arabic::getMatchString(u("وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ"),
+                                                              u("شر"));
+
+    QCOMPARE(list4.size(), 1);
+    QCOMPARE(list4[0], u("شَرِّ"));
+
+    QStringList list5 = Utils::String::Arabic::getMatchString(u("العلمالعلم"),
+                                                              u("العلم"));
+
+    QCOMPARE(list5.size(), 2);
+    QCOMPARE(list5[0], u("العلم"));
+    QCOMPARE(list5[1], u("العلم"));
+}
+
 int UtilsTest::getPageTitleID(QList<int> &titles, int pageID)
 {
     if(!titles.contains(pageID)) {

@@ -140,7 +140,8 @@ SOURCES += mainwindow.cpp \
     ziputils.cpp \
     favouritessearchwidget.cpp \
     favouritessearchfilter.cpp \
-    filterlineedit.cpp
+    filterlineedit.cpp \
+    webviewsearcher.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -268,7 +269,8 @@ HEADERS += mainwindow.h \
     ziputils.h \
     favouritessearchwidget.h \
     favouritessearchfilter.h \
-    filterlineedit.h
+    filterlineedit.h \
+    webviewsearcher.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

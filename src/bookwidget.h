@@ -23,6 +23,7 @@ public:
     void displayInfo();
     RichBookReader *bookReader() { return m_db; }
     IndexWidget *indexWidget() { return m_indexWidget; }
+    WebView *webView() { return m_view; }
     void hideIndexWidget();
     void saveSettings();
 

@@ -1,5 +1,6 @@
 #include "stringutils.h"
 #include <qstringlist.h>
+#include <qsharedpointer.h>
 
 namespace Utils {
 
@@ -184,6 +185,13 @@ QString clean(QString text)
     return text;
 }
 
+bool compare(QChar firstChar, QChar secondChar) {
+    return ((firstChar == secondChar)
+            || (isAlef(firstChar) && isAlef(secondChar))
+            || (isHah(firstChar) && isHah(secondChar))
+            || (isYeh(firstChar) && isYeh(secondChar)));
+}
+
 bool compare(QString first, QString second)
 {
     return clean(first) == clean(second);
@@ -206,6 +214,73 @@ bool fuzzyContains(QString first, QString second)
         return cleanSecond.contains(cleanFirst);
     else
         return cleanFirst.contains(cleanSecond);
+}
+
+class ArabicFindMatch {
+public:
+    ArabicFindMatch() : offset(0), lenght(0) {}
+    ArabicFindMatch(int _offset, int _lenght) : offset(_offset), lenght(_lenght) {}
+
+    int offset;
+    int lenght;
+};
+
+typedef QSharedPointer<ArabicFindMatch> ArabicFindMatchP;
+
+ArabicFindMatchP arabicFind(const QString &text, const QString & pattern, int pos) {
+    if (pos < 0) {
+        pos = 0;
+    }
+
+    QString lower = pattern.toLower();
+    int patternLength = lower.size();
+    int last = text.size();
+    QChar firstChar = lower[0];
+
+    for (int i = pos; i < last; i++) {
+        if (compare(text[i], firstChar)) {
+            int j = 1;
+            bool match = false;
+            int matcheLen = 1;
+            for (int k = i + 1; j < patternLength; ++j, ++k) {
+                if(isTashekil(lower[j])) { --k; continue; }
+                if(isTashekil(text[k])) { --j; ++matcheLen; continue; }
+
+                ++matcheLen;
+
+                if (compare(lower[j], text[k])) {
+                    match = true;
+                } else {
+                    match = false;
+                    break;
+                }
+            }
+
+            while(match && i+matcheLen < text.size() && isTashekil(text[i+matcheLen]))
+                ++matcheLen;
+
+            if (match) {
+                return ArabicFindMatchP(new ArabicFindMatch(i, matcheLen));
+            }
+        }
+    }
+
+    return ArabicFindMatchP();
+}
+
+QStringList getMatchString(const QString &text, QString searchText)
+{
+    QStringList matches;
+
+    for(int i=0; i<text.size();i++) {
+        ArabicFindMatchP match = arabicFind(text, searchText, i);
+        if(match) {
+            matches.append(text.mid(match->offset, match->lenght));
+            i = match->offset+match->lenght-1;
+        }
+    }
+
+    return matches;
 }
 
 } // Arabic
