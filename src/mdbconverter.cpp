@@ -43,7 +43,7 @@ QString MdbConverter::exportFromMdb(const QString &mdb_path, const QString &sql_
     if(sql_path.size()){
         convert_path = sql_path;
     } else {
-        convert_path = Utils::Rand::fileName(m_tempFolder, true, "sqlite", "mdb_");
+        convert_path = Utils::Rand::fileName(m_tempFolder, true, "mdb_", "sqlite");
     }
 
     MdbHandle *mdb;
