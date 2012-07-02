@@ -100,8 +100,8 @@ void LibraryManager::reloadManagers()
 int LibraryManager::addBook(ImportModelNode *node)
 {
     LibraryBookPtr book = node->toLibraryBook();
-    QString newBookName = Utils::Rand::fileName(m_libraryInfo->booksDir());
-    QString newPath = m_libraryInfo->booksDir() + "/" + newBookName;
+    QString newPath = Utils::Rand::newBook(m_libraryInfo->booksDir());
+    QString newBookName = QFileInfo(newPath).fileName();
 
     if(QFile::copy(node->bookPath, newPath)){
         if(!QFile::remove(node->bookPath))

@@ -43,27 +43,27 @@ void UtilsTest::generateFileName()
     // Defaut file name prefix
     QString name = Utils::Rand::fileName(QApplication::applicationDirPath());
     QVERIFY(name.startsWith("book_"));
-    QVERIFY(name.endsWith(".alb"));
+    QVERIFY(name.endsWith(".mlb"));
 
     QString name3 = Utils::Rand::fileName(QApplication::applicationDirPath(), true);
     QVERIFY(name3.startsWith(QString("%1/book_").arg(QApplication::applicationDirPath())));
-    QVERIFY(name3.endsWith(".alb"));
+    QVERIFY(name3.endsWith(".mlb"));
 
     // Custom suffix
-    QString name2 = Utils::Rand::fileName(QApplication::applicationDirPath(), false, "sqlite");
+    QString name2 = Utils::Rand::fileName(QApplication::applicationDirPath(), false, "book_", "sqlite");
     QVERIFY(name2.startsWith("book_"));
     QVERIFY(name2.endsWith(".sqlite"));
 
-    QString name4 = Utils::Rand::fileName(QApplication::applicationDirPath(), true, "sqlite");
+    QString name4 = Utils::Rand::fileName(QApplication::applicationDirPath(), true, "book_", "sqlite");
     QVERIFY(name4.startsWith(QString("%1/book_").arg(QApplication::applicationDirPath())));
     QVERIFY(name4.endsWith(".sqlite"));
 
     // Custom file name prefix
-    QString name5 = Utils::Rand::fileName(QApplication::applicationDirPath(), false, "sqlite", "mdb_");
+    QString name5 = Utils::Rand::fileName(QApplication::applicationDirPath(), false, "mdb_", "sqlite");
     QVERIFY(name5.startsWith("mdb_"));
     QVERIFY(name5.endsWith(".sqlite"));
 
-    QString name6 = Utils::Rand::fileName(QApplication::applicationDirPath(), true, "sqlite", "mdb_");
+    QString name6 = Utils::Rand::fileName(QApplication::applicationDirPath(), true, "mdb_", "sqlite");
     QVERIFY(name6.startsWith(QString("%1/mdb_").arg(QApplication::applicationDirPath())));
     QVERIFY(name6.endsWith(".sqlite"));
 }

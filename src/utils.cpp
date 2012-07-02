@@ -32,26 +32,21 @@ int number(int smin, int smax)
     return qBound(smin, rVal, smax);
 }
 
-QString fileName(QString path, bool fullPath, QString ext, QString namePrefix)
+QString fileName(const QString &path, bool fullPath, QString namePrefix, QString ext)
 {
     Rand::srand();
 
     QDir dir(path);
     QString fileName(namePrefix);
-    QString chars("abcdefghijklmnpqrstuvwxyz0123456789");
-    int smax = chars.size()-1;
 
     if(!ext.startsWith('.'))
         ext.prepend('.');
 
-
-    for(int i=0; i<6; i++) {
-        fileName.append(chars.at(number(0, smax)));
-    }
+    fileName.append(string(6, false));
 
     while(true) {
         if(dir.exists(fileName+ext)){
-            fileName.append(chars.at(number(0, smax)));
+            fileName.append(string(1, false));
         } else {
             break;
         }
@@ -63,14 +58,39 @@ QString fileName(QString path, bool fullPath, QString ext, QString namePrefix)
         return fileName+ext;
 }
 
-QString string(int size)
+QString newBook(const QString &path)
+{
+    QDir dir(path);
+    QString bookDir = string(1, false);
+
+    if(!dir.exists(bookDir))
+        dir.mkdir(bookDir);
+
+    dir.cd(bookDir);
+
+    return fileName(dir.absolutePath(), true, QString("book_")+bookDir);
+}
+
+QString string(int size, bool upperChar, bool lowerChar, bool numbers)
 {
     ml_return_val_on_fail2(size, "Rand::string size must be greater than 0", QString());
+    ml_return_val_on_fail2(upperChar || lowerChar || numbers,
+                           "Rand::string nothing to randomize!", QString());
 
     Rand::srand();
 
     QString str;
-    QString chars("abcdefghijklmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ0123456789");
+    QString chars;
+
+    if(lowerChar)
+        chars.append("abcdefghijklmnpqrstuvwxyz");
+
+    if(upperChar)
+        chars.append("ABCDEFGHIJKLMNPQRSTUVWXYZ");
+
+    if(numbers)
+        chars.append("0123456789");
+
     int smax = chars.size()-1;
 
     for(int i=0; i<size; i++) {
