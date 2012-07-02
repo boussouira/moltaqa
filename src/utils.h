@@ -32,7 +32,7 @@ namespace Rand {
 void srand();
 int number(int smin, int smax);
 QString string(int size);
-QString fileName(QString path, bool fullPath=false, QString ext="alb", QString namePrefix="book_");
+QString fileName(QString path, bool fullPath=false, QString ext="mlb", QString namePrefix="book_");
 }
 
 namespace Widget {

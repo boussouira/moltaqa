@@ -34,7 +34,7 @@ void NewBookWriter::createNewBook(QString bookPath)
 
     while(QFile::exists(m_bookPath)) {
         qWarning() << "NewBookWriter::createNewBook file" << m_bookPath << "already exists";
-        m_bookPath.replace(".alb", "_.alb");
+        m_bookPath.replace(".mlb", "_.mlb");
     }
 
     m_zip.setZipName(m_bookPath);

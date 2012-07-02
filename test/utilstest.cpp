@@ -43,11 +43,11 @@ void UtilsTest::generateFileName()
     // Defaut file name prefix
     QString name = Utils::Rand::fileName(QApplication::applicationDirPath());
     QVERIFY(name.startsWith("book_"));
-    QVERIFY(name.endsWith(".alb"));
+    QVERIFY(name.endsWith(".mlb"));
 
     QString name3 = Utils::Rand::fileName(QApplication::applicationDirPath(), true);
     QVERIFY(name3.startsWith(QString("%1/book_").arg(QApplication::applicationDirPath())));
-    QVERIFY(name3.endsWith(".alb"));
+    QVERIFY(name3.endsWith(".mlb"));
 
     // Custom suffix
     QString name2 = Utils::Rand::fileName(QApplication::applicationDirPath(), false, "sqlite");
