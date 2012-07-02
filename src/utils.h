@@ -81,6 +81,8 @@ void DatabaseError(const QSqlDatabase &db, const char *file, int line);
 
 // TODO: move this defines to an other header file
 
+#define ml_theme_icon(name, defaultIcon) QIcon::fromTheme(name, QIcon(defaultIcon))
+
 #define ml_benchmark(desc, code) do {QTime bmt;bmt.start();code;qDebug(desc " take %d ms", bmt.elapsed());} while(false)
 #define ml_benchmark_start() QTime bmt2;bmt2.start();
 #define ml_benchmark_elapsed(desc) qDebug(desc " take %d ms", bmt2.restart());

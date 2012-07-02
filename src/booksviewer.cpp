@@ -122,13 +122,13 @@ void BooksViewer::createMenus()
 
     // Search widgets
     m_searchEdit = new FilterLineEdit(this);
-    m_searchEdit->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    m_searchEdit->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
     m_searchEdit->setToolTip(tr("بحث في الصفحة"));
 
-    m_searchPrevAction =  new QAction(QIcon::fromTheme("go-up-search", QIcon(":/images/page-preview.png")),
+    m_searchPrevAction =  new QAction(ml_theme_icon("go-up-search", ":/images/go-up-search.png"),
                                       tr("السابق"),
                                       this);
-    m_searchNextAction =  new QAction(QIcon::fromTheme("go-down-search", QIcon(":/images/page-preview.png")),
+    m_searchNextAction =  new QAction(ml_theme_icon("go-down-search", ":/images/go-down-search.png"),
                                       tr("التالي"),
                                       this);
 
