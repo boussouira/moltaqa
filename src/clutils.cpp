@@ -99,7 +99,7 @@ lucene::search::Query *parse(lucene::queryParser::QueryParser *queryPareser,
     wchar_t *queryText = Utils::CLucene::QStringToWChar(text);
     try {
         query = queryPareser->parse(queryText);
-    } catch(CLuceneError &e) {
+    } catch(CLuceneError &) {
         free(queryText);
 
         queryText = Utils::CLucene::QStringToWChar(Utils::CLucene::clearSpecialChars(text));
