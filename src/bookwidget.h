@@ -58,6 +58,10 @@ public slots:
     void showIndex(int tid);
     QString getBreadcrumbs();
 
+    bool search(const QString &text);
+    void searchNext();
+    void searchPrevious();
+
 protected slots:
     void viewObjectCleared();
 

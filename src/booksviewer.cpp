@@ -206,12 +206,10 @@ void BooksViewer::createMenus()
 
 void BooksViewer::updateSearchNavigation()
 {
-    ml_return_on_fail(m_viewManager->activeBookWidget());
-    m_searchNextAction->setVisible(m_viewManager->activeBookWidget()->webView()->searcher()->hasSearchResult());
-    m_searchPrevAction->setVisible(m_viewManager->activeBookWidget()->webView()->searcher()->hasSearchResult());
+    ml_return_on_fail(currentBookWidget());
 
-    //m_searchNextAction->setEnabled(m_viewManager->activeBookWidget()->webView()->searcher()->hasNext());
-    //m_searchPrevAction->setEnabled(m_viewManager->activeBookWidget()->webView()->searcher()->hasPrevious());
+    m_searchNextAction->setVisible(currentBookWidget()->webView()->searcher()->hasSearchResult());
+    m_searchPrevAction->setVisible(currentBookWidget()->webView()->searcher()->hasSearchResult());
 }
 
 void BooksViewer::updateToolBars()
@@ -250,6 +248,11 @@ int BooksViewer::currentBookID()
     LibraryBookPtr book = m_viewManager->activeBook();
 
     return book ? book->id : 0;
+}
+
+BookWidget *BooksViewer::currentBookWidget()
+{
+    return m_viewManager->activeBookWidget();
 }
 
 LibraryBookPtr BooksViewer::currentBook()
@@ -415,9 +418,10 @@ void BooksViewer::loadTafessirList()
 
 void BooksViewer::searchInPage()
 {
+    ml_return_on_fail(currentBookWidget());
+
     QString searchText = m_searchEdit->text().trimmed();
-    m_viewManager->activeBookWidget()->webView()->searcher()->setSearchText(searchText);
-    bool hasResult = m_viewManager->activeBookWidget()->webView()->searcher()->search();
+    bool hasResult = currentBookWidget()->search(searchText);
 
     QString bg = ((searchText.isEmpty() || hasResult) ? "#FFFFFF" : "#F2DEDE");
     m_searchEdit->setStyleSheet(QString("background-color: %1").arg(bg));
@@ -427,13 +431,17 @@ void BooksViewer::searchInPage()
 
 void BooksViewer::searchNext()
 {
-    m_viewManager->activeBookWidget()->webView()->searcher()->next();
+    ml_return_on_fail(currentBookWidget());
+
+    currentBookWidget()->searchNext();
     updateSearchNavigation();
 }
 
 void BooksViewer::searchPrev()
 {
-    m_viewManager->activeBookWidget()->webView()->searcher()->previous();
+    ml_return_on_fail(currentBookWidget());
+
+    currentBookWidget()->searchPrevious();
     updateSearchNavigation();
 }
 

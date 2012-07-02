@@ -11,10 +11,10 @@ WebViewSearcher::WebViewSearcher(QWebView *view) :
 {
 }
 
-void WebViewSearcher::setSearchText(QString text)
+void WebViewSearcher::setSearchText(const QString &text)
 {
     clear();
-    m_searchText = text.trimmed();
+    m_searchText = text;
 }
 
 void WebViewSearcher::setWebView(QWebView *view)
@@ -40,6 +40,12 @@ bool WebViewSearcher::search(bool goNext)
         next();
 
     return m_matches.size();
+}
+
+bool WebViewSearcher::search(const QString &text, bool goNext)
+{
+    setSearchText(text);
+    return search(goNext);
 }
 
 bool WebViewSearcher::next()

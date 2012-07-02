@@ -31,6 +31,7 @@ public:
     void updateToolBars();
 
     int currentBookID();
+    BookWidget *currentBookWidget();
     LibraryBookPtr currentBook();
     BookPage *currentPage();
 

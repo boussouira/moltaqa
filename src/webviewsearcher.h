@@ -10,11 +10,12 @@ class WebViewSearcher
 public:
     WebViewSearcher(QWebView *view=0);
 
-    void setSearchText(QString text);
+    void setSearchText(const QString &text);
     void setWebView(QWebView *view);
     void clear();
 
     bool search(bool goNext=true);
+    bool search(const QString &text, bool goNext=true);
     bool next();
     bool previous();
 

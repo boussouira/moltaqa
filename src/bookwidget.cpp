@@ -87,6 +87,21 @@ void BookWidget::saveSettings()
     Utils::Settings::set("BookWidget/splitter", m_splitter->saveState());
 }
 
+bool BookWidget::search(const QString &text)
+{
+    return m_view->searcher()->search(text);
+}
+
+void BookWidget::searchNext()
+{
+    m_view->searcher()->next();
+}
+
+void BookWidget::searchPrevious()
+{
+    m_view->searcher()->previous();
+}
+
 bool BookWidget::eventFilter(QObject *obj, QEvent *event)
 {
     if(obj == m_view || obj == m_indexWidget->treeView()) {
