@@ -40,6 +40,7 @@ body {
 }
 
 #welcome #icons .icon{
+    background-color: #EEEEEE;
     background-image: -moz-linear-gradient(#FFFFFF, #E1E1E1);
     background-image: -webkit-linear-gradient(#FFFFFF, #E1E1E1);
     border: 1px solid #CCCCCC;
@@ -73,6 +74,7 @@ body {
 }
 
 #statistics table {
+    background-color: #FFFFFF;
     background-image: -moz-linear-gradient(#FFFFFF, #E8E8E8, #FFFFFF);
     background-image: -webkit-linear-gradient(#FFFFFF, #E8E8E8, #FFFFFF);
     border: 1px solid #DADADA;
