@@ -1,11 +1,7 @@
 TEMPLATE = app
 APPNAME = moltaqa-lib
 
-win32 {
-    TARGET = $$APPNAME
-} else {
-    TARGET = $$join(APPNAME, "","", ".bin")
-}
+TARGET = $$APPNAME
 
 CODECFORSRC = UTF-8
 CODECFORTR  = UTF-8
@@ -81,12 +77,9 @@ unix {
     LIBDIR = $$PREFIX/lib
     DATADIR = $$PREFIX/share
 
-    INSTALLS += target script share data js locale styles
+    INSTALLS += target share data js locale styles
 
     target.path = $$BINDIR
-
-    script.path = $$BINDIR
-    script.files += ../bin/moltaqa-lib
 
     share.path = $$DATADIR
     share.files += ../share/fonts
