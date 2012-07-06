@@ -14,6 +14,7 @@ include /usr/share/quilt/quilt.make
 export CLUCENE_SOURCE_PATH=/home/naruto/Programming/clucene
 export CLUCENE_BUILD_PATH=/home/naruto/Programming/clucene
 export DEFAULT_INSTALL_PREFIX=/usr
+export QMAKE=/usr/local/Trolltech/Qt-4.8.1/bin/qmake
 
 clean:
 	dh_testdir
@@ -32,7 +33,7 @@ builddir:
 	mkdir -p builddir
 
 builddir/Makefile: builddir patch
-	cd builddir && qmake PREFIX=$(DEFAULT_INSTALL_PREFIX) ../moltaqa-lib.pro
+	cd builddir && $(QMAKE) PREFIX=$(DEFAULT_INSTALL_PREFIX) ../moltaqa-lib.pro
 
 build-stamp: builddir/Makefile
 	dh_testdir
