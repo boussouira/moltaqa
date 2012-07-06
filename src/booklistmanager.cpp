@@ -135,9 +135,9 @@ CategorieInfo *BookListManager::findCategorie(const QString &cat)
 
     while (i != m_catHash.constEnd()) {
         QString title = i.value();
-        if(Utils::String::Arabic::contains(title, cat)) {
+        if(Utils::String::Arabic::compare(title, cat)) {
             return new CategorieInfo(i.key(), i.value());
-        } else if(Utils::String::Arabic::fuzzyContains(title, cat)) {
+        } else if(Utils::String::Arabic::contains(title, cat)) {
             if(!result)
                 result = new CategorieInfo();
 
