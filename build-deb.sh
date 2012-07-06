@@ -63,7 +63,7 @@ mv -v bin/moltaqa-lib bin/moltaqa-lib.bin
 cp -v $TEMP_DIR_PATH/$APP_DIR_NAME/bin/moltaqa-lib bin
 
 tar -zcf $TEMP_DIR_PATH/$OUTPUT_DIR/$APP_DIR_NAME.tar.gz *
-tar -jcf $TEMP_DIR_PATH/$OUTPUT_DIR/$APP_DIR_NAME.tar.bz2 *
+#tar -jcf $TEMP_DIR_PATH/$OUTPUT_DIR/$APP_DIR_NAME.tar.bz2 *
 
 echo "[*] Create md5 sums"
 
