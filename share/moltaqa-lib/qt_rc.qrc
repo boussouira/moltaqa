@@ -37,5 +37,7 @@
         <file>images/about.png</file>
         <file>images/edit.png</file>
         <file>images/moltaqa-lib.png</file>
+        <file>images/go-down-search.png</file>
+        <file>images/go-up-search.png</file>
     </qresource>
 </RCC>

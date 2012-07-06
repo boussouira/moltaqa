@@ -28,6 +28,8 @@ WebView::WebView(QWidget *parent) :
     m_scrollToBottom = false;
     m_scrollTime.start();
 
+    m_searcher = new WebViewSearcher(this);
+
     m_animation = new QPropertyAnimation(m_frame, "scrollPosition", this);
     connect(m_frame, SIGNAL(contentsSizeChanged(QSize)), m_animation, SLOT(stop()));
     connect(m_frame, SIGNAL(javaScriptWindowObjectCleared()),

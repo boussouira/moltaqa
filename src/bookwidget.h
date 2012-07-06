@@ -23,6 +23,7 @@ public:
     void displayInfo();
     RichBookReader *bookReader() { return m_db; }
     IndexWidget *indexWidget() { return m_indexWidget; }
+    WebView *webView() { return m_view; }
     void hideIndexWidget();
     void saveSettings();
 
@@ -56,6 +57,10 @@ public slots:
     void showIndex();
     void showIndex(int tid);
     QString getBreadcrumbs();
+
+    bool search(const QString &text);
+    void searchNext();
+    void searchPrevious();
 
 protected slots:
     void viewObjectCleared();

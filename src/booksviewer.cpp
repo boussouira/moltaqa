@@ -16,6 +16,8 @@
 #include "bookeditorview.h"
 #include "taffesirlistmanager.h"
 #include "librarybookmanager.h"
+#include "filterlineedit.h"
+#include "webview.h"
 
 #include <qmainwindow.h>
 #include <qmenubar.h>
@@ -118,6 +120,25 @@ void BooksViewer::createMenus()
                                                this);
     m_comboTafasir = new QComboBox(this);
 
+    // Search widgets
+    m_searchEdit = new FilterLineEdit(this);
+    m_searchEdit->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
+    m_searchEdit->setToolTip(tr("بحث في الصفحة"));
+
+    m_searchPrevAction =  new QAction(ml_theme_icon("go-up-search", ":/images/go-up-search.png"),
+                                      tr("السابق"),
+                                      this);
+    m_searchNextAction =  new QAction(ml_theme_icon("go-down-search", ":/images/go-down-search.png"),
+                                      tr("التالي"),
+                                      this);
+
+    m_searchNextAction->setVisible(false);
+    m_searchPrevAction->setVisible(false);
+
+    connect(m_searchEdit, SIGNAL(delayFilterChanged()), SLOT(searchInPage()));
+    connect(m_searchNextAction, SIGNAL(triggered()), SLOT(searchNext()));
+    connect(m_searchPrevAction, SIGNAL(triggered()), SLOT(searchPrev()));
+
     // Add action to their toolbars
     m_toolBarGeneral = new QToolBar(tr("عام"), this);
     m_toolBarGeneral->addAction(m_actionNewTab);
@@ -136,6 +157,13 @@ void BooksViewer::createMenus()
     m_toolBarTafesir->addWidget(m_comboTafasir);
     m_toolBarTafesir->addAction(m_openSelectedTafsir);
 
+    m_toolBarSearch = new QToolBar(tr("البحث"), this);
+    m_toolBarSearch->addWidget(m_searchEdit);
+    m_toolBarSearch->addAction(m_searchNextAction);
+    m_toolBarSearch->addAction(m_searchPrevAction);
+
+    updateSearchNavigation();
+
     m_navActions << m_actionEditBook;
     m_navActions << actionSeparator(this);
     m_navActions << m_actionFirstPage;
@@ -150,6 +178,7 @@ void BooksViewer::createMenus()
     m_toolBars << m_toolBarGeneral;
     m_toolBars << m_toolBarNavigation;
     m_toolBars << m_toolBarTafesir;
+    m_toolBars << m_toolBarSearch;
 
     connect(m_viewManager, SIGNAL(pageChanged()), SLOT(updateActions()));
     connect(m_actionEditBook, SIGNAL(triggered()), SLOT(editCurrentBook()));
@@ -175,6 +204,14 @@ void BooksViewer::createMenus()
     connect(m_taffesirManager, SIGNAL(ModelsReady()), SLOT(loadTafessirList()));
 }
 
+void BooksViewer::updateSearchNavigation()
+{
+    ml_return_on_fail(currentBookWidget());
+
+    m_searchNextAction->setVisible(currentBookWidget()->webView()->searcher()->hasSearchResult());
+    m_searchPrevAction->setVisible(currentBookWidget()->webView()->searcher()->hasSearchResult());
+}
+
 void BooksViewer::updateToolBars()
 {
     LibraryBookPtr book = m_viewManager->activeBook();
@@ -187,6 +224,8 @@ void BooksViewer::updateToolBars()
 
         m_toolBarGeneral->show();
         m_toolBarNavigation->show();
+
+        updateSearchNavigation();
     }
 }
 
@@ -209,6 +248,11 @@ int BooksViewer::currentBookID()
     LibraryBookPtr book = m_viewManager->activeBook();
 
     return book ? book->id : 0;
+}
+
+BookWidget *BooksViewer::currentBookWidget()
+{
+    return m_viewManager->activeBookWidget();
 }
 
 LibraryBookPtr BooksViewer::currentBook()
@@ -370,6 +414,35 @@ void BooksViewer::loadTafessirList()
     m_comboTafasir->completer()->setCompletionMode(QCompleter::PopupCompletion);
 
     updateToolBars();
+}
+
+void BooksViewer::searchInPage()
+{
+    ml_return_on_fail(currentBookWidget());
+
+    QString searchText = m_searchEdit->text().trimmed();
+    bool hasResult = currentBookWidget()->search(searchText);
+
+    QString bg = ((searchText.isEmpty() || hasResult) ? "#FFFFFF" : "#F2DEDE");
+    m_searchEdit->setStyleSheet(QString("background-color: %1").arg(bg));
+
+    updateSearchNavigation();
+}
+
+void BooksViewer::searchNext()
+{
+    ml_return_on_fail(currentBookWidget());
+
+    currentBookWidget()->searchNext();
+    updateSearchNavigation();
+}
+
+void BooksViewer::searchPrev()
+{
+    ml_return_on_fail(currentBookWidget());
+
+    currentBookWidget()->searchPrevious();
+    updateSearchNavigation();
 }
 
 void BooksViewer::editCurrentBook()

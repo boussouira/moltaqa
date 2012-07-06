@@ -33,6 +33,8 @@ private slots:
     void removeHTMLFormat();
     void cleanupTestCase();
 
+    void findArabic();
+
 protected:
     int getPageTitleID(QList<int> &titles, int pageID);
 };

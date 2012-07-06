@@ -16,6 +16,7 @@ class QToolBar;
 class QMenu;
 class QComboBox;
 class CLuceneQuery;
+class FilterLineEdit;
 
 class BooksViewer : public AbstarctView
 {
@@ -30,6 +31,7 @@ public:
     void updateToolBars();
 
     int currentBookID();
+    BookWidget *currentBookWidget();
     LibraryBookPtr currentBook();
     BookPage *currentPage();
 
@@ -43,12 +45,16 @@ public slots:
     void openTafessir();
     void tabChanged(int newIndex);
     void loadTafessirList();
+    void searchInPage();
+    void searchNext();
+    void searchPrev();
 
 protected slots:
     void editCurrentBook();
 
 protected:
     void createMenus();
+    void updateSearchNavigation();
 
 signals:
     void lastTabClosed();
@@ -75,6 +81,10 @@ private:
     QToolBar *m_toolBarNavigation;
     QToolBar *m_toolBarTafesir;
     QComboBox *m_comboTafasir;
+    QToolBar *m_toolBarSearch;
+    FilterLineEdit *m_searchEdit;
+    QAction *m_searchPrevAction;
+    QAction *m_searchNextAction;
 };
 
 #endif // BOOKSVIEWER_H
