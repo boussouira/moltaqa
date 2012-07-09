@@ -180,6 +180,17 @@ void LibraryManager::deleteRefer(int rid)
     q.exec(m_db);
 }
 
+QHash<QString, QVariant> LibraryManager::libraryStatistic()
+{
+    QHash<QString, QVariant> s;
+    s["books_count"] = m_bookmanager->booksCount();
+    s["authors_count"] = m_authorsManager->authorsCount();
+    s["rowat_count"] = m_rowatManager->rowatCount();
+    s["categories_count"] = m_bookListManager->categoriesCount();
+
+    return s;
+}
+
 TaffesirListManager *LibraryManager::taffesirListManager()
 {
     return m_taffesirManager;

@@ -51,6 +51,8 @@ public:
     void editRefers(int rid, const QString &name, const QString &referText);
     void deleteRefer(int rid);
 
+    QHash<QString, QVariant> libraryStatistic();
+
     TaffesirListManager *taffesirListManager();
     BookListManager *bookListManager();
     LibraryBookManager *bookManager();

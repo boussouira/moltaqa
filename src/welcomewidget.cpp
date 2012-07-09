@@ -31,14 +31,10 @@ public:
 
     void run()
     {
-        if(LibraryManager::instance()->bookManager())
-            booksCount = LibraryManager::instance()->bookManager()->booksCount();
-
-        if(LibraryManager::instance()->authorsManager())
-            authorsCount = LibraryManager::instance()->authorsManager()->authorsCount();
-
-        if(LibraryManager::instance()->rowatManager())
-            rowatCount = LibraryManager::instance()->rowatManager()->rowatCount();
+        QHash<QString, QVariant> s = LibraryManager::instance()->libraryStatistic();
+        booksCount = s["books_count"].toInt();
+        authorsCount = s["authors_count"].toInt();
+        rowatCount = s["rowat_count"].toInt();
 
         QMetaObject::invokeMethod(view->page()->mainFrame(), "evaluateJavaScript",
                                   Q_ARG(QString, QString("showStatistics(%1, %2, %3)")
