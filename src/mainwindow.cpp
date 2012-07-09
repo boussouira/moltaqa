@@ -31,6 +31,8 @@
 #include <qfiledialog.h>
 #include <qprogressbar.h>
 #include <qwebsettings.h>
+#include <qtextbrowser.h>
+#include <qlabel.h>
 
 static MainWindow *m_instance = 0;
 
@@ -212,6 +214,7 @@ void MainWindow::setupActions()
     connect(ui->actionAbout, SIGNAL(triggered()), SLOT(aboutdDialog()));
     connect(ui->actionSettings, SIGNAL(triggered()), SLOT(settingDialog()));
     connect(ui->actionControlCenter, SIGNAL(triggered()), SLOT(controlCenter()));
+    connect(ui->actionLibraryInfo, SIGNAL(triggered()), SLOT(showLibraryInfo()));
     connect(ui->actionImport, SIGNAL(triggered()), SLOT(importBookDialog()));
     connect(ui->actionShamelaImport, SIGNAL(triggered()), SLOT(importFromShamela()));
 
@@ -414,4 +417,49 @@ void MainWindow::showLogDialog()
 {
     m_logDialog->startWatching();
     m_logDialog->show();
+}
+
+#define NEW_LINE() textBrowser->append("<br/>");
+#define ADD_VALUE(name, value) \
+    textBrowser->append( \
+    QString("<strong>%1:</strong> <strong style=\"color:green\">%2</strong>") \
+    .arg(tr(name)).arg(value));
+
+
+void MainWindow::showLibraryInfo()
+{
+        QTextBrowser *textBrowser = new QTextBrowser;
+
+        ADD_VALUE("اسم المكتبة", m_libraryInfo->name());
+        ADD_VALUE("مسار المكتبة", m_libraryInfo->path());
+        NEW_LINE();
+
+        ADD_VALUE("حجم كل المكتبة", Utils::Files::formatSize(Utils::Files::directorySize(m_libraryInfo->path())));
+        ADD_VALUE("حجم الكتب", Utils::Files::formatSize(Utils::Files::directorySize(m_libraryInfo->booksDir())));
+        ADD_VALUE("حجم الفهرس", Utils::Files::formatSize(Utils::Files::directorySize(m_libraryInfo->indexDataDir())));
+        NEW_LINE();
+
+        QHash<QString, QVariant> s = LibraryManager::instance()->libraryStatistic();
+        int booksCount = s["books_count"].toInt();
+        int categorieCount = s["categories_count"].toInt();
+        int authorsCount = s["authors_count"].toInt();
+        int rowatCount = s["rowat_count"].toInt();
+
+        if(booksCount)   ADD_VALUE("عدد الكتب", booksCount);
+        if(categorieCount)   ADD_VALUE("عدد الأقسام", categorieCount);
+        if(authorsCount) ADD_VALUE("تراجم المؤلفين", authorsCount);
+        if(rowatCount)   ADD_VALUE("تراجم الرواة", rowatCount);
+
+        QDialog *dialog = new QDialog(this);
+        Utils::Widget::hideHelpButton(dialog);
+
+        QVBoxLayout *layout = new QVBoxLayout();
+        QLabel *label = new QLabel(tr("معلومات حول المكتبة:"), dialog);
+        layout->addWidget(label);
+        layout->addWidget(textBrowser);
+
+        dialog->setWindowTitle(tr("%1 %2").arg(App::name()).arg(App::version()));
+        dialog->setLayout(layout);
+        dialog->resize(350, 250);
+        dialog->show();
 }

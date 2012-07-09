@@ -77,6 +77,7 @@ protected slots:
     void stopIndexing();
     void indexProgress(int value, int max);
     void showLogDialog();
+    void showLibraryInfo();
 
 private:
     Ui::MainWindow *ui;

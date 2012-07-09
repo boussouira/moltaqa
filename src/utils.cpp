@@ -326,6 +326,15 @@ void restore(QTreeView *tree, QString section, QList<int> defaultWidth)
         tree->setColumnWidth(i, colWidth);
     }
 }
+
+void hideHelpButton(QWidget *w)
+{
+    Qt::WindowFlags flags = w->windowFlags();
+    flags |= Qt::WindowContextHelpButtonHint;
+    flags ^= Qt::WindowContextHelpButtonHint;
+
+    w->setWindowFlags(flags);
+}
 } // Widget
 
 namespace Files {
@@ -344,6 +353,41 @@ void removeDir(const QString &path)
             qDebug() << "Utils::Files::removeDir Can't delete:" << path;
     }
 }
+
+quint64 directorySize(const QString &path)
+{
+    QFileInfo info(path);
+    quint64 size = 0;
+
+    if(info.isDir()){
+        QDir dir(path);
+        foreach(QFileInfo fieInfo, dir.entryInfoList(QDir::Dirs|QDir::Files|QDir::NoDotAndDotDot)) {
+            if(fieInfo.isFile())
+                size += fieInfo.size();
+            else if(fieInfo.isDir())
+                size += directorySize(fieInfo.absoluteFilePath());
+        }
+    }
+
+    return size;
+}
+
+QString formatSize(quint64 size)
+{
+    QString sizeStr;
+
+    if(size < 1024)
+        sizeStr = QObject::tr("%1 بيت").arg(size);
+    else if(1024 <= size && size < 1024*1024)
+        sizeStr = QObject::tr("%1 كيلو").arg(size/(1024.0), 4, 'g', 2);
+    else if( 1024*1024 <= size && size < 1024*1024*1024)
+        sizeStr = QObject::tr("%1 ميغا").arg(size/(1024.0*1024.0), 4, 'f', 2);
+    else
+        sizeStr = QObject::tr("%1 جيجا").arg(size/(1024.0*1024.0*1024.0), 4, 'f', 2);
+
+    return sizeStr;
+}
+
 } // Files
 
 namespace Settings {

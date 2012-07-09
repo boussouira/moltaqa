@@ -64,6 +64,7 @@
     <addaction name="separator"/>
     <addaction name="menu_4"/>
     <addaction name="separator"/>
+    <addaction name="actionLibraryInfo"/>
     <addaction name="actionControlCenter"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
@@ -199,6 +200,11 @@
   <action name="actionSearchFavourites">
    <property name="text">
     <string>في المفضلة</string>
+   </property>
+  </action>
+  <action name="actionLibraryInfo">
+   <property name="text">
+    <string>معلومات حول المكتبة</string>
    </property>
   </action>
  </widget>

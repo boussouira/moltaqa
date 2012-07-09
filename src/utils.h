@@ -42,10 +42,14 @@ void restore(QWidget *w, QString section, bool showMaximized=false);
 
 void save(QTreeView *tree, QString section, int columnCount=-1);
 void restore(QTreeView *tree, QString section, QList<int> defaultWidth);
+
+void hideHelpButton(QWidget *w);
 }
 
 namespace Files {
 void removeDir(const QString &path);
+quint64 directorySize(const QString &path);
+QString formatSize(quint64 size);
 }
 
 namespace Settings {
