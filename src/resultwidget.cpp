@@ -26,6 +26,7 @@ ResultWidget::ResultWidget(QWidget *parent) :
 
     m_view = new WebView(this);
     ui->verticalLayout->insertWidget(0, m_view);
+    ui->verticalLayout->setMargin(0);
 
     m_moveToReaderViewAct = new QAction(tr("نقل الى نافذة عرض الكتب"), this);
 
