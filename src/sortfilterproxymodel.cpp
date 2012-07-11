@@ -39,6 +39,7 @@ bool SortFilterProxyModel::filterAcceptsRowItself(int source_row, const QModelIn
         for (int column = 0; column < column_count; ++column) {
             QModelIndex source_index = sourceModel()->index(source_row, column, source_parent);
             QString key = sourceModel()->data(source_index, filterRole()).toString();
+            key = Utils::String::Arabic::clean(key);
             if (key.contains(filterRegExp()))
                 return true;
         }
