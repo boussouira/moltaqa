@@ -19,7 +19,7 @@ SearchFilterManager::SearchFilterManager(QObject *parent)
       m_lineEdit(0),
       m_menu(0),
       m_role(Qt::DisplayRole),
-      m_filterColumn(0),
+      m_filterColumn(-1),
       m_proccessItemChange(true),
       m_autoSelectParent(true),
       m_changeFilterColumn(true)
@@ -84,13 +84,14 @@ void SearchFilterManager::setupMenu()
     if(m_changeFilterColumn) {
         QMenu *menu2 =  m_menu->addMenu(tr("بحث في"));
         QActionGroup *actGroup = new QActionGroup(this);
+        m_actFilterByAll = actGroup->addAction(tr("الكل"));
+        actGroup->addAction("")->setSeparator(true);
         m_actFilterByBooks = actGroup->addAction(tr("اسماء الكتب"));
-        m_actFilterByBetaka = actGroup->addAction(tr("بطاقة الكتاب"));
         m_actFilterByAuthors = actGroup->addAction(tr("اسماء المؤلفين"));
 
         m_actFilterByBooks->setCheckable(true);
-        m_actFilterByBooks->setChecked(true);
-        m_actFilterByBetaka->setCheckable(true);
+        m_actFilterByAll->setCheckable(true);
+        m_actFilterByAll->setChecked(true);
         m_actFilterByAuthors->setCheckable(true);
         actGroup->setExclusive(true);
 
@@ -146,9 +147,9 @@ void SearchFilterManager::changeFilterAction(QAction* act)
     } else if(act == m_actFilterByAuthors) {
         m_filterColumn = 1;
         m_role = Qt::DisplayRole;
-    } else if(act == m_actFilterByBetaka) {
-        m_filterColumn = 0;
-        m_role = Qt::ToolTipRole;
+    } else if(act == m_actFilterByAll) {
+        m_filterColumn = -1;
+        m_role = Qt::DisplayRole;
     }
 
     m_filterModel->setFilterKeyColumn(m_filterColumn);

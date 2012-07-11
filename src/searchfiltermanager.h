@@ -81,7 +81,7 @@ protected:
     QMenu *m_menu;
     QAction *m_actFilterByBooks;
     QAction *m_actFilterByAuthors;
-    QAction *m_actFilterByBetaka;
+    QAction *m_actFilterByAll;
     Qt::ItemDataRole m_role;
     int m_filterColumn;
     bool m_proccessItemChange;
