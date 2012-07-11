@@ -13,11 +13,13 @@ public:
 
 signals:
     void filterChanged(const QString &);
+    void delayFilterChanged(const QString &);
     void delayFilterChanged();
     void filterClear();
 
 private slots:
     void slotTextChanged();
+    void slotDelayTextChanged();
 
 private:
     QString m_lastFilterText;

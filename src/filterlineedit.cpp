@@ -31,6 +31,11 @@ FilterLineEdit::FilterLineEdit(QWidget *parent) :
 
     setButtonPixmap(Left, menuIcon.pixmap(16));
 
+    m_filterTimer = new QTimer(this);
+    m_filterTimer->setSingleShot(true);
+    m_filterTimer->setInterval(300);
+
+    connect(m_filterTimer, SIGNAL(timeout()), SLOT(slotDelayTextChanged()));
     connect(this, SIGNAL(rightButtonClicked()), this, SLOT(clear()));
     connect(this, SIGNAL(textChanged(QString)), this, SLOT(slotTextChanged()));
     connect(this, SIGNAL(returnPressed()), SIGNAL(delayFilterChanged()));
@@ -53,14 +58,12 @@ void FilterLineEdit::slotTextChanged()
         m_lastFilterText = newlyTypedText;
         emit filterChanged(m_lastFilterText);
 
-        if (!m_filterTimer) {
-            m_filterTimer = new QTimer(this);
-            m_filterTimer->setSingleShot(true);
-            m_filterTimer->setInterval(500);
-            connect(m_filterTimer, SIGNAL(timeout()),
-                    SIGNAL(delayFilterChanged()));
-        }
-
         m_filterTimer->start();
     }
+}
+
+void FilterLineEdit::slotDelayTextChanged()
+{
+    emit delayFilterChanged();
+    emit delayFilterChanged(text().trimmed());
 }

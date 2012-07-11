@@ -70,7 +70,7 @@ void SearchFilterManager::setLineEdit(FilterLineEdit *edit)
     m_lineEdit = edit;
     m_lineEdit->setFilterMenu(m_menu);
 
-    connect(m_lineEdit, SIGNAL(textChanged(QString)),
+    connect(m_lineEdit, SIGNAL(delayFilterChanged(QString)),
             SLOT(setFilterText(QString)));
 }
 
@@ -126,17 +126,16 @@ void SearchFilterManager::setAutoSelectParent(bool autoSelect)
 
 void SearchFilterManager::setFilterText(QString text)
 {
-    if(text.size() > 1) {
-        m_filterModel->setArabicFilterRegexp(text);
-        m_treeView->expandAll();
+    m_filterModel->setArabicFilterRegexp(text);
+    m_treeView->expandAll();
 
-        enableCatSelection();
-    } else {
-        m_filterModel->setFilterRegExp("");
-    }
+    enableCatSelection();
 
-    m_filterModel->setFilterKeyColumn(m_filterColumn);
-    m_filterModel->setFilterRole(m_role);
+    if(m_filterModel->filterKeyColumn() != m_filterColumn)
+        m_filterModel->setFilterKeyColumn(m_filterColumn);
+
+    if(m_filterModel->filterRole() != m_role)
+        m_filterModel->setFilterRole(m_role);
 }
 
 void SearchFilterManager::changeFilterAction(QAction* act)
