@@ -68,7 +68,7 @@ void ModelViewFilter::setup()
     if(m_defaultColumn != -1)
         m_treeView->sortByColumn(m_defaultColumn, m_defaultOrder);
 
-    connect(m_lineEdit, SIGNAL(textChanged(QString)), SLOT(filterTextChanged()));
+    connect(m_lineEdit, SIGNAL(delayFilterChanged(QString)), SLOT(setFilterText(QString)));
     connect(m_lineEdit, SIGNAL(returnPressed()), SLOT(lineReturnPressed()));
     connect(m_treeView->header(),
             SIGNAL(sortIndicatorChanged(int,Qt::SortOrder)),
@@ -103,20 +103,14 @@ bool ModelViewFilter::eventFilter(QObject *obj, QEvent *event)
 void ModelViewFilter::setFilterText(QString text)
 {
     m_filterModel->setArabicFilterRegexp(text);
-    m_filterModel->setFilterKeyColumn(m_filterColumn);
-    m_filterModel->setFilterRole(m_role);
+
+    if(m_filterModel->filterKeyColumn() != m_filterColumn)
+        m_filterModel->setFilterKeyColumn(m_filterColumn);
+
+    if(m_filterModel->filterRole() != m_role)
+        m_filterModel->setFilterRole(m_role);
 
     m_treeView->expandAll();
-}
-
-void ModelViewFilter::filterTextChanged()
-{
-    QString text = m_lineEdit->text().trimmed();
-
-    if(text.size() > 3)
-        setFilterText(text);
-    else
-        m_filterModel->setFilterRegExp("");
 }
 
 void ModelViewFilter::lineReturnPressed()

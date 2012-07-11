@@ -36,7 +36,6 @@ public slots:
 protected slots:
     void setFilterText(QString text);
     void sortChanged(int logicalIndex, Qt::SortOrder);
-    void filterTextChanged();
     void lineReturnPressed();
 
 protected:

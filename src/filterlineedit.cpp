@@ -49,7 +49,7 @@ void FilterLineEdit::setFilterMenu(QMenu *menu)
 
 void FilterLineEdit::slotTextChanged()
 {
-    const QString newlyTypedText = text().trimmed();
+    const QString newlyTypedText = text();
 
     if(newlyTypedText.isEmpty())
         emit filterClear();
@@ -58,6 +58,7 @@ void FilterLineEdit::slotTextChanged()
         m_lastFilterText = newlyTypedText;
         emit filterChanged(m_lastFilterText);
 
+        m_filterTimer->setInterval((m_lastFilterText.size() > 3 ? 300 : 900));
         m_filterTimer->start();
     }
 }
@@ -65,5 +66,5 @@ void FilterLineEdit::slotTextChanged()
 void FilterLineEdit::slotDelayTextChanged()
 {
     emit delayFilterChanged();
-    emit delayFilterChanged(text().trimmed());
+    emit delayFilterChanged(text());
 }
