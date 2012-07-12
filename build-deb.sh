@@ -3,7 +3,7 @@
 APP_NAME="moltaqa-lib"
 APP_VERSION="0.9a1"
 APP_DIR_NAME="${APP_NAME}-${APP_VERSION}"
-APP_FILES="moltaqa-lib.pro  Doxyfile share bin  src  test"
+APP_FILES="moltaqa-lib.pro Doxyfile share bin src test"
 TEMP_DIR="temp-build-deb"
 RPM_TEMP_DIR="rpm-temp-dir"
 OUTPUT_DIR="dist"
@@ -35,7 +35,7 @@ echo "[*] Create application directory: $APP_DIR_NAME"
 mkdir $TEMP_DIR/$APP_DIR_NAME
 
 echo "[*] Copy files to application dir"
-cp -fr $APP_FILES debian $TEMP_DIR/$APP_DIR_NAME
+cp -fr $APP_FILES debian .git $TEMP_DIR/$APP_DIR_NAME
 
 echo "[*] Enter application directory"
 cd $TEMP_DIR/$APP_DIR_NAME
