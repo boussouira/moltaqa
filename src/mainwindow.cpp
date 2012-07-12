@@ -22,6 +22,7 @@
 #include "authorsview.h"
 #include "aboutdialog.h"
 #include "logdialog.h"
+#include "webview.h"
 
 #include <qmessagebox.h>
 #include <qsettings.h>
@@ -63,6 +64,7 @@ MainWindow::MainWindow(QWidget *parent):
     loadSettings();
 
     connect(ui->actionLogDialog, SIGNAL(triggered()), SLOT(showLogDialog()));
+    connect(ui->actionHelp, SIGNAL(triggered()), SLOT(showHelp()));
 }
 
 bool MainWindow::init()
@@ -462,4 +464,25 @@ void MainWindow::showLibraryInfo()
         dialog->setLayout(layout);
         dialog->resize(350, 250);
         dialog->show();
+}
+
+void MainWindow::showHelp()
+{
+    QDir dir(App::dataDir());
+    dir.cd("help");
+
+    WebView *webView = new WebView();
+    webView->setUrl(QUrl::fromLocalFile(dir.absoluteFilePath("moltaqa-lib.html")));
+
+    QDialog *dialog = new QDialog(this);
+    Utils::Widget::hideHelpButton(dialog);
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->setMargin(0);
+    layout->addWidget(webView);
+
+    dialog->setWindowTitle(tr("شرح البرنامج"));
+    dialog->setLayout(layout);
+    dialog->resize(750, 550);
+    dialog->show();
 }

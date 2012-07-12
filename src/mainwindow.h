@@ -78,6 +78,7 @@ protected slots:
     void indexProgress(int value, int max);
     void showLogDialog();
     void showLibraryInfo();
+    void showHelp();
 
 private:
     Ui::MainWindow *ui;

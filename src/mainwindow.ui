@@ -76,8 +76,9 @@
     <property name="title">
      <string>مساعدة</string>
     </property>
-    <addaction name="actionLogDialog"/>
+    <addaction name="actionHelp"/>
     <addaction name="separator"/>
+    <addaction name="actionLogDialog"/>
     <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menu">
@@ -205,6 +206,14 @@
   <action name="actionLibraryInfo">
    <property name="text">
     <string>معلومات حول المكتبة</string>
+   </property>
+  </action>
+  <action name="actionHelp">
+   <property name="text">
+    <string>شرح البرنامج</string>
+   </property>
+   <property name="shortcut">
+    <string>F1</string>
    </property>
   </action>
  </widget>

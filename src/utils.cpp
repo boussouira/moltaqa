@@ -438,7 +438,9 @@ QStringList checkDir(bool showWarnings)
                                << "authors.zip"
                                << "welcome/welcome.html"
                                << "welcome/welcome.css"
-                               << "welcome/images",
+                               << "welcome/images"
+                               << "help/moltaqa-lib.html"
+                               << "help/moltaqa-lib_files",
                                dataDir(),
                                showWarnings);
 
