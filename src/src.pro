@@ -50,7 +50,7 @@ exists(../.git/HEAD) {
     !isEmpty(GITVERSION) {
         GITCHANGENUMBER = $$system(git log --pretty=format:%h | wc -l)
         DEFINES += GITVERSION=\"\\\"$$GITVERSION\\\"\"
-        DEFINES += GITCHANGENUMBER=\"\\\"$$GITCHANGENUMBER\\\"\"
+        DEFINES += GITCHANGENUMBER=\"$$GITCHANGENUMBER\"
     }
 }
 

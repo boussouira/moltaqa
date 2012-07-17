@@ -21,6 +21,7 @@ class IndexManager;
 class BookReaderHelper;
 class QProgressBar;
 class LogDialog;
+class UpdateChecker;
 
 namespace Ui
 {
@@ -79,6 +80,8 @@ protected slots:
     void showLogDialog();
     void showLibraryInfo();
     void showHelp();
+    void checkFinnished();
+    void autoUpdateCheck();
 
 private:
     Ui::MainWindow *ui;
@@ -97,6 +100,7 @@ private:
     TarajemRowatView *m_tarajemView;
     AuthorsView *m_authorsView;
     LogDialog *m_logDialog;
+    UpdateChecker *m_updateChecker;
 };
 
 #endif // MAINWINDOW_H

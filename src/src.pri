@@ -141,7 +141,9 @@ SOURCES += mainwindow.cpp \
     favouritessearchwidget.cpp \
     favouritessearchfilter.cpp \
     filterlineedit.cpp \
-    webviewsearcher.cpp
+    webviewsearcher.cpp \
+    updatechecker.cpp \
+    updatedialog.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -270,7 +272,9 @@ HEADERS += mainwindow.h \
     favouritessearchwidget.h \
     favouritessearchfilter.h \
     filterlineedit.h \
-    webviewsearcher.h
+    webviewsearcher.h \
+    updatechecker.h \
+    updatedialog.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \
@@ -300,7 +304,8 @@ FORMS += mainwindow.ui settingsdialog.ui \
     bookreferedialog.ui \
     addbookreferdialog.ui \
     selectbooksdialog.ui \
-    logdialog.ui
+    logdialog.ui \
+    updatedialog.ui
 
 RESOURCES += ../share/moltaqa-lib/qt_rc.qrc
 win32:RC_FILE = ../share/moltaqa-lib/win_rc.rc

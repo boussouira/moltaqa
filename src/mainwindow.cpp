@@ -23,6 +23,7 @@
 #include "aboutdialog.h"
 #include "logdialog.h"
 #include "webview.h"
+#include "updatedialog.h"
 
 #include <qmessagebox.h>
 #include <qsettings.h>
@@ -59,12 +60,15 @@ MainWindow::MainWindow(QWidget *parent):
     ml_set_instance(m_instance, this);
 
     m_logDialog = new LogDialog(this);
+    m_updateChecker = new UpdateChecker(this);
 
     setWindowTitle(App::name());
     loadSettings();
 
     connect(ui->actionLogDialog, SIGNAL(triggered()), SLOT(showLogDialog()));
     connect(ui->actionHelp, SIGNAL(triggered()), SLOT(showHelp()));
+    connect(ui->actionUpdate, SIGNAL(triggered()), m_updateChecker, SLOT(startCheck()));
+    connect(m_updateChecker, SIGNAL(checkFinished()), SLOT(checkFinnished()));
 }
 
 bool MainWindow::init()
@@ -314,6 +318,13 @@ void MainWindow::loadSettings()
     QWebSettings *webSettings = QWebSettings::globalSettings();
     webSettings->setFontFamily(QWebSettings::StandardFont, font.family());
     webSettings->setFontSize(QWebSettings::DefaultFontSize, fontSize);
+
+    if(settings.value("Update/autoCheck", true).toBool()) {
+        uint current = QDateTime::currentDateTime().toTime_t();
+        uint lastCheck = settings.value("Update/lastCheck", 0).toUInt();
+        if(current - lastCheck > 43200)
+            QTimer::singleShot(30000, this, SLOT(autoUpdateCheck()));
+    }
 }
 
 void MainWindow::handleMessage(const QString &)
@@ -485,4 +496,37 @@ void MainWindow::showHelp()
     dialog->setLayout(layout);
     dialog->resize(750, 550);
     dialog->show();
+}
+
+void MainWindow::checkFinnished()
+{
+    UpdateInfo *info = m_updateChecker->result();
+
+    if(!info) {
+        if(m_updateChecker->autoCheck) {
+            QSettings settings;
+            settings.setValue("Update/lastCheck", QDateTime::currentDateTime().toTime_t());
+        } else {
+            if(m_updateChecker->hasError) {
+                QMessageBox::information(this,
+                                         tr("تحديث البرنامج"),
+                                         tr("حدث خطأ اثناء البحث عن التحديث:" "\n")
+                                         + m_updateChecker->errorString);
+            } else {
+                QMessageBox::information(this,
+                                         tr("تحديث البرنامج"),
+                                         tr("لا يوجد تحديث للبرنامج، انت تستخدم اخر اصدار"));
+            }
+        }
+    } else {
+        UpdateDialog dialog(this);
+        dialog.setDownloadUrl(info);
+        dialog.exec();
+    }
+}
+
+
+void MainWindow::autoUpdateCheck()
+{
+    m_updateChecker->startCheck(true);
 }

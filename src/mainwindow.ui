@@ -78,7 +78,9 @@
     </property>
     <addaction name="actionHelp"/>
     <addaction name="separator"/>
+    <addaction name="actionUpdate"/>
     <addaction name="actionLogDialog"/>
+    <addaction name="separator"/>
     <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menu">
@@ -214,6 +216,11 @@
    </property>
    <property name="shortcut">
     <string>F1</string>
+   </property>
+  </action>
+  <action name="actionUpdate">
+   <property name="text">
+    <string>تحديث البرنامج</string>
    </property>
   </action>
  </widget>

@@ -86,6 +86,8 @@ void SettingsDialog::loadSettings()
 
     loadStyles();
 
+    ui->checkAutoUpdate->setChecked(settings.value("Update/autoCheck", true).toBool());
+
     settings.beginGroup("Style");
     QString currentStyle = settings.value("name", ML_DEFAULT_STYLE).toString();
     for(int i=0; i<ui->comboStyles->count(); i++) {
@@ -211,6 +213,8 @@ void SettingsDialog::saveSettings()
     QString appPath = ui->lineBooksDir->text();
 
     saveSetting(settings, QString(), "library_dir", appPath, true);
+
+    saveSetting(settings, "Update", "autoCheck", ui->checkAutoUpdate->isChecked());
 
     saveSetting(settings, "Search", "resultPeerPage", ui->spinResultPeerPage->value());
     saveSetting(settings, "Search", "threadCount", ui->spinThreadCount->value());
