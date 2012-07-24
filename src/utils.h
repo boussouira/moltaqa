@@ -26,6 +26,7 @@
 class QSqlQuery;
 class QSqlDatabase;
 class QTreeView;
+class QDialog;
 
 namespace Utils {
 
@@ -50,6 +51,7 @@ void save(QTreeView *tree, QString section, int columnCount=-1);
 void restore(QTreeView *tree, QString section, QList<int> defaultWidth);
 
 void hideHelpButton(QWidget *w);
+int exec(QDialog *dialog, QString section, bool hideHelp=true);
 }
 
 namespace Files {

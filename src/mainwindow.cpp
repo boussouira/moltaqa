@@ -242,13 +242,13 @@ void MainWindow::setupActions()
 void MainWindow::aboutdDialog()
 {
     AboutDialog dialog(this);
-    dialog.exec();
+    Utils::Widget::exec(&dialog, "AboutDialog");
 }
 
 void MainWindow::settingDialog()
 {
     SettingsDialog settingDialog(this);
-    settingDialog.exec();
+    Utils::Widget::exec(&settingDialog, "SettingDialog");
 }
 
 void MainWindow::openBook(int pBookID, int pageID)

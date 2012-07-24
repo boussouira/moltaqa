@@ -335,6 +335,22 @@ void hideHelpButton(QWidget *w)
 
     w->setWindowFlags(flags);
 }
+
+int exec(QDialog *dialog, QString section, bool hideHelp)
+{
+    if(section.size())
+        restore(dialog, section);
+
+    if(hideHelp)
+        hideHelpButton(dialog);
+
+    int ret = dialog->exec();
+
+    if(section.size())
+        save(dialog, section);
+
+    return ret;
+}
 } // Widget
 
 namespace Files {
