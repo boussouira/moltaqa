@@ -314,7 +314,7 @@ p, li { white-space: pre-wrap; }
      <item>
       <widget class="QPushButton" name="pushCancel">
        <property name="text">
-        <string>الغاء</string>
+        <string>إلغاء</string>
        </property>
       </widget>
      </item>

@@ -37,7 +37,7 @@
    <item row="2" column="0" colspan="2">
     <widget class="QPushButton" name="pushCancel">
      <property name="text">
-      <string>الغاء</string>
+      <string>إلغاء</string>
      </property>
     </widget>
    </item>
