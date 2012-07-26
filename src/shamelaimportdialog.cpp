@@ -206,7 +206,7 @@ void ShamelaImportDialog::nextStep()
             if(!categorieLinked()) {
                 if(QMessageBox::question(this,
                                          tr("الاستيراد من الشاملة"),
-                                         tr("لم تقم باختيار بعض الاقسام" "\n"
+                                         tr("لم تقم باختيار بعض الأقسام" "\n"
                                             "هل تريد المتابعة؟"),
                                          QMessageBox::Yes|QMessageBox::No, QMessageBox::No) == QMessageBox::No)
                     return;
@@ -291,7 +291,7 @@ void ShamelaImportDialog::setupImporting()
         creator.start();
 
         if(ui->radioUseShamelaCat->isChecked()) {
-            addDebugInfo(tr("جاري استيراد الاقسام..."));
+            addDebugInfo(tr("جاري استيراد الأقسام..."));
             creator.importCats();
         }
 
