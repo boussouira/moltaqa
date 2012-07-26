@@ -229,7 +229,7 @@ p, li { white-space: pre-wrap; }
          <item>
           <widget class="QPushButton" name="pushUnSelectAll">
            <property name="text">
-            <string>الغاء الكل</string>
+            <string>إلغاء الكل</string>
            </property>
           </widget>
          </item>

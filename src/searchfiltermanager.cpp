@@ -54,7 +54,7 @@ void SearchFilterManager::setTreeView(QTreeView *view)
 
     if(!m_autoSelectParent) {
         QAction *selectChildAct = new QAction(tr("اختيار العناوين الفرعية"), this);
-        QAction *unSelectChildAct = new QAction(tr("الغاء العناوين الفرعية"), this);
+        QAction *unSelectChildAct = new QAction(tr("إلغاء العناوين الفرعية"), this);
         m_treeView->addAction(selectChildAct);
         m_treeView->addAction(unSelectChildAct);
 

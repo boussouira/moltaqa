@@ -330,8 +330,8 @@ void BookEditorView::save()
 void BookEditorView::cancel()
 {
     int rep = QMessageBox::question(this,
-                                    tr("الغاء التعديلات"),
-                                    tr("هل تريد الغاء كل التعديلات ؟"),
+                                    tr("إلغاء التعديلات"),
+                                    tr("هل تريد إلغاء كل التعديلات ؟"),
                                     QMessageBox::Yes|QMessageBox::No,
                                     QMessageBox::No);
     if(rep == QMessageBox::Yes) {

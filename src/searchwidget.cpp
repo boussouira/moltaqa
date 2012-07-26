@@ -335,10 +335,10 @@ void SearchWidget::showFilterTools()
     QMenu menu(this);
 
     menu.addAction(tr("اختيار الكل"), m_filterManager, SLOT(selectAll()));
-    menu.addAction(tr("الغاء الكل"), m_filterManager, SLOT(unSelectAll()));
+    menu.addAction(tr("إلغاء الكل"), m_filterManager, SLOT(unSelectAll()));
     menu.addSeparator();
     menu.addAction(tr("اختيار الكتب الظاهرة فقط"), m_filterManager, SLOT(selectVisible()));
-    menu.addAction(tr("الغاء الكتب الظاهرة فقط"), m_filterManager, SLOT(unSelectVisible()));
+    menu.addAction(tr("إلغاء الكتب الظاهرة فقط"), m_filterManager, SLOT(unSelectVisible()));
     menu.addSeparator();
     menu.addAction(tr("عرض الشجرة"), m_filterManager, SLOT(expandFilterView()));
     menu.addAction(tr("ضغط الشجرة"), m_filterManager, SLOT(collapseFilterView()));
