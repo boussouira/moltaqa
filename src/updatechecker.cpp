@@ -84,7 +84,7 @@ void UpdateChecker::httpReadyRead()
     // We read all of its new data and write it into the file.
     // That way we use less RAM than when reading it at the finished()
     // signal of the QNetworkReply
-    m_replayText.append(QString::fromUtf8(m_reply->readAll()));
+    m_replayText.append(_u(m_reply->readAll()));
 }
 
 void UpdateChecker::parse(QString updateXML)

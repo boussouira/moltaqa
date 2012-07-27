@@ -227,7 +227,7 @@ QString AbstractBookReader::getFileContent(QuaZip *zip, QString fileName)
 
     if(zip->setCurrentFile(fileName)) {
         if(file.open(QIODevice::ReadOnly)) {
-            return QString::fromUtf8(file.readAll());
+            return _u(file.readAll());
         } else {
             qWarning("AbstractBookReader::getFileContent: open error %d", file.getZipError());
         }

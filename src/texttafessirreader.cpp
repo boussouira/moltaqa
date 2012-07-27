@@ -1,5 +1,6 @@
 #include "texttafessirreader.h"
 #include "librarybook.h"
+#include "utils.h"
 
 TextTafessirReader::TextTafessirReader(QObject *parent) :
     TextBookReader(parent)
@@ -13,7 +14,7 @@ void TextTafessirReader::setCurrentPage(QDomElement pageNode)
     m_currentPage->part = pageNode.attribute("part").toInt();
     m_currentPage->page = pageNode.attribute("page").toInt();
 
-    m_currentPage->text = QString::fromUtf8(m_pages.value(m_currentPage->pageID));
+    m_currentPage->text = _u(m_pages.value(m_currentPage->pageID));
 
 //    if(!m_pages.contains(m_currentPage->pageID))
 //        qWarning("Can't find page %d", m_currentPage->pageID);

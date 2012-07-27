@@ -276,12 +276,12 @@ void WebView::copyWithRefer()
     RichBookReader *reader = bookWidget->bookReader();
 
     QString referText = act->data().toString();
-    referText.replace(QString::fromUtf8("*النص*"),   selectedText().trimmed());
-    referText.replace(QString::fromUtf8("*المؤلف*"), reader->bookInfo()->authorName);
-    referText.replace(QString::fromUtf8("*الكتاب*"), reader->bookInfo()->title);
-    referText.replace(QString::fromUtf8("*الصفحة*"), QString::number(reader->page()->page));
-    referText.replace(QString::fromUtf8("*الجزء*"),  QString::number(reader->page()->part));
-    referText.replace(QString::fromUtf8("*الحديث*"), QString::number(reader->page()->haddit));
+    referText.replace(_u("*النص*"),   selectedText().trimmed());
+    referText.replace(_u("*المؤلف*"), reader->bookInfo()->authorName);
+    referText.replace(_u("*الكتاب*"), reader->bookInfo()->title);
+    referText.replace(_u("*الصفحة*"), QString::number(reader->page()->page));
+    referText.replace(_u("*الجزء*"),  QString::number(reader->page()->part));
+    referText.replace(_u("*الحديث*"), QString::number(reader->page()->haddit));
 
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->setText(referText);

@@ -5,8 +5,6 @@
 #include <qsqldatabase.h>
 #include <QSqlQuery>
 
-#define u(x) QString::fromUtf8(x)
-
 UtilsTest::UtilsTest()
 {
 }
@@ -70,36 +68,36 @@ void UtilsTest::generateFileName()
 
 void UtilsTest::arClean()
 {
-    QCOMPARE(Utils::String::Arabic::clean(u("احمد")), u("احمد"));
+    QCOMPARE(Utils::String::Arabic::clean(_u("احمد")), _u("احمد"));
 
-    QCOMPARE(Utils::String::Arabic::clean(u("أحمد  ")), u("احمد"));
+    QCOMPARE(Utils::String::Arabic::clean(_u("أحمد  ")), _u("احمد"));
 
-    QCOMPARE(Utils::String::Arabic::clean(u("إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ")),
-             u("اياك نعبد واياك نستعين"));
+    QCOMPARE(Utils::String::Arabic::clean(_u("إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ")),
+             _u("اياك نعبد واياك نستعين"));
 
-    QCOMPARE(Utils::String::Arabic::clean(u("إِنَّ فِي ذَلِكَ لَآيَةً لِقَوْمٍ يَتَفَكَّرُونَ")),
-             u("ان في ذلك لايه لقوم يتفكرون"));
+    QCOMPARE(Utils::String::Arabic::clean(_u("إِنَّ فِي ذَلِكَ لَآيَةً لِقَوْمٍ يَتَفَكَّرُونَ")),
+             _u("ان في ذلك لايه لقوم يتفكرون"));
 }
 
 void UtilsTest::arCompare()
 {
-    QVERIFY(Utils::String::Arabic::compare(u("وَتَرَى الْفُلْكَ مَوَاخِرَ فِيهِ وَلِتَبْتَغُوا مِنْ فَضْلِهِ وَلَعَلَّكُمْ تَشْكُرُونَ"),
-                              u("وتري الفلك مواخر فيه ولتبتغوا من فضله ولعلكم تشكرون")));
-    QVERIFY(Utils::String::Arabic::compare(u("قُلْ هُوَ اللَّهُ أَحَدٌ"),
-                             u("قل هُوَ الله احد")));
+    QVERIFY(Utils::String::Arabic::compare(_u("وَتَرَى الْفُلْكَ مَوَاخِرَ فِيهِ وَلِتَبْتَغُوا مِنْ فَضْلِهِ وَلَعَلَّكُمْ تَشْكُرُونَ"),
+                              _u("وتري الفلك مواخر فيه ولتبتغوا من فضله ولعلكم تشكرون")));
+    QVERIFY(Utils::String::Arabic::compare(_u("قُلْ هُوَ اللَّهُ أَحَدٌ"),
+                             _u("قل هُوَ الله احد")));
 }
 
 void UtilsTest::arContains()
 {
-    QVERIFY(Utils::String::Arabic::contains(u("الله اكبر"), u("الله")));
-    QVERIFY(! Utils::String::Arabic::contains(u("الله"), u("الله اكبر")));
+    QVERIFY(Utils::String::Arabic::contains(_u("الله اكبر"), _u("الله")));
+    QVERIFY(! Utils::String::Arabic::contains(_u("الله"), _u("الله اكبر")));
 }
 
 void UtilsTest::arFuzzyContains()
 {
-    QVERIFY(Utils::String::Arabic::fuzzyContains(u("الله اكبر"), u("الله")));
-    QVERIFY(Utils::String::Arabic::fuzzyContains(u("الله"), u("الله اكبر")));
-    QVERIFY(Utils::String::Arabic::fuzzyContains(u("الله"), u("قُلْ هُوَ اللَّهُ أَحَدٌ")));
+    QVERIFY(Utils::String::Arabic::fuzzyContains(_u("الله اكبر"), _u("الله")));
+    QVERIFY(Utils::String::Arabic::fuzzyContains(_u("الله"), _u("الله اكبر")));
+    QVERIFY(Utils::String::Arabic::fuzzyContains(_u("الله"), _u("قُلْ هُوَ اللَّهُ أَحَدٌ")));
 }
 
 void UtilsTest::removeHtmlSpecialChars()
@@ -279,15 +277,15 @@ void UtilsTest::sheerRegExp()
     QStringList origins;
     QList<bool> excpected;
 
-    origins << u("عجبت لشيخ يأمر الناس بالتقى ... وما راقب الرحمن يومًا وما اتقى")
-            << u("واشددْ يديكَ بحيلِ الدينِ معتصماً ... فإِنه الركنُ إِن خانَتْكَ أركانُ")
-            << u("وكثيرٌ من السؤالِ اشتياقٌ ... وكثيرٌ من ردِّه تعليلُ")
-            << u("لعل شَبَاً يفيدُ حباً ... فالشرُّ للخيرِ قد يجرُّ")
-            << u(" إِنما أولادُنا أكبادُنا ... وعلى الأَكْبادِ نحيا آملينْ.")
-            << u("يَبِيتُ يُجَافِي جَنْبَهُ عَنْ فِرَاشِهِ ... إِذَا اسْتَثْقَلَتْ بِالْمُشْرِكِينَ المَضَاجِعُ \"")
+    origins << _u("عجبت لشيخ يأمر الناس بالتقى ... وما راقب الرحمن يومًا وما اتقى")
+            << _u("واشددْ يديكَ بحيلِ الدينِ معتصماً ... فإِنه الركنُ إِن خانَتْكَ أركانُ")
+            << _u("وكثيرٌ من السؤالِ اشتياقٌ ... وكثيرٌ من ردِّه تعليلُ")
+            << _u("لعل شَبَاً يفيدُ حباً ... فالشرُّ للخيرِ قد يجرُّ")
+            << _u(" إِنما أولادُنا أكبادُنا ... وعلى الأَكْبادِ نحيا آملينْ.")
+            << _u("يَبِيتُ يُجَافِي جَنْبَهُ عَنْ فِرَاشِهِ ... إِذَا اسْتَثْقَلَتْ بِالْمُشْرِكِينَ المَضَاجِعُ \"")
 
-            << u("هل ... ما تدري")
-            << u("ثم اتضح أن السبب في إخفاء ابن أبي العز، أو النساخ لاسمه، وهو الخوف من الهجمة الشرسة، التي كانت سائدة في عصره من قبل المخرفين، والمتعصبين، مؤيدين بقوة السلاطين الجاهلين ... الظاهر برقوق، وابنه الناصر فرج، ولاجين بن عبد الله الشركسي وأمثالهم، وكانوا على عقيدة سيئة، فضلا عما في سلوكهم من انحراف، وكانوا يقربون أصحاب وحدة الوجود، وأهل السحر، والزيج، وضرب الرمل, ولا تكاد تجد من المقربين إليهم إلا من اشتهر بذلك أو بما هو أسوأ!!");
+            << _u("هل ... ما تدري")
+            << _u("ثم اتضح أن السبب في إخفاء ابن أبي العز، أو النساخ لاسمه، وهو الخوف من الهجمة الشرسة، التي كانت سائدة في عصره من قبل المخرفين، والمتعصبين، مؤيدين بقوة السلاطين الجاهلين ... الظاهر برقوق، وابنه الناصر فرج، ولاجين بن عبد الله الشركسي وأمثالهم، وكانوا على عقيدة سيئة، فضلا عما في سلوكهم من انحراف، وكانوا يقربون أصحاب وحدة الوجود، وأهل السحر، والزيج، وضرب الرمل, ولا تكاد تجد من المقربين إليهم إلا من اشتهر بذلك أو بما هو أسوأ!!");
 
     excpected << true
               << true
@@ -341,35 +339,35 @@ void UtilsTest::cleanupTestCase()
 void UtilsTest::findArabic()
 {
 
-    QStringList list1 = Utils::String::Arabic::getMatchString(u("واترك ما حرم الله عليك واترك ما حرم الله عليك"),
-                                                              u("الله"));
+    QStringList list1 = Utils::String::Arabic::getMatchString(_u("واترك ما حرم الله عليك واترك ما حرم الله عليك"),
+                                                              _u("الله"));
     QCOMPARE(list1.size(), 2);
-    QCOMPARE(list1[0], u("الله"));
-    QCOMPARE(list1[1], u("الله"));
+    QCOMPARE(list1[0], _u("الله"));
+    QCOMPARE(list1[1], _u("الله"));
 
-    QStringList list2 = Utils::String::Arabic::getMatchString(u("الَّذِي جَعَلَ مَعَ اللَّهِ إِلَهًا آخَرَ "),
-                                                              u("الله"));
+    QStringList list2 = Utils::String::Arabic::getMatchString(_u("الَّذِي جَعَلَ مَعَ اللَّهِ إِلَهًا آخَرَ "),
+                                                              _u("الله"));
     QCOMPARE(list2.size(), 1);
-    QCOMPARE(list2[0], u("اللَّهِ"));
+    QCOMPARE(list2[0], _u("اللَّهِ"));
 
-    QStringList list3 = Utils::String::Arabic::getMatchString(u("وَجَاءَتْ سَكْرَةُ الْمَوْتِ بِالْحَقِّ ذَلِكَ مَا كُنْتَ مِنْهُ تَحِيدُ"),
-                                                              u("كنت منه تحيد"));
+    QStringList list3 = Utils::String::Arabic::getMatchString(_u("وَجَاءَتْ سَكْرَةُ الْمَوْتِ بِالْحَقِّ ذَلِكَ مَا كُنْتَ مِنْهُ تَحِيدُ"),
+                                                              _u("كنت منه تحيد"));
 
     QCOMPARE(list3.size(), 1);
-    QCOMPARE(list3[0], u("كُنْتَ مِنْهُ تَحِيدُ"));
+    QCOMPARE(list3[0], _u("كُنْتَ مِنْهُ تَحِيدُ"));
 
-    QStringList list4 = Utils::String::Arabic::getMatchString(u("وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ"),
-                                                              u("شر"));
+    QStringList list4 = Utils::String::Arabic::getMatchString(_u("وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ"),
+                                                              _u("شر"));
 
     QCOMPARE(list4.size(), 1);
-    QCOMPARE(list4[0], u("شَرِّ"));
+    QCOMPARE(list4[0], _u("شَرِّ"));
 
-    QStringList list5 = Utils::String::Arabic::getMatchString(u("العلمالعلم"),
-                                                              u("العلم"));
+    QStringList list5 = Utils::String::Arabic::getMatchString(_u("العلمالعلم"),
+                                                              _u("العلم"));
 
     QCOMPARE(list5.size(), 2);
-    QCOMPARE(list5[0], u("العلم"));
-    QCOMPARE(list5[1], u("العلم"));
+    QCOMPARE(list5[0], _u("العلم"));
+    QCOMPARE(list5[1], _u("العلم"));
 }
 
 int UtilsTest::getPageTitleID(QList<int> &titles, int pageID)

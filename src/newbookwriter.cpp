@@ -101,13 +101,13 @@ QString NewBookWriter::processPageText(QString text)
     QString htmlText;
     text = Utils::Html::specialCharsEncode(text);
 
-    QRegExp rxMateen(QString::fromUtf8("§([^\"»]+)([»\"])"));
+    QRegExp rxMateen(_u("§([^\"»]+)([»\"])"));
     rxMateen.setMinimal(true);
 
     QRegExp rxSheer("^(.{15,50} [\\.\\*]{3} .{15,50})$");
     rxSheer.setMinimal(true);
 
-    QString specialChar(QString::fromUtf8("§"));
+    QString specialChar(_u("§"));
     // Separete footnote
     QRegExp footnoteSep("_{6,}");
     QStringList pageTextList = text.split(footnoteSep, QString::SkipEmptyParts);
@@ -118,10 +118,10 @@ QString NewBookWriter::processPageText(QString text)
         QString pageText = pageTextList.first();
         QString footnoteText = pageTextList.last().trimmed();
 
-        pageText.replace(QRegExp(QString::fromUtf8("\\(¬?([0-9]{1,2})\\)")),
+        pageText.replace(QRegExp(_u("\\(¬?([0-9]{1,2})\\)")),
                              "<sup class=\"fnn\"><a class=\"footn\" id=\"fnb\\1\" href=\"#fn\\1\">(\\1)</a></sup>");
 
-        footnoteText.replace(QRegExp(QString::fromUtf8("\\(¬?([0-9]{1,2})\\)")),
+        footnoteText.replace(QRegExp(_u("\\(¬?([0-9]{1,2})\\)")),
                              "<sup class=\"fnb\"><a href=\"#fnb\\1\" id=\"fn\\1\">(\\1)</a></sup>");
         footnoteText.replace(QRegExp("[\\r\\n]+"), "<br />");
 

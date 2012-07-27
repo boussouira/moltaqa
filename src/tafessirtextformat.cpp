@@ -1,4 +1,5 @@
 #include "tafessirtextformat.h"
+#include "utils.h"
 #include "stringutils.h"
 
 TafessirTextFormat::TafessirTextFormat()
@@ -21,7 +22,7 @@ void TafessirTextFormat::insertAyaText(const QString &pAyaText, int pAyaNumber, 
 {
     m_htmlHelper.beginSpan(".aya");
     m_htmlHelper.insertSpan(pAyaText, QString(".ayatxt|#s%1a%2").arg(pSoraNumber).arg(pAyaNumber));
-    m_htmlHelper.insertSpan(QString::fromUtf8(" ﴿%1﴾ ").arg(Utils::String::Arabic::arabicNumbers(pAyaNumber)), ".ayanumber");
+    m_htmlHelper.insertSpan(_u(" ﴿%1﴾ ").arg(Utils::String::Arabic::arabicNumbers(pAyaNumber)), ".ayanumber");
     m_htmlHelper.endSpan();
 }
 

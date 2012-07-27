@@ -126,8 +126,8 @@ void SettingsDialog::loadStyles()
             QSettings cfg(styleDir.absoluteFilePath("config.cfg"), QSettings::IniFormat);
             if(cfg.contains("name") && cfg.contains("description")) {
                 QHash<QString, QVariant> styleInfo;
-                styleInfo["name"] = QString::fromUtf8(cfg.value("name").toByteArray());
-                styleInfo["description"] = QString::fromUtf8(cfg.value("description").toByteArray());
+                styleInfo["name"] = _u(cfg.value("name").toByteArray());
+                styleInfo["description"] = _u(cfg.value("description").toByteArray());
                 styleInfo["dir"] = style;
 
                 ui->comboStyles->addItem(styleInfo["name"].toString(), styleInfo);
