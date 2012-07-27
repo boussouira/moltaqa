@@ -82,7 +82,7 @@
       </property>
       <property name="styleSheet">
        <string notr="true">QListWidget {
-	font: 14pt &quot;Traditional Arabic&quot;;
+	font: 14pt;
 }
 
 QListWidget::item {
