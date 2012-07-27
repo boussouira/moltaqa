@@ -1,4 +1,5 @@
 #include "tafessirtextformat.h"
+#include "stringutils.h"
 
 TafessirTextFormat::TafessirTextFormat()
 {
@@ -20,7 +21,7 @@ void TafessirTextFormat::insertAyaText(const QString &pAyaText, int pAyaNumber, 
 {
     m_htmlHelper.beginSpan(".aya");
     m_htmlHelper.insertSpan(pAyaText, QString(".ayatxt|#s%1a%2").arg(pSoraNumber).arg(pAyaNumber));
-    m_htmlHelper.insertSpan(QString(" (%1) ").arg(pAyaNumber), ".ayanumber");
+    m_htmlHelper.insertSpan(QString::fromUtf8(" ﴿%1﴾ ").arg(Utils::String::Arabic::arabicNumbers(pAyaNumber)), ".ayanumber");
     m_htmlHelper.endSpan();
 }
 
@@ -29,9 +30,13 @@ void TafessirTextFormat::beginQuran(QString soraName, int firstAya, int lastAya)
     QString quranTextInfo;
     if(firstAya < lastAya) {
         quranTextInfo = tr("سورة %1، من الاية %2 الى الاية %3")
-                .arg(soraName).arg(firstAya).arg(lastAya);
+                .arg(soraName)
+                .arg(Utils::String::Arabic::arabicNumbers(firstAya))
+                .arg(Utils::String::Arabic::arabicNumbers(lastAya));
     } else {
-        quranTextInfo = tr("سورة %1، الاية %2").arg(soraName).arg(firstAya);
+        quranTextInfo = tr("سورة %1، الاية %2")
+                .arg(soraName)
+                .arg(Utils::String::Arabic::arabicNumbers(lastAya));
     }
 
     m_htmlHelper.beginDiv(".tafessir_quran");

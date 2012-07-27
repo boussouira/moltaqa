@@ -283,6 +283,23 @@ QStringList getMatchString(const QString &text, QString searchText)
     return matches;
 }
 
+QString arabicNumbers(const QString &text)
+{
+    QString arabicNum;
+    for(int i=0; i<text.size(); i++) {
+        QChar c = text.at(i);
+        ushort uc = c.unicode();
+
+        if(0x30 <= uc && uc <= 0x39) {
+            arabicNum.append(QChar(0x630 + uc));
+        } else {
+            arabicNum.append(c);
+        }
+    }
+
+    return arabicNum;
+}
+
 } // Arabic
 } // String
 } // Utils

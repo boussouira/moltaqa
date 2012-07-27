@@ -67,6 +67,10 @@ inline bool isTashekil(QChar c) { return (0x064B <= c && c <= 0x0653); }
 inline bool isTatweel(QChar c) { return (c == 0x0640); }
 inline bool isArabic(QChar c) { return (0x0621 <= c &&  c <= 0x06ED); }
 
+QString arabicNumbers(const QString &text);
+inline QString arabicNumbers(int number) { return arabicNumbers(QString::number(number)); }
+
+
 } //Arabic
 } //String
 } //Utils
