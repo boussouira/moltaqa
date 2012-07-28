@@ -108,6 +108,10 @@ void BooksViewer::createMenus()
     m_bookInfoAct = new QAction(tr("بطاقة الكتاب"), this);
     QAction *readHistoryAct = new QAction(tr("تاريخ تصفح الكتاب"), this);
 
+    m_removeTashekilAct = new QAction(tr("حذف التشكيل"), this);
+    m_removeTashekilAct->setCheckable(true);
+    m_removeTashekilAct->setChecked(Utils::Settings::get("Style/removeTashekil", false).toBool());
+
     m_actionNextAYA->setShortcut(QKeySequence("J"));
     m_actionPrevAYA->setShortcut(QKeySequence("K"));
     m_actionNextPage->setShortcut(QKeySequence("N"));
@@ -172,6 +176,8 @@ void BooksViewer::createMenus()
     m_navActions << m_actionLastPage;
     m_navActions << m_actionGotToPage;
     m_navActions << actionSeparator(this);
+    m_navActions << m_removeTashekilAct;
+    m_navActions << actionSeparator(this);
     m_navActions << m_bookInfoAct;
     m_navActions << readHistoryAct;
 
@@ -193,6 +199,7 @@ void BooksViewer::createMenus()
     connect(m_actionGotToPage, SIGNAL(triggered()), m_viewManager, SLOT(goToPage()));
     connect(m_bookInfoAct, SIGNAL(triggered()), m_viewManager, SLOT(showBookInfo()));
     connect(readHistoryAct, SIGNAL(triggered()), m_viewManager, SLOT(showBookHistory()));
+    connect(m_removeTashekilAct, SIGNAL(triggered(bool)), SLOT(removeTashkil(bool)));
 
     // Generale actions
     connect(m_actionIndexDock, SIGNAL(triggered()), SLOT(showIndexWidget()));
@@ -443,6 +450,17 @@ void BooksViewer::searchPrev()
 
     currentBookWidget()->searchPrevious();
     updateSearchNavigation();
+}
+
+void BooksViewer::removeTashkil(bool remove)
+{
+    Utils::Settings::set("Style/removeTashekil", remove);
+
+    QList<BookWidget *> list = m_viewManager->getBookWidgets();
+    foreach (BookWidget *book, list) {
+        book->bookReader()->setRemoveTashkil(remove);
+        book->reloadCurrentPage();
+    }
 }
 
 void BooksViewer::editCurrentBook()

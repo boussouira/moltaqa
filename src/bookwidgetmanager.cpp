@@ -321,6 +321,27 @@ BookWidget *BookWidgetManager::getBookWidget(int bookID)
     return 0;
 }
 
+QList<BookWidget *> BookWidgetManager::getBookWidgets()
+{
+    QList<BookWidget *> list;
+
+    for(int i=0; i<m_topTab->count(); i++) {
+        BookWidget *bookWidget = qobject_cast<BookWidget*>(m_topTab->widget(i));
+        if(bookWidget) {
+            list.append(bookWidget);
+        }
+    }
+
+    for(int i=0; i<m_bottomTab->count(); i++) {
+        BookWidget *bookWidget = qobject_cast<BookWidget*>(m_bottomTab->widget(i));
+        if(bookWidget) {
+            list.append(bookWidget);
+        }
+    }
+
+    return list;
+}
+
 void BookWidgetManager::addTabActions(QList<QAction*> tabActions)
 {
     QList<QAction*> topActions = m_topTab->tabActions();

@@ -71,6 +71,11 @@ int RichBookReader::getPageTitleID(int pageID)
     return pageID;
 }
 
+void RichBookReader::setRemoveTashkil(bool remove)
+{
+    m_removeTashekil = remove;
+}
+
 QStandardItemModel *RichBookReader::indexModel()
 {
     ZipOpener opener(this);

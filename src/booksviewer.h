@@ -48,6 +48,7 @@ public slots:
     void searchInPage();
     void searchNext();
     void searchPrev();
+    void removeTashkil(bool remove);
 
 protected slots:
     void editCurrentBook();
@@ -76,6 +77,7 @@ private:
     QAction *m_actionLastPage;
     QAction *m_actionGotToPage;
     QAction *m_bookInfoAct;
+    QAction *m_removeTashekilAct;
     QAction *m_openSelectedTafsir;
     QToolBar *m_toolBarGeneral;
     QToolBar *m_toolBarNavigation;

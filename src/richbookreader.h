@@ -29,6 +29,8 @@ public:
     void getPageTitleID();
     int getPageTitleID(int pageID);
 
+    void setRemoveTashkil(bool remove);
+
 protected:
     virtual void connected();
     void readItem(QDomElement &element, QStandardItem *parent);
