@@ -245,7 +245,7 @@ void createDatabases(const QString &path)
         q.setTableName("refers", QueryBuilder::Replace);
 
         q.set("name", QObject::tr("افتراضي"));
-        q.set("referText", _u("قال *المؤلف*: «*النص*» (*الكتاب* *الصفحة*/*الجزء*)"));
+        q.set("referText", _u("قال *المؤلف*: \"*النص*\" (*الكتاب*) (*الجزء*/ *الصفحة*)"));
         q.where("id", 1);
 
         q.exec(query);
