@@ -5,11 +5,13 @@
 #include "utils.h"
 #include "timeutils.h"
 #include "clconstants.h"
+#include "stringutils.h"
 #include "bookexception.h"
 
 #include <qdir.h>
 #include <qthread.h>
 #include <qvariant.h>
+#include <qmessagebox.h>
 
 IndexManager::IndexManager(QObject *parent) :
     QObject(parent),
@@ -76,35 +78,46 @@ bool IndexManager::isIndexing()
 
 void IndexManager::start()
 {
+    m_taskIter = m_indexTracker->getTaskIter();
+    ml_return_on_fail(m_taskIter->taskCount());
+
+    if(m_taskIter->taskCount() > 100) {
+        ml_return_on_fail(QMessageBox::question(MW,
+                                 tr("تحديث الفهرس"),
+                                 tr("يجب تحديث %1" "\n" "هل تريد تحديث الفهرس الآن؟")
+                                 .arg(Utils::String::Arabic::plural(m_taskIter->taskCount(),
+                                                                    Utils::String::Arabic::BOOK)),
+                                 QMessageBox::Yes|QMessageBox::No,
+                                 QMessageBox::No) == QMessageBox::Yes);
+    }
+
     ml_return_on_fail2(openWriter(), "IndexManager: Can't open IndexWriter");
 
     m_threadCount = Utils::Settings::get("Search/threadCount", QThread::idealThreadCount()).toInt();
-    m_taskIter = m_indexTracker->getTaskIter();
     m_indexedBookCount = 0;
 
     m_threads.clear();
     m_indexingTime.start();
 
-    if(m_taskIter->taskCount()) {
-        m_threadCount = qMin(m_threadCount, m_taskIter->taskCount());
 
-        qDebug("IndexManager: start %d tasks with %d threads",
-               m_taskIter->taskCount(), m_threadCount);
+    m_threadCount = qMin(m_threadCount, m_taskIter->taskCount());
 
-        for(int i=0;i<m_threadCount;i++) {
-            BookIndexer *indexThread = new BookIndexer();
-            connect(indexThread, SIGNAL(taskDone(IndexTask*)), SLOT(taskDone(IndexTask*)));
-            connect(indexThread, SIGNAL(doneIndexing()), SLOT(threadDoneIndexing()));
+    qDebug("IndexManager: start %d tasks with %d threads",
+           m_taskIter->taskCount(), m_threadCount);
 
-            indexThread->setTaskIter(m_taskIter);
-            indexThread->setWirter(m_writer);
+    for(int i=0;i<m_threadCount;i++) {
+        BookIndexer *indexThread = new BookIndexer();
+        connect(indexThread, SIGNAL(taskDone(IndexTask*)), SLOT(taskDone(IndexTask*)));
+        connect(indexThread, SIGNAL(doneIndexing()), SLOT(threadDoneIndexing()));
 
-            indexThread->start();
-            m_threads.append(indexThread);
-        }
+        indexThread->setTaskIter(m_taskIter);
+        indexThread->setWirter(m_writer);
 
-        emit started();
+        indexThread->start();
+        m_threads.append(indexThread);
     }
+
+    emit started();
 }
 
 void IndexManager::stop()
