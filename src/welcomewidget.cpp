@@ -119,8 +119,6 @@ void WelcomeWidget::open(QString vid)
 void WelcomeWidget::jsCleared()
 {
     ui->webView->page()->mainFrame()->addToJavaScriptWindowObject("welcome", this);
-
-    QTimer::singleShot(3000, this, SLOT(showStatistics()));
 }
 
 void WelcomeWidget::showStatistics()
