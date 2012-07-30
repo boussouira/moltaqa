@@ -84,6 +84,8 @@ QString localeDir();
 QString dataDir();
 
 QString currentStyle(const QString &fileName=QString());
+
+QString id();
 }
 
 namespace Log {

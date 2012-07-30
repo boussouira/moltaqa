@@ -604,6 +604,14 @@ QString currentStyle(const QString &fileName)
     return dir.absolutePath();
 }
 
+QString id()
+{
+    if(!Utils::Settings::contains("Update/token"))
+        Utils::Settings::set("Update/token", Utils::Rand::string(16, false));
+
+    return Utils::Settings::get("Update/token").toString();
+}
+
 }
 
 namespace Log {

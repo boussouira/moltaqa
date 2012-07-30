@@ -27,6 +27,18 @@ void UpdateChecker::startCheck(bool autoUpdateCheck)
     QString updateUrl = Utils::Settings::get("Update/url",
                                             "http://dl.dropbox.com/s/k8wtn3js2bi51uy/update.xml?dl=1").toString();
 
+    if(updateUrl.contains("{ID}"))
+        updateUrl.replace("{ID}", App::id());
+
+    updateUrl.replace("{REVISION}", QString::number(APP_UPDATE_REVISION));
+    updateUrl.replace("{OS}",
+                  #ifdef Q_OS_WIN
+                      "windows"
+                  #else
+                      "linux"
+                  #endif
+                      );
+
     startRequest(QUrl(updateUrl));
 #else
     qWarning("Can't check for update without Git change number");
