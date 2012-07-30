@@ -24,9 +24,10 @@ void UpdateChecker::startCheck(bool autoUpdateCheck)
     autoCheck = autoUpdateCheck;
 
 #ifdef APP_UPDATE_REVISION
-    QUrl url("http://dl.dropbox.com/s/k8wtn3js2bi51uy/update.xml?dl=1");
+    QString updateUrl = Utils::Settings::get("Update/url",
+                                            "http://dl.dropbox.com/s/k8wtn3js2bi51uy/update.xml?dl=1").toString();
 
-    startRequest(url);
+    startRequest(QUrl(updateUrl));
 #else
     qWarning("Can't check for update without Git change number");
 #endif
@@ -110,6 +111,8 @@ void UpdateChecker::parse(QString updateXML)
             m_result->downloadLink = e.text();
         } else if(e.nodeName() == "changelog") {
             m_result->changelog = e.text();
+        } else if(e.nodeName() == "url") {
+            Utils::Settings::set("Update/url", e.text());
         }
 
         e = e.nextSiblingElement();
