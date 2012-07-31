@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>نافذة التعديلات</string>
+   <string>خيارات البرنامج</string>
   </property>
   <property name="layoutDirection">
    <enum>Qt::RightToLeft</enum>
@@ -27,7 +27,7 @@
      </property>
      <widget class="QWidget" name="tabGeneralSettings">
       <attribute name="title">
-       <string>تعديلات عامة</string>
+       <string>خيارات عامة</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>

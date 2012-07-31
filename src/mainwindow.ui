@@ -85,7 +85,7 @@
    </widget>
    <widget class="QMenu" name="menu">
     <property name="title">
-     <string>اعدادات</string>
+     <string>أدوات</string>
     </property>
     <addaction name="actionSettings"/>
    </widget>
@@ -137,7 +137,7 @@
   </action>
   <action name="actionSettings">
    <property name="text">
-    <string>تعديلات...</string>
+    <string>خيارات البرنامج...</string>
    </property>
    <property name="iconText">
     <string>تعديلات...</string>
