@@ -15,6 +15,7 @@
 #include "favouritesmanager.h"
 #include "searchmanager.h"
 #include "indextracker.h"
+#include "statisticsmanager.h"
 
 #include <qdebug.h>
 #include <qsqlquery.h>
@@ -76,6 +77,7 @@ void LibraryManager::openManagers()
     m_taffesirManager = new TaffesirListManager(this);
     m_rowatManager = new TarajemRowatManager(this);
     m_searchManager = new SearchManager(this);
+    m_statisticsManager = new StatisticsManager(this);
 
     m_managers.clear();
 
@@ -85,7 +87,8 @@ void LibraryManager::openManagers()
                << m_bookListManager
                << m_taffesirManager
                << m_rowatManager
-               << m_searchManager;
+               << m_searchManager
+               << m_statisticsManager;
 
     foreach (ListManager *manager, m_managers)
         manager->loadModels();

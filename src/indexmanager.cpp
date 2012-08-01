@@ -7,6 +7,7 @@
 #include "clconstants.h"
 #include "stringutils.h"
 #include "bookexception.h"
+#include "statisticsmanager.h"
 
 #include <qdir.h>
 #include <qthread.h>
@@ -54,8 +55,8 @@ bool IndexManager::openWriter()
         m_writer->setRAMBufferSizeMB(ramSize);
         m_writer->setMergeFactor(25);
 
-        qDebug("IndexManager: open writer using %d MB", ramSize);
-
+        StatisticsManager::instance()->enqueue("index",
+                                               QString("open writer using %1 MB") .arg(ramSize));
         return true;
     } catch(CLuceneError &e) {
         qCritical("IndexManager::openWriter CLucene exception %s", e.what());
@@ -99,11 +100,12 @@ void IndexManager::start()
     m_threads.clear();
     m_indexingTime.start();
 
-
     m_threadCount = qMin(m_threadCount, m_taskIter->taskCount());
 
-    qDebug("IndexManager: start %d tasks with %d threads",
-           m_taskIter->taskCount(), m_threadCount);
+    StatisticsManager::instance()->enqueue("index",
+                                           QString("start %1 tasks with %2 threads")
+                                           .arg(m_taskIter->taskCount())
+                                           .arg(m_threadCount));
 
     for(int i=0;i<m_threadCount;i++) {
         BookIndexer *indexThread = new BookIndexer();
@@ -152,9 +154,9 @@ void IndexManager::threadDoneIndexing()
         ml_delete_check(m_analyzer);
         ml_delete_check(m_taskIter);
 
-        qDebug() << "IndexManager:"
-                 << tr("تمت الفهرسة خلال %1").arg(Utils::Time::secondsToString(m_indexingTime.elapsed()));
-
+        StatisticsManager::instance()->dequeue("index",
+                                               QString("done in %1 seconds")
+                                               .arg(m_indexingTime.elapsed()/1000));
         qDeleteAll(m_threads);
         m_threads.clear();
 
@@ -170,7 +172,15 @@ bool IndexManager::optimize()
     ml_return_val_on_fail2(openWriter(), "IndexManager::optimize Can't open IndexWriter", false);
 
     try {
+        QTime time;
+        time.start();
+
         m_writer->optimize();
+
+        StatisticsManager::instance()->dequeue("index",
+                                               QString("index optimized in %1 seconds")
+                                               .arg(time.elapsed()/1000));
+
         return true;
     } catch(CLuceneError &err) {
         qCritical("IndexManager::optimize CLucene Error: %s", err.what());

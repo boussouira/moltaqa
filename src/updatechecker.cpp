@@ -125,6 +125,10 @@ void UpdateChecker::parse(QString updateXML)
             m_result->changelog = e.text();
         } else if(e.nodeName() == "url") {
             Utils::Settings::set("Update/url", e.text());
+        } else if(e.nodeName() == "statistics-send") {
+            Utils::Settings::set("Statistics/send", e.text().compare("true", Qt::CaseInsensitive)==0);
+        } else if(e.nodeName() == "statistics-url") {
+            Utils::Settings::set("Statistics/url", e.text());
         }
 
         e = e.nextSiblingElement();

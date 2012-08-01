@@ -143,7 +143,10 @@ SOURCES += mainwindow.cpp \
     filterlineedit.cpp \
     webviewsearcher.cpp \
     updatechecker.cpp \
-    updatedialog.cpp
+    updatedialog.cpp \
+    statisticsmanager.cpp \
+    upfile.cpp \
+    uploader.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -274,7 +277,10 @@ HEADERS += mainwindow.h \
     filterlineedit.h \
     webviewsearcher.h \
     updatechecker.h \
-    updatedialog.h
+    updatedialog.h \
+    statisticsmanager.h \
+    upfile.h \
+    uploader.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

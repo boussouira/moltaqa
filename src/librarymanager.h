@@ -25,6 +25,7 @@ class TarajemRowatManager;
 class FavouritesManager;
 class SearchManager;
 class QAction;
+class StatisticsManager;
 
 class LibraryManager : public DatabaseManager
 {
@@ -71,6 +72,7 @@ protected:
     TarajemRowatManager *m_rowatManager;
     FavouritesManager *m_favourites;
     SearchManager *m_searchManager;
+    StatisticsManager *m_statisticsManager;
 };
 
 #endif // LIBRARYMANAGER_H

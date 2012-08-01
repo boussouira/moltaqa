@@ -12,6 +12,8 @@
 #include "utils.h"
 #include "searchmanager.h"
 #include "searchfieldsdialog.h"
+#include "statisticsmanager.h"
+
 #include <qmessagebox.h>
 #include <qinputdialog.h>
 #include <qcompleter.h>
@@ -248,9 +250,12 @@ void SearchWidget::saveSearchQuery()
         }
     }
 
-    qDebug() << "Search: Query" << queryStr.trimmed()
-             << "take" << m_searcher->searchTime() << "ms,"
-             << "result count" << m_searcher->resultsCount();
+    QString log = QString("query: [%1] take %2 ms, results count %3")
+            .arg(queryStr.trimmed())
+            .arg(m_searcher->searchTime())
+            .arg(m_searcher->resultsCount());
+
+    StatisticsManager::instance()->add("search", log);
 
     if(m_completerModel) {
         foreach (QString q, list) {

@@ -17,6 +17,7 @@
 #include "modelenums.h"
 #include "bookeditor.h"
 #include "modelviewfilter.h"
+#include "statisticsmanager.h"
 
 #ifdef USE_MDBTOOLS
 #include "mdbconverter.h"
@@ -357,9 +358,10 @@ void ShamelaImportDialog::startImporting()
 
     m_importThreadCount = qMin(ui->spinImportThreads->value(), booksCount);
 
-    qDebug("ShamelaImportDialog: Start importing %d books using %d threads",
-           booksCount,
-           m_importThreadCount);
+    StatisticsManager::instance()->enqueue("ShamelaImport",
+                                           QString("Import %1 books using %2 threads")
+                                           .arg(booksCount)
+                                           .arg(m_importThreadCount));
 
     m_manager->selectBooks();
 
@@ -425,6 +427,11 @@ void ShamelaImportDialog::doneImporting()
         addDebugInfo(tr("تم استيراد %1 بنجاح خلال %2")
                      .arg(Utils::String::Arabic::plural(m_importedBooksCount, Utils::String::Arabic::BOOK))
                      .arg(Utils::Time::secondsToString(m_importTime.elapsed())));
+
+        StatisticsManager::instance()->dequeue("ShamelaImport",
+                                               QString("%1 books imported in %2 seconds")
+                                               .arg(m_importedBooksCount)
+                                               .arg(m_importTime.elapsed() / 1000));
 
         qDeleteAll(m_importThreads);
         m_importThreads.clear();
