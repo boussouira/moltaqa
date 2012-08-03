@@ -13,10 +13,10 @@ AboutDialog::AboutDialog(QWidget *parent) :
 
     QString info;
 #ifdef GITVERSION
-    info += QString("(rev: %1) - ").arg(GITVERSION);
+    info += QString("Rev: %1, ").arg(GITVERSION);
 #endif
 
-    info += QString("Qt: %1 - ").arg(QT_VERSION_STR);
+    info += QString("Qt: %1, ").arg(qVersion());
     info += QString("CLucene: %1").arg(_CL_VERSION);
 
     ui->labelRevision->setText(info);
