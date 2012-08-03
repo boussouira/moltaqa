@@ -8,14 +8,7 @@
 #include <qvariant.h>
 
 #define APP_VERSION_STR "0.9a1"
-#define APP_VERSION 0x000900
-#define APP_VERSION_CHECK(major, minor, patch) ((major<<16)|(minor<<8)|(patch))
-
-#ifdef GITCHANGENUMBER
-#define APP_UPDATE_REVISION GITCHANGENUMBER
-#else
-#define APP_UPDATE_REVISION APP_VERSION
-#endif
+#define APP_UPDATE_REVISION 1
 
 #if QT_VERSION >= 0x040800
     #define ML_DEFAULT_STYLE "default"
@@ -70,7 +63,6 @@ bool contains(const QString &key);
 namespace App {
 QString name();
 const char *version();
-int versionNumber();
 
 QStringList checkDir(bool showWarning);
 QStringList checkFiles(QStringList files, QDir dir, bool showWarning);

@@ -439,11 +439,6 @@ const char *version()
     return APP_VERSION_STR;
 }
 
-int versionNumber()
-{
-    return APP_VERSION;
-}
-
 QStringList checkDir(bool showWarnings)
 {
     QStringList missingFiles;
