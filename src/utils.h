@@ -7,7 +7,7 @@
 #include <qdebug.h>
 #include <qvariant.h>
 
-#define APP_VERSION_STR "0.9.0"
+#define APP_VERSION_STR "0.9a1"
 #define APP_VERSION 0x000900
 #define APP_VERSION_CHECK(major, minor, patch) ((major<<16)|(minor<<8)|(patch))
 
