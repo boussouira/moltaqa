@@ -136,53 +136,39 @@ void TarajemRowatView::setCurrentRawi(RawiInfoPtr info)
     html.endDiv();
 
     html.beginDiv("#info");
+    html.beginDL(".dl-horizontal");
 
-    html.beginParagraph();
-    html.insertSpan(tr("اسم الراوي: "), ".pro-name");
-    html.insertSpan(info->name, ".pro-value");
-    html.endParagraph();
+    html.insertDT(tr("اسم الراوي: "));
+    html.insertDD(info->name);
 
     if(info->laqab.size()) {
-        html.beginParagraph();
-        html.insertSpan(tr("اللقب: "), ".pro-name");
-        html.insertSpan(info->laqab, ".pro-value");
-        html.endParagraph();
+        html.insertDT(tr("اللقب: "));
+        html.insertDD(info->laqab);
     }
 
     if(info->birthStr.size()) {
-        html.beginParagraph();
-        html.insertSpan(tr("الولادة: "), ".pro-name");
-        html.insertSpan(info->birthStr, ".pro-value");
-        html.endParagraph();
+        html.insertDT(tr("الولادة: "));
+        html.insertDD(info->birthStr);
     }
 
     if(info->deathStr.size()) {
-        html.beginParagraph();
-        html.insertSpan(tr("الوفاة: "), ".pro-name");
-        html.insertSpan(info->deathStr, ".pro-value");
-        html.endParagraph();
+        html.insertDT(tr("الوفاة: "));
+        html.insertDD(info->deathStr);
     }
 
-    html.beginParagraph();
-    html.insertSpan(tr("الطبقة: "), ".pro-name");
-    html.insertSpan(info->tabaqa, ".pro-value");
-    html.endParagraph();
+    html.insertDT(tr("الطبقة: "));
+    html.insertDD(info->tabaqa);
 
-    html.beginParagraph();
-    html.insertSpan(tr("روى له: "), ".pro-name");
-    html.insertSpan(info->rowat, ".pro-value");
-    html.endParagraph();
+    html.insertDT(tr("روى له: "));
+    html.insertDD(info->rowat);
 
-    html.beginParagraph();
-    html.insertSpan(tr("رتبته عند ابن حجر: "), ".pro-name");
-    html.insertSpan(info->rotba_hafed, ".pro-value");
-    html.endParagraph();
+    html.insertDT(tr("رتبته عند ابن حجر: "));
+    html.insertDD(info->rotba_hafed);
 
-    html.beginParagraph();
-    html.insertSpan(tr("رتبته عند الذهبي: "), ".pro-name");
-    html.insertSpan(info->rotba_zahabi, ".pro-value");
-    html.endParagraph();
+    html.insertDT(tr("رتبته عند الذهبي: "));
+    html.insertDD(info->rotba_zahabi);
 
+    html.endDL(); // .dl-horizontal
     html.endDiv(); // #info
 
     html.insertHead(4, tr("الشيوخ"), "#sheok");

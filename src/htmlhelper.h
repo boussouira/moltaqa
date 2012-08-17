@@ -78,9 +78,28 @@ public:
         beginHtmlTag("span", selector, attr);
     }
 
+    /// Begin Definition List
+    inline void beginDL(const QString &selector="", const QString &attr="")
+    {
+        beginHtmlTag("dl", selector, attr);
+    }
+
+    /// Insert Definition Item
+    inline void insertDT(const QString &text, const QString &selector="")
+    {
+        insertHtmlTag("dt", text, selector);
+    }
+
+    /// Insert item description
+    inline void insertDD(const QString &text, const QString &selector="")
+    {
+        insertHtmlTag("dd", text, selector);
+    }
+
     inline void endDiv() { endHtmlTag(); }
     inline void endParagraph() { endHtmlTag(); }
     inline void endSpan() { endHtmlTag(); }
+    inline void endDL() { endHtmlTag(); }
 
     inline void insertBr() { m_html.append("<br />"); }
 

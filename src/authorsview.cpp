@@ -139,42 +139,35 @@ void AuthorsView::setCurrentAuth(AuthorInfoPtr info)
     html.endDiv(); // .nav
 
     html.beginDiv("#info");
+    html.beginDL(".dl-horizontal");
 
     if(info->name.size()) {
-        html.beginParagraph();
-        html.insertSpan(tr("الاسم: "), ".pro-name");
+        html.insertDT(tr("الاسم: "));
 
         if(info->isALive)
-            html.insertSpan(tr("%1 (معاصر)").arg(info->name), ".pro-value");
+            html.insertDD(tr("%1 (معاصر)").arg(info->name));
         else
-            html.insertSpan(info->name, ".pro-value");
+            html.insertDD(info->name);
 
-        html.endParagraph();
     }
 
     if(info->fullName.size()) {
-        html.beginParagraph();
-        html.insertSpan(tr("الاسم الكامل: "), ".pro-name");
-        html.insertSpan(info->fullName, ".pro-value");
-        html.endParagraph();
+        html.insertDT(tr("الاسم الكامل: "));
+        html.insertDD(info->fullName);
     }
 
     if(info->birthStr.size()) {
-        html.beginParagraph();
-        html.insertSpan(tr("الولادة: "), ".pro-name");
-        html.insertSpan(info->birthStr, ".pro-value");
-        html.endParagraph();
+        html.insertDT(tr("الولادة: "));
+        html.insertDD(info->birthStr);
     }
 
     if(info->deathStr.size()) {
-        html.beginParagraph();
-        html.insertSpan(tr("الوفاة: "), ".pro-name");
-        html.insertSpan(info->deathStr, ".pro-value");
-        html.endParagraph();
+        html.insertDT(tr("الوفاة: "));
+        html.insertDD(info->deathStr);
     }
 
+    html.endDL(); // .dl-horizontal
     html.endDiv(); // #info
-
 
     if(books.size()) {
         html.insertHead(4, tr("كتب المؤلف (%1)").arg(books.size()), "#books");

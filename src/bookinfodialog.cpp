@@ -37,11 +37,10 @@ void BookInfoDialog::setup()
     html.beginDiv(".rawi-info");
 
     html.beginDiv("#info");
+    html.beginDL(".dl-horizontal");
 
-    html.beginParagraph();
-    html.insertSpan(tr("الكتاب:"), ".pro-name");
-    html.insertSpan(m_book->title, ".pro-value");
-    html.endParagraph();
+    html.insertDT(tr("الكتاب:"));
+    html.insertDD(m_book->title);
 
     if(!m_book->isQuran()) {
         QString authorDeath;
@@ -53,47 +52,35 @@ void BookInfoDialog::setup()
                 authorDeath = tr("(%1)").arg(author->deathStr);
         }
 
-        html.beginParagraph();
-        html.insertSpan(tr("المؤلف:"), ".pro-name");
-        html.beginSpan(".pro-value");
+        html.insertDT(tr("المؤلف:"));
+        html.beginHtmlTag("dd", ".pro-value");
         html.insertAuthorLink(m_book->authorName + " " + authorDeath, m_book->authorID);
-        html.endSpan();
-        html.endParagraph();
+        html.endHtmlTag();
     }
 
     if(m_book->edition.size()) {
-        html.beginParagraph();
-        html.insertSpan(tr("الطبعة:"), ".pro-name");
-        html.insertSpan(m_book->edition, ".pro-value");
-        html.endParagraph();
+        html.insertDT(tr("الطبعة:"));
+        html.insertDD(m_book->edition);
     }
 
     if(m_book->publisher.size()) {
-        html.beginParagraph();
-        html.insertSpan(tr("الناشر:"), ".pro-name");
-        html.insertSpan(m_book->publisher, ".pro-value");
-        html.endParagraph();
+        html.insertDT(tr("الناشر:"));
+        html.insertDD(m_book->publisher);
     }
 
     if(m_book->mohaqeq.size()) {
-        html.beginParagraph();
-        html.insertSpan(tr("المحقق:"), ".pro-name");
-        html.insertSpan(m_book->mohaqeq, ".pro-value");
-        html.endParagraph();
+        html.insertDT(tr("المحقق:"));
+        html.insertDD(m_book->mohaqeq);
     }
 
-    html.beginParagraph();
-    html.insertSpan(tr("ترقيم الكتاب:"), ".pro-name");
+    html.insertDT(tr("ترقيم الكتاب:"));
 
     if(m_book->bookFlags & LibraryBook::PrintedPageNumber)
-        html.insertSpan(tr("موافق للمطبوع"), ".pro-value");
+        html.insertDD(tr("موافق للمطبوع"));
     else if(m_book->bookFlags & LibraryBook::MakhetotPageNumer)
-        html.insertSpan(tr("موافق للمخطوط"), ".pro-value");
+        html.insertDD(tr("موافق للمخطوط"));
     else
-        html.insertSpan(tr("غير موافق للمطبوع"), ".pro-value");
-
-    html.endParagraph();
-
+        html.insertDD(tr("غير موافق للمطبوع"));
 
     QString moqabal;
     if(m_book->bookFlags & LibraryBook::MoqabalMoteboa)
@@ -104,10 +91,8 @@ void BookInfoDialog::setup()
         moqabal += tr("نسخة مصورة PDF");
 
     if(moqabal.size()) {
-        html.beginParagraph();
-        html.insertSpan(tr("مقابل على:"), ".pro-name");
-        html.insertSpan(moqabal, ".pro-value");
-        html.endParagraph();
+        html.insertDT(tr("مقابل على:"));
+        html.insertDD(moqabal);
     }
 
     QString otherInfo;
@@ -119,19 +104,16 @@ void BookInfoDialog::setup()
         otherInfo += tr("مشكول، ");
 
     if(otherInfo.size()) {
-        html.beginParagraph();
-        html.insertSpan(tr("معلومات اخرى:"), ".pro-name");
-        html.insertSpan(otherInfo, ".pro-value");
-        html.endParagraph();
+        html.insertDT(tr("معلومات اخرى:"));
+        html.insertDD(otherInfo);
     }
 
     if(m_book->comment.size() && !m_book->comment.contains(tr("[مؤخود من الشاملة]"))) {
-        html.beginParagraph();
-        html.insertSpan(tr("ملاحظات:"), ".pro-name");
-        html.insertSpan(m_book->comment, ".pro-value");
-        html.endParagraph();
+        html.insertDT(tr("ملاحظات:"));
+        html.insertDD(m_book->comment);
     }
 
+    html.endDL(); // .dl-horizontal
     html.endDiv(); // #info
 
     if(m_book->info.size()) {
