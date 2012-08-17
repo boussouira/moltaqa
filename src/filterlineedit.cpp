@@ -58,7 +58,7 @@ void FilterLineEdit::slotTextChanged()
         m_lastFilterText = newlyTypedText;
         emit filterChanged(m_lastFilterText);
 
-        m_filterTimer->setInterval((m_lastFilterText.size() > 3 ? 300 : 900));
+        m_filterTimer->setInterval((m_lastFilterText.size() > 9 ? 300 : 900));
         m_filterTimer->start();
     }
 }
