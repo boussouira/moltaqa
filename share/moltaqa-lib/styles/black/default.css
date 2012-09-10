@@ -125,11 +125,11 @@ a {
     color: #040643;
 }
 footnote {
-    font-size: 20px;
+    font-size: 0.8em;
 }
 footnote a {
     color: green;
-    font-size: 17px;
+    font-size: 0.9em;
 }
 footnote p {
     margin: 0;
@@ -137,7 +137,7 @@ footnote p {
 }
 .footn {
     color: green;
-    font-size: 20px;
+    font-size: 0.8em;
     padding-bottom: 4px;
 }
 .tafessir_quran .quran_text {
