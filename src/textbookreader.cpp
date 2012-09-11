@@ -49,15 +49,19 @@ void TextBookReader::getTitles()
                 titleID = reader.attributes().value("pageID").toString().toInt();
                 m_titles.append(titleID);
             } else if(m_loadTitlesText && reader.name() == "text") {
-                if(reader.readNext() == QXmlStreamReader::Characters)
+                if(reader.readNext() == QXmlStreamReader::Characters) {
                     m_titlesText[titleID] = reader.text().toString();
-                else
-                    qWarning() << "TextBookReader::getTitles Unexpected token type" << reader.tokenString();
+                } else {
+                    qWarning() << "TextBookReader::getTitles Unexpected token type" << reader.tokenString()
+                               << "- Book:" << m_bookInfo->id << m_bookInfo->title << m_bookInfo->fileName;
+                    break;
+                }
             }
         }
 
         if(reader.hasError()) {
-            qDebug() << "getTitles: QXmlStreamReader error:" << reader.errorString();
+            qDebug() << "getTitles: QXmlStreamReader error:" << reader.errorString()
+                     << "- Book:" << m_bookInfo->id << m_bookInfo->title << m_bookInfo->fileName;
             break;
         }
     }
