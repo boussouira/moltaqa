@@ -35,6 +35,8 @@ private slots:
 
     void findArabic();
 
+    void cleanFileName();
+
 protected:
     int getPageTitleID(QList<int> &titles, int pageID);
 };

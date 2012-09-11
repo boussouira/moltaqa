@@ -354,6 +354,28 @@ int exec(QDialog *dialog, QString section, bool hideHelp)
 } // Widget
 
 namespace Files {
+bool move(const QString &sourcePath, const QString &destPath)
+{
+    QString destFile;
+    QFileInfo info(destPath);
+
+    if(info.isDir()) {
+        QDir dir(destPath);
+        destFile = dir.filePath(QFileInfo(sourcePath).fileName());
+    } else {
+        destFile = destPath;
+    }
+
+    ml_return_val_on_fail2(QFile::copy(sourcePath, destFile),
+                           "Files::move can't copy" << sourcePath << "to" << destFile,
+                           false);
+
+    ml_warn_on_fail(QFile::remove(sourcePath),
+                    "Files::move can't delete file" << sourcePath);
+
+    return true;
+}
+
 void removeDir(const QString &path)
 {
     QFileInfo info(path);
@@ -402,6 +424,61 @@ QString formatSize(quint64 size)
         sizeStr = QObject::tr("%1 جيجا").arg(size/(1024.0*1024.0*1024.0), 4, 'f', 2);
 
     return sizeStr;
+}
+
+QString cleanFileName(QString fileName, bool removeSpace)
+{
+    QFileInfo info(fileName);
+    QString baseName = info.baseName().remove(QRegExp("[\\?\\*<>\\(\\)\\[\\]\"']")).simplified();
+    QString ext = info.completeSuffix().trimmed();
+
+    if(removeSpace)
+         baseName.replace(' ', '_');
+
+    QString path = info.dir().filePath(baseName + '.' + ext);
+    if(path.startsWith("./"))
+        path = path.remove(0, 2);
+
+    return path;
+}
+
+/**
+ * @brief This function ensure the no file exists at the given path
+ * if a file already exists at the given path, this function will return
+ * a change the file name and return the new path
+ * @param path
+ * @return path to a new file
+ */
+QString ensureFileExistsNot(QString path)
+{
+    if(!QFile::exists(path))
+        return path;
+
+    QFileInfo info(path);
+    QString baseName = info.baseName();
+
+    QString newPath;
+
+    do {
+        if(baseName.contains(QRegExp("_[0-9]+$"))) {
+            QRegExp rx("_([0-9]+)$");
+            int pos = 0;
+
+            if ((pos = rx.indexIn(baseName, pos)) != -1) {
+                int num =rx.cap(1).toInt();
+                baseName.replace(QRegExp("_[0-9]+$"), QString("_%1").arg(num+1));
+            } else {
+                baseName.append("_1");
+            }
+        } else {
+            baseName.append("_1");
+        }
+
+        newPath = info.dir().filePath(baseName + '.' + info.completeSuffix());
+
+    } while(QFile::exists(newPath));
+
+    return newPath;
 }
 
 } // Files

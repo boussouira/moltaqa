@@ -36,6 +36,8 @@ public:
 
     static LibraryManager *instance();
 
+    LibraryInfo *libraryInfo();
+
     void loadModels();
     void clear();
 

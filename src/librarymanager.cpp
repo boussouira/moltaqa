@@ -60,6 +60,11 @@ LibraryManager *LibraryManager::instance()
     return m_instance;
 }
 
+LibraryInfo *LibraryManager::libraryInfo()
+{
+    return m_libraryInfo;
+}
+
 void LibraryManager::loadModels()
 {
 }

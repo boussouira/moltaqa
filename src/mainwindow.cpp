@@ -24,6 +24,7 @@
 #include "logdialog.h"
 #include "webview.h"
 #include "updatedialog.h"
+#include "exportdialog.h"
 
 #include <qmessagebox.h>
 #include <qsettings.h>
@@ -223,6 +224,7 @@ void MainWindow::setupActions()
     connect(ui->actionLibraryInfo, SIGNAL(triggered()), SLOT(showLibraryInfo()));
     connect(ui->actionImport, SIGNAL(triggered()), SLOT(importBookDialog()));
     connect(ui->actionShamelaImport, SIGNAL(triggered()), SLOT(importFromShamela()));
+    connect(ui->actionExport, SIGNAL(triggered()), SLOT(exportBooks()));
 
     connect(m_welcomeWidget, SIGNAL(bookSelected(int)), SLOT(openBook(int)));
     connect(m_booksList, SIGNAL(bookSelected(int)), SLOT(openBook(int)));
@@ -408,6 +410,12 @@ void MainWindow::importFromShamela()
 {
     ShamelaImportDialog importDialog;
     importDialog.exec();
+}
+
+void MainWindow::exportBooks()
+{
+    ExportDialog exportDialog;
+    exportDialog.exec();
 }
 
 void MainWindow::startIndexing()

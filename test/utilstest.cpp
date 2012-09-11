@@ -370,6 +370,42 @@ void UtilsTest::findArabic()
     QCOMPARE(list5[1], _u("العلم"));
 }
 
+void UtilsTest::cleanFileName()
+{
+    QCOMPARE(Utils::Files::cleanFileName("book first.pdf"),
+             QString("book first.pdf"));
+
+    QCOMPARE(Utils::Files::cleanFileName("book first.pdf", true),
+             QString("book_first.pdf"));
+
+    QCOMPARE(Utils::Files::cleanFileName("book (first).pdf"),
+             QString("book first.pdf"));
+
+    QCOMPARE(Utils::Files::cleanFileName("book (first).pdf", true),
+             QString("book_first.pdf"));
+
+    QCOMPARE(Utils::Files::cleanFileName("book [programming] (first).pdf", true),
+             QString("book_programming_first.pdf"));
+
+    QCOMPARE(Utils::Files::cleanFileName("book <first>.pdf"),
+             QString("book first.pdf"));
+
+    QCOMPARE(Utils::Files::cleanFileName("book *first* ???.pdf"),
+             QString("book first.pdf"));
+
+    QCOMPARE(Utils::Files::cleanFileName("book    first   .pdf"),
+             QString("book first.pdf"));
+
+    QCOMPARE(Utils::Files::cleanFileName("/home/user/Documents/book <first>.pdf"),
+             QString("/home/user/Documents/book first.pdf"));
+
+    QCOMPARE(Utils::Files::cleanFileName("/home/user/Documents/book [programming] (123) <first >  .pdf", true),
+             QString("/home/user/Documents/book_programming_123_first.pdf"));
+
+    QCOMPARE(Utils::Files::cleanFileName("c:\\home\\user\\Documents\\book [programming] (123) <first >  .pdf", true),
+             QString("c:\\home\\user\\Documents\\book_programming_123_first.pdf"));
+}
+
 int UtilsTest::getPageTitleID(QList<int> &titles, int pageID)
 {
     if(!titles.contains(pageID)) {
