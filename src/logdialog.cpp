@@ -9,6 +9,7 @@
 #include <qtextstream.h>
 #include <qevent.h>
 #include <qdir.h>
+#include <qmessagebox.h>
 #include <qdebug.h>
 
 LogDialog::LogDialog(QWidget *parent) :
@@ -57,6 +58,13 @@ void LogDialog::fileChanged(const QString &path)
 
 void LogDialog::clearLog()
 {
+    ml_return_on_fail(QMessageBox::question(this,
+                                            windowTitle(),
+                                            tr("نافذة الأخطاء تحتوي على معلومات قد تساعد في تصحيح أخطاء البرنامج" "\n"
+                                               "هل تريد مسح الأخطاء الموجودة في هذه النافذة؟"),
+                                            QMessageBox::Yes|QMessageBox::No,
+                                            QMessageBox::No) == QMessageBox::Yes);
+
     QFile log(m_logPath);
     log.open(QFile::WriteOnly | QFile::Text | QFile::Truncate);
 }
