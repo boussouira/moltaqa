@@ -22,7 +22,8 @@ protected:
     void importQuran();
 
 signals:
-    void bookImported(QString name);
+    void bookImported(QString title);
+    void BookImportError(QString title);
     void doneImporting();
 
 protected:

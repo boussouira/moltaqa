@@ -118,6 +118,14 @@ void DatabaseError(const QSqlDatabase &db, const char *file, int line);
 
 #define ml_set_instance(name, val) ml_warn_on_fail(!name, qPrintable(QString("[%1:%2]").arg(QFileInfo(__FILE__).fileName()).arg(__LINE__)) << #name " is already set"); name = val;
 
+#define ml_throw_on_fail(con, what) if(!(con)) { throw BookException(what); }
+#define ml_throw_on_fail2(con, what, file) if(!(con)) { throw BookException(what, file); }
+
+#define ml_throw_on_query_exec_fail(query) if(!query.exec()) { throw BookException(query.lastError().text(), QString("[%1:%2]").arg(QFileInfo(__FILE__).fileName()).arg(__LINE__)); }
+#define ml_throw_on_query_exec_fail2(query, sql) query.prepare(sql); ml_throw_on_query_exec_fail(query);
+
+#define ml_throw_on_db_open_fail(db) if(!db.open()) { throw BookException(db.lastError().text(), QString("[%1:%2]").arg(QFileInfo(__FILE__).fileName()).arg(__LINE__)); }
+
 #define ml_delete(p) delete p; p=0;
 #define ml_delete_check(p) if(p) { delete p; p=0; }
 

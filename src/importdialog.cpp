@@ -194,18 +194,22 @@ void ImportDialog::startImporting()
     int imported = 0;
 
     for(int i=0;i<nodesList.count();i++) {
-        ImportModelNode *node = nodesList.at(i);
-        int lastInsert = m_libraryManager->addBook(node);
+        try {
+            ImportModelNode *node = nodesList.at(i);
+            int lastInsert = m_libraryManager->addBook(node);
 
-        if(lastInsert != -1) {
-            imported++;
-            m_booksList.insert(lastInsert, node->bookName);
-        } else {
-            qWarning() << "ImportDialog: Unknow error when importing" << node->bookName;
+            if(lastInsert != -1) {
+                imported++;
+                m_booksList.insert(lastInsert, node->bookName);
+            } else {
+                qWarning() << "ImportDialog: Unknow error when importing" << node->bookName;
+            }
+
+            metaObject()->invokeMethod(ui->progressBar, "setValue",
+                                       Q_ARG(int, i+1));
+        } catch(BookException &e) {
+            e.print();
         }
-
-        metaObject()->invokeMethod(ui->progressBar, "setValue",
-                                   Q_ARG(int, i+1));
     }
 
     qDebug("ImportDialog: Importing %d books take %d ms", imported, time.elapsed());

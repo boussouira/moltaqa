@@ -2,6 +2,7 @@
 #define SHAMELAIMPORTDIALOG_H
 
 #include <QDialog>
+#include <qicon.h>
 #include <qdatetime.h>
 #include "libraryinfo.h"
 
@@ -52,8 +53,9 @@ protected:
 
 public slots:
     void setStepTitle(const QString &title);
-    void addDebugInfo(const QString &text);
+    void addDebugInfo(const QString &text, QIcon icon=QIcon());
     void bookImported(const QString &text);
+    void BookImportError(const QString &text);
 
 private slots:
     void nextStep();
@@ -71,6 +73,7 @@ private slots:
 private:
     int m_importThreadCount;
     int m_importedBooksCount;
+    int m_importErrorCount; ///< Number of non-imported books
     LibraryInfo *m_library;
     LibraryManager *m_libraryManager;
     BookListManager *m_bookListManager;

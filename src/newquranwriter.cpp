@@ -53,11 +53,17 @@ void newQuranWriter::endReading()
 
         m_pagesDoc.save(out, 1);
     } else {
-        qCritical("newQuranWriter::endReading error %d when writing to pages.xml",
-                  pagesFile.getZipError());
+        throw BookException("newQuranWriter::endReading save DOM error",
+                            "pages.xml",
+                            pagesFile.getZipError());
     }
 
     m_zip.close();
+
+    if(m_zip.getZipError()!=0)
+        throw BookException("newQuranWriter::endReading zip file close error",
+                            m_zip.getZipName(),
+                            m_zip.getZipError());
 }
 
 void newQuranWriter::addPage(const QString &text, int soraNum, int ayaNum, int pageNum)
