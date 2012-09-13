@@ -10,6 +10,10 @@ public:
 
 protected:
     void highlightBlock(const QString &text);
+
+    void debugHL(const QString &);
+    void warningHL(const QString &text);
+    void criticalHL(const QString &text);
 };
 
 #endif // LOGHIGHLIGHTER_H
