@@ -52,9 +52,11 @@ void TextBookReader::getTitles()
                 if(reader.readNext() == QXmlStreamReader::Characters) {
                     m_titlesText[titleID] = reader.text().toString();
                 } else {
-                    qWarning() << "TextBookReader::getTitles Unexpected token type" << reader.tokenString()
-                               << "- Book:" << m_bookInfo->id << m_bookInfo->title << m_bookInfo->fileName;
-                    break;
+                    if(reader.tokenType() != QXmlStreamReader::EndElement) { // Ignore empty titles
+                        qWarning() << "TextBookReader::getTitles Unexpected token type" << reader.tokenString()
+                                   << "- Book:" << m_bookInfo->id << m_bookInfo->title << m_bookInfo->fileName;
+                        break;
+                    }
                 }
             }
         }
