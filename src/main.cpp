@@ -55,10 +55,12 @@ void debugMessageHandler(QtMsgType type, const char *msg)
     QString dateTime = QDateTime::currentDateTime().toString("[dd/MM/yyyy] [hh:mm:ss] ");
     QString text = QString::fromLocal8Bit(msg);
 
+#ifdef Q_OS_LINUX
     if(text.startsWith("X Error:")) {
         fprintf(stderr, "%s", msg);
         return;
     }
+#endif
 
     if(text.contains('\n'))
         text = text.replace('\n', "\n\t\t\t").trimmed();
