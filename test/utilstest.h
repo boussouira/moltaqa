@@ -23,6 +23,7 @@ private slots:
     void getTags();
 
     void getPageTitle();
+    void getEmptyPageTitle();
 
     void formatHTML();
 

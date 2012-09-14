@@ -132,7 +132,8 @@ int TextBookReader::getPageTitleID(int pageID)
                 break;
         }
 
-        return m_titles.first();
+        if(m_titles.size())
+            return m_titles.first();
     }
 
     return pageID;

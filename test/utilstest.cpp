@@ -179,6 +179,13 @@ void UtilsTest::getPageTitle()
 
 }
 
+void UtilsTest::getEmptyPageTitle()
+{
+    QList<int> titles;
+
+    QCOMPARE(getPageTitleID(titles, 15), 15);
+}
+
 void UtilsTest::formatHTML()
 {
     QStringList origins;
@@ -420,7 +427,8 @@ int UtilsTest::getPageTitleID(QList<int> &titles, int pageID)
                 break;
         }
 
-        return titles.first();
+        if(titles.size())
+            return titles.first();
     }
 
     return pageID;
