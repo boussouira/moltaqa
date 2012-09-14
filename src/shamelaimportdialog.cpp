@@ -218,7 +218,7 @@ void ShamelaImportDialog::nextStep()
         setupImporting();
         startImporting();
         ui->pushNext->setEnabled(false);
-        ui->pushCancel->setText("إيقاف");
+        ui->pushCancel->setText(tr("إيقاف"));
         goPage();
     }
 }
