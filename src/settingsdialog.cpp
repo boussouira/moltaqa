@@ -37,6 +37,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     connect(ui->pushCancel, SIGNAL(clicked()), this, SLOT(reject()));
     connect(ui->pushDeleteSavedSearch, SIGNAL(clicked()), SLOT(deleteSavedSearch()));
     connect(ui->pushOptimizeIndex, SIGNAL(clicked()), SLOT(optimizeIndex()));
+    connect(ui->pushUpdateIndex, SIGNAL(clicked()), SLOT(updateIndex()));
     connect(ui->pushClearBooksHistory, SIGNAL(clicked()), SLOT(deleteBooksHistory()));
     connect(ui->pushClearLastOpenedBooks, SIGNAL(clicked()), SLOT(deleteLastOpenedBooks()));
 }
@@ -81,6 +82,8 @@ void SettingsDialog::loadSettings()
 
     ui->checkSaveSearch->setChecked(settings.value("saveSearch", true).toBool());
     ui->checkShowMessageAfterSearch->setChecked(settings.value("showMessageAfterSearch", false).toBool());
+    ui->checkAutoUpdateIndex->setChecked(settings.value("autoUpdateIndex", true).toBool());
+    ui->spinMaxBookToUpdate->setValue(settings.value("maxBookToUpdate", 6000).toInt());
 
     settings.endGroup();
 
@@ -222,6 +225,8 @@ void SettingsDialog::saveSettings()
     saveSetting(settings, "Search", "defaultField", ui->comboSearchFields->itemData(ui->comboSearchFields->currentIndex()));
     saveSetting(settings, "Search", "saveSearch", ui->checkSaveSearch->isChecked());
     saveSetting(settings, "Search", "showMessageAfterSearch", ui->checkShowMessageAfterSearch->isChecked());
+    saveSetting(settings, "Search", "autoUpdateIndex", ui->checkAutoUpdateIndex->isChecked());
+    saveSetting(settings, "Search", "maxBookToUpdate", ui->spinMaxBookToUpdate->value());
 
     saveSetting(settings, "Style", "name", ui->comboStyles->itemData(ui->comboStyles->currentIndex(),
                                                         Qt::UserRole).toHash().value("dir"), true);
@@ -315,6 +320,11 @@ void SettingsDialog::optimizeIndex()
                              tr("ضغط الفهرس"),
                              tr("حدث خطأ اثناء ضغط الفهرس"));
     }
+}
+
+void SettingsDialog::updateIndex()
+{
+    MW->indexManager()->start();
 }
 
 void SettingsDialog::hideCancelButton(bool hide)

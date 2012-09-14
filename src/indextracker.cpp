@@ -179,8 +179,10 @@ void IndexTracker::run()
     addTask(m_bookManager->getBooksWithIndexStat(LibraryBook::Delete), IndexTask::Delete);
     addTask(m_bookManager->getBooksWithIndexStat(LibraryBook::Update), IndexTask::Update);
 
-    if(m_tasks.size())
+    if(m_tasks.size()) {
+        m_dom.maySave();
         emit gotTask();
+    }
 }
 
 int IndexTracker::taskCount()
@@ -194,11 +196,16 @@ IndexTaskIter* IndexTracker::getTaskIter()
     loadTask();
 
     IndexTaskIter *iter = new IndexTaskIter();
+    int count = m_tasks.size();
+    int maxUpdateCount = Utils::Settings::get("Search/maxBookToUpdate", 6000).toInt();
 
-    foreach(IndexTask *task, m_tasks) {
+    if(maxUpdateCount)
+        count = qMin(count, maxUpdateCount);
+
+    for(int i=0; i<count; i++) {
         IndexTask *t = new IndexTask();
-        t->bookID = task->bookID;
-        t->task = task->task;
+        t->bookID = m_tasks[i]->bookID;
+        t->task = m_tasks[i]->task;
 
         iter->addTask(t);
     }

@@ -34,6 +34,7 @@ protected slots:
     void deleteLastOpenedBooks();
     void deleteBooksHistory();
     void optimizeIndex();
+    void updateIndex();
 
 private slots:
     void on_pushEditRefer_clicked();

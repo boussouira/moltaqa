@@ -21,6 +21,7 @@ public:
 
     void load();
     void load(QIODevice *file);
+    void maySave();
     void save();
     void save(const QString &filePath);
     void save(QIODevice *ioDevice);

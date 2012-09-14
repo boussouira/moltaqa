@@ -238,7 +238,9 @@ void MainWindow::setupActions()
     connect(m_indexManager, SIGNAL(progress(int,int)), SLOT(indexProgress(int,int)));
     connect(m_indexManager, SIGNAL(started()), SLOT(startIndexing()));
     connect(m_indexManager, SIGNAL(done()), SLOT(stopIndexing()));
-    connect(m_indexTracker, SIGNAL(gotTask()), m_indexManager, SLOT(start()));
+
+    if(Utils::Settings::get("Search/autoUpdateIndex", true).toBool())
+        connect(m_indexTracker, SIGNAL(gotTask()), m_indexManager, SLOT(start()));
 }
 
 void MainWindow::aboutdDialog()

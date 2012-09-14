@@ -72,6 +72,12 @@ void XmlDomHelper::load(QIODevice *file)
     m_domLoaded = true;
 }
 
+void XmlDomHelper::maySave()
+{
+    if(m_needSave)
+        save();
+}
+
 void XmlDomHelper::save()
 {
     save(m_filePath);
