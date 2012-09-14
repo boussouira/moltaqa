@@ -116,10 +116,6 @@ void IndexTracker::addTask(const QList<int> &books, IndexTask::Task task)
         foreach(int bookID, books) {
             addTask(bookID, task, false);
         }
-
-        qDebug("IndexTracker: Got %d books to %s",
-               books.size(),
-               qPrintable(IndexTask::taskToString(task)));
     }
 }
 
