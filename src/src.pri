@@ -146,7 +146,12 @@ SOURCES += mainwindow.cpp \
     updatedialog.cpp \
     statisticsmanager.cpp \
     upfile.cpp \
-    uploader.cpp
+    uploader.cpp \
+    exportdialog.cpp \
+    filechooserwidget.cpp \
+    exportdialogpages.cpp \
+    bookexporterthread.cpp \
+    bookexporter.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -280,7 +285,12 @@ HEADERS += mainwindow.h \
     updatedialog.h \
     statisticsmanager.h \
     upfile.h \
-    uploader.h
+    uploader.h \
+    exportdialog.h \
+    filechooserwidget.h \
+    exportdialogpages.h \
+    bookexporterthread.h \
+    bookexporter.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

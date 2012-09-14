@@ -218,7 +218,7 @@ int TarajemRowatManager::getNewRawiID()
     int rawiID = 0;
     do {
         rawiID = Utils::Rand::number(11111, 99999);
-    } while(m_rowat.contains(rawiID));
+    } while(getRawiInfo(rawiID));
 
     return rawiID;
 }

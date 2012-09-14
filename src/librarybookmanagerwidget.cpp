@@ -141,40 +141,45 @@ void LibraryBookManagerWidget::createNewBook()
         return;
     }
 
-    LibraryBookPtr book(new LibraryBook());
-    book->title = title;
-    book->type = LibraryBook::NormalBook;
+    try {
 
-    selectAuthorDialog authorDialog(this);
-    if(authorDialog.exec() == QDialog::Accepted) {
-        book->authorID = authorDialog.selectedAuthorID();
-        book->authorName = authorDialog.selectedAuthorName();
+        LibraryBookPtr book(new LibraryBook());
+        book->title = title;
+        book->type = LibraryBook::NormalBook;
+
+        selectAuthorDialog authorDialog(this);
+        if(authorDialog.exec() == QDialog::Accepted) {
+            book->authorID = authorDialog.selectedAuthorID();
+            book->authorName = authorDialog.selectedAuthorName();
+        }
+
+        NewBookWriter bookWrite;
+        bookWrite.createNewBook(Utils::Rand::newBook(MW->libraryInfo()->booksDir()));
+
+        bookWrite.startReading();
+        bookWrite.addPage(title, 1, 1, 1);
+        bookWrite.addTitle(title, 1, 0);
+        bookWrite.endReading();
+
+        book->path = bookWrite.bookPath();
+        book->fileName = QFileInfo(book->path).fileName();
+
+        m_libraryManager->addBook(book, 0);
+        m_libraryManager->bookListManager()->reloadModels();
+
+        QStandardItem *item = new QStandardItem(book->title);
+        item->setData(book->id, ItemRole::idRole);
+        m_model->appendRow(item);
+
+        //Utils::Model::selectIndex(ui->treeView, m_model->indexFromItem(item));
+
+        QMessageBox::information(this,
+                                 tr("كتاب جديد"),
+                                 tr("تم انشاء الكتاب الجديد"));
+    } catch(BookException &e) {
+        e.showMessage(tr("كتاب جديد"), this);
+        e.print();
     }
-
-    NewBookWriter bookWrite;
-    bookWrite.createNewBook(Utils::Rand::newBook(MW->libraryInfo()->booksDir()));
-
-    bookWrite.startReading();
-    bookWrite.addPage(title, 1, 1, 1);
-    bookWrite.addTitle(title, 1, 0);
-    bookWrite.endReading();
-
-
-    book->path = bookWrite.bookPath();
-    book->fileName = QFileInfo(book->path).fileName();
-
-    m_libraryManager->addBook(book, 0);
-    m_libraryManager->bookListManager()->reloadModels();
-
-    QStandardItem *item = new QStandardItem(book->title);
-    item->setData(book->id, ItemRole::idRole);
-    m_model->appendRow(item);
-
-    //Utils::Model::selectIndex(ui->treeView, m_model->indexFromItem(item));
-
-    QMessageBox::information(this,
-                             tr("كتاب جديد"),
-                             tr("تم انشاء الكتاب الجديد"));
 }
 
 void LibraryBookManagerWidget::removeBook()

@@ -60,6 +60,8 @@ void debugMessageHandler(QtMsgType type, const char *msg)
         return;
     }
 
+    text = text.replace('\n', "\n\t\t\t").trimmed();
+
     switch (type) {
     case QtDebugMsg:
         out << dateTime << "[DEBUG] " << text << "\n";

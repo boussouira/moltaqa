@@ -72,6 +72,12 @@ void XmlDomHelper::load(QIODevice *file)
     m_domLoaded = true;
 }
 
+void XmlDomHelper::maySave()
+{
+    if(m_needSave)
+        save();
+}
+
 void XmlDomHelper::save()
 {
     save(m_filePath);
@@ -82,7 +88,12 @@ void XmlDomHelper::save(const QString &filePath)
     QFile outFile(filePath);
     ml_return_on_fail2(outFile.open(QFile::WriteOnly | QFile::Truncate), "XmlDomHelper::save open error:" << filePath);
 
-    QTextStream out(&outFile);
+    save(&outFile);
+}
+
+void XmlDomHelper::save(QIODevice *ioDevice)
+{
+    QTextStream out(ioDevice);
     m_doc.save(out, 4);
 
     m_needSave = false;
@@ -100,7 +111,6 @@ void XmlDomHelper::reload()
 
 void XmlDomHelper::create()
 {
-    qDebug("XmlDomHelper::create Create empty File...");
     ml_return_on_fail2(!QFile::exists(m_filePath),
                "XmlDomHelper::create file already exists" << m_filePath);
 
@@ -116,7 +126,6 @@ void XmlDomHelper::create()
                "XmlDomHelper::create open file error:" << file.errorString());
 
     ml_return_on_fail(m_documentName.size());
-    qDebug("XmlDomHelper::create Create XML File...");
 
     QTextStream out(&file);
     out.setCodec("utf-8");
@@ -176,7 +185,7 @@ QDomElement XmlDomHelper::treeFindElement(const QString &tag, const QString &att
     return elementFind(m_rootElement.firstChildElement(tag), tag, attr, value);
 }
 
-void XmlDomHelper::setElementText(QDomElement &parent, const QString &tagName, const QString &text, bool cdata)
+QDomElement XmlDomHelper::setElementText(QDomElement &parent, const QString &tagName, const QString &text, bool cdata)
 {
     QDomElement element = Utils::Xml::findChildElement(parent, m_doc, tagName);
     if(!element.isNull()) {
@@ -188,4 +197,6 @@ void XmlDomHelper::setElementText(QDomElement &parent, const QString &tagName, c
     } else {
         qCritical("XmlDomHelper::setElementText element is null");
     }
+
+    return element;
 }

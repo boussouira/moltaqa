@@ -21,8 +21,10 @@ public:
 
     void load();
     void load(QIODevice *file);
+    void maySave();
     void save();
     void save(const QString &filePath);
+    void save(QIODevice *ioDevice);
     void reload();
     void create();
 
@@ -40,7 +42,7 @@ public:
 
     void setCurrentElement(QDomElement element) { m_currentElement = element; }
 
-    void setElementText(QDomElement &parent, const QString &tagName, const QString &text, bool cdata=false);
+    QDomElement setElementText(QDomElement &parent, const QString &tagName, const QString &text, bool cdata=false);
 
 protected:
     QString m_filePath;

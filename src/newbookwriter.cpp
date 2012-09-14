@@ -73,8 +73,9 @@ int NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int par
 
         out << processPageText(text);
     } else {
-        qCritical("NewBookWriter::addPage error %d when writing to pages/p%d.html",
-                  outFile.getZipError(), pageID);
+        throw BookException("NewBookWriter::addPage create new page error",
+                            QString("pages/p%2.html").arg(pageID),
+                            outFile.getZipError());
     }
 
     m_pagesElemnent.appendChild(page);
@@ -169,8 +170,9 @@ void NewBookWriter::endReading()
 
         m_titlesDoc.save(out, 1);
     } else {
-        qCritical("NewBookWriter::endReading error %d when writing to titles.xml",
-                  titlesFile.getZipError());
+        throw BookException("NewBookWriter::endReading save DOM error",
+                            "titles.xml",
+                            titlesFile.getZipError());
     }
 
     QuaZipFile pagesFile(&m_zip);
@@ -180,14 +182,16 @@ void NewBookWriter::endReading()
 
         m_pagesDoc.save(out, 1);
     } else {
-        qCritical("NewBookWriter::endReading error %d when writing to pages.xml",
-                  pagesFile.getZipError());
+        throw BookException("NewBookWriter::endReading save DOM error",
+                            "pages.xml",
+                            pagesFile.getZipError());
     }
 
     m_zip.close();
 
-    ml_warn_on_fail(m_zip.getZipError()==0,
-                    "NewBookWriter::endReading zip error" << m_zip.getZipError()
-                    << "file" << m_zip.getZipName());
+    if(m_zip.getZipError()!=0)
+        throw BookException("NewBookWriter::endReading zip file close error",
+                            m_zip.getZipName(),
+                            m_zip.getZipError());
 }
 

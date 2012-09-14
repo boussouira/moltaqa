@@ -60,6 +60,11 @@ LibraryManager *LibraryManager::instance()
     return m_instance;
 }
 
+LibraryInfo *LibraryManager::libraryInfo()
+{
+    return m_libraryInfo;
+}
+
 void LibraryManager::loadModels()
 {
 }
@@ -123,7 +128,12 @@ int LibraryManager::addBook(ImportModelNode *node)
 
 void LibraryManager::addBook(LibraryBookPtr book, int catID)
 {
-    m_bookmanager->addBook(book);
+    int bookID = m_bookmanager->addBook(book);
+    if(!bookID) {
+        throw BookException(QString("LibraryManager::addBook Error when adding book '%1' to the database")
+                            .arg(book->title));
+    }
+
     m_bookListManager->addBook(book, catID);
 }
 

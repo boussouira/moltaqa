@@ -56,11 +56,8 @@ void ConvertThread::run()
 #else
 
 #endif
-
         } catch(BookException &e) {
-            QMessageBox::critical(0,
-                                  tr("خطأ عند الاستيراد"),
-                                  e.what());
+             e.print();
         }
     }
 
@@ -89,11 +86,8 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
 
     QSqlQuery bookQuery(bookDB);
 
-    if(!bookQuery.exec("SELECT * FROM Main")) {
-        ml_warn_query_error(bookQuery);
-        throw BookException(tr("حدث خطأ أثناء سحب المعلومات من قاعدة البيانات"
-                     "<br><b style=\"direction:rtl\">%1</b>").arg(bookQuery.lastError().text()), path);
-    }
+    bookQuery.prepare("SELECT * FROM Main");
+    ml_throw_on_query_exec_fail(bookQuery);
 
     int bkIdCol = bookQuery.record().indexOf("BkId");
     int bkCol = bookQuery.record().indexOf("bk");
@@ -133,9 +127,6 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
          else
              node->setAuthor(0, bookQuery.value(authCol).toString());
 
-
-        qDebug() << "Importing:" << node->bookName;
-
         copyBookFromShamelaBook(node, bookDB, bookID);
         m_model->appendNode(node);
     }
@@ -148,12 +139,12 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
     QSqlQuery query(bookDB);
 
 #ifdef USE_MDBTOOLS
-    if(!query.exec(QString("SELECT * FROM b%1 LIMIT 1").arg(bookID)))
-        ml_warn_query_error(query);
+    query.prepare(QString("SELECT * FROM b%1 LIMIT 1").arg(bookID));
 #else
-    if(!query.exec(QString("SELECT TOP 1 * FROM b%1").arg(bookID)))
-        ml_warn_query_error(query);
+    query.prepare(QString("SELECT TOP 1 * FROM b%1").arg(bookID));
 #endif
+
+    ml_throw_on_query_exec_fail(query);
 
     int hnoCol = query.record().indexOf("hno");
     int ayaCol = query.record().indexOf("aya");
@@ -163,78 +154,72 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
     writer.createNewBook();
     writer.startReading();
 
-
     if(ayaCol != -1 && soraCol != -1) {
         // This is a tafessir book
         if(hnoCol!=-1) {
             // We have hno column
-            if(query.exec(QString("SELECT id, nass, page, part, aya, sora, hno FROM b%1 ORDER BY id").arg(bookID))) {
-                while(query.next()) {
-                    writer.addPage(query.value(1).toString(),
-                                            query.value(0).toInt(),
-                                            query.value(2).toInt(),
-                                            query.value(3).toInt(),
-                                            query.value(6).toInt(),
-                                            query.value(4).toInt(),
-                                            query.value(5).toInt());
-                }
-            } else {
-                ml_warn_query_error(query);
+            query.prepare(QString("SELECT id, nass, page, part, aya, sora, hno FROM b%1 ORDER BY id").arg(bookID));
+            ml_throw_on_query_exec_fail(query);
+
+            while(query.next()) {
+                writer.addPage(query.value(1).toString(),
+                               query.value(0).toInt(),
+                               query.value(2).toInt(),
+                               query.value(3).toInt(),
+                               query.value(6).toInt(),
+                               query.value(4).toInt(),
+                               query.value(5).toInt());
             }
         } else {
             // We don't have hno column
-            if(query.exec(QString("SELECT id, nass, page, part, aya, sora FROM b%1 ORDER BY id").arg(bookID))) {
-                while(query.next()) {
-                    writer.addPage(query.value(1).toString(),
-                                   query.value(0).toInt(),
-                                   query.value(2).toInt(),
-                                   query.value(3).toInt(),
-                                   -1,
-                                   query.value(4).toInt(),
-                                   query.value(5).toInt());
-                }
-            } else {
-                ml_warn_query_error(query);
+            query.prepare(QString("SELECT id, nass, page, part, aya, sora FROM b%1 ORDER BY id").arg(bookID));
+            ml_throw_on_query_exec_fail(query);
+
+            while(query.next()) {
+                writer.addPage(query.value(1).toString(),
+                               query.value(0).toInt(),
+                               query.value(2).toInt(),
+                               query.value(3).toInt(),
+                               -1,
+                               query.value(4).toInt(),
+                               query.value(5).toInt());
             }
         }
     } else {
         // This is a simple book
         if(hnoCol!=-1) {
             // We have hno column
-            if(query.exec(QString("SELECT id, nass, page, part, hno FROM b%1 ORDER BY id").arg(bookID))) {
-                while(query.next()) {
-                    writer.addPage(query.value(1).toString(),
-                                            query.value(0).toInt(),
-                                            query.value(2).toInt(),
-                                            query.value(3).toInt(),
-                                            query.value(4).toInt());
-                }
-            } else {
-                ml_warn_query_error(query);
+            query.prepare(QString("SELECT id, nass, page, part, hno FROM b%1 ORDER BY id").arg(bookID));
+            ml_throw_on_query_exec_fail(query);
+
+            while(query.next()) {
+                writer.addPage(query.value(1).toString(),
+                               query.value(0).toInt(),
+                               query.value(2).toInt(),
+                               query.value(3).toInt(),
+                               query.value(4).toInt());
             }
         } else {
             // We don't have hno column
-            if(query.exec(QString("SELECT id, nass, page, part FROM b%1 ORDER BY id").arg(bookID))) {
-                while(query.next()) {
-                    writer.addPage(query.value(1).toString(),
-                                            query.value(0).toInt(),
-                                            query.value(2).toInt(),
-                                            query.value(3).toInt());
-                }
-            } else {
-                ml_warn_query_error(query);
+            query.prepare(QString("SELECT id, nass, page, part FROM b%1 ORDER BY id").arg(bookID));
+            ml_throw_on_query_exec_fail(query);
+
+            while(query.next()) {
+                writer.addPage(query.value(1).toString(),
+                               query.value(0).toInt(),
+                               query.value(2).toInt(),
+                               query.value(3).toInt());
             }
         }
     }
 
-    if(query.exec(QString("SELECT id, tit, lvl, sub FROM t%1 ORDER BY id, sub").arg(bookID))) {
-        while(query.next()) {
-            writer.addTitle(query.value(1).toString(),
-                            query.value(0).toInt(),
-                            query.value(2).toInt());
-        }
-    } else {
-        ml_warn_query_error(query);
+    query.prepare(QString("SELECT id, tit, lvl, sub FROM t%1 ORDER BY id, sub").arg(bookID));
+    ml_throw_on_query_exec_fail(query);
+
+    while(query.next()) {
+        writer.addTitle(query.value(1).toString(),
+                        query.value(0).toInt(),
+                        query.value(2).toInt());
     }
 
     writer.endReading();
@@ -256,9 +241,8 @@ QString ConvertThread::getBookType(const QSqlDatabase &bookDB)
         throw BookException(tr("قاعدة البيانات المختار غير صحيحة، "
                                "لم يتم العثور على جدول البيانات"));
 
-    if(!query.exec(QString("SELECT * FROM %1").arg(bookTable))) {
-        ml_warn_query_error(query);
-    }
+    query.prepare(QString("SELECT * FROM %1").arg(bookTable));
+    ml_throw_on_query_exec_fail(query);
 
     if(query.next()) {
         //int hno = query.record().indexOf("hno");

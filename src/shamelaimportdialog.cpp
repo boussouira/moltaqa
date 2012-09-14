@@ -54,6 +54,7 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
     m_bookFilter = new ModelViewFilter(this);
 
     m_importedBooksCount = 0;
+    m_importErrorCount = 0;
     m_proccessItemChange = true;
 
     ui->radioUseShamelaCat->setChecked(!m_bookListManager->categoriesCount());
@@ -217,6 +218,7 @@ void ShamelaImportDialog::nextStep()
         setupImporting();
         startImporting();
         ui->pushNext->setEnabled(false);
+        ui->pushCancel->setText(tr("إيقاف"));
         goPage();
     }
 }
@@ -368,6 +370,7 @@ void ShamelaImportDialog::startImporting()
     for(int i=0; i<m_importThreadCount; i++) {
         ShamelaImportThread *thread = new ShamelaImportThread(this);
         connect(thread, SIGNAL(bookImported(QString)), SLOT(bookImported(QString)));
+        connect(thread, SIGNAL(BookImportError(QString)), SLOT(BookImportError(QString)));
         connect(thread, SIGNAL(doneImporting()), SLOT(doneImporting()));
 
         m_importThreads.append(thread);
@@ -384,27 +387,37 @@ void ShamelaImportDialog::setStepTitle(const QString &title)
     ui->groupStep->setTitle(title);
 }
 
-void ShamelaImportDialog::addDebugInfo(const QString &text)
-{
-    ui->listDebug->addItem(text);
-    ui->listDebug->scrollToBottom();
-}
-
-void ShamelaImportDialog::bookImported(const QString &text)
+void ShamelaImportDialog::addDebugInfo(const QString &text, QIcon icon)
 {
     bool scrollToBottom = (ui->listDebug->verticalScrollBar()->maximum()
                            == ui->listDebug->verticalScrollBar()->value());
 
-    if(m_importedBooksCount == 0)
-        ui->listDebug->addItem(tr("جاري استيراد الكتب..."));
-
-    ui->progressBar->setValue(ui->progressBar->value()+1);
-    ui->listDebug->addItem(new QListWidgetItem(QIcon(":/images/add2.png"), text));
+    if(icon.isNull())
+        ui->listDebug->addItem(text);
+    else
+        ui->listDebug->addItem(new QListWidgetItem(icon, text));
 
     if(scrollToBottom)
         ui->listDebug->scrollToBottom();
+}
 
+void ShamelaImportDialog::bookImported(const QString &text)
+{
+    if(m_importedBooksCount == 0)
+        addDebugInfo(tr("جاري استيراد الكتب..."));
+
+    ui->progressBar->setValue(ui->progressBar->value()+1);
     m_importedBooksCount++;
+
+    addDebugInfo(text, QIcon(":/images/add2.png"));
+}
+
+void ShamelaImportDialog::BookImportError(const QString &text)
+{
+    m_importErrorCount++;
+
+    addDebugInfo(tr("حدث خطأ أثناء استيراد '%1'").arg(text),
+                 QIcon(":/images/delete.png"));
 }
 
 void ShamelaImportDialog::doneImporting()
@@ -428,10 +441,18 @@ void ShamelaImportDialog::doneImporting()
                      .arg(Utils::String::Arabic::plural(m_importedBooksCount, Utils::String::Arabic::BOOK))
                      .arg(Utils::Time::secondsToString(m_importTime.elapsed())));
 
-        StatisticsManager::instance()->dequeue("ShamelaImport",
-                                               QString("%1 books imported in %2 seconds")
-                                               .arg(m_importedBooksCount)
-                                               .arg(m_importTime.elapsed() / 1000));
+        if(m_importErrorCount)
+            addDebugInfo(tr("لم يتم استيراد %1")
+                         .arg(Utils::String::Arabic::plural(m_importErrorCount, Utils::String::Arabic::BOOK)));
+
+        QString str = QString("%1 books imported in %2 seconds")
+                .arg(m_importedBooksCount)
+                .arg(m_importTime.elapsed() / 1000);
+
+        if(m_importErrorCount)
+            str.replace("books", QString("books (%1 errors)").arg(m_importErrorCount));
+
+        StatisticsManager::instance()->dequeue("ShamelaImport", str);
 
         qDeleteAll(m_importThreads);
         m_importThreads.clear();

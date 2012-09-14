@@ -24,6 +24,7 @@
 #include "logdialog.h"
 #include "webview.h"
 #include "updatedialog.h"
+#include "exportdialog.h"
 
 #include <qmessagebox.h>
 #include <qsettings.h>
@@ -223,6 +224,7 @@ void MainWindow::setupActions()
     connect(ui->actionLibraryInfo, SIGNAL(triggered()), SLOT(showLibraryInfo()));
     connect(ui->actionImport, SIGNAL(triggered()), SLOT(importBookDialog()));
     connect(ui->actionShamelaImport, SIGNAL(triggered()), SLOT(importFromShamela()));
+    connect(ui->actionExport, SIGNAL(triggered()), SLOT(exportBooks()));
 
     connect(m_welcomeWidget, SIGNAL(bookSelected(int)), SLOT(openBook(int)));
     connect(m_booksList, SIGNAL(bookSelected(int)), SLOT(openBook(int)));
@@ -236,7 +238,9 @@ void MainWindow::setupActions()
     connect(m_indexManager, SIGNAL(progress(int,int)), SLOT(indexProgress(int,int)));
     connect(m_indexManager, SIGNAL(started()), SLOT(startIndexing()));
     connect(m_indexManager, SIGNAL(done()), SLOT(stopIndexing()));
-    connect(m_indexTracker, SIGNAL(gotTask()), m_indexManager, SLOT(start()));
+
+    if(Utils::Settings::get("Search/autoUpdateIndex", true).toBool())
+        connect(m_indexTracker, SIGNAL(gotTask()), m_indexManager, SLOT(start()));
 }
 
 void MainWindow::aboutdDialog()
@@ -408,6 +412,12 @@ void MainWindow::importFromShamela()
 {
     ShamelaImportDialog importDialog;
     importDialog.exec();
+}
+
+void MainWindow::exportBooks()
+{
+    ExportDialog exportDialog;
+    exportDialog.exec();
 }
 
 void MainWindow::startIndexing()

@@ -161,19 +161,18 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
     }
 
     if(!bookDB.isOpen()) {
-        if (!bookDB.open()) {
-            ml_warn_db_error(bookDB);
-        }
+        ml_throw_on_db_open_fail(bookDB);
     }
 
     QSqlQuery query(bookDB);
+
 #ifdef USE_MDBTOOLS
-    if(!query.exec(QString("SELECT * FROM %1 LIMIT 1").arg(book->mainTable)))
-        ml_warn_query_error(query);
+    query.prepare(QString("SELECT * FROM %1 LIMIT 1").arg(book->mainTable));
 #else
-    if(!query.exec(QString("SELECT TOP 1 * FROM %1").arg(book->mainTable)))
-        ml_warn_query_error(query);
+    query.prepare(QString("SELECT TOP 1 * FROM %1").arg(book->mainTable));
 #endif
+
+    ml_throw_on_query_exec_fail(query);
 
     int hnoCol = query.record().indexOf("hno");
     int ayaCol = query.record().indexOf("aya");
@@ -188,14 +187,12 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
     }
 
     query.prepare(QString("SELECT id, tit, lvl, sub FROM %1 ORDER BY id, sub").arg(book->tocTable));
-    if(query.exec()) {
-        while(query.next()) {
-            bookWrite.addTitle(query.value(1).toString(),
-                               query.value(0).toInt(),
-                               query.value(2).toInt());
-        }
-    } else {
-        ml_warn_query_error(query);
+    ml_throw_on_query_exec_fail(query);
+
+    while(query.next()) {
+        bookWrite.addTitle(query.value(1).toString(),
+                           query.value(0).toInt(),
+                           query.value(2).toInt());
     }
 
     bookWrite.endReading();
@@ -231,23 +228,19 @@ void LibraryCreator::addQuran()
                                .arg(m_shamelaInfo->shamelaSpecialDbPath()));
 #endif
 
-        if (!bookDB.open()) {
-            ml_warn_db_error(bookDB);
-        }
+        ml_throw_on_db_open_fail(bookDB);
 
         QSqlQuery query(bookDB);
         quranWrite.startReading();
 
         query.prepare("SELECT nass, sora, aya, Page FROM Qr ORDER BY id");
-        if(query.exec()) {
-            while(query.next()) {
-                quranWrite.addPage(query.value(0).toString(),
-                                   query.value(1).toInt(),
-                                   query.value(2).toInt(),
-                                   query.value(3).toInt());
-            }
-        } else {
-            ml_warn_query_error(query);
+        ml_throw_on_query_exec_fail(query);
+
+        while(query.next()) {
+            quranWrite.addPage(query.value(0).toString(),
+                               query.value(1).toInt(),
+                               query.value(2).toInt(),
+                               query.value(3).toInt());
         }
 
         quranWrite.endReading();
@@ -314,36 +307,31 @@ void LibraryCreator::readSimpleBook(ShamelaBookInfo *book, QSqlQuery &query, New
 
     if(hno) {
         query.prepare(QString("SELECT id, nass, page, part, hno FROM %1 ORDER BY id").arg(book->mainTable));
-        if(query.exec()) {
-            while(query.next()) {
-                QString pageText = query.value(1).toString();
-                RemoveShamelaShoorts(pageText, shoorts);
+        ml_throw_on_query_exec_fail(query);
 
-                writer.addPage(pageText,
-                               query.value(0).toInt(),
-                               query.value(2).toInt(),
-                               query.value(3).toInt(),
-                               query.value(4).toInt());
-            }
-        } else {
-            ml_warn_query_error(query);
+        while(query.next()) {
+            QString pageText = query.value(1).toString();
+            RemoveShamelaShoorts(pageText, shoorts);
+
+            writer.addPage(pageText,
+                           query.value(0).toInt(),
+                           query.value(2).toInt(),
+                           query.value(3).toInt(),
+                           query.value(4).toInt());
         }
     } else {
         query.prepare(QString("SELECT id, nass, page, part FROM %1 ORDER BY id").arg(book->mainTable));
-        if(query.exec()) {
-            while(query.next()) {
-                QString pageText= query.value(1).toString();
-                RemoveShamelaShoorts(pageText, shoorts);
+        ml_throw_on_query_exec_fail(query);
 
-                writer.addPage(pageText,
-                               query.value(0).toInt(),
-                               query.value(2).toInt(),
-                               query.value(3).toInt());
-            }
-        } else {
-            ml_warn_query_error(query);
+        while(query.next()) {
+            QString pageText= query.value(1).toString();
+            RemoveShamelaShoorts(pageText, shoorts);
+
+            writer.addPage(pageText,
+                           query.value(0).toInt(),
+                           query.value(2).toInt(),
+                           query.value(3).toInt());
         }
-
     }
 }
 

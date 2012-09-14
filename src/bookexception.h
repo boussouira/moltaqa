@@ -1,24 +1,30 @@
 #ifndef BOOKEXCEPTION_H
 #define BOOKEXCEPTION_H
 
-//#include <exception>
 #include <qstring.h>
 
-class BookException /*: public std::exception*/
+class QWidget;
+
+class BookException
 {
 public:
     BookException();
     BookException(const QString &what, int id=0);
-    BookException(const QString &description, const QString &file, int id=0);
+    BookException(const QString &what, const QString &file, int id=0);
     ~BookException();
 
-    QString what() const { return m_what;}
-    int id() const { return m_id;}
-    void setWhat(const QString &what) { m_what = what; }
-    void setId(int id) { m_id = id; }
+    QString what() const;
+    int id() const;
+    void setWhat(const QString &what);
+    void setId(int id);
+
+    QString format(bool html=false);
+    void print();
+    void showMessage(QString title="", QWidget *parent=0);
 
 protected:
     QString m_what;
+    QString m_file;
     int m_id;
 };
 

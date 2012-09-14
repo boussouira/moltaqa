@@ -440,7 +440,7 @@ int LibraryBookManager::getNewBookID()
 
     do {
         bookID = Utils::Rand::number(111111, 999999);
-    } while(m_books.contains(bookID));
+    } while(getLibraryBook(bookID));
 
     return bookID;
 }

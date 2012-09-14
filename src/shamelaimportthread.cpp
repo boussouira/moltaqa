@@ -3,6 +3,8 @@
 #include "shamelamanager.h"
 #include "librarycreator.h"
 #include "shamelaimportdialog.h"
+#include "utils.h"
+#include "bookexception.h"
 
 ShamelaImportThread::ShamelaImportThread(QObject *parent) :
     QThread(parent)
@@ -39,8 +41,14 @@ void ShamelaImportThread::importBooks()
     ShamelaBookInfo *book = m_shamelaManager->nextBook();
     while(book) {
         book->genInfo(m_shamelaInfo);
-        m_creator.addBook(book);
-        emit bookImported(book->name);
+
+        try {
+            m_creator.addBook(book);
+            emit bookImported(book->name);
+        } catch (BookException &e) {
+            e.print();
+            emit BookImportError(book->name);
+        }
 
         delete book;
 

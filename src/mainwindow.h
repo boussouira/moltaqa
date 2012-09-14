@@ -73,6 +73,8 @@ public slots:
     void importBookDialog();
     void importFromShamela();
 
+    void exportBooks();
+
 protected slots:
     void startIndexing();
     void stopIndexing();

@@ -23,6 +23,7 @@ private slots:
     void getTags();
 
     void getPageTitle();
+    void getEmptyPageTitle();
 
     void formatHTML();
 
@@ -34,6 +35,8 @@ private slots:
     void cleanupTestCase();
 
     void findArabic();
+
+    void cleanFileName();
 
 protected:
     int getPageTitleID(QList<int> &titles, int pageID);
