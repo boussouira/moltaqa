@@ -296,7 +296,7 @@ BookWidget *BooksViewer::openBook(int bookID, int pageID, CLuceneQuery *query)
         else if(bookInfo->isTafessir())
             bookReader = new RichTafessirReader();
         else
-            throw BookException(tr("لم يتم التعرف على نوع الكتاب"), QString("Book Type: %1").arg(bookInfo->path));
+            throw BookException(tr("لم يتم التعرف على نوع الكتاب"), QString("Book Type: %1").arg(bookInfo->type));
 
         bookReader->setBookInfo(bookInfo);
 
