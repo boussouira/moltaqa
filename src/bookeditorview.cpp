@@ -314,7 +314,7 @@ void BookEditorView::save()
         LibraryBookPtr book = m_bookReader->bookInfo();
 
         if(m_bookEditor->save())
-            IndexTracker::instance()->addTask(book->id, IndexTask::Update);
+            IndexTracker::instance()->addTask(book->id, IndexTask::Update, false);
 
         dialog.setValue(dialog.value()+1);
 
