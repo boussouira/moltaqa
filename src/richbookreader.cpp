@@ -65,7 +65,8 @@ int RichBookReader::getPageTitleID(int pageID)
                 break;
         }
 
-        return m_pageTitles.first();
+        if(m_pageTitles.size())
+            return m_pageTitles.first();
     }
 
     return pageID;
