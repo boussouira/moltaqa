@@ -126,7 +126,7 @@ QString NewBookWriter::processPageText(QString text)
                              "<sup class=\"fnb\"><a href=\"#fnb\\1\" id=\"fn\\1\">(\\1)</a></sup>");
         footnoteText.replace(QRegExp("[\\r\\n]+"), "<br />");
 
-        footnoteText.prepend("<hr class=\"fns\"/><div class=\"clear\"><footnote>");
+        footnoteText.prepend("<hr class=\"fns\"/><div class=\"clear\"></div><footnote>");
         footnoteText.append("</footnote>");
 
         pageTextList[0] = pageText;
