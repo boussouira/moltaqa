@@ -109,6 +109,20 @@ void XmlDomHelper::reload()
     load();
 }
 
+void XmlDomHelper::mayCreate()
+{
+    ml_return_on_fail2(m_filePath.size(),
+                       "XmlDomHelper::mayCreate empty file path");
+
+    ml_return_on_fail2(m_documentName.size(),
+                       "XmlDomHelper::mayCreate Document name is empty");
+
+    if(QFileInfo(m_filePath).size() < 40 + (m_documentName.size() * 2)) {
+        QFile::remove(m_filePath);
+        create();
+    }
+}
+
 void XmlDomHelper::create()
 {
     ml_return_on_fail2(!QFile::exists(m_filePath),

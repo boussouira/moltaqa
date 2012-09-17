@@ -26,6 +26,7 @@ public:
     void save(const QString &filePath);
     void save(QIODevice *ioDevice);
     void reload();
+    void mayCreate();
     void create();
 
     QDomElement findElement(const QString &attr, const QString &value) { return findElement(QString(), attr, value); }

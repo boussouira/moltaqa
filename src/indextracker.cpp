@@ -58,6 +58,8 @@ void IndexTracker::open()
         throw BookException(tr("لم يتم العثور على الملف:"), m_trackerFile);
 
     m_dom.setFilePath(m_trackerFile);
+    m_dom.setDocumentName("task-list");
+    m_dom.mayCreate();
     m_dom.load();
 }
 
