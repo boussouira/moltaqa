@@ -83,7 +83,7 @@ void SettingsDialog::loadSettings()
     ui->checkSaveSearch->setChecked(settings.value("saveSearch", true).toBool());
     ui->checkShowMessageAfterSearch->setChecked(settings.value("showMessageAfterSearch", false).toBool());
     ui->checkAutoUpdateIndex->setChecked(settings.value("autoUpdateIndex", true).toBool());
-    ui->spinMaxBookToUpdate->setValue(settings.value("maxBookToUpdate", 6000).toInt());
+    ui->spinMaxBookToUpdate->setValue(settings.value("maxBookToUpdate", 0).toInt());
 
     settings.endGroup();
 

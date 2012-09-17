@@ -600,9 +600,6 @@
               <property name="maximum">
                <number>50000</number>
               </property>
-              <property name="value">
-               <number>6000</number>
-              </property>
              </widget>
             </item>
             <item>

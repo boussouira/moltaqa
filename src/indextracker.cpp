@@ -195,7 +195,7 @@ IndexTaskIter* IndexTracker::getTaskIter()
 
     IndexTaskIter *iter = new IndexTaskIter();
     int count = m_tasks.size();
-    int maxUpdateCount = Utils::Settings::get("Search/maxBookToUpdate", 6000).toInt();
+    int maxUpdateCount = Utils::Settings::get("Search/maxBookToUpdate", 0).toInt();
 
     if(maxUpdateCount)
         count = qMin(count, maxUpdateCount);
