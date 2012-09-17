@@ -14,7 +14,7 @@ class TextBookIndexer
 {
 public:
     TextBookIndexer();
-    ~TextBookIndexer();
+    virtual ~TextBookIndexer();
 
     void setIndexWriter(lucene::index::IndexWriter *writer) { m_writer = writer; }
     void setLibraryBook(LibraryBookPtr book) { m_book = book; }

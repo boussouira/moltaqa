@@ -19,14 +19,6 @@ ArabicAnalyzer::ArabicAnalyzer()
 
 ArabicAnalyzer::~ArabicAnalyzer()
 {
-    SavedStreams* streams = reinterpret_cast<SavedStreams*>(getPreviousTokenStream());
-    if (streams != NULL) {
-        if(streams->tokenStream)
-            delete streams->tokenStream;
-
-        if(streams->filteredTokenStream)
-            delete streams->filteredTokenStream;
-    }
 }
 
 TokenStream* ArabicAnalyzer::tokenStream(const TCHAR* /*fieldName*/, Reader* reader)

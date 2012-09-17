@@ -39,6 +39,7 @@ WebView::WebView(QWidget *parent) :
 WebView::~WebView()
 {
     ml_delete_check(m_page);
+    ml_delete_check(m_searcher);
 }
 
 void WebView::scrollToAya(int pSoraNumber, int pAyaNumber)
