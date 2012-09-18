@@ -409,8 +409,8 @@ void UtilsTest::cleanFileName()
     QCOMPARE(Utils::Files::cleanFileName("/home/user/Documents/book [programming] (123) <first >  .pdf", true),
              QString("/home/user/Documents/book_programming_123_first.pdf"));
 
-    QCOMPARE(Utils::Files::cleanFileName("c:\\home\\user\\Documents\\book [programming] (123) <first >  .pdf", true),
-             QString("c:\\home\\user\\Documents\\book_programming_123_first.pdf"));
+    QCOMPARE(Utils::Files::cleanFileName("c:/home/user/Documents/book [programming] (123) <first >  .pdf", true),
+             QString("c:/home/user/Documents/book_programming_123_first.pdf"));
 }
 
 int UtilsTest::getPageTitleID(QList<int> &titles, int pageID)
