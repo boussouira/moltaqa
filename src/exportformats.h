@@ -1,0 +1,11 @@
+#ifndef EXPORTFORMATS_H
+#define EXPORTFORMATS_H
+
+enum ExportFormat {
+    MOLTAQA_FROMAT,
+    EPUB_FROMAT,
+    HTML_FORMAT,
+    PDF_FROMAT
+};
+
+#endif // EXPORTFORMATS_H

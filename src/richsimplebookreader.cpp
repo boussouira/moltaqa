@@ -11,13 +11,20 @@
 #include <qdebug.h>
 #include <qdatetime.h>
 
-RichSimpleBookReader::RichSimpleBookReader(QObject *parent) : RichBookReader(parent)
+RichSimpleBookReader::RichSimpleBookReader(QObject *parent) :
+    RichBookReader(parent)
 {
     m_textFormat = new SimpleTextFormat();
+    m_showShorooh = true;
 }
 
 RichSimpleBookReader::~RichSimpleBookReader()
 {
+}
+
+void RichSimpleBookReader::setShowShorooh(bool show)
+{
+    m_showShorooh = show;
 }
 
 void RichSimpleBookReader::connected()
@@ -41,7 +48,8 @@ void RichSimpleBookReader::setCurrentPage(QDomElement pageNode)
     else
         getPageTitleID();
 
-    getShorooh();
+    if(m_showShorooh)
+        getShorooh();
 
     QString pageText = getPageText(m_currentPage->pageID);
     if(m_removeTashekil)

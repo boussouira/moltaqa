@@ -151,7 +151,9 @@ SOURCES += mainwindow.cpp \
     filechooserwidget.cpp \
     exportdialogpages.cpp \
     bookexporterthread.cpp \
-    bookexporter.cpp
+    bookexporter.cpp \
+    librarybookexporter.cpp \
+    epubbookexporter.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -290,7 +292,10 @@ HEADERS += mainwindow.h \
     filechooserwidget.h \
     exportdialogpages.h \
     bookexporterthread.h \
-    bookexporter.h
+    bookexporter.h \
+    librarybookexporter.h \
+    exportformats.h \
+    epubbookexporter.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

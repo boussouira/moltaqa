@@ -14,15 +14,20 @@
 #include <qdebug.h>
 #include <qdatetime.h>
 
-RichTafessirReader::RichTafessirReader(QObject *parent, bool showQuran) : RichBookReader(parent)
+RichTafessirReader::RichTafessirReader(QObject *parent) : RichBookReader(parent)
 {
     m_formatter = new TafessirTextFormat();
     m_textFormat = m_formatter;
-    m_showQuran = showQuran;
+    m_showQuran = true;
 }
 
 RichTafessirReader::~RichTafessirReader()
 {
+}
+
+void RichTafessirReader::setShowQuranText(bool show)
+{
+    m_showQuran = show;
 }
 
 void RichTafessirReader::connected()

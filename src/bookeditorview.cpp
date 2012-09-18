@@ -99,12 +99,17 @@ void BookEditorView::editBook(LibraryBookPtr book, int pageID)
 
     ml_delete_check(m_bookReader);
 
-    if(book->isNormal())
-        m_bookReader = new RichSimpleBookReader();
-    else if(book->isTafessir())
-        m_bookReader = new RichTafessirReader(0, false);
-     else
+    if(book->isNormal()) {
+        RichSimpleBookReader *simpleReader = new RichSimpleBookReader();
+        simpleReader->setShowShorooh(false);
+        m_bookReader = simpleReader;
+    } else if(book->isTafessir()) {
+        RichTafessirReader *tafessir = new RichTafessirReader();
+        tafessir->setShowQuranText(false);
+        m_bookReader = tafessir;
+    } else {
         throw BookException(QString("Unknow book type %1").arg(book->type), book->path);
+    }
 
     ui->widgetQuran->setVisible(!book->isNormal());
 

@@ -19,6 +19,7 @@ RichBookReader::RichBookReader(QObject *parent) : AbstractBookReader(parent)
     m_bookmanager = m_libraryManager->bookManager();
 
     m_removeTashekil = Utils::Settings::get("Style/removeTashekil", false).toBool();
+    m_saveReadingHistory = true;
 
     connect(this, SIGNAL(textChanged()), SLOT(updateHistory()));
 }
@@ -75,6 +76,11 @@ int RichBookReader::getPageTitleID(int pageID)
 void RichBookReader::setRemoveTashkil(bool remove)
 {
     m_removeTashekil = remove;
+}
+
+void RichBookReader::setSaveReadingHistory(bool save)
+{
+    m_saveReadingHistory = save;
 }
 
 QStandardItemModel *RichBookReader::indexModel()
@@ -136,10 +142,12 @@ void RichBookReader::readItem(QDomElement &element, QStandardItem *parent)
 
 void RichBookReader::updateHistory()
 {
-    QtConcurrent::run(m_bookmanager,
-                      &LibraryBookManager::addBookHistory,
-                      m_bookInfo->id,
-                      m_currentPage->pageID);
+    if(m_saveReadingHistory) {
+        QtConcurrent::run(m_bookmanager,
+                          &LibraryBookManager::addBookHistory,
+                          m_bookInfo->id,
+                          m_currentPage->pageID);
+    }
 }
 
 TextFormatter *RichBookReader::textFormat()

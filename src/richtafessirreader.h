@@ -8,8 +8,10 @@ class TafessirTextFormat;
 class RichTafessirReader : public RichBookReader
 {
 public:
-    RichTafessirReader(QObject *parent=0, bool showQuran=true);
+    RichTafessirReader(QObject *parent=0);
     ~RichTafessirReader();
+
+    void setShowQuranText(bool show);
 
     void setCurrentPage(QDomElement pageNode);
     QDomElement getQuranPageId(int sora, int aya);

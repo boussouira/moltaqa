@@ -8,6 +8,7 @@
 #include "librarysearchfilter.h"
 #include "utils.h"
 #include "exportdialog.h"
+#include "exportformats.h"
 
 #include <qboxlayout.h>
 #include <qlabel.h>
@@ -34,9 +35,9 @@ IntroPage::IntroPage(QWidget *parent) : QWizardPage(parent)
 
     QComboBox *combo = new QComboBox(this);
     combo->insertItem(MOLTAQA_FROMAT, tr("مكتبة الملتقى"));
-    combo->insertItem(PDF_FROMAT, "PDF");
     combo->insertItem(EPUB_FROMAT, "ePub");
     combo->insertItem(HTML_FORMAT, "HTML");
+    //combo->insertItem(PDF_FROMAT, "PDF");
 
     QHBoxLayout *hbox = new QHBoxLayout;
     hbox->addWidget(new QLabel(tr("صيغة التصدير:")));
@@ -156,6 +157,8 @@ ExportPage::ExportPage(QWidget *parent) : QWizardPage(parent)
     layout->addWidget(m_label);
 
     m_progressBar = new QProgressBar(this);
+    m_progressBar->setFormat("%p% (%v/%m)");
+    m_progressBar->setAlignment(Qt::AlignCenter);
     layout->addWidget(m_progressBar);
 
     m_treeWidget = new QListWidget(this);
@@ -176,7 +179,7 @@ void ExportPage::initializePage()
     ml_return_on_fail2(w, "ExportPage::initializePage Can't get wizard");
 
     QList<int> books = w->booksToImport();
-    m_label->setText(tr("Selected books %1").arg(books.count()));
+    m_label->setText(tr("جاري تصدير الكتب..."));
 
     ExportFormat format = static_cast<ExportFormat>(field("export.type").toInt());
     QString outDir = field("export.outdir").toString();
@@ -186,8 +189,13 @@ void ExportPage::initializePage()
 
     m_progressBar->setMaximum(books.count());
 
+    m_thread->setExportFormat(format);
+    m_thread->setRemoveTashkil(removeTashkil);
+    m_thread->setAddPageNumber(addPageNumber);
+
     m_thread->setBooksToImport(books);
     m_thread->setOutDir(outDir);
+
     m_thread->start();
 }
 

@@ -20,6 +20,9 @@ public:
     void nextAya();
     void prevAya();
 
+    bool hasNext();
+    bool hasPrev();
+
 protected:
     QuranTextFormat *m_formatter;
 };

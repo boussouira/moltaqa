@@ -30,6 +30,7 @@ public:
     int getPageTitleID(int pageID);
 
     void setRemoveTashkil(bool remove);
+    void setSaveReadingHistory(bool save);
 
 protected:
     virtual void connected();
@@ -48,6 +49,7 @@ protected:
     QList<int> m_pageTitles;
     int m_highlightPageID;
     bool m_removeTashekil;
+    bool m_saveReadingHistory;
 };
 
 #endif // RICHBOOKREADER_H

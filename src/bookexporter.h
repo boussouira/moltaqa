@@ -2,37 +2,28 @@
 #define BOOKEXPORTER_H
 
 #include <qobject.h>
-#include <quazip/quazip.h>
-#include <quazip/quazipfile.h>
-
 #include "librarybook.h"
 
 class BookExporter : public QObject
 {
+    Q_OBJECT
 public:
-    BookExporter();
+    BookExporter(QObject *parent=0);
 
     void setLibraryBook(LibraryBookPtr book) { m_book = book; }
     QString genereatedPath() { return m_genereatedPath; }
 
-    virtual void start();
+    void setRemoveTashkil(bool remove) { m_removeTashkil = remove; }
+    void setAddPageNumber(bool add) { m_addPageNumber = add; }
 
-protected:
-    void openZip();
-    void closeZip();
-
-    void addBookInfo();
-    void addAuthorInfo();
-    void addBookFile();
-
-    void deleteTemp();
+    virtual void start()=0;
 
 protected:
     LibraryBookPtr m_book;
-    QuaZip m_zip;
     QString m_genereatedPath;
     QString m_tempDir;
-    QStringList m_tempFiles;
+    bool m_removeTashkil;
+    bool m_addPageNumber;
 };
 
 #endif // BOOKEXPORTER_H

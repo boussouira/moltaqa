@@ -4,13 +4,6 @@
 #include <qwizard.h>
 #include "bookexporterthread.h"
 
-enum ExportFormat {
-    MOLTAQA_FROMAT,
-    PDF_FROMAT,
-    EPUB_FROMAT,
-    HTML_FORMAT
-};
-
 class QCheckBox;
 
 class IntroPage : public QWizardPage

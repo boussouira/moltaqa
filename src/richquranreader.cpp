@@ -97,7 +97,9 @@ QStandardItemModel *RichQuranReader::indexModel()
 
 void RichQuranReader::nextPage()
 {
-    QDomElement e = m_pagesDom.currentElement().nextSiblingElement();
+    QDomElement e = m_pagesDom.currentElement().isNull()
+            ? m_pagesDom.rootElement().firstChildElement()
+            : m_pagesDom.currentElement().nextSiblingElement();
 
     while(!e.isNull()) {
         if(e.attribute("page") != m_pagesDom.currentElement().attribute("page")) {
@@ -148,4 +150,14 @@ void RichQuranReader::prevAya()
 
     if(!e.isNull())
         setCurrentPage(e);
+}
+
+bool RichQuranReader::hasNext()
+{
+    return (m_currentPage->page+1 <= 604);
+}
+
+bool RichQuranReader::hasPrev()
+{
+    return (1 <= m_currentPage->page-1);
 }

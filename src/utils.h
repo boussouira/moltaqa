@@ -97,9 +97,9 @@ void DatabaseError(const QSqlDatabase &db, const char *file, int line);
 
 #define ml_theme_icon(name, defaultIcon) QIcon::fromTheme(name, QIcon(defaultIcon))
 
-#define ml_benchmark(desc, code) do {QTime bmt;bmt.start();code;qDebug(desc " take %d ms", bmt.elapsed());} while(false)
+#define ml_benchmark(desc, code) do {QTime bmt;bmt.start();code;qDebug() << desc << "take" << bmt.elapsed() << "ms";} while(false)
 #define ml_benchmark_start() QTime bmt2;bmt2.start();
-#define ml_benchmark_elapsed(desc) qDebug(desc " take %d ms", bmt2.restart());
+#define ml_benchmark_elapsed(desc) qDebug() << desc << "take" << bmt2.elapsed() << "ms";;
 
 #define ml_warn_db_error(db) Log::DatabaseError(db, __FILE__, __LINE__)
 #define ml_warn_query_error(query) Log::QueryError(query, __FILE__, __LINE__)
