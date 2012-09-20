@@ -212,13 +212,15 @@ void AbstractBookReader::prevPage()
 bool AbstractBookReader::hasNext()
 {
     return m_pagesDom.currentElement().isNull()
-            || !m_pagesDom.currentElement().nextSibling().isNull();
+            ? !m_pagesDom.rootElement().firstChildElement().isNull()
+            : !m_pagesDom.currentElement().nextSibling().isNull();
 }
 
 bool AbstractBookReader::hasPrev()
 {
     return m_pagesDom.currentElement().isNull()
-            || !m_pagesDom.currentElement().previousSibling().isNull();
+            ? !m_pagesDom.rootElement().lastChildElement().isNull()
+            : !m_pagesDom.currentElement().previousSiblingElement().isNull();
 }
 
 QString AbstractBookReader::getFileContent(QuaZip *zip, QString fileName)
