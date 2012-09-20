@@ -94,6 +94,8 @@ public:
       */
     virtual bool hasPrev();
 
+    int pagesCount();
+
     inline XmlDomHelper& pagesDom() { return m_pagesDom; }
 
     static QString getFileContent(QuaZip *zip, QString fileName);

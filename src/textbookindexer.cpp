@@ -42,6 +42,8 @@ void TextBookIndexer::open()
 
 void TextBookIndexer::start()
 {
+    ml_return_on_fail2(m_reader->pagesCount(), "BookIndexer: Book" << m_book->title << "is empty");
+
     wchar_t *bookW;
     wchar_t *pageW;
 

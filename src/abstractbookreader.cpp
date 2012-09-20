@@ -223,6 +223,11 @@ bool AbstractBookReader::hasPrev()
             : !m_pagesDom.currentElement().previousSiblingElement().isNull();
 }
 
+int AbstractBookReader::pagesCount()
+{
+    return m_pagesDom.rootElement().childNodes().size();
+}
+
 QString AbstractBookReader::getFileContent(QuaZip *zip, QString fileName)
 {
     QuaZipFile file(zip);
