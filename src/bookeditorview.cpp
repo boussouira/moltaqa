@@ -60,20 +60,17 @@ void BookEditorView::setupView()
     ui->tabWidget->setTabsClosable(true);
     ui->tabWidget->setDocumentMode(true);
 
-    QWidget *w = new QWidget(this);
-    QVBoxLayout *webLayout = new QVBoxLayout(w);
-    webLayout->setMargin(0);
-
-    m_webView = new EditWebView(this);
-    webLayout->addWidget(m_webView);
-
-    w->setLayout(webLayout);
-
     m_indexEditor = new BookIndexEditor(this);
+    m_webView = new EditWebView(this);
+    m_webView->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+    m_webView->setMinimumWidth(200);
 
     m_splitter = new QSplitter(this);
     m_splitter->addWidget(m_indexEditor);
-    m_splitter->addWidget(w);
+    m_splitter->addWidget(m_webView);
+
+    m_splitter->setCollapsible(0, true);
+    m_splitter->setCollapsible(1, false);
 
     ui->tabWidget->addTab(m_splitter, QString());
 
