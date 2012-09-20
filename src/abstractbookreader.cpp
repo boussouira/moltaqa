@@ -50,10 +50,10 @@ void AbstractBookReader::openZip()
 
     if(!m_zip.open(QuaZip::mdUnzip)) {
         qCritical() << "AbstractBookReader::openZip open book error"
-                    << m_zip.getZipError();
-        qCritical() << "\t" "id" << m_bookInfo->id
-                    << "\t" "title" << m_bookInfo->title
-                    << "\t" "Path" << m_bookInfo->path;
+                    << m_zip.getZipError() << "\n"
+                    << "Book id:" << m_bookInfo->id << "\n"
+                    << "Title:" << m_bookInfo->title << "\n"
+                    << "Path:" << m_bookInfo->path;
     }
 }
 
