@@ -15,6 +15,7 @@ RichBookReader::RichBookReader(QObject *parent) : AbstractBookReader(parent)
     m_textFormat = 0;
     m_query = 0;
     m_highlightPageID = -1;
+    m_stopModelLoad = false;
 
     m_bookmanager = m_libraryManager->bookManager();
 
@@ -85,10 +86,21 @@ void RichBookReader::setSaveReadingHistory(bool save)
 
 QStandardItemModel *RichBookReader::indexModel()
 {
-    ZipOpener opener(this);
-    QuaZipFile titleFile(&m_zip);
+    QuaZip zip;
+    zip.setZipName(m_bookInfo->path);
 
-    if(m_zip.setCurrentFile("titles.xml")) {
+    if(!zip.open(QuaZip::mdUnzip)) {
+        qCritical() << "AbstractBookReader::openZip open book error"
+                    << zip.getZipError() << "\n"
+                    << "Book id:" << m_bookInfo->id << "\n"
+                    << "Title:" << m_bookInfo->title << "\n"
+                    << "Path:" << m_bookInfo->path;
+        return 0;
+    }
+
+    QuaZipFile titleFile(&zip);
+
+    if(zip.setCurrentFile("titles.xml")) {
         if(!titleFile.open(QIODevice::ReadOnly)) {
             qWarning("RichBookReader::indexModel open title file error %d",
                      titleFile.getZipError());
@@ -106,7 +118,7 @@ QStandardItemModel *RichBookReader::indexModel()
     m_indexModel = new QStandardItemModel();
     m_pageTitles.clear();
 
-    while(!element.isNull()) {
+    while(!element.isNull() && !m_stopModelLoad) {
         readItem(element, m_indexModel->invisibleRootItem());
 
         element = element.nextSiblingElement();
@@ -114,7 +126,17 @@ QStandardItemModel *RichBookReader::indexModel()
 
     qSort(m_pageTitles);
 
+    titleFile.close();
+    zip.close();
+
+    m_stopModelLoad = false;
+
     return m_indexModel;
+}
+
+void RichBookReader::stopModelLoad()
+{
+    m_stopModelLoad = true;
 }
 
 void RichBookReader::readItem(QDomElement &element, QStandardItem *parent)
@@ -127,7 +149,7 @@ void RichBookReader::readItem(QDomElement &element, QStandardItem *parent)
     if(element.childNodes().count() > 1) {
         QDomElement child = element.firstChildElement("title");
 
-        while(!child.isNull()) {
+        while(!child.isNull() && !m_stopModelLoad) {
             readItem(child, item);
 
             child = child.nextSiblingElement("title");

@@ -4,7 +4,11 @@
 #include <qsqldatabase.h>
 #include <qhash.h>
 #include <qset.h>
+#include <qcache.h>
+
 #include "sqlutils.h"
+
+class QStandardItemModel;
 
 class QuranSora {
 public:
@@ -24,6 +28,9 @@ public:
     ~BookReaderHelper();
 
     QuranSora *getQuranSora(int sora);
+    QStandardItemModel *getBookModel(int bookID);
+    bool containsBookModel(int bookID);
+    void addBookModel(int bookID, QStandardItemModel *model);
 
 protected:
     void open();
@@ -32,6 +39,7 @@ protected:
     DatabaseRemover m_remover;
     QSqlDatabase m_quranDB;
     QHash<int, QuranSora*> m_sowar;
+    QCache<int, QStandardItemModel> m_models;
 };
 
 #endif // BOOKREADERHELPER_H

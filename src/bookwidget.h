@@ -3,14 +3,17 @@
 
 #include <qwidget.h>
 #include <qfuture.h>
+#include <qfuturewatcher.h>
 
 class WebView;
 class IndexWidget;
 class RichBookReader;
 class LibraryBookManager;
+class BookReaderHelper;
 class QSplitter;
 class QVBoxLayout;
 class QModelIndex;
+class QStandardItemModel;
 
 class BookWidget: public QWidget
 {
@@ -51,6 +54,7 @@ public slots:
 
     void scrollToCurrentAya(bool timer=false);
 
+    void indexModelReady();
     void readerTextChanged();
     void reloadCurrentPage();
 
@@ -77,6 +81,9 @@ protected:
     IndexWidget *m_indexWidget;
     RichBookReader *m_db;
     LibraryBookManager *m_bookManager;
+    BookReaderHelper *m_bookHelper;
+    QFuture<QStandardItemModel*> m_retModel;
+    QFutureWatcher<QStandardItemModel*> m_watcher;
     bool m_viewInitialized;
     bool m_indexReading;
 };

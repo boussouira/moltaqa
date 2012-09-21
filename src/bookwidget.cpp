@@ -36,6 +36,7 @@ BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_
     m_indexWidget->setCurrentPage(db->page());
 
     m_bookManager = LibraryManager::instance()->bookManager();
+    m_bookHelper = MW->readerHelper();
 
     m_splitter->addWidget(m_indexWidget);
     m_splitter->addWidget(m_view);
@@ -58,6 +59,7 @@ BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_
     connect(m_db, SIGNAL(textChanged()), SIGNAL(textChanged()));
     connect(m_db, SIGNAL(textChanged()), m_indexWidget, SLOT(displayBookInfo()));
     connect(m_view->page()->action(QWebPage::Reload), SIGNAL(triggered()), SLOT(reloadCurrentPage()));
+    connect(&m_watcher, SIGNAL(finished()), SLOT(indexModelReady()));
 
     if(!m_db->bookInfo()->isQuran()) {
         connect(m_view, SIGNAL(nextPage()), SLOT(wheelNextPage()));
@@ -72,6 +74,11 @@ BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_
 
 BookWidget::~BookWidget()
 {
+    if(m_watcher.isRunning()) {
+        m_db->stopModelLoad();
+        m_watcher.waitForFinished();
+    }
+
     delete m_db;
 }
 
@@ -120,9 +127,34 @@ void BookWidget::focusInEvent(QFocusEvent *event)
 
 void BookWidget::displayInfo()
 {
-    m_indexWidget->setIndex(m_db->indexModel());
+    QStandardItemModel *model = 0;
 
+    if(m_db->bookInfo()->isQuran()) {
+        model = m_db->indexModel();
+    } else {
+        if(!m_bookHelper->containsBookModel(m_db->bookInfo()->id)) {
+            m_retModel = QtConcurrent::run(m_db, &RichBookReader::indexModel);
+            m_watcher.setFuture(m_retModel);
+        } else {
+            QStandardItemModel *savedModel = m_bookHelper->getBookModel(m_db->bookInfo()->id);
+            if(savedModel)
+                model = Utils::Model::cloneModel(savedModel);
+        }
+    }
+
+    m_indexWidget->setIndex(model ? model : new QStandardItemModel);
     m_indexWidget->hideAyaSpin(!m_db->bookInfo()->isNormal());
+}
+
+void BookWidget::indexModelReady()
+{
+    QStandardItemModel *model = m_retModel.result();
+    m_indexWidget->setIndex(model);
+
+    m_indexWidget->displayBookInfo();
+
+    if(!m_bookHelper->containsBookModel(m_db->bookInfo()->id))
+        m_bookHelper->addBookModel(m_db->bookInfo()->id, Utils::Model::cloneModel(model));
 }
 
 void BookWidget::openPage(int id)

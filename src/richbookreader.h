@@ -20,6 +20,8 @@ public:
       */
     virtual QStandardItemModel *indexModel();
 
+    void stopModelLoad();
+
     TextFormatter *textFormat();
 
     void highlightPage(int pageID, CLuceneQuery *query);
@@ -50,6 +52,7 @@ protected:
     int m_highlightPageID;
     bool m_removeTashekil;
     bool m_saveReadingHistory;
+    bool m_stopModelLoad;
 };
 
 #endif // RICHBOOKREADER_H

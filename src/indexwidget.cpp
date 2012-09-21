@@ -16,6 +16,7 @@ IndexWidget::IndexWidget(QWidget *parent) :
 
     sendSignals = true;
     m_filter = new ModelViewFilter(this);
+    m_model = 0;
 
     ui->treeView->setExpandsOnDoubleClick(false);
 
@@ -44,6 +45,8 @@ IndexWidget::~IndexWidget()
 
 void IndexWidget::setIndex(QStandardItemModel *indexModel)
 {
+    ml_return_on_fail(indexModel);
+
     m_model = indexModel;
     ui->treeView->setHeaderHidden(true);
 

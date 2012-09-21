@@ -5,6 +5,7 @@
 #include <qsqlquery.h>
 #include <qvariant.h>
 #include <qdebug.h>
+#include <qstandarditemmodel.h>
 
 BookReaderHelper::BookReaderHelper()
 {
@@ -48,6 +49,21 @@ QuranSora *BookReaderHelper::getQuranSora(int sora)
     }
 
     return quranSora;
+}
+
+QStandardItemModel *BookReaderHelper::getBookModel(int bookID)
+{
+    return m_models.object(bookID);
+}
+
+bool BookReaderHelper::containsBookModel(int bookID)
+{
+    return m_models.contains(bookID);
+}
+
+void BookReaderHelper::addBookModel(int bookID, QStandardItemModel *model)
+{
+    m_models.insert(bookID, model);
 }
 
 void BookReaderHelper::open()
