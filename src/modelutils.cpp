@@ -197,8 +197,12 @@ QStandardItemModel *cloneModel(QStandardItemModel *model)
     int columnCount = model->columnCount();
     QStandardItemModel *newModel = new QStandardItemModel();
 
-    for(int i=0; i<columnCount; i++)
-        newModel->setHorizontalHeaderItem(i, model->horizontalHeaderItem(i)->clone());
+    for(int i=0; i<columnCount; i++) {
+        QStandardItem *header = model->horizontalHeaderItem(i);
+
+        if(header)
+            newModel->setHorizontalHeaderItem(i, header->clone());
+    }
 
     foreach(QList<QStandardItem*> items, getItemChilds(model->invisibleRootItem(), columnCount)) {
         newModel->appendRow(items);
