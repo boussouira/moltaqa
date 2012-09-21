@@ -10,7 +10,6 @@ public:
     SearchResult(LibraryBookPtr _book, BookPage *_page);
     ~SearchResult();
 
-    void generateHTML();
     QString toHtml();
 
     LibraryBookPtr book;
@@ -19,9 +18,6 @@ public:
     QString bgColor;
     int resultID;
     int score;
-
-protected:
-    QString m_html;
 };
 
 #endif // SEARCHRESULT_H

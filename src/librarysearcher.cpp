@@ -26,6 +26,8 @@ LibrarySearcher::LibrarySearcher(QObject *parent)
     m_resultReader = new SearchResultReader(this);
     m_sort = new Sort();
 
+    m_resultsHash.setMaxCost(30);
+
     m_resultParPage = Utils::Settings::get("Search/resultPeerPage", 10).toInt();
 }
 
@@ -41,9 +43,6 @@ LibrarySearcher::~LibrarySearcher()
         m_searcher->close();
         delete m_searcher;
     }
-
-    qDeleteAll(m_resultsHash);
-    m_resultsHash.clear();
 }
 
 void LibrarySearcher::run()
@@ -121,7 +120,6 @@ void LibrarySearcher::search()
 
     open();
     buildQuery();
-    qDeleteAll(m_resultsHash);
     m_resultsHash.clear();
 
     QTime time;
@@ -147,7 +145,7 @@ void LibrarySearcher::fetech()
 
     for(int i=start; i < maxResult;i++){
 
-        SearchResult *savedResult = m_resultsHash.value(i, 0);
+        SearchResult *savedResult = m_resultsHash.object(i);
         if(savedResult) {
             emit gotResult(savedResult);
             continue;
@@ -214,7 +212,7 @@ void LibrarySearcher::setQuery(CLuceneQuery *query)
 
 SearchResult *LibrarySearcher::getResult(int resultD)
 {
-    return m_resultsHash.value(resultD, 0);
+    return m_resultsHash.object(resultD);
 }
 
 CLuceneQuery *LibrarySearcher::getSearchQuery()

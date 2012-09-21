@@ -1,5 +1,6 @@
 #include "bookreaderhelper.h"
 #include "utils.h"
+#include "modelutils.h"
 
 #include <qdir.h>
 #include <qsqlquery.h>
@@ -64,6 +65,19 @@ bool BookReaderHelper::containsBookModel(int bookID)
 void BookReaderHelper::addBookModel(int bookID, QStandardItemModel *model)
 {
     m_models.insert(bookID, model);
+}
+
+QString BookReaderHelper::getTitleText(int bookID, int titleID)
+{
+    ml_return_val_on_fail(m_models.contains(bookID), QString());
+
+    QStandardItemModel *model = m_models.object(bookID);
+    ml_return_val_on_fail(model, QString());
+
+    QModelIndex index = Utils::Model::findModelIndex(model, titleID);
+    ml_return_val_on_fail(index.isValid(), QString());
+
+    return index.data().toString();
 }
 
 void BookReaderHelper::open()

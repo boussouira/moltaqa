@@ -3,7 +3,7 @@
 
 #include <qthread.h>
 #include <qsqldatabase.h>
-#include <qhash.h>
+#include <qcache.h>
 #include "clheader.h"
 #include "libraryinfo.h"
 #include "librarymanager.h"
@@ -72,7 +72,7 @@ protected:
     int m_pageCount;
     int m_timeSearch;
     int m_resultParPage;
-    QHash<int, SearchResult*> m_resultsHash;
+    QCache<int, SearchResult> m_resultsHash;
     bool m_stop;
 };
 

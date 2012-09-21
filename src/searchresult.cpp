@@ -15,7 +15,7 @@ SearchResult::~SearchResult()
         delete page;
 }
 
-void SearchResult::generateHTML()
+QString SearchResult::toHtml()
 {
     HtmlHelper helper;
     helper.beginDiv(".result");
@@ -51,10 +51,5 @@ void SearchResult::generateHTML()
 
     helper.endAll();
 
-    m_html = helper.html();
-}
-
-QString SearchResult::toHtml()
-{
-    return m_html;
+    return helper.html();
 }

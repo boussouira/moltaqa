@@ -320,7 +320,6 @@ void ResultWidget::fetechFinnished()
 
 void ResultWidget::gotResult(SearchResult *result)
 {
-    result->generateHTML();
     m_view->execJS(QString("addResult('%1')").arg(Utils::Html::jsEscape(result->toHtml())));
 
     ui->progressBar->setValue(ui->progressBar->value()+1);

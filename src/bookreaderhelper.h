@@ -12,9 +12,7 @@ class QStandardItemModel;
 
 class QuranSora {
 public:
-    QuranSora() :
-        sora(0),    ayatCount(0)
-    {};
+    QuranSora() : sora(0), ayatCount(0) {}
 
     int sora;
     int ayatCount;
@@ -31,6 +29,8 @@ public:
     QStandardItemModel *getBookModel(int bookID);
     bool containsBookModel(int bookID);
     void addBookModel(int bookID, QStandardItemModel *model);
+
+    QString getTitleText(int bookID, int titleID);
 
 protected:
     void open();

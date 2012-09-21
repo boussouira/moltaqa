@@ -2,7 +2,7 @@
 #define SEARCHRESULTREADER_H
 
 #include <qobject.h>
-#include <qhash.h>
+#include <qcache.h>
 #include <qsharedpointer.h>
 #include "librarybook.h"
 #include "xmldomhelper.h"
@@ -22,13 +22,12 @@ public:
 
 protected:
     bool getSimpleBookPage(QuaZip *zip, LibraryBookPtr book, BookPage *page);
-    bool getTafessirPage(QuaZip *zip, LibraryBookPtr book, BookPage *page);
     bool getQuranPage(QuaZip *zip, LibraryBookPtr book, BookPage *page);
 
 protected:
     BookReaderHelper *m_readerHelper;
-    QHash<int, XmlDomHelperPtr> m_pagesDom;
-    QHash<int, XmlDomHelperPtr> m_titlesDom;
+    QCache<int, XmlDomHelper> m_pagesDom;
+    QCache<int, XmlDomHelper> m_titlesDom;
 };
 
 #endif // SEARCHRESULTREADER_H

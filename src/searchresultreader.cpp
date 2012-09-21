@@ -11,6 +11,8 @@ SearchResultReader::SearchResultReader(QObject *parent) :
     QObject(parent)
 {
     m_readerHelper = MW->readerHelper();
+    m_pagesDom.setMaxCost(10);
+    m_titlesDom.setMaxCost(10);
 }
 
 bool SearchResultReader::getBookPage(LibraryBookPtr book, BookPage *page)
@@ -33,10 +35,8 @@ bool SearchResultReader::getBookPage(LibraryBookPtr book, BookPage *page)
                    << book->path << "error:" << zip.getZipError();
     }
 
-    if(book->isNormal())
+    if(book->isNormal() || book->isTafessir())
         return getSimpleBookPage(&zip, book, page);
-    else if(book->isTafessir())
-        return getTafessirPage(&zip, book, page);
     else if(book->isQuran())
         return getQuranPage(&zip, book, page);
     else
@@ -54,22 +54,22 @@ bool SearchResultReader::getSimpleBookPage(QuaZip *zip, LibraryBookPtr book, Boo
 
     // Get the page
     QuaZipFile pagesFile(zip);
-    if(zip->setCurrentFile("pages.xml")) {
-        if(!pagesFile.open(QIODevice::ReadOnly)) {
-            qWarning() << "getSimpleBookPage: open book pages error" << pagesFile.getZipError()
-                       << "book" << book->title
-                       << "id" << book->id;
-
-            return false;
-        }
-    }
-
-    XmlDomHelperPtr pagesDom;
+    XmlDomHelper *pagesDom = 0;
 
     if(m_pagesDom.contains(book->id)) {
-        pagesDom = m_pagesDom[book->id];
+        pagesDom = m_pagesDom.object(book->id);
     } else {
-        pagesDom = XmlDomHelperPtr(new XmlDomHelper());
+        if(zip->setCurrentFile("pages.xml")) {
+            if(!pagesFile.open(QIODevice::ReadOnly)) {
+                qWarning() << "getSimpleBookPage: open book pages error" << pagesFile.getZipError()
+                           << "book" << book->title
+                           << "id" << book->id;
+
+                return false;
+            }
+        }
+
+        pagesDom = new XmlDomHelper;
         pagesDom->load(&pagesFile);
     }
 
@@ -78,125 +78,80 @@ bool SearchResultReader::getSimpleBookPage(QuaZip *zip, LibraryBookPtr book, Boo
         page->part = pageElement.attribute("part").toInt();
         page->page = pageElement.attribute("page").toInt();
 
-        page->text = AbstractBookReader::getPageText(zip, page->pageID);
-    }
-
-    pagesFile.close();
-
-    if(time.elapsed() > 2500 && !m_pagesDom.contains(book->id))
-        m_pagesDom.insert(book->id, pagesDom);
-
-    // Get the title
-    QuaZipFile titleFile(zip);
-
-    if(zip->setCurrentFile("titles.xml")) {
-        if(!titleFile.open(QIODevice::ReadOnly)) {
-            qWarning() << "getSimpleBookPage: open book titles error" << titleFile.getZipError()
-                       << "book" << book->title
-                       << "id" << book->id;
-
-            return false;
+        if(book->isTafessir()) {
+            page->sora = pageElement.attribute("sora").toInt();
+            page->aya = pageElement.attribute("aya").toInt();
         }
-    }
-
-    XmlDomHelperPtr titlesDom;
-
-    if(m_titlesDom.contains(book->id)) {
-        titlesDom = m_titlesDom[book->id];
-    } else {
-        titlesDom = XmlDomHelperPtr(new XmlDomHelper());
-        titlesDom->load(&pagesFile);
-    }
-
-    QDomElement titleElement = titlesDom->treeFindElement("pageID", page->titleID);
-    if(!titleElement.isNull())
-        page->title = titleElement.firstChildElement("text").text();
-
-    titleFile.close();
-
-    if(m_pagesDom.contains(book->id) && !m_titlesDom.contains(book->id))
-        m_titlesDom.insert(book->id, titlesDom);
-
-    return true;
-}
-
-bool SearchResultReader::getTafessirPage(QuaZip *zip, LibraryBookPtr book, BookPage *page)
-{
-    QTime time;
-    time.start();
-
-    // Get the page
-    QuaZipFile pagesFile(zip);
-    if(zip->setCurrentFile("pages.xml")) {
-        if(!pagesFile.open(QIODevice::ReadOnly)) {
-            qWarning() << "getTafessirPage: open book pages error" << pagesFile.getZipError()
-                       << "book" << book->title
-                       << "id" << book->id;
-
-            return false;
-        }
-    }
-    XmlDomHelperPtr pagesDom;
-
-    if(m_pagesDom.contains(book->id)) {
-        pagesDom = m_pagesDom[book->id];
-    } else {
-        pagesDom = XmlDomHelperPtr(new XmlDomHelper());
-        pagesDom->load(&pagesFile);
-    }
-
-    QDomElement pageElement = pagesDom->findElement("id", page->pageID);
-    if(!pageElement.isNull()) {
-        page->part = pageElement.attribute("part").toInt();
-        page->page = pageElement.attribute("page").toInt();
-        page->sora = pageElement.attribute("sora").toInt();
-        page->aya = pageElement.attribute("aya").toInt();
 
         page->text = AbstractBookReader::getPageText(zip, page->pageID);
     }
 
-    pagesFile.close();
+    if(pagesFile.isOpen())
+        pagesFile.close();
 
-    if(time.elapsed() > 2500 && !m_pagesDom.contains(book->id))
-        m_pagesDom.insert(book->id, pagesDom);
-
-    // Get the title
-    QuaZipFile titleFile(zip);
-
-    if(zip->setCurrentFile("titles.xml")) {
-        if(!titleFile.open(QIODevice::ReadOnly)) {
-            qWarning() << "getTafessirPage: open book titles error" << titleFile.getZipError()
-                       << "book" << book->title
-                       << "id" << book->id;
-
-            return false;
-        }
+    if(!m_pagesDom.contains(book->id)) {
+        if(time.elapsed() > 1000)
+            m_pagesDom.insert(book->id, pagesDom);
+        else
+            delete pagesDom;
     }
 
-    XmlDomHelperPtr titlesDom;
+    // Get the title
+
+    // If we have a saved model we use it to get the title
+    QString title = MW->readerHelper()->getTitleText(book->id, page->titleID).trimmed();
+    if(title.size()) {
+        page->title = title;
+
+        if(book->isTafessir() && page->title.size() < 9) {
+            QuranSora *quranSora = m_readerHelper->getQuranSora(page->sora);
+            if(quranSora)
+                page->title = tr("تفسير سورة %1، الاية %2").arg(quranSora->name).arg(page->aya);
+        }
+
+        return true;
+    }
+
+    QuaZipFile titleFile(zip);
+    XmlDomHelper *titlesDom = 0;
 
     if(m_titlesDom.contains(book->id)) {
-        titlesDom = m_titlesDom[book->id];
+        titlesDom = m_titlesDom.object(book->id);
     } else {
-        titlesDom = XmlDomHelperPtr(new XmlDomHelper());
-        titlesDom->load(&pagesFile);
+        if(zip->setCurrentFile("titles.xml")) {
+            if(!titleFile.open(QIODevice::ReadOnly)) {
+                qWarning() << "getSimpleBookPage: open book titles error" << titleFile.getZipError()
+                           << "book" << book->title
+                           << "id" << book->id;
+
+                return false;
+            }
+        }
+
+        titlesDom = new XmlDomHelper;
+        titlesDom->load(&titleFile);
     }
 
     QDomElement titleElement = titlesDom->treeFindElement("pageID", page->titleID);
     if(!titleElement.isNull()) {
         page->title = titleElement.firstChildElement("text").text();
 
-        if(page->title.size() < 9) {
+        if(book->isTafessir() && page->title.size() < 9) {
             QuranSora *quranSora = m_readerHelper->getQuranSora(page->sora);
             if(quranSora)
                 page->title = tr("تفسير سورة %1، الاية %2").arg(quranSora->name).arg(page->aya);
         }
     }
 
-    titleFile.close();
+    if(pagesFile.isOpen())
+        titleFile.close();
 
-    if(m_pagesDom.contains(book->id) && !m_titlesDom.contains(book->id))
-        m_titlesDom.insert(book->id, titlesDom);
+    if(!m_titlesDom.contains(book->id)) {
+        if(m_pagesDom.contains(book->id))
+            m_titlesDom.insert(book->id, titlesDom);
+        else
+            delete titlesDom;
+    }
 
     return true;
 }
