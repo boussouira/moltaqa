@@ -109,6 +109,22 @@ void selectIndex(QTreeView *tree, const QModelIndex &index)
     }
 }
 
+bool indexesAtSameLevel(QList<QModelIndex> &list)
+{
+    ml_return_val_on_fail(list.size(), false);
+
+    if(list.size()==1)
+        return true;
+
+    QModelIndex parent = list.first().parent();
+    for(int i=0;i<list.size();i++) {
+        if(list[i].parent() != parent)
+            return false;
+    }
+
+    return true;
+}
+
 void moveUp(QStandardItemModel *model, QTreeView *tree)
 {
     QModelIndex index = Model::selectedIndex(tree);

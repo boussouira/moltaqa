@@ -18,6 +18,8 @@ void swap(QStandardItemModel *model, QModelIndex fromIndex, QModelIndex toIndex)
 QModelIndex selectedIndex(QTreeView *tree);
 void selectIndex(QTreeView *tree, const QModelIndex &index);
 
+bool indexesAtSameLevel(QList<QModelIndex> &list);
+
 void moveUp(QStandardItemModel *model, QTreeView *tree);
 void moveDown(QStandardItemModel *model, QTreeView *tree);
 void moveRight(QStandardItemModel *model, QTreeView *tree);

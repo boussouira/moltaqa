@@ -45,7 +45,8 @@ protected:
 
 protected:
     QStandardItemModel *m_model;
-    QList<QStandardItem*> m_copiedItems;
+    QList<QList<QStandardItem*> > m_copiedItems;
+    QList<QList<QStandardItem*> > m_cattedItems;
     BookListManager *m_manager;
     Ui::BookListManagerWidget *ui;
 };
