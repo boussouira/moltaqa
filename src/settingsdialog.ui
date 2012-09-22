@@ -23,7 +23,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabGeneralSettings">
       <attribute name="title">
@@ -65,6 +65,13 @@
         <widget class="QCheckBox" name="checkAutoUpdate">
          <property name="text">
           <string>بحث تلقائي عن  الاصدارات الجديدة من البرنامج</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkShowCloseWarning">
+         <property name="text">
+          <string>عرض رسالة تأكيد إغلاق البرنامج</string>
          </property>
         </widget>
        </item>

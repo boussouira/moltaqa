@@ -294,6 +294,19 @@ void MainWindow::searchInFavourites()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    if(Utils::Settings::get("showCloseWarning", true).toBool()) {
+        int ret = QMessageBox::question(this,
+                                        windowTitle(),
+                                        tr("هل تريد إغلاق البرنامج؟"),
+                                        QMessageBox::Yes|QMessageBox::No,
+                                        QMessageBox::No);
+
+        if(ret == QMessageBox::No) {
+            event->ignore();
+            return;
+        }
+    }
+
     Utils::Widget::save(this, "MainWindow");
 
     m_booksList->close();

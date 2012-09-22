@@ -90,6 +90,7 @@ void SettingsDialog::loadSettings()
     loadStyles();
 
     ui->checkAutoUpdate->setChecked(settings.value("Update/autoCheck", true).toBool());
+    ui->checkShowCloseWarning->setChecked(settings.value("showCloseWarning", true).toBool());
 
     settings.beginGroup("Style");
     QString currentStyle = settings.value("name", ML_DEFAULT_STYLE).toString();
@@ -216,6 +217,7 @@ void SettingsDialog::saveSettings()
     QString appPath = ui->lineBooksDir->text();
 
     saveSetting(settings, QString(), "library_dir", appPath, true);
+    saveSetting(settings, QString(), "showCloseWarning", ui->checkShowCloseWarning->isChecked());
 
     saveSetting(settings, "Update", "autoCheck", ui->checkAutoUpdate->isChecked());
 
