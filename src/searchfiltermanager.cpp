@@ -7,6 +7,11 @@
 #include "clutils.h"
 #include "libraryenums.h"
 #include "stringutils.h"
+#include "modelutils.h"
+#include "librarymanager.h"
+#include "librarybookmanager.h"
+#include "bookinfodialog.h"
+#include "booksviewer.h"
 
 #include <qsqlquery.h>
 #include <qitemselectionmodel.h>
@@ -55,14 +60,24 @@ void SearchFilterManager::setTreeView(QTreeView *view)
     if(!m_autoSelectParent) {
         QAction *selectChildAct = new QAction(tr("اختيار العناوين الفرعية"), this);
         QAction *unSelectChildAct = new QAction(tr("إلغاء العناوين الفرعية"), this);
+
         m_treeView->addAction(selectChildAct);
         m_treeView->addAction(unSelectChildAct);
 
-        m_treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
-
         connect(selectChildAct, SIGNAL(triggered()), SLOT(selectChilds()));
         connect(unSelectChildAct, SIGNAL(triggered()), SLOT(unSelectChilds()));
+    } else {
+        QAction *bookInfoAct = new QAction(tr("بطاقة الكتاب"), this);
+        QAction *openBookAct = new QAction(tr("فتح الكتاب"), this);
+
+        m_treeView->addAction(bookInfoAct);
+        m_treeView->addAction(openBookAct);
+
+        connect(bookInfoAct, SIGNAL(triggered()), SLOT(showBookInfo()));
+        connect(openBookAct, SIGNAL(triggered()), SLOT(openBook()));
     }
+
+    m_treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
 void SearchFilterManager::setLineEdit(FilterLineEdit *edit)
@@ -188,6 +203,36 @@ void SearchFilterManager::unSelectChilds()
     QModelIndex index = m_treeView->selectionModel()->selectedIndexes().first();
     if(index.isValid())
         checkIndex(m_filterModel, index, Qt::Unchecked, true);
+}
+
+void SearchFilterManager::showBookInfo()
+{
+    QModelIndex index = Utils::Model::selectedIndex(m_treeView);
+    ml_return_on_fail(index.isValid());
+    ml_return_on_fail(index.data(ItemRole::itemTypeRole).toInt()==ItemType::BookItem);
+
+    LibraryBookPtr book = LibraryManager::instance()
+            ->bookManager()
+            ->getLibraryBook(index.data(ItemRole::idRole).toInt());
+
+    ml_return_on_fail(book);
+
+    BookInfoDialog *dialog = new BookInfoDialog(0);
+    dialog->setLibraryBook(book);
+    dialog->setup();
+    dialog->show();
+}
+
+void SearchFilterManager::openBook()
+{
+    QModelIndex index = Utils::Model::selectedIndex(m_treeView);
+    ml_return_on_fail(index.isValid());
+    ml_return_on_fail(index.data(ItemRole::itemTypeRole).toInt()==ItemType::BookItem);
+
+    int bookID = index.data(ItemRole::idRole).toInt();
+    ml_return_on_fail(bookID);
+
+    MW->booksViewer()->openBook(bookID);
 }
 
 void SearchFilterManager::clearFilter()

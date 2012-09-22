@@ -64,6 +64,9 @@ protected slots:
     void selectChilds();
     void unSelectChilds();
 
+    void showBookInfo();
+    void openBook();
+
     void itemChanged(QStandardItem *item);
     void enableCatSelection();
     void setCatCheckable(QStandardItem *parent, bool checkable);
