@@ -13,6 +13,7 @@
 RichBookReader::RichBookReader(QObject *parent) : AbstractBookReader(parent)
 {
     m_textFormat = 0;
+    m_indexModel = 0;
     m_query = 0;
     m_highlightPageID = -1;
     m_stopModelLoad = false;
@@ -28,6 +29,7 @@ RichBookReader::RichBookReader(QObject *parent) : AbstractBookReader(parent)
 RichBookReader::~RichBookReader()
 {
     ml_delete_check(m_textFormat);
+    ml_delete_check(m_indexModel);
 }
 
 void RichBookReader::connected()

@@ -17,7 +17,6 @@
 class LibraryInfo;
 class LibraryBook;
 class BookPage;
-class QStandardItemModel;
 class TextFormatter;
 class QSqlQuery;
 class BookEditor;
@@ -142,9 +141,6 @@ protected:
     LibraryBookPtr m_bookInfo;
     BookPage *m_currentPage;
     LibraryManager *m_libraryManager;
-    QStandardItemModel *m_indexModel;
-    QString m_bookDBPath;
-    QString m_connectionName;
     QuaZip m_zip;
     XmlDomHelper m_pagesDom;
 };

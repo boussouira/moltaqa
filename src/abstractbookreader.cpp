@@ -16,14 +16,12 @@
 
 AbstractBookReader::AbstractBookReader(QObject *parent) : QObject(parent)
 {
-    m_indexModel = 0;
     m_currentPage = new BookPage();
     m_libraryManager = LibraryManager::instance();
 }
 
 AbstractBookReader::~AbstractBookReader()
 {
-    ml_delete_check(m_indexModel);
     ml_delete_check(m_currentPage);
 
     if(m_zip.isOpen())

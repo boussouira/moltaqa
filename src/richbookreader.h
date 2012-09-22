@@ -6,6 +6,7 @@
 #include "clucenequery.h"
 
 class LibraryBookManager;
+class QStandardItemModel;
 
 class RichBookReader : public AbstractBookReader
 {
@@ -46,6 +47,7 @@ signals:
 
 protected:
     TextFormatter *m_textFormat;
+    QStandardItemModel *m_indexModel;
     CLuceneQuery *m_query;
     LibraryBookManager *m_bookmanager;
     QList<int> m_pageTitles;
