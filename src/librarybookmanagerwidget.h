@@ -15,6 +15,7 @@ class QStandardItemModel;
 class LibraryBookManager;
 class EditWebView;
 class ModelViewFilter;
+class BooksViewer;
 
 class LibraryBookManagerWidget : public ControlCenterWidget
 {
@@ -34,17 +35,20 @@ public:
 protected:
     void enableEditWidgets(bool enable);
     void setupActions();
+    void setupBookReader();
     void saveCurrentBookInfo();
     LibraryBookPtr getBookInfo(int bookID);
 
 private slots:
     void on_treeView_doubleClicked(const QModelIndex &index);
+    void on_tabWidget_currentChanged(int index);
     void on_toolChangeAuthor_clicked();
     void setupEdit(LibraryBookPtr info);
     void infoChanged();
     void checkEditWebChange();
     void createNewBook();
     void removeBook();
+    void lastReaderTabClosed();
 
 protected:
     Ui::LibraryBookManagerWidget *ui;
@@ -52,6 +56,8 @@ protected:
     QStandardItemModel *m_model;
     LibraryBookManager *m_manager;
     EditWebView *m_webEdit;
+    BooksViewer *m_readerview;
+    QWidget *m_readerWidget;
     ModelViewFilter *m_filter;
     QHash<int, LibraryBookPtr > m_editedBookInfo;
     bool m_selectCurrentBook;

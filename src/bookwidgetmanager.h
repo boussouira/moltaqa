@@ -29,6 +29,7 @@ public:
     void closeBook(int bookID);
     BookWidget *getBookWidget(int bookID);
     QList<BookWidget *> getBookWidgets();
+    bool showBook(int bookID);
 
     void addTabActions(QList<QAction *> tabActions);
 

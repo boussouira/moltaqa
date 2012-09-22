@@ -19,6 +19,7 @@
 #include <qtextedit.h>
 #include <qmessagebox.h>
 #include <QInputDialog>
+#include <QHBoxLayout>
 
 LibraryBookManagerWidget::LibraryBookManagerWidget(QWidget *parent) :
     ControlCenterWidget(parent),
@@ -36,6 +37,7 @@ LibraryBookManagerWidget::LibraryBookManagerWidget(QWidget *parent) :
 
     enableEditWidgets(false);
     setupActions();
+    setupBookReader();
 }
 
 LibraryBookManagerWidget::~LibraryBookManagerWidget()
@@ -102,6 +104,33 @@ void LibraryBookManagerWidget::setupActions()
      connect(ui->tabWidget, SIGNAL(currentChanged(int)), SLOT(checkEditWebChange()));
      connect(ui->toolAdd, SIGNAL(clicked()), SLOT(createNewBook()));
      connect(ui->toolDelete, SIGNAL(clicked()), SLOT(removeBook()));
+}
+
+void LibraryBookManagerWidget::setupBookReader()
+{
+    m_readerview = new BooksViewer(LibraryManager::instance(), this);
+
+    m_readerWidget = new QWidget(this);
+    QWidget *toolBarWidget = new QWidget(this);
+    QHBoxLayout *toolBarLayout = new QHBoxLayout;
+    QVBoxLayout *mainlayout = new QVBoxLayout;
+
+    foreach(QToolBar *bar, m_readerview->toolBars()) {
+        toolBarLayout->addWidget(bar);
+    }
+
+    toolBarLayout->addStretch(1);
+    toolBarLayout->setContentsMargins(9, 0, 9, 0);
+    toolBarLayout->setSpacing(0);
+    toolBarWidget->setLayout(toolBarLayout);
+
+    mainlayout->setMenuBar(toolBarWidget);
+    mainlayout->addWidget(m_readerview);
+
+    m_readerWidget->setLayout(mainlayout);
+    ui->tabWidget->addTab(m_readerWidget, tr("تصفح الكتاب"));
+
+    connect(m_readerview->bookWidgetManager(), SIGNAL(lastTabClosed()), SLOT(lastReaderTabClosed()));
 }
 
 void LibraryBookManagerWidget::enableEditWidgets(bool enable)
@@ -219,6 +248,11 @@ void LibraryBookManagerWidget::removeBook()
                              tr("حذف كتاب"),
                              tr("لم تقم باختيار اي كتاب"));
     }
+}
+
+void LibraryBookManagerWidget::lastReaderTabClosed()
+{
+    m_readerWidget->setEnabled(false);
 }
 
 void LibraryBookManagerWidget::save()
@@ -381,4 +415,16 @@ LibraryBookPtr LibraryBookManagerWidget::getBookInfo(int bookID)
     }
 
     return info;
+}
+
+void LibraryBookManagerWidget::on_tabWidget_currentChanged(int index)
+{
+    if(index == 2) {
+        ml_return_on_fail(m_currentBook);
+
+        if(!m_readerview->bookWidgetManager()->showBook(m_currentBook->id))
+            m_readerview->openBook(m_currentBook->id);
+
+        m_readerWidget->setEnabled(true);
+    }
 }
