@@ -1,6 +1,6 @@
 @echo off
 
-set OUTDIR=moltaqa-lib-0.9b1
+set OUTDIR=moltaqa-lib-0.9a2
 
 echo Create directory %OUTDIR%
 mkdir %OUTDIR%

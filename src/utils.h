@@ -9,8 +9,8 @@
 
 #include "bookexception.h"
 
-#define APP_VERSION_STR "0.9a1"
-#define APP_UPDATE_REVISION 1
+#define APP_VERSION_STR "0.9a2"
+#define APP_UPDATE_REVISION 2
 
 #if QT_VERSION >= 0x040800
     #define ML_DEFAULT_STYLE "default"

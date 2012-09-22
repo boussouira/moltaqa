@@ -1,7 +1,7 @@
 #!/bin/bash
 
 APP_NAME="moltaqa-lib"
-APP_VERSION="0.9a1"
+APP_VERSION="0.9a2"
 APP_DIR_NAME="${APP_NAME}-${APP_VERSION}"
 APP_FILES="moltaqa-lib.pro Doxyfile share bin src test"
 TEMP_DIR="temp-build-deb"

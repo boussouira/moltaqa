@@ -1,7 +1,7 @@
 ﻿[Setup]
 AppId={{15FA1AB7-9C81-43E8-9882-C7145422FE7E}
 AppName=مكتبة الملتقى
-AppVerName=مكتبة الملتقى 0.9a1
+AppVerName=مكتبة الملتقى 0.9a2
 DefaultDirName={pf}\moltaqa-lib
 DefaultGroupName=مكتبة الملتقى
 AllowNoIcons=yes
