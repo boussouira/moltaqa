@@ -54,6 +54,7 @@ protected:
     EditWebView *m_webEdit;
     ModelViewFilter *m_filter;
     QHash<int, LibraryBookPtr > m_editedBookInfo;
+    bool m_selectCurrentBook;
 };
 
 #endif // EDITBOOKSLISTWIDGET_H

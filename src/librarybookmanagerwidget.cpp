@@ -12,6 +12,7 @@
 #include "newbookwriter.h"
 #include "mainwindow.h"
 #include "booklistmanager.h"
+#include "booksviewer.h"
 
 #include <qdebug.h>
 #include <qlineedit.h>
@@ -30,6 +31,8 @@ LibraryBookManagerWidget::LibraryBookManagerWidget(QWidget *parent) :
 
     m_manager = LibraryManager::instance()->bookManager();
     m_filter = new ModelViewFilter(this);
+
+    m_selectCurrentBook = true;
 
     enableEditWidgets(false);
     setupActions();
@@ -58,6 +61,19 @@ void LibraryBookManagerWidget::aboutToShow()
 
     if(Utils::Settings::contains("BookManagerWidget/splitter"))
         ui->splitter->restoreState(Utils::Settings::get("BookManagerWidget/splitter").toByteArray());
+
+    if(m_selectCurrentBook) {
+        if(MW->booksViewer()->currentBookID()) {
+            QModelIndex index = Utils::Model::findModelIndex(ui->treeView->model(),
+                                                             MW->booksViewer()->currentBookID());
+            if(index.isValid()) {
+                Utils::Model::selectIndex(ui->treeView, index);
+                on_treeView_doubleClicked(index);
+            }
+        }
+
+        m_selectCurrentBook = false;
+    }
 }
 
 void LibraryBookManagerWidget::aboutToHide()
