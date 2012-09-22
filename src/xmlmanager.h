@@ -20,6 +20,7 @@ public:
 
 protected:
     virtual void saveModel(QXmlStreamWriter &writer, QStandardItemModel *model)=0;
+    void makeBackup();
 
 protected:
     XmlDomHelper m_dom;
