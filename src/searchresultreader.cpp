@@ -58,6 +58,12 @@ bool SearchResultReader::getSimpleBookPage(QuaZip *zip, LibraryBookPtr book, Boo
 
     if(m_pagesDom.contains(book->id)) {
         pagesDom = m_pagesDom.object(book->id);
+
+        if(!pagesDom) {
+            m_pagesDom.remove(book->id);
+            qWarning("SearchResultReader: Null saved pages DOM");
+            return false;
+        }
     } else {
         if(zip->setCurrentFile("pages.xml")) {
             if(!pagesFile.open(QIODevice::ReadOnly)) {
@@ -117,6 +123,12 @@ bool SearchResultReader::getSimpleBookPage(QuaZip *zip, LibraryBookPtr book, Boo
 
     if(m_titlesDom.contains(book->id)) {
         titlesDom = m_titlesDom.object(book->id);
+
+        if(!titlesDom) {
+            m_titlesDom.remove(book->id);
+            qWarning("SearchResultReader: Null saved titles DOM");
+            return false;
+        }
     } else {
         if(zip->setCurrentFile("titles.xml")) {
             if(!titleFile.open(QIODevice::ReadOnly)) {

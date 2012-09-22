@@ -45,7 +45,7 @@ IndexWidget::~IndexWidget()
 
 void IndexWidget::setIndex(QStandardItemModel *indexModel)
 {
-    ml_return_on_fail(indexModel);
+    ml_return_on_fail2(indexModel, "IndexWidget::setIndex model is null");
 
     m_model = indexModel;
     ui->treeView->setHeaderHidden(true);
@@ -85,6 +85,9 @@ void IndexWidget::displayBookInfo()
 
 void IndexWidget::setSelectedSora(int pSoraNumber)
 {
+    ml_return_on_fail(ui->treeView->model());
+    ml_return_on_fail(ui->treeView->selectionModel());
+
     QItemSelectionModel *selection = ui->treeView->selectionModel();
     QModelIndex itemToSelect = ui->treeView->model()->index(pSoraNumber - 1, 0, QModelIndex());
     selection->select(itemToSelect,
@@ -129,7 +132,8 @@ void IndexWidget::setCurrentPage(BookPage *page)
 
 void IndexWidget::selectTitle(int tid)
 {
-    ml_return_on_fail2(m_model, "IndexWidget::selectTitle model is null");
+    ml_return_on_fail(ui->treeView->model());
+    ml_return_on_fail(ui->treeView->selectionModel());
 
     QModelIndex index;
     QModelIndexList selected = ui->treeView->selectionModel()->selectedIndexes();

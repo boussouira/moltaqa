@@ -149,6 +149,8 @@ void BookWidget::displayInfo()
 void BookWidget::indexModelReady()
 {
     QStandardItemModel *model = m_retModel.result();
+    ml_return_on_fail(model);
+
     m_indexWidget->setIndex(model);
 
     m_indexWidget->displayBookInfo();
@@ -402,6 +404,8 @@ void BookWidget::showIndex(int tid)
 
 QString BookWidget::getBreadcrumbs()
 {
+    ml_return_val_on_fail(m_indexWidget->indexModel(), QString());
+
     QList<QPair<int, QString> > list;
     QModelIndex index = Utils::Model::findModelIndex(m_indexWidget->indexModel(), m_db->page()->titleID);
 
