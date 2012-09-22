@@ -142,7 +142,7 @@ void BookWidget::displayInfo()
         }
     }
 
-    m_indexWidget->setIndex(model ? model : new QStandardItemModel);
+    m_indexWidget->setIndex(model ? model : new QStandardItemModel(this));
     m_indexWidget->hideAyaSpin(!m_db->bookInfo()->isNormal());
 }
 
