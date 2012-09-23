@@ -69,7 +69,7 @@ echo "[*] Create md5 sums"
 cd $TEMP_DIR_PATH/$OUTPUT_DIR
 md5sum -b * > MD5SUMS
 
-mv -v $TEMP_DIR_PATH/$OUTPUT_DIR $SOURCE_DIR
+cp -v $TEMP_DIR_PATH/$OUTPUT_DIR "$SOURCE_DIR/_$APP_DIR_NAME"
 
 echo "[*] Generated files in $SOURCE_DIR/$OUTPUT_DIR"
 cat $SOURCE_DIR/$OUTPUT_DIR/MD5SUMS

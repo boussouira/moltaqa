@@ -38,4 +38,6 @@ sed -i 's/\(AppVerName=[^ ]\+ [^ ]\+\) [^\w]\+/\1 '$version'/' installer.iss
 
 echo
 
+echo "*** PLEASE EDIT THE DEBIAN/CHANGELOG FILE ***"
+
 echo [*] "done"
