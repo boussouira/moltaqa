@@ -114,7 +114,8 @@ void BookIndexEditor::addTitle()
     if(ok && text.size()) {
         QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
         QStandardItem *title = new QStandardItem(text);
-        title->setData(m_editView->m_currentPage->pageID, ItemRole::idRole);
+        int pageID = (m_editView->m_currentPage ? m_editView->m_currentPage->pageID : 1);
+        title->setData(pageID, ItemRole::idRole);
 
         QStandardItem *parentItem = Utils::Model::itemFromIndex(m_model, index.parent());
         int row = index.isValid() ? index.row()+1 : parentItem->rowCount();
@@ -128,6 +129,8 @@ void BookIndexEditor::addTitle()
 
 void BookIndexEditor::removeTitle()
 {
+    ml_return_on_fail(m_editView->m_currentPage);
+
     QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
     ml_return_on_fail(index.isValid());
 
