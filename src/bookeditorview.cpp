@@ -17,6 +17,7 @@
 #include "bookexception.h"
 #include "bookindexeditor.h"
 #include "indextracker.h"
+#include "bookreaderhelper.h"
 
 #include <qstatusbar.h>
 #include <qtabwidget.h>
@@ -322,6 +323,7 @@ void BookEditorView::save()
 
         m_webView->resetUndo();
         m_bookReader->goToPage(m_bookReader->page()->pageID);
+        MW->readerHelper()->removeBookModel(book->id);
 
         m_timer->start();
     }

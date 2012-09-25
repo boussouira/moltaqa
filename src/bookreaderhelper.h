@@ -29,6 +29,7 @@ public:
     QStandardItemModel *getBookModel(int bookID);
     bool containsBookModel(int bookID);
     void addBookModel(int bookID, QStandardItemModel *model);
+    void removeBookModel(int bookID);
 
     QString getTitleText(int bookID, int titleID);
 

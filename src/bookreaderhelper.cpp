@@ -67,6 +67,12 @@ void BookReaderHelper::addBookModel(int bookID, QStandardItemModel *model)
     m_models.insert(bookID, model);
 }
 
+void BookReaderHelper::removeBookModel(int bookID)
+{
+    if(m_models.contains(bookID))
+        m_models.remove(bookID);
+}
+
 QString BookReaderHelper::getTitleText(int bookID, int titleID)
 {
     ml_return_val_on_fail(m_models.contains(bookID), QString());
