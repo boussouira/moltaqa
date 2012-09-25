@@ -358,6 +358,15 @@ void BookEditorView::addPage()
 
 void BookEditorView::removePage()
 {
+    ml_return_on_fail(m_currentPage);
+
+    if(m_bookReader->pagesCount()==1) {
+        QMessageBox::warning(this,
+                             title(),
+                             tr("لا يمكن حذف الصفحة الأخيرة من الكتاب"));
+        return;
+    }
+
     BookPage *page = m_currentPage->clone();
     m_pages.insert(page->pageID, page);
 
