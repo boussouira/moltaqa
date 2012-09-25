@@ -1,7 +1,10 @@
 #include "modelutils.h"
 #include "modelenums.h"
 #include "utils.h"
+
 #include <qtreeview.h>
+#include <qabstractbutton.h>
+#include <qmessagebox.h>
 
 namespace Utils {
 namespace Model {
@@ -67,7 +70,7 @@ QModelIndex changeParent(QStandardItemModel *model, QModelIndex child, QModelInd
     if(!newParentItem)
         return QModelIndex();
 
-    if(row == -1)
+    if(row == -1 || row > newParentItem->rowCount())
         row = newParentItem->rowCount();
 
     newParentItem->insertRow(row, childItems);
@@ -105,7 +108,7 @@ void selectIndex(QTreeView *tree, const QModelIndex &index)
     if(index.isValid()) {
         tree->scrollTo(index, QAbstractItemView::EnsureVisible);
         tree->selectionModel()->setCurrentIndex(index,
-                                                QItemSelectionModel::ClearAndSelect);
+                                                QItemSelectionModel::SelectCurrent|QItemSelectionModel::Rows);
     }
 }
 
@@ -265,4 +268,343 @@ void setModelCheckable(QStandardItemModel *model, bool checkable)
 }
 
 }
+}
+
+TreeViewEditor::TreeViewEditor(QObject *parent) : QObject(parent)
+{
+     m_tree = 0;
+     m_model = 0;
+     m_moveUp = 0;
+     m_moveDown = 0;
+     m_moveLeft = 0;
+     m_moveRight = 0;
+     m_remove = 0;
+     m_lastLeftRow = -1;
+}
+
+TreeViewEditor::~TreeViewEditor()
+{
+}
+
+void TreeViewEditor::setTreeView(QTreeView *tree)
+{
+    ml_return_on_fail(tree);
+    ml_return_on_fail(tree->selectionModel());
+
+    m_tree = tree;
+}
+
+void TreeViewEditor::setModel(QStandardItemModel *model)
+{
+    ml_return_on_fail(model);
+
+    m_model = model;
+}
+
+void TreeViewEditor::setup()
+{
+    ml_return_on_fail2(m_model, "TreeViewEditor::setup model is null");
+    ml_return_on_fail2(m_tree, "TreeViewEditor::setup tree view is null");
+    ml_return_on_fail2(m_tree->selectionModel(), "TreeViewEditor::setup selection model is null");
+
+    m_tree->setSelectionMode(QAbstractItemView::ExtendedSelection);
+
+    connect(m_model,
+            SIGNAL(layoutChanged()),
+            SLOT(updateActions()));
+
+    connect(m_tree->selectionModel(),
+            SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+            SLOT(updateActions()));
+}
+
+void TreeViewEditor::setMoveUpButton(QAbstractButton *btn)
+{
+    ml_return_on_fail2(btn, "TreeViewEditor::setMoveUpButton Button is null");
+
+    m_moveUp = btn;
+    connect(m_moveUp, SIGNAL(clicked()), SLOT(moveUp()));
+}
+
+void TreeViewEditor::setMoveDownButton(QAbstractButton *btn)
+{
+    ml_return_on_fail2(btn, "TreeViewEditor::setMoveDownButton Button is null");
+
+    m_moveDown = btn;
+    connect(m_moveDown, SIGNAL(clicked()), SLOT(moveDown()));
+}
+
+void TreeViewEditor::setMoveLeftButton(QAbstractButton *btn)
+{
+    ml_return_on_fail2(btn, "TreeViewEditor::setMoveLeftButton Button is null");
+
+    m_moveLeft = btn;
+    connect(m_moveLeft, SIGNAL(clicked()), SLOT(moveLeft()));
+}
+
+void TreeViewEditor::setMoveRightButton(QAbstractButton *btn)
+{
+    ml_return_on_fail2(btn, "TreeViewEditor::setMoveRightButton Button is null");
+
+    m_moveRight = btn;
+    connect(m_moveRight, SIGNAL(clicked()), SLOT(moveRight()));
+}
+
+void TreeViewEditor::setRemovButton(QAbstractButton *btn)
+{
+    ml_return_on_fail2(btn, "TreeViewEditor::setRemovButton Button is null");
+
+    m_remove = btn;
+    connect(m_remove, SIGNAL(clicked()), SLOT(removeItem()));
+}
+
+void TreeViewEditor::updateActions()
+{
+    ml_return_on_fail(m_model);
+    ml_return_on_fail(m_tree->selectionModel());
+
+    QModelIndexList list = m_tree->selectionModel()->selectedRows();
+    qSort(list);
+
+    bool sameLevel = Utils::Model::indexesAtSameLevel(list);
+
+    QModelIndex index = (list.size() ? list.first() : QModelIndex());
+
+    if(m_moveUp)
+        m_moveUp->setEnabled(sameLevel);
+
+    if(m_moveDown)
+        m_moveDown->setEnabled(sameLevel);
+
+    if(m_moveRight)
+        m_moveRight->setEnabled(index.parent().isValid() || list.size());
+
+    if(m_moveLeft)
+        m_moveLeft->setEnabled(index.sibling(index.row()-1, 0).isValid() || list.size());
+
+    if(m_remove)
+        m_remove->setEnabled(index.isValid() && sameLevel);
+}
+
+void TreeViewEditor::moveUp()
+{
+    QModelIndexList list = m_tree->selectionModel()->selectedRows();
+    ml_return_on_fail(list.size());
+    qSort(list);
+
+    QModelIndexList selection;
+
+    for(int i=0;i<list.size();i++) {
+        QModelIndex index = list[i];
+        if(!index.isValid())
+            continue;
+
+        QModelIndex toIndex = index.sibling(index.row()-1, index.column());
+        if(!toIndex.isValid() || selection.contains(toIndex)) {
+            selection << index;
+            continue;
+        }
+
+        m_tree->collapse(index);
+        m_tree->collapse(toIndex);
+        m_tree->scrollTo(toIndex, QAbstractItemView::EnsureVisible);
+
+        Utils::Model::swap(m_model, index, toIndex);
+        selection << toIndex;
+    }
+
+    m_tree->selectionModel()->clear();
+    qSort(selection);
+
+    if(selection.size()) {
+        for(int i=0;i<selection.size();i++) {
+            QModelIndex index = selection[i];
+            if(index.isValid()) {
+                m_tree->selectionModel()->select(index,
+                                                 QItemSelectionModel::Select|QItemSelectionModel::Rows);
+            }
+        }
+    }
+}
+
+void TreeViewEditor::moveDown()
+{
+    QModelIndexList list = m_tree->selectionModel()->selectedRows();
+    ml_return_on_fail(list.size());
+    qSort(list);
+
+    QModelIndexList selection;
+
+    for(int i=list.size()-1;i>=0;i--) {
+        QModelIndex index = list[i];
+        if(!index.isValid())
+            continue;
+
+        QModelIndex toIndex = index.sibling(index.row()+1, index.column());
+        if(!toIndex.isValid() || selection.contains(toIndex)) {
+            selection << index;
+            continue;
+        }
+
+        m_tree->collapse(index);
+        m_tree->collapse(toIndex);
+        m_tree->scrollTo(toIndex, QAbstractItemView::EnsureVisible);
+
+        Utils::Model::swap(m_model, index, toIndex);
+        selection << toIndex;
+    }
+
+    m_tree->selectionModel()->clear();
+    qSort(selection);
+
+    if(selection.size()) {
+        for(int i=selection.size()-1;i>=0;i--) {
+            QModelIndex index = selection[i];
+            if(index.isValid()) {
+                m_tree->selectionModel()->select(index,
+                                                 QItemSelectionModel::Select|QItemSelectionModel::Rows);
+            }
+        }
+    }
+}
+
+void TreeViewEditor::moveRight()
+{
+    QModelIndexList list = m_tree->selectionModel()->selectedRows();
+    ml_return_on_fail(list.size());
+    qSort(list);
+
+    QList<QStandardItem *> items;
+    QModelIndexList selection;
+
+    for(int i=list.size()-1;i>=0;i--) {
+        QModelIndex index = list[i];
+        QModelIndex parent = index.parent();
+        if(!index.isValid() || !parent.isValid()) {
+            selection << index;
+            continue;
+        }
+
+        QModelIndex newParent = parent.parent();
+
+        QModelIndex changedIndex = Utils::Model::changeParent(m_model, index, newParent, parent.row()+1);
+        QStandardItem *item = m_model->itemFromIndex(changedIndex);
+        if(item)
+            items << item;
+    }
+
+    foreach (QStandardItem *item, items) {
+        QModelIndex index = m_model->indexFromItem(item);
+        if(index.isValid())
+            selection << index;
+    }
+
+    m_tree->selectionModel()->clear();
+    qSort(selection);
+
+    if(selection.size()) {
+        for(int i=selection.size()-1;i>=0;i--) {
+            QModelIndex index = selection[i];
+            if(index.isValid()) {
+                m_tree->selectionModel()->select(index,
+                                                 QItemSelectionModel::Select|QItemSelectionModel::Rows);
+            }
+        }
+    }
+}
+
+void TreeViewEditor::moveLeft()
+{
+    QModelIndexList list = m_tree->selectionModel()->selectedRows();
+    ml_return_on_fail(list.size());
+    qSort(list);
+
+    QList<QStandardItem *> items;
+    QModelIndexList selection;
+
+    for(int i=list.size()-1;i>=0;i--) {
+        QModelIndex index = list[i];
+        if(!index.isValid())
+            continue;
+
+        QModelIndex parent = index.sibling(index.row()-1, index.column());
+
+        while(parent.isValid() && list.contains(parent)) {
+            parent = parent.sibling(parent.row()-1, parent.column());
+        }
+
+        if(!parent.isValid()) {
+            selection << index;
+            continue;
+        }
+
+        if(m_lastLeftParent != parent) {
+            m_lastLeftRow = -1;
+        }
+
+        m_lastLeftParent = parent;
+
+        QModelIndex changedIndex = Utils::Model::changeParent(m_model, index, parent, m_lastLeftRow);
+        if(m_lastLeftRow == -1)
+            m_lastLeftRow = changedIndex.row();
+
+        m_tree->expand(parent);
+
+        QStandardItem *item = m_model->itemFromIndex(changedIndex);
+        if(item)
+            items << item;
+    }
+
+    foreach (QStandardItem *item, items) {
+        QModelIndex index = m_model->indexFromItem(item);
+        if(index.isValid())
+            selection << index;
+    }
+
+    m_tree->selectionModel()->clear();
+    qSort(selection);
+
+    if(selection.size()) {
+        for(int i=0;i<selection.size();i++) {
+            QModelIndex index = selection[i];
+            if(index.isValid()) {
+                m_tree->selectionModel()->select(index,
+                                                 QItemSelectionModel::Select|QItemSelectionModel::Rows);
+            }
+        }
+    }
+
+    m_lastLeftParent = QModelIndex();
+}
+
+void TreeViewEditor::removeItem()
+{
+    QModelIndexList list = m_tree->selectionModel()->selectedRows();
+    ml_return_on_fail(list.size());
+    qSort(list);
+
+    QString msg;
+    if(list.size()==1) {
+        QStandardItem *item = Utils::Model::itemFromIndex(m_model, list.first());
+        if(item)
+            msg = tr("هل انت متأكد من أنك تريد حذف '%1'؟").arg(item->text());
+    } else {
+        msg = tr("هل انت متأكد من أنك تريد حذف %1 سطر؟").arg(list.size());
+    }
+
+    int rep = QMessageBox::question(0,
+                                    tr("حذف عناصر من الشجرة"),
+                                    msg,
+                                    QMessageBox::Yes|QMessageBox::No, QMessageBox::No);
+
+    ml_return_on_fail(rep == QMessageBox::Yes);
+
+    for(int i=list.size()-1;i>=0;i--) {
+        QModelIndex index = list[i];
+
+        QStandardItem *parentItem = Utils::Model::itemFromIndex(m_model, index.parent());
+        if(parentItem) {
+            parentItem->removeRow(index.row());
+        }
+    }
 }

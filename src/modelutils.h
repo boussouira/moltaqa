@@ -4,6 +4,7 @@
 #include <qstandarditemmodel.h>
 
 class QTreeView;
+class QAbstractButton;
 
 namespace Utils {
 namespace Model {
@@ -31,5 +32,43 @@ void setModelCheckable(QStandardItemModel *model, bool checkable=true);
 
 }
 }
+
+class TreeViewEditor : public QObject
+{
+    Q_OBJECT
+public:
+    TreeViewEditor(QObject *parent=0);
+    ~TreeViewEditor();
+
+    void setTreeView(QTreeView *tree);
+    void setModel(QStandardItemModel *model);
+    void setup();
+
+    void setMoveUpButton(QAbstractButton *btn);
+    void setMoveDownButton(QAbstractButton *btn);
+    void setMoveLeftButton(QAbstractButton *btn);
+    void setMoveRightButton(QAbstractButton *btn);
+    void setRemovButton(QAbstractButton *btn);
+
+protected slots:
+    void updateActions();
+
+    void moveUp();
+    void moveDown();
+    void moveRight();
+    void moveLeft();
+    void removeItem();
+
+protected:
+    QTreeView *m_tree;
+    QStandardItemModel *m_model;
+    QAbstractButton *m_moveUp;
+    QAbstractButton *m_moveDown;
+    QAbstractButton *m_moveLeft;
+    QAbstractButton *m_moveRight;
+    QAbstractButton *m_remove;
+    QModelIndex m_lastLeftParent;
+    int m_lastLeftRow;
+};
 
 #endif // MODELUTILS_H

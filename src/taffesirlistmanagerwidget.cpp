@@ -14,16 +14,13 @@ TaffesirListManagerWidget::TaffesirListManagerWidget(QWidget *parent) :
 
     m_model = 0;
     m_taffesirManager = LibraryManager::instance()->taffesirListManager();
-
-    updateActions();
-
-    connect(ui->toolMoveUp, SIGNAL(clicked()), SLOT(moveUp()));
-    connect(ui->toolMoveDown, SIGNAL(clicked()), SLOT(moveDown()));
+    m_treeManager = new TreeViewEditor(this);
 }
 
 TaffesirListManagerWidget::~TaffesirListManagerWidget()
 {
     ml_delete_check(m_model);
+    ml_delete_check(m_treeManager);
 
     delete ui;
 }
@@ -36,42 +33,20 @@ QString TaffesirListManagerWidget::title()
 void TaffesirListManagerWidget::loadModel()
 {
     m_model = m_taffesirManager->allTaffesirModel();
+    ml_return_on_fail(m_model);
 
     ui->treeView->setModel(m_model);
     ui->treeView->resizeColumnToContents(0);
 
-    connect(ui->treeView->selectionModel(),
-            SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-            SLOT(updateActions()));
-    connect(m_model, SIGNAL(layoutChanged()), SLOT(updateActions()));
+    m_treeManager->setMoveUpButton(ui->toolMoveUp);
+    m_treeManager->setMoveDownButton(ui->toolMoveDown);
+
+    m_treeManager->setTreeView(ui->treeView);
+    m_treeManager->setModel(m_model);
+    m_treeManager->setup();
 }
 
 void TaffesirListManagerWidget::save()
 {
     m_taffesirManager->save(m_model);
-}
-
-void TaffesirListManagerWidget::moveUp()
-{
-    Utils::Model::moveUp(m_model, ui->treeView);
-}
-
-void TaffesirListManagerWidget::moveDown()
-{
-    Utils::Model::moveDown(m_model, ui->treeView);
-}
-
-void TaffesirListManagerWidget::updateActions()
-{
-    if(!m_model || ui->treeView->selectionModel()->selectedIndexes().isEmpty()) {
-        ui->toolMoveDown->setEnabled(false);
-        ui->toolMoveUp->setEnabled(false);
-    } else {
-        QModelIndex index = ui->treeView->selectionModel()->selectedIndexes().first();
-        QModelIndex prevIndex = index.sibling(index.row()+1, index.column());
-        QModelIndex nextIndex = index.sibling(index.row()-1, index.column());
-
-        ui->toolMoveUp->setEnabled(nextIndex.isValid());
-        ui->toolMoveDown->setEnabled(prevIndex.isValid());
-    }
 }

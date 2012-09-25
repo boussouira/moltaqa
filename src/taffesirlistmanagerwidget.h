@@ -10,6 +10,7 @@ class TaffesirListManagerWidget;
 
 class LibraryManager;
 class TaffesirListManager;
+class TreeViewEditor;
 
 class TaffesirListManagerWidget : public ControlCenterWidget
 {
@@ -24,14 +25,10 @@ public:
     void loadModel();
     void save();
 
-public slots:
-    void updateActions();
-    void moveUp();
-    void moveDown();
-
 private:
     QStandardItemModel *m_model;
     TaffesirListManager *m_taffesirManager;
+    TreeViewEditor *m_treeManager;
     Ui::TaffesirListManagerWidget *ui;
 };
 

@@ -28,15 +28,9 @@ BookListManagerWidget::BookListManagerWidget(QWidget *parent) :
     ui->treeView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
     m_manager = LibraryManager::instance()->bookListManager();
-
-    updateActions();
+    m_treeManager = new TreeViewEditor(this);
 
     connect(ui->toolAddCat, SIGNAL(clicked()), SLOT(addToBookList()));
-    connect(ui->toolRemoveCat, SIGNAL(clicked()), SLOT(removeCat()));
-    connect(ui->toolMoveUp, SIGNAL(clicked()), SLOT(moveUp()));
-    connect(ui->toolMoveDown, SIGNAL(clicked()), SLOT(moveDown()));
-    connect(ui->toolMoveRight, SIGNAL(clicked()), SLOT(moveRight()));
-    connect(ui->toolMoveLeft, SIGNAL(clicked()), SLOT(moveLeft()));
     connect(m_manager, SIGNAL(ModelsReady()), SLOT(reloadModel()));
 
     connect(ui->treeView, SIGNAL(customContextMenuRequested(QPoint)),
@@ -46,6 +40,7 @@ BookListManagerWidget::BookListManagerWidget(QWidget *parent) :
 BookListManagerWidget::~BookListManagerWidget()
 {
     ml_delete_check(m_model);
+    ml_delete_check(m_treeManager);
 
     delete ui;
 }
@@ -64,11 +59,15 @@ void BookListManagerWidget::loadModel()
     ui->treeView->setModel(m_model);
     ui->treeView->resizeColumnToContents(0);
 
-    connect(m_model, SIGNAL(layoutChanged()), SLOT(updateActions()));
-    connect(m_model, SIGNAL(layoutChanged()), SLOT(modelEdited()));
-    connect(ui->treeView->selectionModel(),
-            SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-            SLOT(updateActions()));
+    m_treeManager->setMoveUpButton(ui->toolMoveUp);
+    m_treeManager->setMoveDownButton(ui->toolMoveDown);
+    m_treeManager->setMoveLeftButton(ui->toolMoveLeft);
+    m_treeManager->setMoveRightButton(ui->toolMoveRight);
+    m_treeManager->setRemovButton(ui->toolRemoveCat);
+
+    m_treeManager->setTreeView(ui->treeView);
+    m_treeManager->setModel(m_model);
+    m_treeManager->setup();
 }
 
 void BookListManagerWidget::save()
@@ -169,98 +168,6 @@ void BookListManagerWidget::pastSublingNode()
     }
 }
 
-void BookListManagerWidget::moveUp()
-{
-    QModelIndexList list = ui->treeView->selectionModel()->selectedRows();
-    ml_return_on_fail(list.size());
-    qSort(list);
-
-    QModelIndexList selection;
-
-    for(int i=0;i<list.size();i++) {
-        QModelIndex index = list[i];
-        if(!index.isValid())
-            continue;
-
-        QModelIndex toIndex = index.sibling(index.row()-1, index.column());
-        if(!toIndex.isValid() || selection.contains(toIndex)) {
-            selection << index;
-            continue;
-        }
-
-        ui->treeView->collapse(index);
-        ui->treeView->collapse(toIndex);
-        ui->treeView->scrollTo(toIndex, QAbstractItemView::EnsureVisible);
-
-        Utils::Model::swap(m_model, index, toIndex);
-        selection << toIndex;
-    }
-
-    ui->treeView->selectionModel()->clear();
-    qSort(selection);
-
-    if(selection.size()) {
-        for(int i=0;i<selection.size();i++) {
-            QModelIndex index = selection[i];
-            if(index.isValid()) {
-                ui->treeView->selectionModel()->select(index,
-                                                       QItemSelectionModel::Select|QItemSelectionModel::Rows);
-            }
-        }
-    }
-}
-
-void BookListManagerWidget::moveDown()
-{
-    QModelIndexList list = ui->treeView->selectionModel()->selectedRows();
-    ml_return_on_fail(list.size());
-    qSort(list);
-
-    QModelIndexList selection;
-
-    for(int i=list.size()-1;i>=0;i--) {
-        QModelIndex index = list[i];
-        if(!index.isValid())
-            continue;
-
-        QModelIndex toIndex = index.sibling(index.row()+1, index.column());
-        if(!toIndex.isValid() || selection.contains(toIndex)) {
-            selection << index;
-            continue;
-        }
-
-        ui->treeView->collapse(index);
-        ui->treeView->collapse(toIndex);
-        ui->treeView->scrollTo(toIndex, QAbstractItemView::EnsureVisible);
-
-        Utils::Model::swap(m_model, index, toIndex);
-        selection << toIndex;
-    }
-
-    ui->treeView->selectionModel()->clear();
-    qSort(selection);
-
-    if(selection.size()) {
-        for(int i=selection.size()-1;i>=0;i--) {
-            QModelIndex index = selection[i];
-            if(index.isValid()) {
-                ui->treeView->selectionModel()->select(index,
-                                                       QItemSelectionModel::Select|QItemSelectionModel::Rows);
-            }
-        }
-    }
-}
-
-void BookListManagerWidget::moveRight()
-{
-    Utils::Model::moveRight(m_model, ui->treeView);
-}
-
-void BookListManagerWidget::moveLeft()
-{
-    Utils::Model::moveLeft(m_model, ui->treeView);
-}
-
 void BookListManagerWidget::addToBookList()
 {
     QMenu menu(this);
@@ -327,38 +234,6 @@ void BookListManagerWidget::addBooks()
     }
 }
 
-void BookListManagerWidget::removeCat()
-{
-    QModelIndexList list = ui->treeView->selectionModel()->selectedRows();
-    ml_return_on_fail(list.size());
-    qSort(list);
-
-    QString msg;
-    if(list.size()==1) {
-        QStandardItem *item = Utils::Model::itemFromIndex(m_model, list.first());
-        if(item)
-            msg = tr("هل انت متأكد من أنك تريد حذف '%1'؟").arg(item->text());
-    } else {
-        msg = tr("هل انت متأكد من أنك تريد حذف %1 سطر؟").arg(list.size());
-    }
-
-    int rep = QMessageBox::question(this,
-                                title(),
-                                msg,
-                                QMessageBox::Yes|QMessageBox::No, QMessageBox::No);
-
-    ml_return_on_fail(rep == QMessageBox::Yes);
-
-    for(int i=list.size()-1;i>=0;i--) {
-        QModelIndex index = list[i];
-
-        QStandardItem *parentItem = Utils::Model::itemFromIndex(m_model, index.parent());
-        if(parentItem) {
-            parentItem->removeRow(index.row());
-        }
-    }
-}
-
 void BookListManagerWidget::menuRequested(QPoint)
 {
     QModelIndexList list = ui->treeView->selectionModel()->selectedRows();
@@ -395,25 +270,6 @@ void BookListManagerWidget::menuRequested(QPoint)
     }
 }
 
-void BookListManagerWidget::updateActions()
-{
-    ml_return_on_fail(m_model);
-
-    QModelIndexList list = ui->treeView->selectionModel()->selectedRows();
-    qSort(list);
-
-    bool sameLevel = Utils::Model::indexesAtSameLevel(list);
-
-    QModelIndex index = (list.size() ? list.first() : QModelIndex());
-    QModelIndex prevIndex = index.sibling(index.row()+1, index.column());
-    QModelIndex nextIndex = index.sibling(index.row()-1, index.column());
-
-    ui->toolMoveUp->setEnabled(sameLevel);
-    ui->toolMoveDown->setEnabled(sameLevel);
-    ui->toolRemoveCat->setEnabled(index.isValid() && sameLevel);
-    ui->toolMoveRight->setEnabled(index.parent().isValid() && sameLevel);
-    ui->toolMoveLeft->setEnabled(index.sibling(index.row()-1, 0).isValid() && sameLevel);
-}
 
 void BookListManagerWidget::addBookItem(LibraryBookPtr book, const QModelIndex &parent)
 {

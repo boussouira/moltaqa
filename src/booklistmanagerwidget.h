@@ -8,6 +8,8 @@ namespace Ui {
     class BookListManagerWidget;
 }
 
+class TreeViewEditor;
+
 class BookListManagerWidget : public ControlCenterWidget
 {
     Q_OBJECT
@@ -27,18 +29,12 @@ protected slots:
     void cutNode();
     void pastNode();
     void pastSublingNode();
-    void moveUp();
-    void moveDown();
-    void moveRight();
-    void moveLeft();
     void addToBookList();
     void addCat();
     void addBooks();
-    void removeCat();
     void modelEdited();
 
     void menuRequested(QPoint);
-    void updateActions();
 
 protected:
     void addBookItem(LibraryBookPtr book, const QModelIndex &parent);
@@ -48,6 +44,7 @@ protected:
     QList<QList<QStandardItem*> > m_copiedItems;
     QList<QList<QStandardItem*> > m_cattedItems;
     BookListManager *m_manager;
+    TreeViewEditor *m_treeManager;
     Ui::BookListManagerWidget *ui;
 };
 

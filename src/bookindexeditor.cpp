@@ -19,12 +19,9 @@ BookIndexEditor::BookIndexEditor(BookEditorView *parent) :
 {
     ui->setupUi(this);
 
+    m_treeManager = new TreeViewEditor(this);
+
     connect(ui->toolAddTitle, SIGNAL(clicked()), SLOT(addTitle()));
-    connect(ui->toolRemoveTitle, SIGNAL(clicked()), SLOT(removeTitle()));
-    connect(ui->toolMoveUp, SIGNAL(clicked()), SLOT(moveUp()));
-    connect(ui->toolMoveDown, SIGNAL(clicked()), SLOT(moveDown()));
-    connect(ui->toolMoveRight, SIGNAL(clicked()), SLOT(moveRight()));
-    connect(ui->toolMoveLeft, SIGNAL(clicked()), SLOT(moveLeft()));
     connect(ui->toolLinkTitle, SIGNAL(clicked()), SLOT(linkTitle()));
     connect(ui->treeView, SIGNAL(doubleClicked(QModelIndex)), SLOT(openPage(QModelIndex)));
 }
@@ -51,6 +48,16 @@ void BookIndexEditor::setModel(QStandardItemModel *model)
             SLOT(updateActions()));
 
     connect(m_model, SIGNAL(itemChanged(QStandardItem*)), SIGNAL(indexEdited()));
+
+    m_treeManager->setMoveUpButton(ui->toolMoveUp);
+    m_treeManager->setMoveDownButton(ui->toolMoveDown);
+    m_treeManager->setMoveLeftButton(ui->toolMoveLeft);
+    m_treeManager->setMoveRightButton(ui->toolMoveRight);
+    m_treeManager->setRemovButton(ui->toolRemoveTitle);
+
+    m_treeManager->setTreeView(ui->treeView);
+    m_treeManager->setModel(m_model);
+    m_treeManager->setup();
 
     updateActions();
 }
@@ -127,45 +134,10 @@ void BookIndexEditor::addTitle()
     }
 }
 
-void BookIndexEditor::removeTitle()
+void BookIndexEditor::linkTitle()
 {
     ml_return_on_fail(m_editView->m_currentPage);
 
-    QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
-    ml_return_on_fail(index.isValid());
-
-    m_model->removeRow(index.row(), index.parent());
-    ui->treeView->clearSelection();
-
-    emit indexEdited();
-}
-
-void BookIndexEditor::moveUp()
-{
-    Utils::Model::moveUp(m_model, ui->treeView);
-    emit indexEdited();
-}
-
-void BookIndexEditor::moveDown()
-{
-    Utils::Model::moveDown(m_model, ui->treeView);
-    emit indexEdited();
-}
-
-void BookIndexEditor::moveRight()
-{
-    Utils::Model::moveRight(m_model, ui->treeView);
-    emit indexEdited();
-}
-
-void BookIndexEditor::moveLeft()
-{
-    Utils::Model::moveLeft(m_model, ui->treeView);
-    emit indexEdited();
-}
-
-void BookIndexEditor::linkTitle()
-{
     QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
     ml_return_on_fail(index.isValid());
 
@@ -178,15 +150,8 @@ void BookIndexEditor::linkTitle()
 void BookIndexEditor::updateActions()
 {
     QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
-    QModelIndex prevIndex = index.sibling(index.row()+1, index.column());
-    QModelIndex nextIndex = index.sibling(index.row()-1, index.column());
 
-    ui->toolMoveUp->setEnabled(nextIndex.isValid());
-    ui->toolMoveDown->setEnabled(prevIndex.isValid());
-    ui->toolRemoveTitle->setEnabled(index.isValid());
     ui->toolLinkTitle->setEnabled(index.isValid());
-    ui->toolMoveRight->setEnabled(index.parent().isValid());
-    ui->toolMoveLeft->setEnabled(index.sibling(index.row()-1, 0).isValid());
 }
 
 void BookIndexEditor::openPage(QModelIndex index)

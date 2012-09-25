@@ -12,6 +12,7 @@ class QXmlStreamWriter;
 class EditWebView;
 class RichBookReader;
 class BookEditorView;
+class TreeViewEditor;
 
 class BookIndexEditor : public QWidget
 {
@@ -27,11 +28,6 @@ public:
 
 protected slots:
      void addTitle();
-     void removeTitle();
-     void moveUp();
-     void moveDown();
-     void moveRight();
-     void moveLeft();
      void linkTitle();
      void updateActions();
      void openPage(QModelIndex index);
@@ -47,6 +43,7 @@ private:
     Ui::BookIndexEditor *ui;
     BookEditorView *m_editView;
     QStandardItemModel *m_model;
+    TreeViewEditor *m_treeManager;
 };
 
 #endif // BOOKINDEXEDITOR_H
