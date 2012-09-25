@@ -305,7 +305,7 @@ bool QueryBuilder::exec(QSqlQuery &q)
 {
     prepare(q);
     ml_return_val_on_fail2(q.exec(),
-                   "QueryBuilder::exec Sql error:" << q.lastError().text() << "Query:" << q.lastQuery(),
+                   "QueryBuilder::exec Sql error:" << q.lastError().text() << "\nQuery:" << q.lastQuery(),
                    false);
 
     return true;

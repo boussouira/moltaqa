@@ -118,7 +118,7 @@ void TextBookReader::getPages()
 
         file.close();
         if(file.getZipError()!=UNZ_OK) {
-            qWarning("TextBookReader::getPages zip error %d", file.getZipError());
+            qWarning("TextBookReader::getPages Unknow zip error %d", file.getZipError());
             continue;
         }
     }
