@@ -219,7 +219,7 @@ void EPubBookExporter::writeBookInfo()
         html.insertDD(otherInfo);
     }
 
-    if(m_book->comment.size() && !m_book->comment.contains(tr("[مؤخود من الشاملة]"))) {
+    if(m_book->comment.size() && !m_book->comment.contains(tr("[مأخود من الشاملة]"))) {
         html.insertDT(tr("ملاحظات:"));
         html.insertDD(m_book->comment);
     }

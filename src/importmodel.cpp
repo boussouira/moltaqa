@@ -70,7 +70,7 @@ LibraryBookPtr ImportModelNode::toLibraryBook()
     LibraryBookPtr book(new LibraryBook());
     book->type = type;
     book->title = bookName;
-    book->comment = bookBetaka.append(tr("\n[مؤخود من الشاملة]"));
+    book->comment = bookBetaka.append(tr("\n[مأخود من الشاملة]"));
     book->info = bookInfo;
     book->authorID = authorID;
     book->authorName = authorName;
