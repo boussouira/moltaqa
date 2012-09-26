@@ -4,9 +4,22 @@
 #include <qobject.h>
 #include <qabstractitemmodel.h>
 #include <qtreeview.h>
+#include <qstandarditemmodel.h>
+
 #include "sortfilterproxymodel.h"
 #include "filterlineedit.h"
-#include <qstandarditemmodel.h>
+
+class QActionGroup;
+
+class FilterInfo
+{
+public:
+    FilterInfo() : column(0), role(Qt::DisplayRole) {}
+
+    int column;
+    Qt::ItemDataRole role;
+    QString filterName;
+};
 
 class ModelViewFilter : public QObject
 {
@@ -23,6 +36,8 @@ public:
 
     void setColumnSortRole(int column, int role);
 
+    void addFilterColumn(int column, Qt::ItemDataRole role, const QString &filterName);
+
     void setup();
 
     SortFilterProxyModel *filterModel();
@@ -37,6 +52,7 @@ protected slots:
     void setFilterText(QString text);
     void sortChanged(int logicalIndex, Qt::SortOrder);
     void lineReturnPressed();
+    void changeFilterAction(QAction *act);
 
 protected:
     QTreeView *m_treeView;
@@ -52,6 +68,9 @@ protected:
     Qt::SortOrder m_defaultOrder;
 
     QHash<int, int> m_roles;
+    QMenu *m_menu;
+    QMenu *m_filterMenu;
+    QActionGroup *m_filterActionGroup;
 };
 
 #endif // MODELVIEWFILTER_H

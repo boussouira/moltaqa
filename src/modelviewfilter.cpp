@@ -5,6 +5,10 @@
 #include <qicon.h>
 #include <qheaderview.h>
 #include <qevent.h>
+#include <qaction.h>
+#include <qmenu.h>
+
+Q_DECLARE_METATYPE(FilterInfo)
 
 ModelViewFilter::ModelViewFilter(QObject *parent) :
     QObject(parent),
@@ -17,7 +21,10 @@ ModelViewFilter::ModelViewFilter(QObject *parent) :
     m_filterColumn(0),
     m_defaultRole(-1),
     m_defaultColumn(-1),
-    m_defaultOrder(Qt::AscendingOrder)
+    m_defaultOrder(Qt::AscendingOrder),
+    m_menu(0),
+    m_filterMenu(0),
+    m_filterActionGroup(0)
 {
 }
 
@@ -52,6 +59,42 @@ void ModelViewFilter::setColumnSortRole(int column, int role)
     m_roles[column] = role;
 }
 
+void ModelViewFilter::addFilterColumn(int column, Qt::ItemDataRole role, const QString &filterName)
+{
+    FilterInfo info;
+    info.column = column;
+    info.role = role;
+    info.filterName = filterName;
+
+    QAction *act = new QAction(filterName, this);
+    act->setData(QVariant::fromValue(info));
+    act->setCheckable(true);
+
+    if(!m_filterActionGroup || !m_menu || !m_filterMenu) {
+        m_menu = new QMenu(0);
+
+        m_filterMenu =  m_menu->addMenu(tr("بحث في"));
+        m_filterActionGroup = new QActionGroup(this);
+        QAction * actFilterByAll = m_filterActionGroup->addAction(tr("الكل"));
+        FilterInfo infoAll;
+        infoAll.column = -1;
+        infoAll.role = role;
+        infoAll.filterName = filterName;
+        actFilterByAll->setData(QVariant::fromValue(infoAll));
+
+        m_filterActionGroup->addAction("")->setSeparator(true);
+
+        actFilterByAll->setCheckable(true);
+        actFilterByAll->setChecked(true);
+        m_filterActionGroup->setExclusive(true);
+
+        connect(m_filterActionGroup, SIGNAL(triggered(QAction*)), SLOT(changeFilterAction(QAction*)));
+    }
+
+    m_filterActionGroup->addAction(act);
+    m_filterMenu->addActions(m_filterActionGroup->actions());
+}
+
 void ModelViewFilter::setup()
 {
     ml_return_on_fail2(m_treeView, "ModelViewFilter::setup tree view is not set");
@@ -67,6 +110,9 @@ void ModelViewFilter::setup()
 
     if(m_defaultColumn != -1)
         m_treeView->sortByColumn(m_defaultColumn, m_defaultOrder);
+
+    if(m_menu)
+        m_lineEdit->setFilterMenu(m_menu);
 
     connect(m_lineEdit, SIGNAL(delayFilterChanged(QString)), SLOT(setFilterText(QString)));
     connect(m_lineEdit, SIGNAL(returnPressed()), SLOT(lineReturnPressed()));
@@ -118,6 +164,24 @@ void ModelViewFilter::lineReturnPressed()
     QString text = m_lineEdit->text().trimmed();
 
     setFilterText(text);
+}
+
+void ModelViewFilter::changeFilterAction(QAction *act)
+{
+    ml_return_on_fail(act);
+    ml_return_on_fail(act->data().canConvert<FilterInfo>());
+
+    FilterInfo info = act->data().value<FilterInfo>();
+    ml_return_on_fail(m_filterColumn != info.column);
+
+    m_filterColumn = info.column;
+    m_role = info.role;
+
+    m_filterModel->setFilterKeyColumn(m_filterColumn);
+    m_filterModel->setFilterRole(m_role);
+
+    if(!m_filterModel->filterRegExp().isEmpty())
+        m_treeView->expandAll();
 }
 
 void ModelViewFilter::clearFilter()

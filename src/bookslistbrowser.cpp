@@ -111,6 +111,10 @@ void BooksListBrowser::readBookListModel()
     m_bookListFilter->setDefautSortRole(ItemRole::orderRole);
     m_bookListFilter->setDefautSortColumn(0, Qt::AscendingOrder);
     m_bookListFilter->setColumnSortRole(AuthorDeathCol, ItemRole::authorDeathRole);
+
+    m_bookListFilter->addFilterColumn(0, Qt::DisplayRole, tr("اسم الكتاب"));
+    m_bookListFilter->addFilterColumn(1, Qt::DisplayRole, tr("المؤلف"));
+
     m_bookListFilter->setup();
 
     Utils::Widget::restore(ui->treeBookList,
@@ -132,6 +136,10 @@ void BooksListBrowser::readFavouritesModel()
     m_favouritesListFilter->setDefautSortRole(ItemRole::orderRole);
     m_favouritesListFilter->setDefautSortColumn(0, Qt::AscendingOrder);
     m_favouritesListFilter->setColumnSortRole(AuthorDeathCol, ItemRole::authorDeathRole);
+
+    m_favouritesListFilter->addFilterColumn(0, Qt::DisplayRole, tr("اسم الكتاب"));
+    m_favouritesListFilter->addFilterColumn(1, Qt::DisplayRole, tr("المؤلف"));
+
     m_favouritesListFilter->setup();
 
     Utils::Widget::restore(ui->treeFavouritesList,
