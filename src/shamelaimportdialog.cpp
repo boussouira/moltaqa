@@ -423,9 +423,8 @@ void ShamelaImportDialog::BookImportError(const QString &text)
 void ShamelaImportDialog::doneImporting()
 {
     if(--m_importThreadCount<=0) {
-        ui->pushNext->hide();
-        ui->pushCancel->hide();
-        ui->pushDone->show();
+        ui->pushNext->setEnabled(false);
+        ui->pushCancel->setEnabled(false);
 
         ui->progressBar->setMaximum(m_importedBooksCount);
         ui->progressBar->setValue(ui->progressBar->maximum());
@@ -460,6 +459,10 @@ void ShamelaImportDialog::doneImporting()
 #ifdef USE_MDBTOOLS
         MdbConverter::removeAllConvertedDB();
 #endif
+
+        ui->pushNext->hide();
+        ui->pushCancel->hide();
+        ui->pushDone->show();
 
         Utils::Settings::set("ShamelaImportDialog/threadCount",
                           ui->spinImportThreads->value());
