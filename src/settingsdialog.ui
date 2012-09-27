@@ -751,6 +751,13 @@
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QCheckBox" name="checkSaveSearchOptions">
+            <property name="text">
+             <string>حفظ اعدادات البحث</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>

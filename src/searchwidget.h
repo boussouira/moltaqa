@@ -54,6 +54,9 @@ protected:
     virtual void loadDefaultSearchField();
     QString getSearchField();
 
+    void loadSettings();
+    void saveSettings();
+
     void saveSearchQuery();
     void loadSearchQuery();
 

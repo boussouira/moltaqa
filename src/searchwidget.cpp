@@ -18,6 +18,7 @@
 #include <qmessagebox.h>
 #include <qinputdialog.h>
 #include <qcompleter.h>
+#include <qsettings.h>
 
 #define ADD_QUERY(text, andOperator, clause) { \
     Query *sq = Utils::CLucene::parse(&queryPareser, text, ui->andOperator->isChecked()); \
@@ -45,11 +46,14 @@ SearchWidget::SearchWidget(QWidget *parent) :
 
     setupCleanMenu();
     setCurrentWidget(Search);
+    loadSettings();
     loadSearchQuery();
 }
 
 SearchWidget::~SearchWidget()
 {
+    saveSettings();
+
     if(m_searcher) {
         if(m_searcher->isRunning()) {
             m_searcher->stop();
@@ -229,6 +233,42 @@ QString SearchWidget::getSearchField()
     }
 
     return Utils::CLucene::WCharToString(field);
+}
+
+void SearchWidget::loadSettings()
+{
+    QSettings settings;
+
+    settings.beginGroup("SearchWidget");
+
+    if(settings.value("saveSearchOptions", true).toBool()) {
+        ui->comboSortSearch->setCurrentIndex(settings.value("sortSearch", 0).toInt());
+        ui->comboSearchField->setCurrentIndex(settings.value("searchField", 0).toInt());
+
+        ui->checkQueryMust->setChecked(settings.value("checkQueryMust", false).toBool());
+        ui->checkQueryShould->setChecked(settings.value("checkQueryShould", false).toBool());
+        ui->checkQueryShouldNot->setChecked(settings.value("checkQueryShouldNot", false).toBool());
+
+        ui->checkShowPageInfo->setChecked(settings.value("showPageInfo", true).toBool());
+        ui->checkShowResultTitles->setChecked(settings.value("showResultTitles", true).toBool());
+    }
+}
+
+void SearchWidget::saveSettings()
+{
+    QSettings settings;
+
+    settings.beginGroup("SearchWidget");
+
+    settings.setValue("sortSearch", ui->comboSortSearch->currentIndex());
+    settings.setValue("searchField", ui->comboSearchField->currentIndex());
+
+    settings.setValue("checkQueryMust", ui->checkQueryMust->isChecked());
+    settings.setValue("checkQueryShould", ui->checkQueryShould->isChecked());
+    settings.setValue("checkQueryShouldNot", ui->checkQueryShouldNot->isChecked());
+
+    settings.setValue("showPageInfo", ui->checkShowPageInfo->isChecked());
+    settings.setValue("showResultTitles", ui->checkShowResultTitles->isChecked());
 }
 
 void SearchWidget::saveSearchQuery()

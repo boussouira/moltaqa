@@ -91,6 +91,7 @@ void SettingsDialog::loadSettings()
 
     ui->checkAutoUpdate->setChecked(settings.value("Update/autoCheck", true).toBool());
     ui->checkShowCloseWarning->setChecked(settings.value("showCloseWarning", true).toBool());
+    ui->checkSaveSearchOptions->setChecked(settings.value("SearchWidget/saveSearchOptions", true).toBool());
 
     settings.beginGroup("Style");
     QString currentStyle = settings.value("name", ML_DEFAULT_STYLE).toString();
@@ -229,6 +230,8 @@ void SettingsDialog::saveSettings()
     saveSetting(settings, "Search", "showMessageAfterSearch", ui->checkShowMessageAfterSearch->isChecked());
     saveSetting(settings, "Search", "autoUpdateIndex", ui->checkAutoUpdateIndex->isChecked());
     saveSetting(settings, "Search", "maxBookToUpdate", ui->spinMaxBookToUpdate->value());
+
+    saveSetting(settings, "SearchWidget", "saveSearchOptions", ui->checkSaveSearchOptions->isChecked());
 
     saveSetting(settings, "Style", "name", ui->comboStyles->itemData(ui->comboStyles->currentIndex(),
                                                         Qt::UserRole).toHash().value("dir"), true);
