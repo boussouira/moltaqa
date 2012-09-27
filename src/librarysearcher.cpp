@@ -26,9 +26,9 @@ LibrarySearcher::LibrarySearcher(QObject *parent)
     m_resultReader = new SearchResultReader(this);
     m_sort = new Sort();
 
-    m_resultsHash.setMaxCost(30);
-
     m_resultParPage = Utils::Settings::get("Search/resultPeerPage", 10).toInt();
+
+    m_resultsHash.setMaxCost(m_resultParPage * 3);
 }
 
 LibrarySearcher::~LibrarySearcher()
