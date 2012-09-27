@@ -13,6 +13,18 @@ SearchResultReader::SearchResultReader(QObject *parent) :
     m_readerHelper = MW->readerHelper();
     m_pagesDom.setMaxCost(10);
     m_titlesDom.setMaxCost(10);
+    m_showPageTitle = true;
+    m_showPageInfo = true;
+}
+
+void SearchResultReader::setShowPageTitle(bool show)
+{
+    m_showPageTitle = show;
+}
+
+void SearchResultReader::setShowPageInfo(bool show)
+{
+    m_showPageInfo = show;
 }
 
 bool SearchResultReader::getBookPage(LibraryBookPtr book, BookPage *page)
@@ -49,10 +61,83 @@ bool SearchResultReader::getBookPage(LibraryBookPtr book, BookPage *page)
 
 bool SearchResultReader::getSimpleBookPage(QuaZip *zip, LibraryBookPtr book, BookPage *page)
 {
+    // Page info
+    if(m_showPageInfo) {
+        ml_return_val_on_fail(getPageInfo(zip, book, page), false);
+    }
+
+    // Page text
+    ml_return_val_on_fail(getPageText(zip, page), false);
+
+    // Page title
+    if(m_showPageTitle) {
+        ml_return_val_on_fail(getPageTitle(zip, book, page), false);
+    }
+
+    return true;
+}
+
+bool SearchResultReader::getQuranPage(QuaZip *zip, LibraryBookPtr book, BookPage *page)
+{
+    Q_UNUSED(book);
+
+    // Get the page
+    QuaZipFile pagesFile(zip);
+    if(zip->setCurrentFile("pages.xml")) {
+        if(!pagesFile.open(QIODevice::ReadOnly)) {
+            qWarning() << "getQuranPage: open book pages error" << pagesFile.getZipError()
+                       << "book" << book->title
+                       << "id" << book->id;
+            return false;
+        }
+    }
+
+    QString pid = QString::number(page->pageID);
+
+    QXmlStreamReader bookReader(&pagesFile);
+    while(!bookReader.atEnd()) {
+        bookReader.readNext();
+
+        if(bookReader.isStartElement()) {
+            if(bookReader.name() == "item") {
+                if(pid == bookReader.attributes().value("id")) {
+                    page->part = bookReader.attributes().value("part").toString().toInt();
+                    page->part = qMax(1, page->part);
+
+                    page->page = bookReader.attributes().value("page").toString().toInt();
+                    page->sora = bookReader.attributes().value("sora").toString().toInt();
+                    page->aya = bookReader.attributes().value("aya").toString().toInt();
+
+                    if(page->sora) {
+                        QuranSora *quranSora = m_readerHelper->getQuranSora(page->sora);
+                        if(quranSora)
+                            page->title = tr("سورة %1، الاية %2").arg(quranSora->name).arg(page->aya);
+                    }
+
+                    if(bookReader.readNext() == QXmlStreamReader::Characters)
+                        page->text = bookReader.text().toString();
+
+                    break;
+                }
+            }
+        }
+
+        if(bookReader.hasError()) {
+            qWarning() << "getQuranPage: bookReader error:" << bookReader.errorString();
+            break;
+        }
+    }
+
+    pagesFile.close();
+
+    return true;
+}
+
+bool SearchResultReader::getPageInfo(QuaZip *zip, LibraryBookPtr book, BookPage *page)
+{
     QTime time;
     time.start();
 
-    // Get the page
     QuaZipFile pagesFile(zip);
     XmlDomHelper *pagesDom = 0;
 
@@ -88,8 +173,8 @@ bool SearchResultReader::getSimpleBookPage(QuaZip *zip, LibraryBookPtr book, Boo
             page->sora = pageElement.attribute("sora").toInt();
             page->aya = pageElement.attribute("aya").toInt();
         }
-
-        page->text = AbstractBookReader::getPageText(zip, page->pageID);
+    } else {
+        return false;
     }
 
     if(pagesFile.isOpen())
@@ -102,18 +187,25 @@ bool SearchResultReader::getSimpleBookPage(QuaZip *zip, LibraryBookPtr book, Boo
             delete pagesDom;
     }
 
-    // Get the title
+    return true;
+}
 
+bool SearchResultReader::getPageText(QuaZip *zip, BookPage *page)
+{
+    page->text = AbstractBookReader::getPageText(zip, page->pageID);
+
+    return true;
+}
+
+bool SearchResultReader::getPageTitle(QuaZip *zip, LibraryBookPtr book, BookPage *page)
+{
     // If we have a saved model we use it to get the title
     QString title = MW->readerHelper()->getTitleText(book->id, page->titleID).trimmed();
     if(title.size()) {
         page->title = title;
 
-        if(book->isTafessir() && page->title.size() < 9) {
-            QuranSora *quranSora = m_readerHelper->getQuranSora(page->sora);
-            if(quranSora)
-                page->title = tr("تفسير سورة %1، الاية %2").arg(quranSora->name).arg(page->aya);
-        }
+        if(book->isTafessir())
+            taffesirTitle(page);
 
         return true;
     }
@@ -148,14 +240,13 @@ bool SearchResultReader::getSimpleBookPage(QuaZip *zip, LibraryBookPtr book, Boo
     if(!titleElement.isNull()) {
         page->title = titleElement.firstChildElement("text").text();
 
-        if(book->isTafessir() && page->title.size() < 9) {
-            QuranSora *quranSora = m_readerHelper->getQuranSora(page->sora);
-            if(quranSora)
-                page->title = tr("تفسير سورة %1، الاية %2").arg(quranSora->name).arg(page->aya);
-        }
+        if(book->isTafessir())
+            taffesirTitle(page);
+    } else {
+        return false;
     }
 
-    if(pagesFile.isOpen())
+    if(titleFile.isOpen())
         titleFile.close();
 
     if(!m_titlesDom.contains(book->id)) {
@@ -168,54 +259,11 @@ bool SearchResultReader::getSimpleBookPage(QuaZip *zip, LibraryBookPtr book, Boo
     return true;
 }
 
-bool SearchResultReader::getQuranPage(QuaZip *zip, LibraryBookPtr book, BookPage *page)
+void SearchResultReader::taffesirTitle(BookPage *page)
 {
-    Q_UNUSED(book);
-
-    // Get the page
-    QuaZipFile pagesFile(zip);
-    if(zip->setCurrentFile("pages.xml")) {
-        if(!pagesFile.open(QIODevice::ReadOnly)) {
-            qWarning() << "getQuranPage: open book pages error" << pagesFile.getZipError()
-                       << "book" << book->title
-                       << "id" << book->id;
-            return false;
-        }
+    if(page->sora && page->title.size() < 9) {
+        QuranSora *quranSora = m_readerHelper->getQuranSora(page->sora);
+        if(quranSora)
+            page->title = tr("تفسير سورة %1، الاية %2").arg(quranSora->name).arg(page->aya);
     }
-
-    QString pid = QString::number(page->pageID);
-
-    QXmlStreamReader bookReader(&pagesFile);
-    while(!bookReader.atEnd()) {
-        bookReader.readNext();
-
-        if(bookReader.isStartElement()) {
-            if(bookReader.name() == "item") {
-                if(pid == bookReader.attributes().value("id")) {
-                    page->part = bookReader.attributes().value("part").toString().toInt();
-                    page->page = bookReader.attributes().value("page").toString().toInt();
-                    page->sora = bookReader.attributes().value("sora").toString().toInt();
-                    page->aya = bookReader.attributes().value("aya").toString().toInt();
-
-                    QuranSora *quranSora = m_readerHelper->getQuranSora(page->sora);
-                    if(quranSora)
-                        page->title = tr("سورة %1، الاية %2").arg(quranSora->name).arg(page->aya);
-
-                    if(bookReader.readNext() == QXmlStreamReader::Characters)
-                        page->text = bookReader.text().toString();
-
-                    break;
-                }
-            }
-        }
-
-        if(bookReader.hasError()) {
-            qWarning() << "getQuranPage: bookReader error:" << bookReader.errorString();
-            break;
-        }
-    }
-
-    pagesFile.close();
-
-    return true;
 }

@@ -13,6 +13,7 @@
 #include "searchmanager.h"
 #include "searchfieldsdialog.h"
 #include "statisticsmanager.h"
+#include "searchresultreader.h"
 
 #include <qmessagebox.h>
 #include <qinputdialog.h>
@@ -307,6 +308,9 @@ void SearchWidget::search()
 
     m_searcher = new LibrarySearcher(this);
     m_searcher->setQuery(query);
+
+    m_searcher->getResultReader()->setShowPageInfo(ui->checkShowPageInfo->isChecked());
+    m_searcher->getResultReader()->setShowPageTitle(ui->checkShowResultTitles->isChecked());
 
     connect(m_searcher, SIGNAL(doneSearching()), SLOT(doneSearching()));
 

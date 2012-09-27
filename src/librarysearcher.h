@@ -32,6 +32,8 @@ public:
 
     SearchResult *getResult(int resultD);
     CLuceneQuery *getSearchQuery();
+    SearchResultReader *getResultReader();
+
     int pageCount();
     int currentPage();
     int resultsCount();

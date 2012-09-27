@@ -220,6 +220,11 @@ CLuceneQuery *LibrarySearcher::getSearchQuery()
     return m_cluceneQuery;
 }
 
+SearchResultReader *LibrarySearcher::getResultReader()
+{
+    return m_resultReader;
+}
+
 int LibrarySearcher::pageCount()
 {
     return m_pageCount;

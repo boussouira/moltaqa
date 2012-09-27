@@ -41,10 +41,16 @@ QString SearchResult::toHtml()
     helper.endDiv();
 
     helper.beginDiv(".pageInfo");
-    helper.insertSpan(QObject::tr("الصفحة:"), ".page");
-    helper.insertSpan(QString::number(page->page), ".pageVal");
-    helper.insertSpan(QObject::tr("الجزء:"), ".part");
-    helper.insertSpan(QString::number(page->part), ".partVal");
+    if(page->page) {
+        helper.insertSpan(QObject::tr("الصفحة:"), ".page");
+        helper.insertSpan(QString::number(page->page), ".pageVal");
+    }
+
+    if(page->part) {
+        helper.insertSpan(QObject::tr("الجزء:"), ".part");
+        helper.insertSpan(QString::number(page->part), ".partVal");
+    }
+
     helper.endDiv();
 
     helper.insertDiv("", ".clear");

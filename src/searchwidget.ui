@@ -27,9 +27,6 @@
      </property>
      <widget class="QWidget" name="page">
       <layout class="QVBoxLayout" name="verticalLayout">
-       <property name="margin">
-        <number>15</number>
-       </property>
        <item>
         <widget class="QGroupBox" name="groupBox">
          <property name="layoutDirection">
@@ -190,65 +187,190 @@ p, li { white-space: pre-wrap; }
         </layout>
        </item>
        <item>
-        <widget class="QWidget" name="widgetResultSort" native="true">
-         <layout class="QHBoxLayout" name="horizontalLayout_6">
-          <property name="margin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>ترتيب النتائج حسب:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="comboSortSearch">
+        <layout class="QGridLayout" name="gridLayout_2">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <item row="1" column="1">
+          <widget class="QWidget" name="widgetSearchField" native="true">
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
-             <property name="text">
-              <string>التطابق</string>
-             </property>
+             <widget class="QLabel" name="label_5">
+              <property name="minimumSize">
+               <size>
+                <width>100</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>بحث في:</string>
+              </property>
+             </widget>
             </item>
             <item>
-             <property name="text">
-              <string>الكتاب ثم التطابق</string>
-             </property>
+             <widget class="QComboBox" name="comboSearchField">
+              <property name="minimumSize">
+               <size>
+                <width>170</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QComboBox::AdjustToContents</enum>
+              </property>
+              <item>
+               <property name="text">
+                <string>كامل الصفحة</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>العناوين</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>متون الحديث</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>الاسانيد</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>الشعر</string>
+               </property>
+              </item>
+             </widget>
             </item>
             <item>
-             <property name="text">
-              <string>الكتاب ثم ترتيب الصفحات</string>
-             </property>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Minimum</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QWidget" name="widgetResultSort" native="true">
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QLabel" name="label_7">
+              <property name="minimumSize">
+               <size>
+                <width>100</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>ترتيب النتائج حسب:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              </property>
+             </widget>
             </item>
             <item>
-             <property name="text">
-              <string>وفاة المؤلف ثم التطابق</string>
-             </property>
+             <widget class="QComboBox" name="comboSortSearch">
+              <property name="minimumSize">
+               <size>
+                <width>170</width>
+                <height>0</height>
+               </size>
+              </property>
+              <item>
+               <property name="text">
+                <string>التطابق</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>الكتاب ثم التطابق</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>الكتاب ثم ترتيب الصفحات</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>وفاة المؤلف ثم التطابق</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>وفاة المؤلف ثم الكتاب</string>
+               </property>
+              </item>
+             </widget>
             </item>
             <item>
-             <property name="text">
-              <string>وفاة المؤلف ثم الكتاب</string>
-             </property>
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Minimum</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_4">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
+           </layout>
+          </widget>
+         </item>
+         <item row="1" column="3">
+          <widget class="QCheckBox" name="checkShowPageInfo">
+           <property name="text">
+            <string>عرض رقم الصفحة والجزء</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="4">
+          <spacer name="horizontalSpacer_5">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="0" column="3">
+          <widget class="QCheckBox" name="checkShowResultTitles">
+           <property name="text">
+            <string>عرض العناوين</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <widget class="QWidget" name="widgetSelectedFilter" native="true">
@@ -256,67 +378,6 @@ p, li { white-space: pre-wrap; }
           <property name="margin">
            <number>0</number>
           </property>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QWidget" name="widgetSearchField" native="true">
-         <layout class="QHBoxLayout" name="horizontalLayout_4">
-          <property name="margin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>بحث في:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="comboSearchField">
-            <property name="sizeAdjustPolicy">
-             <enum>QComboBox::AdjustToContents</enum>
-            </property>
-            <item>
-             <property name="text">
-              <string>كامل الصفحة</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>العناوين</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>متون الحديث</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>الاسانيد</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>الشعر</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
          </layout>
         </widget>
        </item>
@@ -365,7 +426,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>treeView</tabstop>
   <tabstop>lineFilter</tabstop>
   <tabstop>comboSortSearch</tabstop>
-  <tabstop>comboSearchField</tabstop>
   <tabstop>pushSearch</tabstop>
  </tabstops>
  <resources/>
