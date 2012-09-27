@@ -209,11 +209,12 @@ div.clear {
 }
 
 .result h3 {
-    color: #555555;
+    color: #000000;
     display: inline-block;
-    font-size: 16px;
+    font-size: 0.8em;
+    min-height: 25px;
     margin: 0pt;
-    padding: 8px 5px;
+    padding: 2px 5px;
 }
 
 .result .resultText {

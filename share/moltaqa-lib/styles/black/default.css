@@ -178,7 +178,8 @@ div.clear {
 .result h3 {
     color: #FFFFFF;
     display: inline-block;
-    font-size: 18px;
+    font-size: 0.8em;
+    min-height: 25px;
     margin: 0;
     padding: 3px 5px;
 }
