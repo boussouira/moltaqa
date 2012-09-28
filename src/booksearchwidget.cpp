@@ -36,6 +36,8 @@ void BookSearchWidget::init(int bookID)
 
     ui->widgetResultSort->setVisible(!m_bookInfo->isQuran());
     ui->widgetSearchField->setVisible(!m_bookInfo->isQuran());
+    ui->checkShowPageInfo->setVisible(!m_bookInfo->isQuran());
+    ui->checkShowResultTitles->setVisible(!m_bookInfo->isQuran());
 
     m_filterManager = filter;
 }
