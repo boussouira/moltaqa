@@ -39,6 +39,7 @@ protected:
     QCache<int, XmlDomHelper> m_titlesDom;
     bool m_showPageTitle;
     bool m_showPageInfo;
+    bool m_hierarchyTitle;
 };
 
 #endif // SEARCHRESULTREADER_H

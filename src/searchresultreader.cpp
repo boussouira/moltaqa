@@ -15,6 +15,7 @@ SearchResultReader::SearchResultReader(QObject *parent) :
     m_titlesDom.setMaxCost(10);
     m_showPageTitle = true;
     m_showPageInfo = true;
+    m_hierarchyTitle = Utils::Settings::get("Search/hierarchyTitle", true).toBool();
 }
 
 void SearchResultReader::setShowPageTitle(bool show)
@@ -200,7 +201,9 @@ bool SearchResultReader::getPageText(QuaZip *zip, BookPage *page)
 bool SearchResultReader::getPageTitle(QuaZip *zip, LibraryBookPtr book, BookPage *page)
 {
     // If we have a saved model we use it to get the title
-    QString title = MW->readerHelper()->getTitleText(book->id, page->titleID).trimmed();
+    QString title = m_readerHelper->getTitleText(book->id,
+                                                 page->titleID,
+                                                 m_hierarchyTitle && !book->isTafessir());
     if(title.size()) {
         page->title = title;
 
@@ -238,10 +241,21 @@ bool SearchResultReader::getPageTitle(QuaZip *zip, LibraryBookPtr book, BookPage
 
     QDomElement titleElement = titlesDom->treeFindElement("pageID", page->titleID);
     if(!titleElement.isNull()) {
-        page->title = titleElement.firstChildElement("text").text();
-
-        if(book->isTafessir())
+        if(book->isTafessir()) {
+            page->title = titleElement.firstChildElement("text").text();
             taffesirTitle(page);
+        } else {
+            QStringList list;
+            do {
+                list << titleElement.firstChildElement("text").text();
+
+                titleElement = titleElement.parentNode().toElement();
+            } while (m_hierarchyTitle
+                     && !titleElement.isNull()
+                     && titleElement != titlesDom->rootElement());
+
+            page->title = BookReaderHelper::formatTitlesList(list);;
+        }
     } else {
         return false;
     }

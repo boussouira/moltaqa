@@ -31,7 +31,8 @@ public:
     void addBookModel(int bookID, QStandardItemModel *model);
     void removeBookModel(int bookID);
 
-    QString getTitleText(int bookID, int titleID);
+    QString getTitleText(int bookID, int titleID, bool parent);
+    static QString formatTitlesList(QStringList &list);
 
 protected:
     void open();

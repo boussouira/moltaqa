@@ -73,7 +73,7 @@ void BookReaderHelper::removeBookModel(int bookID)
         m_models.remove(bookID);
 }
 
-QString BookReaderHelper::getTitleText(int bookID, int titleID)
+QString BookReaderHelper::getTitleText(int bookID, int titleID, bool parent)
 {
     ml_return_val_on_fail(m_models.contains(bookID), QString());
 
@@ -83,7 +83,28 @@ QString BookReaderHelper::getTitleText(int bookID, int titleID)
     QModelIndex index = Utils::Model::findModelIndex(model, titleID);
     ml_return_val_on_fail(index.isValid(), QString());
 
-    return index.data().toString();
+    QStringList list;
+    do {
+        list << index.data().toString();
+
+        index = index.parent();
+    } while (index.isValid() && parent);
+
+    return BookReaderHelper::formatTitlesList(list);
+}
+
+QString BookReaderHelper::formatTitlesList(QStringList &list)
+{
+    QString title;
+
+    for(int i=list.size()-1; i>=0; i--) {
+        title.append(list[i]);
+
+        if(i)
+            title.append("<span style=\"font-family:cursive;font-size:0.8em;color:#777;\"> > </span>");
+    }
+
+    return title.trimmed();
 }
 
 void BookReaderHelper::open()

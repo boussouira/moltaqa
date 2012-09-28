@@ -817,6 +817,13 @@
            </layout>
           </item>
           <item>
+           <widget class="QCheckBox" name="checkHierarchyTitle">
+            <property name="text">
+             <string>عرض العناوين بشكل تشعبي</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QCheckBox" name="checkShowMessageAfterSearch">
             <property name="text">
              <string>عرض رسالة عند انتهاء البحث</string>

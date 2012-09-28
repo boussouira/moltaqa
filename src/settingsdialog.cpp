@@ -83,6 +83,7 @@ void SettingsDialog::loadSettings()
     ui->checkSaveSearch->setChecked(settings.value("saveSearch", true).toBool());
     ui->checkShowMessageAfterSearch->setChecked(settings.value("showMessageAfterSearch", false).toBool());
     ui->checkAutoUpdateIndex->setChecked(settings.value("autoUpdateIndex", true).toBool());
+    ui->checkHierarchyTitle->setChecked(settings.value("hierarchyTitle", true).toBool());
     ui->spinMaxBookToUpdate->setValue(settings.value("maxBookToUpdate", 0).toInt());
 
     settings.endGroup();
@@ -229,6 +230,7 @@ void SettingsDialog::saveSettings()
     saveSetting(settings, "Search", "saveSearch", ui->checkSaveSearch->isChecked());
     saveSetting(settings, "Search", "showMessageAfterSearch", ui->checkShowMessageAfterSearch->isChecked());
     saveSetting(settings, "Search", "autoUpdateIndex", ui->checkAutoUpdateIndex->isChecked());
+    saveSetting(settings, "Search", "hierarchyTitle", ui->checkHierarchyTitle->isChecked());
     saveSetting(settings, "Search", "maxBookToUpdate", ui->spinMaxBookToUpdate->value());
 
     saveSetting(settings, "SearchWidget", "saveSearchOptions", ui->checkSaveSearchOptions->isChecked());
