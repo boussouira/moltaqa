@@ -28,6 +28,7 @@ protected:
     void saveSetting(QSettings &settings, const QString &group, const QString &key, const QVariant &value, bool needRestart=false);
 
 protected slots:
+    void resetSettings();
     void changeBooksDir();
     void saveSettings();
     void deleteSavedSearch();

@@ -33,6 +33,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     ui->tabWidget->setCurrentIndex(settings.value("SettingsDialog/tabIndex", 0).toInt());
 
     connect(ui->pushBooksDir, SIGNAL(clicked()), this, SLOT(changeBooksDir()));
+    connect(ui->pushResetSettings, SIGNAL(clicked()), this, SLOT(resetSettings()));
     connect(ui->pushSaveSettings, SIGNAL(clicked()), this, SLOT(saveSettings()));
     connect(ui->pushCancel, SIGNAL(clicked()), this, SLOT(reject()));
     connect(ui->pushDeleteSavedSearch, SIGNAL(clicked()), SLOT(deleteSavedSearch()));
@@ -162,6 +163,64 @@ void SettingsDialog::loadSearchFields()
             break;
         }
     }
+}
+
+void SettingsDialog::resetSettings()
+{
+    ml_return_on_fail(QMessageBox::question(this,
+                                            tr("الخيارات الإفتراضية"),
+                                            tr("هل انت متأكد من انك تريد إستعادة الخيارات الإفتراضية للبرنامج؟"),
+                                            QMessageBox::Yes|QMessageBox::No, QMessageBox::No)==QMessageBox::Yes);
+
+    QSettings settings;
+
+    QStringList keys;
+    keys << "showCloseWarning"
+         << "Search/resultPeerPage"
+         << "Search/threadCount"
+         << "Search/ramSize"
+         << "Search/saveSearch"
+         << "Search/showMessageAfterSearch"
+         << "Search/autoUpdateIndex"
+         << "Search/hierarchyTitle"
+         << "Search/maxBookToUpdate"
+         << "Search/defaultField"
+         << "Update/autoCheck"
+         << "SearchWidget/saveSearchOptions"
+         << "SearchWidget/sortSearch"
+         << "SearchWidget/searchField"
+         << "SearchWidget/checkQueryMust"
+         << "SearchWidget/checkQueryShould"
+         << "SearchWidget/checkQueryShouldNot"
+         << "SearchWidget/showPageInfo"
+         << "SearchWidget/showResultTitles"
+         << "Style/name"
+         << "Style/fontFamily"
+         << "Style/fontSize"
+         << "Style/singleIndexClick"
+         << "Style/removeTashekil"
+         << "Style/showQuranFirst"
+         << "BookWidget/splitter"
+         << "ShamelaImportDialog/threadCount"
+         << "WelcomeWidget/tab"
+         << "IndexWidget/updateTitle"
+         << "AuthorsView/splitter"
+         << "BookManagerWidget/splitter"
+         << "RowatView/splitter"
+         << "BookEditorView/splitter"
+         << "RowatManagerWidget/splitter"
+
+            // Groups
+         << "WidgetStat"
+         << "TreeViewStat";
+
+    foreach (QString key, keys) {
+        settings.remove(key);
+    }
+
+    m_needAppRestart = true;
+
+    loadSettings();
 }
 
 QString SettingsDialog::getFilePath()
