@@ -28,6 +28,7 @@ public:
     void setLibraryManager(LibraryManager *libraryManager) { m_libraryManager = libraryManager;}
     QString title();
     QString viewLink();
+    WebViewSearcher *searcher();
     void updateToolBars();
 
     int currentBookID();
@@ -45,9 +46,6 @@ public slots:
     void openTafessir();
     void tabChanged(int newIndex);
     void loadTafessirList();
-    void searchInPage();
-    void searchNext();
-    void searchPrev();
     void removeTashkil(bool remove);
 
 protected slots:
@@ -55,7 +53,6 @@ protected slots:
 
 protected:
     void createMenus();
-    void updateSearchNavigation();
 
 signals:
     void lastTabClosed();
@@ -83,10 +80,6 @@ private:
     QToolBar *m_toolBarNavigation;
     QToolBar *m_toolBarTafesir;
     QComboBox *m_comboTafasir;
-    QToolBar *m_toolBarSearch;
-    FilterLineEdit *m_searchEdit;
-    QAction *m_searchPrevAction;
-    QAction *m_searchNextAction;
 };
 
 #endif // BOOKSVIEWER_H

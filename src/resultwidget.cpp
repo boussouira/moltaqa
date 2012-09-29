@@ -47,6 +47,11 @@ ResultWidget::~ResultWidget()
     delete ui;
 }
 
+WebView *ResultWidget::resultWebView()
+{
+    return m_view;
+}
+
 void ResultWidget::search(LibrarySearcher *searcher)
 {
     m_searcher = searcher;

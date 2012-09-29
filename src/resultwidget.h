@@ -19,6 +19,8 @@ public:
     ResultWidget(QWidget *parent = 0);
     ~ResultWidget();
 
+    WebView *resultWebView();
+
     void search(LibrarySearcher *searcher);
 
 protected:

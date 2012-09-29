@@ -44,6 +44,8 @@ public:
     CurrentWidget currentWidget();
     void toggleWidget();
 
+    ResultWidget *resultWidget();
+
     void showSearchInfo();
 
     void setSearchText(QString mustQuery, QString shouldQuery="", QString mustNotQuery="");

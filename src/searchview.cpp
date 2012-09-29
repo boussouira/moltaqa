@@ -7,6 +7,8 @@
 #include "indexmanager.h"
 #include "librarybookmanager.h"
 #include "stringutils.h"
+#include "resultwidget.h"
+#include "webview.h"
 
 #include <qboxlayout.h>
 #include <qmessagebox.h>
@@ -21,7 +23,7 @@ SearchView::SearchView(QWidget *parent) : AbstarctView(parent)
     m_layout->addWidget(m_tabWidget);
     m_layout->setContentsMargins(0, 6, 0, 0);
 
-    QToolBar *bar = new QToolBar(tr("البحث"), this);
+    QToolBar *bar = new QToolBar(tr("أدواة"), this);
 
     QAction *actNewTab = new QAction(QIcon(":/images/tab-new.png"),
                                tr("تبويب بحث جديد"), this);
@@ -38,6 +40,8 @@ SearchView::SearchView(QWidget *parent) : AbstarctView(parent)
     bar->addAction(actSearchInfo);
 
     m_toolBars << bar;
+    m_toolBars << m_toolBarSearch;
+
     setLayout(m_layout);
 
     connect(actNewTab, SIGNAL(triggered()), SLOT(openNewTab()));
@@ -56,6 +60,15 @@ void SearchView::aboutToShow()
 {
     if(!m_tabWidget->count())
         newTab(SearchWidget::LibrarySearch);
+}
+
+WebViewSearcher *SearchView::searcher()
+{
+    ml_return_val_on_fail(currentSearchWidget(), 0);
+    ml_return_val_on_fail(currentSearchWidget()->resultWidget(), 0);
+    ml_return_val_on_fail(currentSearchWidget()->currentWidget() == SearchWidget::Result, 0);
+
+    return currentSearchWidget()->resultWidget()->resultWebView()->searcher();
 }
 
 bool SearchView::canSearch(bool showMessage)

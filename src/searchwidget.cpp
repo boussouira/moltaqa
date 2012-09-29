@@ -88,6 +88,11 @@ void SearchWidget::toggleWidget()
         setCurrentWidget(ui->stackedWidget->currentIndex()==Search ? Result : Search);
 }
 
+ResultWidget *SearchWidget::resultWidget()
+{
+    return m_resultWidget;
+}
+
 void SearchWidget::showSearchInfo()
 {
     ml_return_on_fail(m_searcher);
