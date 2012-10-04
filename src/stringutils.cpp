@@ -242,7 +242,7 @@ ArabicFindMatchP arabicFind(const QString &text, const QString & pattern, int po
             int j = 1;
             bool match = false;
             int matcheLen = 1;
-            for (int k = i + 1; j < patternLength; ++j, ++k) {
+            for (int k = i + 1; j < patternLength && k < text.size() && j < lower.size(); ++j, ++k) {
                 if(isTashekil(lower[j])) { --k; continue; }
                 if(isTashekil(text[k])) { --j; ++matcheLen; continue; }
 
