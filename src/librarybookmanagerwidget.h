@@ -15,7 +15,7 @@ class QStandardItemModel;
 class LibraryBookManager;
 class EditWebView;
 class ModelViewFilter;
-class BooksViewer;
+class BookReaderView;
 
 class LibraryBookManagerWidget : public ControlCenterWidget
 {
@@ -56,7 +56,7 @@ protected:
     QStandardItemModel *m_model;
     LibraryBookManager *m_manager;
     EditWebView *m_webEdit;
-    BooksViewer *m_readerview;
+    BookReaderView *m_readerview;
     QWidget *m_readerWidget;
     ModelViewFilter *m_filter;
     QHash<int, LibraryBookPtr > m_editedBookInfo;

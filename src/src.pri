@@ -23,7 +23,7 @@ SOURCES += mainwindow.cpp \
     tabwidget.cpp \
     settingsdialog.cpp \
     indexwidget.cpp \
-    booksviewer.cpp \
+    bookreaderview.cpp \
     bookslistbrowser.cpp \
     abstractbookreader.cpp \
     richquranreader.cpp \
@@ -160,7 +160,7 @@ HEADERS += mainwindow.h \
     tabwidget.h \
     settingsdialog.h \
     indexwidget.h \
-    booksviewer.h \
+    bookreaderview.h \
     bookslistbrowser.h \
     abstractbookreader.h \
     richquranreader.h \

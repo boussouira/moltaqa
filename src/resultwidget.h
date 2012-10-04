@@ -8,7 +8,7 @@ namespace Ui {
 class ResultWidget;
 }
 
-class BooksViewer;
+class BookReaderView;
 class WebView;
 
 class ResultWidget : public QWidget
@@ -51,7 +51,7 @@ private slots:
 
 private:
     Ui::ResultWidget *ui;
-    BooksViewer *m_readerview;
+    BookReaderView *m_readerview;
     QWidget *m_readerWidget;
     WebView *m_view;
     LibrarySearcher *m_searcher;

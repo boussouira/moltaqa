@@ -87,7 +87,7 @@ function setShorooh(shorooh)
                                                 book = $(this).attr('book');;
                                                 page = $(this).attr('page');;
 
-                                                booksViewer.openBook(book, page);
+                                                bookReaderView.openBook(book, page);
                                             });
 
         infoSpin.removeClass('disabled');

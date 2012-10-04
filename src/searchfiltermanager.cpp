@@ -11,7 +11,7 @@
 #include "librarymanager.h"
 #include "librarybookmanager.h"
 #include "bookinfodialog.h"
-#include "booksviewer.h"
+#include "bookreaderview.h"
 
 #include <qsqlquery.h>
 #include <qitemselectionmodel.h>
@@ -232,7 +232,7 @@ void SearchFilterManager::openBook()
     int bookID = index.data(ItemRole::idRole).toInt();
     ml_return_on_fail(bookID);
 
-    MW->booksViewer()->openBook(bookID);
+    MW->bookReaderView()->openBook(bookID);
 }
 
 void SearchFilterManager::clearFilter()

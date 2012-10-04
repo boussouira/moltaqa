@@ -1,4 +1,4 @@
-#include "booksviewer.h"
+#include "bookreaderview.h"
 #include "tabwidget.h"
 #include "indexwidget.h"
 #include "bookslistbrowser.h"
@@ -32,7 +32,7 @@
 #include <qkeysequence.h>
 #include <QCompleter>
 
-BooksViewer::BooksViewer(LibraryManager *libraryManager, QWidget *parent): AbstarctView(parent)
+BookReaderView::BookReaderView(LibraryManager *libraryManager, QWidget *parent): AbstarctView(parent)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
     m_viewManager = new BookWidgetManager(this);
@@ -53,17 +53,17 @@ BooksViewer::BooksViewer(LibraryManager *libraryManager, QWidget *parent): Absta
     connect(m_viewManager, SIGNAL(lastTabClosed()), SIGNAL(hideMe()));
 }
 
-BooksViewer::~BooksViewer()
+BookReaderView::~BookReaderView()
 {
     delete m_viewManager;
 }
 
-QString BooksViewer::title()
+QString BookReaderView::title()
 {
     return tr("تصفح الكتب");
 }
 
-void BooksViewer::createMenus()
+void BookReaderView::createMenus()
 {
 
     // Edit book action
@@ -187,7 +187,7 @@ void BooksViewer::createMenus()
     connect(m_taffesirManager, SIGNAL(ModelsReady()), SLOT(loadTafessirList()));
 }
 
-void BooksViewer::updateToolBars()
+void BookReaderView::updateToolBars()
 {
     LibraryBookPtr book = m_viewManager->activeBook();
 
@@ -204,7 +204,7 @@ void BooksViewer::updateToolBars()
     }
 }
 
-QString BooksViewer::viewLink()
+QString BookReaderView::viewLink()
 {
     RichBookReader *bookReader = m_viewManager->activeBookReader();
     ml_return_val_on_fail(bookReader, QString());
@@ -218,37 +218,37 @@ QString BooksViewer::viewLink()
     return link;
 }
 
-WebViewSearcher *BooksViewer::searcher()
+WebViewSearcher *BookReaderView::searcher()
 {
     ml_return_val_on_fail(currentBookWidget(), 0);
     return currentBookWidget()->webView()->searcher();
 }
 
-int BooksViewer::currentBookID()
+int BookReaderView::currentBookID()
 {
     LibraryBookPtr book = m_viewManager->activeBook();
 
     return book ? book->id : 0;
 }
 
-BookWidget *BooksViewer::currentBookWidget()
+BookWidget *BookReaderView::currentBookWidget()
 {
     return m_viewManager->activeBookWidget();
 }
 
-LibraryBookPtr BooksViewer::currentBook()
+LibraryBookPtr BookReaderView::currentBook()
 {
     return m_viewManager->activeBook();
 }
 
-BookPage *BooksViewer::currentPage()
+BookPage *BookReaderView::currentPage()
 {
     RichBookReader *bookdb = m_viewManager->activeBookReader();
 
    return bookdb ? bookdb->page() : 0;
 }
 
-BookWidget *BooksViewer::openBook(int bookID, int pageID, CLuceneQuery *query)
+BookWidget *BookReaderView::openBook(int bookID, int pageID, CLuceneQuery *query)
 {
     LibraryBookPtr bookInfo;
     RichBookReader *bookReader = 0;
@@ -305,7 +305,7 @@ BookWidget *BooksViewer::openBook(int bookID, int pageID, CLuceneQuery *query)
     return bookWidget;
 }
 
-void BooksViewer::openTafessir()
+void BookReaderView::openTafessir()
 {
     BookWidget *bookWidget = 0;
     RichTafessirReader *bookdb = 0;
@@ -340,7 +340,7 @@ void BooksViewer::openTafessir()
     }
 }
 
-void BooksViewer::updateActions()
+void BookReaderView::updateActions()
 {
     if(m_viewManager->activeBookWidget()) {
         bool hasNext = m_viewManager->activeBookReader()->hasNext();
@@ -353,7 +353,7 @@ void BooksViewer::updateActions()
     }
 }
 
-void BooksViewer::showIndexWidget()
+void BookReaderView::showIndexWidget()
 {
     BookWidget *book = m_viewManager->activeBookWidget();
 
@@ -361,7 +361,7 @@ void BooksViewer::showIndexWidget()
         book->hideIndexWidget();
 }
 
-void BooksViewer::searchInBook()
+void BookReaderView::searchInBook()
 {
     LibraryBookPtr book = m_viewManager->activeBook();
     ml_return_on_fail(book);
@@ -370,7 +370,7 @@ void BooksViewer::searchInBook()
     MW->showSearchView();
 }
 
-void BooksViewer::tabChanged(int newIndex)
+void BookReaderView::tabChanged(int newIndex)
 {
     if(newIndex != -1) {
         updateActions();
@@ -386,7 +386,7 @@ void BooksViewer::tabChanged(int newIndex)
     }
 }
 
-void BooksViewer::loadTafessirList()
+void BookReaderView::loadTafessirList()
 {
     m_comboTafasir->clear();
     m_comboTafasir->setModel(m_taffesirManager->taffesirListModel());
@@ -397,7 +397,7 @@ void BooksViewer::loadTafessirList()
     updateToolBars();
 }
 
-void BooksViewer::removeTashkil(bool remove)
+void BookReaderView::removeTashkil(bool remove)
 {
     Utils::Settings::set("Style/removeTashekil", remove);
 
@@ -408,7 +408,7 @@ void BooksViewer::removeTashkil(bool remove)
     }
 }
 
-void BooksViewer::editCurrentBook()
+void BookReaderView::editCurrentBook()
 {
     LibraryBookPtr book = currentBook();
     BookPage *page = currentPage();

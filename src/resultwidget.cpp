@@ -2,7 +2,7 @@
 #include "ui_resultwidget.h"
 #include "utils.h"
 #include "webview.h"
-#include "booksviewer.h"
+#include "bookreaderview.h"
 #include "librarybookmanager.h"
 #include "bookwidget.h"
 #include "htmlhelper.h"
@@ -68,7 +68,7 @@ void ResultWidget::search(LibrarySearcher *searcher)
 void ResultWidget::setupBookReaderView()
 {
     // Setup the book reader view
-    m_readerview = new BooksViewer(LibraryManager::instance(), this);
+    m_readerview = new BookReaderView(LibraryManager::instance(), this);
 
     m_readerWidget = new QWidget(this);
     QWidget *toolBarWidget = new QWidget(this);
@@ -198,7 +198,7 @@ void ResultWidget::moveToReaderView()
     RichBookReader *reader = m_readerview->bookWidgetManager()->activeBookReader();
     ml_return_on_fail(reader);
 
-    MW->booksViewer()->openBook(reader->bookInfo()->id, reader->page()->pageID);
+    MW->bookReaderView()->openBook(reader->bookInfo()->id, reader->page()->pageID);
 }
 
 void ResultWidget::openResult(int resultID)

@@ -1,7 +1,7 @@
 #include "shemehandler.h"
 #include "utils.h"
 #include "librarymanager.h"
-#include "booksviewer.h"
+#include "bookreaderview.h"
 #include "librarybookmanager.h"
 #include "bookwidget.h"
 #include "authorsview.h"
@@ -46,7 +46,7 @@ void ShemeHandler::openBook(const QUrl &url)
     int bookID = url.queryItemValue("id").toInt();
     int page = url.hasQueryItem("page") ? url.queryItemValue("page").toInt() : -1;
 
-    MW->booksViewer()->openBook(bookID, page);
+    MW->bookReaderView()->openBook(bookID, page);
 }
 
 void ShemeHandler::openQuran(const QUrl &url)
@@ -59,7 +59,7 @@ void ShemeHandler::openQuran(const QUrl &url)
     LibraryBookPtr quranBook = LibraryManager::instance()->bookManager()->getQuranBook();
     ml_return_on_fail2(quranBook, "MoltaqaShemeHandler::openQuran quranBook is null");
 
-    BookWidget *w = MW->booksViewer()->openBook(quranBook->id);
+    BookWidget *w = MW->bookReaderView()->openBook(quranBook->id);
     ml_return_on_fail2(w, "MoltaqaShemeHandler::openQuran quranBook is null");
 
     w->openSora(sora, aya);

@@ -12,7 +12,7 @@
 #include "newbookwriter.h"
 #include "mainwindow.h"
 #include "booklistmanager.h"
-#include "booksviewer.h"
+#include "bookreaderview.h"
 
 #include <qdebug.h>
 #include <qlineedit.h>
@@ -65,9 +65,9 @@ void LibraryBookManagerWidget::aboutToShow()
         ui->splitter->restoreState(Utils::Settings::get("BookManagerWidget/splitter").toByteArray());
 
     if(m_selectCurrentBook) {
-        if(MW->booksViewer()->currentBookID()) {
+        if(MW->bookReaderView()->currentBookID()) {
             QModelIndex index = Utils::Model::findModelIndex(ui->treeView->model(),
-                                                             MW->booksViewer()->currentBookID());
+                                                             MW->bookReaderView()->currentBookID());
             if(index.isValid()) {
                 Utils::Model::selectIndex(ui->treeView, index);
                 on_treeView_doubleClicked(index);
@@ -108,7 +108,7 @@ void LibraryBookManagerWidget::setupActions()
 
 void LibraryBookManagerWidget::setupBookReader()
 {
-    m_readerview = new BooksViewer(LibraryManager::instance(), this);
+    m_readerview = new BookReaderView(LibraryManager::instance(), this);
 
     m_readerWidget = new QWidget(this);
     QWidget *toolBarWidget = new QWidget(this);

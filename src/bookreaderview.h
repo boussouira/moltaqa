@@ -1,5 +1,5 @@
-#ifndef BOOKSVIEWER_H
-#define BOOKSVIEWER_H
+#ifndef BOOKREADERVIEW_H
+#define BOOKREADERVIEW_H
 
 #include "abstarctview.h"
 #include "bookwidgetmanager.h"
@@ -18,12 +18,12 @@ class QComboBox;
 class CLuceneQuery;
 class FilterLineEdit;
 
-class BooksViewer : public AbstarctView
+class BookReaderView : public AbstarctView
 {
     Q_OBJECT
 public:
-    BooksViewer(LibraryManager *libraryManager, QWidget *parent=0);
-    ~BooksViewer();
+    BookReaderView(LibraryManager *libraryManager, QWidget *parent=0);
+    ~BookReaderView();
 
     void setLibraryManager(LibraryManager *libraryManager) { m_libraryManager = libraryManager;}
     QString title();
@@ -82,4 +82,4 @@ private:
     QComboBox *m_comboTafasir;
 };
 
-#endif // BOOKSVIEWER_H
+#endif // BOOKREADERVIEW_H

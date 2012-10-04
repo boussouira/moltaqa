@@ -9,7 +9,7 @@
 #include "modelenums.h"
 #include "modelutils.h"
 #include "librarybookmanager.h"
-#include "booksviewer.h"
+#include "bookreaderview.h"
 #include "utils.h"
 #include "stringutils.h"
 
@@ -429,5 +429,5 @@ QString BookWidget::getBreadcrumbs()
 void BookWidget::viewObjectCleared()
 {
     m_view->addObject("bookWidget", this);
-    m_view->addObject("booksViewer", MW->booksViewer());
+    m_view->addObject("bookReaderView", MW->bookReaderView());
 }

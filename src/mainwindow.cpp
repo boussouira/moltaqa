@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "utils.h"
-#include "booksviewer.h"
+#include "bookreaderview.h"
 #include "librarymanager.h"
 #include "bookslistbrowser.h"
 #include "settingsdialog.h"
@@ -138,7 +138,7 @@ bool MainWindow::init()
 
         m_libraryManager = new LibraryManager(m_libraryInfo);
 
-        m_bookView = new BooksViewer(m_libraryManager, this);
+        m_bookView = new BookReaderView(m_libraryManager, this);
         m_viewManager->addView(m_bookView, false);
 
         m_booksList = new BooksListBrowser(0);
@@ -362,7 +362,7 @@ LibraryManager *MainWindow::libraryManager()
     return m_libraryManager;
 }
 
-BooksViewer *MainWindow::booksViewer()
+BookReaderView *MainWindow::bookReaderView()
 {
     return m_bookView;
 }

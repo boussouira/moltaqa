@@ -7,7 +7,7 @@
 #include "xmlutils.h"
 #include "timeutils.h"
 #include "authorsmanager.h"
-#include "booksviewer.h"
+#include "bookreaderview.h"
 
 #include <qdir.h>
 #include <qstandarditemmodel.h>
@@ -299,7 +299,7 @@ bool LibraryBookManager::removeBook(int bookID)
         return false;
     }
 
-    MW->booksViewer()->bookWidgetManager()->closeBook(bookID);
+    MW->bookReaderView()->bookWidgetManager()->closeBook(bookID);
 
     ml_warn_on_fail(QFile::remove(book->path),
                     "LibraryBookManager::removeBook can't remove file" << book->path);

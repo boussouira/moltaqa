@@ -9,7 +9,7 @@
 class ViewManager;
 class LibraryManager;
 class SettingsDialog;
-class BooksViewer;
+class BookReaderView;
 class BooksListBrowser;
 class WelcomeWidget;
 class BookEditorView;
@@ -41,7 +41,7 @@ public:
 
     LibraryInfo *libraryInfo();
     LibraryManager *libraryManager();
-    BooksViewer *booksViewer();
+    BookReaderView *bookReaderView();
     BooksListBrowser *booksListBrowser();
     IndexTracker *indexTracker();
     IndexManager *indexManager();
@@ -90,7 +90,7 @@ private:
     ViewManager *m_viewManager;
     LibraryInfo *m_libraryInfo;
     LibraryManager *m_libraryManager;
-    BooksViewer *m_bookView;
+    BookReaderView *m_bookView;
     BooksListBrowser *m_booksList;
     WelcomeWidget *m_welcomeWidget;
     IndexTracker *m_indexTracker;
