@@ -53,7 +53,7 @@ protected:
 
 public slots:
     void setStepTitle(const QString &title);
-    void addDebugInfo(const QString &text, QIcon icon=QIcon());
+    void addDebugInfo(const QString &text, QIcon icon=QIcon(":/images/about.png"));
     void bookImported(const QString &text);
     void BookImportError(const QString &text);
 
@@ -73,7 +73,7 @@ private slots:
 private:
     int m_importThreadCount;
     int m_importedBooksCount;
-    int m_importErrorCount; ///< Number of non-imported books
+    QStringList m_importError; ///< Titles of non-imported books
     LibraryInfo *m_library;
     LibraryManager *m_libraryManager;
     BookListManager *m_bookListManager;

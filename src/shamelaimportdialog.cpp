@@ -54,7 +54,6 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
     m_bookFilter = new ModelViewFilter(this);
 
     m_importedBooksCount = 0;
-    m_importErrorCount = 0;
     m_proccessItemChange = true;
 
     ui->radioUseShamelaCat->setChecked(!m_bookListManager->categoriesCount());
@@ -414,10 +413,10 @@ void ShamelaImportDialog::bookImported(const QString &text)
 
 void ShamelaImportDialog::BookImportError(const QString &text)
 {
-    m_importErrorCount++;
+    m_importError.append(text);
 
     addDebugInfo(tr("حدث خطأ أثناء استيراد '%1'").arg(text),
-                 QIcon(":/images/delete.png"));
+                 QIcon(":/images/alert.png"));
 }
 
 void ShamelaImportDialog::doneImporting()
@@ -436,20 +435,25 @@ void ShamelaImportDialog::doneImporting()
             qDebug("ShamelaImportDialog::doneImporting no book imported");
         }
 
+        if(m_importError.size()) {
+            addDebugInfo(tr("لم يتم استيراد %1:")
+                         .arg(Utils::String::Arabic::plural(m_importError.size(), Utils::String::Arabic::BOOK)));
+
+            foreach (QString title, m_importError) {
+                addDebugInfo(title, QIcon(":/images/delete2.png"));
+            }
+        }
+
         addDebugInfo(tr("تم استيراد %1 بنجاح خلال %2")
                      .arg(Utils::String::Arabic::plural(m_importedBooksCount, Utils::String::Arabic::BOOK))
                      .arg(Utils::Time::secondsToString(m_importTime.elapsed())));
-
-        if(m_importErrorCount)
-            addDebugInfo(tr("لم يتم استيراد %1")
-                         .arg(Utils::String::Arabic::plural(m_importErrorCount, Utils::String::Arabic::BOOK)));
 
         QString str = QString("%1 books imported in %2")
                 .arg(m_importedBooksCount)
                 .arg(Utils::Time::prettyMilliSeconds(m_importTime.elapsed()));
 
-        if(m_importErrorCount)
-            str.replace("books", QString("books (%1 errors)").arg(m_importErrorCount));
+        if(m_importError.size())
+            str.replace("books", QString("books (%1 errors)").arg(m_importError.size()));
 
         StatisticsManager::instance()->dequeue("ShamelaImport", str);
 
