@@ -41,6 +41,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     connect(ui->pushUpdateIndex, SIGNAL(clicked()), SLOT(updateIndex()));
     connect(ui->pushClearBooksHistory, SIGNAL(clicked()), SLOT(deleteBooksHistory()));
     connect(ui->pushClearLastOpenedBooks, SIGNAL(clicked()), SLOT(deleteLastOpenedBooks()));
+
+    connect(ui->fontComboBox, SIGNAL(currentFontChanged(QFont)), SLOT(fontSettingChange()));
+    connect(ui->comboFontSize, SIGNAL(currentIndexChanged(int)), SLOT(fontSettingChange()));
 }
 
 SettingsDialog::~SettingsDialog()
@@ -391,6 +394,15 @@ void SettingsDialog::optimizeIndex()
 void SettingsDialog::updateIndex()
 {
     MW->indexManager()->start();
+}
+
+void SettingsDialog::fontSettingChange()
+{
+    QWebSettings *webSettings = QWebSettings::globalSettings();
+    webSettings->setFontFamily(QWebSettings::StandardFont,
+                               ui->fontComboBox->currentFont().toString());
+    webSettings->setFontSize(QWebSettings::DefaultFontSize,
+                             ui->comboFontSize->currentText().toInt());
 }
 
 void SettingsDialog::hideCancelButton(bool hide)
