@@ -82,5 +82,21 @@ QString elapsedTime(uint timestamp)
     return date.toString("hh:mm - dd/MM");
 }
 
+QString prettySeconds(int seconds) {
+  seconds = qAbs(seconds);
+
+  int hours = seconds / (60*60);
+  int minutes = (seconds / 60) % 60;
+  seconds %= 60;
+
+  QString ret;
+  if (hours)
+    ret.sprintf("%d:%02d:%02d", hours, minutes, seconds);
+  else
+    ret.sprintf("%d:%02d", minutes, seconds);
+
+  return ret;
+}
+
 } // Time
 } // Utils

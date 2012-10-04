@@ -212,7 +212,8 @@ void ImportDialog::startImporting()
         }
     }
 
-    qDebug("ImportDialog: Importing %d books take %d ms", imported, time.elapsed());
+    qDebug() << "ImportDialog: Importing" << imported << "books take"
+             << qPrintable(Utils::Time::prettyMilliSeconds(time.elapsed()));
 }
 
 void ImportDialog::doneImporting()

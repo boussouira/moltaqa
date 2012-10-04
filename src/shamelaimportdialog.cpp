@@ -444,9 +444,9 @@ void ShamelaImportDialog::doneImporting()
             addDebugInfo(tr("لم يتم استيراد %1")
                          .arg(Utils::String::Arabic::plural(m_importErrorCount, Utils::String::Arabic::BOOK)));
 
-        QString str = QString("%1 books imported in %2 seconds")
+        QString str = QString("%1 books imported in %2")
                 .arg(m_importedBooksCount)
-                .arg(m_importTime.elapsed() / 1000);
+                .arg(Utils::Time::prettyMilliSeconds(m_importTime.elapsed()));
 
         if(m_importErrorCount)
             str.replace("books", QString("books (%1 errors)").arg(m_importErrorCount));

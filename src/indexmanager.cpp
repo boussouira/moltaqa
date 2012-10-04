@@ -155,8 +155,8 @@ void IndexManager::threadDoneIndexing()
         ml_delete_check(m_taskIter);
 
         StatisticsManager::instance()->dequeue("index",
-                                               QString("done in %1 seconds")
-                                               .arg(m_indexingTime.elapsed()/1000));
+                                               QString("done in %1")
+                                               .arg(Utils::Time::prettyMilliSeconds(m_indexingTime.elapsed())));
         qDeleteAll(m_threads);
         m_threads.clear();
 
@@ -178,8 +178,8 @@ bool IndexManager::optimize()
         m_writer->optimize();
 
         StatisticsManager::instance()->dequeue("index",
-                                               QString("index optimized in %1 seconds")
-                                               .arg(time.elapsed()/1000));
+                                               QString("index optimized in %1")
+                                               .arg(Utils::Time::prettyMilliSeconds(time.elapsed())));
 
         return true;
     } catch(CLuceneError &err) {

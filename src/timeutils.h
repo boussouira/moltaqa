@@ -19,6 +19,9 @@ QString hijriYear(int hYear);
 QString secondsToString(int milsec, bool html=false);
 QString elapsedTime(uint timestamp);
 
+QString prettySeconds(int seconds);
+inline QString prettyMilliSeconds(int msec)  { return prettySeconds(msec/1000); }
+
 } // Time
 } // Utils
 
