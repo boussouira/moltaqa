@@ -39,7 +39,6 @@ AbstarctView::AbstarctView(QWidget *parent) :
 
 AbstarctView::~AbstarctView()
 {
-    ml_delete_check(m_toolBarSearch);
 }
 
 QList<QToolBar*> AbstarctView::toolBars()
