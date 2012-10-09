@@ -72,7 +72,7 @@ bool SearchResultReader::getSimpleBookPage(QuaZip *zip, LibraryBookPtr book, Boo
 
     // Page title
     if(m_showPageTitle) {
-        ml_return_val_on_fail(getPageTitle(zip, book, page), false);
+        getPageTitle(zip, book, page);
     }
 
     return true;
