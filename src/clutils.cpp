@@ -66,7 +66,10 @@ QString highlightText(QString orignalText, lucene::search::Query *query,
     _CLDELETE_CARRAY(highlighterResult)
     _CLDELETE_CARRAY(text);
 
-    return fragment ? Utils::Html::nl2br(highlightedText) : highlightedText;
+    if(highlightedText.size())
+        return fragment ? Utils::Html::nl2br(highlightedText) : highlightedText;
+    else
+        return orignalText;
 }
 
 QString highlightText(QString orignalText, CLuceneQuery *query, bool fragment)
