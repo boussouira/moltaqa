@@ -50,7 +50,10 @@ void TextBookReader::getTitles()
                 m_titles.append(titleID);
             } else if(m_loadTitlesText && reader.name() == "text") {
                 if(reader.readNext() == QXmlStreamReader::Characters) {
-                    m_titlesText[titleID] = reader.text().toString();
+                    if(m_titlesText.contains(titleID))
+                        m_titlesText[titleID].append(' ').append(reader.text().toString());
+                    else
+                        m_titlesText[titleID] = reader.text().toString();
                 } else {
                     if(reader.tokenType() != QXmlStreamReader::EndElement) { // Ignore empty titles
                         qWarning() << "TextBookReader::getTitles Unexpected token type" << reader.tokenString()
