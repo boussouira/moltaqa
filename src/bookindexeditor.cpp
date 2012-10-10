@@ -144,6 +144,11 @@ void BookIndexEditor::linkTitle()
     m_editView->m_currentPage->titleID = m_editView->m_currentPage->pageID;
     ui->treeView->model()->setData(index, m_editView->m_currentPage->pageID, ItemRole::idRole);
 
+    QDomElement pageElement = m_editView->m_bookReader->pagesDom().findElement("id",
+                                                                               m_editView->m_currentPage->pageID);
+    if(!pageElement.isNull())
+        pageElement.removeAttribute("tid");
+
     emit indexEdited();
 }
 
