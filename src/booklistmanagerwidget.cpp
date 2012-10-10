@@ -30,6 +30,12 @@ BookListManagerWidget::BookListManagerWidget(QWidget *parent) :
     m_manager = LibraryManager::instance()->bookListManager();
     m_treeManager = new TreeViewEditor(this);
 
+    m_treeManager->setMoveUpButton(ui->toolMoveUp);
+    m_treeManager->setMoveDownButton(ui->toolMoveDown);
+    m_treeManager->setMoveLeftButton(ui->toolMoveLeft);
+    m_treeManager->setMoveRightButton(ui->toolMoveRight);
+    m_treeManager->setRemovButton(ui->toolRemoveCat);
+
     connect(ui->toolAddCat, SIGNAL(clicked()), SLOT(addToBookList()));
     connect(m_manager, SIGNAL(ModelsReady()), SLOT(reloadModel()));
 
@@ -58,12 +64,6 @@ void BookListManagerWidget::loadModel()
 
     ui->treeView->setModel(m_model);
     ui->treeView->resizeColumnToContents(0);
-
-    m_treeManager->setMoveUpButton(ui->toolMoveUp);
-    m_treeManager->setMoveDownButton(ui->toolMoveDown);
-    m_treeManager->setMoveLeftButton(ui->toolMoveLeft);
-    m_treeManager->setMoveRightButton(ui->toolMoveRight);
-    m_treeManager->setRemovButton(ui->toolRemoveCat);
 
     m_treeManager->setTreeView(ui->treeView);
     m_treeManager->setModel(m_model);

@@ -21,6 +21,12 @@ BookIndexEditor::BookIndexEditor(BookEditorView *parent) :
 
     m_treeManager = new TreeViewEditor(this);
 
+    m_treeManager->setMoveUpButton(ui->toolMoveUp);
+    m_treeManager->setMoveDownButton(ui->toolMoveDown);
+    m_treeManager->setMoveLeftButton(ui->toolMoveLeft);
+    m_treeManager->setMoveRightButton(ui->toolMoveRight);
+    m_treeManager->setRemovButton(ui->toolRemoveTitle);
+
     connect(ui->toolAddTitle, SIGNAL(clicked()), SLOT(addTitle()));
     connect(ui->toolLinkTitle, SIGNAL(clicked()), SLOT(linkTitle()));
     connect(ui->treeView, SIGNAL(doubleClicked(QModelIndex)), SLOT(openPage(QModelIndex)));
@@ -48,12 +54,6 @@ void BookIndexEditor::setModel(QStandardItemModel *model)
             SLOT(updateActions()));
 
     connect(m_model, SIGNAL(itemChanged(QStandardItem*)), SIGNAL(indexEdited()));
-
-    m_treeManager->setMoveUpButton(ui->toolMoveUp);
-    m_treeManager->setMoveDownButton(ui->toolMoveDown);
-    m_treeManager->setMoveLeftButton(ui->toolMoveLeft);
-    m_treeManager->setMoveRightButton(ui->toolMoveRight);
-    m_treeManager->setRemovButton(ui->toolRemoveTitle);
 
     m_treeManager->setTreeView(ui->treeView);
     m_treeManager->setModel(m_model);

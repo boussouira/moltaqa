@@ -15,6 +15,9 @@ TaffesirListManagerWidget::TaffesirListManagerWidget(QWidget *parent) :
     m_model = 0;
     m_taffesirManager = LibraryManager::instance()->taffesirListManager();
     m_treeManager = new TreeViewEditor(this);
+
+    m_treeManager->setMoveUpButton(ui->toolMoveUp);
+    m_treeManager->setMoveDownButton(ui->toolMoveDown);
 }
 
 TaffesirListManagerWidget::~TaffesirListManagerWidget()
@@ -37,9 +40,6 @@ void TaffesirListManagerWidget::loadModel()
 
     ui->treeView->setModel(m_model);
     ui->treeView->resizeColumnToContents(0);
-
-    m_treeManager->setMoveUpButton(ui->toolMoveUp);
-    m_treeManager->setMoveDownButton(ui->toolMoveDown);
 
     m_treeManager->setTreeView(ui->treeView);
     m_treeManager->setModel(m_model);
