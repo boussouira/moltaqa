@@ -254,7 +254,7 @@ void SearchFilterManager::enableCatSelection()
 
     foreach (QModelIndex index, sourceSelection.indexes()) {
         QStandardItem *item = m_model->itemFromIndex(index);
-        if(item) {
+        if(item && item->data(ItemRole::itemTypeRole).toInt()==ItemType::CategorieItem) {
             item->setCheckable(catCheckable);
             setCatCheckable(item, catCheckable);
         }
