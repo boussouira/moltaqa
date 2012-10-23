@@ -442,6 +442,9 @@ void ShamelaImportDialog::doneImporting()
             foreach (QString title, m_importError) {
                 addDebugInfo(title, QIcon(":/images/delete2.png"));
             }
+
+            qWarning() << "ShamelaImportDialog::doneImporting"
+                       << tr("لم يتم استيراد الكتب التالية:") + "\n" + m_importError.join("\n");
         }
 
         addDebugInfo(tr("تم استيراد %1 بنجاح خلال %2")
