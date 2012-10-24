@@ -413,6 +413,41 @@ void UtilsTest::cleanFileName()
              QString("c:/home/user/Documents/book_programming_123_first.pdf"));
 }
 
+void UtilsTest::footnoteRegExp()
+{
+    QString text1 = _u("دار النشر: دار الفكر العربي\nعدد الأجزاء: 10\nأعده "
+            "للشاملة/ أبو إبراهيم حسانين، جزاه الله خيرا\n[ترقيم الشاملة موافق للمطبوع، وهو مذيل بالحواشي وضمن "
+            "خدمة مقارنة التفاسير]\n__________\nتنبيه\n1 - صفحة 341 بها سطران ممسوحان في آخرها"
+            "والكلمة الأخيرة من الصفحة التي تليها\nوفي"
+            "صفحة 727 كلمة ممسوحة من السطر الرابع من أسفل\n2 - يوجد سقط من تفسير الإمام الجليل أبي زهرة من الآية 190 وحتى نهاية الآية 193 من سورة البقرة، وتميمًا للفائدة فقد نقل الناشر تفسير "
+            "هذه الآيات من تفسير الإمام القرطبي.\n");
+
+    QString text2 = _u("First line\n__________\n\nSecond line");
+
+    QString text3 = _u("الاسعاف في احكام الاوقاف\n"
+            "http://www.4shared.com/get/217350836/7137ec16/____.html\n\n"
+            "الاشباه والنظائر\n"
+            "http://www.4shared.com/get/233998481/12089cfc/______.html\n\n"
+            "تحفة الناسك في احكام المناسك\n"
+            "http://www.4shared.com/get/218171027/68c4599e/____________.html\n\n"
+            "تغيير التنقيح في الاصول\n"
+            "http://www.4shared.com/get/221050314/ca91402e/___.html\n\n"
+            "تحفة الناسك في احكام المناسك\n"
+            "http://www.4shared.com/get/218171027/68c4599e/____________.html\n"
+            "تحفة الناسك في احكام المناسك\n"
+            "http://www.4shared.com/get/218171027/68c4599e/____________.html\n");
+
+    // Separete footnote
+    QRegExp footnoteSep("\\n+_{6,}\\n+");
+
+    QCOMPARE(text1.split(footnoteSep, QString::SkipEmptyParts).size() , 2);
+    QCOMPARE(text2.split(footnoteSep, QString::SkipEmptyParts).size() , 2);
+    QCOMPARE(text3.split(footnoteSep, QString::SkipEmptyParts).size() , 1);
+
+    QCOMPARE(text2.split(footnoteSep, QString::SkipEmptyParts).first(), _u("First line"));
+    QCOMPARE(text2.split(footnoteSep, QString::SkipEmptyParts).last(), _u("Second line"));
+}
+
 int UtilsTest::getPageTitleID(QList<int> &titles, int pageID)
 {
     if(!titles.contains(pageID)) {

@@ -100,6 +100,7 @@ void NewBookWriter::addTitle(const QString &title, int tid, int level)
 QString NewBookWriter::processPageText(QString text)
 {
     QString htmlText;
+    text = text.replace(QRegExp("[\\r\\n]+"), "\n");
     text = Utils::Html::specialCharsEncode(text);
 
     QRegExp rxMateen(_u("§([^\"»]+)([»\"])"));
@@ -110,7 +111,7 @@ QString NewBookWriter::processPageText(QString text)
 
     QString specialChar(_u("§"));
     // Separete footnote
-    QRegExp footnoteSep("_{6,}");
+    QRegExp footnoteSep("\\n+_{6,}\\n+");
     QStringList pageTextList = text.split(footnoteSep, QString::SkipEmptyParts);
     if(pageTextList.isEmpty())
         return htmlText;
@@ -124,7 +125,7 @@ QString NewBookWriter::processPageText(QString text)
 
         footnoteText.replace(QRegExp(_u("\\(¬?([0-9]{1,2})\\)")),
                              "<sup class=\"fnb\"><a href=\"#fnb\\1\" id=\"fn\\1\">(\\1)</a></sup>");
-        footnoteText.replace(QRegExp("[\\r\\n]+"), "<br />");
+        footnoteText.replace("\n", "<br />");
 
         footnoteText.prepend("<hr class=\"fns\"/><div class=\"clear\"></div><footnote>");
         footnoteText.append("</footnote>");
@@ -135,7 +136,7 @@ QString NewBookWriter::processPageText(QString text)
         pageTextList[0] = text;
     }
 
-    QStringList paragraphs = pageTextList[0].split(QRegExp("[\\r\\n]+"), QString::SkipEmptyParts);
+    QStringList paragraphs = pageTextList[0].split(QRegExp("\\n+"), QString::SkipEmptyParts);
     foreach(QString p, paragraphs) {
         htmlText.append("<p>");
 
