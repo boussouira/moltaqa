@@ -153,7 +153,8 @@ SOURCES += mainwindow.cpp \
     bookexporterthread.cpp \
     bookexporter.cpp \
     librarybookexporter.cpp \
-    epubbookexporter.cpp
+    epubbookexporter.cpp \
+    windowsview.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -295,7 +296,8 @@ HEADERS += mainwindow.h \
     bookexporter.h \
     librarybookexporter.h \
     exportformats.h \
-    epubbookexporter.h
+    epubbookexporter.h \
+    windowsview.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \

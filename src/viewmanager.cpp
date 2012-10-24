@@ -5,6 +5,7 @@
 #include <qapplication.h>
 #include <qclipboard.h>
 #include <qstatusbar.h>
+#include "windowsview.h"
 
 ViewManager::ViewManager(QWidget *parent) :
     QStackedWidget(parent),
@@ -27,7 +28,7 @@ void ViewManager::addView(AbstarctView *view, bool selectable)
     addWidget(view);
     setupWindowsActions();
 
-    m_viewDisplay.insert(view);
+    m_viewDisplay.append(view);
 
     connect(view, SIGNAL(hideMe()), SLOT(hideView()));
     connect(view, SIGNAL(showMe()), SLOT(showView()));
@@ -35,7 +36,7 @@ void ViewManager::addView(AbstarctView *view, bool selectable)
 
 void ViewManager::removeView(AbstarctView *view)
 {
-    m_viewDisplay.remove(view);
+    m_viewDisplay.removeAll(view);
 
     removeWidget(view);
     setupWindowsActions();
@@ -76,6 +77,9 @@ void ViewManager::setCurrentView(AbstarctView *view)
 
     setupWindowsActions();
     m_mainWindow->activateWindow();
+
+    m_viewDisplay.removeAll(view);
+    m_viewDisplay.append(view);
 }
 
 void ViewManager::setDefautView(AbstarctView *view)
@@ -120,6 +124,11 @@ void ViewManager::setupWindowsActions()
             m_windowsMenu->addAction(act);
         }
     }
+
+    m_windowsMenu->addSeparator();
+    QAction *act = m_windowsMenu->addAction(tr("عرض كل النوافذ"),
+                                            this, SLOT(showAllWindows()));
+    act->setShortcut(QKeySequence(("CTRL+TAB")));
 }
 
 void ViewManager::changeWindow()
@@ -155,6 +164,32 @@ void ViewManager::copyViewLink()
     }
 }
 
+void ViewManager::showAllWindows()
+{
+    WindowsView view(this);
+
+    for(int i=m_viewDisplay.size()-1; i>=0; i--) {
+        AbstarctView* prevView = m_viewDisplay.at(i);
+        if(prevView->isSelectable()) {
+            view.addView(prevView, i);
+        }
+    }
+
+    connect(&view, SIGNAL(selectView(QString)), SLOT(selectViewFromListIndex(QString)));
+
+    view.selectCurrentView();
+    view.exec();
+}
+
+void ViewManager::selectViewFromListIndex(QString title)
+{
+    for(int i=0; i<m_viewDisplay.size(); i++) {
+    AbstarctView *view = qobject_cast<AbstarctView*>(m_viewDisplay.at(i));
+    if(view && view->title() == title)
+        setCurrentView(view);
+    }
+}
+
 void ViewManager::hideView()
 {
     AbstarctView *w = qobject_cast<AbstarctView*>(sender());
@@ -162,7 +197,9 @@ void ViewManager::hideView()
         w->setSelectable(false);
         bool useDefautView = true;
 
-        foreach(AbstarctView* prevView, m_viewDisplay) {
+        for(int i=m_viewDisplay.size()-1; i>=0; i--) {
+            AbstarctView* prevView = m_viewDisplay.at(i);
+//        foreach(AbstarctView* prevView, m_viewDisplay) {
             if(prevView && prevView != w && prevView->isSelectable() && prevView != m_defautView) {
                 setCurrentView(prevView);
                 useDefautView = false;
