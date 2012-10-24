@@ -131,6 +131,8 @@ QString NewBookWriter::processPageText(QString text)
 
         pageTextList[0] = pageText;
         pageTextList[1] = footnoteText;
+    } else if(pageTextList.size() > 2) {
+        pageTextList[0] = text;
     }
 
     QStringList paragraphs = pageTextList[0].split(QRegExp("[\\r\\n]+"), QString::SkipEmptyParts);
