@@ -48,7 +48,7 @@ AuthorsView *AuthorsView::instance()
 
 QString AuthorsView::title()
 {
-    return tr("المؤلفين");
+    return tr("تراجم المؤلفين");
 }
 
 QString AuthorsView::viewLink()
