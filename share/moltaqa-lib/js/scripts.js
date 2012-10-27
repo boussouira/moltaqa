@@ -12,14 +12,12 @@ function setupToolTip() {
 function moltaqaLink() {
     $('a').each(function(index) {
         link = $(this).attr('href');
+        if(typeof(link) != "undefined") {
+            scheme = link.substring(0, link.indexOf(':'));
 
-        scheme = link.substring(0, link.indexOf(':'));
-
-        if(scheme == 'moltaqa') {
-            $(this).addClass('ext');
-            $(this).click(function() {
-                webView.openMoltaqaLink($(this).attr('href'));
-            });
+            if(scheme == 'moltaqa') {
+                $(this).addClass('ext');
+            }
         }
     });
 }

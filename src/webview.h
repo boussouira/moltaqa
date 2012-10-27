@@ -20,9 +20,6 @@ public:
 
     void scrollToAya(int pSoraNumber, int pAyaNumber);
     void scrollToSora(int soraNumber);
-    void pageDown();
-    void pageUp();
-    void scrollToPosition(const QPoint &pos, int duration=1000);
     bool maxDown();
     bool maxUp();
 
@@ -43,6 +40,9 @@ protected:
 public slots:
     void setText(const QString &text);
     void scrollToElement(QString elementQuery);
+    void scrollToPosition(const QPoint &pos, int duration=1000);
+    void pageDown();
+    void pageUp();
     void pageTextChanged();
     void scrollToSearch();
     void openMoltaqaLink(QString link);
