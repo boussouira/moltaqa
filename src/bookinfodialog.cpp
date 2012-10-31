@@ -114,9 +114,9 @@ void BookInfoDialog::setup()
         html.insertDD(otherInfo);
     }
 
-    if(m_book->comment.size() && !m_book->comment.contains(tr("[مأخود من الشاملة]"))) {
+    if(m_book->comment.size()) {
         html.insertDT(tr("ملاحظات:"));
-        html.insertDD(m_book->comment);
+        html.insertDD(m_book->comment.replace("\n", "<br>"));
     }
 
     html.endDL(); // .dl-horizontal
