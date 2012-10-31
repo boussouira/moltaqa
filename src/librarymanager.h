@@ -64,6 +64,9 @@ public:
     FavouritesManager *favouritesManager();
     SearchManager *searchManager();
 
+    static const int HELP_BOOK_ID = 101;
+    void addHelpBook();
+
 protected:
     LibraryInfo *m_libraryInfo;
     QList<ListManager*> m_managers;

@@ -527,8 +527,7 @@ QStringList checkDir(bool showWarnings)
                                << "welcome/welcome.html"
                                << "welcome/welcome.css"
                                << "welcome/images"
-                               << "help/moltaqa-lib.html"
-                               << "help/moltaqa-lib_files",
+                               << "help/help.mlb",
                                dataDir(),
                                showWarnings);
 

@@ -65,5 +65,4 @@ doc/html
 
 # This file is too big, we should not add it our repo
 share/moltaqa-lib/data/*.zip
-share/moltaqa-lib/data/help
 

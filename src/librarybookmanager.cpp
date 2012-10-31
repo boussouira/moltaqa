@@ -301,8 +301,10 @@ bool LibraryBookManager::removeBook(int bookID)
 
     MW->bookReaderView()->bookWidgetManager()->closeBook(bookID);
 
-    ml_warn_on_fail(QFile::remove(book->path),
-                    "LibraryBookManager::removeBook can't remove file" << book->path);
+    if(book->id != LibraryManager::HELP_BOOK_ID) {
+        ml_warn_on_fail(QFile::remove(book->path),
+                        "LibraryBookManager::removeBook can't remove file" << book->path);
+    }
 
     m_books.remove(bookID);
 

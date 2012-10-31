@@ -238,3 +238,24 @@ SearchManager *LibraryManager::searchManager()
 {
     return m_searchManager;
 }
+
+void LibraryManager::addHelpBook()
+{
+    if(!m_bookmanager->getLibraryBook(HELP_BOOK_ID)) {
+        qDebug("LibraryManager::addHelpBook add help book to the current library...");
+
+        LibraryBookPtr book(new LibraryBook());
+        book->id = HELP_BOOK_ID;
+        book->type = LibraryBook::NormalBook;
+        book->title = tr("شرح البرنامج");
+        book->info = tr("شرح استخدام برنامج مكتبة الملتقى");
+        book->authorName = tr("مكتبة الملتقى");
+        book->fileName = "${DATA_DIR}/help/help.mlb";
+
+        int bookID = m_bookmanager->addBook(book);
+        if(bookID)
+            IndexTracker::instance()->addTask(bookID, IndexTask::Add, false);
+        else
+            qWarning() << "LibraryManager::addHelpBook Can't add help book";
+    }
+}

@@ -206,12 +206,16 @@ void LibraryInfo::checkDataFiles(QString dataDirPath)
 
 QString LibraryInfo::bookPath(QString bookName)
 {
-    QDir dir(m_booksDir);
-    QString bookDir = bookName.split('_').last().at(0);
+    if(bookName.contains("${")) {
+        return bookName.replace("${DATA_DIR}", App::dataDir());
+    } else {
+        QDir dir(m_booksDir);
+        QString bookDir = bookName.split('_').last().at(0);
 
-    dir.cd(bookDir);
+        dir.cd(bookDir);
 
-    return dir.filePath(bookName);
+        return dir.filePath(bookName);
+    }
 }
 
 QString LibraryInfo::tempDir()

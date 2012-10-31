@@ -177,6 +177,8 @@ bool MainWindow::init()
         m_readerHelper = new BookReaderHelper();
         m_indexTracker->findTasks();
 
+        m_libraryManager->addHelpBook();
+
     } catch(BookException &e) {
         QMessageBox::information(this,
                                  App::name(),
@@ -502,23 +504,7 @@ void MainWindow::showLibraryInfo()
 
 void MainWindow::showHelp()
 {
-    QDir dir(App::dataDir());
-    dir.cd("help");
-
-    WebView *webView = new WebView();
-    webView->setUrl(QUrl::fromLocalFile(dir.absoluteFilePath("moltaqa-lib.html")));
-
-    QDialog *dialog = new QDialog(this);
-    Utils::Widget::hideHelpButton(dialog);
-
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->setMargin(0);
-    layout->addWidget(webView);
-
-    dialog->setWindowTitle(tr("شرح البرنامج"));
-    dialog->setLayout(layout);
-    dialog->resize(750, 550);
-    dialog->show();
+    openBook(LibraryManager::HELP_BOOK_ID);
 }
 
 void MainWindow::checkFinnished()
