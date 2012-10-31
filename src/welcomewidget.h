@@ -4,10 +4,7 @@
 #include "abstarctview.h"
 
 class LibraryBookManager;
-
-namespace Ui {
-    class WelcomeWidget;
-}
+class WebView;
 
 class WelcomeWidget : public AbstarctView
 {
@@ -36,7 +33,7 @@ signals:
 
 private:
     LibraryBookManager *m_bookManager;
-    Ui::WelcomeWidget *ui;
+    WebView *m_webView;
 };
 
 #endif // WELCOMEWIDGET_H

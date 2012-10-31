@@ -318,6 +318,7 @@ void LibraryBookManagerWidget::on_treeView_doubleClicked(const QModelIndex &inde
 
         enableEditWidgets(true);
         setupEdit(info);
+        m_webEdit->setBook(info);
 
         m_currentBook = info;
     }

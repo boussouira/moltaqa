@@ -113,7 +113,7 @@ void TextBookReader::getPages()
             len = file.read(buf, 4096);
             out.append(buf, len);
 
-            if(!len)
+            if(len <= 0)
                 break;
         }
 

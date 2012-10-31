@@ -154,7 +154,9 @@ SOURCES += mainwindow.cpp \
     bookexporter.cpp \
     librarybookexporter.cpp \
     epubbookexporter.cpp \
-    windowsview.cpp
+    windowsview.cpp \
+    webpagenam.cpp \
+    mimeutils.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -297,12 +299,13 @@ HEADERS += mainwindow.h \
     librarybookexporter.h \
     exportformats.h \
     epubbookexporter.h \
-    windowsview.h
+    windowsview.h \
+    webpagenam.h \
+    mimeutils.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \
     importdialog.ui \
-    welcomewidget.ui \
     shamelaimportdialog.ui \
     openpagedialog.ui \
     newlibrarydialog.ui \

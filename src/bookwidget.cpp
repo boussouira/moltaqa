@@ -30,6 +30,7 @@ BookWidget::BookWidget(RichBookReader *db, QWidget *parent): QWidget(parent), m_
     m_splitter = new QSplitter(this);
     m_view = new WebView(this);
     m_view->setStopScroll(!m_db->bookInfo()->isQuran());
+    m_view->setBook(m_db->bookInfo());
 
     m_indexWidget = new IndexWidget(m_splitter);
     m_indexWidget->setBookInfo(db->bookInfo());

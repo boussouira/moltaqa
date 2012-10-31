@@ -11,7 +11,7 @@ class BookInfoDialog : public QWidget
 public:
     BookInfoDialog(QWidget* parent = 0);
 
-    inline void setLibraryBook(LibraryBookPtr book) { m_book = book; }
+    void setLibraryBook(LibraryBookPtr book);
     void setup();
 
 protected:

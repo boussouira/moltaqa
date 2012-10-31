@@ -124,6 +124,7 @@ void BookEditorView::editBook(LibraryBookPtr book, int pageID)
     ui->tabWidget->setTabToolTip(0, book->title);
 
     m_bookEditor->setBookReader(m_bookReader);
+    m_webView->setBook(book);
 
     m_indexEdited = false;
     m_timer->start();

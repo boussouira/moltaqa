@@ -1,13 +1,24 @@
 #include "webpage.h"
 #include "webview.h"
+#include "webpagenam.h"
 
 #include <qdebug.h>
 #include <qnetworkrequest.h>
 #include <qwebelement.h>
 
-WebPage::WebPage(QObject *parent) :
+WebPage::WebPage(WebView *parent) :
     QWebPage(parent)
 {
+    m_webView = parent;
+    m_nam = new WebPageNAM(this);
+
+    setNetworkAccessManager(m_nam);
+}
+
+void WebPage::setBook(LibraryBookPtr book)
+{
+    m_book = book;
+    m_nam->setBook(book);
 }
 
 void WebPage::javaScriptConsoleMessage ( const QString & message, int lineNumber, const QString & sourceID )
@@ -27,15 +38,14 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
 
         return false;
     } else if(url.hasFragment()){
-        WebView *webView = qobject_cast<WebView*>(parent());
-        if(webView) {
+        if(m_webView) {
             QWebElement element = mainFrame()->findFirstElement('#' + url.encodedFragment());
             if(element.isNull())
                 element = mainFrame()->findFirstElement("[name|=" + url.encodedFragment() + "]");
 
             if(!element.isNull()
                     && url.toString(QUrl::RemoveFragment) == mainFrame()->url().toString(QUrl::RemoveFragment)) {
-                webView->scrollToPosition(element.geometry().topLeft(), -1);
+                m_webView->scrollToPosition(element.geometry().topLeft(), -1);
 
                 return false;
             }

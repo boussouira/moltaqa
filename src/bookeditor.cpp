@@ -98,7 +98,8 @@ void BookEditor::unZip()
 
     dir.mkdir(folder);
     dir.cd(folder);
-    dir.mkdir("pages");
+
+    m_createdDirs.clear();
 
     QFile zipFile(m_book->path);
     QuaZip zip(&zipFile);
@@ -116,6 +117,15 @@ void BookEditor::unZip()
             continue;
         }
 
+        QString outPath = dir.filePath(info.name);
+        QFileInfo fileInfo(outPath);
+        if(!m_createdDirs.contains(fileInfo.path())
+                && dir.mkpath(fileInfo.path()))
+            m_createdDirs.append(fileInfo.path());
+
+        if(fileInfo.isDir())
+            continue;
+
         if(!file.open(QIODevice::ReadOnly)) {
             qWarning("BookEditor::unZip open reader Error %d", zip.getZipError());
             continue;
@@ -123,7 +133,8 @@ void BookEditor::unZip()
 
         QFile out(dir.filePath(info.name));
         if(!out.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-            qWarning("BookEditor::unZip open writer Error %d", zip.getZipError());
+            qWarning() << "BookEditor::unZip open" << out.fileName()
+                       << "for writing - Error" << out.errorString();
             file.close();
             continue;
         }
@@ -134,6 +145,9 @@ void BookEditor::unZip()
         while (!file.atEnd()) {
             len = file.read(buf, 4096);
             out.write(buf, len);
+
+            if(len <= 0)
+                break;
         }
 
         out.close();

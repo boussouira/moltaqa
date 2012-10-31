@@ -43,6 +43,12 @@ WebView::~WebView()
     ml_delete_check(m_searcher);
 }
 
+void WebView::setBook(LibraryBookPtr book)
+{
+    m_book = book;
+    m_page->setBook(book);
+}
+
 void WebView::scrollToAya(int pSoraNumber, int pAyaNumber)
 {
     QWebElement aya = m_frame->findFirstElement(QString("span#s%1a%2")
@@ -156,6 +162,26 @@ QString WebView::toHtml()
     return m_frame->toHtml();
 }
 
+LibraryBookPtr WebView::getLibraryBook()
+{
+    ml_return_val_on_fail2(parent(), "WebView::getLibraryBook parent is null", LibraryBookPtr());
+
+    BookWidget *p;
+    QObject *parentObj = parent();
+    while (parentObj) {
+        p = qobject_cast<BookWidget*>(parentObj);
+        if(p)
+            break;
+
+        parentObj = parentObj->parent();
+    }
+
+//    p = qobject_cast<BookWidget*>(parent()->parent()); // QSplitter > BookWidget
+    ml_return_val_on_fail2(p, "WebView::getLibraryBook book widget is null", LibraryBookPtr());
+
+    return p->bookReader()->bookInfo();
+}
+
 void WebView::setText(const QString &text)
 {
     setHtml(text);
@@ -219,16 +245,13 @@ void WebView::openLinkInBrowser()
 
 void WebView::searchInCurrentBook()
 {
-    ml_return_on_fail2(parent(), "WebView::searchInCurrentBook parent is null");
-
-    BookWidget *p = qobject_cast<BookWidget*>(parent()->parent()); // QSplitter > BookWidget
-    ml_return_on_fail2(p, "WebView::searchInCurrentBook book widget is null");
+    ml_return_on_fail2(m_book, "WebView::searchInCurrentBook book is null");
 
     QString text = selectedText().simplified();
     ml_return_on_fail2(text.size(), "WebView::searchInLibrary search text is empty");
 
     SearchWidget *searchWidget = MW->searchView()->newTab(SearchWidget::BookSearch,
-                                                          p->bookReader()->bookInfo()->id);
+                                                          m_book->id);
     ml_return_on_fail2(searchWidget, "WebView::searchInLibrary searchWidget is null");
 
     searchWidget->setSearchText(text);
@@ -334,13 +357,9 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     }
 
     if(selectedText().trimmed().size()) {
-        BookWidget *bookWidget = 0;
-        if(parent())
-            bookWidget = qobject_cast<BookWidget*>(parent()->parent()); // QSplitter > BookWidget
-
         QMenu *searchMenu = menu.addMenu(tr("بحث عن النص المحدد في"));
 
-        if(bookWidget)
+        if(m_book)
             searchMenu->addAction(tr("الكتاب الحالي"), this, SLOT(searchInCurrentBook()));
 
         if(LibraryManager::instance()->bookManager()->getQuranBook())
@@ -349,7 +368,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         searchMenu->addAction(tr("كل الكتب"), this, SLOT(searchInLibrary()));
         menu.addSeparator();
 
-        if(bookWidget && !bookWidget->bookReader()->bookInfo()->isQuran()) {
+        if(m_book && !m_book->isQuran()) {
             QMenu *referMenu = menu.addMenu(tr("نسخ النص مع العزو"));
             foreach(QAction *act, LibraryManager::instance()->textRefersActions()) {
                 referMenu->addAction(act);

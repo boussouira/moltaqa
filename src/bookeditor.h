@@ -45,6 +45,7 @@ protected:
     QString m_newBookPath;
     int m_lastBookID;
     QList<int> m_removedPages;
+    QStringList m_createdDirs;
 };
 
 #endif // BOOKEDITOR_H

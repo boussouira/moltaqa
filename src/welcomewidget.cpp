@@ -1,5 +1,4 @@
 #include "welcomewidget.h"
-#include "ui_welcomewidget.h"
 #include "librarymanager.h"
 #include "modelenums.h"
 #include "modelutils.h"
@@ -12,6 +11,8 @@
 #include "htmlhelper.h"
 #include "authorsmanager.h"
 #include "tarajemrowatmanager.h"
+#include "webview.h"
+#include "webpage.h"
 
 #include <qsettings.h>
 #include <qmenu.h>
@@ -19,11 +20,11 @@
 #include <qwebframe.h>
 #include <qrunnable.h>
 #include <qtimer.h>
-#include "webpage.h"
+#include <QVBoxLayout>
 
 class LibraryInfoThread : public QRunnable {
 public:
-    LibraryInfoThread(QWebView *_view) :
+    LibraryInfoThread(WebView *_view) :
         view(_view),
         booksCount(0),
         authorsCount(0),
@@ -43,7 +44,7 @@ public:
                                   .arg(rowatCount)));
     }
 
-    QWebView *view;
+    WebView *view;
     int booksCount;
     int authorsCount;
     int rowatCount;
@@ -51,14 +52,17 @@ public:
 
 WelcomeWidget::WelcomeWidget(QWidget *parent) :
     AbstarctView(parent),
-    m_bookManager(LibraryManager::instance()->bookManager()),
-    ui(new Ui::WelcomeWidget)
+    m_bookManager(LibraryManager::instance()->bookManager())
 {
-    ui->setupUi(this);
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->setMargin(0);
 
-    ui->webView->setPage(new WebPage(ui->webView));
+    m_webView = new WebView(this);
+    layout->addWidget(m_webView);
 
-    connect(ui->webView->page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()),
+    setLayout(layout);
+
+    connect(m_webView->page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()),
             SLOT(jsCleared()));
 
     setupHTML();
@@ -67,7 +71,6 @@ WelcomeWidget::WelcomeWidget(QWidget *parent) :
 WelcomeWidget::~WelcomeWidget()
 {
     saveSettings();
-    delete ui;
 }
 
 QString WelcomeWidget::title()
@@ -88,7 +91,7 @@ void WelcomeWidget::setupHTML()
     QDir dir(App::dataDir());
     dir.cd("welcome");
 
-    ui->webView->setUrl(QUrl::fromLocalFile(dir.absoluteFilePath("welcome.html")));
+    m_webView->setUrl(QUrl::fromLocalFile(dir.absoluteFilePath("welcome.html")));
 }
 
 void WelcomeWidget::open(QString vid)
@@ -110,7 +113,7 @@ void WelcomeWidget::open(QString vid)
     } else if(vid == "bookslist") {
         MW->showBooksList(0);
     } else if(vid == "moltaqa-lib") {
-        ui->webView->setUrl(QUrl("http://www.ahlalhdeeth.com/vb/forumdisplay.php?f=75"));
+        m_webView->setUrl(QUrl("http://www.ahlalhdeeth.com/vb/forumdisplay.php?f=75"));
     } else {
         qWarning() << "WelcomeWidget::open unknow id" << vid;
     }
@@ -118,11 +121,11 @@ void WelcomeWidget::open(QString vid)
 
 void WelcomeWidget::jsCleared()
 {
-    ui->webView->page()->mainFrame()->addToJavaScriptWindowObject("welcome", this);
+    m_webView->page()->mainFrame()->addToJavaScriptWindowObject("welcome", this);
 }
 
 void WelcomeWidget::showStatistics()
 {
-    QThreadPool::globalInstance()->start(new LibraryInfoThread(ui->webView));
+    QThreadPool::globalInstance()->start(new LibraryInfoThread(m_webView));
 }
 

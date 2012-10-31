@@ -18,6 +18,12 @@ BookInfoDialog::BookInfoDialog(QWidget *parent) : QWidget(parent)
     Utils::Widget::restore(this, "BookInfoDialog");
 }
 
+void BookInfoDialog::setLibraryBook(LibraryBookPtr book)
+{
+    m_book = book;
+    m_view->setBook(book);
+}
+
 void BookInfoDialog::setup()
 {
     ml_return_on_fail2(m_book, "BookInfoDialog::setup book is null");
