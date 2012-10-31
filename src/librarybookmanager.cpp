@@ -252,7 +252,6 @@ int LibraryBookManager::addBook(LibraryBookPtr book)
 
     ml_return_val_on_fail(q.exec(query), 0);
 
-    m_books.insert(book->id, book);
     return book->id;
 }
 
