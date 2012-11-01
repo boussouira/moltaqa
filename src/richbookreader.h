@@ -37,6 +37,7 @@ public:
 
 protected:
     virtual void connected();
+    virtual QString proccessPageText(QString text);
     void readItem(QDomElement &element, QStandardItem *parent);
 
 protected slots:

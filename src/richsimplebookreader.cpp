@@ -52,13 +52,7 @@ void RichSimpleBookReader::setCurrentPage(QDomElement pageNode)
         getShorooh();
 
     QString pageText = getPageText(m_currentPage->pageID);
-    if(m_removeTashekil)
-        pageText = Utils::String::Arabic::removeTashekil(pageText);
-
-    if(m_query && m_highlightPageID == m_currentPage->pageID)
-        m_textFormat->insertText(Utils::CLucene::highlightText(pageText, m_query, false));
-    else
-        m_textFormat->insertText(pageText);
+    m_textFormat->insertText(proccessPageText(pageText));
 
     m_textFormat->done();
 

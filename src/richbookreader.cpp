@@ -7,6 +7,7 @@
 #include "libraryinfo.h"
 #include "modelenums.h"
 #include "xmlutils.h"
+#include "stringutils.h"
 
 #include <qstandarditemmodel.h>
 
@@ -37,6 +38,17 @@ void RichBookReader::connected()
     m_textFormat->setData(m_bookInfo, m_currentPage);
 
     AbstractBookReader::connected();
+}
+
+QString RichBookReader::proccessPageText(QString text)
+{
+    if(m_removeTashekil)
+        text = Utils::String::Arabic::removeTashekil(text);
+
+    if(m_query && m_highlightPageID == m_currentPage->pageID)
+        text = Utils::CLucene::highlightText(text, m_query, false);
+
+    return text;
 }
 
 void RichBookReader::highlightPage(int pageID, CLuceneQuery *query)
