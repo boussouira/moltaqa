@@ -122,6 +122,7 @@ void SettingsDialog::loadSettings()
 
     ui->checkSingleIndexClick->setChecked(settings.value("singleIndexClick", false).toBool());
     ui->checkRemoveTashekil->setChecked(settings.value("removeTashekil", false).toBool());
+    ui->checkFixShamelaShoorts->setChecked(settings.value("fixShamelaShoorts", true).toBool());
     ui->checkShowQuranFirst->setChecked(settings.value("showQuranFirst", true).toBool());
 
     loadSearchFields();
@@ -202,6 +203,7 @@ void SettingsDialog::resetSettings()
          << "Style/fontSize"
          << "Style/singleIndexClick"
          << "Style/removeTashekil"
+         << "Style/fixShamelaShoorts"
          << "Style/showQuranFirst"
          << "BookWidget/splitter"
          << "ShamelaImportDialog/threadCount"
@@ -304,6 +306,7 @@ void SettingsDialog::saveSettings()
 
     saveSetting(settings, "Style", "singleIndexClick", ui->checkSingleIndexClick->isChecked(), true);
     saveSetting(settings, "Style", "removeTashekil", ui->checkRemoveTashekil->isChecked(), true);
+    saveSetting(settings, "Style", "fixShamelaShoorts", ui->checkFixShamelaShoorts->isChecked(), true);
     saveSetting(settings, "Style", "showQuranFirst", ui->checkShowQuranFirst->isChecked(), true);
 
 

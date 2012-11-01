@@ -70,6 +70,7 @@ inline bool isArabic(QChar c) { return (0x0621 <= c &&  c <= 0x06ED); }
 QString arabicNumbers(const QString &text);
 inline QString arabicNumbers(int number) { return arabicNumbers(QString::number(number)); }
 
+QString fixShamelaShoorts(QString text);
 
 } //Arabic
 } //String

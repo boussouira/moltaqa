@@ -300,6 +300,26 @@ QString arabicNumbers(const QString &text)
     return arabicNum;
 }
 
+QString fixShamelaShoorts(QString text)
+{
+    text.replace(QRegExp(QString::fromUtf8("([\\x0621-\\x06ED]\\W)A\\b")),
+                 QString::fromUtf8("\\1""صلى الله عليه وسلم"));
+
+    text.replace(QRegExp(QString::fromUtf8("([\\x0621-\\x06ED]\\W)B\\b")),
+                 QString::fromUtf8("\\1""رضي الله عن"));
+
+    text.replace(QRegExp(QString::fromUtf8("([\\x0621-\\x06ED]\\W)C\\b")),
+                 QString::fromUtf8("\\1""رحمه الله"));
+
+    text.replace(QRegExp(QString::fromUtf8("([\\x0621-\\x06ED]\\W)D\\b")),
+                 QString::fromUtf8("\\1""عز وجل"));
+
+    text.replace(QRegExp(QString::fromUtf8("([\\x0621-\\x06ED]\\W)E\\b")),
+                 QString::fromUtf8("\\1""عليه الصلاة و السلام"));
+
+    return text;
+}
+
 } // Arabic
 } // String
 } // Utils
