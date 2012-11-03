@@ -215,13 +215,40 @@ QString plural(int count, Words word, bool html)
 
 QString clean(QString text)
 {
-    text = text.trimmed();
-    text.replace(QRegExp("[\\x0622\\x0623\\x0625]"), QChar(0x0627));//ALEFs
-    text.replace(QChar(0x0629), QChar(0x0647)); //TAH_MARBUTA -> HEH
-    text.replace(QChar(0x0649), QChar(0x064A)); //YAH -> ALEF MAKSOURA
-    text.remove(QRegExp("[\\x064B-\\x0653]"));
+    QString buf;
+    buf.reserve(text.size());
 
-    return text;
+    for(int i=0; i<text.size(); i++) {
+        QChar ch = text[i];
+
+        switch(ch.unicode()) {
+        case 0x0622: // ALEF WITH MADDA ABOVE
+        case 0x0623: // ALEF WITH HAMEZA ABOVE
+        case 0x0625: // ALEF WITH HAMEZA BELOW
+            buf.append(QChar(0x0627)); // ALEF
+            break;
+        case 0x0629: // TAH MARBUTA
+             buf.append(QChar(0x0647)); // HAH
+            break;
+        case 0x0649: // ALEF MAKSURA
+             buf.append(QChar(0x064A)); // YEH
+            break;
+        case 0x064b:
+        case 0x064c:
+        case 0x064d:
+        case 0x064e:
+        case 0x064f:
+        case 0x0650:
+        case 0x0651:
+        case 0x0652:
+        case 0x0653:
+            break;
+        default:
+            buf.append(ch);
+        }
+    }
+
+    return buf;
 }
 
 bool compare(QChar firstChar, QChar secondChar) {

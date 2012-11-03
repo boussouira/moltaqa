@@ -70,7 +70,7 @@ void UtilsTest::arClean()
 {
     QCOMPARE(Utils::String::Arabic::clean(_u("احمد")), _u("احمد"));
 
-    QCOMPARE(Utils::String::Arabic::clean(_u("أحمد  ")), _u("احمد"));
+    QCOMPARE(Utils::String::Arabic::clean(_u("أحمد  ")), _u("احمد  "));
 
     QCOMPARE(Utils::String::Arabic::clean(_u("إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ")),
              _u("اياك نعبد واياك نستعين"));
