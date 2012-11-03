@@ -140,10 +140,10 @@ void UtilsTest::removeHtmlTags()
             << "<p>My name is <span style=\"color:red;\">kamal</span>from<img src\"pay.png\" /></p>"
             << "<ul dir=\"ltr\"><li><sanad>saad</sanad></li><li>kamal</li><li>karim</li><li><mateen>ahmed</mateen></li></ul>";
 
-    excpected << "Je suis \"kamal\" j'ai 15 < age > 18"
-              << "Test"
-              << "My name is  kamal from"
-              << "saad   kamal  karim   ahmed";
+    excpected << "Je suis \"kamal\" j'ai 15 < age > 18 "
+              << "Test "
+              << "My name is  kamal from  "
+              << "saad   kamal  karim   ahmed   ";
 
     for(int i=0; i<origins.size(); i++)
         QCOMPARE(excpected[i], Utils::Html::removeTags(origins[i]));
@@ -328,9 +328,9 @@ void UtilsTest::removeHTMLFormat()
             << "<p>The aya number<span class=\"ayanumber\"> (50) </span></span>"
                ":<span class=\"aya\"><br><span class=\"ayatxt\" id=\"s34a51\">aya</span></span></p>";
 
-    excpected << "The head\n Small paragraph\nAn other one\n SecondHead"
-              << "Line one\nLine Two\nLine Tree"
-              << "The aya number  (50)   : \n aya";
+    excpected << "The head\n Small paragraph\nAn other one\n SecondHead\n"
+              << "Line one\nLine Two\nLine Tree\n"
+              << "The aya number  (50)   : \n aya  \n";
 
     for(int i=0; i<origins.size(); i++)
         QCOMPARE(excpected[i], Utils::Html::removeHTMLFormat(origins[i]));

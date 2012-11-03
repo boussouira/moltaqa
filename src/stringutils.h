@@ -12,6 +12,7 @@ inline QString removeSpecialChars(QString text)
 }
 
 QString removeTags(QString text);
+
 QString jsEscape(QString text);
 
 QString specialCharsEncode(QString text);

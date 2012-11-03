@@ -1,4 +1,5 @@
 #include "stringutils.h"
+#include "clconstants.h"
 #include <qstringlist.h>
 #include <qsharedpointer.h>
 
@@ -10,9 +11,38 @@ namespace Html {
 
 QString removeTags(QString text)
 {
-    return text.contains('<')
-            ? text.replace(QRegExp("</?\\w[^>]*>"), " ").trimmed()
-            : text;
+    QString buf;
+    bool insideTag = false;
+    QChar lt('<');
+    QChar gt('>');
+    QChar sp(' ');
+
+    buf.reserve(text.size());
+    for (int i=0; i<text.size(); i++) {
+        const QChar ch = text[i];
+        if (ch==lt) {
+            if(i+1<text.size()
+                    && (IS_ASCII(text[i+1]) || text[i+1] == '/')) {
+                insideTag = true;
+            } else {
+                buf.append(ch);
+            }
+        } else if (ch==gt) {
+            if(buf.size()) {
+                if(insideTag)
+                    buf.append(sp);
+                else
+                    buf.append(ch);
+            }
+
+            insideTag = false;
+
+        } else if (!insideTag) {
+            buf.append(ch);
+        }
+    }
+
+    return buf;
 }
 
 QString jsEscape(QString text)
