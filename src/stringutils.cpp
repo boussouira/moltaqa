@@ -68,21 +68,51 @@ QString specialCharsEncode(QString text)
 
 QString getTagsText(const QString &text, const QString &tag)
 {
-    if(!text.contains(tag))
-        return QString();
+    QString buf;
+    QString startTag = "<" + tag;
+    QString endTag = "</" + tag + ">";
 
-    QString result;
-    QRegExp rx(QString("<%1>(.+)</%1>").arg(tag));
-    rx.setMinimal(true);
-    int pos = 0;
+    buf.reserve(text.size());
+    for(int i=0; i<text.size(); i++) {
+        if(text[i] == startTag[0]) { // find the tag start
+            int j = 1;
+            bool match = false;
+            int matcheLen = 1;
+            for(int k=i+1; k<text.size() && j <startTag.size(); ++j, ++k) {
 
-    while ((pos = rx.indexIn(text, pos)) != -1) {
-        result.append(removeTags(rx.cap(1)));
-        result.append(" ");
-        pos += rx.matchedLength();
+                ++matcheLen;
+
+                if (startTag[j].toLower() == text[k].toLower()) {
+                    match = true;
+                } else {
+                    match = false;
+                    break;
+                }
+            }
+
+            if(match) { // find > in starting tag
+                int t=0;
+                QChar gt('>');
+                for(int k=i+matcheLen; i<text.size();k++) {
+                    ++t;
+                    if(text[k]==gt) {
+                        int n=i+matcheLen+t;
+                        int closeIndex = text.indexOf(endTag, n, Qt::CaseInsensitive);
+                        if(closeIndex != -1) {
+                            buf.append(removeTags(text.mid(n, closeIndex-n)));
+                            buf.append(' ');
+
+                            i = closeIndex + endTag.size();
+                        }
+
+                        break;
+                    }
+                }
+            }
+        }
     }
 
-    return result;
+    return buf;
 }
 
 QString nl2br(QString text)
