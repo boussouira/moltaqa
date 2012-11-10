@@ -85,16 +85,16 @@ void LibrarySearcher::open()
 
 void LibrarySearcher::buildQuery()
 {
-    BooleanQuery booleanQuery;
-    booleanQuery.add(m_cluceneQuery->searchQuery, BooleanClause::MUST);
+    BooleanQuery *booleanQuery = new BooleanQuery();
+    booleanQuery->add(m_cluceneQuery->searchQuery, BooleanClause::MUST);
 
     if(m_cluceneQuery->filter)
-        booleanQuery.add(m_cluceneQuery->filter->query, m_cluceneQuery->filter->clause);
+        booleanQuery->add(m_cluceneQuery->filter->query, m_cluceneQuery->filter->clause);
 
     if(m_cluceneQuery->resultFilter)
-        booleanQuery.add(m_cluceneQuery->resultFilter->query, m_cluceneQuery->resultFilter->clause);
+        booleanQuery->add(m_cluceneQuery->resultFilter->query, m_cluceneQuery->resultFilter->clause);
 
-    m_query = m_searcher->rewrite(&booleanQuery);
+    m_query = m_searcher->rewrite(booleanQuery);
 
     if(m_cluceneQuery->sort == CLuceneQuery::BookRelvance) {
         SortField *sort[] = {new SortField(BOOK_ID_FIELD), SortField::FIELD_SCORE(), NULL};
