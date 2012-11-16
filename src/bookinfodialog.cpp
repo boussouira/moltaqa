@@ -116,7 +116,8 @@ void BookInfoDialog::setup()
 
     if(m_book->comment.size()) {
         html.insertDT(tr("ملاحظات:"));
-        html.insertDD(m_book->comment.replace("\n", "<br>"));
+        // Copy the object before editing it
+        html.insertDD(QString(m_book->comment).replace("\n", "<br>"));
     }
 
     html.endDL(); // .dl-horizontal
