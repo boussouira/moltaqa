@@ -6,6 +6,13 @@ namespace Utils {
 
 namespace Html {
 
+QString removeTags(QString text)
+{
+    return text.contains('<')
+            ? text.replace(QRegExp("</?\\w[^>]*>"), " ").trimmed()
+            : text;
+}
+
 QString jsEscape(QString text)
 {
     return text.replace('\\', "\\\\")
