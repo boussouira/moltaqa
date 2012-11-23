@@ -37,6 +37,11 @@ public:
     QDomElement treeFindElement(const QString &attr, int value) { return treeFindElement(QString(), attr, QString::number(value));}
     QDomElement treeFindElement(const QString &tag, const QString &attr, const QString &value);
 
+    QList<QDomElement> treeFindElements(const QString &attr, const QString &value) { return treeFindElements(QString(), attr, value);}
+    QList<QDomElement> treeFindElements(const QString &attr, int value) { return treeFindElements(QString(), attr, QString::number(value));}
+    QList<QDomElement> treeFindElements(const QString &tag, const QString &attr, int value) { return treeFindElements(tag, attr, QString::number(value));}
+    QList<QDomElement> treeFindElements(const QString &tag, const QString &attr, const QString &value);
+
     inline QDomElement& rootElement() { return m_rootElement; }
     inline QDomElement& currentElement() { return m_currentElement; }
     inline QDomDocument& domDocument() { return m_doc; }

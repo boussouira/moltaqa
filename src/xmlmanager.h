@@ -18,6 +18,8 @@ public:
 
     void reloadModels();
 
+    XmlDomHelper &domHelper() { return m_dom; }
+
 protected:
     virtual void saveModel(QXmlStreamWriter &writer, QStandardItemModel *model)=0;
     void makeBackup();

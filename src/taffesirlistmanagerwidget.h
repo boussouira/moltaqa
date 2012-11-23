@@ -22,6 +22,8 @@ public:
 
     QString title();
 
+    void aboutToShow();
+
     void loadModel();
     void save();
 

@@ -33,6 +33,14 @@ QString TaffesirListManagerWidget::title()
     return tr("التفاسير");
 }
 
+void TaffesirListManagerWidget::aboutToShow()
+{
+    if(m_taffesirManager->domHelper().needSave()) {
+        m_taffesirManager->reloadModels();
+        loadModel();
+    }
+}
+
 void TaffesirListManagerWidget::loadModel()
 {
     m_model = m_taffesirManager->allTaffesirModel();

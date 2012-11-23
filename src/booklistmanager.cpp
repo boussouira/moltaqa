@@ -210,16 +210,23 @@ void BookListManager::addBook(int bookID, int parentCat)
         addBook(book, parentCat);
 }
 
-void BookListManager::removeBook(int bookID)
+bool BookListManager::removeBook(int bookID)
 {
-    QDomElement e = m_booksElementHash.value(bookID);
-    ml_return_on_fail2(!e.isNull(), "BookListManager::removeBook no book with id" << bookID);
+    QList<QDomElement> books = m_dom.treeFindElements("book", "id", bookID);
 
-    QDomNode parent = e.parentNode();
-    ml_return_on_fail2(!parent.isNull(), "BookListManager::removeBook parent element is null");
+    ml_return_val_on_fail(books.size(), false);
 
-    ml_return_on_fail2(!parent.removeChild(e).isNull(), "BookListManager::removeBook error when removing book" << bookID);
+    foreach (const QDomElement &e, books) {
+        ml_return_val_on_fail(!e.isNull(), false);
+
+        QDomNode parent = e.parentNode();
+        ml_return_val_on_fail(!parent.isNull(), false);
+
+        ml_return_val_on_fail(!parent.removeChild(e).isNull(), false);
+    }
+
     m_dom.setNeedSave(true);
+    return true;
 }
 
 bool BookListManager::containsBook(int bookID)

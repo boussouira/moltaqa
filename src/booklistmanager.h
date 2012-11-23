@@ -45,7 +45,7 @@ public:
     void addBook(LibraryBookPtr book, int parentCat);
     void addBook(int bookID, int parentCat);
 
-    void removeBook(int bookID);
+    bool removeBook(int bookID);
 
     bool containsBook(int bookID);
 

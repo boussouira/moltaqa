@@ -199,6 +199,34 @@ QDomElement XmlDomHelper::treeFindElement(const QString &tag, const QString &att
     return elementFind(m_rootElement.firstChildElement(tag), tag, attr, value);
 }
 
+void elementsFind(QList<QDomElement> &list, QDomElement element, const QString &tag, const QString &attr, const QString &value)
+{
+    while(!element.isNull()) {
+        if(element.attribute(attr) == value)
+            list.append(element);
+
+        if(element.hasChildNodes()) {
+
+            QDomElement child = element.firstChildElement(tag);
+            while(!child.isNull()){
+                elementsFind(list, child, tag, attr, value);
+
+                child = child.nextSiblingElement(tag);
+            }
+        }
+
+        element = element.nextSiblingElement(tag);
+    }
+}
+
+QList<QDomElement> XmlDomHelper::treeFindElements(const QString &tag, const QString &attr, const QString &value)
+{
+    QList<QDomElement> list;
+    elementsFind(list, m_rootElement.firstChildElement(tag), tag, attr, value);
+
+    return list;
+}
+
 QDomElement XmlDomHelper::setElementText(QDomElement &parent, const QString &tagName, const QString &text, bool cdata)
 {
     QDomElement element = Utils::Xml::findChildElement(parent, m_doc, tagName);

@@ -56,6 +56,14 @@ QString BookListManagerWidget::title()
     return tr("لائحة الكتب");
 }
 
+void BookListManagerWidget::aboutToShow()
+{
+    if(m_manager->domHelper().needSave()) {
+        m_manager->reloadModels();
+        reloadModel();
+    }
+}
+
 void BookListManagerWidget::loadModel()
 {
     ml_delete_check(m_model);
