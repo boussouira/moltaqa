@@ -55,6 +55,15 @@ void XmlManager::makeBackup()
 
     dir.cd("backup");
 
+    QFileInfoList backups = dir.entryInfoList(QStringList() << info.baseName()+"*",
+                                              QDir::Files|QDir::NoDotAndDotDot,
+                                              QDir::Time);
+    if(backups.size() > 5) {
+        for(int i=5; i < backups.size(); i++) {
+            QFile::remove(backups.at(i).filePath());
+        }
+    }
+
     QString fileName = QString("%1_%2.%3")
             .arg(info.baseName())
             .arg(QDateTime::currentDateTime().toString("dd-MM-yyyy_hh-mm-ss"))
