@@ -48,7 +48,6 @@ void selectBooksDialog::selectBooks()
     }
 
     if(m_selectedBooks.size()) {
-        qDebug("SELECTED %d", m_selectedBooks.size());
         accept();
     } else {
         QMessageBox::warning(this,
