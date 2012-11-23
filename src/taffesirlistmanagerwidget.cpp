@@ -56,5 +56,8 @@ void TaffesirListManagerWidget::loadModel()
 
 void TaffesirListManagerWidget::save()
 {
-    m_taffesirManager->save(m_model);
+    if(m_treeManager->isDataChanged()) {
+        m_taffesirManager->save(m_model);
+        m_treeManager->setDataChanged(false);
+    }
 }

@@ -49,15 +49,15 @@ void BookIndexEditor::setModel(QStandardItemModel *model)
     m_model = model;
     ui->treeView->setModel(model);
 
+    m_treeManager->setTreeView(ui->treeView);
+    m_treeManager->setModel(m_model);
+    m_treeManager->setup();
+
     connect(ui->treeView->selectionModel(),
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             SLOT(updateActions()));
 
-    connect(m_model, SIGNAL(itemChanged(QStandardItem*)), SIGNAL(indexEdited()));
-
-    m_treeManager->setTreeView(ui->treeView);
-    m_treeManager->setModel(m_model);
-    m_treeManager->setup();
+    connect(m_treeManager, SIGNAL(modelDataChanged()), SIGNAL(indexEdited()));
 
     updateActions();
 }
@@ -108,6 +108,8 @@ bool BookIndexEditor::save(QString path)
     writer.setAutoFormatting(true);
 
     saveModel(&writer);
+
+    m_treeManager->setDataChanged(false);
 
     return true;
 }

@@ -50,7 +50,11 @@ public:
     void setMoveRightButton(QAbstractButton *btn);
     void setRemovButton(QAbstractButton *btn);
 
+    bool isDataChanged() { return m_dataChanged; }
+    void setDataChanged(bool changed) { m_dataChanged = changed; }
+
 protected slots:
+    void dataChanged();
     void updateActions();
 
     void moveUp();
@@ -58,6 +62,9 @@ protected slots:
     void moveRight();
     void moveLeft();
     void removeItem();
+
+signals:
+    void modelDataChanged();
 
 protected:
     QTreeView *m_tree;
@@ -69,6 +76,7 @@ protected:
     QAbstractButton *m_remove;
     QModelIndex m_lastLeftParent;
     int m_lastLeftRow;
+    bool m_dataChanged;
 };
 
 #endif // MODELUTILS_H

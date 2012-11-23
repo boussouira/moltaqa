@@ -280,6 +280,7 @@ TreeViewEditor::TreeViewEditor(QObject *parent) : QObject(parent)
      m_moveRight = 0;
      m_remove = 0;
      m_lastLeftRow = -1;
+     m_dataChanged = false;
 }
 
 TreeViewEditor::~TreeViewEditor()
@@ -299,6 +300,7 @@ void TreeViewEditor::setModel(QStandardItemModel *model)
     ml_return_on_fail(model);
 
     m_model = model;
+    m_dataChanged = false;
 }
 
 void TreeViewEditor::setup()
@@ -308,6 +310,12 @@ void TreeViewEditor::setup()
     ml_return_on_fail2(m_tree->selectionModel(), "TreeViewEditor::setup selection model is null");
 
     m_tree->setSelectionMode(QAbstractItemView::ExtendedSelection);
+
+    // Detect model editing
+    connect(m_model, SIGNAL(itemChanged(QStandardItem*)), SLOT(dataChanged()));
+    connect(m_model, SIGNAL(rowsInserted(QModelIndex, int, int)), SLOT(dataChanged()));
+    connect(m_model, SIGNAL(rowsRemoved(QModelIndex, int, int)), SLOT(dataChanged()));
+    connect(m_model, SIGNAL(rowsMoved(QModelIndex, int, int, QModelIndex, int)), SLOT(dataChanged()));
 
     connect(m_model,
             SIGNAL(layoutChanged()),
@@ -356,6 +364,13 @@ void TreeViewEditor::setRemovButton(QAbstractButton *btn)
 
     m_remove = btn;
     connect(m_remove, SIGNAL(clicked()), SLOT(removeItem()));
+}
+
+void TreeViewEditor::dataChanged()
+{
+    m_dataChanged = true;
+
+    emit modelDataChanged();
 }
 
 void TreeViewEditor::updateActions()

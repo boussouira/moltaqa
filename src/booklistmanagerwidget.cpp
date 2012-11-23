@@ -80,7 +80,10 @@ void BookListManagerWidget::loadModel()
 
 void BookListManagerWidget::save()
 {
-    m_manager->save(m_model);
+    if(m_treeManager->isDataChanged()) {
+        m_manager->save(m_model);
+        m_treeManager->setDataChanged(false);
+    }
 }
 
 void BookListManagerWidget::reloadModel()
