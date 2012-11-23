@@ -68,6 +68,7 @@ public slots:
 protected slots:
     void setupCleanMenu();
     void clearSpecialChar();
+    void matchSearch();
     void showFilterTools();
     void showSearchFieldMenu();
     void doneSearching();

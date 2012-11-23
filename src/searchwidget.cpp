@@ -373,10 +373,13 @@ void SearchWidget::setupCleanMenu()
     foreach(FilterLineEdit *line, lines) {
         QMenu *menu = new QMenu(line);
         QAction *clearSpecialCharAct = new QAction(tr("ابطال مفعول الاقواس وغيرها"), line);
+        QAction *matchSearchAct = new QAction(tr("بحث مطابق"), line);
 
         menu->addAction(clearSpecialCharAct);
+        menu->addAction(matchSearchAct);
 
         connect(clearSpecialCharAct, SIGNAL(triggered()), SLOT(clearSpecialChar()));
+        connect(matchSearchAct, SIGNAL(triggered()), SLOT(matchSearch()));
 
         line->setFilterMenu(menu);
     }
@@ -479,5 +482,29 @@ void SearchWidget::clearSpecialChar()
 
     if(edit) {
         edit->setText(Utils::CLucene::clearSpecialChars(edit->text()));
+    }
+}
+
+void SearchWidget::matchSearch()
+{
+    FilterLineEdit *edit = qobject_cast<FilterLineEdit*>(sender()->parent());
+
+    if(edit) {
+        QString text = edit->text().trimmed();
+        if(text.isEmpty())
+            return;
+
+        QChar del('"');
+        if(text.startsWith(del) && text.endsWith(del)) {
+            text = text.remove(0, 1).remove(text.size()-2, 1);
+        } else {
+            if(!text.startsWith(del))
+                text.prepend(del);
+
+            if(!text.endsWith(del))
+                text.append(del);
+        }
+
+        edit->setText(text);
     }
 }
