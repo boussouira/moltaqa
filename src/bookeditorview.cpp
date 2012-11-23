@@ -288,8 +288,7 @@ void BookEditorView::readerTextChange()
 
 void BookEditorView::checkPageModified()
 {
-    bool pageModified = m_webView->pageModified();
-    m_actionSave->setEnabled(m_pages.size() || pageModified || m_indexEdited);
+    m_actionSave->setEnabled(m_pages.size() || m_indexEdited || m_webView->pageModified());
 }
 
 void BookEditorView::indexChanged()
