@@ -2,6 +2,8 @@
 #include <qstringlist.h>
 #include <qsharedpointer.h>
 
+#define _u QString::fromUtf8
+
 namespace Utils {
 
 namespace Html {
@@ -309,20 +311,17 @@ QString arabicNumbers(const QString &text)
 
 QString fixShamelaShoorts(QString text)
 {
-    text.replace(QRegExp(QString::fromUtf8("([\\x0621-\\x06ED]\\W)A\\b")),
-                 QString::fromUtf8("\\1""صلى الله عليه وسلم"));
+    text.replace(QRegExp(_u("([\\x0621-\\x06ED]\\W)A\\b")), _u("\\1""صلى الله عليه وسلم"));
+    text.replace(QRegExp(_u("([\\x0621-\\x06ED]\\W)B([هماـ]*)\\b")), _u("\\1""رضي الله عن""\\2"));
+    text.replace(QRegExp(_u("([\\x0621-\\x06ED]\\W)C\\b")), _u("\\1""رحمه الله"));
+    text.replace(QRegExp(_u("([\\x0621-\\x06ED]\\W)D\\b")), _u("\\1""عز وجل"));
+    text.replace(QRegExp(_u("([\\x0621-\\x06ED]\\W)E\\b")), _u("\\1""عليه الصلاة و السلام"));
 
-    text.replace(QRegExp(QString::fromUtf8("([\\x0621-\\x06ED]\\W)B\\b")),
-                 QString::fromUtf8("\\1""رضي الله عن"));
-
-    text.replace(QRegExp(QString::fromUtf8("([\\x0621-\\x06ED]\\W)C\\b")),
-                 QString::fromUtf8("\\1""رحمه الله"));
-
-    text.replace(QRegExp(QString::fromUtf8("([\\x0621-\\x06ED]\\W)D\\b")),
-                 QString::fromUtf8("\\1""عز وجل"));
-
-    text.replace(QRegExp(QString::fromUtf8("([\\x0621-\\x06ED]\\W)E\\b")),
-                 QString::fromUtf8("\\1""عليه الصلاة و السلام"));
+    text.replace(QRegExp(_u("(>\\W*)A(\\W+[\\x0621-\\x06ED])")), _u("\\1""صلى الله عليه وسلم""\\2"));
+    text.replace(QRegExp(_u("(>\\W*)B([هماـ]*)(\\W+[\\x0621-\\x06ED])")), _u("\\1""رضي الله عن""\\2""\\3"));
+    text.replace(QRegExp(_u("(>\\W*)C(\\W+[\\x0621-\\x06ED])")), _u("\\1""رحمه الله""\\2"));
+    text.replace(QRegExp(_u("(>\\W*)D(\\W+[\\x0621-\\x06ED])")), _u("\\1""عز وجل""\\2"));
+    text.replace(QRegExp(_u("(>\\W*)E(\\W+[\\x0621-\\x06ED])")), _u("\\1""عليه الصلاة و السلام""\\2"));
 
     return text;
 }
