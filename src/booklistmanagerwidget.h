@@ -3,6 +3,7 @@
 
 #include "controlcenterwidget.h"
 #include "librarymanager.h"
+#include "modelviewsearcher.h"
 
 namespace Ui {
     class BookListManagerWidget;
@@ -47,6 +48,7 @@ protected:
     QList<QList<QStandardItem*> > m_cattedItems;
     BookListManager *m_manager;
     TreeViewEditor *m_treeManager;
+    ModelViewSearcher *m_viewSearcher;
     Ui::BookListManagerWidget *ui;
 };
 

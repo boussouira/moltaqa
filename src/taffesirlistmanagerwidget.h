@@ -2,6 +2,7 @@
 #define EDITTAFFASIRLISTWIDGET_H
 
 #include "controlcenterwidget.h"
+#include "modelviewsearcher.h"
 #include <qstandarditemmodel.h>
 
 namespace Ui {
@@ -31,6 +32,7 @@ private:
     QStandardItemModel *m_model;
     TaffesirListManager *m_taffesirManager;
     TreeViewEditor *m_treeManager;
+    ModelViewSearcher *m_viewSearcher;
     Ui::TaffesirListManagerWidget *ui;
 };
 

@@ -18,6 +18,9 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <widget class="FilterLineEdit" name="filterLineEdit"/>
+   </item>
+   <item>
     <widget class="QTreeView" name="treeView">
      <property name="rootIsDecorated">
       <bool>false</bool>
@@ -101,6 +104,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>FilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>filterlineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../share/moltaqa-lib/qt_rc.qrc"/>
  </resources>

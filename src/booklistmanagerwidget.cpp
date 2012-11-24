@@ -29,6 +29,7 @@ BookListManagerWidget::BookListManagerWidget(QWidget *parent) :
 
     m_manager = LibraryManager::instance()->bookListManager();
     m_treeManager = new TreeViewEditor(this);
+    m_viewSearcher = new ModelViewSearcher(this);
 
     m_treeManager->setMoveUpButton(ui->toolMoveUp);
     m_treeManager->setMoveDownButton(ui->toolMoveDown);
@@ -76,6 +77,11 @@ void BookListManagerWidget::loadModel()
     m_treeManager->setTreeView(ui->treeView);
     m_treeManager->setModel(m_model);
     m_treeManager->setup();
+
+    m_viewSearcher->setTreeView(ui->treeView);
+    m_viewSearcher->setSourceModel(m_model);
+    m_viewSearcher->setLineEdit(ui->filterLineEdit);
+    m_viewSearcher->setup();
 }
 
 void BookListManagerWidget::save()

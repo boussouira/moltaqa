@@ -15,6 +15,7 @@ TaffesirListManagerWidget::TaffesirListManagerWidget(QWidget *parent) :
     m_model = 0;
     m_taffesirManager = LibraryManager::instance()->taffesirListManager();
     m_treeManager = new TreeViewEditor(this);
+    m_viewSearcher = new ModelViewSearcher(this);
 
     m_treeManager->setMoveUpButton(ui->toolMoveUp);
     m_treeManager->setMoveDownButton(ui->toolMoveDown);
@@ -52,6 +53,11 @@ void TaffesirListManagerWidget::loadModel()
     m_treeManager->setTreeView(ui->treeView);
     m_treeManager->setModel(m_model);
     m_treeManager->setup();
+
+    m_viewSearcher->setTreeView(ui->treeView);
+    m_viewSearcher->setSourceModel(m_model);
+    m_viewSearcher->setLineEdit(ui->filterLineEdit);
+    m_viewSearcher->setup();
 }
 
 void TaffesirListManagerWidget::save()
