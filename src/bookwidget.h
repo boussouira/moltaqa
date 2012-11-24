@@ -20,11 +20,11 @@ class BookWidget: public QWidget
     Q_OBJECT
 
 public:
-    BookWidget(RichBookReader *db, QWidget *parent=0);
+    BookWidget(RichBookReader *reader, QWidget *parent=0);
     ~BookWidget();
 
     void displayInfo();
-    RichBookReader *bookReader() { return m_db; }
+    RichBookReader *bookReader() { return m_reader; }
     IndexWidget *indexWidget() { return m_indexWidget; }
     WebView *webView() { return m_view; }
     void hideIndexWidget();
@@ -79,7 +79,7 @@ protected:
     QVBoxLayout *m_layout;
     WebView *m_view;
     IndexWidget *m_indexWidget;
-    RichBookReader *m_db;
+    RichBookReader *m_reader;
     LibraryBookManager *m_bookManager;
     BookReaderHelper *m_bookHelper;
     QFuture<QStandardItemModel*> m_retModel;
