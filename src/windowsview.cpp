@@ -11,7 +11,7 @@ WindowsView::WindowsView(QWidget *parent) :
     QDialog(parent)
 {
     setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
-
+    setWindowTitle(tr("مكتبة الملتقى"));
 
     QVBoxLayout *verticalLayout = new QVBoxLayout(this);
     verticalLayout->setMargin(0);
