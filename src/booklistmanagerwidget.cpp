@@ -16,6 +16,10 @@
 #include <qmenu.h>
 #include <qaction.h>
 #include <qinputdialog.h>
+#include <qboxlayout.h>
+#include <qpushbutton.h>
+#include <qlabel.h>
+#include <qprogressdialog.h>
 
 BookListManagerWidget::BookListManagerWidget(QWidget *parent) :
     ControlCenterWidget(parent),
@@ -30,6 +34,7 @@ BookListManagerWidget::BookListManagerWidget(QWidget *parent) :
     m_manager = LibraryManager::instance()->bookListManager();
     m_treeManager = new TreeViewEditor(this);
     m_viewSearcher = new ModelViewSearcher(this);
+    m_updateBooksModel = 0;
 
     m_treeManager->setMoveUpButton(ui->toolMoveUp);
     m_treeManager->setMoveDownButton(ui->toolMoveDown);
@@ -38,6 +43,7 @@ BookListManagerWidget::BookListManagerWidget(QWidget *parent) :
     m_treeManager->setRemovButton(ui->toolRemoveCat);
 
     connect(ui->toolAddCat, SIGNAL(clicked()), SLOT(addToBookList()));
+    connect(ui->toolUpdateList, SIGNAL(clicked()), SLOT(updateBooksList()));
     connect(m_manager, SIGNAL(ModelsReady()), SLOT(reloadModel()));
 
     connect(ui->treeView, SIGNAL(customContextMenuRequested(QPoint)),
@@ -341,4 +347,145 @@ void BookListManagerWidget::addBookItem(LibraryBookPtr book, const QModelIndex &
 void BookListManagerWidget::modelEdited()
 {
     setModified(true);
+}
+
+void BookListManagerWidget::updateBooksList()
+{
+    int rep = QMessageBox::question(this,
+                                    tr("لائحة الكتب"),
+                                    tr("هل تريد تحديث قائمة الكتب؟"),
+                                    QMessageBox::Yes|QMessageBox::No, QMessageBox::No);
+
+    ml_return_on_fail(rep == QMessageBox::Yes);
+
+    ml_delete_check(m_updateBooksModel);
+    m_updateBooksModel = new QStandardItemModel(this);
+
+    QProgressDialog dialog(this);
+    dialog.setWindowTitle(tr("تحديث اللائحة"));
+    dialog.setLabelText(tr("جاري تحديث لائحة الكتب..."));
+    dialog.setMaximum(m_model->rowCount());
+    dialog.setCancelButton(0);
+    dialog.show();
+
+    ml_benchmark_start();
+
+    QModelIndex index = m_model->index(0, 0);
+    while(index.isValid()) {
+        updateItem(index);
+        dialog.setValue(dialog.value()+1);
+
+        index = index.sibling(index.row()+1, index.column());
+    }
+
+    ml_benchmark_elapsed("UPDATE");
+
+    dialog.hide();
+
+    if(m_updateBooksModel->rowCount() > 0) {
+        QLabel *label = new QLabel(tr("التغييرات التي طرأت على لائحة الكتب:"));
+
+        QTreeView *tree = new QTreeView();
+        tree->setHeaderHidden(true);
+        tree->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        tree->setModel(m_updateBooksModel);
+
+        QVBoxLayout *layout = new QVBoxLayout();
+        layout->addWidget(label);
+        layout->addWidget(tree);
+
+        QDialog *dialog = new QDialog(this);
+        dialog->setWindowTitle(tr("تحديث لائحة الكتب"));
+        dialog->setLayout(layout);
+        dialog->resize(420, 250);
+        dialog->exec();
+    } else {
+        QMessageBox::information(this,
+                                 tr("تحديث اللائحة"),
+                                 tr("تم تحديث لائحة الكتب"));
+    }
+}
+
+void BookListManagerWidget::updateItem(QModelIndex index)
+{
+    if(index.data(ItemRole::itemTypeRole).toInt() == ItemType::BookItem) {
+        QModelIndex authorIndex = index.sibling(index.row(), 1);
+        QModelIndex authorDeathIndex = index.sibling(index.row(), 2);
+
+        int bookID = index.data(ItemRole::idRole).toInt();
+        int authorID = authorIndex.data(ItemRole::authorIdRole).toInt();
+        bool isQuran = index.data(ItemRole::typeRole).toInt() == LibraryBook::QuranBook;
+
+        QStandardItem *bookItem = new QStandardItem(tr("كتاب '%1'").arg(index.data().toString()));
+        LibraryBookPtr book = LibraryManager::instance()->bookManager()->getLibraryBook(bookID);
+        if(book) {
+            bookItem->setIcon(QIcon(":/images/refresh2.png"));
+            QList<QStandardItem*> bookItems;
+            if(index.data().toString() != book->title) {
+                bookItems << new QStandardItem(tr("تغيير عنوان الكتاب من '%1' الى '%2'")
+                                               .arg(index.data().toString())
+                                               .arg(book->title));
+                m_model->setData(index, book->title, Qt::EditRole);
+
+            }
+
+            if(authorID != book->authorID) {
+                m_model->setData(authorIndex, book->authorID, ItemRole::authorIdRole);
+                authorID = book->authorID;
+            }
+
+            if(authorID && !isQuran) {
+                AuthorInfoPtr author = LibraryManager::instance()->authorsManager()->getAuthorInfo(authorID);
+                if(author) {
+                    if(author->name != authorIndex.data().toString()) {
+                        bookItems << new QStandardItem(tr("تغيير اسم المؤلف من '%1' الى '%2'")
+                                                       .arg(authorIndex.data().toString())
+                                                       .arg(author->name));
+                        m_model->setData(authorIndex, author->name, Qt::EditRole);
+                    }
+
+                    if(author->deathStr != authorDeathIndex.data().toString()) {
+                        bookItems << new QStandardItem(tr("تغيير وفاة المؤلف من '%1' الى '%2'")
+                                                       .arg(authorDeathIndex.data().toString())
+                                                       .arg(author->deathStr));
+                        m_model->setData(authorDeathIndex, author->deathStr, Qt::EditRole);
+                    }
+
+                    if(author->deathYear != authorDeathIndex.data(ItemRole::authorDeathRole).toInt()) {
+                        m_model->setData(authorDeathIndex, author->deathYear, ItemRole::authorDeathRole);
+                    }
+                } else {
+                    qWarning() << "Author not found for" << book->title;
+                }
+            }
+
+            if(bookItems.size()) {
+                bookItem->appendRows(bookItems);
+                m_updateBooksModel->appendRow(bookItem);
+            } else {
+                delete bookItem;
+            }
+        } else {
+            qWarning() << "BookListManagerWidget::updateItem book not found:"
+                       << index.data().toString()
+                       << "remove it from the list";
+
+            if(m_model->removeRow(index.row(), index.parent())) {
+                bookItem->setText(tr("حذف %1").arg(bookItem->text()));
+                bookItem->setIcon(QIcon(":/images/delete2.png"));
+                m_updateBooksModel->appendRow(bookItem);
+            } else {
+                qWarning() << "BookListManagerWidget::updateItem Can't remove"
+                           << index.data().toString() << "from books list";
+            }
+        }
+
+    }
+
+    QModelIndex child = index.child(0, 0);
+    while(child.isValid()) {
+        updateItem(child);
+
+        child = child.sibling(child.row()+1, child.column());
+    }
 }

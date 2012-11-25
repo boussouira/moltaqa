@@ -41,5 +41,6 @@
         <file>images/go-up-search.png</file>
         <file>images/alert.png</file>
         <file>images/delete2.png</file>
+        <file>images/refresh2.png</file>
     </qresource>
 </RCC>
