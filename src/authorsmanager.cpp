@@ -58,8 +58,12 @@ void AuthorsManager::loadAuthorsInfo()
 
         if(flags & AuthorInfo::ALive) {
             auth->isALive = true;
+            auth->deathYear = Utils::Time::aliveDeathYear();
+            auth->deathStr = tr("معاصر");
         } else if(flags & AuthorInfo::UnknowDeath) {
             auth->unknowDeath = true;
+            auth->deathYear = Utils::Time::unknowDeathYear();
+            auth->deathStr = tr("مجهول");
         } else {
             auth->deathYear = query.value(6).toInt();
             auth->deathStr = query.value(7).toString();

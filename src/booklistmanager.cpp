@@ -304,17 +304,8 @@ QList<QStandardItem*> BookListManager::readBookNode(QDomElement &element)
 
         if(auth) {
             authName = auth->name;
-
-            if(auth->unknowDeath) {
-                deathStr = tr("مجهول");
-                deathYear = Utils::Time::unknowDeathYear();
-            } else if(auth->isALive) {
-                deathStr = tr("معاصر");
-                deathYear = Utils::Time::aliveDeathYear();
-            } else {
-                deathYear = auth->deathYear;
-                deathStr = auth->deathStr;
-            }
+            deathYear = auth->deathYear;
+            deathStr = auth->deathStr;
         } else {
             authName = element.firstChildElement("author").text();
         }
