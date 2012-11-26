@@ -138,12 +138,14 @@ void UtilsTest::removeHtmlTags()
     origins << "<p>Je suis \"kamal\" j'ai 15 < age > 18</p>"
             << "<a href='test'>Test</a>"
             << "<p>My name is <span style=\"color:red;\">kamal</span>from<img src\"pay.png\" /></p>"
-            << "<ul dir=\"ltr\"><li><sanad>saad</sanad></li><li>kamal</li><li>karim</li><li><mateen>ahmed</mateen></li></ul>";
+            << "<ul dir=\"ltr\"><li><sanad>saad</sanad></li><li>kamal</li><li>karim</li><li><mateen>ahmed</mateen></li></ul>"
+            << "No HTML tags";
 
     excpected << "Je suis \"kamal\" j'ai 15 < age > 18 "
               << "Test "
               << "My name is  kamal from  "
-              << "saad   kamal  karim   ahmed   ";
+              << "saad   kamal  karim   ahmed   "
+              << "No HTML tags";
 
     for(int i=0; i<origins.size(); i++)
         QCOMPARE(excpected[i], Utils::Html::removeTags(origins[i]));
@@ -159,11 +161,13 @@ void UtilsTest::getTags()
             << "Sime test<sanad id=\"n_2\" class=\"title\">This is a test</sanad>, test an other tag:"
                "<sanad style=\"color:red;\">I mean <span class=\"red\">THIS</span> tag</sanad> if it work."
             << "<SANAD CLASS=\"on\">Simple Text</SANAD>"
-            << "<span class=\"red\">Simple Text</span>";
+            << "<span class=\"red\">Simple Text</span>"
+            << "No HTML tags";
 
     excpected << "This is a test I mean  THIS  tag "
               << "This is a test I mean  THIS  tag "
               << "Simple Text "
+              << ""
               << "";
 
     for(int i=0; i<origins.size(); i++)
