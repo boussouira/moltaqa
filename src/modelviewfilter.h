@@ -40,6 +40,8 @@ public:
 
     void setup();
 
+    void reset();
+
     SortFilterProxyModel *filterModel();
 
 protected:

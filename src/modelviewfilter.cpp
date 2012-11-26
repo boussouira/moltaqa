@@ -12,20 +12,9 @@ Q_DECLARE_METATYPE(FilterInfo)
 
 ModelViewFilter::ModelViewFilter(QObject *parent) :
     QObject(parent),
-    m_treeView(0),
-    m_model(0),
-    m_filterModel(new SortFilterProxyModel(this)),
-    m_lineEdit(0),
-
-    m_role(Qt::DisplayRole),
-    m_filterColumn(0),
-    m_defaultRole(-1),
-    m_defaultColumn(-1),
-    m_defaultOrder(Qt::AscendingOrder),
-    m_menu(0),
-    m_filterMenu(0),
-    m_filterActionGroup(0)
+    m_filterModel(0)
 {
+    reset();
 }
 
 void ModelViewFilter::setSourceModel(QStandardItemModel *model)
@@ -121,6 +110,25 @@ void ModelViewFilter::setup()
             SLOT(sortChanged(int,Qt::SortOrder)));
 
     m_treeView->installEventFilter(this);
+}
+
+void ModelViewFilter::reset()
+{
+    m_treeView = 0;
+    m_model = 0;
+    m_lineEdit = 0;
+
+    m_role = Qt::DisplayRole;
+    m_filterColumn = 0;
+    m_defaultRole = -1;
+    m_defaultColumn = -1;
+    m_defaultOrder = Qt::AscendingOrder;
+    m_menu = 0;
+    m_filterMenu = 0;
+    m_filterActionGroup = 0;
+
+    ml_delete_check(m_filterModel);
+    m_filterModel = new SortFilterProxyModel(this);
 }
 
 SortFilterProxyModel *ModelViewFilter::filterModel()

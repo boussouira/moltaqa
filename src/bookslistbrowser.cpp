@@ -104,6 +104,8 @@ void BooksListBrowser::readBookListModel()
     m_bookListModel = Utils::Model::cloneModel(m_bookListManager->bookListModel());
     ml_return_on_fail2(m_bookListModel, "BooksListBrowser::readBookListModel model is null");
 
+    m_bookListFilter->reset();
+
     m_bookListFilter->setLineEdit(ui->lineFilterBookList);
     m_bookListFilter->setTreeView(ui->treeBookList);
     m_bookListFilter->setSourceModel(m_bookListModel);
@@ -128,6 +130,8 @@ void BooksListBrowser::readFavouritesModel()
 
     m_favouritesModel = Utils::Model::cloneModel(m_favouritesManager->bookListModel());
     ml_return_on_fail2(m_favouritesModel, "BooksListBrowser::readFavouritesModel model is null");
+
+    m_favouritesListFilter->reset();
 
     m_favouritesListFilter->setLineEdit(ui->lineFilterFavourites);
     m_favouritesListFilter->setTreeView(ui->treeFavouritesList);
