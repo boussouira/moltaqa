@@ -368,8 +368,6 @@ void BookListManagerWidget::updateBooksList()
     dialog.setCancelButton(0);
     dialog.show();
 
-    ml_benchmark_start();
-
     QModelIndex index = m_model->index(0, 0);
     while(index.isValid()) {
         updateItem(index);
@@ -377,8 +375,6 @@ void BookListManagerWidget::updateBooksList()
 
         index = index.sibling(index.row()+1, index.column());
     }
-
-    ml_benchmark_elapsed("UPDATE");
 
     dialog.hide();
 

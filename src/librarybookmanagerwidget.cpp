@@ -263,7 +263,6 @@ void LibraryBookManagerWidget::save()
         m_manager->transaction();
 
         foreach(LibraryBookPtr book, m_editedBookInfo.values()) {
-            qDebug("BookManagerWidget::save Saving book %d...", book->id);
             m_manager->updateBook(book);
         }
 
