@@ -17,6 +17,10 @@ QString removeTags(QString text)
     QChar gt('>');
     QChar sp(' ');
 
+    // Check if we have any tag
+    if(text.indexOf('<') == -1)
+        return text;
+
     buf.reserve(text.size());
     for (int i=0; i<text.size(); i++) {
         const QChar ch = text[i];
@@ -72,8 +76,14 @@ QString getTagsText(const QString &text, const QString &tag)
     QString startTag = "<" + tag;
     QString endTag = "</" + tag + ">";
 
+
+    int initOffset = text.indexOf('<');
+    if(initOffset == -1)
+        return QString();
+
     buf.reserve(text.size());
-    for(int i=0; i<text.size(); i++) {
+
+    for(int i=initOffset; i<text.size(); i++) {
         if(text[i] == startTag[0]) { // find the tag start
             int j = 1;
             bool match = false;
