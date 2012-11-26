@@ -19,14 +19,6 @@ public:
     ~FavouritesManagerWidget();
 
     QString title();
-
-//    void loadModel();
-//    void save();
-
-protected:
-//    QStandardItemModel *m_model;
-//    QList<QStandardItem*> m_copiedItems;
-//    Ui::FavouritesManagerWidget *ui;
 };
 
 #endif // FAVOURITESMANAGERWIDGET_H
