@@ -19,6 +19,8 @@ selectBooksDialog::selectBooksDialog(QWidget *parent) :
     Utils::Model::setModelCheckable(m_model.data());
 
     m_filter = new ModelViewFilter(this);
+    m_filter->addFilterColumn(0, Qt::DisplayRole, tr("عنوان الكتاب"));
+    m_filter->addFilterColumn(1, Qt::DisplayRole, tr("اسم المؤلف"));
     m_filter->setSourceModel(m_model.data());
     m_filter->setTreeView(ui->treeView);
     m_filter->setLineEdit(ui->lineSearch);

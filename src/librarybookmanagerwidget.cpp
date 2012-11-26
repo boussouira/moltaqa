@@ -144,12 +144,14 @@ void LibraryBookManagerWidget::loadModel()
 
     m_model = Utils::Model::cloneModel(m_manager->getModel().data());
 
+    m_filter->reset();
+    m_filter->addFilterColumn(0, Qt::DisplayRole, tr("عنوان الكتاب"));
+    m_filter->addFilterColumn(1, Qt::DisplayRole, tr("اسم المؤلف"));
+
     m_filter->setSourceModel(m_model);
     m_filter->setLineEdit(ui->lineFilter);
     m_filter->setTreeView(ui->treeView);
     m_filter->setup();
-
-    ui->treeView->resizeColumnToContents(0);
 }
 
 void LibraryBookManagerWidget::infoChanged()

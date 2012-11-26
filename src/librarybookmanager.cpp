@@ -46,11 +46,12 @@ StandardItemModelPtr LibraryBookManager::getModel(bool bookIcon)
     QStandardItemModel *model = new QStandardItemModel();
 
     QSqlQuery query(m_db);
-    query.prepare("SELECT id, title FROM books ORDER BY id");
+    query.prepare("SELECT id, title, authorID FROM books ORDER BY id");
 
     ml_query_exec(query);
 
     while(query.next()) {
+        QList<QStandardItem*> rows;
         QStandardItem *item = new QStandardItem();
         item->setText(query.value(1).toString());
         item->setData(query.value(0).toInt(), ItemRole::idRole);
@@ -58,10 +59,20 @@ StandardItemModelPtr LibraryBookManager::getModel(bool bookIcon)
         if(bookIcon)
             item->setIcon(QIcon(":/images/book.png"));
 
-        model->appendRow(item);
+        rows << item;
+
+        AuthorInfoPtr author = m_authorsManager->getAuthorInfo(query.value(2).toInt());
+        if(author) {
+            QStandardItem *authorItem = new QStandardItem();
+            authorItem->setText(author->name);
+            authorItem->setData(author->id, ItemRole::authorIdRole);
+            rows << authorItem;
+        }
+
+        model->appendRow(rows);
     }
 
-    model->setHorizontalHeaderLabels(QStringList() << tr("الكتب"));
+    model->setHorizontalHeaderLabels(QStringList() << tr("الكتب") << tr("المؤلف"));
 
     return StandardItemModelPtr(model);
 }
