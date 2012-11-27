@@ -22,6 +22,7 @@ class QSqlQuery;
 class QSqlDatabase;
 class QTreeView;
 class QDialog;
+class QToolBar;
 
 namespace Utils {
 
@@ -45,6 +46,9 @@ void restore(QWidget *w, QString section, bool showMaximized=false);
 void save(QTreeView *tree, QString section, int columnCount=-1);
 void restore(QTreeView *tree, QString section, QList<int> defaultWidth);
 
+void save(QToolBar *bar);
+void restore(QToolBar *bar);
+
 void hideHelpButton(QWidget *w);
 int exec(QDialog *dialog, QString section, bool hideHelp=true);
 }
@@ -61,6 +65,7 @@ QString ensureFileExistsNot(QString path);
 namespace Settings {
 QVariant get(const QString &key, const QVariant &defaultValue=QVariant());
 void set(const QString &key, const QVariant &defaultValue);
+void remove(const QString &key);
 bool contains(const QString &key);
 }
 }

@@ -13,6 +13,7 @@
 #include <qsettings.h>
 #include <qtreeview.h>
 #include <qheaderview.h>
+#include <qtoolbar.h>
 
 static QString appRootPath;
 static uint m_randSlat = QDateTime::currentDateTime().toTime_t();
@@ -327,6 +328,20 @@ void restore(QTreeView *tree, QString section, QList<int> defaultWidth)
     }
 }
 
+void save(QToolBar *bar)
+{
+    ml_return_on_fail2(bar->objectName().size(), "Utils::Widget::save Toolbar name is empty");
+
+    Utils::Settings::set("ToolBars/" + bar->objectName() + ".show", bar->isVisible());
+}
+
+void restore(QToolBar *bar)
+{
+    ml_return_on_fail2(bar->objectName().size(), "Utils::Widget::restore Toolbar name is empty");
+
+    bar->setVisible(Utils::Settings::get("ToolBars/" + bar->objectName() + ".show", true).toBool());
+}
+
 void hideHelpButton(QWidget *w)
 {
     Qt::WindowFlags flags = w->windowFlags();
@@ -494,6 +509,12 @@ void set(const QString &key, const QVariant &defaultValue)
 {
     QSettings settings;
     settings.setValue(key, defaultValue);
+}
+
+void remove(const QString &key)
+{
+    QSettings settings;
+    settings.remove(key);
 }
 
 bool contains(const QString &key)

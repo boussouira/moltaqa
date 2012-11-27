@@ -7,12 +7,15 @@
 class MainWindow;
 class AbstarctView;
 class QMenu;
+class QToolBar;
 
 class ViewManager : public QStackedWidget
 {
     Q_OBJECT
 public:
     ViewManager(QWidget *parent = 0);
+
+    void aboutToClose();
 
     void addView(AbstarctView *view, bool selectable=true);
     void removeView(AbstarctView *view);
@@ -42,7 +45,6 @@ protected:
     QList<AbstarctView*> m_viewDisplay;
     AbstarctView *m_defautView;
     AbstarctView *m_currentView;
-
 };
 
 #endif // VIEWMANAGER_H

@@ -39,6 +39,9 @@ SearchView::SearchView(QWidget *parent) : AbstarctView(parent)
     bar->addAction(actSearchAgain);
     bar->addAction(actSearchInfo);
 
+    bar->setObjectName("SearchView.Tools");
+    m_toolBarSearch->setObjectName("SearchView.Search");
+
     m_toolBars << bar;
     m_toolBars << m_toolBarSearch;
 

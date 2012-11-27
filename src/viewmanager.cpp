@@ -1,11 +1,13 @@
 #include "viewmanager.h"
 #include "mainwindow.h"
 #include "abstarctview.h"
+#include "windowsview.h"
+#include "utils.h"
+
 #include <qmenu.h>
 #include <qapplication.h>
 #include <qclipboard.h>
 #include <qstatusbar.h>
-#include "windowsview.h"
 
 ViewManager::ViewManager(QWidget *parent) :
     QStackedWidget(parent),
@@ -19,6 +21,16 @@ ViewManager::ViewManager(QWidget *parent) :
     m_copyLinkAction = new QAction(tr("نسخ رابط الشاشة"), this);
 
     connect(m_copyLinkAction, SIGNAL(triggered()), SLOT(copyViewLink()));
+}
+
+void ViewManager::aboutToClose()
+{
+    AbstarctView *currentView = qobject_cast<AbstarctView*>(currentWidget());
+    ml_return_on_fail(currentView);
+
+    foreach (QToolBar *bar, currentView->toolBars()) {
+        Utils::Widget::save(bar);
+    }
 }
 
 void ViewManager::addView(AbstarctView *view, bool selectable)
@@ -49,6 +61,7 @@ void ViewManager::setCurrentView(AbstarctView *view)
     currentView->aboutToHide();
 
     foreach (QToolBar *bar, currentView->toolBars()) {
+        Utils::Widget::save(bar);
         m_mainWindow->removeToolBar(bar);
     }
 
@@ -64,7 +77,7 @@ void ViewManager::setCurrentView(AbstarctView *view)
 
     foreach (QToolBar *bar, view->toolBars()) {
         m_mainWindow->addToolBar(bar);
-        bar->show();
+        Utils::Widget::restore(bar);
     }
 
     if(m_navigationsMenu) {

@@ -142,6 +142,11 @@ void BookReaderView::createMenus()
     m_toolBarTafesir->addWidget(m_comboTafasir);
     m_toolBarTafesir->addAction(m_openSelectedTafsir);
 
+    m_toolBarGeneral->setObjectName("BookReaderView.General");
+    m_toolBarNavigation->setObjectName("BookReaderView.Navigation");
+    m_toolBarTafesir->setObjectName("BookReaderView.Tafesir");
+    m_toolBarSearch->setObjectName("BookReaderView.Search");
+
     updateSearchNavigation();
 
     m_navActions << m_actionEditBook;
@@ -196,9 +201,6 @@ void BookReaderView::updateToolBars()
 
         m_toolBarTafesir->setEnabled(showTafsssir);
         m_toolBarTafesir->setVisible(showTafsssir);
-
-        m_toolBarGeneral->show();
-        m_toolBarNavigation->show();
 
         updateSearchNavigation();
     }

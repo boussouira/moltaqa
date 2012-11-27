@@ -138,9 +138,6 @@ bool MainWindow::init()
 
         m_libraryManager = new LibraryManager(m_libraryInfo);
 
-        m_bookView = new BookReaderView(m_libraryManager, this);
-        m_viewManager->addView(m_bookView, false);
-
         m_booksList = new BooksListBrowser(0);
 
         // IndexTracker should be created before the IndexManager
@@ -159,6 +156,9 @@ bool MainWindow::init()
         m_viewManager->addView(m_welcomeWidget);
         m_viewManager->setDefautView(m_welcomeWidget);
         m_viewManager->setCurrentView(m_welcomeWidget);
+
+        m_bookView = new BookReaderView(m_libraryManager, this);
+        m_viewManager->addView(m_bookView, false);
 
         m_searchView = new SearchView(this);
         m_viewManager->addView(m_searchView, false);
@@ -260,8 +260,6 @@ void MainWindow::settingDialog()
 void MainWindow::openBook(int pBookID, int pageID)
 {
     ml_return_on_fail(m_bookView->openBook(pBookID, pageID));
-
-    m_viewManager->setCurrentView(m_bookView);
 }
 
 void MainWindow::showBooksList(int tabIndex)
@@ -316,6 +314,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
     if(m_indexManager->isIndexing())
         m_indexManager->stop();
+
+    m_viewManager->aboutToClose();
 
     event->accept();
 }

@@ -163,6 +163,7 @@ void BookEditorView::setupToolBar()
     m_actionAddPage = bar->addAction(QIcon(":/images/add.png"), tr("اضافة صفحة"), this, SLOT(addPage()));
     m_actionRemovePage = bar->addAction(QIcon(":/images/remove.png"), tr("حذف الصفحة"), this, SLOT(removePage()));
 
+    bar->setObjectName("BookEditorView.Edit");
     m_toolBars << bar;
 }
 
