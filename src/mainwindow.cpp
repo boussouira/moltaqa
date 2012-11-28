@@ -68,6 +68,7 @@ MainWindow::MainWindow(QWidget *parent):
 
     connect(ui->actionLogDialog, SIGNAL(triggered()), SLOT(showLogDialog()));
     connect(ui->actionHelp, SIGNAL(triggered()), SLOT(showHelp()));
+    connect(ui->actionFullScreen, SIGNAL(triggered()), SLOT(fullScreenMode()));
     connect(ui->actionUpdate, SIGNAL(triggered()), m_updateChecker, SLOT(startCheck()));
     connect(m_updateChecker, SIGNAL(checkFinished()), SLOT(checkFinnished()));
 }
@@ -538,4 +539,12 @@ void MainWindow::checkFinnished()
 void MainWindow::autoUpdateCheck()
 {
     m_updateChecker->startCheck(true);
+}
+
+void MainWindow::fullScreenMode()
+{
+    if(isFullScreen())
+        showNormal();
+    else
+        showFullScreen();
 }

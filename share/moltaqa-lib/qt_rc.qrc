@@ -42,5 +42,8 @@
         <file>images/alert.png</file>
         <file>images/delete2.png</file>
         <file>images/refresh2.png</file>
+        <file>images/arrow_in.png</file>
+        <file>images/arrow_out.png</file>
+        <file>images/show-menu.png</file>
     </qresource>
 </RCC>

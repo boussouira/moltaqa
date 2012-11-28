@@ -85,6 +85,8 @@ protected slots:
     void checkFinnished();
     void autoUpdateCheck();
 
+    void fullScreenMode();
+
 private:
     Ui::MainWindow *ui;
     ViewManager *m_viewManager;
