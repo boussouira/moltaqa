@@ -547,4 +547,6 @@ void MainWindow::fullScreenMode()
         showNormal();
     else
         showFullScreen();
+
+    statusBar()->setVisible(!isFullScreen());
 }
