@@ -10,6 +10,8 @@ class SortFilterProxyModel : public QSortFilterProxyModel
 public:
     SortFilterProxyModel(QObject *parent = 0);
 
+    void setFilterByDeath(int fromYear, int toYear);
+
 protected:
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
     bool filterAcceptsRowItself(int source_row, const QModelIndex &source_parent) const;
@@ -22,6 +24,9 @@ public slots:
 
 protected:
     bool m_showQuranFirst;
+    bool m_filterByDeath;
+    int m_filterFromYear;
+    int m_filterToYear;
 };
 
 #endif // SORTFILTERPROXYMODEL_H

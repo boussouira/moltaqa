@@ -141,7 +141,16 @@ void SearchFilterManager::setAutoSelectParent(bool autoSelect)
 
 void SearchFilterManager::setFilterText(QString text)
 {
-    m_filterModel->setArabicFilterRegexp(text);
+    if(text.contains(QRegExp("[0-9\\?\\*-]+:[0-9\\?\\*-]+"))) {
+        QStringList t = text.split(':');
+        int dStart = (t.first() == "*") ? 0x80000000 : t.first().toInt();
+        int dEnd = (t.last() == "*") ? 99999 : t.last().toInt();
+
+        m_filterModel->setFilterByDeath(dStart, dEnd);
+    } else {
+        m_filterModel->setArabicFilterRegexp(text);
+    }
+
     m_treeView->expandAll();
 
     enableCatSelection();

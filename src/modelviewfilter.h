@@ -38,6 +38,8 @@ public:
 
     void addFilterColumn(int column, Qt::ItemDataRole role, const QString &filterName);
 
+    void setAllowFilterByDeath(bool allow);
+
     void setup();
 
     void reset();
@@ -73,6 +75,8 @@ protected:
     QMenu *m_menu;
     QMenu *m_filterMenu;
     QActionGroup *m_filterActionGroup;
+
+    bool m_allowFilterByDeath;
 };
 
 #endif // MODELVIEWFILTER_H

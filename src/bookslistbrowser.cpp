@@ -117,6 +117,8 @@ void BooksListBrowser::readBookListModel()
     m_bookListFilter->addFilterColumn(0, Qt::DisplayRole, tr("اسم الكتاب"));
     m_bookListFilter->addFilterColumn(1, Qt::DisplayRole, tr("المؤلف"));
 
+    m_bookListFilter->setAllowFilterByDeath(true);
+
     m_bookListFilter->setup();
 
     Utils::Widget::restore(ui->treeBookList,
@@ -143,6 +145,8 @@ void BooksListBrowser::readFavouritesModel()
 
     m_favouritesListFilter->addFilterColumn(0, Qt::DisplayRole, tr("اسم الكتاب"));
     m_favouritesListFilter->addFilterColumn(1, Qt::DisplayRole, tr("المؤلف"));
+
+    m_favouritesListFilter->setAllowFilterByDeath(true);
 
     m_favouritesListFilter->setup();
 

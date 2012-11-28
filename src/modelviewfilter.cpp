@@ -84,6 +84,11 @@ void ModelViewFilter::addFilterColumn(int column, Qt::ItemDataRole role, const Q
     m_filterMenu->addActions(m_filterActionGroup->actions());
 }
 
+void ModelViewFilter::setAllowFilterByDeath(bool allow)
+{
+    m_allowFilterByDeath = allow;
+}
+
 void ModelViewFilter::setup()
 {
     ml_return_on_fail2(m_treeView, "ModelViewFilter::setup tree view is not set");
@@ -127,6 +132,8 @@ void ModelViewFilter::reset()
     m_filterMenu = 0;
     m_filterActionGroup = 0;
 
+    m_allowFilterByDeath = false;
+
     ml_delete_check(m_filterModel);
     m_filterModel = new SortFilterProxyModel(this);
 }
@@ -156,7 +163,16 @@ bool ModelViewFilter::eventFilter(QObject *obj, QEvent *event)
 
 void ModelViewFilter::setFilterText(QString text)
 {
-    m_filterModel->setArabicFilterRegexp(text);
+    if(m_allowFilterByDeath
+            && text.contains(QRegExp("[0-9\\?\\*-]+:[0-9\\?\\*-]+"))) {
+        QStringList t = text.split(':');
+        int dStart = (t.first() == "*") ? 0x80000000 : t.first().toInt();
+        int dEnd = (t.last() == "*") ? 99999 : t.last().toInt();
+
+        m_filterModel->setFilterByDeath(dStart, dEnd);
+    } else {
+        m_filterModel->setArabicFilterRegexp(text);
+    }
 
     if(m_filterModel->filterKeyColumn() != m_filterColumn)
         m_filterModel->setFilterKeyColumn(m_filterColumn);

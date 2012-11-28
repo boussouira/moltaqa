@@ -7,6 +7,9 @@
 SortFilterProxyModel::SortFilterProxyModel(QObject *parent) : QSortFilterProxyModel(parent)
 {
     m_showQuranFirst = Utils::Settings::get("Style/showQuranFirst", true).toBool();
+    m_filterByDeath = false;
+    m_filterFromYear = -1;
+    m_filterToYear = -1;
 }
 
 bool SortFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
@@ -32,6 +35,14 @@ bool SortFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex &s
 
 bool SortFilterProxyModel::filterAcceptsRowItself(int source_row, const QModelIndex &source_parent) const
 {
+    if(m_filterByDeath) {
+        QModelIndex index = sourceModel()->index(source_row, 2, source_parent);
+        bool ok;
+        int deathYear = index.data(ItemRole::authorDeathRole).toInt(&ok);
+
+        return (ok && m_filterFromYear <= deathYear && deathYear <= m_filterToYear);
+    }
+
     if (filterRegExp().isEmpty())
         return true;
     if (filterKeyColumn() == -1) {
@@ -98,7 +109,16 @@ bool SortFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex &
     return QSortFilterProxyModel::lessThan(left, right);
 }
 
+void SortFilterProxyModel::setFilterByDeath(int fromYear, int toYear)
+{
+    m_filterByDeath = true;
+    m_filterFromYear = fromYear;
+    m_filterToYear = toYear;
+    setFilterRegExp(QString("%1:%2").arg(fromYear).arg(toYear));
+}
+
 void SortFilterProxyModel::setArabicFilterRegexp(QString text)
 {
+    m_filterByDeath = false;
     setFilterRegExp(Utils::String::Arabic::clean(text));
 }
