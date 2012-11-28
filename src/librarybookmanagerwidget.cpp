@@ -20,6 +20,7 @@
 #include <qmessagebox.h>
 #include <QInputDialog>
 #include <QHBoxLayout>
+#include <indextracker.h>
 
 LibraryBookManagerWidget::LibraryBookManagerWidget(QWidget *parent) :
     ControlCenterWidget(parent),
@@ -104,6 +105,7 @@ void LibraryBookManagerWidget::setupActions()
      connect(ui->tabWidget, SIGNAL(currentChanged(int)), SLOT(checkEditWebChange()));
      connect(ui->toolAdd, SIGNAL(clicked()), SLOT(createNewBook()));
      connect(ui->toolDelete, SIGNAL(clicked()), SLOT(removeBook()));
+     connect(ui->toolReIndex, SIGNAL(clicked()), SLOT(reindexBook()));
 }
 
 void LibraryBookManagerWidget::setupBookReader()
@@ -250,6 +252,31 @@ void LibraryBookManagerWidget::removeBook()
                              tr("حذف كتاب"),
                              tr("لم تقم باختيار اي كتاب"));
     }
+}
+
+void LibraryBookManagerWidget::reindexBook()
+{
+    QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
+    if(index.isValid()) {
+        if(QMessageBox::question(this,
+                                 tr("إعادة فهرسة كتاب"),
+                                 tr("هل تريد إعادة فهرس كتاب '%1'؟")
+                                 .arg(index.data().toString()),
+                                 QMessageBox::Yes|QMessageBox::No,
+                                 QMessageBox::No)==QMessageBox::Yes) {
+            int bookId = index.data(ItemRole::idRole).toInt();
+            if(bookId) {
+                IndexTracker::instance()->addTask(bookId, IndexTask::Update, false);
+                QMessageBox::information(this,
+                                         tr("إعادة فهرسة كتاب"),
+                                         tr("ستتم إعادة فهرسة هذا الكتاب عند إعادة تشغيل البرنامج"));
+            }
+        } else {
+        QMessageBox::warning(this,
+                             tr("حذف كتاب"),
+                             tr("لم تقم باختيار اي كتاب"));
+    }
+}
 }
 
 void LibraryBookManagerWidget::lastReaderTabClosed()

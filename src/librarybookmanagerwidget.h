@@ -48,6 +48,7 @@ private slots:
     void checkEditWebChange();
     void createNewBook();
     void removeBook();
+    void reindexBook();
     void lastReaderTabClosed();
 
 protected:
