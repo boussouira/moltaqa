@@ -76,8 +76,7 @@ QString getTagsText(const QString &text, const QString &tag)
     QString startTag = "<" + tag;
     QString endTag = "</" + tag + ">";
 
-
-    int initOffset = text.indexOf('<');
+    int initOffset = text.indexOf(startTag, 0, Qt::CaseInsensitive);
     if(initOffset == -1)
         return QString();
 
