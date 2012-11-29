@@ -9,17 +9,17 @@ namespace Utils {
 
 namespace Html {
 
-QString removeTags(QString text)
+QString removeTags(const QString &text)
 {
+    // Check if we have any tag
+    if(text.indexOf('<') == -1)
+        return text;
+
     QString buf;
     bool insideTag = false;
     QChar lt('<');
     QChar gt('>');
     QChar sp(' ');
-
-    // Check if we have any tag
-    if(text.indexOf('<') == -1)
-        return text;
 
     buf.reserve(text.size());
     for (int i=0; i<text.size(); i++) {

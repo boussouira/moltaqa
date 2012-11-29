@@ -11,7 +11,7 @@ inline QString removeSpecialChars(QString text)
     return text.replace(QRegExp("&#?[a-z0-9]{2,8};"), " ");
 }
 
-QString removeTags(QString text);
+QString removeTags(const QString &text);
 
 QString jsEscape(QString text);
 
