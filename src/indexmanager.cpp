@@ -175,7 +175,7 @@ bool IndexManager::optimize()
         QTime time;
         time.start();
 
-        m_writer->optimize();
+        m_writer->optimize(MAX_SEGMENT);
 
         StatisticsManager::instance()->dequeue("index",
                                                QString("index optimized in %1")
