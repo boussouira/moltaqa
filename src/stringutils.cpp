@@ -9,6 +9,13 @@ namespace Utils {
 
 namespace Html {
 
+QString removeSpecialChars(QString text)
+{
+    return text.contains('&')
+            ? text.replace(QRegExp("&#?[a-z0-9]{2,8};"), " ")
+            : text;
+}
+
 QString removeTags(const QString &text)
 {
     // Check if we have any tag

@@ -6,10 +6,7 @@
 namespace Utils {
 namespace Html {
 
-inline QString removeSpecialChars(QString text)
-{
-    return text.replace(QRegExp("&#?[a-z0-9]{2,8};"), " ");
-}
+QString removeSpecialChars(QString text);
 
 QString removeTags(const QString &text);
 
