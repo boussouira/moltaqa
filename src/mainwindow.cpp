@@ -274,7 +274,8 @@ void MainWindow::showBooksList(int tabIndex)
 
 void MainWindow::showSearchView()
 {
-    m_viewManager->setCurrentView(m_searchView);
+    if(m_searchView->canSearch())
+        m_viewManager->setCurrentView(m_searchView);
 }
 
 void MainWindow::showTarajemRowatView()
