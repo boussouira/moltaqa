@@ -308,7 +308,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
         }
     }
 
-    Utils::Widget::save(this, "MainWindow");
+    if(!isFullScreen())
+        Utils::Widget::save(this, "MainWindow");
 
     m_booksList->close();
     m_editorView->maySave(false);
@@ -543,10 +544,12 @@ void MainWindow::autoUpdateCheck()
 
 void MainWindow::fullScreenMode()
 {
-    if(isFullScreen())
-        showNormal();
-    else
+    if(isFullScreen()) {
+        statusBar()->setVisible(true);
+        Utils::Widget::restore(this, "MainWindow", true);
+    } else {
+        Utils::Widget::save(this, "MainWindow");
+        statusBar()->setVisible(false);
         showFullScreen();
-
-    statusBar()->setVisible(!isFullScreen());
+    }
 }
