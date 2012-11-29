@@ -277,13 +277,13 @@ void restore(QWidget *w, QString section, bool showMaximized)
 
     QRect r(1337,1337,1337,1337);
 
-    QPoint pos = settings.value(section + ".pos", r.topLeft()).toPoint();
-    if(pos != r.topLeft())
-        w->move(pos);
-
     QSize size = settings.value(section + ".size", r.size()).toSize();
     if(size != r.size())
         w->resize(size);
+
+    QPoint pos = settings.value(section + ".pos", r.topLeft()).toPoint();
+    if(pos != r.topLeft())
+        w->move(pos);
 
     if(settings.value(section + ".maximized", showMaximized).toBool())
         w->showMaximized();
