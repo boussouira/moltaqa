@@ -375,8 +375,9 @@ void SearchWidget::setupCleanMenu()
         QAction *clearSpecialCharAct = new QAction(tr("ابطال مفعول الاقواس وغيرها"), line);
         QAction *matchSearchAct = new QAction(tr("بحث مطابق"), line);
 
-        menu->addAction(clearSpecialCharAct);
         menu->addAction(matchSearchAct);
+        menu->addSeparator();
+        menu->addAction(clearSpecialCharAct);
 
         connect(clearSpecialCharAct, SIGNAL(triggered()), SLOT(clearSpecialChar()));
         connect(matchSearchAct, SIGNAL(triggered()), SLOT(matchSearch()));
