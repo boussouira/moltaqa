@@ -117,6 +117,7 @@ void WebView::scrollToPosition(const QPoint &pos, int duration)
         duration = qMin(500, qAbs(pos.y()-m_frame->scrollPosition().y())/2);
 
     if(scroll || !m_stopScrolling){
+        m_animation->setEasingCurve(QEasingCurve::OutQuad);
         m_animation->setDuration(duration);
         m_animation->setStartValue(m_frame->scrollPosition());
         m_animation->setEndValue(pos);
