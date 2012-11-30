@@ -264,9 +264,14 @@ void save(QWidget *w, QString section)
 {
     QSettings settings;
     settings.beginGroup("WidgetStat");
-    settings.setValue(section + ".pos", w->pos());
-    settings.setValue(section + ".size", w->size());
+
+    if(!w->isMaximized()) {
+        settings.setValue(section + ".pos", w->pos());
+        settings.setValue(section + ".size", w->size());
+    }
+
     settings.setValue(section + ".maximized", w->isMaximized());
+
     settings.endGroup();
 }
 
