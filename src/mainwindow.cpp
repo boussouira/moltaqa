@@ -547,6 +547,7 @@ void MainWindow::fullScreenMode()
 {
     if(isFullScreen()) {
         statusBar()->setVisible(true);
+        showNormal();
         Utils::Widget::restore(this, "MainWindow", true);
     } else {
         Utils::Widget::save(this, "MainWindow");
