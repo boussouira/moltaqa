@@ -292,6 +292,15 @@ void SearchWidget::doneSearching()
         showSearchInfo();
 
     ui->searchQueryWidget->saveSearchQuery();
+
+    if(m_searcher
+            && Utils::Settings::get("Search/returnToSearchWidget", true).toBool()
+            && !m_searcher->resultsCount()) {
+        setCurrentWidget(Search);
+        QMessageBox::information(this,
+                                 tr("بحث"),
+                                 tr("لم يتم العثور على ما يطابق بحثك"));
+    }
 }
 
 void SearchWidget::saveSelectedField()

@@ -811,6 +811,13 @@
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QCheckBox" name="checkReturnToSearchWidget">
+            <property name="text">
+             <string>الرجوع الى نافذة البحث اذا لم يتم العثور على أي نتيحة</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
