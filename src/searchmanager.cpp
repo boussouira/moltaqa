@@ -4,6 +4,7 @@
 #include "libraryinfo.h"
 #include "utils.h"
 #include <qdir.h>
+#include <qstringlistmodel.h>
 
 SearchManager::SearchManager(QObject *parent) :
     DatabaseManager(parent)
@@ -116,9 +117,9 @@ void SearchManager::setFieldName(const QString &name, int fid)
     q.exec(query);
 }
 
-QStandardItemModel *SearchManager::getSavedSearchModel()
+QStringListModel *SearchManager::getSavedSearchModel()
 {
-    QStandardItemModel *model = new QStandardItemModel();
+    QStringListModel *model = new QStringListModel();
     QSqlQuery query(m_db);
 
     query.prepare("SELECT query FROM savedSearch "
@@ -126,8 +127,11 @@ QStandardItemModel *SearchManager::getSavedSearchModel()
 
     ml_query_exec(query);
 
+    QStringList words;
     while(query.next())
-        model->appendRow(new QStandardItem(query.value(0).toString()));
+        words.append(query.value(0).toString());
+
+    model->setStringList(words);
 
     return model;
 }

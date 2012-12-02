@@ -10,6 +10,7 @@ public:
     int fieldID;
 };
 
+class QStringListModel;
 class SearchManager : public DatabaseManager
 {
     Q_OBJECT
@@ -27,7 +28,7 @@ public:
     void removeField(int fid);
     void setFieldName(const QString &name, int fid);
 
-    QStandardItemModel *getSavedSearchModel();
+    QStringListModel *getSavedSearchModel();
     void saveSearchQueries(QStringList list);
     void removeSavedQueries();
 };
