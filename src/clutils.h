@@ -49,6 +49,8 @@ inline int WCharToInt(const wchar_t *str)
 
 lucene::search::Query *parse(lucene::queryParser::QueryParser *queryPareser,
                              const QString &text, bool andOperator);
+
+lucene::search::Query *termQuery(const QString &queryStr, const wchar_t *field);
 }
 }
 

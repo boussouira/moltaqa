@@ -48,7 +48,7 @@ public:
 
     void showSearchInfo();
 
-    void setSearchText(QString mustQuery, QString shouldQuery="", QString mustNotQuery="");
+    void setSearchText(QString query);
 
 protected:
     virtual lucene::search::Query *getSearchQuery(const wchar_t *searchField);
@@ -59,16 +59,10 @@ protected:
     void loadSettings();
     void saveSettings();
 
-    void saveSearchQuery();
-    void loadSearchQuery();
-
 public slots:
     void search();
 
 protected slots:
-    void setupCleanMenu();
-    void clearSpecialChar();
-    void matchSearch();
     void showFilterTools();
     void showSearchFieldMenu();
     void doneSearching();

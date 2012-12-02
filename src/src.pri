@@ -157,7 +157,8 @@ SOURCES += mainwindow.cpp \
     windowsview.cpp \
     webpagenam.cpp \
     mimeutils.cpp \
-    modelviewsearcher.cpp
+    modelviewsearcher.cpp \
+    searchquerywidget.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -303,7 +304,8 @@ HEADERS += mainwindow.h \
     windowsview.h \
     webpagenam.h \
     mimeutils.h \
-    modelviewsearcher.h
+    modelviewsearcher.h \
+    searchquerywidget.h
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \
@@ -333,7 +335,8 @@ FORMS += mainwindow.ui settingsdialog.ui \
     addbookreferdialog.ui \
     selectbooksdialog.ui \
     logdialog.ui \
-    updatedialog.ui
+    updatedialog.ui \
+    searchquerywidget.ui
 
 RESOURCES += ../share/moltaqa-lib/qt_rc.qrc
 win32:RC_FILE = ../share/moltaqa-lib/win_rc.rc

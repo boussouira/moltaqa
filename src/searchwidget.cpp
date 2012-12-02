@@ -20,10 +20,6 @@
 #include <qcompleter.h>
 #include <qsettings.h>
 
-#define ADD_QUERY(text, andOperator, clause) { \
-    Query *sq = Utils::CLucene::parse(&queryPareser, text, ui->andOperator->isChecked()); \
-    if(sq) q->add(sq, true, BooleanClause::clause);}
-
 SearchWidget::SearchWidget(QWidget *parent) :
     QWidget(parent),
     m_resultWidget(0),
@@ -35,19 +31,15 @@ SearchWidget::SearchWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    connect(ui->lineQueryMust, SIGNAL(returnPressed()), SLOT(search()));
-    connect(ui->lineQueryShould, SIGNAL(returnPressed()), SLOT(search()));
-    connect(ui->lineQueryShouldNot, SIGNAL(returnPressed()), SLOT(search()));
+    setCurrentWidget(Search);
+    loadSettings();
+
+    connect(ui->searchQueryWidget, SIGNAL(search()), SLOT(search()));
     connect(ui->pushSearch, SIGNAL(clicked()), SLOT(search()));
     connect(ui->labelTools, SIGNAL(linkActivated(QString)),
             SLOT(showFilterTools()));
     connect(ui->labelSearchField, SIGNAL(linkActivated(QString)),
             SLOT(showSearchFieldMenu()));
-
-    setupCleanMenu();
-    setCurrentWidget(Search);
-    loadSettings();
-    loadSearchQuery();
 }
 
 SearchWidget::~SearchWidget()
@@ -131,73 +123,14 @@ void SearchWidget::showSearchInfo()
                              info);
 }
 
-void SearchWidget::setSearchText(QString mustQuery, QString shouldQuery, QString mustNotQuery)
+void SearchWidget::setSearchText(QString query)
 {
-    ui->lineQueryMust->setText(Utils::CLucene::clearSpecialChars(mustQuery));
-    ui->lineQueryShould->setText(Utils::CLucene::clearSpecialChars(shouldQuery));
-    ui->lineQueryShouldNot->setText(Utils::CLucene::clearSpecialChars(mustNotQuery));
+    ui->searchQueryWidget->setSearchQuery(Utils::CLucene::clearSpecialChars(query.trimmed()));
 }
 
 Query *SearchWidget::getSearchQuery(const wchar_t *searchField)
 {
-    if(ui->lineQueryMust->text().trimmed().isEmpty()) {
-        if(ui->lineQueryShould->text().trimmed().size()) {
-            ui->lineQueryMust->setText(ui->lineQueryShould->text());
-            ui->lineQueryShould->clear();
-        }
-    }
-
-    QString mustQureyStr = ui->lineQueryMust->text().trimmed();
-    QString shouldQureyStr = ui->lineQueryShould->text().trimmed();
-    QString shouldNotQureyStr = ui->lineQueryShouldNot->text().trimmed();
-
-    if(mustQureyStr.isEmpty()){
-            QMessageBox::warning(this,
-                                 tr("البحث"),
-                                 tr("يجب ملء حقل العبارات التي يجب ان تظهر في النتائج"));
-            return 0;
-    }
-
-    ArabicAnalyzer analyzer;
-    BooleanQuery *q = new BooleanQuery;
-
-    QueryParser queryPareser(searchField, &analyzer);
-    queryPareser.setAllowLeadingWildcard(true);
-
-    try {
-        ADD_QUERY(mustQureyStr, checkQueryMust, MUST);
-        ADD_QUERY(shouldQureyStr, checkQueryShould, SHOULD);
-        ADD_QUERY(shouldNotQureyStr, checkQueryShouldNot, MUST_NOT);
-
-        return q;
-
-    } catch(CLuceneError &e) {
-        if(e.number() == CL_ERR_Parse)
-            QMessageBox::warning(this,
-                                 tr("خطأ في استعلام البحث"),
-                                 tr("هنالك خطأ في احدى حقول البحث"
-                                    "\n"
-                                    "تأكد من حذف الأقواس و المعقوفات وغيرها،"
-                                    " ويمكنك فعل ذلك من خلال زر التنظيف الموجود يسار حقل البحث، بعد الضغط على هذا الزر اعد البحث"
-                                    "\n"
-                                    "او تأكد من أنك تستخدمها بشكل صحيح"));
-        else
-            QMessageBox::warning(0,
-                                 "CLucene Query error",
-                                 tr("code: %1\nError: %2").arg(e.number()).arg(e.what()));
-
-        ml_delete(q);
-
-        return 0;
-    }
-    catch(...) {
-        QMessageBox::warning(0,
-                             "CLucene Query error",
-                             tr("Unknow error"));
-        ml_delete(q);
-
-        return 0;
-    }
+    return ui->searchQueryWidget->searchQuery(searchField);
 }
 
 void SearchWidget::loadDefaultSearchField()
@@ -250,13 +183,11 @@ void SearchWidget::loadSettings()
         ui->comboSortSearch->setCurrentIndex(settings.value("sortSearch", 0).toInt());
         ui->comboSearchField->setCurrentIndex(settings.value("searchField", 0).toInt());
 
-        ui->checkQueryMust->setChecked(settings.value("checkQueryMust", false).toBool());
-        ui->checkQueryShould->setChecked(settings.value("checkQueryShould", false).toBool());
-        ui->checkQueryShouldNot->setChecked(settings.value("checkQueryShouldNot", false).toBool());
-
         ui->checkShowPageInfo->setChecked(settings.value("showPageInfo", true).toBool());
         ui->checkShowResultTitles->setChecked(settings.value("showResultTitles", true).toBool());
     }
+
+    ui->searchQueryWidget->loadSettings();
 }
 
 void SearchWidget::saveSettings()
@@ -268,61 +199,10 @@ void SearchWidget::saveSettings()
     settings.setValue("sortSearch", ui->comboSortSearch->currentIndex());
     settings.setValue("searchField", ui->comboSearchField->currentIndex());
 
-    settings.setValue("checkQueryMust", ui->checkQueryMust->isChecked());
-    settings.setValue("checkQueryShould", ui->checkQueryShould->isChecked());
-    settings.setValue("checkQueryShouldNot", ui->checkQueryShouldNot->isChecked());
-
     settings.setValue("showPageInfo", ui->checkShowPageInfo->isChecked());
     settings.setValue("showResultTitles", ui->checkShowResultTitles->isChecked());
-}
 
-void SearchWidget::saveSearchQuery()
-{
-    ml_return_on_fail(Utils::Settings::get("Search/saveSearch", true).toBool());
-
-    QStringList list;
-    list << ui->lineQueryMust->text().trimmed()
-         << ui->lineQueryShould->text().trimmed()
-         << ui->lineQueryShouldNot->text().trimmed();
-
-    LibraryManager::instance()->searchManager()->saveSearchQueries(list);
-
-    QString queryStr;
-    for(int i=0; i<list.size(); i++) {
-        if(list[i].size()) {
-            queryStr += ((i==0) ? "+(" : ((i==2) ? "-(" : "("));
-            queryStr += list[i];
-            queryStr += ") ";
-        }
-    }
-
-    QString log = QString("query: [%1] take %2 ms, results count %3")
-            .arg(queryStr.trimmed())
-            .arg(m_searcher->searchTime())
-            .arg(m_searcher->resultsCount());
-
-    StatisticsManager::instance()->add("search", log);
-
-    if(m_completerModel) {
-        foreach (QString q, list) {
-            if(q.size())
-                m_completerModel->appendRow(new QStandardItem(q));
-        }
-    }
-}
-
-void SearchWidget::loadSearchQuery()
-{
-    ml_return_on_fail(Utils::Settings::get("Search/saveSearch", true).toBool());
-
-    m_completerModel = LibraryManager::instance()->searchManager()->getSavedSearchModel();
-
-    if(!m_completer) {
-        m_completer = new QCompleter(m_completerModel, this);
-        ui->lineQueryMust->setCompleter(m_completer);
-        ui->lineQueryShould->setCompleter(m_completer);
-        ui->lineQueryShouldNot->setCompleter(m_completer);
-    }
+    ui->searchQueryWidget->saveSettings();
 }
 
 void SearchWidget::search()
@@ -361,29 +241,6 @@ void SearchWidget::search()
 
     m_resultWidget->search(m_searcher);
     setCurrentWidget(Result);
-}
-
-void SearchWidget::setupCleanMenu()
-{
-    QList<FilterLineEdit*> lines;
-    lines << ui->lineQueryMust;
-    lines << ui->lineQueryShould;
-    lines << ui->lineQueryShouldNot;
-
-    foreach(FilterLineEdit *line, lines) {
-        QMenu *menu = new QMenu(line);
-        QAction *clearSpecialCharAct = new QAction(tr("ابطال مفعول الاقواس وغيرها"), line);
-        QAction *matchSearchAct = new QAction(tr("بحث مطابق"), line);
-
-        menu->addAction(matchSearchAct);
-        menu->addSeparator();
-        menu->addAction(clearSpecialCharAct);
-
-        connect(clearSpecialCharAct, SIGNAL(triggered()), SLOT(clearSpecialChar()));
-        connect(matchSearchAct, SIGNAL(triggered()), SLOT(matchSearch()));
-
-        line->setFilterMenu(menu);
-    }
 }
 
 void SearchWidget::showFilterTools()
@@ -434,7 +291,7 @@ void SearchWidget::doneSearching()
     if(Utils::Settings::get("Search/showMessageAfterSearch", false).toBool())
         showSearchInfo();
 
-    saveSearchQuery();
+    ui->searchQueryWidget->saveSearchQuery();
 }
 
 void SearchWidget::saveSelectedField()
@@ -475,37 +332,4 @@ void SearchWidget::changeSearchfield()
 
     QList<int> selectBooks = LibraryManager::instance()->searchManager()->getFieldBooks(act->data().toInt());
     m_filterManager->setSelectedItems(selectBooks);
-}
-
-void SearchWidget::clearSpecialChar()
-{
-    FilterLineEdit *edit = qobject_cast<FilterLineEdit*>(sender()->parent());
-
-    if(edit) {
-        edit->setText(Utils::CLucene::clearSpecialChars(edit->text()));
-    }
-}
-
-void SearchWidget::matchSearch()
-{
-    FilterLineEdit *edit = qobject_cast<FilterLineEdit*>(sender()->parent());
-
-    if(edit) {
-        QString text = edit->text().trimmed();
-        if(text.isEmpty())
-            return;
-
-        QChar del('"');
-        if(text.startsWith(del) && text.endsWith(del)) {
-            text = text.remove(0, 1).remove(text.size()-2, 1);
-        } else {
-            if(!text.startsWith(del))
-                text.prepend(del);
-
-            if(!text.endsWith(del))
-                text.append(del);
-        }
-
-        edit->setText(text);
-    }
 }

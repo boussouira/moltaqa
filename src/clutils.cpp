@@ -113,5 +113,21 @@ lucene::search::Query *parse(lucene::queryParser::QueryParser *queryPareser,
 
     return query;
 }
+
+lucene::search::Query *termQuery(const QString &queryStr, const wchar_t *field)
+{
+    ml_return_val_on_fail(queryStr.size(), 0);
+
+    QStringList words = queryStr.split(" ", QString::SkipEmptyParts);
+    ml_return_val_on_fail(words.size(), 0);
+
+    PhraseQuery *query = new PhraseQuery();
+    foreach (QString word, words) {
+        query->add(new Term(field, Utils::CLucene::QStringToWChar(word)));
+    }
+
+    return query;
+}
+
 }
 }
