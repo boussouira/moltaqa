@@ -1,12 +1,12 @@
 ﻿[Setup]
 AppId={{15FA1AB7-9C81-43E8-9882-C7145422FE7E}
 AppName=مكتبة الملتقى
-AppVerName=مكتبة الملتقى 0.9a3
+AppVerName=مكتبة الملتقى 0.9a4
 DefaultDirName={pf}\moltaqa-lib
 DefaultGroupName=مكتبة الملتقى
 AllowNoIcons=yes
 OutputDir=installer
-OutputBaseFilename=moltaqa-lib-0.9-alpha1
+OutputBaseFilename=moltaqa-lib-0.9a4
 SetupIconFile=moltaqa-lib.ico
 Compression=lzma
 SolidCompression=yes
