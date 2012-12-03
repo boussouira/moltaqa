@@ -332,7 +332,7 @@ void SearchQueryWidget::updateSearchWidget()
 {
     ui->widgetAdvancedSearch->setVisible(m_advancedSearch);
     ui->toolAdvancedSearch->setText((m_advancedSearch ? "-" : "+"));
-    ui->lineDefaultQuery->setEnabled(!m_advancedSearch);
-    ui->checkDefaultQuery->setEnabled(!m_advancedSearch);
-    ui->labelDefaultQuery->setEnabled(!m_advancedSearch);
+    ui->lineDefaultQuery->setVisible(!m_advancedSearch);
+    ui->checkDefaultQuery->setVisible(!m_advancedSearch);
+    ui->labelDefaultQuery->setVisible(!m_advancedSearch);
 }
