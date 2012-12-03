@@ -297,9 +297,9 @@ void SearchWidget::doneSearching()
             && Utils::Settings::get("Search/returnToSearchWidget", true).toBool()
             && !m_searcher->resultsCount()) {
         setCurrentWidget(Search);
-        QMessageBox::information(this,
-                                 tr("بحث"),
-                                 tr("لم يتم العثور على ما يطابق بحثك"));
+        QMessageBox::warning(this,
+                             tr("بحث"),
+                             tr("لم يتم العثور على ما يطابق بحثك"));
     }
 }
 
