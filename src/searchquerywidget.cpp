@@ -32,6 +32,10 @@ SearchQueryWidget::SearchQueryWidget(QWidget *parent) :
             SIGNAL(clicked()),
             SLOT(toggoleAdvancedSearchWidget()));
 
+    connect(ui->labelAdvancedSearch,
+            SIGNAL(linkActivated(QString)),
+            SLOT(toggoleAdvancedSearchWidget()));
+
     connect(ui->lineDefaultQuery, SIGNAL(returnPressed()), SIGNAL(search()));
     connect(ui->lineAllWordsQuery, SIGNAL(returnPressed()), SIGNAL(search()));
     connect(ui->lineAnyWordQuery, SIGNAL(returnPressed()), SIGNAL(search()));
