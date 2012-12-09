@@ -13,9 +13,28 @@
 #include <qfileinfo.h>
 #include <qhash.h>
 
-#define is_text_type(x) (x==MDB_TEXT || x==MDB_MEMO || x==MDB_SDATETIME)
+#define is_text_type(x) (x==MDB_TEXT || x==MDB_OLE || x==MDB_MEMO || x==MDB_DATETIME || x==MDB_BINARY || x==MDB_REPID)
 
 static QHash<QString, QString> m_converted;
+
+const char *get_col_type(int col_type)
+{
+    switch (col_type)
+    {
+    case MDB_INT:
+    case MDB_LONGINT:
+    case MDB_NUMERIC:
+        return "INT";
+        break;
+    case MDB_BINARY:
+    case MDB_BYTE:
+        return "BLOB";
+        break;
+    default:
+        return "TEXT";
+        break;
+    }
+}
 
 MdbConverter::MdbConverter(bool cache) : m_cache(cache)
 {
@@ -174,15 +193,8 @@ void MdbConverter::getTableContent(MdbHandle *mdb, MdbCatalogEntry *entry, bool 
 void MdbConverter::generateTableSchema(MdbCatalogEntry *entry)
 {
     MdbTableDef *table;
-    MdbHandle *mdb = entry->mdb;
     MdbColumn *col;
     QString sqlCmd;
-
-    /* Sqlite types */
-    QStringList sqlite_types;
-    sqlite_types << "Text" << "char" << "int" << "int" << "int" << "float"
-            << "float" << "float" << "date" << "varchar" << "varchar"
-            << "varchar" << "text" << "blob" << "text" << "numeric" << "numeric";
 
     m_bookQuery.exec(QString("DROP TABLE IF EXISTS %1; ").arg(sanitizeName(entry->object_name)));
 
@@ -202,14 +214,7 @@ void MdbConverter::generateTableSchema(MdbCatalogEntry *entry)
 
         sqlCmd.append(sanitizeName(col->name));
         sqlCmd.append(" ");
-        sqlCmd.append(sqlite_types.at(col->col_type));
-
-        if (mdb_coltype_takes_length(mdb->default_backend, col->col_type)) {
-            if (col->col_size == 0)
-                sqlCmd.append(" (255)");
-            else
-                sqlCmd.append(QString(" (%1) ").arg(col->col_size));
-        }
+        sqlCmd.append(get_col_type(col->col_type));
 
         if (i < table->num_cols - 1)
             sqlCmd.append( ", ");
