@@ -14,7 +14,7 @@ include /usr/share/quilt/quilt.make
 export CLUCENE_SOURCE_PATH=/home/naruto/Programming/clucene
 export CLUCENE_BUILD_PATH=/home/naruto/Programming/clucene
 export DEFAULT_INSTALL_PREFIX=/usr
-export QMAKE=/usr/local/Trolltech/Qt-4.8.1/bin/qmake
+export QMAKE=qmake
 
 clean:
 	dh_testdir
@@ -39,7 +39,7 @@ build-stamp: builddir/Makefile
 	dh_testdir
 
 	# Add here commands to compile the package.
-	cd builddir && $(MAKE) -j4
+	cd builddir && $(MAKE) -j2
 
 	touch $@
 

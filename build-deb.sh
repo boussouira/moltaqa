@@ -57,11 +57,12 @@ cp $RPM_TEMP_DIR/*.rpm $OUTPUT_DIR
 
 echo "[*] Create archives"
 
-cd $TEMP_DIR_PATH/$APP_DIR_NAME/debian/moltaqa-lib/usr
+cd $TEMP_DIR_PATH/$APP_DIR_NAME/debian/moltaqa-lib/
+mv -v usr $APP_DIR_NAME
 
-cp -v $TEMP_DIR_PATH/$APP_DIR_NAME/bin/moltaqa-lib.run bin
+cp -v $TEMP_DIR_PATH/$APP_DIR_NAME/bin/moltaqa-lib.run $APP_DIR_NAME/bin
 
-tar -zcf $TEMP_DIR_PATH/$OUTPUT_DIR/$APP_DIR_NAME.tar.gz *
+tar -zcf $TEMP_DIR_PATH/$OUTPUT_DIR/$APP_DIR_NAME.tar.gz $APP_DIR_NAME
 #tar -jcf $TEMP_DIR_PATH/$OUTPUT_DIR/$APP_DIR_NAME.tar.bz2 *
 
 echo "[*] Create md5 sums"

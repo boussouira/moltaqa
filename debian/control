@@ -8,7 +8,7 @@ Homepage: http://ahlalhdeeth.com
 
 Package: moltaqa-lib
 Architecture: any
-Depends: libqtcore4 (>= 4.7.0), libqtgui4 (>= 4.7.0), libqtwebkit4, libqt4-sql-sqlite (>= 4.7.0), libmdbtools
+Depends: libqtcore4 (>= 4.7.0), libqtgui4 (>= 4.7.0), libqtwebkit4, libqt4-sql-sqlite (>= 4.7.0)
 Description: Moltaqa Library is an Arabic and Islamic Library
  Moltaqa Library is an arabic library, it can help in reading and
  searching in thousnd of islamic books, mean features:
