@@ -17,6 +17,7 @@ void TextSimpleBookReader::setCurrentPage(QDomElement pageNode)
     m_currentPage->page = pageNode.attribute("page").toInt();
 
     m_currentPage->text = _u(m_pages.value(m_currentPage->pageID));
+    m_pages.remove(m_currentPage->pageID);
 
 //    if(!m_pages.contains(m_currentPage->pageID))
 //        qWarning("Can't find page %d", m_currentPage->pageID);
