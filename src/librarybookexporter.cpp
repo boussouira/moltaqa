@@ -3,7 +3,6 @@
 #include "librarymanager.h"
 #include "libraryinfo.h"
 #include "ziphelper.h"
-#include "xmldomhelper.h"
 #include "authorsmanager.h"
 
 LibraryBookExporter::LibraryBookExporter(QObject *parent) :
@@ -13,7 +12,7 @@ LibraryBookExporter::LibraryBookExporter(QObject *parent) :
 
 void LibraryBookExporter::start()
 {
-    openZip();
+    createZip();
 
     addBookInfo();
     addAuthorInfo();
@@ -22,7 +21,7 @@ void LibraryBookExporter::start()
     closeZip();
 }
 
-void LibraryBookExporter::openZip()
+void LibraryBookExporter::createZip()
 {
     QString bookPath = Utils::Rand::fileName(m_tempDir, "true", "book_", "mlp");
 
@@ -35,12 +34,36 @@ void LibraryBookExporter::openZip()
     if(!m_zip.open(QuaZip::mdCreate))
         throw BookException("LibraryBookExporter::openZip Can't creat zip file", bookPath, m_zip.getZipError());
 
+    // Create content file
+    m_contentDom.setFilePath(Utils::Rand::fileName(m_tempDir, "true", "content_", "xml"));
+    m_contentDom.setDocumentName("package-content");
+
+    m_contentDom.create();
+    m_contentDom.load();
+
+    m_booksElement = m_contentDom.domDocument().createElement("books");
+    m_authorsElement = m_contentDom.domDocument().createElement("authors");
 
     m_genereatedPath = bookPath;
+    m_tempFiles << m_contentDom.filePath();
 }
 
 void LibraryBookExporter::closeZip()
 {
+
+    m_contentDom.rootElement().appendChild(m_booksElement);
+    m_contentDom.rootElement().appendChild(m_authorsElement);
+
+    QuaZipFile contentFile(&m_zip);
+    if(contentFile.open(QIODevice::WriteOnly, QuaZipNewInfo("content.xml"))) {
+        m_contentDom.save(&contentFile);
+
+        contentFile.close();
+    } else {
+        throw BookException("LibraryBookExporter::closeZip error when writing to content.xml",
+                            contentFile.getZipError());
+    }
+
     m_zip.close();
 
     if(m_zip.getZipError()!=0)
@@ -52,62 +75,39 @@ void LibraryBookExporter::closeZip()
 
 void LibraryBookExporter::addBookInfo()
 {
-    XmlDomHelper dom;
-    dom.setFilePath(Utils::Rand::fileName(m_tempDir, "true", "info_", "xml"));
-    dom.setDocumentName("books-info");
-
-    dom.create();
-    dom.load();
-
-    QDomElement bookElement = dom.domDocument().createElement("book");
+    QDomElement bookElement = m_contentDom.domDocument().createElement("book");
     bookElement.setAttribute("id", m_book->id);
     bookElement.setAttribute("type", m_book->type);
     bookElement.setAttribute("author", m_book->authorID);
     bookElement.setAttribute("flags", m_book->bookFlags);
 
-    dom.setElementText(bookElement, "title", m_book->title);
+    m_contentDom.setElementText(bookElement, "fileName", m_book->fileName);
+
+    m_contentDom.setElementText(bookElement, "title", m_book->title);
 
     if(m_book->otherTitles.size())
-        dom.setElementText(bookElement, "otherTitles", m_book->otherTitles);
+        m_contentDom.setElementText(bookElement, "otherTitles", m_book->otherTitles);
 
     if(m_book->edition.size())
-        dom.setElementText(bookElement, "edition", m_book->edition);
+        m_contentDom.setElementText(bookElement, "edition", m_book->edition);
 
     if(m_book->publisher.size())
-        dom.setElementText(bookElement, "publisher", m_book->publisher);
+        m_contentDom.setElementText(bookElement, "publisher", m_book->publisher);
 
     if(m_book->mohaqeq.size())
-        dom.setElementText(bookElement, "mohaqeq", m_book->mohaqeq);
+        m_contentDom.setElementText(bookElement, "mohaqeq", m_book->mohaqeq);
 
     if(m_book->comment.size())
-        dom.setElementText(bookElement, "comment", m_book->comment, true);
+        m_contentDom.setElementText(bookElement, "comment", m_book->comment, true);
 
     if(m_book->info.size())
-        dom.setElementText(bookElement, "info", m_book->info, true);
+        m_contentDom.setElementText(bookElement, "info", m_book->info, true);
 
-    dom.rootElement().appendChild(bookElement);
-
-    QuaZipFile booksFile(&m_zip);
-    if(booksFile.open(QIODevice::WriteOnly, QuaZipNewInfo("books.xml"))) {
-        dom.save(&booksFile);
-
-        booksFile.close();
-    } else {
-        throw BookException("LibraryBookExporter::addBookInfo error when writing to info.xml", booksFile.getZipError());
-    }
-
-    m_tempFiles << dom.filePath();
+    m_booksElement.appendChild(bookElement);
 }
 
 void LibraryBookExporter::addAuthorInfo()
 {
-    XmlDomHelper dom;
-    dom.setFilePath(Utils::Rand::fileName(m_tempDir, "true", "authors_", "xml"));
-    dom.setDocumentName("authors-info");
-
-    dom.create();
-    dom.load();
-
     AuthorInfoPtr author = LibraryManager::instance()->authorsManager()->getAuthorInfo(m_book->authorID);
     if(author) {
         int flags = 0;
@@ -118,31 +118,19 @@ void LibraryBookExporter::addAuthorInfo()
         if(author->isALive)
             flags |= AuthorInfo::ALive;
 
-        QDomElement authorElement = dom.domDocument().createElement("author");
+        QDomElement authorElement = m_contentDom.domDocument().createElement("author");
         authorElement.setAttribute("id", author->id);
         authorElement.setAttribute("flags", flags);
 
-        dom.setElementText(authorElement, "name", author->name);
-        dom.setElementText(authorElement, "full-name", author->fullName);
-        dom.setElementText(authorElement, "info", author->info, true);
+        m_contentDom.setElementText(authorElement, "name", author->name);
+        m_contentDom.setElementText(authorElement, "full-name", author->fullName);
+        m_contentDom.setElementText(authorElement, "info", author->info, true);
 
-        dom.setElementText(authorElement, "birth", author->birthStr).setAttribute("year", author->birthYear);
-        dom.setElementText(authorElement, "death", author->deathStr).setAttribute("year", author->deathYear);
+        m_contentDom.setElementText(authorElement, "birth", author->birthStr).setAttribute("year", author->birthYear);
+        m_contentDom.setElementText(authorElement, "death", author->deathStr).setAttribute("year", author->deathYear);
 
-        dom.rootElement().appendChild(authorElement);
+        m_authorsElement.appendChild(authorElement);
     }
-
-    QuaZipFile authorFile(&m_zip);
-    if(authorFile.open(QIODevice::WriteOnly, QuaZipNewInfo("authors.xml"))) {
-        dom.save(&authorFile);
-
-        authorFile.close();
-    } else {
-        throw BookException("LibraryBookExporter::addAuthorInfo error when writing to authors.xml",
-                            authorFile.getZipError());
-    }
-
-    m_tempFiles << dom.filePath();
 }
 
 void LibraryBookExporter::addBookFile()

@@ -2,6 +2,7 @@
 #define LIBRARYBOOKEXPORTER_H
 
 #include "bookexporter.h"
+#include "xmldomhelper.h"
 #include "quazip/quazip.h"
 #include "quazip/quazipfile.h"
 
@@ -14,7 +15,7 @@ public:
     void start();
 
 protected:
-    void openZip();
+    void createZip();
     void closeZip();
 
     void addBookInfo();
@@ -26,6 +27,9 @@ protected:
 protected:
     QuaZip m_zip;
     QStringList m_tempFiles;
+    XmlDomHelper m_contentDom;
+    QDomElement m_booksElement;
+    QDomElement m_authorsElement;
 };
 
 #endif // LIBRARYBOOKEXPORTER_H
