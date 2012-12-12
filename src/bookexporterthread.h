@@ -13,8 +13,8 @@ public:
 
     void run();
 
-    void setBooksToImport(QList<int> list);
-    QList<int> booksToImport();
+    void setBooksToExport(QList<int> list);
+    QList<int> booksToExport();
 
     void setRemoveTashkil(bool remove);
     void setAddPageNumber(bool add);
@@ -26,7 +26,7 @@ public slots:
     void stop();
 
 protected:
-    void importBook(LibraryBookPtr book);
+    void exportBook(LibraryBookPtr book);
 
 signals:
     void doneExporting();

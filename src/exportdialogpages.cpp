@@ -193,7 +193,7 @@ void ExportPage::initializePage()
     m_thread->setRemoveTashkil(removeTashkil);
     m_thread->setAddPageNumber(addPageNumber);
 
-    m_thread->setBooksToImport(books);
+    m_thread->setBooksToExport(books);
     m_thread->setOutDir(outDir);
 
     m_thread->start();

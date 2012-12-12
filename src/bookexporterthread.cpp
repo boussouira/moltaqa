@@ -27,7 +27,7 @@ void BookExporterThread::run()
         LibraryBookPtr book = manager->getLibraryBook(bookID);
 
         try {
-            importBook(book);
+            exportBook(book);
 
             emit bookExported(book->title);
         } catch (BookException &e) {
@@ -43,12 +43,12 @@ void BookExporterThread::run()
     emit doneExporting();
 }
 
-void BookExporterThread::setBooksToImport(QList<int> list)
+void BookExporterThread::setBooksToExport(QList<int> list)
 {
     m_bookToImport = list;
 }
 
-QList<int> BookExporterThread::booksToImport()
+QList<int> BookExporterThread::booksToExport()
 {
     return m_bookToImport;
 }
@@ -78,7 +78,7 @@ void BookExporterThread::stop()
     m_stop = true;
 }
 
-void BookExporterThread::importBook(LibraryBookPtr book)
+void BookExporterThread::exportBook(LibraryBookPtr book)
 {
     BookExporter *exporter = 0;
     if(m_exportFormat == MOLTAQA_FROMAT) {
