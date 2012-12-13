@@ -37,6 +37,7 @@ public:
 
     int categoriesCount();
     int booksCount();
+    QList<CategorieInfo> bookCategorie(int bookID);
 
     int getNewCategorieID();
 
@@ -63,8 +64,9 @@ protected:
     QStandardItemModel *m_catModel;
     QHash<int, QString> m_catHash;
     QHash<int, QDomElement> m_catElementHash;
-    QHash<int, QDomElement> m_booksElementHash;
+    QHash<int, QString> m_booksCatHash;
     int m_order;
+    int m_lastCatId;
     QIcon m_bookIcon;
     QIcon m_catIcon;
 };

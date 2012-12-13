@@ -1,6 +1,7 @@
 #include "librarybookexporter.h"
 #include "utils.h"
 #include "librarymanager.h"
+#include "booklistmanager.h"
 #include "libraryinfo.h"
 #include "ziphelper.h"
 #include "authorsmanager.h"
@@ -84,6 +85,19 @@ void LibraryBookExporter::addBookInfo()
     m_contentDom.setElementText(bookElement, "fileName", m_book->fileName);
 
     m_contentDom.setElementText(bookElement, "title", m_book->title);
+
+    QList<CategorieInfo> books = LibraryManager::instance()->bookListManager()->bookCategorie(m_book->id);
+
+    if(books.size()) {
+        QDomElement catsElement = m_contentDom.domDocument().createElement("categories");
+
+        foreach(const CategorieInfo &cat, books) {
+            qDebug() << cat.title << m_book->title;
+            m_contentDom.setElementText(catsElement, "cat", cat.title).setAttribute("id", cat.catID);
+        }
+
+        bookElement.appendChild(catsElement);
+    }
 
     if(m_book->otherTitles.size())
         m_contentDom.setElementText(bookElement, "otherTitles", m_book->otherTitles);

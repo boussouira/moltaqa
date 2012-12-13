@@ -21,6 +21,7 @@ BookListManager::BookListManager(QObject *parent)
       m_bookModel(0),
       m_catModel(0),
       m_order(0),
+      m_lastCatId(0),
       m_bookIcon(QIcon(":/images/book.png")),
       m_catIcon(QIcon(":/images/book-cat.png"))
 {
@@ -53,13 +54,13 @@ void BookListManager::clear()
 
     m_catHash.clear();
     m_catElementHash.clear();
-    m_booksElementHash.clear();
+    m_booksCatHash.clear();
 }
 
 QStandardItemModel *BookListManager::bookListModel()
 {
     if(!m_bookModel) {
-        m_booksElementHash.clear();
+        m_booksCatHash.clear();
 
         m_bookModel = new QStandardItemModel(this);
         m_bookModel->setHorizontalHeaderLabels(QStringList() << tr("الكتاب")
@@ -114,7 +115,24 @@ int BookListManager::categoriesCount()
 
 int BookListManager::booksCount()
 {
-    return m_booksElementHash.size();
+    return m_booksCatHash.size();
+}
+
+QList<CategorieInfo> BookListManager::bookCategorie(int bookID)
+{
+    QList<CategorieInfo> list;
+
+    QString cats = m_booksCatHash[bookID];
+    if(cats.size()) {
+        foreach(QString cat, cats.split(';', QString::SkipEmptyParts)) {
+            int catID = cat.toInt();
+            if(m_catHash.contains(catID)) {
+                list << CategorieInfo(catID, m_catHash[catID]);
+            }
+        }
+    }
+
+    return list;
 }
 
 int BookListManager::getNewCategorieID()
@@ -231,7 +249,7 @@ bool BookListManager::removeBook(int bookID)
 
 bool BookListManager::containsBook(int bookID)
 {
-    return m_booksElementHash.contains(bookID);
+    return m_booksCatHash.contains(bookID);
 }
 
 void BookListManager::readNode(QStandardItem *parentItem, QDomElement &element, bool withBooks)
@@ -247,10 +265,13 @@ void BookListManager::readNode(QStandardItem *parentItem, QDomElement &element, 
 
     QStandardItem *newParentItem = rows.isEmpty() ? parentItem : rows.first();
 
+    int currentCat = m_lastCatId;
     QDomElement child = element.firstChildElement();
     while(!child.isNull()) {
         if(child.tagName() == "book" || child.tagName() == "cat")
             readNode(newParentItem, child, withBooks);
+
+        m_lastCatId = currentCat;
 
         child = child.nextSiblingElement();
     }
@@ -268,6 +289,7 @@ QList<QStandardItem*> BookListManager::readCatNode(QDomElement &element)
     catItem->setData(ItemType::CategorieItem, ItemRole::itemTypeRole);
     catItem->setData(++m_order, ItemRole::orderRole);
 
+    m_lastCatId = catID;
     m_catHash.insert(catID, title);
     m_catElementHash.insert(catID, element);
 
@@ -321,7 +343,7 @@ QList<QStandardItem*> BookListManager::readBookNode(QDomElement &element)
         rows << authDeathItem;
     }
 
-    m_booksElementHash[bookID] = element;
+    m_booksCatHash[bookID].append(QString("%1;").arg(m_lastCatId));
 
     return rows;
 }
