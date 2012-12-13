@@ -202,27 +202,29 @@ QDomElement XmlDomHelper::treeFindElement(const QString &tag, const QString &att
 void elementsFind(QList<QDomElement> &list, QDomElement element, const QString &tag, const QString &attr, const QString &value)
 {
     while(!element.isNull()) {
-        if(element.attribute(attr) == value)
+        if(element.attribute(attr) == value
+                && (element.tagName() == tag || tag.isEmpty())) {
             list.append(element);
+        }
 
         if(element.hasChildNodes()) {
 
-            QDomElement child = element.firstChildElement(tag);
+            QDomElement child = element.firstChildElement();
             while(!child.isNull()){
                 elementsFind(list, child, tag, attr, value);
 
-                child = child.nextSiblingElement(tag);
+                child = child.nextSiblingElement();
             }
         }
 
-        element = element.nextSiblingElement(tag);
+        element = element.nextSiblingElement();
     }
 }
 
 QList<QDomElement> XmlDomHelper::treeFindElements(const QString &tag, const QString &attr, const QString &value)
 {
     QList<QDomElement> list;
-    elementsFind(list, m_rootElement.firstChildElement(tag), tag, attr, value);
+    elementsFind(list, m_rootElement.firstChildElement(), tag, attr, value);
 
     return list;
 }
