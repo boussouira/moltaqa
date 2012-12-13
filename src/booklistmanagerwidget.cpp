@@ -227,12 +227,10 @@ void BookListManagerWidget::addBooks()
     selectBooksDialog dialog(this);
     if(dialog.exec() == QDialog::Accepted) {
         QList<int> books = dialog.selectedBooks();
-        int parentID = 0;
 
         QModelIndex parent = Utils::Model::selectedIndex(ui->treeView);
         while(parent.isValid()) {
             if(parent.data(ItemRole::itemTypeRole).toInt() == ItemType::CategorieItem) {
-                parentID = parent.data(ItemRole::idRole).toInt();
                 break;
             }
 
