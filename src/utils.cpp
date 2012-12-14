@@ -40,7 +40,7 @@ QString fileName(const QString &path, bool fullPath, QString namePrefix, QString
     QDir dir(path);
     QString fileName(namePrefix);
 
-    if(!ext.startsWith('.'))
+    if(ext.size() && !ext.startsWith('.'))
         ext.prepend('.');
 
     fileName.append(string(6, false));

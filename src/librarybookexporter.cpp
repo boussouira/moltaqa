@@ -54,7 +54,7 @@ void LibraryBookExporter::start()
 
 void LibraryBookExporter::createZip()
 {
-    QString bookPath = Utils::Rand::fileName(m_tempDir, "true", "book_", "mlp");
+    QString bookPath = Utils::Rand::fileName(m_tempDir, true, "book_", "mlp");
 
     while(QFile::exists(bookPath)) {
         bookPath.replace(".mlp", "_.mlp");
@@ -66,7 +66,7 @@ void LibraryBookExporter::createZip()
         throw BookException("LibraryBookExporter::openZip Can't creat zip file", bookPath, m_zip.getZipError());
 
     // Create content file
-    m_contentDom.setFilePath(Utils::Rand::fileName(m_tempDir, "true", "content_", "xml"));
+    m_contentDom.setFilePath(Utils::Rand::fileName(m_tempDir, true, "content_", "xml"));
     m_contentDom.setDocumentName("package-content");
 
     m_contentDom.create();

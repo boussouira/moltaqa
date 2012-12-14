@@ -43,7 +43,7 @@ void EPubBookExporter::start()
 
 void EPubBookExporter::openZip()
 {
-    QString bookPath = Utils::Rand::fileName(m_tempDir, "true", "book_", "epub");
+    QString bookPath = Utils::Rand::fileName(m_tempDir, true, "book_", "epub");
 
     while(QFile::exists(bookPath)) {
         bookPath.replace(".epub", "_.epub");
