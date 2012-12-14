@@ -13,7 +13,9 @@
 BookExporterThread::BookExporterThread(QObject *parent) :
     QThread(parent)
 {
+    m_exporter = 0;
     m_exportFormat = MOLTAQA_FROMAT;
+    m_exportInOnePackage = false;
     m_removeTashkil = false;
     m_addPageNumber = false;
     m_stop = false;
@@ -23,22 +25,67 @@ void BookExporterThread::run()
 {
     LibraryBookManager *manager = LibraryManager::instance()->bookManager();
 
-    foreach (int bookID, m_bookToImport) {
-        LibraryBookPtr book = manager->getLibraryBook(bookID);
+    try {
+        if(m_exportFormat == MOLTAQA_FROMAT) {
+            m_exporter = new LibraryBookExporter();
+        } else if(m_exportFormat == EPUB_FROMAT) {
+            m_exporter = new EPubBookExporter();
+        } else {
+            throw BookException(QString("BookExporterThread::importBook Unknow format %1").arg(m_exportFormat));
+        }
+    } catch (BookException &e) {
+        e.print();
+        return;
+    }
 
-        try {
-            exportBook(book);
+    m_exporter->setAddPageNumber(m_addPageNumber);
+    m_exporter->setRemoveTashkil(m_removeTashkil);
 
-            emit bookExported(book->title);
-        } catch (BookException &e) {
-            e.print();
+    if(m_exportInOnePackage
+            && m_exporter->multiBookExport()
+            && m_bookToImport.size() > 1) {
+        QList<LibraryBookPtr> libraryBooks;
+        foreach (int bookID, m_bookToImport) {
+            LibraryBookPtr book = manager->getLibraryBook(bookID);
+            if(book)
+                libraryBooks.append(book);
         }
 
-        if(m_stop) {
-            m_stop = false;
-            break;
+        connect(m_exporter,
+                SIGNAL(bookExported(QString)),
+                SIGNAL(bookExported(QString)));
+
+        m_exporter->setLibraryBookList(libraryBooks);
+        m_exporter->setExportInOnePackage(true);
+        m_exporter->start();
+
+        moveToOutDir(m_exporter->genereatedPath(),
+                     tr("مجموعة كتب (%1)").arg(m_exporter->exportedBooksCount()));
+    } else {
+
+
+        foreach (int bookID, m_bookToImport) {
+            LibraryBookPtr book = manager->getLibraryBook(bookID);
+
+            try {
+                m_exporter->setLibraryBook(book);
+                m_exporter->start();
+
+                moveToOutDir(m_exporter->genereatedPath(), book->title);
+
+                emit bookExported(book->title);
+            } catch (BookException &e) {
+                e.print();
+            }
+
+            if(m_stop) {
+                m_stop = false;
+                break;
+            }
         }
     }
+
+    ml_delete_check(m_exporter);
 
     emit doneExporting();
 }
@@ -51,6 +98,11 @@ void BookExporterThread::setBooksToExport(QList<int> list)
 QList<int> BookExporterThread::booksToExport()
 {
     return m_bookToImport;
+}
+
+void BookExporterThread::setExportInOnePackage(bool onePackage)
+{
+    m_exportInOnePackage = onePackage;
 }
 
 void BookExporterThread::setRemoveTashkil(bool remove)
@@ -76,36 +128,25 @@ void BookExporterThread::setOutDir(const QString &dir)
 void BookExporterThread::stop()
 {
     m_stop = true;
+
+    if(m_exporter)
+        m_exporter->stop();
 }
 
-void BookExporterThread::exportBook(LibraryBookPtr book)
+void BookExporterThread::moveToOutDir(QString filePath, QString fileName)
 {
-    BookExporter *exporter = 0;
-    if(m_exportFormat == MOLTAQA_FROMAT) {
-        exporter = new LibraryBookExporter();
-    } else if(m_exportFormat == EPUB_FROMAT) {
-        exporter = new EPubBookExporter();
-    } else {
-        throw BookException(QString("BookExporterThread::importBook Unknow format %1").arg(m_exportFormat));
-    }
-
-    exporter->setLibraryBook(book);
-    exporter->setAddPageNumber(m_addPageNumber);
-    exporter->setRemoveTashkil(m_removeTashkil);
-    exporter->start();
-
     QDir dir(m_outDir);
-    QString filePath = dir.filePath(book->title + '.' +
-                                    QFileInfo(exporter->genereatedPath()).completeSuffix());
+    QString newFilePath = dir.filePath(fileName + '.' +
+                                    QFileInfo(filePath).completeSuffix());
 
-    filePath = Utils::Files::cleanFileName(filePath);
-    filePath = Utils::Files::ensureFileExistsNot(filePath);
+    newFilePath = Utils::Files::cleanFileName(newFilePath);
+    newFilePath = Utils::Files::ensureFileExistsNot(newFilePath);
 
-    if(!Utils::Files::move(exporter->genereatedPath(), filePath)) {
-        QFile::remove(exporter->genereatedPath());
+    if(!Utils::Files::move(filePath, newFilePath)) {
+        QFile::remove(filePath);
 
         throw BookException(QString("BookExporterThread::importBook can't move file %1 to %2")
-                            .arg(exporter->genereatedPath())
-                            .arg(filePath));
+                            .arg(filePath)
+                            .arg(newFilePath));
     }
 }

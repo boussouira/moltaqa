@@ -10,7 +10,9 @@ ExportDialog::ExportDialog(QWidget *parent) :
 
     addPage(new IntroPage(this));
     addPage(new BookSelectionPage(this));
-    addPage(new ExportPage(this));
+
+    m_exportPage = new ExportPage(this);
+    addPage(m_exportPage);
 
     connect(this, SIGNAL(currentIdChanged(int)), SLOT(pageChanged(int)));
 }
@@ -23,13 +25,12 @@ void ExportDialog::pageChanged(int pageID)
         button(QWizard::BackButton)->setEnabled(false);
 
         connect(button(QWizard::CancelButton), SIGNAL(clicked()), SLOT(cancelExport()));
+        connect(button(QWizard::FinishButton), SIGNAL(clicked()), m_exportPage, SLOT(openOutDir()));
     }
 }
 
 void ExportDialog::cancelExport()
 {
-    ExportPage *p = qobject_cast<ExportPage*>(page(2));
-    ml_return_on_fail(p);
-
-    p->exportThread()->stop();
+    m_exportPage->exportThread()->stop();
 }
+

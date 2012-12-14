@@ -3,6 +3,8 @@
 
 #include <qwizard.h>
 
+class ExportPage;
+
 class ExportDialog : public QWizard
 {
     Q_OBJECT
@@ -17,6 +19,7 @@ protected slots:
     void cancelExport();
 
 protected:
+    ExportPage *m_exportPage;
     QList<int> m_bookToImport;
 };
 

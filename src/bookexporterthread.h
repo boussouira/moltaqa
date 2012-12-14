@@ -5,6 +5,8 @@
 #include "librarybook.h"
 #include "exportformats.h"
 
+class BookExporter;
+
 class BookExporterThread : public QThread
 {
     Q_OBJECT
@@ -16,6 +18,7 @@ public:
     void setBooksToExport(QList<int> list);
     QList<int> booksToExport();
 
+    void setExportInOnePackage(bool onePackage);
     void setRemoveTashkil(bool remove);
     void setAddPageNumber(bool add);
     void setExportFormat(ExportFormat format);
@@ -26,7 +29,7 @@ public slots:
     void stop();
 
 protected:
-    void exportBook(LibraryBookPtr book);
+    void moveToOutDir(QString filePath, QString fileName);
 
 signals:
     void doneExporting();
@@ -35,8 +38,10 @@ signals:
 protected:
     QList<int> m_bookToImport;
     QString m_outDir;
+    BookExporter *m_exporter;
     ExportFormat m_exportFormat;
     bool m_stop;
+    bool m_exportInOnePackage;
     bool m_removeTashkil;
     bool m_addPageNumber;
 };

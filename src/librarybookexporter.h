@@ -12,6 +12,7 @@ class LibraryBookExporter : public BookExporter
 public:
     LibraryBookExporter(QObject *parent = 0);
 
+    bool multiBookExport() { return true; }
     void start();
 
 protected:
@@ -30,6 +31,7 @@ protected:
     XmlDomHelper m_contentDom;
     QDomElement m_booksElement;
     QDomElement m_authorsElement;
+    QList<int> m_addedAuthorsInfo;
 };
 
 #endif // LIBRARYBOOKEXPORTER_H

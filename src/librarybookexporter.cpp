@@ -15,9 +15,39 @@ void LibraryBookExporter::start()
 {
     createZip();
 
-    addBookInfo();
-    addAuthorInfo();
-    addBookFile();
+    if(m_exportInOnePackage && m_bookList.size() > 1) {
+        for(int i=0; i<m_bookList.size(); i++) {
+            m_book = m_bookList[i];
+
+            try {
+                addBookInfo();
+                addAuthorInfo();
+                addBookFile();
+
+                m_exportedBooks++;
+
+                emit bookExported(m_book->title);
+
+                if(m_stop) {
+                    break;
+                }
+
+            } catch (BookException &e) {
+                e.print();
+            }
+        }
+    } else {
+        if(!m_book) {
+            if(m_bookList.size())
+                m_book = m_bookList.first();
+            else
+                throw BookException("LibraryBookExporter::start no library book");
+        }
+
+        addBookInfo();
+        addAuthorInfo();
+        addBookFile();
+    }
 
     closeZip();
 }
@@ -92,7 +122,6 @@ void LibraryBookExporter::addBookInfo()
         QDomElement catsElement = m_contentDom.domDocument().createElement("categories");
 
         foreach(const CategorieInfo &cat, books) {
-            qDebug() << cat.title << m_book->title;
             m_contentDom.setElementText(catsElement, "cat", cat.title).setAttribute("id", cat.catID);
         }
 
@@ -122,6 +151,9 @@ void LibraryBookExporter::addBookInfo()
 
 void LibraryBookExporter::addAuthorInfo()
 {
+    if(m_addedAuthorsInfo.contains(m_book->authorID))
+        return;
+
     AuthorInfoPtr author = LibraryManager::instance()->authorsManager()->getAuthorInfo(m_book->authorID);
     if(author) {
         int flags = 0;
@@ -144,6 +176,7 @@ void LibraryBookExporter::addAuthorInfo()
         m_contentDom.setElementText(authorElement, "death", author->deathStr).setAttribute("year", author->deathYear);
 
         m_authorsElement.appendChild(authorElement);
+        m_addedAuthorsInfo.append(m_book->authorID);
     }
 }
 

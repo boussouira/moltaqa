@@ -19,6 +19,9 @@
 #include <qlistwidget.h>
 #include <qmessagebox.h>
 #include <qprogressbar.h>
+#include <qdesktopservices.h>
+#include <qurl.h>
+#include <qscrollbar.h>
 
 /* IntroPage class */
 
@@ -51,9 +54,12 @@ IntroPage::IntroPage(QWidget *parent) : QWizardPage(parent)
 
     layout->addStretch();
 
+    m_checkExportInOnePackage = new QCheckBox(tr("تصدير كل الكتب في ملف واحد"), this);
+    m_checkExportInOnePackage->setChecked(Utils::Settings::get("ExportDialog/exportInOnePackage", false).toBool());
     m_checkRemoveTashkil = new QCheckBox(tr("حذف تشكيل النص"), this);
     m_checkAddPageNumber = new QCheckBox(tr("ذكر الجزء والصفحة عقب كل صفحة"), this);
 
+    layout->addWidget(m_checkExportInOnePackage);
     layout->addWidget(m_checkRemoveTashkil);
     layout->addWidget(m_checkAddPageNumber);
 
@@ -62,6 +68,7 @@ IntroPage::IntroPage(QWidget *parent) : QWizardPage(parent)
     registerField("export.type", combo);
     registerField("export.outdir", chooser->lineEdit());
 
+    registerField("export.ExportInOnePackage", m_checkExportInOnePackage);
     registerField("export.removeTashkil", m_checkRemoveTashkil);
     registerField("export.addPageNumber", m_checkAddPageNumber);
 
@@ -69,22 +76,43 @@ IntroPage::IntroPage(QWidget *parent) : QWizardPage(parent)
     formatChanged(MOLTAQA_FROMAT);
 }
 
+bool IntroPage::validatePage()
+{
+    if(field("export.outdir").toString().trimmed().isEmpty()) {
+        QMessageBox::warning(this,
+                             tr("تصدير الكتب"),
+                             tr("لم تقم بإختيار مجلد وضع الكتب"));
+        return false;
+    }
+
+    if(m_checkExportInOnePackage->isVisible()) {
+        Utils::Settings::set("ExportDialog/exportInOnePackage",
+                             m_checkExportInOnePackage->isChecked());
+    }
+
+    return true;
+}
+
 void IntroPage::formatChanged(int index)
 {
     switch (index) {
     case MOLTAQA_FROMAT:
+        m_checkExportInOnePackage->setVisible(true);
         m_checkAddPageNumber->setVisible(false);
         m_checkRemoveTashkil->setVisible(false);
         break;
     case PDF_FROMAT:
+        m_checkExportInOnePackage->setVisible(false);
         m_checkAddPageNumber->setVisible(false);
         m_checkRemoveTashkil->setVisible(false);
         break;
     case EPUB_FROMAT:
+        m_checkExportInOnePackage->setVisible(false);
         m_checkAddPageNumber->setVisible(true);
         m_checkRemoveTashkil->setVisible(true);
         break;
     case HTML_FORMAT:
+        m_checkExportInOnePackage->setVisible(false);
         m_checkAddPageNumber->setVisible(true);
         m_checkRemoveTashkil->setVisible(true);
         break;
@@ -164,6 +192,10 @@ ExportPage::ExportPage(QWidget *parent) : QWizardPage(parent)
     m_treeWidget = new QListWidget(this);
     layout->addWidget(m_treeWidget);
 
+    m_checkOpenOutFolder = new QCheckBox(tr("فتح مجلد وضع الملفات عند الانتهاء من التصدير"), this);
+    m_checkOpenOutFolder->setChecked(Utils::Settings::get("ExportDialog/openOutDit", true).toBool());
+    layout->addWidget(m_checkOpenOutFolder);
+
     setLayout(layout);
 
     m_doneExport = false;
@@ -184,14 +216,12 @@ void ExportPage::initializePage()
     ExportFormat format = static_cast<ExportFormat>(field("export.type").toInt());
     QString outDir = field("export.outdir").toString();
 
-    bool removeTashkil = field("export.removeTashkil").toBool();
-    bool addPageNumber = field("export.addPageNumber").toBool();
-
     m_progressBar->setMaximum(books.count());
 
     m_thread->setExportFormat(format);
-    m_thread->setRemoveTashkil(removeTashkil);
-    m_thread->setAddPageNumber(addPageNumber);
+    m_thread->setExportInOnePackage(field("export.ExportInOnePackage").toBool());
+    m_thread->setRemoveTashkil(field("export.removeTashkil").toBool());
+    m_thread->setAddPageNumber(field("export.addPageNumber").toBool());
 
     m_thread->setBooksToExport(books);
     m_thread->setOutDir(outDir);
@@ -204,10 +234,27 @@ bool ExportPage::isComplete() const
     return m_doneExport;
 }
 
+void ExportPage::openOutDir()
+{
+    if(m_checkOpenOutFolder->isChecked()) {
+        QString outDir = field("export.outdir").toString();
+        QDesktopServices::openUrl(QUrl(outDir));
+    }
+
+    Utils::Settings::set("ExportDialog/openOutDit", m_checkOpenOutFolder->isChecked());
+}
+
 void ExportPage::bookExported(QString book)
 {
-    m_treeWidget->addItem(book);
+
+    bool scrollToBottom = (m_treeWidget->verticalScrollBar()->maximum()
+                           == m_treeWidget->verticalScrollBar()->value());
+
+    m_treeWidget->addItem(new QListWidgetItem(QIcon(":/images/add2.png"), book));
     m_progressBar->setValue(m_progressBar->value()+1);
+
+    if(scrollToBottom)
+        m_treeWidget->scrollToBottom();
 }
 
 void ExportPage::doneExporting()

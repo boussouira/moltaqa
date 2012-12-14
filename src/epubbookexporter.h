@@ -11,6 +11,7 @@ class EPubBookExporter : public BookExporter
 public:
     EPubBookExporter(QObject *parent = 0);
 
+    bool multiBookExport() { return false; }
     void start();
 
 protected:

@@ -5,6 +5,9 @@
 #include "bookexporterthread.h"
 
 class QCheckBox;
+class QLabel;
+class QListWidget;
+class QProgressBar;
 
 class IntroPage : public QWizardPage
 {
@@ -12,12 +15,15 @@ class IntroPage : public QWizardPage
 public:
     IntroPage(QWidget *parent = 0);
 
+    bool validatePage();
+
 protected slots:
     void formatChanged(int index);
 
 protected:
     QCheckBox *m_checkRemoveTashkil;
     QCheckBox *m_checkAddPageNumber;
+    QCheckBox *m_checkExportInOnePackage;
 };
 
 class BookSelectionPage : public QWizardPage
@@ -43,14 +49,18 @@ public:
 
     BookExporterThread *exportThread() { return m_thread; }
 
+public slots:
+    void openOutDir();
+
 protected slots:
     void bookExported(QString book);
     void doneExporting();
 
 protected:
-    class QLabel *m_label;
-    class QListWidget *m_treeWidget;
-    class QProgressBar *m_progressBar;
+    QLabel *m_label;
+    QListWidget *m_treeWidget;
+    QProgressBar *m_progressBar;
+    QCheckBox *m_checkOpenOutFolder;
     BookExporterThread *m_thread;
     bool m_doneExport;
 };
