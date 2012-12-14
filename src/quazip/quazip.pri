@@ -18,6 +18,9 @@ HEADERS += crypt.h \
            quachecksum32.h \
            quacrc32.h \
            quazip.h \
+           quagzipfile.h \
+           quaziodevice.h \
+           quazipdir.h \
            quazipfile.h \
            quazipfileinfo.h \
            quazipnewinfo.h \
@@ -27,7 +30,10 @@ SOURCES += qioapi.cpp \
            JlCompress.cpp \
            quaadler32.cpp \
            quacrc32.cpp \
+           quagzipfile.cpp \
+           quaziodevice.cpp \
            quazip.cpp \
+           quazipdir.cpp \
            quazipfile.cpp \
            quazipnewinfo.cpp \
            unzip.c \

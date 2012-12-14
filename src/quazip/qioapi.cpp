@@ -33,13 +33,11 @@
 #endif
 
 voidpf ZCALLBACK qiodevice_open_file_func (
-   voidpf /*opaque*/,
+   voidpf opaque UNUSED,
    voidpf file,
    int mode)
 {
     QIODevice *iodevice = reinterpret_cast<QIODevice*>(file);
-    if(iodevice->isSequential())
-        return NULL;
     if ((mode & ZLIB_FILEFUNC_MODE_READWRITEFILTER)==ZLIB_FILEFUNC_MODE_READ)
         iodevice->open(QIODevice::ReadOnly);
     else
@@ -49,15 +47,20 @@ voidpf ZCALLBACK qiodevice_open_file_func (
     if (mode & ZLIB_FILEFUNC_MODE_CREATE)
         iodevice->open(QIODevice::WriteOnly);
 
-    if(iodevice->isOpen())
-        return iodevice;
-    else
+    if (iodevice->isOpen()) {
+        if (iodevice->isSequential()) {
+            iodevice->close();
+            return NULL;
+        } else {
+            return iodevice;
+        }
+    } else
         return NULL;
 }
 
 
 uLong ZCALLBACK qiodevice_read_file_func (
-   voidpf /*opaque*/,
+   voidpf opaque UNUSED,
    voidpf stream,
    void* buf,
    uLong size)
@@ -69,7 +72,7 @@ uLong ZCALLBACK qiodevice_read_file_func (
 
 
 uLong ZCALLBACK qiodevice_write_file_func (
-   voidpf /*opaque*/,
+   voidpf opaque UNUSED,
    voidpf stream,
    const void* buf,
    uLong size)
@@ -80,7 +83,7 @@ uLong ZCALLBACK qiodevice_write_file_func (
 }
 
 uLong ZCALLBACK qiodevice_tell_file_func (
-   voidpf /*opaque*/,
+   voidpf opaque UNUSED,
    voidpf stream)
 {
     uLong ret;
@@ -89,7 +92,7 @@ uLong ZCALLBACK qiodevice_tell_file_func (
 }
 
 int ZCALLBACK qiodevice_seek_file_func (
-   voidpf /*opaque*/,
+   voidpf opaque UNUSED,
    voidpf stream,
    uLong offset,
    int origin)
@@ -114,7 +117,7 @@ int ZCALLBACK qiodevice_seek_file_func (
 }
 
 int ZCALLBACK qiodevice_close_file_func (
-   voidpf /*opaque*/,
+   voidpf opaque UNUSED,
    voidpf stream)
 {
     ((QIODevice*)stream)->close();
@@ -122,10 +125,11 @@ int ZCALLBACK qiodevice_close_file_func (
 }
 
 int ZCALLBACK qiodevice_error_file_func (
-   voidpf /*opaque*/,
-   voidpf stream)
+   voidpf opaque UNUSED,
+   voidpf stream UNUSED)
 {
-    return !((QIODevice*)stream)->errorString().isEmpty();
+    // can't check for error due to the QIODevice API limitation
+    return 0;
 }
 
 void fill_qiodevice_filefunc (
