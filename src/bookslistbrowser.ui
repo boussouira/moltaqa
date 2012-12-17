@@ -108,6 +108,14 @@
    <header>filterlineedit.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>lineFilterBookList</tabstop>
+  <tabstop>treeBookList</tabstop>
+  <tabstop>treeLastBook</tabstop>
+  <tabstop>lineFilterFavourites</tabstop>
+  <tabstop>treeFavouritesList</tabstop>
+  <tabstop>tabWidget</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
