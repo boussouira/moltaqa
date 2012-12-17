@@ -126,7 +126,9 @@ void HtmlBookExporter::writeTOC()
         for(int i=1; i<=114; i++) {
             QuranSora *sora = MW->readerHelper()->getQuranSora(i);
             if(sora) {
-                out << "<li><a href=\"pages/p" << m_sowarPages[i]+1 << ".html\">" << sora->name << "</a></li>" << "\n";
+                out << "<li><a href=\"pages/p"
+                    << m_sowarPages[i]+1 << ".html\">"
+                    << sora->name << "</a></li>" << "\n";
             }
         }
     } else {
@@ -173,7 +175,11 @@ void HtmlBookExporter::writeTocItem(QTextStream &out, QDomElement &element)
     if(m_removeTashkil)
         text = Utils::String::Arabic::removeTashekil(text);
 
-    out << "<li><a id=\"id_" << pageID << "\" href=\"pages/p" << pageID << ".html\">" << text << "</a></li>" << "\n";
+    out << "<li><a id=\"id_"
+        << pageID << "\" href=\"pages/p"
+        << pageID << ".html\">"
+        << text << "</a></li>"
+        << "\n";
 
     if(element.childNodes().count() > 1) {
         out << "<ul>" << "\n";
@@ -253,17 +259,9 @@ void HtmlBookExporter::writePage(QDir &dir, BookPage *page)
         helper.endSpan(); // span.part
 
         helper.endDiv(); // div#currentPage
-
         helper.endDiv(); // div.bookInfo
-
-        //helper.beginDiv(".breadcrumbs");
-        //helper.endDiv();
-
         helper.endDiv(); // div#pageHeader
     }
-
-//    if(!page->text.contains("<div class=\"clear\"></div>")) // TODO: remove this later
-//        page->text.replace("<div class=\"clear\">", "<div class=\"clear\"></div>");
 
     helper.beginDiv("#pageText");
     helper.append(page->text);
@@ -290,50 +288,8 @@ void HtmlBookExporter::writePage(QDir &dir, BookPage *page)
     }
 
     helper.endDiv();
-
-    //helper.addJS("jquery.js");
-    //helper.addJS("jquery.tooltip.js");
-    //helper.addJS("scripts.js");
-    //helper.addJS("reader.js");
-
-    //helper.addJSCode("pageTextChanged();");
-
-    //if(m_book->isNormal())
-    //    helper.addJSCode("toggleShorooh();");
-
-    //helper.addJSCode(jsCode);
-
     helper.endAll();
 
-    //////////////////////////
-    /*
-        out << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" "
-            << "\"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">" << "\n";
-
-        out << "<html xmlns=\"http://www.w3.org/1999/xhtml\">" << "\n";
-
-        out << "<head>" << "\n";
-        out << "<title>" << m_book->title << "</title>" << "\n";
-        out << "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>" << "\n";
-        out << "<link href=\"../../style/default.css\" rel=\"stylesheet\" type=\"text/css\" />" << "\n";
-        out << "</head>" << "\n\n";
-
-        out << "<body>" << "\n";
-
-        if(!page->text.contains("<div class=\"clear\"></div>")) // TODO: remove this later
-            page->text.replace("<div class=\"clear\">", "<div class=\"clear\"></div>");
-
-        out << page->text << "\n";
-
-        if(m_addPageNumber && !m_book->isQuran()) {
-            out << "<p class=\"center\">"
-                << tr("الصفحة: ") << page->page << " - "
-                << tr("الجزء: ") << page->part
-                << "</p>" << "\n";
-        }
-
-        out << "</body>\n</html>";
-*/
     QTextStream out(&file);
     out.setCodec("utf-8");
 
