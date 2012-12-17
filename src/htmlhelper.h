@@ -96,10 +96,16 @@ public:
         insertHtmlTag("dd", text, selector);
     }
 
+    inline void beginLink(const QString &href, const QString &selector="")
+    {
+        beginHtmlTag("a", selector, QString("href='%1'").arg(href));
+    }
+
     inline void endDiv() { endHtmlTag(); }
     inline void endParagraph() { endHtmlTag(); }
     inline void endSpan() { endHtmlTag(); }
     inline void endDL() { endHtmlTag(); }
+    inline void endLink() { endHtmlTag(); }
 
     inline void insertBr() { m_html.append("<br />"); }
 

@@ -13,6 +13,7 @@ public:
     LibraryBookExporter(QObject *parent = 0);
 
     bool multiBookExport() { return true; }
+    bool moveGeneratedFile() { return true; }
     void start();
 
 protected:

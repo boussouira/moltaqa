@@ -221,6 +221,24 @@ bool AbstractBookReader::hasPrev()
             : !m_pagesDom.currentElement().previousSiblingElement().isNull();
 }
 
+int AbstractBookReader::nextPageID()
+{
+    QDomElement element = m_pagesDom.currentElement().isNull()
+            ? m_pagesDom.rootElement().firstChildElement()
+            : m_pagesDom.currentElement().nextSiblingElement();
+
+    return element.attribute("id").toInt();
+}
+
+int AbstractBookReader::prevPageID()
+{
+    QDomElement element = m_pagesDom.currentElement().isNull()
+            ? m_pagesDom.rootElement().lastChildElement()
+            : m_pagesDom.currentElement().previousSiblingElement();
+
+    return element.attribute("id").toInt();
+}
+
 int AbstractBookReader::pagesCount()
 {
     return m_pagesDom.rootElement().childNodes().size();

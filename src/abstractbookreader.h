@@ -93,6 +93,10 @@ public:
       */
     virtual bool hasPrev();
 
+    virtual int nextPageID();
+
+    virtual int prevPageID();
+
     int pagesCount();
 
     inline XmlDomHelper& pagesDom() { return m_pagesDom; }

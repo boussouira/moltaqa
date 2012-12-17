@@ -7,6 +7,7 @@
 #include "bookexporter.h"
 #include "librarybookexporter.h"
 #include "epubbookexporter.h"
+#include "htmlbookexporter.h"
 #include "utils.h"
 #include <qdebug.h>
 
@@ -30,6 +31,8 @@ void BookExporterThread::run()
             m_exporter = new LibraryBookExporter();
         } else if(m_exportFormat == EPUB_FROMAT) {
             m_exporter = new EPubBookExporter();
+        } else if(m_exportFormat == HTML_FORMAT) {
+            m_exporter = new HtmlBookExporter();
         } else {
             throw BookException(QString("BookExporterThread::importBook Unknow format %1").arg(m_exportFormat));
         }
@@ -38,6 +41,7 @@ void BookExporterThread::run()
         return;
     }
 
+    m_exporter->setOutDir(m_outDir);
     m_exporter->setAddPageNumber(m_addPageNumber);
     m_exporter->setRemoveTashkil(m_removeTashkil);
 
@@ -59,11 +63,11 @@ void BookExporterThread::run()
         m_exporter->setExportInOnePackage(true);
         m_exporter->start();
 
-        moveToOutDir(m_exporter->genereatedPath(),
-                     tr("مجموعة كتب (%1)").arg(m_exporter->exportedBooksCount()));
+        if(m_exporter->moveGeneratedFile()) {
+            moveToOutDir(m_exporter->genereatedPath(),
+                         tr("مجموعة كتب (%1)").arg(m_exporter->exportedBooksCount()));
+        }
     } else {
-
-
         foreach (int bookID, m_bookToImport) {
             LibraryBookPtr book = manager->getLibraryBook(bookID);
 
@@ -71,7 +75,8 @@ void BookExporterThread::run()
                 m_exporter->setLibraryBook(book);
                 m_exporter->start();
 
-                moveToOutDir(m_exporter->genereatedPath(), book->title);
+                if(m_exporter->moveGeneratedFile())
+                    moveToOutDir(m_exporter->genereatedPath(), book->title);
 
                 emit bookExported(book->title);
             } catch (BookException &e) {

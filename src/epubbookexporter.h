@@ -12,6 +12,7 @@ public:
     EPubBookExporter(QObject *parent = 0);
 
     bool multiBookExport() { return false; }
+    bool moveGeneratedFile() { return true; }
     void start();
 
 protected:

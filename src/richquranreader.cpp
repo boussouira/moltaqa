@@ -161,3 +161,13 @@ bool RichQuranReader::hasPrev()
 {
     return (1 <= m_currentPage->page-1);
 }
+
+int RichQuranReader::nextPageID()
+{
+    return m_currentPage->page + 1;
+}
+
+int RichQuranReader::prevPageID()
+{
+    return m_currentPage->page - 1;
+}

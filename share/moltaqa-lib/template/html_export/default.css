@@ -1,0 +1,596 @@
+body {
+    direction: rtl;
+}
+a {
+    text-decoration: none;
+}
+
+/* Reader */
+
+#quran {
+    border: 1px solid #CCCCCC;
+    margin-bottom: 20px;
+    padding: 15px;
+    text-align: center;
+}
+#simpleBook {
+    margin-bottom: 20px;
+    padding: 15px;
+    text-align: right;
+}
+.soraname {
+    border: 1px solid #CCCCCC;
+    color: #444444;
+    font-size: 30px;
+    margin-bottom: 25px;
+    margin-left: 5px;
+    margin-right: 5px;
+    text-align: center;
+}
+.ayanumber {
+    color: Teal;
+    margin-left: 4px;
+    margin-right: 4px;
+}
+.ayatxt {
+    text-align: justify;
+}
+.bassemala {
+    color: DarkBlue;
+    margin-bottom: 10px;
+    text-align: center;
+}
+.highlighted {
+    color: #003BCC;
+}
+
+#simpleBook #pageText {
+}
+
+#simpleBook #pageHeader {
+  font-family: 'Tahoma';
+  font-size: 13px;
+  border-bottom: 1px solid #CCCCCC;
+  margin-bottom: 15px;
+  padding-bottom: 5px;
+}
+
+#simpleBook #pageHeader .bookName {
+  color: #AA0000;
+  cursor: pointer;
+}
+
+#simpleBook #pageHeader .bookInfo #currentPage {
+    float: left;
+}
+
+#simpleBook #pageHeader .bookInfo #currentPage > span{
+    margin: 0 5px;
+}
+
+#simpleBook #pageHeader .bookInfo #currentPage .page span {
+    margin-left: 2px;
+}
+
+#simpleBook #pageHeader .bookInfo #currentPage .part span {
+    margin-left: 2px;
+}
+
+#simpleBook #pageHeader .breadcrumbs {
+    font-family: cursive;
+}
+
+#simpleBook #pageHeader .breadcrumbs span {
+    cursor: pointer;
+    margin: 0px 5px;
+}
+
+#simpleBook #pageHeader .breadcrumbs span:hover {
+    color: #184388;
+}
+
+#simpleBook .bookIndex {
+    padding: 5px 10px;
+}
+
+#simpleBook .bookIndex a:hover {
+    color: #184388;
+}
+
+#simpleBook .bookIndex a:visited {
+    color: blue;
+}
+
+#simpleBook .bookIndex img {
+    cursor:pointer;
+    padding: 0 10px;
+}
+
+#simpleBook #shorooh {
+    display:none;
+}
+
+#simpleBook #shorooh span.info {
+    border-color: #CCCCCC;
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 1px;
+    color: #507B5A;
+    cursor: pointer;
+    float: left;
+    font-size: 16px;
+    margin-bottom: 5px;
+    padding: 0 10px;
+}
+
+#simpleBook #shorooh span.disabled {
+    color: #D9500A;
+    cursor: default;
+}
+
+#simpleBook #shorooh .shoroohBooks {
+    display:none;
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+    font-size: 18px;
+    padding: 0 10px;
+}
+
+#simpleBook #shorooh .shoroohBooks p {
+    color: #0A4311;
+    cursor: pointer;
+    margin: 3px 0;
+    padding: 0;
+}
+
+#simpleBook #shorooh .shoroohBooks p:hover {
+    color: #040643;
+}
+
+footnote {
+    font-size: 0.8em;
+    color: #414141;
+}
+footnote a {
+    color: green;
+    font-size: 0.9em;
+}
+footnote p {
+    margin: 0;
+    padding: 0;
+}
+.footn {
+    color: green;
+    font-size: 0.8em;
+    padding-bottom: 4px;
+}
+.tafessir_quran .quran_text {
+    border-radius:0 0 10px 10px;
+    background-color: #FFF2F2;
+    border-color: #FFD2D2;
+    border-style: none solid solid;
+    border-width: medium 1px 1px;
+    display: none;
+    font-size: 0.9em;
+    margin-bottom: 15px;
+    padding: 10px;
+}
+.tafessir_quran .toggale_quran {
+    background-color: #FFF2F2;
+    border: 1px solid #FFD2D2;
+    border-radius: 10px 10px 0 0;
+    padding: 5px;
+}
+
+.tafessir_quran .toggale_quran img {
+    cursor: pointer;
+    float: left;
+}
+
+.tafessir_quran .toggale_quran .quran_info {
+    font-size: 0.9em;
+}
+
+/* Search */
+
+div.clear {
+    clear: both;
+}
+.result {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #AAAAAA;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 0 10px #CBCBCB;
+    margin: 5px 5px 15px;
+    padding-bottom: 3px;
+}
+.result h3 {
+    color: #333333;
+    display: inline-block;
+    font-size: 0.8em;
+    min-height: 25px;
+    margin: 0;
+    padding: 2px 5px;
+}
+.result .resultText {
+    color: #333333;
+    cursor: pointer;
+    display: block;
+    margin: 0;
+    padding: 10px 5px;
+}
+.result .resultInfo {
+    border-top: 1px solid #E7E7E7;
+    margin: 5px 0;
+    padding: 10px 10px 5px 5px;
+}
+.result .resultInfo .bookInfo {
+    float: right;
+}
+.result .resultInfo .bookInfo .book {
+    color: #666666;
+    font-weight: bold;
+    margin-left: 5px;
+}
+.result .resultInfo .bookInfo .bookName {
+    color: #ED8E28;
+    cursor: pointer;
+    font-weight: bold;
+    margin-left: 7px;
+}
+.result .resultInfo .bookInfo .bookName:hover {
+    color: #FFB96A;
+}
+.result .resultInfo .pageInfo {
+    float: left;
+}
+.result .resultInfo .pageInfo .page {
+    color: #666666;
+    font-weight: bold;
+    margin-left: 5px;
+}
+.result .resultInfo .pageInfo .pageVal {
+    color: #E38C0B;
+    font-weight: bold;
+    margin-left: 10px;
+}
+.result .resultInfo .pageInfo .part {
+    color: #666666;
+    font-weight: bold;
+    margin-left: 5px;
+}
+.result .resultInfo .pageInfo .partVal {
+    color: #E38C0B;
+    font-weight: bold;
+    margin-left: 7px;
+}
+.result .resultHead {
+    background-color: #EDEDED;
+    background-image: -webkit-linear-gradient(#FFFFFF, #E7E7E7);
+    background-image: -moz-linear-gradient(#FFFFFF, #E7E7E7);
+    border-bottom: 1px solid #D5D5D5;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    margin: 0;
+}
+.result .progSpan {
+    background-color: #C3EBBC;
+    border-radius: 3px;
+    float: left;
+    height: 22px;
+    margin: 5px 5px 0;
+}
+.result .progSpanContainre {
+    border: 1px solid #B1B5AE;
+    border-radius: 3px;
+    box-shadow: 0 0 5px 0 #C8C8C8;
+    float: left;
+    height: 20px;
+    width: 99px;
+}
+.result .prev {
+    float: right;
+    font-style: oblique;
+}
+.result .next {
+    float: right;
+    font-style: oblique;
+}
+
+/* Result highlight */
+
+.resultHL {
+    background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.1));
+    background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.1));
+}
+
+.resultHL_0 {
+    background-color: #ffff63;
+}
+
+.resultHL_1 {
+    background-color: #ef86fb;
+}
+
+.resultHL_2 {
+    background-color: #a5ffff;
+}
+
+.resultHL_3 {
+    background-color: #F77A7E;
+}
+
+.resultHL_4 {
+    background-color: #9cff9c;
+}
+
+.resultHL_5 {
+    background-color: #d4ce62;
+}
+
+.resultHL_6 {
+    background-color: #ab9bff;
+}
+
+.resultHL_7 {
+    background-color: #e7cda4;
+}
+
+.resultHL_8 {
+    background-color: #c8dc79;
+}
+
+.resultHL_default{
+    background-color: #b6d7c6;
+}
+
+/* Info message */
+#growlcontainer {
+    font-size: .9em;
+    left: 20px;
+    position: fixed;
+    top: 20px;
+    width: 300px;
+    z-index: 1000;
+}
+.growlstatus {
+    background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.9), rgba(222, 214, 214, 0.9));
+    background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.9), rgba(222, 214, 214, 0.9));
+    border: 3px solid #E1E1E1;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 0 5px 0 rgba(200, 200, 200, 0.8) inset;
+    color: #000000;
+    margin-bottom: 5px;
+    padding: 15px;
+    position: relative;
+}
+.growlstatus .growltitle {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.growlstatusclose {
+    background: url("growlclose.png") no-repeat scroll 0 0 transparent;
+    cursor: pointer;
+    display: none;
+    height: 30px;
+    left: 5px;
+    position: absolute;
+    top: 5px;
+    width: 30px;
+}
+.growlstatus:hover {
+    border: 3px solid rgba(193, 193, 193, 0.7);
+    box-shadow: 0 0 5px 2px #CCCCCC;
+}
+.growlstatus:hover .growlstatusclose {
+    display: block;
+}
+.growlwithicon {
+    background-position: 5px 10px;
+    background-repeat: no-repeat;
+    padding-right: 50px;
+}
+
+div.error {
+    background-image: -moz-linear-gradient(#FFE7E7, #FF9595);
+    background-image: -webkit-linear-gradient(#FFE7E7, #FF9595);
+    border: 1px solid #CCCCCC;
+    border-radius: 7px 7px 7px 7px;
+    margin: 10px 15px;
+    padding: 20px 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+div.error p{
+    padding: 0;
+    margin: 0;
+}
+
+div.info {
+    background-image: -moz-linear-gradient(#FFFFFF, #B8FB9E);
+    background-image: -webkit-linear-gradient(#FFFFFF, #B8FB9E);
+    border: 1px solid #CCCCCC;
+    border-radius: 7px 7px 7px 7px;
+    margin: 10px 15px;
+    padding: 20px 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* Pagination */
+.pagination {
+    text-align: center;
+    direction: ltr;
+}
+
+.pagination a {
+    text-decoration: none;
+    border: solid 1px #AAE;
+    color: #15B;
+}
+
+.pagination a:hover, .pagination span:hover {
+    background-color: #E6E6E6;
+}
+.pagination a, .pagination span {
+    box-shadow: 0 0 5px #AEAEAE ;
+    padding: 0 10px;
+    font-size: 0.9em;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    text-align:center;
+}
+
+.pagination span.ellipse {
+    box-shadow: none;
+}
+
+.pagination span.ellipse:hover {
+    background-color: #fff;
+}
+
+.pagination .current {
+    background-image: -webkit-linear-gradient(#A7BED9, #4877B0);
+    border: 1px solid #AAAAEE;
+    color: #FFFFFF;
+}
+
+.pagination .current:hover {
+    background-image: -webkit-linear-gradient(#A7BED9, #4877B0);
+}
+
+.pagination .current.prev, .pagination .current.next{
+    color:#999;
+    border-color:#999;
+    background:#fff;
+}
+
+abbr {
+    border-bottom: 1px dotted silver;
+    color: maroon;
+    cursor: help;
+}
+
+#tooltip {
+    background-color: #D3FFD6;
+    border: 1px solid #8BD599;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 0 5px 1px #7DCC89;
+    font-size: 18px;
+    max-width: 560px;
+    padding: 3px 5px;
+    position: absolute;
+    word-wrap: normal;
+    z-index: 3000;
+}
+
+#tooltip h3 {
+    margin: 0;
+    padding: 2px;
+}
+
+a.ext {
+    background: url("external.png") no-repeat scroll left top transparent;
+    padding-left: 12px;
+}
+
+sanad {
+    color: #000080;
+}
+
+mateen {
+    color: green;
+}
+
+sheer {
+    color: #273A9D;
+}
+
+.rawi-info {
+    padding: 5px;
+    text-align: right;
+}
+
+.rawi-info .nav {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.rawi-info .nav a {
+    border: 1px dotted #CCCCCC;
+    border-radius: 5px 5px 5px 5px;
+    margin: 0 5px;
+    padding: 0 15px;
+}
+
+.rawi-info #info {
+    border: 1px solid #CCCCCC;
+    border-radius: 5px 5px 5px 5px;
+    padding: 0 6px;
+}
+
+.rawi-info #info p{
+    padding: 0;
+    margin: 0;
+}
+
+.rawi-info h4 {
+    background-color: #F7F7F7;
+    border: 1px solid #CCCCCC;
+    border-bottom: none;
+    border-radius: 5px 5px 0 0;
+    margin-bottom: 0;
+    padding: 0 6px;
+}
+
+.rawi-info .head-info {
+    background-color: #FFFEF9;
+    border: 1px solid #CCCCCC;
+    border-radius: 0 0 5px 5px;
+    padding: 0 6px;
+}
+
+hr.fns {
+    width: 20%;
+    float: right;
+}
+dl {
+    margin-bottom: 18px;
+}
+dt {
+    color: #306631;
+    font-weight: bold;
+    margin: 0 5px;
+}
+dd {
+    margin-right: 9px;
+}
+.dl-horizontal dt {
+    clear: right;
+    float: right;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 120px;
+}
+.dl-horizontal dd {
+    margin-right: 130px;
+}
+
+#pageNav {
+    background-color: #FFFFFF;
+    border-top: 1px solid #CCCCCC;
+    bottom: 0;
+    height: 20px;
+    left: 0;
+    padding: 5px;
+    position: fixed;
+    right: 0;
+    text-align: center;
+}
+
+#pageNav a {
+    margin: 0 5px;
+}

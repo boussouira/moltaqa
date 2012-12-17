@@ -15,6 +15,7 @@ public:
     void setLibraryBookList(QList<LibraryBookPtr> bookList) { m_bookList = bookList; }
     QString genereatedPath() { return m_genereatedPath; }
 
+    void setOutDir(QString outDir) { m_outDir = outDir; }
     void setRemoveTashkil(bool remove) { m_removeTashkil = remove; }
     void setAddPageNumber(bool add) { m_addPageNumber = add; }
 
@@ -27,6 +28,8 @@ public:
      */
     virtual bool multiBookExport()=0;
 
+    virtual bool moveGeneratedFile()=0;
+
     virtual void start()=0;
 
 signals:
@@ -37,6 +40,7 @@ protected:
     QList<LibraryBookPtr> m_bookList; ///< list of books to export in one package, only supported by our format
     QString m_genereatedPath;
     QString m_tempDir;
+    QString m_outDir;
     int m_exportedBooks;
     bool m_stop;
     bool m_exportInOnePackage;

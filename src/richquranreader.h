@@ -23,6 +23,9 @@ public:
     bool hasNext();
     bool hasPrev();
 
+    int nextPageID();
+    int prevPageID();
+
 protected:
     QuranTextFormat *m_formatter;
 };

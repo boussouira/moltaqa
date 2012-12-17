@@ -37,9 +37,9 @@ IntroPage::IntroPage(QWidget *parent) : QWizardPage(parent)
     layout->addWidget(label);
 
     QComboBox *combo = new QComboBox(this);
-    combo->insertItem(MOLTAQA_FROMAT, tr("مكتبة الملتقى"));
-    combo->insertItem(EPUB_FROMAT, "ePub");
-    combo->insertItem(HTML_FORMAT, "HTML");
+    combo->insertItem(MOLTAQA_FROMAT, tr("مكتبة الملتقى (mlp)"));
+    combo->insertItem(EPUB_FROMAT, tr("كتاب الكتروني (epub)"));
+    combo->insertItem(HTML_FORMAT, tr("وويب (html)"));
     //combo->insertItem(PDF_FROMAT, "PDF");
 
     QHBoxLayout *hbox = new QHBoxLayout;
