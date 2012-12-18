@@ -258,9 +258,9 @@ void MainWindow::settingDialog()
     Utils::Widget::exec(&settingDialog, "SettingDialog");
 }
 
-void MainWindow::openBook(int pBookID, int pageID)
+void MainWindow::openBook(int bookID, int pageID)
 {
-    ml_return_on_fail(m_bookView->openBook(pBookID, pageID));
+    m_bookView->openBook(bookID, pageID);
 }
 
 void MainWindow::showBooksList(int tabIndex)
