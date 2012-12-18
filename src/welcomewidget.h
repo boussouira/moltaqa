@@ -28,9 +28,6 @@ protected slots:
     void jsCleared();
     void showStatistics();
 
-signals:
-    void bookSelected(int bookID);
-
 private:
     LibraryBookManager *m_bookManager;
     WebView *m_webView;

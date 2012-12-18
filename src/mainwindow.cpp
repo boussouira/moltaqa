@@ -229,7 +229,6 @@ void MainWindow::setupActions()
     connect(ui->actionShamelaImport, SIGNAL(triggered()), SLOT(importFromShamela()));
     connect(ui->actionExport, SIGNAL(triggered()), SLOT(exportBooks()));
 
-    connect(m_welcomeWidget, SIGNAL(bookSelected(int)), SLOT(openBook(int)));
     connect(m_booksList, SIGNAL(bookSelected(int)), SLOT(openBook(int)));
     connect(ui->actionBooksList, SIGNAL(triggered()), SLOT(showBooksList()));
     connect(ui->actionSearchView, SIGNAL(triggered()), SLOT(showSearchView()));
