@@ -219,6 +219,7 @@ void SettingsDialog::resetSettings()
             // Groups
          << "WidgetStat"
          << "ToolBars"
+         << "BooksListWidget"
          << "TreeViewStat";
 
     foreach (QString key, keys) {

@@ -3,6 +3,7 @@
 
 #include <qmainwindow.h>
 #include "searchview.h"
+#include "bookslistbrowser.h"
 
 #define MW MainWindow::instance()
 
@@ -65,7 +66,8 @@ public slots:
 
     void searchInFavourites();
 
-    void showBooksList(int tabIndex=-1);
+    void showBooksList();
+    void showBooksList(BooksListBrowser::TreeViewModel model);
     void aboutdDialog();
     void settingDialog();
     void controlCenter();

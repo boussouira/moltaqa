@@ -29,6 +29,16 @@ public:
         ALive     = 0x8
     };
 
+    static inline QString formatAuthorName(QString name, QString deathStr)
+    {
+        return QString::fromUtf8("%1، %2").arg(name).arg(deathStr);
+    }
+
+    static inline QString formatAuthorName(QSharedPointer<AuthorInfo> author)
+    {
+        return formatAuthorName(author->name, author->deathStr);
+    }
+
     AuthorInfo *clone()
     {
         return new AuthorInfo(*this);

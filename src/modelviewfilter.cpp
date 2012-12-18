@@ -48,6 +48,12 @@ void ModelViewFilter::setColumnSortRole(int column, int role)
     m_roles[column] = role;
 }
 
+void ModelViewFilter::setSorting(int column, int role, Qt::SortOrder order)
+{
+    m_treeView->sortByColumn(column, order);
+    m_filterModel->setSortRole(role);
+}
+
 void ModelViewFilter::addFilterColumn(int column, Qt::ItemDataRole role, const QString &filterName)
 {
     FilterInfo info;
@@ -92,6 +98,7 @@ void ModelViewFilter::setAllowFilterByDeath(bool allow)
 void ModelViewFilter::setup()
 {
     ml_return_on_fail2(m_treeView, "ModelViewFilter::setup tree view is not set");
+    ml_return_on_fail2(m_filterModel, "ModelViewFilter::setup filter is not set");
     ml_return_on_fail2(m_model, "ModelViewFilter::setup model is not set");
     ml_return_on_fail2(m_lineEdit, "ModelViewFilter::setup line edit is not set");
 

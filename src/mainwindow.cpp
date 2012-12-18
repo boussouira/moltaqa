@@ -3,7 +3,6 @@
 #include "utils.h"
 #include "bookreaderview.h"
 #include "librarymanager.h"
-#include "bookslistbrowser.h"
 #include "settingsdialog.h"
 #include "bookwidget.h"
 #include "importdialog.h"
@@ -229,7 +228,7 @@ void MainWindow::setupActions()
     connect(ui->actionShamelaImport, SIGNAL(triggered()), SLOT(importFromShamela()));
     connect(ui->actionExport, SIGNAL(triggered()), SLOT(exportBooks()));
 
-    connect(m_booksList, SIGNAL(bookSelected(int)), SLOT(openBook(int)));
+    connect(m_booksList, SIGNAL(bookSelected(int,int)), SLOT(openBook(int,int)));
     connect(ui->actionBooksList, SIGNAL(triggered()), SLOT(showBooksList()));
     connect(ui->actionSearchView, SIGNAL(triggered()), SLOT(showSearchView()));
     connect(ui->actionSearchFavourites, SIGNAL(triggered()), SLOT(searchInFavourites()));
@@ -262,13 +261,16 @@ void MainWindow::openBook(int bookID, int pageID)
     m_bookView->openBook(bookID, pageID);
 }
 
-void MainWindow::showBooksList(int tabIndex)
+void MainWindow::showBooksList()
 {
     m_booksList->show();
     m_booksList->activateWindow();
+}
 
-    if(tabIndex != -1)
-        m_booksList->setCurrentTab(tabIndex);
+void MainWindow::showBooksList(BooksListBrowser::TreeViewModel model)
+{
+    showBooksList();
+    m_booksList->setCurrentModel(model);
 }
 
 void MainWindow::showSearchView()

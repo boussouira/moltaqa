@@ -37,7 +37,7 @@ void LibrarySearchWidget::init(int bookID)
     ui->treeView->setColumnWidth(0, 300);
 
     Utils::Widget::restore(ui->treeView, "LibrarySearch",
-                           QList<int>() << 350 << 200);
+                           QList<int>() << 350);
 
     m_filterManager = filter;
 

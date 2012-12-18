@@ -107,11 +107,11 @@ void WelcomeWidget::open(QString vid)
     } else if(vid == "search") {
         MW->showSearchView();
     } else if(vid == "lastbooks") {
-        MW->showBooksList(2);
+        MW->showBooksList(BooksListBrowser::LastOpenModel);
     } else if(vid == "favourites") {
-        MW->showBooksList(1);
+        MW->showBooksList(BooksListBrowser::FavoritesModel);
     } else if(vid == "bookslist") {
-        MW->showBooksList(0);
+        MW->showBooksList(BooksListBrowser::AllBooksModel);
     } else if(vid == "moltaqa-lib") {
         m_webView->setUrl(QUrl("http://www.ahlalhdeeth.com/vb/forumdisplay.php?f=75"));
     } else {

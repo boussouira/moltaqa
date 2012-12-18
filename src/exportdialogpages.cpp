@@ -147,7 +147,7 @@ BookSelectionPage::BookSelectionPage(QWidget *parent) : QWizardPage(parent)
     treeView->setColumnWidth(0, 300);
 
     Utils::Widget::restore(treeView, "ExportDialog",
-                           QList<int>() << 350 << 200);
+                           QList<int>() << 350);
 
     layout->addWidget(treeView);
 

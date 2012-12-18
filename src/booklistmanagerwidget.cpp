@@ -328,14 +328,10 @@ void BookListManagerWidget::addBookItem(LibraryBookPtr book, const QModelIndex &
         }
 
         QStandardItem *authItem = new QStandardItem();
-        authItem->setText(authName);
+        authItem->setText(AuthorInfo::formatAuthorName(authName, deathStr));
         authItem->setData(book->authorID, ItemRole::authorIdRole);
+        authItem->setData(deathYear, ItemRole::authorDeathRole);
         rows << authItem;
-
-        QStandardItem *authDeathItem = new QStandardItem();
-        authDeathItem->setText(deathStr);
-        authDeathItem->setData(deathYear, ItemRole::authorDeathRole);
-        rows << authDeathItem;
     }
 
     QStandardItem *item = Utils::Model::itemFromIndex(m_model, parent);
@@ -404,7 +400,6 @@ void BookListManagerWidget::updateItem(QModelIndex index)
 {
     if(index.data(ItemRole::itemTypeRole).toInt() == ItemType::BookItem) {
         QModelIndex authorIndex = index.sibling(index.row(), 1);
-        QModelIndex authorDeathIndex = index.sibling(index.row(), 2);
 
         int bookID = index.data(ItemRole::idRole).toInt();
         int authorID = authorIndex.data(ItemRole::authorIdRole).toInt();
@@ -431,22 +426,16 @@ void BookListManagerWidget::updateItem(QModelIndex index)
             if(authorID && !isQuran) {
                 AuthorInfoPtr author = LibraryManager::instance()->authorsManager()->getAuthorInfo(authorID);
                 if(author) {
-                    if(author->name != authorIndex.data().toString()) {
+                    QString authorStr = AuthorInfo::formatAuthorName(author);
+                    if(authorStr != authorIndex.data().toString()) {
                         bookItems << new QStandardItem(tr("تغيير اسم المؤلف من '%1' الى '%2'")
                                                        .arg(authorIndex.data().toString())
-                                                       .arg(author->name));
-                        m_model->setData(authorIndex, author->name, Qt::EditRole);
+                                                       .arg(authorStr));
+                        m_model->setData(authorIndex, authorStr, Qt::EditRole);
                     }
 
-                    if(author->deathStr != authorDeathIndex.data().toString()) {
-                        bookItems << new QStandardItem(tr("تغيير وفاة المؤلف من '%1' الى '%2'")
-                                                       .arg(authorDeathIndex.data().toString())
-                                                       .arg(author->deathStr));
-                        m_model->setData(authorDeathIndex, author->deathStr, Qt::EditRole);
-                    }
-
-                    if(author->deathYear != authorDeathIndex.data(ItemRole::authorDeathRole).toInt()) {
-                        m_model->setData(authorDeathIndex, author->deathYear, ItemRole::authorDeathRole);
+                    if(author->deathYear != authorIndex.data(ItemRole::authorDeathRole).toInt()) {
+                        m_model->setData(authorIndex, author->deathYear, ItemRole::authorDeathRole);
                     }
                 } else {
                     qWarning() << "Author not found for" << book->title;

@@ -16,10 +16,10 @@
 #include <qmessagebox.h>
 
 enum {
-    BookNameCol,
-    AuthorNameCol,
-    AuthorDeathCol,
-    ColumnCount
+    OrderSort,
+    BookTitleSort,
+    AuthorNameSort,
+    AuthorDeathSort
 };
 
 BooksListBrowser::BooksListBrowser(QWidget *parent) :
@@ -27,11 +27,11 @@ BooksListBrowser::BooksListBrowser(QWidget *parent) :
     m_bookListManager(LibraryManager::instance()->bookListManager()),
     m_favouritesManager(LibraryManager::instance()->favouritesManager()),
     m_bookManager(LibraryManager::instance()->bookManager()),
+    m_currentModel(0),
     m_bookListModel(0),
     m_favouritesModel(0),
     m_lastReadedModel(0),
     m_bookListFilter(new ModelViewFilter(this)),
-    m_favouritesListFilter(new ModelViewFilter(this)),
     ui(new Ui::BooksListBrowser)
 {
     ui->setupUi(this);
@@ -42,25 +42,30 @@ BooksListBrowser::BooksListBrowser(QWidget *parent) :
     readFavouritesModel();
     lastReadBooksModel();
 
+    ui->checkSortAsc->setChecked(Utils::Settings::get("BooksListWidget/sortAsc", true).toBool());
+
     connect(m_bookListManager, SIGNAL(ModelsReady()), SLOT(readBookListModel()));
     connect(m_favouritesManager, SIGNAL(ModelsReady()), SLOT(readFavouritesModel()));
-
-    connect(ui->treeBookList, SIGNAL(doubleClicked(QModelIndex)),
-            SLOT(itemClicked(QModelIndex)));
-    connect(ui->treeFavouritesList, SIGNAL(doubleClicked(QModelIndex)),
-            SLOT(itemClicked(QModelIndex)));
-    connect(ui->treeLastBook, SIGNAL(doubleClicked(QModelIndex)),
-            SLOT(lastOpenedItemClicked(QModelIndex)));
-
-    connect(ui->tabWidget, SIGNAL(currentChanged(int)),
-            SLOT(lastReadBooksModel()));
+    connect(ui->treeBookList, SIGNAL(doubleClicked(QModelIndex)), SLOT(itemClicked(QModelIndex)));
+    connect(ui->comboCurrentList, SIGNAL(currentIndexChanged(int)), SLOT(currentListChanged(int)));
+    connect(ui->comboListSorting, SIGNAL(currentIndexChanged(int)), SLOT(listSortingChanged(int)));
+    connect(ui->checkSortAsc, SIGNAL(toggled(bool)), SLOT(sortOrderChanged(bool)));
 
     connect(ui->treeBookList, SIGNAL(customContextMenuRequested(QPoint)),
             SLOT(bookListMenu(QPoint)));
-    connect(ui->treeFavouritesList, SIGNAL(customContextMenuRequested(QPoint)),
-            SLOT(bookListMenu(QPoint)));
-    connect(ui->treeLastBook, SIGNAL(customContextMenuRequested(QPoint)),
-            SLOT(bookListMenu(QPoint)));
+
+    int current = Utils::Settings::get("BooksListWidget/currentList", 0).toInt();
+    int sorting = Utils::Settings::get("BooksListWidget/listSorting", 0).toInt();
+
+    if(current == ui->comboCurrentList->currentIndex())
+        currentListChanged(current);
+    else
+        ui->comboCurrentList->setCurrentIndex(current);
+
+    if(sorting == ui->comboListSorting->currentIndex())
+        listSortingChanged(sorting);
+    else
+        ui->comboListSorting->setCurrentIndex(sorting);
 }
 
 BooksListBrowser::~BooksListBrowser()
@@ -72,9 +77,9 @@ BooksListBrowser::~BooksListBrowser()
     delete ui;
 }
 
-void BooksListBrowser::setCurrentTab(int index)
+void BooksListBrowser::setCurrentModel(TreeViewModel model)
 {
-    ui->tabWidget->setCurrentIndex(index);
+    ui->comboCurrentList->setCurrentIndex(model);
 }
 
 void BooksListBrowser::closeEvent(QCloseEvent *event)
@@ -93,26 +98,16 @@ void BooksListBrowser::saveSettings()
 {
     Utils::Widget::save(this, "BooksListWidget");
 
-    Utils::Widget::save(ui->treeBookList, "BooksListBrowser.bookList", 2);
-    Utils::Widget::save(ui->treeFavouritesList, "BooksListBrowser.favourites", 2);
+    Utils::Widget::save(ui->treeBookList, "BooksListBrowser.bookList", 1);
 }
 
-void BooksListBrowser::readBookListModel()
+void BooksListBrowser::setupListFilter()
 {
-    ml_delete_check(m_bookListModel);
-
-    m_bookListModel = Utils::Model::cloneModel(m_bookListManager->bookListModel());
-    ml_return_on_fail2(m_bookListModel, "BooksListBrowser::readBookListModel model is null");
-
     m_bookListFilter->reset();
 
     m_bookListFilter->setLineEdit(ui->lineFilterBookList);
     m_bookListFilter->setTreeView(ui->treeBookList);
-    m_bookListFilter->setSourceModel(m_bookListModel);
-
-    m_bookListFilter->setDefautSortRole(ItemRole::orderRole);
-    m_bookListFilter->setDefautSortColumn(0, Qt::AscendingOrder);
-    m_bookListFilter->setColumnSortRole(AuthorDeathCol, ItemRole::authorDeathRole);
+    m_bookListFilter->setSourceModel(m_currentModel);
 
     m_bookListFilter->addFilterColumn(0, Qt::DisplayRole, tr("اسم الكتاب"));
     m_bookListFilter->addFilterColumn(1, Qt::DisplayRole, tr("المؤلف"));
@@ -123,67 +118,111 @@ void BooksListBrowser::readBookListModel()
 
     Utils::Widget::restore(ui->treeBookList,
                            "BooksListBrowser.bookList",
-                           QList<int>() << 350 << 200);
+                           QList<int>() << 350);
+}
+
+void BooksListBrowser::currentListChanged(int index)
+{
+    if(index == AllBooksModel) {
+        m_currentModel = m_bookListModel;
+    } else if(index == FavoritesModel) {
+        m_currentModel = m_favouritesModel;
+    } else if(index == LastOpenModel) {
+        m_currentModel = 0; // don't call setupListFilter()
+        lastReadBooksModel();
+        m_currentModel = m_lastReadedModel;
+    } else {
+        qWarning() << "BooksListBrowser::currentListChanged unknow list index"
+                   << index;
+    }
+
+    setupListFilter();
+
+    Utils::Settings::set("BooksListWidget/currentList", index);
+}
+
+void BooksListBrowser::listSortingChanged(int index)
+{
+    int column = 0;
+    int role = Qt::DisplayRole;
+    Qt::SortOrder sort = (ui->checkSortAsc->isChecked()
+                          ? Qt::AscendingOrder : Qt::DescendingOrder);
+
+    if(index == OrderSort) {
+        column = 0;
+        role = ItemRole::orderRole;
+    } else if(index == BookTitleSort) {
+        column = 0;
+    } else if(index == AuthorNameSort) {
+        column = 1;
+    } else if(index == AuthorDeathSort) {
+        column = 1;
+        role = ItemRole::authorDeathRole;
+    } else {
+        qWarning() << "BooksListBrowser::listSortingChanged unknow list index"
+                   << index;
+    }
+
+    m_bookListFilter->setSorting(column, role, sort);
+
+    Utils::Settings::set("BooksListWidget/listSorting", index);
+    Utils::Settings::set("BooksListWidget/sortAsc", ui->checkSortAsc->isChecked());
+}
+
+void BooksListBrowser::sortOrderChanged(bool checked)
+{
+    Q_UNUSED(checked);
+    listSortingChanged(ui->comboListSorting->currentIndex());
+}
+
+void BooksListBrowser::readBookListModel()
+{
+    bool reload = (m_currentModel && m_currentModel == m_bookListModel);
+    ml_delete_check(m_bookListModel);
+
+    m_bookListModel = Utils::Model::cloneModel(m_bookListManager->bookListModel());
+    ml_return_on_fail2(m_bookListModel, "BooksListBrowser::readBookListModel model is null");
+
+    if(reload)
+        setupListFilter();
 }
 
 void BooksListBrowser::readFavouritesModel()
 {
+    bool reload = (m_currentModel && m_currentModel == m_bookListModel);
     ml_delete_check(m_favouritesModel);
 
     m_favouritesModel = Utils::Model::cloneModel(m_favouritesManager->bookListModel());
     ml_return_on_fail2(m_favouritesModel, "BooksListBrowser::readFavouritesModel model is null");
 
-    m_favouritesListFilter->reset();
-
-    m_favouritesListFilter->setLineEdit(ui->lineFilterFavourites);
-    m_favouritesListFilter->setTreeView(ui->treeFavouritesList);
-    m_favouritesListFilter->setSourceModel(m_favouritesModel);
-
-    m_favouritesListFilter->setDefautSortRole(ItemRole::orderRole);
-    m_favouritesListFilter->setDefautSortColumn(0, Qt::AscendingOrder);
-    m_favouritesListFilter->setColumnSortRole(AuthorDeathCol, ItemRole::authorDeathRole);
-
-    m_favouritesListFilter->addFilterColumn(0, Qt::DisplayRole, tr("اسم الكتاب"));
-    m_favouritesListFilter->addFilterColumn(1, Qt::DisplayRole, tr("المؤلف"));
-
-    m_favouritesListFilter->setAllowFilterByDeath(true);
-
-    m_favouritesListFilter->setup();
-
-    Utils::Widget::restore(ui->treeFavouritesList,
-                           "BooksListBrowser.favourites",
-                           QList<int>() << 350 << 200);
+    if(reload)
+        setupListFilter();
 }
 
 void BooksListBrowser::lastReadBooksModel()
 {
+    bool reload = (m_currentModel && m_currentModel == m_bookListModel);
     ml_delete_check(m_lastReadedModel);
 
     m_lastReadedModel = Utils::Model::cloneModel(m_bookManager->getLastOpendModel().data());
     ml_return_on_fail2(m_lastReadedModel, "BooksListBrowser::lastReadBooksModel model is null");
 
-    ui->treeLastBook->setModel(m_lastReadedModel);
-
-    Utils::Widget::restore(ui->treeLastBook,
-                           "BooksListBrowser.lastBook",
-                           QList<int>() << 350);
+    if(reload)
+        setupListFilter();
 }
 
 void BooksListBrowser::itemClicked(QModelIndex index)
 {
     int bookType = index.sibling(index.row(), 0).data(ItemRole::itemTypeRole).toInt();
     int bookID = index.sibling(index.row(), 0).data(ItemRole::idRole).toInt();
+    int pageID = index.sibling(index.row(), 0).data(ItemRole::pageIdRole).toInt();
 
-    if(bookType != ItemType::CategorieItem)
+    ml_return_on_fail(bookType != ItemType::CategorieItem);
+
+    if(m_currentModel != m_lastReadedModel)
         emit bookSelected(bookID);
-}
-
-void BooksListBrowser::lastOpenedItemClicked(QModelIndex index)
-{
-    int book = index.sibling(index.row(), 0).data(ItemRole::idRole).toInt();
-    int page = index.sibling(index.row(), 0).data(ItemRole::pageIdRole).toInt();
-
-    MW->openBook(book, page);
+    else
+        emit bookSelected(bookID, pageID);
 }
 
 void BooksListBrowser::bookListMenu(QPoint /*point*/)
@@ -224,7 +263,7 @@ void BooksListBrowser::bookListMenu(QPoint /*point*/)
     QAction *searchInBookAct = menu.addAction(QIcon::fromTheme("edit-find", QIcon(":/images/find.png")),
                                            tr("بحث في الكتاب"));
 
-    if(treeView == ui->treeLastBook) {
+    if(m_currentModel == m_lastReadedModel) {
         menu.addSeparator();
 
         removeFromLastOpenedAct = menu.addAction(QIcon(":/images/remove.png"),

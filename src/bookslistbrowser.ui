@@ -21,83 +21,110 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QTabWidget" name="tabWidget">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>عرض لائحة:</string>
+       </property>
+       <property name="indent">
+        <number>5</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboCurrentList">
+       <item>
+        <property name="text">
+         <string>كل الكتب</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>المفضلة</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>الأحدث تصفحا</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>ترتبب حسب:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboListSorting">
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToContents</enum>
+       </property>
+       <item>
+        <property name="text">
+         <string>تريب غرفة التحكم</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>عنوان الكتاب</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>المؤلف</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>وفاة المؤلف</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkSortAsc">
+       <property name="text">
+        <string>تصاعدي</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QTreeView" name="treeBookList">
      <property name="contextMenuPolicy">
       <enum>Qt::CustomContextMenu</enum>
      </property>
-     <property name="currentIndex">
-      <number>0</number>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
      </property>
-     <widget class="QWidget" name="tab">
-      <attribute name="title">
-       <string>لائحة الكتب</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QTreeView" name="treeBookList">
-         <property name="contextMenuPolicy">
-          <enum>Qt::CustomContextMenu</enum>
-         </property>
-         <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
-         </property>
-         <property name="sortingEnabled">
-          <bool>true</bool>
-         </property>
-         <property name="animated">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="FilterLineEdit" name="lineFilterBookList"/>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tab_2">
-      <attribute name="title">
-       <string>المفضلة</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <widget class="QTreeView" name="treeFavouritesList">
-         <property name="contextMenuPolicy">
-          <enum>Qt::CustomContextMenu</enum>
-         </property>
-         <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
-         </property>
-         <property name="sortingEnabled">
-          <bool>true</bool>
-         </property>
-         <property name="animated">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="FilterLineEdit" name="lineFilterFavourites"/>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tab_3">
-      <attribute name="title">
-       <string>الأحدث تصفحا</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_4">
-       <item>
-        <widget class="QTreeView" name="treeLastBook">
-         <property name="contextMenuPolicy">
-          <enum>Qt::CustomContextMenu</enum>
-         </property>
-         <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
+     <property name="animated">
+      <bool>true</bool>
+     </property>
     </widget>
+   </item>
+   <item>
+    <widget class="FilterLineEdit" name="lineFilterBookList"/>
    </item>
   </layout>
  </widget>
@@ -110,11 +137,10 @@
  </customwidgets>
  <tabstops>
   <tabstop>lineFilterBookList</tabstop>
+  <tabstop>comboCurrentList</tabstop>
+  <tabstop>comboListSorting</tabstop>
+  <tabstop>checkSortAsc</tabstop>
   <tabstop>treeBookList</tabstop>
-  <tabstop>treeLastBook</tabstop>
-  <tabstop>lineFilterFavourites</tabstop>
-  <tabstop>treeFavouritesList</tabstop>
-  <tabstop>tabWidget</tabstop>
  </tabstops>
  <resources/>
  <connections/>

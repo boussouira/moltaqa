@@ -36,6 +36,8 @@ public:
 
     void setColumnSortRole(int column, int role);
 
+    void setSorting(int column, int role, Qt::SortOrder order);
+
     void addFilterColumn(int column, Qt::ItemDataRole role, const QString &filterName);
 
     void setAllowFilterByDeath(bool allow);

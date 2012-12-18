@@ -36,7 +36,7 @@ bool SortFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex &s
 bool SortFilterProxyModel::filterAcceptsRowItself(int source_row, const QModelIndex &source_parent) const
 {
     if(m_filterByDeath) {
-        QModelIndex index = sourceModel()->index(source_row, 2, source_parent);
+        QModelIndex index = sourceModel()->index(source_row, 1, source_parent);
         bool ok;
         int deathYear = index.data(ItemRole::authorDeathRole).toInt(&ok);
 
