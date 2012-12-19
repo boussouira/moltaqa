@@ -139,16 +139,7 @@ void BookEditor::unZip()
             continue;
         }
 
-        char buf[4096];
-        int len = 0;
-
-        while (!file.atEnd()) {
-            len = file.read(buf, 4096);
-            out.write(buf, len);
-
-            if(len <= 0)
-                break;
-        }
+        Utils::Files::copyData(file, out);
 
         out.close();
         file.close();
@@ -172,7 +163,7 @@ bool BookEditor::zip()
 
     QuaZipFile outFile(&zip);
 
-    if(!zipDir(m_bookTmpDir, &outFile)) {
+    if(!zipDir(m_bookTmpDir, outFile)) {
         zip.close();
         return false;
     }
@@ -314,7 +305,7 @@ void BookEditor::removePage()
         m_removedPages.append(removedPage.attribute("id").toInt());
 }
 
-bool BookEditor::zipDir(QString path, QuaZipFile *outFile)
+bool BookEditor::zipDir(QString path, QuaZipFile &outFile)
 {
     QFile inFile;
     QDir bookDir(path);
@@ -348,43 +339,23 @@ bool BookEditor::zipDir(QString path, QuaZipFile *outFile)
             return false;
         }
 
-        if(!outFile->open(QIODevice::WriteOnly, QuaZipNewInfo(inFilePath, inFilePath))) {
-            qWarning("zip outFile->open(): %d", outFile->getZipError());
+        if(!outFile.open(QIODevice::WriteOnly, QuaZipNewInfo(inFilePath, inFilePath))) {
+            qWarning("zip outFile.open(): %d", outFile.getZipError());
             return false;
         }
 
-        char buf[4096];
-        qint64 l = 0;
-
-        while (!inFile.atEnd()) {
-             l = inFile.read(buf, 4096);
-            if (l < 0) {
-                qWarning("BookEditor::zipDir read from input file error %s",
-                         qPrintable(inFile.errorString()));
-                break;
-            }
-            if (l == 0)
-                break;
-            if (outFile->write(buf, l) != l) {
-                qWarning("BookEditor::zipDir write to output file error %d",
-                         outFile->getZipError());
-                break;
-            }
-        }
-
-        if(outFile->getZipError()!=UNZ_OK) {
-            qWarning("BookEditor::zipDir outFile error %d", outFile->getZipError());
+        if(!Utils::Files::copyData(inFile, outFile)) {
+            qWarning("BookEditor::zipDir data copy error");
             return false;
         }
 
-        outFile->close();
-
-        if(outFile->getZipError()!=UNZ_OK) {
-            qWarning("BookEditor::zipDir outFile error %d", outFile->getZipError());
-            return false;
-        }
-
+        outFile.close();
         inFile.close();
+
+        if(outFile.getZipError()!=UNZ_OK) {
+            qWarning("BookEditor::zipDir outFile error %d", outFile.getZipError());
+            return false;
+        }
     }
 
     return true;

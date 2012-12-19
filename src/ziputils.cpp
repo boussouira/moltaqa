@@ -49,13 +49,7 @@ bool unzip(const QString &zipPath, const QString &outPath)
             continue;
         }
 
-        char buf[4096];
-        int len = 0;
-
-        while (!file.atEnd()) {
-            len = file.read(buf, 4096);
-            out.write(buf, len);
-        }
+        Utils::Files::copyData(file, out);
 
         out.close();
         file.close();
@@ -65,7 +59,7 @@ bool unzip(const QString &zipPath, const QString &outPath)
 }
 
 
-bool zipDir(const QDir &parentDir, const QString &path, QuaZipFile *outFile)
+bool zipDir(const QDir &parentDir, const QString &path, QuaZipFile &outFile)
 {
     QFile inFile;
     QDir bookDir(path);
@@ -97,32 +91,17 @@ bool zipDir(const QDir &parentDir, const QString &path, QuaZipFile *outFile)
             return false;
         }
 
-        if(!outFile->open(QIODevice::WriteOnly, QuaZipNewInfo(inFilePath, inFilePath))) {
-            qWarning("zipDir: open outFile error: %d", outFile->getZipError());
+        if(!outFile.open(QIODevice::WriteOnly, QuaZipNewInfo(inFilePath, inFilePath))) {
+            qWarning("zipDir: open outFile error: %d", outFile.getZipError());
             return false;
         }
 
-        char buf[4096];
-        qint64 l = 0;
+        Utils::Files::copyData(inFile, outFile);
 
-        while (!inFile.atEnd()) {
-             l = inFile.read(buf, 4096);
-            if (l < 0) {
-                qWarning("zipDir: input file read error: %s", qPrintable(inFile.errorString()));
-                break;
-            }
-            if (l == 0)
-                break;
-            if (outFile->write(buf, l) != l) {
-                qWarning("zipDir: write chunk error: %d", outFile->getZipError());
-                break;
-            }
-        }
+        outFile.close();
 
-        outFile->close();
-
-        if(outFile->getZipError()!=UNZ_OK) {
-            qWarning("zipDir: outFile close error: %d", outFile->getZipError());
+        if(outFile.getZipError()!=UNZ_OK) {
+            qWarning("zipDir: outFile close error: %d", outFile.getZipError());
             return false;
         }
 
@@ -145,7 +124,7 @@ bool zip(const QString &dir, const QString &zipPath)
 
     QuaZipFile outFile(&zip);
 
-    if(!zipDir(inDir, dir, &outFile)) {
+    if(!zipDir(inDir, dir, outFile)) {
         zip.close();
         return false;
     }

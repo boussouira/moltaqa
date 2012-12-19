@@ -56,6 +56,7 @@ int exec(QDialog *dialog, QString section, bool hideHelp=true);
 namespace Files {
 bool move(const QString &sourcePath, const QString &destPath);
 void removeDir(const QString &path);
+bool copyData(QIODevice &inFile, QIODevice &outFile);
 quint64 directorySize(const QString &path);
 QString formatSize(quint64 size);
 QString cleanFileName(QString fileName, bool removeSpace=false);

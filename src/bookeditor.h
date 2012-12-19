@@ -35,7 +35,7 @@ public:
     void removePageLink(int sourcPage, int destBook, int destPage);
 
 protected:
-    bool zipDir(QString path, QuaZipFile *outFile);
+    bool zipDir(QString path, QuaZipFile &outFile);
 
 protected:
     RichBookReader *m_bookReader;

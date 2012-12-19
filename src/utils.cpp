@@ -412,6 +412,23 @@ void removeDir(const QString &path)
     }
 }
 
+bool copyData(QIODevice &inFile, QIODevice &outFile)
+{
+    char buf[4096];
+    qint64 len = 0;
+
+    while (!inFile.atEnd()) {
+        len = inFile.read(buf, 4096);
+        if(len <= 0)
+            return false;
+
+        if(outFile.write(buf, len) != len)
+            return false;
+    }
+
+    return true;
+}
+
 quint64 directorySize(const QString &path)
 {
     QFileInfo info(path);

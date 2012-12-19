@@ -197,21 +197,8 @@ void LibraryBookExporter::addBookFile()
         return;
     }
 
-    char buf[4096];
-    qint64 l = 0;
-
-    while (!inFile.atEnd()) {
-         l = inFile.read(buf, 4096);
-        if (l < 0) {
-            qWarning("LibraryBookExporter::addBookFile input file read error: %s", qPrintable(inFile.errorString()));
-            break;
-        }
-        if (l == 0)
-            break;
-        if (bookFile.write(buf, l) != l) {
-            qWarning("LibraryBookExporter::addBookFile write chunk error: %d", bookFile.getZipError());
-            break;
-        }
+    if(!Utils::Files::copyData(inFile, bookFile)) {
+        throw BookException("LibraryBookExporter::addBookFile copy data error");
     }
 
     bookFile.close();
