@@ -45,12 +45,8 @@ QString fileName(const QString &path, bool fullPath, QString namePrefix, QString
 
     fileName.append(string(6, false));
 
-    while(true) {
-        if(dir.exists(fileName+ext)){
-            fileName.append(string(1, false));
-        } else {
-            break;
-        }
+    while(dir.exists(fileName+ext)) {
+        fileName.append(string(1, false));
     }
 
     if(fullPath)
