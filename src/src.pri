@@ -159,7 +159,8 @@ SOURCES += mainwindow.cpp \
     mimeutils.cpp \
     modelviewsearcher.cpp \
     searchquerywidget.cpp \
-    htmlbookexporter.cpp
+    htmlbookexporter.cpp \
+    authorinfo.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -307,7 +308,9 @@ HEADERS += mainwindow.h \
     mimeutils.h \
     modelviewsearcher.h \
     searchquerywidget.h \
-    htmlbookexporter.h
+    htmlbookexporter.h \
+    authorinfo.h
+
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
     bookslistbrowser.ui \
