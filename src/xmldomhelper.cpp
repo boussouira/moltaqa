@@ -169,7 +169,8 @@ QDomElement elementFind(QDomElement element, const QString &tag, const QString &
         if(element.attribute(attr) == value)
             return element;
 
-        if(element.hasChildNodes()) {
+        QDomElement child = element.firstChildElement(tag);
+        if(!child.isNull()){
             QDomElement nextElement = element.nextSiblingElement(tag);
             if(!nextElement.isNull()) {
                 int next = nextElement.attribute(attr).toInt();
@@ -178,14 +179,11 @@ QDomElement elementFind(QDomElement element, const QString &tag, const QString &
                     continue;
                 }
             }
-            QDomElement child = element.firstChildElement(tag);
-            while(!child.isNull()){
-                QDomElement found = elementFind(child, tag, attr, value);
-                if(!found.isNull())
-                    return found;
 
-                child = child.nextSiblingElement(tag);
-            }
+            QDomElement found = elementFind(child, tag, attr, value);
+
+            if(!found.isNull())
+                return found;
         }
 
         element = element.nextSiblingElement(tag);
@@ -207,14 +205,10 @@ void elementsFind(QList<QDomElement> &list, QDomElement element, const QString &
             list.append(element);
         }
 
-        if(element.hasChildNodes()) {
+        QDomElement child = element.firstChildElement();
+        if(!child.isNull()){
+            elementsFind(list, child, tag, attr, value);
 
-            QDomElement child = element.firstChildElement();
-            while(!child.isNull()){
-                elementsFind(list, child, tag, attr, value);
-
-                child = child.nextSiblingElement();
-            }
         }
 
         element = element.nextSiblingElement();
