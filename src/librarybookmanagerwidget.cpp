@@ -325,7 +325,11 @@ void LibraryBookManagerWidget::save()
 
 void LibraryBookManagerWidget::on_treeView_doubleClicked(const QModelIndex &index)
 {
-    int bookID = index.data(ItemRole::idRole).toInt();
+    QModelIndex bookIndex = (index.column() != 0)
+                             ? index.sibling(index.row(), 0)
+                             : index;
+
+    int bookID = bookIndex.data(ItemRole::idRole).toInt();
     LibraryBook::Ptr info = getBookInfo(bookID);
     if(info) {
         saveCurrentBookInfo();
