@@ -3,7 +3,6 @@
 
 #include <qobject.h>
 #include <qcache.h>
-#include <qsharedpointer.h>
 #include "librarybook.h"
 #include "xmldomhelper.h"
 
@@ -33,8 +32,6 @@ protected:
 
 protected:
     BookReaderHelper *m_readerHelper;
-    QCache<int, XmlDomHelper> m_pagesDom;
-    QCache<int, XmlDomHelper> m_titlesDom;
     bool m_showPageTitle;
     bool m_showPageInfo;
     bool m_hierarchyTitle;

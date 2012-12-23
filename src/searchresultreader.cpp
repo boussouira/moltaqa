@@ -12,8 +12,6 @@ SearchResultReader::SearchResultReader(QObject *parent) :
     QObject(parent)
 {
     m_readerHelper = MW->readerHelper();
-    m_pagesDom.setMaxCost(10);
-    m_titlesDom.setMaxCost(10);
     m_showPageTitle = true;
     m_showPageInfo = true;
     m_hierarchyTitle = Utils::Settings::get("Search/hierarchyTitle", true).toBool();
