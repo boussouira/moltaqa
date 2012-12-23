@@ -6,6 +6,7 @@
 #include <qfile.h>
 #include <quazip.h>
 #include <qxmlstream.h>
+#include <qstack.h>
 
 SearchResultReader::SearchResultReader(QObject *parent) :
     QObject(parent)
@@ -136,59 +137,45 @@ bool SearchResultReader::getQuranPage(QuaZip *zip, LibraryBookPtr book, BookPage
 
 bool SearchResultReader::getPageInfo(QuaZip *zip, LibraryBookPtr book, BookPage *page)
 {
-    QTime time;
-    time.start();
-
     QuaZipFile pagesFile(zip);
-    XmlDomHelper *pagesDom = 0;
+    if(zip->setCurrentFile("pages.xml")) {
+        if(!pagesFile.open(QIODevice::ReadOnly)) {
+            qWarning() << "getSimpleBookPage: open book pages error" << pagesFile.getZipError()
+                       << "book" << book->title
+                       << "id" << book->id;
 
-    if(m_pagesDom.contains(book->id)) {
-        pagesDom = m_pagesDom.object(book->id);
-
-        if(!pagesDom) {
-            m_pagesDom.remove(book->id);
-            qWarning("SearchResultReader: Null saved pages DOM");
             return false;
         }
-    } else {
-        if(zip->setCurrentFile("pages.xml")) {
-            if(!pagesFile.open(QIODevice::ReadOnly)) {
-                qWarning() << "getSimpleBookPage: open book pages error" << pagesFile.getZipError()
-                           << "book" << book->title
-                           << "id" << book->id;
+    }
 
-                return false;
+    QXmlStreamReader reader(&pagesFile);
+    QString pageIdStr = QString::number(page->pageID);
+
+    while(!reader.atEnd()) {
+        reader.readNext();
+
+        if(reader.isStartElement()) {
+            if(reader.name() == "item") {
+                if(reader.attributes().value("id") == pageIdStr) {
+                    page->part = reader.attributes().value("part").toString().toInt();
+                    page->page = reader.attributes().value("page").toString().toInt();
+                    if(book->isTafessir()) {
+                        page->sora = reader.attributes().value("sora").toString().toInt();
+                        page->aya = reader.attributes().value("aya").toString().toInt();
+                    }
+
+                    return true;
+                }
             }
         }
 
-        pagesDom = new XmlDomHelper;
-        pagesDom->load(&pagesFile);
     }
 
-    QDomElement pageElement = pagesDom->findElement("id", page->pageID);
-    if(!pageElement.isNull()) {
-        page->part = pageElement.attribute("part").toInt();
-        page->page = pageElement.attribute("page").toInt();
-
-        if(book->isTafessir()) {
-            page->sora = pageElement.attribute("sora").toInt();
-            page->aya = pageElement.attribute("aya").toInt();
-        }
-    } else {
-        return false;
+    if(reader.hasError()) {
+        qDebug() << "getTitles: QXmlStreamReader error:" << reader.errorString();
     }
 
-    if(pagesFile.isOpen())
-        pagesFile.close();
-
-    if(!m_pagesDom.contains(book->id)) {
-        if(time.elapsed() > 1000)
-            m_pagesDom.insert(book->id, pagesDom);
-        else
-            delete pagesDom;
-    }
-
-    return true;
+    return false;
 }
 
 bool SearchResultReader::getPageText(QuaZip *zip, BookPage *page)
@@ -200,77 +187,69 @@ bool SearchResultReader::getPageText(QuaZip *zip, BookPage *page)
 
 bool SearchResultReader::getPageTitle(QuaZip *zip, LibraryBookPtr book, BookPage *page)
 {
-    // If we have a saved model we use it to get the title
-    QString title = m_readerHelper->getTitleText(book->id,
-                                                 page->titleID,
-                                                 m_hierarchyTitle && !book->isTafessir());
-    if(title.size()) {
-        page->title = title;
-
-        if(book->isTafessir())
-            taffesirTitle(page);
-
-        return true;
-    }
-
     QuaZipFile titleFile(zip);
-    XmlDomHelper *titlesDom = 0;
 
-    if(m_titlesDom.contains(book->id)) {
-        titlesDom = m_titlesDom.object(book->id);
+    if(zip->setCurrentFile("titles.xml")) {
+        if(!titleFile.open(QIODevice::ReadOnly)) {
+            qWarning() << "getSimpleBookPage: open book titles error" << titleFile.getZipError()
+                       << "book" << book->title
+                       << "id" << book->id;
 
-        if(!titlesDom) {
-            m_titlesDom.remove(book->id);
-            qWarning("SearchResultReader: Null saved titles DOM");
             return false;
         }
-    } else {
-        if(zip->setCurrentFile("titles.xml")) {
-            if(!titleFile.open(QIODevice::ReadOnly)) {
-                qWarning() << "getSimpleBookPage: open book titles error" << titleFile.getZipError()
-                           << "book" << book->title
-                           << "id" << book->id;
+    }
 
-                return false;
+    QXmlStreamReader reader(&titleFile);
+    QString titleIdStr = QString::number(page->titleID);
+    QStack<QString> titles;
+
+    while(!reader.atEnd()) {
+        reader.readNext();
+
+        if(reader.isStartElement()) {
+            if(reader.name() == "title") {
+                if(reader.attributes().value("pageID") == titleIdStr) {
+                    if(reader.readNext() == QXmlStreamReader::Characters
+                            && reader.readNext() == QXmlStreamReader::StartElement
+                            && reader.name() == "text") {
+                        if(reader.readNext() == QXmlStreamReader::Characters) {
+                            page->title = reader.text().toString();
+                            if(m_hierarchyTitle) {
+                                titles.push(page->title);
+                                page->title = BookReaderHelper::formatTitlesList(titles);
+                            }
+                            return true;
+                        } else {
+                            if(reader.tokenType() != QXmlStreamReader::EndElement) { // Ignore empty titles
+                                qWarning() << "SearchResultReader::getPageTitle Unexpected token type"
+                                           << reader.tokenString() << "- Book:" << book->id
+                                           << book->title << book->fileName;
+                            }
+
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+            } else if(m_hierarchyTitle && reader.name() == "text") {
+                if(reader.readNext() == QXmlStreamReader::Characters) {
+                    titles.push(reader.text().toString());
+                }
+            }
+        } else if(m_hierarchyTitle && reader.isEndElement()) {
+            if(reader.name() == "title") {
+                titles.pop();
             }
         }
-
-        titlesDom = new XmlDomHelper;
-        titlesDom->load(&titleFile);
     }
 
-    QDomElement titleElement = titlesDom->treeFindElement("pageID", page->titleID);
-    if(!titleElement.isNull()) {
-        if(book->isTafessir()) {
-            page->title = titleElement.firstChildElement("text").text();
-            taffesirTitle(page);
-        } else {
-            QStringList list;
-            do {
-                list << titleElement.firstChildElement("text").text();
-
-                titleElement = titleElement.parentNode().toElement();
-            } while (m_hierarchyTitle
-                     && !titleElement.isNull()
-                     && titleElement != titlesDom->rootElement());
-
-            page->title = BookReaderHelper::formatTitlesList(list);;
-        }
-    } else {
-        return false;
+    if(reader.hasError()) {
+        qDebug() << "SearchResultReader::getPageTitle QXmlStreamReader error:" << reader.errorString()
+                 << "- Book:" << book->id << book->title << book->fileName;
     }
 
-    if(titleFile.isOpen())
-        titleFile.close();
-
-    if(!m_titlesDom.contains(book->id)) {
-        if(m_pagesDom.contains(book->id))
-            m_titlesDom.insert(book->id, titlesDom);
-        else
-            delete titlesDom;
-    }
-
-    return true;
+    return false;
 }
 
 void SearchResultReader::taffesirTitle(BookPage *page)

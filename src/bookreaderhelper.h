@@ -5,6 +5,7 @@
 #include <qhash.h>
 #include <qset.h>
 #include <qcache.h>
+#include <qstack.h>
 
 #include "sqlutils.h"
 
@@ -33,6 +34,7 @@ public:
 
     QString getTitleText(int bookID, int titleID, bool parent);
     static QString formatTitlesList(QStringList &list);
+    static QString formatTitlesList(QStack<QString> &stack);
 
 protected:
     void open();
@@ -41,7 +43,7 @@ protected:
     DatabaseRemover m_remover;
     QSqlDatabase m_quranDB;
     QHash<int, QuranSora*> m_sowar;
-    QCache<int, QStandardItemModel> m_models;
+    QCache<int, QStandardItemModel> m_models; // TODO: use QSharedPointer to reduce RAM usage
 };
 
 #endif // BOOKREADERHELPER_H

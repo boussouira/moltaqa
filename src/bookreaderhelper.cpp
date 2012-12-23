@@ -107,6 +107,21 @@ QString BookReaderHelper::formatTitlesList(QStringList &list)
     return title.trimmed();
 }
 
+QString BookReaderHelper::formatTitlesList(QStack<QString> &stack)
+{
+    QList<QString> list(stack.toList());
+    QString title;
+
+    for(int i=0; i<list.size(); i++) {
+        if(i)
+            title.append("<span style=\"font-family:cursive;font-size:0.8em;color:#777;\"> > </span>");
+
+        title.append(list[i]);
+    }
+
+    return title.trimmed();
+}
+
 void BookReaderHelper::open()
 {
     if(!m_quranDB.isOpen()) {
