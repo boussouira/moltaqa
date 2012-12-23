@@ -309,7 +309,7 @@ bool BookEditor::zipDir(QString path, QuaZipFile &outFile)
 {
     QFile inFile;
     QDir bookDir(path);
-    QFileInfoList files = bookDir.entryInfoList(QDir::AllDirs|QDir::Files|QDir::NoSymLinks|QDir::NoDotAndDotDot);
+    QFileInfoList files = bookDir.entryInfoList(QDir::AllDirs|QDir::Files|QDir::NoSymLinks|QDir::NoDotAndDotDot, QDir::DirsLast);
 
     if(files.isEmpty()) {
         qWarning() << "BookEditor::zipDir Ziping an empty directory" << path;
