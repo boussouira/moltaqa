@@ -107,17 +107,9 @@ void LibraryBookExporter::closeZip()
 void LibraryBookExporter::addBookInfo()
 {
     QDomElement bookElement = m_contentDom.domDocument().createElement("book");
-    bookElement.setAttribute("id", m_book->id);
-    bookElement.setAttribute("type", m_book->type);
-    bookElement.setAttribute("author", m_book->authorID);
-    bookElement.setAttribute("flags", m_book->bookFlags);
-
-    m_contentDom.setElementText(bookElement, "fileName", m_book->fileName);
-
-    m_contentDom.setElementText(bookElement, "title", m_book->title);
+    m_book->toDomElement(m_contentDom, bookElement);
 
     QList<CategorieInfo> books = LibraryManager::instance()->bookListManager()->bookCategorie(m_book->id);
-
     if(books.size()) {
         QDomElement catsElement = m_contentDom.domDocument().createElement("categories");
 
@@ -127,24 +119,6 @@ void LibraryBookExporter::addBookInfo()
 
         bookElement.appendChild(catsElement);
     }
-
-    if(m_book->otherTitles.size())
-        m_contentDom.setElementText(bookElement, "otherTitles", m_book->otherTitles);
-
-    if(m_book->edition.size())
-        m_contentDom.setElementText(bookElement, "edition", m_book->edition);
-
-    if(m_book->publisher.size())
-        m_contentDom.setElementText(bookElement, "publisher", m_book->publisher);
-
-    if(m_book->mohaqeq.size())
-        m_contentDom.setElementText(bookElement, "mohaqeq", m_book->mohaqeq);
-
-    if(m_book->comment.size())
-        m_contentDom.setElementText(bookElement, "comment", m_book->comment, true);
-
-    if(m_book->info.size())
-        m_contentDom.setElementText(bookElement, "info", m_book->info, true);
 
     m_booksElement.appendChild(bookElement);
 }
@@ -156,24 +130,8 @@ void LibraryBookExporter::addAuthorInfo()
 
     AuthorInfoPtr author = LibraryManager::instance()->authorsManager()->getAuthorInfo(m_book->authorID);
     if(author) {
-        int flags = 0;
-        if(author->unknowBirth)
-            flags |= AuthorInfo::UnknowBirth;
-        if(author->unknowDeath)
-            flags |= AuthorInfo::UnknowDeath;
-        if(author->isALive)
-            flags |= AuthorInfo::ALive;
-
         QDomElement authorElement = m_contentDom.domDocument().createElement("author");
-        authorElement.setAttribute("id", author->id);
-        authorElement.setAttribute("flags", flags);
-
-        m_contentDom.setElementText(authorElement, "name", author->name);
-        m_contentDom.setElementText(authorElement, "full-name", author->fullName);
-        m_contentDom.setElementText(authorElement, "info", author->info, true);
-
-        m_contentDom.setElementText(authorElement, "birth", author->birthStr).setAttribute("year", author->birthYear);
-        m_contentDom.setElementText(authorElement, "death", author->deathStr).setAttribute("year", author->deathYear);
+        author->toDomElement(m_contentDom, authorElement);
 
         m_authorsElement.appendChild(authorElement);
         m_addedAuthorsInfo.append(m_book->authorID);

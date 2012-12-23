@@ -17,6 +17,9 @@ public:
         ALive     = 0x8
     };
 
+    void fromDomElement(QDomElement &authorElement);
+    void toDomElement(XmlDomHelper &domHeleper, QDomElement &authorElement);
+
     static inline QString formatAuthorName(QString name, QString deathStr)
     {
         return QString::fromUtf8("%1، %2").arg(name).arg(deathStr);

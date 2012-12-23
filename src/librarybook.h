@@ -6,6 +6,9 @@
 #include <qsharedpointer.h>
 #include <qdebug.h>
 
+class QDomElement;
+class XmlDomHelper;
+
 class BookShorooh
 {
 public:
@@ -57,6 +60,9 @@ public:
     QList<BookShorooh> shorooh;
 
     LibraryBook *clone();
+
+    void fromDomElement(QDomElement &bookElement);
+    void toDomElement(XmlDomHelper &domHeleper, QDomElement &bookElement);
 
 public:
     LibraryBook::Type type;
