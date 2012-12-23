@@ -164,7 +164,7 @@ QuaZipFilePtr ZipHelper::getZipFile(const QString &fileName)
     return QuaZipFilePtr(file);
 }
 
-XmlDomHelperPtr ZipHelper::getDomHelper(const QString &fileName, const QString &documentName)
+XmlDomHelper::Ptr ZipHelper::getDomHelper(const QString &fileName, const QString &documentName)
 {
     XmlDomHelper *dom = 0;
     if(m_stat == Open) {
@@ -193,7 +193,7 @@ XmlDomHelperPtr ZipHelper::getDomHelper(const QString &fileName, const QString &
         qWarning("ZipHelper::getDomHelper File is not in Open or Unzipped stat");
     }
 
-    return XmlDomHelperPtr(dom);
+    return XmlDomHelper::Ptr(dom);
 }
 
 bool ZipHelper::unzip(const QString &zipPath, const QString &outPath)

@@ -3,12 +3,15 @@
 
 #include <qfile.h>
 #include <qdom.h>
+#include <qsharedpointer.h>
 
 class XmlDomHelper
 {
 public:
     XmlDomHelper();
     ~XmlDomHelper();
+
+    typedef QSharedPointer<XmlDomHelper> Ptr;
 
     void setFilePath(const QString &path);
     QString filePath();

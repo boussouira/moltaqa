@@ -10,8 +10,6 @@
 class QuaZip;
 class BookReaderHelper;
 
-typedef QSharedPointer<XmlDomHelper> XmlDomHelperPtr;
-
 class SearchResultReader : public QObject
 {
     Q_OBJECT

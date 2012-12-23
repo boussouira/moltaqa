@@ -10,7 +10,6 @@
 
 typedef QSharedPointer<QFile> QFilePtr;
 typedef QSharedPointer<QuaZipFile> QuaZipFilePtr;
-typedef QSharedPointer<XmlDomHelper> XmlDomHelperPtr;
 
 class ZipHelper : public QObject
 {
@@ -44,7 +43,7 @@ public:
 
     QFilePtr getFile(const QString &fileName, QIODevice::OpenModeFlag mode=QIODevice::WriteOnly);
     QuaZipFilePtr getZipFile(const QString &fileName);
-    XmlDomHelperPtr getDomHelper(const QString &fileName, const QString &documentName=QString());
+    XmlDomHelper::Ptr getDomHelper(const QString &fileName, const QString &documentName=QString());
 
     static bool unzip(const QString &zipPath, const QString &outPath);
     static bool zip(const QString &dir, const QString &zipPath);

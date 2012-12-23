@@ -333,13 +333,13 @@ public:
     ArabicFindMatch() : offset(0), lenght(0) {}
     ArabicFindMatch(int _offset, int _lenght) : offset(_offset), lenght(_lenght) {}
 
+    typedef QSharedPointer<ArabicFindMatch> Ptr;
+
     int offset;
     int lenght;
 };
 
-typedef QSharedPointer<ArabicFindMatch> ArabicFindMatchP;
-
-ArabicFindMatchP arabicFind(const QString &text, const QString & pattern, int pos) {
+ArabicFindMatch::Ptr arabicFind(const QString &text, const QString & pattern, int pos) {
     if (pos < 0) {
         pos = 0;
     }
@@ -372,12 +372,12 @@ ArabicFindMatchP arabicFind(const QString &text, const QString & pattern, int po
                 ++matcheLen;
 
             if (match) {
-                return ArabicFindMatchP(new ArabicFindMatch(i, matcheLen));
+                return ArabicFindMatch::Ptr(new ArabicFindMatch(i, matcheLen));
             }
         }
     }
 
-    return ArabicFindMatchP();
+    return ArabicFindMatch::Ptr();
 }
 
 QStringList getMatchString(const QString &text, QString searchText)
@@ -385,7 +385,7 @@ QStringList getMatchString(const QString &text, QString searchText)
     QStringList matches;
 
     for(int i=0; i<text.size();i++) {
-        ArabicFindMatchP match = arabicFind(text, searchText, i);
+        ArabicFindMatch::Ptr match = arabicFind(text, searchText, i);
         if(match) {
             matches.append(text.mid(match->offset, match->lenght));
             i = match->offset+match->lenght-1;
