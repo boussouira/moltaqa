@@ -100,7 +100,7 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
 
         ImportModelNode *node = new ImportModelNode(LibraryBook::NormalBook);
         node->setTypeName(getBookType(bookDB));
-        node->bookName = bookQuery.value(bkCol).toString().trimmed();
+        node->title = bookQuery.value(bkCol).toString().trimmed();
         node->authorName = bookQuery.value(authCol).toString().trimmed();
 
         if(catCol != -1) { // Some old books doesn't have this column
@@ -114,10 +114,10 @@ void ConvertThread::ConvertShamelaBook(const QString &path)
         }
 
         if(betakaCol != -1)
-             node->bookBetaka = bookQuery.value(betakaCol).toString();
+             node->comment = bookQuery.value(betakaCol).toString();
 
         if(infoCol != -1)
-            node->bookInfo = Utils::Html::format(bookQuery.value(infoCol).toString());
+            node->info = Utils::Html::format(bookQuery.value(infoCol).toString());
 
          AuthorInfoPtr foundAuth = m_authorsManager->findAuthor(bookQuery.value(authCol).toString(), false);
          if(foundAuth)
@@ -222,7 +222,7 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
 
     writer.endReading();
 
-    node->bookPath = writer.bookPath();
+    node->path = writer.bookPath();
 }
 
 QString ConvertThread::getBookType(const QSqlDatabase &bookDB)

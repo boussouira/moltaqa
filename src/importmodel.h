@@ -8,7 +8,7 @@
 #include <qbrush.h>
 #include <qcoreapplication.h>
 
-class ImportModelNode
+class ImportModelNode : public LibraryBook
 {
     Q_DECLARE_TR_FUNCTIONS(ImportModelNode);
 
@@ -19,22 +19,16 @@ public:
     void deleteChild(int index);
 
     void setTypeName(const QString &name);
+    void setType(LibraryBook::Type bookType);
     void setCategories(int cid, const QString &name=QString());
     void setAuthor(int aid, const QString &name=QString());
 
     LibraryBookPtr toLibraryBook();
 
 public:
-    LibraryBook::Type type;
-    QString bookName;
-    QString authorName;
-    QString bookInfo;
-    QString bookBetaka;
-    QString bookPath;
     QString typeName;
     QString catName;
     int catID;
-    int authorID;
     QBrush bgColor;
     ImportModelNode *parentNode;
     QList<ImportModelNode *> childrenNode;

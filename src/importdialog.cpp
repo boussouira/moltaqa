@@ -198,9 +198,9 @@ void ImportDialog::startImporting()
 
             if(lastInsert != -1) {
                 imported++;
-                m_booksList.insert(lastInsert, node->bookName);
+                m_booksList.insert(lastInsert, node->title);
             } else {
-                qWarning() << "ImportDialog: Unknow error when importing" << node->bookName;
+                qWarning() << "ImportDialog: Unknow error when importing" << node->title;
             }
 
             metaObject()->invokeMethod(ui->progressBar, "setValue",
