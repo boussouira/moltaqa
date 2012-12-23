@@ -10,6 +10,7 @@
 #include "stringutils.h"
 
 #include <qstandarditemmodel.h>
+#include <qxmlstream.h>
 
 RichBookReader::RichBookReader(QObject *parent) : AbstractBookReader(parent)
 {
@@ -126,26 +127,64 @@ QStandardItemModel *RichBookReader::indexModel()
         }
     }
 
-    QDomDocument doc = Utils::Xml::getDomDocument(&titleFile);
-    if(doc.isNull())
-        return 0;
-
-    QDomElement root = doc.documentElement();
-    QDomElement element = root.firstChildElement();
-
     m_indexModel = new QStandardItemModel();
     m_pageTitles.clear();
 
-    while(!element.isNull() && !m_stopModelLoad) {
-        readItem(element, m_indexModel->invisibleRootItem());
+    QStandardItem *rootItem = m_indexModel->invisibleRootItem();
+    QXmlStreamReader reader(&titleFile);
 
-        element = element.nextSiblingElement();
+    while(!reader.atEnd()) {
+        reader.readNext();
+
+        if(reader.isStartElement()) {
+            if(reader.name() == "title") {
+                int pageID = reader.attributes().value("pageID").toString().toInt();
+
+                if(reader.readNext() == QXmlStreamReader::Characters
+                        && reader.readNext() == QXmlStreamReader::StartElement
+                        && reader.name() == "text") {
+
+                    if(reader.readNext() == QXmlStreamReader::Characters) {
+                        QStandardItem *item = new QStandardItem(reader.text().toString());
+                        item->setData(pageID, ItemRole::idRole);
+                        rootItem->appendRow(item);
+
+                        m_pageTitles.append(pageID);
+
+                        rootItem = item;
+                    } else {
+                        if(reader.tokenType() != QXmlStreamReader::EndElement) { // Ignore empty titles
+                            qWarning() << "RichBookReader::indexModel Unexpected token type"
+                                       << reader.tokenString() << "- Book:" << m_bookInfo->id
+                                       << m_bookInfo->title << m_bookInfo->fileName;
+                        }
+
+                        break;
+                    }
+                } else {
+                    break;
+                }
+            }
+        } else if(reader.isEndElement()) {
+            if(reader.name() == "title") {
+                if(rootItem
+                        && rootItem != m_indexModel->invisibleRootItem()
+                        && rootItem->parent()) {
+                    rootItem = rootItem->parent();
+
+                } else {
+                    rootItem = m_indexModel->invisibleRootItem();
+                }
+            }
+        }
+    }
+
+    if(reader.hasError()) {
+        qDebug() << "RichBookReader::indexModel QXmlStreamReader error:" << reader.errorString()
+                 << "- Book:" << m_bookInfo->id << m_bookInfo->title << m_bookInfo->fileName;
     }
 
     qSort(m_pageTitles);
-
-    titleFile.close();
-    zip.close();
 
     m_stopModelLoad = false;
 
@@ -155,29 +194,6 @@ QStandardItemModel *RichBookReader::indexModel()
 void RichBookReader::stopModelLoad()
 {
     m_stopModelLoad = true;
-}
-
-void RichBookReader::readItem(QDomElement &element, QStandardItem *parent)
-{
-    int pageID = element.attribute("pageID").toInt();
-
-    QStandardItem *item = new QStandardItem(element.firstChildElement("text").text());
-    item->setData(pageID, ItemRole::idRole);
-
-    if(element.childNodes().count() > 1) {
-        QDomElement child = element.firstChildElement("title");
-
-        while(!child.isNull() && !m_stopModelLoad) {
-            readItem(child, item);
-
-            child = child.nextSiblingElement("title");
-        }
-    }
-
-    if(parent)
-        parent->appendRow(item);
-
-    m_pageTitles.append(pageID);
 }
 
 void RichBookReader::updateHistory()
