@@ -17,7 +17,7 @@ public:
     BookSearchFilter(QObject *parent = 0);
     ~BookSearchFilter();
 
-    void setLibraryBook(LibraryBookPtr book);
+    void setLibraryBook(LibraryBook::Ptr book);
     void loadModel();
     SearchFilter *getFilterQuery();
 
@@ -38,7 +38,7 @@ protected:
     void getChildTitles(const QModelIndex &index, QList<int> &titles);
 
 protected:
-    LibraryBookPtr m_book;
+    LibraryBook::Ptr m_book;
     QuaZip m_zip;
 };
 

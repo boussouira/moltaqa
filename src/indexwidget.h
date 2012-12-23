@@ -20,7 +20,7 @@ public:
     IndexWidget(QWidget *parent = 0);
     ~IndexWidget();
 
-    void setBookInfo(LibraryBookPtr book);
+    void setBookInfo(LibraryBook::Ptr book);
     void setCurrentPage(BookPage *page);
     void hideAyaSpin(bool visible);
     void selectTitle(int tid);
@@ -46,7 +46,7 @@ signals:
 private:
     ModelViewFilter *m_filter;
     QStandardItemModel *m_model;
-    LibraryBookPtr m_bookInfo;
+    LibraryBook::Ptr m_bookInfo;
     BookPage *m_page;
     Ui::IndexWidget *ui;
     bool sendSignals;

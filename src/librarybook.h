@@ -24,6 +24,8 @@ public:
     LibraryBook();
     ~LibraryBook();
 
+    typedef QSharedPointer<LibraryBook> Ptr;
+
     enum Type {
         QuranBook = 1,
         TafessirBook,
@@ -82,8 +84,6 @@ public:
     IndexFlags indexFlags;
 };
 
-typedef QSharedPointer<LibraryBook> LibraryBookPtr;
-
-QDebug operator<<(QDebug dbg, LibraryBookPtr &info);
+QDebug operator<<(QDebug dbg, LibraryBook::Ptr &info);
 
 #endif // LIBRARYBOOK_H

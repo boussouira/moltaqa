@@ -27,7 +27,7 @@ BookSearchFilter::~BookSearchFilter()
 {
 }
 
-void BookSearchFilter::setLibraryBook(LibraryBookPtr book)
+void BookSearchFilter::setLibraryBook(LibraryBook::Ptr book)
 {
     m_book = book;
 }

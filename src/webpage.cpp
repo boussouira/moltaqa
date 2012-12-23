@@ -15,7 +15,7 @@ WebPage::WebPage(WebView *parent) :
     setNetworkAccessManager(m_nam);
 }
 
-void WebPage::setBook(LibraryBookPtr book)
+void WebPage::setBook(LibraryBook::Ptr book)
 {
     m_book = book;
     m_nam->setBook(book);

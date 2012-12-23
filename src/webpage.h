@@ -13,7 +13,7 @@ class WebPage : public QWebPage
 public:
     WebPage(WebView *parent = 0);
 
-    void setBook(LibraryBookPtr book);
+    void setBook(LibraryBook::Ptr book);
 
 protected:
     void javaScriptConsoleMessage ( const QString & message, int lineNumber, const QString & sourceID );
@@ -25,7 +25,7 @@ signals:
 protected:
     WebView *m_webView;
     WebPageNAM *m_nam;
-    LibraryBookPtr m_book;
+    LibraryBook::Ptr m_book;
 };
 
 #endif // WEBPAGE_H

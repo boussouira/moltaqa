@@ -14,7 +14,7 @@ TextFormatter::TextFormatter(QObject *parent): QObject(parent)
     m_page = 0;
 }
 
-void TextFormatter::setData(LibraryBookPtr book, BookPage *page)
+void TextFormatter::setData(LibraryBook::Ptr book, BookPage *page)
 {
     m_book = book;
     m_page = page;

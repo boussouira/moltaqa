@@ -17,7 +17,7 @@ public:
     virtual ~TextBookIndexer();
 
     void setIndexWriter(lucene::index::IndexWriter *writer) { m_writer = writer; }
-    void setLibraryBook(LibraryBookPtr book) { m_book = book; }
+    void setLibraryBook(LibraryBook::Ptr book) { m_book = book; }
 
     void open();
     void start();
@@ -29,7 +29,7 @@ protected:
 protected:
     lucene::index::IndexWriter *m_writer;
     lucene::document::Document *m_doc;
-    LibraryBookPtr m_book;
+    LibraryBook::Ptr m_book;
     TextBookReader *m_reader;
     int m_tokenAndNoStore;
     int m_storeAndNoToken;

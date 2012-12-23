@@ -114,7 +114,7 @@ int AuthorsView::addTab(QString tabText)
 
 void AuthorsView::setCurrentAuth(AuthorInfo::Ptr info)
 {
-    QList<LibraryBookPtr> books = m_bookManager->getAuthorBooks(info->id);
+    QList<LibraryBook::Ptr> books = m_bookManager->getAuthorBooks(info->id);
 
     HtmlHelper html;
     html.beginHtml();

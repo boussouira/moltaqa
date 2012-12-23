@@ -41,7 +41,7 @@ protected slots:
     void menuRequested(QPoint);
 
 protected:
-    void addBookItem(LibraryBookPtr book, const QModelIndex &parent);
+    void addBookItem(LibraryBook::Ptr book, const QModelIndex &parent);
     void updateItem(QModelIndex index);
 
 protected:

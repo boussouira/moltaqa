@@ -86,7 +86,7 @@ void BookEditorView::setupView()
     connect(m_indexEditor, SIGNAL(indexEdited()), SLOT(indexChanged()));
 }
 
-void BookEditorView::editBook(LibraryBookPtr book, int pageID)
+void BookEditorView::editBook(LibraryBook::Ptr book, int pageID)
 {
     ml_return_on_fail2(book, "BookEditorView::editBook book is null");
 
@@ -324,7 +324,7 @@ void BookEditorView::save()
         m_bookEditor->zip();
         dialog.setValue(dialog.value()+1);
 
-        LibraryBookPtr book = m_bookReader->bookInfo();
+        LibraryBook::Ptr book = m_bookReader->bookInfo();
 
         if(m_bookEditor->save())
             IndexTracker::instance()->addTask(book->id, IndexTask::Update, false);

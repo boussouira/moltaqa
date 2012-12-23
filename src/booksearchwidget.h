@@ -23,7 +23,7 @@ protected:
     SearchFilter *getSearchFilterQuery();
 
 protected:
-    LibraryBookPtr m_bookInfo;
+    LibraryBook::Ptr m_bookInfo;
     LibraryBookManager *m_bookManager;
 };
 

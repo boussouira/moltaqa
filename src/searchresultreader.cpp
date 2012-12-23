@@ -29,7 +29,7 @@ void SearchResultReader::setShowPageInfo(bool show)
     m_showPageInfo = show;
 }
 
-bool SearchResultReader::getBookPage(LibraryBookPtr book, BookPage *page)
+bool SearchResultReader::getBookPage(LibraryBook::Ptr book, BookPage *page)
 {
     if(!book) {
         qWarning("SearchResultReader::getBookPage No book with given id");
@@ -61,7 +61,7 @@ bool SearchResultReader::getBookPage(LibraryBookPtr book, BookPage *page)
     return false;
 }
 
-bool SearchResultReader::getSimpleBookPage(QuaZip *zip, LibraryBookPtr book, BookPage *page)
+bool SearchResultReader::getSimpleBookPage(QuaZip *zip, LibraryBook::Ptr book, BookPage *page)
 {
     // Page info
     if(m_showPageInfo) {
@@ -79,7 +79,7 @@ bool SearchResultReader::getSimpleBookPage(QuaZip *zip, LibraryBookPtr book, Boo
     return true;
 }
 
-bool SearchResultReader::getQuranPage(QuaZip *zip, LibraryBookPtr book, BookPage *page)
+bool SearchResultReader::getQuranPage(QuaZip *zip, LibraryBook::Ptr book, BookPage *page)
 {
     Q_UNUSED(book);
 
@@ -135,7 +135,7 @@ bool SearchResultReader::getQuranPage(QuaZip *zip, LibraryBookPtr book, BookPage
     return true;
 }
 
-bool SearchResultReader::getPageInfo(QuaZip *zip, LibraryBookPtr book, BookPage *page)
+bool SearchResultReader::getPageInfo(QuaZip *zip, LibraryBook::Ptr book, BookPage *page)
 {
     QuaZipFile pagesFile(zip);
     if(zip->setCurrentFile("pages.xml")) {
@@ -185,7 +185,7 @@ bool SearchResultReader::getPageText(QuaZip *zip, BookPage *page)
     return true;
 }
 
-bool SearchResultReader::getPageTitle(QuaZip *zip, LibraryBookPtr book, BookPage *page)
+bool SearchResultReader::getPageTitle(QuaZip *zip, LibraryBook::Ptr book, BookPage *page)
 {
     QuaZipFile titleFile(zip);
 

@@ -192,7 +192,7 @@ void LibraryBookManagerWidget::createNewBook()
 
     try {
 
-        LibraryBookPtr book(new LibraryBook());
+        LibraryBook::Ptr book(new LibraryBook());
         book->title = title;
         book->type = LibraryBook::NormalBook;
 
@@ -291,7 +291,7 @@ void LibraryBookManagerWidget::save()
     if(m_editedBookInfo.size()) {
         m_manager->transaction();
 
-        foreach(LibraryBookPtr book, m_editedBookInfo.values()) {
+        foreach(LibraryBook::Ptr book, m_editedBookInfo.values()) {
             m_manager->updateBook(book);
         }
 
@@ -308,7 +308,7 @@ void LibraryBookManagerWidget::save()
 void LibraryBookManagerWidget::on_treeView_doubleClicked(const QModelIndex &index)
 {
     int bookID = index.data(ItemRole::idRole).toInt();
-    LibraryBookPtr info = getBookInfo(bookID);
+    LibraryBook::Ptr info = getBookInfo(bookID);
     if(info) {
         saveCurrentBookInfo();
 
@@ -365,7 +365,7 @@ void LibraryBookManagerWidget::on_toolChangeAuthor_clicked()
     }
 }
 
-void LibraryBookManagerWidget::setupEdit(LibraryBookPtr info)
+void LibraryBookManagerWidget::setupEdit(LibraryBook::Ptr info)
 {
     bool enable = !info->isQuran();
 
@@ -434,13 +434,13 @@ void LibraryBookManagerWidget::saveCurrentBookInfo()
     }
 }
 
-LibraryBookPtr LibraryBookManagerWidget::getBookInfo(int bookID)
+LibraryBook::Ptr LibraryBookManagerWidget::getBookInfo(int bookID)
 {
-    LibraryBookPtr info = m_editedBookInfo.value(bookID);
+    LibraryBook::Ptr info = m_editedBookInfo.value(bookID);
     if(!info) {
         info = m_manager->getLibraryBook(bookID);
         if(info)
-            info = LibraryBookPtr(info->clone());
+            info = LibraryBook::Ptr(info->clone());
     }
 
     return info;

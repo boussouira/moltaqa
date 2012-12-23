@@ -20,7 +20,7 @@ public:
     int addBook(BookWidget* book);
     BookWidget *bookWidget(int index);
     BookWidget *activeBookWidget();
-    LibraryBookPtr activeBook();
+    LibraryBook::Ptr activeBook();
     RichBookReader *activeBookReader();
     TabWidget *activeTab();
     TabWidget *unActiveTab();

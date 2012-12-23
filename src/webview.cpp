@@ -43,7 +43,7 @@ WebView::~WebView()
     ml_delete_check(m_searcher);
 }
 
-void WebView::setBook(LibraryBookPtr book)
+void WebView::setBook(LibraryBook::Ptr book)
 {
     m_book = book;
     m_page->setBook(book);
@@ -163,9 +163,9 @@ QString WebView::toHtml()
     return m_frame->toHtml();
 }
 
-LibraryBookPtr WebView::getLibraryBook()
+LibraryBook::Ptr WebView::getLibraryBook()
 {
-    ml_return_val_on_fail2(parent(), "WebView::getLibraryBook parent is null", LibraryBookPtr());
+    ml_return_val_on_fail2(parent(), "WebView::getLibraryBook parent is null", LibraryBook::Ptr());
 
     BookWidget *p;
     QObject *parentObj = parent();
@@ -178,7 +178,7 @@ LibraryBookPtr WebView::getLibraryBook()
     }
 
 //    p = qobject_cast<BookWidget*>(parent()->parent()); // QSplitter > BookWidget
-    ml_return_val_on_fail2(p, "WebView::getLibraryBook book widget is null", LibraryBookPtr());
+    ml_return_val_on_fail2(p, "WebView::getLibraryBook book widget is null", LibraryBook::Ptr());
 
     return p->bookReader()->bookInfo();
 }
@@ -263,7 +263,7 @@ void WebView::searchInCurrentBook()
 
 void WebView::searchInQuran()
 {
-    LibraryBookPtr quranBook = LibraryManager::instance()->bookManager()->getQuranBook();
+    LibraryBook::Ptr quranBook = LibraryManager::instance()->bookManager()->getQuranBook();
     ml_return_on_fail2(quranBook, "WebView::searchInQuran can't find quran book");
 
     QString text = selectedText().simplified();

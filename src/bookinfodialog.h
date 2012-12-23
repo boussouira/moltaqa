@@ -11,14 +11,14 @@ class BookInfoDialog : public QWidget
 public:
     BookInfoDialog(QWidget* parent = 0);
 
-    void setLibraryBook(LibraryBookPtr book);
+    void setLibraryBook(LibraryBook::Ptr book);
     void setup();
 
 protected:
     void closeEvent(QCloseEvent *event);
 
 protected:
-    LibraryBookPtr m_book;
+    LibraryBook::Ptr m_book;
     WebView *m_view;
 };
 

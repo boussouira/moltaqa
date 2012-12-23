@@ -45,7 +45,7 @@ public:
     void reloadManagers();
 
     int addBook(ImportModelNode *node);
-    void addBook(LibraryBookPtr book, int catID);
+    void addBook(LibraryBook::Ptr book, int catID);
 
     void removeBook(int bookID);
 

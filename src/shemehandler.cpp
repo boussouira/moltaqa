@@ -56,7 +56,7 @@ void ShemeHandler::openQuran(const QUrl &url)
     int sora = url.queryItemValue("sora").toInt();
     int aya = url.hasQueryItem("aya") ? url.queryItemValue("aya").toInt() : 1;
 
-    LibraryBookPtr quranBook = LibraryManager::instance()->bookManager()->getQuranBook();
+    LibraryBook::Ptr quranBook = LibraryManager::instance()->bookManager()->getQuranBook();
     ml_return_on_fail2(quranBook, "MoltaqaShemeHandler::openQuran quranBook is null");
 
     BookWidget *w = MW->bookReaderView()->openBook(quranBook->id);

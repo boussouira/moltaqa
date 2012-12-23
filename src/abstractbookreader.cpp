@@ -60,7 +60,7 @@ void AbstractBookReader::closeZip()
     m_zip.close();
 }
 
-void AbstractBookReader::setBookInfo(LibraryBookPtr bi)
+void AbstractBookReader::setBookInfo(LibraryBook::Ptr bi)
 {
     m_bookInfo = bi;
 }
@@ -123,7 +123,7 @@ QDomElement AbstractBookReader::getQuranPageId(int sora, int aya)
     return QDomElement();
 }
 
-LibraryBookPtr AbstractBookReader::bookInfo()
+LibraryBook::Ptr AbstractBookReader::bookInfo()
 {
     return m_bookInfo;
 }

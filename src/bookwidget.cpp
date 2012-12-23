@@ -309,7 +309,7 @@ void BookWidget::readerTextChanged()
         js = "setShorooh([";
 
         foreach(BookShorooh shareeh, m_reader->bookInfo()->shorooh) {
-            LibraryBookPtr book = m_bookManager->getLibraryBook(shareeh.bookID);
+            LibraryBook::Ptr book = m_bookManager->getLibraryBook(shareeh.bookID);
             if(!book)
                 continue;
 

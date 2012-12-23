@@ -107,7 +107,7 @@ void LibraryManager::reloadManagers()
 
 int LibraryManager::addBook(ImportModelNode *node)
 {
-    LibraryBookPtr book = node->toLibraryBook();
+    LibraryBook::Ptr book = node->toLibraryBook();
     QString bookPath = (book->fileName.startsWith("book_") ? m_libraryInfo->bookPath(book->fileName) :  QString());
 
     QString newPath;
@@ -131,7 +131,7 @@ int LibraryManager::addBook(ImportModelNode *node)
     }
 }
 
-void LibraryManager::addBook(LibraryBookPtr book, int catID)
+void LibraryManager::addBook(LibraryBook::Ptr book, int catID)
 {
     int bookID = m_bookmanager->addBook(book);
     if(!bookID) {
@@ -251,7 +251,7 @@ void LibraryManager::addHelpBook()
     if(!m_bookmanager->getLibraryBook(HELP_BOOK_ID)) {
         qDebug("LibraryManager::addHelpBook add help book to the current library...");
 
-        LibraryBookPtr book(new LibraryBook());
+        LibraryBook::Ptr book(new LibraryBook());
         book->id = HELP_BOOK_ID;
         book->type = LibraryBook::NormalBook;
         book->title = tr("شرح البرنامج");

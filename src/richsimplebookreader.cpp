@@ -68,7 +68,7 @@ void RichSimpleBookReader::getShorooh()
         int bookID = linkElement.attribute("book").toInt();
         int page = linkElement.attribute("page").toInt();
 
-        LibraryBookPtr book = LibraryManager::instance()->bookManager()->getLibraryBook(bookID);
+        LibraryBook::Ptr book = LibraryManager::instance()->bookManager()->getLibraryBook(bookID);
         if(book)
             m_bookInfo->shorooh.append(BookShorooh(bookID, page, book->title));
 

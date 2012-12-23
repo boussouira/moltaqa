@@ -33,7 +33,7 @@ public:
 
     int currentBookID();
     BookWidget *currentBookWidget();
-    LibraryBookPtr currentBook();
+    LibraryBook::Ptr currentBook();
     BookPage *currentPage();
 
     BookWidgetManager *bookWidgetManager() { return m_viewManager; }

@@ -19,7 +19,7 @@ public:
     WebView(QWidget* parent = 0);
     ~WebView();
 
-    void setBook(LibraryBookPtr book);
+    void setBook(LibraryBook::Ptr book);
 
     void scrollToAya(int pSoraNumber, int pAyaNumber);
     void scrollToSora(int soraNumber);
@@ -34,7 +34,7 @@ public:
     QString toHtml();
 
     WebViewSearcher *searcher() { return m_searcher; }
-    LibraryBookPtr getLibraryBook();
+    LibraryBook::Ptr getLibraryBook();
 
 protected:
     void wheelEvent(QWheelEvent *event);
@@ -73,7 +73,7 @@ protected:
     QPoint m_lastMenuPos;
     bool m_scrollToBottom;
     bool m_stopScrolling;
-    LibraryBookPtr m_book;
+    LibraryBook::Ptr m_book;
     WebViewSearcher *m_searcher;
 };
 

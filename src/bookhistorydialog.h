@@ -19,7 +19,7 @@ public:
     BookHistoryDialog(QWidget *parent = 0);
     ~BookHistoryDialog();
 
-    inline void setLibraryBook(LibraryBookPtr book) { m_book = book; }
+    inline void setLibraryBook(LibraryBook::Ptr book) { m_book = book; }
     void setup();
 
 private slots:
@@ -31,7 +31,7 @@ signals:
 
 private:
     Ui::BookHistoryDialog *ui;
-    LibraryBookPtr m_book;
+    LibraryBook::Ptr m_book;
     StandardItemModelPtr m_model;
 };
 

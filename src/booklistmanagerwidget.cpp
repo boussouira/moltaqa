@@ -238,7 +238,7 @@ void BookListManagerWidget::addBooks()
         }
 
         foreach (int bookID, books) {
-            LibraryBookPtr book = LibraryManager::instance()->bookManager()->getLibraryBook(bookID);
+            LibraryBook::Ptr book = LibraryManager::instance()->bookManager()->getLibraryBook(bookID);
             if(!book)
                 continue;
 
@@ -292,7 +292,7 @@ void BookListManagerWidget::menuRequested(QPoint)
 }
 
 
-void BookListManagerWidget::addBookItem(LibraryBookPtr book, const QModelIndex &parent)
+void BookListManagerWidget::addBookItem(LibraryBook::Ptr book, const QModelIndex &parent)
 {
     QList<QStandardItem*> rows;
 
@@ -390,7 +390,7 @@ void BookListManagerWidget::updateItem(QModelIndex index)
         bool isQuran = index.data(ItemRole::typeRole).toInt() == LibraryBook::QuranBook;
 
         QStandardItem *bookItem = new QStandardItem(tr("كتاب '%1'").arg(index.data().toString()));
-        LibraryBookPtr book = LibraryManager::instance()->bookManager()->getLibraryBook(bookID);
+        LibraryBook::Ptr book = LibraryManager::instance()->bookManager()->getLibraryBook(bookID);
         if(book) {
             bookItem->setIcon(QIcon(":/images/refresh2.png"));
             QList<QStandardItem*> bookItems;

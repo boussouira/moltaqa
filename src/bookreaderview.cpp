@@ -194,7 +194,7 @@ void BookReaderView::createMenus()
 
 void BookReaderView::updateToolBars()
 {
-    LibraryBookPtr book = m_viewManager->activeBook();
+    LibraryBook::Ptr book = m_viewManager->activeBook();
 
     if(book) {
         bool showTafsssir = book->isQuran() && m_comboTafasir->count();
@@ -228,7 +228,7 @@ WebViewSearcher *BookReaderView::searcher()
 
 int BookReaderView::currentBookID()
 {
-    LibraryBookPtr book = m_viewManager->activeBook();
+    LibraryBook::Ptr book = m_viewManager->activeBook();
 
     return book ? book->id : 0;
 }
@@ -238,7 +238,7 @@ BookWidget *BookReaderView::currentBookWidget()
     return m_viewManager->activeBookWidget();
 }
 
-LibraryBookPtr BookReaderView::currentBook()
+LibraryBook::Ptr BookReaderView::currentBook()
 {
     return m_viewManager->activeBook();
 }
@@ -252,7 +252,7 @@ BookPage *BookReaderView::currentPage()
 
 BookWidget *BookReaderView::openBook(int bookID, int pageID, CLuceneQuery *query)
 {
-    LibraryBookPtr bookInfo;
+    LibraryBook::Ptr bookInfo;
     RichBookReader *bookReader = 0;
     BookWidget *bookWidget = 0;
 
@@ -315,7 +315,7 @@ void BookReaderView::openTafessir()
     try {
         int tafessirID = m_comboTafasir->itemData(m_comboTafasir->currentIndex(), ItemRole::idRole).toInt();
 
-        LibraryBookPtr bookInfo = m_bookManager->getLibraryBook(tafessirID);
+        LibraryBook::Ptr bookInfo = m_bookManager->getLibraryBook(tafessirID);
         ml_return_on_fail(bookInfo && bookInfo->isTafessir() && m_viewManager->activeBook()->isQuran());
 
         bookdb = new RichTafessirReader();
@@ -365,7 +365,7 @@ void BookReaderView::showIndexWidget()
 
 void BookReaderView::searchInBook()
 {
-    LibraryBookPtr book = m_viewManager->activeBook();
+    LibraryBook::Ptr book = m_viewManager->activeBook();
     ml_return_on_fail(book);
 
     MW->searchView()->newTab(SearchWidget::BookSearch, book->id);
@@ -412,7 +412,7 @@ void BookReaderView::removeTashkil(bool remove)
 
 void BookReaderView::editCurrentBook()
 {
-    LibraryBookPtr book = currentBook();
+    LibraryBook::Ptr book = currentBook();
     BookPage *page = currentPage();
 
     if(book && page) {

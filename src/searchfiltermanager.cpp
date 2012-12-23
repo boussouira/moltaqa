@@ -220,7 +220,7 @@ void SearchFilterManager::showBookInfo()
     ml_return_on_fail(index.isValid());
     ml_return_on_fail(index.data(ItemRole::itemTypeRole).toInt()==ItemType::BookItem);
 
-    LibraryBookPtr book = LibraryManager::instance()
+    LibraryBook::Ptr book = LibraryManager::instance()
             ->bookManager()
             ->getLibraryBook(index.data(ItemRole::idRole).toInt());
 

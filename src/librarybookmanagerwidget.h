@@ -37,13 +37,13 @@ protected:
     void setupActions();
     void setupBookReader();
     void saveCurrentBookInfo();
-    LibraryBookPtr getBookInfo(int bookID);
+    LibraryBook::Ptr getBookInfo(int bookID);
 
 private slots:
     void on_treeView_doubleClicked(const QModelIndex &index);
     void on_tabWidget_currentChanged(int index);
     void on_toolChangeAuthor_clicked();
-    void setupEdit(LibraryBookPtr info);
+    void setupEdit(LibraryBook::Ptr info);
     void infoChanged();
     void checkEditWebChange();
     void createNewBook();
@@ -53,14 +53,14 @@ private slots:
 
 protected:
     Ui::LibraryBookManagerWidget *ui;
-    LibraryBookPtr m_currentBook;
+    LibraryBook::Ptr m_currentBook;
     QStandardItemModel *m_model;
     LibraryBookManager *m_manager;
     EditWebView *m_webEdit;
     BookReaderView *m_readerview;
     QWidget *m_readerWidget;
     ModelViewFilter *m_filter;
-    QHash<int, LibraryBookPtr > m_editedBookInfo;
+    QHash<int, LibraryBook::Ptr > m_editedBookInfo;
     bool m_selectCurrentBook;
 };
 

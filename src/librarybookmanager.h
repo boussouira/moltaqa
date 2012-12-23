@@ -29,21 +29,21 @@ public:
     StandardItemModelPtr getLastOpendModel();
     StandardItemModelPtr getBookHistoryModel(int bookID);
 
-    LibraryBookPtr getLibraryBook(int bookID);
-    LibraryBookPtr getQuranBook();
+    LibraryBook::Ptr getLibraryBook(int bookID);
+    LibraryBook::Ptr getQuranBook();
 
-    LibraryBookPtr findBook(QString bookName);
+    LibraryBook::Ptr findBook(QString bookName);
     int booksCount();
 
-    int addBook(LibraryBookPtr book);
+    int addBook(LibraryBook::Ptr book);
 
-    bool updateBook(LibraryBookPtr book);
+    bool updateBook(LibraryBook::Ptr book);
     bool removeBook(int bookID);
 
     QList<int> getBooksWithIndexStat(LibraryBook::IndexFlags indexFlag);
     void setBookIndexStat(int bookID, LibraryBook::IndexFlags indexFlag);
 
-    QList<LibraryBookPtr> getAuthorBooks(int authorID);
+    QList<LibraryBook::Ptr> getAuthorBooks(int authorID);
 
     void addBookHistory(int bookID, int pageID);
     /// Get the last readed for the given book
@@ -58,8 +58,8 @@ protected:
 protected:
     LibraryInfo *m_libraryInfo;
     AuthorsManager *m_authorsManager;
-    QHash<int, LibraryBookPtr> m_books;
-    LibraryBookPtr m_quranBook;
+    QHash<int, LibraryBook::Ptr> m_books;
+    LibraryBook::Ptr m_quranBook;
 };
 
 #endif // LIBRARYBOOKMANAGER_H

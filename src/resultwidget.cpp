@@ -223,7 +223,7 @@ void ResultWidget::goToPage(int page)
 
 void ResultWidget::showBookMenu(int bookID)
 {
-    LibraryBookPtr book = LibraryManager::instance()->bookManager()->getLibraryBook(bookID);
+    LibraryBook::Ptr book = LibraryManager::instance()->bookManager()->getLibraryBook(bookID);
     ml_return_on_fail2(book, "ResultWidget::showBookMenu no book with id" << bookID);
 
     QMenu menu(this);

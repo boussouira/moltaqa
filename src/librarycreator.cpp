@@ -274,7 +274,7 @@ void LibraryCreator::importBook(ShamelaBookInfo *shamelBook, QString path)
         delete auth;
     }
 
-    LibraryBookPtr book(new LibraryBook());
+    LibraryBook::Ptr book(new LibraryBook());
     book->type = shamelBook->tafessirName.isEmpty() ? LibraryBook::NormalBook : LibraryBook::TafessirBook;
     book->title = shamelBook->name;
     book->comment = shamelBook->betaka.append(tr("\n[مأخود من الشاملة]"));
@@ -292,7 +292,7 @@ void LibraryCreator::importQuran(QString path)
 {
     QFileInfo fileInfo(path);
 
-    LibraryBookPtr book(new LibraryBook());
+    LibraryBook::Ptr book(new LibraryBook());
     book->type = LibraryBook::QuranBook;
     book->title = tr("القرآن الكريم");
     book->info = tr("القرآن الكريم");

@@ -120,7 +120,7 @@ void IndexWidget::hideAyaSpin(bool visible)
     ui->labelAya->setVisible(visible);
 }
 
-void IndexWidget::setBookInfo(LibraryBookPtr book)
+void IndexWidget::setBookInfo(LibraryBook::Ptr book)
 {
     m_bookInfo = book;
 }

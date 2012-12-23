@@ -48,9 +48,9 @@ void BookExporterThread::run()
     if(m_exportInOnePackage
             && m_exporter->multiBookExport()
             && m_bookToImport.size() > 1) {
-        QList<LibraryBookPtr> libraryBooks;
+        QList<LibraryBook::Ptr> libraryBooks;
         foreach (int bookID, m_bookToImport) {
-            LibraryBookPtr book = manager->getLibraryBook(bookID);
+            LibraryBook::Ptr book = manager->getLibraryBook(bookID);
             if(book)
                 libraryBooks.append(book);
         }
@@ -69,7 +69,7 @@ void BookExporterThread::run()
         }
     } else {
         foreach (int bookID, m_bookToImport) {
-            LibraryBookPtr book = manager->getLibraryBook(bookID);
+            LibraryBook::Ptr book = manager->getLibraryBook(bookID);
 
             try {
                 m_exporter->setLibraryBook(book);

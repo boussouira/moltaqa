@@ -155,10 +155,10 @@ BookWidget *BookWidgetManager::activeBookWidget()
     return qobject_cast<BookWidget*>(m_activeTab->widget(m_activeTab->currentIndex()));
 }
 
-LibraryBookPtr BookWidgetManager::activeBook()
+LibraryBook::Ptr BookWidgetManager::activeBook()
 {
     BookWidget *bookWidget = activeBookWidget();
-    return bookWidget ? bookWidget->bookReader()->bookInfo() : LibraryBookPtr();
+    return bookWidget ? bookWidget->bookReader()->bookInfo() : LibraryBook::Ptr();
 }
 
 RichBookReader *BookWidgetManager::activeBookReader()
@@ -230,7 +230,7 @@ void BookWidgetManager::reverseSplitter()
 
 void BookWidgetManager::addToFavouite()
 {
-    LibraryBookPtr book = activeBook();
+    LibraryBook::Ptr book = activeBook();
     ml_return_on_fail(book);
 
     if(m_libraryManager->favouritesManager()->containsBook(book->id)) {
@@ -251,7 +251,7 @@ void BookWidgetManager::addToFavouite()
 
 void BookWidgetManager::showBookInfo()
 {
-    LibraryBookPtr book = activeBook();
+    LibraryBook::Ptr book = activeBook();
     ml_return_on_fail(book);
 
     BookInfoDialog *dialog = new BookInfoDialog(0);
@@ -262,7 +262,7 @@ void BookWidgetManager::showBookInfo()
 
 void BookWidgetManager::showBookHistory()
 {
-    LibraryBookPtr book = activeBook();
+    LibraryBook::Ptr book = activeBook();
     BookWidget *widget = activeBookWidget();
     ml_return_on_fail(book && widget);
 

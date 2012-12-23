@@ -23,7 +23,7 @@ public:
     void setCategories(int cid, const QString &name=QString());
     void setAuthor(int aid, const QString &name=QString());
 
-    LibraryBookPtr toLibraryBook();
+    LibraryBook::Ptr toLibraryBook();
 
 public:
     QString typeName;

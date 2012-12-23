@@ -441,8 +441,8 @@ void ShamelaManager::importShorooh(ShamelaImportDialog *dialog)
                     qApp->processEvents();
                 }
 
-                LibraryBookPtr mi = bookManager->getLibraryBook(mateen_libID);
-                LibraryBookPtr si = bookManager->getLibraryBook(shareeh_LibID);
+                LibraryBook::Ptr mi = bookManager->getLibraryBook(mateen_libID);
+                LibraryBook::Ptr si = bookManager->getLibraryBook(shareeh_LibID);
 
                 if(mi && si) {
                     dialog->addDebugInfo(QObject::tr("ربط المتن '%1' بالشرح '%2'")

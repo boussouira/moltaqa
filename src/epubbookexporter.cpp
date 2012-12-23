@@ -253,7 +253,7 @@ void EPubBookExporter::writeAuthorInfo()
     AuthorInfo::Ptr info = LibraryManager::instance()->authorsManager()->getAuthorInfo(m_book->authorID);
     ml_return_on_fail(info);
 
-    QList<LibraryBookPtr> books = LibraryManager::instance()->bookManager()->getAuthorBooks(m_book->authorID);
+    QList<LibraryBook::Ptr> books = LibraryManager::instance()->bookManager()->getAuthorBooks(m_book->authorID);
 
     HtmlHelper html;
     html.beginHead();

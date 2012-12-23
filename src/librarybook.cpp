@@ -76,7 +76,7 @@ void LibraryBook::toDomElement(XmlDomHelper &domHeleper, QDomElement &bookElemen
         domHeleper.setElementText(bookElement, "info", info, true);
 }
 
-QDebug operator<<(QDebug dbg, LibraryBookPtr &info)
+QDebug operator<<(QDebug dbg, LibraryBook::Ptr &info)
 {
     dbg.nospace() << "BookInfo(\n\t"
                   << "ID: " << info->id << "\n\t"

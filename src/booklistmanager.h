@@ -45,7 +45,7 @@ public:
 
     CategorieInfo *findCategorie(const QString &cat, bool fazzySearch=true);
     int addCategorie(const QString &title, int parentCat=0);
-    void addBook(LibraryBookPtr book, int parentCat);
+    void addBook(LibraryBook::Ptr book, int parentCat);
     void addBook(int bookID, int parentCat);
 
     bool removeBook(int bookID);

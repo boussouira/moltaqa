@@ -36,13 +36,13 @@ class WebPageNAM : public QNetworkAccessManager
 public:
     WebPageNAM(QObject *parent = 0);
 
-    void setBook(LibraryBookPtr book) { m_book = book; }
+    void setBook(LibraryBook::Ptr book) { m_book = book; }
     QNetworkReply *getFileContent(const QString &fileName);
 
 protected:
     QNetworkReply *createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0);
 
-    LibraryBookPtr m_book;
+    LibraryBook::Ptr m_book;
 };
 
 

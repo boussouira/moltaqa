@@ -1,7 +1,7 @@
 #include "searchresult.h"
 #include "htmlhelper.h"
 
-SearchResult::SearchResult(LibraryBookPtr _book, BookPage *_page) :
+SearchResult::SearchResult(LibraryBook::Ptr _book, BookPage *_page) :
     book(_book),
     page(_page)
 {

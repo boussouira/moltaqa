@@ -21,15 +21,15 @@ public:
     void setShowPageTitle(bool show);
     void setShowPageInfo(bool show);
 
-    bool getBookPage(LibraryBookPtr book, BookPage *page);
+    bool getBookPage(LibraryBook::Ptr book, BookPage *page);
 
 protected:
-    bool getSimpleBookPage(QuaZip *zip, LibraryBookPtr book, BookPage *page);
-    bool getQuranPage(QuaZip *zip, LibraryBookPtr book, BookPage *page);
+    bool getSimpleBookPage(QuaZip *zip, LibraryBook::Ptr book, BookPage *page);
+    bool getQuranPage(QuaZip *zip, LibraryBook::Ptr book, BookPage *page);
 
-    bool getPageInfo(QuaZip *zip, LibraryBookPtr book, BookPage *page);
+    bool getPageInfo(QuaZip *zip, LibraryBook::Ptr book, BookPage *page);
     bool getPageText(QuaZip *zip, BookPage *page);
-    bool getPageTitle(QuaZip *zip, LibraryBookPtr book, BookPage *page);
+    bool getPageTitle(QuaZip *zip, LibraryBook::Ptr book, BookPage *page);
 
     void taffesirTitle(BookPage *page);
 

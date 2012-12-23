@@ -138,9 +138,9 @@ StandardItemModelPtr LibraryBookManager::getBookHistoryModel(int bookID)
     return StandardItemModelPtr(model);
 }
 
-LibraryBookPtr LibraryBookManager::getLibraryBook(int bookID)
+LibraryBook::Ptr LibraryBookManager::getLibraryBook(int bookID)
 {
-    LibraryBookPtr book = m_books.value(bookID);
+    LibraryBook::Ptr book = m_books.value(bookID);
     if(book)
         return book;
 
@@ -153,7 +153,7 @@ LibraryBookPtr LibraryBookManager::getLibraryBook(int bookID)
     ml_query_exec(query);
 
     if(query.next()) {
-        LibraryBookPtr book(new LibraryBook());
+        LibraryBook::Ptr book(new LibraryBook());
         book->id = query.value(0).toInt();
         book->title = query.value(1).toString();
         book->type = static_cast<LibraryBook::Type>(query.value(2).toInt());
@@ -186,10 +186,10 @@ LibraryBookPtr LibraryBookManager::getLibraryBook(int bookID)
         return book;
     }
 
-    return LibraryBookPtr();
+    return LibraryBook::Ptr();
 }
 
-LibraryBookPtr LibraryBookManager::getQuranBook()
+LibraryBook::Ptr LibraryBookManager::getQuranBook()
 {
     if(m_quranBook)
         return m_quranBook;
@@ -206,10 +206,10 @@ LibraryBookPtr LibraryBookManager::getQuranBook()
             return m_quranBook;
     }
 
-    return LibraryBookPtr();
+    return LibraryBook::Ptr();
 }
 
-LibraryBookPtr LibraryBookManager::findBook(QString bookName)
+LibraryBook::Ptr LibraryBookManager::findBook(QString bookName)
 {
     QueryBuilder q;
     q.setTableName("books", QueryBuilder::Select);
@@ -220,7 +220,7 @@ LibraryBookPtr LibraryBookManager::findBook(QString bookName)
     if(q.exec(query) && query.next())
         return getLibraryBook(query.value(0).toInt());
 
-    return LibraryBookPtr();
+    return LibraryBook::Ptr();
 }
 
 int LibraryBookManager::booksCount()
@@ -233,7 +233,7 @@ int LibraryBookManager::booksCount()
     return 0;
 }
 
-int LibraryBookManager::addBook(LibraryBookPtr book)
+int LibraryBookManager::addBook(LibraryBook::Ptr book)
 {
     QMutexLocker locker(&m_mutex);
 
@@ -266,7 +266,7 @@ int LibraryBookManager::addBook(LibraryBookPtr book)
     return book->id;
 }
 
-bool LibraryBookManager::updateBook(LibraryBookPtr book)
+bool LibraryBookManager::updateBook(LibraryBook::Ptr book)
 {
     QSqlQuery query(m_db);
 
@@ -298,7 +298,7 @@ bool LibraryBookManager::updateBook(LibraryBookPtr book)
 
 bool LibraryBookManager::removeBook(int bookID)
 {
-    LibraryBookPtr book = getLibraryBook(bookID);
+    LibraryBook::Ptr book = getLibraryBook(bookID);
     ml_return_val_on_fail2(book, "LibraryBookManager::removeBook can't find book" << bookID, false);
 
     QSqlQuery query(m_db);
@@ -359,16 +359,16 @@ void LibraryBookManager::setBookIndexStat(int bookID, LibraryBook::IndexFlags in
     ml_return_on_fail(q.exec(query));
 
     if(bookID != -1) {
-        LibraryBookPtr book = m_books.value(bookID);
+        LibraryBook::Ptr book = m_books.value(bookID);
         ml_return_on_fail2(book, "LibraryBookManager::setBookIndexStat No book with id" << bookID << "where found");
 
         book->indexFlags = indexFlag;
     }
 }
 
-QList<LibraryBookPtr> LibraryBookManager::getAuthorBooks(int authorID)
+QList<LibraryBook::Ptr> LibraryBookManager::getAuthorBooks(int authorID)
 {
-    QList<LibraryBookPtr> list;
+    QList<LibraryBook::Ptr> list;
 
     QSqlQuery query(m_db);
     query.prepare("SELECT id FROM books WHERE authorID = ?");
@@ -377,7 +377,7 @@ QList<LibraryBookPtr> LibraryBookManager::getAuthorBooks(int authorID)
     ml_query_exec(query);
 
     while(query.next()) {
-        LibraryBookPtr book = getLibraryBook(query.value(0).toInt());
+        LibraryBook::Ptr book = getLibraryBook(query.value(0).toInt());
         if(book)
             list.append(book);
     }

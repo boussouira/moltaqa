@@ -16,7 +16,7 @@ class TextFormatter : public QObject
 public:
     TextFormatter(QObject *parent = 0);
 
-    void setData(LibraryBookPtr book, BookPage *page);
+    void setData(LibraryBook::Ptr book, BookPage *page);
 
     QString getText();
     void insertText(QString text);
@@ -36,7 +36,7 @@ signals:
     void doneReading();
 
 protected:
-    LibraryBookPtr m_book;
+    LibraryBook::Ptr m_book;
     BookPage *m_page;
     QString m_cssID;
     QString m_headerText;

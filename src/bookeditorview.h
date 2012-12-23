@@ -24,7 +24,7 @@ public:
     ~BookEditorView();
 
     QString title();
-    void editBook(LibraryBookPtr book, int pageID=0);
+    void editBook(LibraryBook::Ptr book, int pageID=0);
     bool maySave(bool canCancel=true);
 
 protected:

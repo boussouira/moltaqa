@@ -99,7 +99,7 @@ void WelcomeWidget::open(QString vid)
     vid = vid.toLower();
 
     if(vid == "quran") {
-        LibraryBookPtr quran = m_bookManager->getQuranBook();
+        LibraryBook::Ptr quran = m_bookManager->getQuranBook();
         if(quran)
             MW->openBook(quran->id);
         else
