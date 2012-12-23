@@ -110,8 +110,8 @@ QString BookReaderHelper::formatTitlesList(QStringList &list)
 void BookReaderHelper::open()
 {
     if(!m_quranDB.isOpen()) {
-        QDir dataDir(App::dataDir());
-        QString path = dataDir.filePath("quran-meta.db");
+        QDir dir(App::dataDir());
+        QString path = dir.filePath("quran-meta.db");
 
         m_quranDB = QSqlDatabase::addDatabase("QSQLITE", "helper_quran");
         m_quranDB.setDatabaseName(path);
