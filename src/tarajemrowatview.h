@@ -30,7 +30,7 @@ public:
 
 protected:
     int addTab(QString tabText=QString());
-    void setCurrentRawi(RawiInfoPtr info);
+    void setCurrentRawi(RawiInfo::Ptr info);
     void setCurrentTabHtml(QString title, QString html);
 
 private slots:
@@ -41,7 +41,7 @@ private:
     TarajemRowatManager *m_rowatManager;
     QStandardItemModel *m_model;
     ModelViewFilter *m_filter;
-    RawiInfoPtr m_currentRawi;
+    RawiInfo::Ptr m_currentRawi;
     Ui::TarajemRowatView *ui;
 };
 

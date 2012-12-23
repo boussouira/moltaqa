@@ -80,7 +80,7 @@ void TarajemRowatManagerWidget::save()
 
     m_manager->transaction();
 
-    foreach(RawiInfoPtr rawi, m_editedRawiInfo.values()) {
+    foreach(RawiInfo::Ptr rawi, m_editedRawiInfo.values()) {
         m_manager->updateRawi(rawi);
     }
 
@@ -168,13 +168,13 @@ void TarajemRowatManagerWidget::saveCurrentRawi()
 
 }
 
-RawiInfoPtr TarajemRowatManagerWidget::getRawiInfo(int rawiID)
+RawiInfo::Ptr TarajemRowatManagerWidget::getRawiInfo(int rawiID)
 {
-    RawiInfoPtr rawi = m_editedRawiInfo.value(rawiID);
+    RawiInfo::Ptr rawi = m_editedRawiInfo.value(rawiID);
     if(!rawi) {
         rawi = m_manager->getRawiInfo(rawiID);
         if(rawi)
-            rawi = RawiInfoPtr(rawi->clone());
+            rawi = RawiInfo::Ptr(rawi->clone());
     }
 
     return rawi;
@@ -183,7 +183,7 @@ RawiInfoPtr TarajemRowatManagerWidget::getRawiInfo(int rawiID)
 void TarajemRowatManagerWidget::on_treeView_doubleClicked(const QModelIndex &index)
 {
     int rawiID = index.data(ItemRole::authorIdRole).toInt();
-    RawiInfoPtr rawi= getRawiInfo(rawiID);
+    RawiInfo::Ptr rawi= getRawiInfo(rawiID);
     ml_return_on_fail(rawi);
 
     saveCurrentRawi();
@@ -266,7 +266,7 @@ void TarajemRowatManagerWidget::newRawi()
                                          tr("اضافة راوي"),
                                          tr("اسم الراوي:"));
     if(name.size()) {
-        RawiInfoPtr rawi = RawiInfoPtr(new RawiInfo());
+        RawiInfo::Ptr rawi = RawiInfo::Ptr(new RawiInfo());
         rawi->name = name;
 
         m_manager->addRawi(rawi);
@@ -300,7 +300,7 @@ void TarajemRowatManagerWidget::removeRawi()
                                  QMessageBox::No)==QMessageBox::Yes) {
 
             int rawiID = index.data(ItemRole::authorIdRole).toInt();
-            RawiInfoPtr rawi= getRawiInfo(rawiID);
+            RawiInfo::Ptr rawi= getRawiInfo(rawiID);
             ml_return_on_fail(rawi);
 
             m_manager->removeRawi(rawi->id);

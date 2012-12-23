@@ -32,7 +32,7 @@ protected:
     void setupActions();
     void enableEditWidgets(bool enable);
     void saveCurrentRawi();
-    RawiInfoPtr getRawiInfo(int rawiID);
+    RawiInfo::Ptr getRawiInfo(int rawiID);
 
 private slots:
     void on_treeView_doubleClicked(const QModelIndex &index);
@@ -49,8 +49,8 @@ protected:
     EditWebView *m_webEditShoek;
     EditWebView *m_webEditTalamid;
     EditWebView *m_webEditTarjama;
-    QHash<int, RawiInfoPtr> m_editedRawiInfo;
-    RawiInfoPtr m_currentRawi;
+    QHash<int, RawiInfo::Ptr> m_editedRawiInfo;
+    RawiInfo::Ptr m_currentRawi;
     ModelViewFilter *m_filter;
 };
 

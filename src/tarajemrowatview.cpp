@@ -92,7 +92,7 @@ void TarajemRowatView::aboutToHide()
 
 bool TarajemRowatView::openRawiInfo(int rawiID)
 {
-    RawiInfoPtr info = m_rowatManager->getRawiInfo(rawiID);
+    RawiInfo::Ptr info = m_rowatManager->getRawiInfo(rawiID);
     ml_return_val_on_fail2(info, "TarajemRowatView::openRawiInfo no rawi with id" << rawiID, false);
 
     setCurrentRawi(info);
@@ -115,7 +115,7 @@ int TarajemRowatView::addTab(QString tabText)
     return ui->tabWidget->addTab(tabRawiInfo, tabText);
 }
 
-void TarajemRowatView::setCurrentRawi(RawiInfoPtr info)
+void TarajemRowatView::setCurrentRawi(RawiInfo::Ptr info)
 {
     HtmlHelper html;
     html.beginHtml();
@@ -223,7 +223,7 @@ void TarajemRowatView::on_treeView_doubleClicked(const QModelIndex &index)
     int rawiID = index.data(ItemRole::authorIdRole).toInt();
     ml_return_on_fail(rawiID);
 
-    RawiInfoPtr info = m_rowatManager->getRawiInfo(rawiID);
+    RawiInfo::Ptr info = m_rowatManager->getRawiInfo(rawiID);
     ml_return_on_fail(info);
 
     setCurrentRawi(info);

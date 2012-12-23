@@ -73,9 +73,9 @@ int TarajemRowatManager::rowatCount()
     return 0;
 }
 
-RawiInfoPtr TarajemRowatManager::getRawiInfo(int rawiID)
+RawiInfo::Ptr TarajemRowatManager::getRawiInfo(int rawiID)
 {
-    RawiInfoPtr rawi = m_rowat.value(rawiID);
+    RawiInfo::Ptr rawi = m_rowat.value(rawiID);
     if(rawi)
         return rawi;
 
@@ -89,7 +89,7 @@ RawiInfoPtr TarajemRowatManager::getRawiInfo(int rawiID)
     ml_query_exec(query);
 
     if(query.next()) {
-        rawi = RawiInfoPtr(new RawiInfo());
+        rawi = RawiInfo::Ptr(new RawiInfo());
         rawi->id = query.value(0).toInt();
         rawi->name = query.value(1).toString();
         rawi->tabaqa = query.value(7).toString();
@@ -124,7 +124,7 @@ RawiInfoPtr TarajemRowatManager::getRawiInfo(int rawiID)
     return rawi;
 }
 
-bool TarajemRowatManager::updateRawi(RawiInfoPtr rawi)
+bool TarajemRowatManager::updateRawi(RawiInfo::Ptr rawi)
 {
     QSqlQuery query(m_db);
 
@@ -159,7 +159,7 @@ bool TarajemRowatManager::updateRawi(RawiInfoPtr rawi)
     return true;
 }
 
-int TarajemRowatManager::addRawi(RawiInfoPtr rawi)
+int TarajemRowatManager::addRawi(RawiInfo::Ptr rawi)
 {
     QMutexLocker locker(&m_mutex);
 

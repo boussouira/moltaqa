@@ -10,6 +10,8 @@ class RawiInfo
 public:
     RawiInfo() : id(0), birthYear(99999), deathYear(99999) {}
 
+    typedef QSharedPointer<RawiInfo> Ptr;
+
     int id;
     QString name;
     QString laqab;
@@ -38,8 +40,6 @@ public:
     RawiInfo *clone() { return new RawiInfo(*this); }
 };
 
-typedef QSharedPointer<RawiInfo> RawiInfoPtr;
-
 class TarajemRowatManager : public DatabaseManager
 {
 public:
@@ -53,10 +53,10 @@ public:
     QStandardItemModel *getRowatModel();
     int rowatCount();
 
-    RawiInfoPtr getRawiInfo(int rawiID);
+    RawiInfo::Ptr getRawiInfo(int rawiID);
 
-    bool updateRawi(RawiInfoPtr rawi);
-    int addRawi(RawiInfoPtr rawi);
+    bool updateRawi(RawiInfo::Ptr rawi);
+    int addRawi(RawiInfo::Ptr rawi);
     bool removeRawi(int rawiID);
 
 protected:
@@ -64,7 +64,7 @@ protected:
 
 protected:
     QString m_path;
-    QHash<int, RawiInfoPtr> m_rowat;
+    QHash<int, RawiInfo::Ptr> m_rowat;
 };
 
 #endif // TARAJEMROWATMANAGER_H
