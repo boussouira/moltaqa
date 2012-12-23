@@ -149,8 +149,7 @@ void BooksListBrowser::listSortingChanged(int index)
                           ? Qt::AscendingOrder : Qt::DescendingOrder);
 
     if(index == OrderSort) {
-        column = 0;
-        role = ItemRole::orderRole;
+        column = -1;
     } else if(index == BookTitleSort) {
         column = 0;
     } else if(index == AuthorNameSort) {
