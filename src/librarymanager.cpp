@@ -152,7 +152,7 @@ void LibraryManager::removeBook(int bookID)
 
     m_favourites->removeBook(bookID);
 
-    IndexTracker::instance()->addTask(bookID, IndexTask::Delete, true);
+    IndexTracker::instance()->addTask(bookID, IndexTask::Delete, false);
 }
 
 QHash<int, QAction *> LibraryManager::textRefersActions()
