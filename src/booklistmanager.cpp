@@ -324,26 +324,20 @@ QList<QStandardItem*> BookListManager::readBookNode(QDomElement &element)
     rows << nameItem;
 
     if(type != LibraryBook::QuranBook) {
-        AuthorInfoPtr auth = m_authorsManager->getAuthorInfo(authorID);
-        QString authName;
-        int deathYear = 999999;
-        QString deathStr;
-
-        if(auth) {
-            authName = auth->name;
-            deathYear = auth->deathYear;
-            deathStr = auth->deathStr;
-        } else {
-            authName = element.firstChildElement("author").text();
-            deathYear = element.firstChildElement("author").attribute("death",
-                                                                     QString::number(999999)).toInt();
-            deathStr = Utils::Time::hijriYear(deathYear);
-        }
-
         QStandardItem *authItem = new QStandardItem();
         authItem->setData(authorID, ItemRole::authorIdRole);
-        authItem->setText(AuthorInfo::formatAuthorName(authName, deathStr));
-        authItem->setData(deathYear, ItemRole::authorDeathRole);
+
+        AuthorInfoPtr auth = m_authorsManager->getAuthorInfo(authorID);
+        if(auth) {
+            authItem->setText(AuthorInfo::formatAuthorName(auth));
+            authItem->setData(auth->deathYear, ItemRole::authorDeathRole);
+        } else {
+            QString authName = element.firstChildElement("author").text();
+            int deathYear = element.firstChildElement("author").attribute("death",
+                                                                     QString::number(999999)).toInt();
+            authItem->setText(authName);
+            authItem->setData(deathYear, ItemRole::authorDeathRole);
+        }
 
         rows << authItem;
     }

@@ -307,30 +307,14 @@ void BookListManagerWidget::addBookItem(LibraryBookPtr book, const QModelIndex &
     rows << nameItem;
 
     if(book->type != LibraryBook::QuranBook) {
+        QStandardItem *authItem = new QStandardItem();
         AuthorInfoPtr auth = LibraryManager::instance()->authorsManager()->getAuthorInfo(book->authorID);
-        QString authName;
-        int deathYear = 999999;
-        QString deathStr;
-
         if(auth) {
-            authName = auth->name;
-
-            if(auth->unknowDeath) {
-                deathStr = tr("مجهول");
-                deathYear = Utils::Time::unknowDeathYear();
-            } else if(auth->isALive) {
-                deathStr = tr("معاصر");
-                deathYear = Utils::Time::aliveDeathYear();
-            } else {
-                deathYear = auth->deathYear;
-                deathStr = auth->deathStr;
-            }
+            authItem->setText(AuthorInfo::formatAuthorName(auth));
+            authItem->setData(book->authorID, ItemRole::authorIdRole);
+            authItem->setData(auth->deathYear, ItemRole::authorDeathRole);
         }
 
-        QStandardItem *authItem = new QStandardItem();
-        authItem->setText(AuthorInfo::formatAuthorName(authName, deathStr));
-        authItem->setData(book->authorID, ItemRole::authorIdRole);
-        authItem->setData(deathYear, ItemRole::authorDeathRole);
         rows << authItem;
     }
 
