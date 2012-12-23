@@ -106,7 +106,7 @@ int AuthorsManager::addAuthor(AuthorInfoPtr auth)
 {
     QMutexLocker locker(&m_mutex);
 
-    if(!auth->id)
+    if(!auth->id || getAuthorInfo(auth->id))
         auth->id = getNewAuthorID();
 
     if(!auth->unknowBirth && auth->birthStr.isEmpty())
@@ -159,7 +159,7 @@ int AuthorsManager::getNewAuthorID()
     int authorID = 0;
     do {
         authorID = Utils::Rand::number(11111, 99999);
-    } while(m_authors.contains(authorID));
+    } while(getAuthorInfo(authorID));
 
     return authorID;
 }

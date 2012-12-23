@@ -237,7 +237,7 @@ int LibraryBookManager::addBook(LibraryBookPtr book)
 {
     QMutexLocker locker(&m_mutex);
 
-    if(!book->id)
+    if(!book->id || getLibraryBook(book->id))
         book->id = getNewBookID();
 
     QSqlQuery query(m_db);
