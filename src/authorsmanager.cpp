@@ -42,7 +42,7 @@ void AuthorsManager::loadAuthorsInfo()
     ml_query_exec(query);
 
     while(query.next()) {
-        AuthorInfoPtr auth(new AuthorInfo());
+        AuthorInfo::Ptr auth(new AuthorInfo());
         auth->id = query.value(0).toInt();
         auth->name = query.value(1).toString();
         auth->fullName = query.value(2).toString();
@@ -81,7 +81,7 @@ QStandardItemModel *AuthorsManager::authorsModel()
 
     model->setHorizontalHeaderLabels(QStringList() << tr("المؤلفين"));
 
-    foreach(AuthorInfoPtr auth, m_authors.values()) {
+    foreach(AuthorInfo::Ptr auth, m_authors.values()) {
         QStandardItem *item = new QStandardItem();
         item->setText(auth->name);
         item->setToolTip(auth->fullName);
@@ -102,7 +102,7 @@ int AuthorsManager::authorsCount()
     return 0;
 }
 
-int AuthorsManager::addAuthor(AuthorInfoPtr auth)
+int AuthorsManager::addAuthor(AuthorInfo::Ptr auth)
 {
     QMutexLocker locker(&m_mutex);
 
@@ -164,7 +164,7 @@ int AuthorsManager::getNewAuthorID()
     return authorID;
 }
 
-AuthorInfoPtr AuthorsManager::getAuthorInfo(int authorID)
+AuthorInfo::Ptr AuthorsManager::getAuthorInfo(int authorID)
 {
     return m_authors.value(authorID);
 }
@@ -176,14 +176,14 @@ bool AuthorsManager::hasAuthorInfo(int authorID)
 
 QString AuthorsManager::getAuthorName(int authorID)
 {
-    AuthorInfoPtr auth = m_authors.value(authorID);
+    AuthorInfo::Ptr auth = m_authors.value(authorID);
     return auth ? auth->name : QString();
 }
 
-AuthorInfoPtr AuthorsManager::findAuthor(QString name, bool fazzySearch)
+AuthorInfo::Ptr AuthorsManager::findAuthor(QString name, bool fazzySearch)
 {
-    AuthorInfoPtr auth;
-    QHash<int, AuthorInfoPtr>::const_iterator i = m_authors.constBegin();
+    AuthorInfo::Ptr auth;
+    QHash<int, AuthorInfo::Ptr>::const_iterator i = m_authors.constBegin();
 
     QString cleanName = Utils::String::Arabic::clean(name);
 
@@ -202,7 +202,7 @@ AuthorInfoPtr AuthorsManager::findAuthor(QString name, bool fazzySearch)
     return auth;
 }
 
-void AuthorsManager::updateAuthor(AuthorInfoPtr auth)
+void AuthorsManager::updateAuthor(AuthorInfo::Ptr auth)
 {
     QMutexLocker locker(&m_mutex);
 

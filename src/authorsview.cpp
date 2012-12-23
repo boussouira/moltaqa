@@ -89,7 +89,7 @@ void AuthorsView::aboutToHide()
 
 bool AuthorsView::openAuthorInfo(int authorID)
 {
-    AuthorInfoPtr info = m_manager->getAuthorInfo(authorID);
+    AuthorInfo::Ptr info = m_manager->getAuthorInfo(authorID);
     ml_return_val_on_fail2(info, "AuthorsView::openAuthorInfo no author with id" << authorID, false);
 
     setCurrentAuth(info);
@@ -112,7 +112,7 @@ int AuthorsView::addTab(QString tabText)
     return ui->tabWidget->addTab(tabAuthInfo, tabText);
 }
 
-void AuthorsView::setCurrentAuth(AuthorInfoPtr info)
+void AuthorsView::setCurrentAuth(AuthorInfo::Ptr info)
 {
     QList<LibraryBookPtr> books = m_bookManager->getAuthorBooks(info->id);
 
@@ -234,7 +234,7 @@ void AuthorsView::on_treeView_doubleClicked(const QModelIndex &index)
 {
     int authID = index.data(ItemRole::authorIdRole).toInt();
 
-    AuthorInfoPtr info = m_manager->getAuthorInfo(authID);
+    AuthorInfo::Ptr info = m_manager->getAuthorInfo(authID);
     ml_return_on_fail2(info, "AuthorsView::doubleClicked no author with id" << authID);
 
     setCurrentAuth(info);

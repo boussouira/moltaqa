@@ -124,7 +124,7 @@ void AuthorsManagerWidget::newAuthor()
                                          tr("اضافة مؤلف"),
                                          tr("اسم المؤلف:"));
     if(name.size()) {
-        AuthorInfoPtr auth(new AuthorInfo());
+        AuthorInfo::Ptr auth(new AuthorInfo());
         auth->name = name;
         auth->fullName = name;
         auth->unknowBirth = true;
@@ -197,13 +197,13 @@ void AuthorsManagerWidget::saveCurrentAuthor()
     }
 }
 
-AuthorInfoPtr AuthorsManagerWidget::getAuthorInfo(int authorID)
+AuthorInfo::Ptr AuthorsManagerWidget::getAuthorInfo(int authorID)
 {
-    AuthorInfoPtr auth = m_editedAuthInfo.value(authorID);
+    AuthorInfo::Ptr auth = m_editedAuthInfo.value(authorID);
     if(!auth) {
         auth = m_authorsManager->getAuthorInfo(authorID);
         if(auth)
-            auth = AuthorInfoPtr(auth->clone());
+            auth = AuthorInfo::Ptr(auth->clone());
     }
 
     return auth;
@@ -214,7 +214,7 @@ void AuthorsManagerWidget::on_treeView_doubleClicked(const QModelIndex &index)
     ml_return_on_fail(m_webEdit);
 
     int authorID = index.data(ItemRole::authorIdRole).toInt();
-    AuthorInfoPtr auth = getAuthorInfo(authorID);
+    AuthorInfo::Ptr auth = getAuthorInfo(authorID);
     if(auth) {
         saveCurrentAuthor();
 
@@ -252,7 +252,7 @@ void AuthorsManagerWidget::save()
 
     m_authorsManager->transaction();
 
-    foreach(AuthorInfoPtr auth, m_editedAuthInfo.values()) {
+    foreach(AuthorInfo::Ptr auth, m_editedAuthInfo.values()) {
         m_authorsManager->updateAuthor(auth);
     }
 

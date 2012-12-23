@@ -11,6 +11,8 @@ class AuthorInfo
 public:
     AuthorInfo();
 
+    typedef QSharedPointer<AuthorInfo> Ptr;
+
     enum AuthorFlags {
         UnknowBirth = 0x2,
         UnknowDeath = 0x4,
@@ -37,7 +39,5 @@ public:
     bool unknowBirth;
     bool unknowDeath;
 };
-
-typedef QSharedPointer<AuthorInfo> AuthorInfoPtr;
 
 #endif // AUTHORINFO_H

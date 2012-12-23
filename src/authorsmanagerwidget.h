@@ -35,7 +35,7 @@ protected:
     void setupActions();
     void enableEditWidgets(bool enable);
     void saveCurrentAuthor();
-    AuthorInfoPtr getAuthorInfo(int authorID);
+    AuthorInfo::Ptr getAuthorInfo(int authorID);
 
 private slots:
     void infoChanged();
@@ -50,8 +50,8 @@ private:
     QStandardItemModel *m_model;
     AuthorsManager *m_authorsManager;
     EditWebView *m_webEdit;
-    QHash<int, AuthorInfoPtr> m_editedAuthInfo;
-    AuthorInfoPtr m_currentAuthor;
+    QHash<int, AuthorInfo::Ptr> m_editedAuthInfo;
+    AuthorInfo::Ptr m_currentAuthor;
     ModelViewFilter *m_filter;
 };
 

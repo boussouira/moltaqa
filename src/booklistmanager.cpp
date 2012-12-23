@@ -327,7 +327,7 @@ QList<QStandardItem*> BookListManager::readBookNode(QDomElement &element)
         QStandardItem *authItem = new QStandardItem();
         authItem->setData(authorID, ItemRole::authorIdRole);
 
-        AuthorInfoPtr auth = m_authorsManager->getAuthorInfo(authorID);
+        AuthorInfo::Ptr auth = m_authorsManager->getAuthorInfo(authorID);
         if(auth) {
             authItem->setText(AuthorInfo::formatAuthorName(auth));
             authItem->setData(auth->deathYear, ItemRole::authorDeathRole);

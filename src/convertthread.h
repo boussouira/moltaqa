@@ -37,7 +37,7 @@ protected:
 
     void convertMoltaqaPackage(const QString &path);
     void extractMoltaqaBook(QuaZip &zip, QDomElement &bookElement, QDomElement &authorsElement);
-    AuthorInfoPtr importAuthorInfo(QDomElement &authorElement);
+    AuthorInfo::Ptr importAuthorInfo(QDomElement &authorElement);
 
 signals:
     void setProgress(int prog);

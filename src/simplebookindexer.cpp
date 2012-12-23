@@ -21,7 +21,7 @@ SimpleBookIndexer::~SimpleBookIndexer()
 void SimpleBookIndexer::indexPage(BookPage *page)
 {
     if(!m_authorDeath && !m_unknowAuthor) {
-        AuthorInfoPtr author = LibraryManager::instance()->authorsManager()->getAuthorInfo(m_book->authorID);
+        AuthorInfo::Ptr author = LibraryManager::instance()->authorsManager()->getAuthorInfo(m_book->authorID);
         if(author) {
             int death = (author->isALive ? 9999 : (author->unknowDeath ? 0 : author->deathYear));
             m_authorDeath = Utils::CLucene::intToWChar(death);

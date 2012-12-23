@@ -19,23 +19,23 @@ public:
     QStandardItemModel *authorsModel();
     int authorsCount();
 
-    int addAuthor(AuthorInfoPtr auth);
+    int addAuthor(AuthorInfo::Ptr auth);
     void removeAuthor(int authorID);
 
-    AuthorInfoPtr getAuthorInfo(int authorID);
+    AuthorInfo::Ptr getAuthorInfo(int authorID);
     bool hasAuthorInfo(int authorID);
     QString getAuthorName(int authorID);
 
-    AuthorInfoPtr findAuthor(QString name, bool fazzySearch);
+    AuthorInfo::Ptr findAuthor(QString name, bool fazzySearch);
 
-    void updateAuthor(AuthorInfoPtr auth);
+    void updateAuthor(AuthorInfo::Ptr auth);
 
 protected:
     int getNewAuthorID();
     void loadAuthorsInfo();
 
 protected:
-    QHash<int, AuthorInfoPtr> m_authors;
+    QHash<int, AuthorInfo::Ptr> m_authors;
 };
 
 #endif // AUTHORSMANAGER_H

@@ -31,7 +31,7 @@ public:
 
 protected:
     int addTab(QString tabText=QString());
-    void setCurrentAuth(AuthorInfoPtr info);
+    void setCurrentAuth(AuthorInfo::Ptr info);
     void setCurrentTabHtml(QString title, QString html);
 
 private slots:
@@ -44,7 +44,7 @@ protected:
     QStandardItemModel *m_model;
     ModelViewFilter *m_filter;
     LibraryBookManager *m_bookManager;
-    AuthorInfoPtr m_currentAuthor;
+    AuthorInfo::Ptr m_currentAuthor;
 };
 
 #endif // AUTHORSVIEW_H

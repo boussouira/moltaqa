@@ -155,7 +155,7 @@ void EPubBookExporter::writeBookInfo()
 
     if(!m_book->isQuran()) {
         QString authorDeath;
-        AuthorInfoPtr author = LibraryManager::instance()->authorsManager()->getAuthorInfo(m_book->authorID);
+        AuthorInfo::Ptr author = LibraryManager::instance()->authorsManager()->getAuthorInfo(m_book->authorID);
         if(author) {
             if(author->isALive)
                 authorDeath = tr("(معاصر)");
@@ -250,7 +250,7 @@ void EPubBookExporter::writeBookInfo()
 
 void EPubBookExporter::writeAuthorInfo()
 {
-    AuthorInfoPtr info = LibraryManager::instance()->authorsManager()->getAuthorInfo(m_book->authorID);
+    AuthorInfo::Ptr info = LibraryManager::instance()->authorsManager()->getAuthorInfo(m_book->authorID);
     ml_return_on_fail(info);
 
     QList<LibraryBookPtr> books = LibraryManager::instance()->bookManager()->getAuthorBooks(m_book->authorID);

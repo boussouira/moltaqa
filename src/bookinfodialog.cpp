@@ -50,7 +50,7 @@ void BookInfoDialog::setup()
 
     if(!m_book->isQuran()) {
         QString authorDeath;
-        AuthorInfoPtr author = LibraryManager::instance()->authorsManager()->getAuthorInfo(m_book->authorID);
+        AuthorInfo::Ptr author = LibraryManager::instance()->authorsManager()->getAuthorInfo(m_book->authorID);
         if(author) {
             if(author->isALive)
                 authorDeath = tr("(معاصر)");

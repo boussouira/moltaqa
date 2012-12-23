@@ -61,7 +61,7 @@ StandardItemModelPtr LibraryBookManager::getModel(bool bookIcon)
 
         rows << item;
 
-        AuthorInfoPtr author = m_authorsManager->getAuthorInfo(query.value(2).toInt());
+        AuthorInfo::Ptr author = m_authorsManager->getAuthorInfo(query.value(2).toInt());
         if(author) {
             QStandardItem *authorItem = new QStandardItem();
             authorItem->setText(author->name);

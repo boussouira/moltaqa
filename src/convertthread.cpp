@@ -123,7 +123,7 @@ void ConvertThread::convertShamelaBook(const QString &path)
         if(infoCol != -1)
             node->info = Utils::Html::format(bookQuery.value(infoCol).toString());
 
-         AuthorInfoPtr foundAuth = m_authorsManager->findAuthor(bookQuery.value(authCol).toString(), false);
+         AuthorInfo::Ptr foundAuth = m_authorsManager->findAuthor(bookQuery.value(authCol).toString(), false);
          if(foundAuth)
              node->setAuthor(foundAuth->id, foundAuth->name);
          else
@@ -300,7 +300,7 @@ void ConvertThread::extractMoltaqaBook(QuaZip &zip, QDomElement &bookElement, QD
     node->setType(node->type);
 
     if(!node->isQuran()) {
-        AuthorInfoPtr foundAuth = m_authorsManager->getAuthorInfo(node->authorID);
+        AuthorInfo::Ptr foundAuth = m_authorsManager->getAuthorInfo(node->authorID);
         if(foundAuth) {
             node->setAuthor(foundAuth->id, foundAuth->name);
         } else if(node->authorID) {
@@ -308,7 +308,7 @@ void ConvertThread::extractMoltaqaBook(QuaZip &zip, QDomElement &bookElement, QD
             QDomElement authorElement = authorsElement.firstChildElement("author");
             while(!authorElement.isNull()) {
                 if(authorElement.attribute("id").toInt() == node->authorID) {
-                    AuthorInfoPtr author = importAuthorInfo(authorElement);
+                    AuthorInfo::Ptr author = importAuthorInfo(authorElement);
                     if(author) {
                         node->setAuthor(author->id, author->name);
                     }
@@ -369,9 +369,9 @@ void ConvertThread::extractMoltaqaBook(QuaZip &zip, QDomElement &bookElement, QD
     m_model->appendNode(node);
 }
 
-AuthorInfoPtr ConvertThread::importAuthorInfo(QDomElement &authorElement)
+AuthorInfo::Ptr ConvertThread::importAuthorInfo(QDomElement &authorElement)
 {
-    AuthorInfoPtr auth(new AuthorInfo());
+    AuthorInfo::Ptr auth(new AuthorInfo());
     auth->fromDomElement(authorElement);
 
     int authorID = m_authorsManager->addAuthor(auth);

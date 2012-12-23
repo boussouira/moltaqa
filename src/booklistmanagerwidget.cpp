@@ -308,7 +308,7 @@ void BookListManagerWidget::addBookItem(LibraryBookPtr book, const QModelIndex &
 
     if(book->type != LibraryBook::QuranBook) {
         QStandardItem *authItem = new QStandardItem();
-        AuthorInfoPtr auth = LibraryManager::instance()->authorsManager()->getAuthorInfo(book->authorID);
+        AuthorInfo::Ptr auth = LibraryManager::instance()->authorsManager()->getAuthorInfo(book->authorID);
         if(auth) {
             authItem->setText(AuthorInfo::formatAuthorName(auth));
             authItem->setData(book->authorID, ItemRole::authorIdRole);
@@ -408,7 +408,7 @@ void BookListManagerWidget::updateItem(QModelIndex index)
             }
 
             if(authorID && !isQuran) {
-                AuthorInfoPtr author = LibraryManager::instance()->authorsManager()->getAuthorInfo(authorID);
+                AuthorInfo::Ptr author = LibraryManager::instance()->authorsManager()->getAuthorInfo(authorID);
                 if(author) {
                     QString authorStr = AuthorInfo::formatAuthorName(author);
                     if(authorStr != authorIndex.data().toString()) {

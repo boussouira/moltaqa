@@ -128,7 +128,7 @@ void LibraryBookExporter::addAuthorInfo()
     if(m_addedAuthorsInfo.contains(m_book->authorID))
         return;
 
-    AuthorInfoPtr author = LibraryManager::instance()->authorsManager()->getAuthorInfo(m_book->authorID);
+    AuthorInfo::Ptr author = LibraryManager::instance()->authorsManager()->getAuthorInfo(m_book->authorID);
     if(author) {
         QDomElement authorElement = m_contentDom.domDocument().createElement("author");
         author->toDomElement(m_contentDom, authorElement);
