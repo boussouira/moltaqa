@@ -144,7 +144,7 @@ int BookListManager::getNewCategorieID()
     return catID;
 }
 
-CategorieInfo *BookListManager::findCategorie(const QString &cat)
+CategorieInfo *BookListManager::findCategorie(const QString &cat, bool fazzySearch)
 {
     CategorieInfo *result = 0;
     QHash<int, QString>::const_iterator i = m_catHash.constBegin();
@@ -153,7 +153,7 @@ CategorieInfo *BookListManager::findCategorie(const QString &cat)
         QString title = i.value();
         if(Utils::String::Arabic::compare(title, cat)) {
             return new CategorieInfo(i.key(), i.value());
-        } else if(Utils::String::Arabic::contains(title, cat)) {
+        } else if(fazzySearch && Utils::String::Arabic::contains(title, cat)) {
             if(!result)
                 result = new CategorieInfo();
 

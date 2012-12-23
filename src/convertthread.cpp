@@ -53,8 +53,6 @@ void ConvertThread::run()
                 QFile::remove(m_tempDB);
                 m_tempDB.clear();
             }
-#else
-
 #endif
         } catch(BookException &e) {
              e.print();

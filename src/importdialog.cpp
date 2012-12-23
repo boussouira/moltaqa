@@ -137,9 +137,7 @@ void ImportDialog::convertBooks()
     ui->progressBar->show();
 
     thread->start();
-
 }
-
 
 void ImportDialog::doneConverting()
 {
@@ -235,7 +233,7 @@ void ImportDialog::doneImporting()
         button->setStyleSheet("padding:5px;");
         button->setToolTip(tr("فتح كتاب %1").arg(i.value()));
 
-        QLabel *label = new QLabel(i.value());
+        QLabel *label = new QLabel(Utils::String::abbreviate(i.value(), 70));
         label->setStyleSheet("padding:5px;border:1px solid #cccccc;");
 
         int row = gridLayout->rowCount();
