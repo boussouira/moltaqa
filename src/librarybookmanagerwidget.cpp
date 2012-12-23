@@ -13,6 +13,7 @@
 #include "mainwindow.h"
 #include "booklistmanager.h"
 #include "bookreaderview.h"
+#include "authorsmanager.h"
 
 #include <qdebug.h>
 #include <qlineedit.h>
@@ -216,11 +217,28 @@ void LibraryBookManagerWidget::createNewBook()
         m_libraryManager->addBook(book, 0);
         m_libraryManager->bookListManager()->reloadModels();
 
+        QList<QStandardItem*> rows;
         QStandardItem *item = new QStandardItem(book->title);
         item->setData(book->id, ItemRole::idRole);
-        m_model->appendRow(item);
+        item->setIcon(QIcon(":/images/book.png"));
+        rows << item;
 
-        //Utils::Model::selectIndex(ui->treeView, m_model->indexFromItem(item));
+        AuthorInfo::Ptr author = m_libraryManager->authorsManager()->getAuthorInfo(book->authorID);
+        if(author) {
+            QStandardItem *authorItem = new QStandardItem();
+            authorItem->setText(author->name);
+            authorItem->setData(author->id, ItemRole::authorIdRole);
+            rows << authorItem;
+        }
+
+        m_model->appendRow(rows);
+
+        QModelIndex index = m_model->indexFromItem(item);
+        if(index.isValid()) {
+            Utils::Model::selectIndex(ui->treeView, index);
+            ui->treeView->scrollToBottom();
+            on_treeView_doubleClicked(index);
+        }
 
         QMessageBox::information(this,
                                  tr("كتاب جديد"),
