@@ -212,6 +212,9 @@ bool SearchResultReader::getPageTitle(QuaZip *zip, LibraryBook::Ptr book, BookPa
                             && reader.name() == "text") {
                         if(reader.readNext() == QXmlStreamReader::Characters) {
                             page->title = reader.text().toString();
+                            if(book->isTafessir())
+                                taffesirTitle(page);
+
                             if(m_hierarchyTitle) {
                                 titles.push(page->title);
                                 page->title = BookReaderHelper::formatTitlesList(titles);
