@@ -8,7 +8,9 @@
 #include "stringutils.h"
 #include "booklistmanager.h"
 #include "authorsmanager.h"
-#include "booklistmanager.h"
+#include "xmldomhelper.h"
+#include "xmlutils.h"
+#include "libraryinfo.h"
 
 #ifdef USE_MDBTOOLS
 #include "mdbconverter.h"
@@ -40,9 +42,11 @@ void ConvertThread::run()
     foreach(QString file, m_files){
         try {
             QFileInfo info(file);
-
-            if(info.suffix().compare("bok", Qt::CaseInsensitive) == 0)
-                ConvertShamelaBook(file);
+            QString fileType = info.suffix().toLower();
+            if(fileType == "bok")
+                convertShamelaBook(file);
+            else if(fileType == "mlp")
+                convertMoltaqaPackage(file);
             else
                 qWarning() << "ConvertThread: File" << info.fileName() << "not handeled";
 
@@ -62,7 +66,7 @@ void ConvertThread::run()
     m_convertTime = time.elapsed();
 }
 
-void ConvertThread::ConvertShamelaBook(const QString &path)
+void ConvertThread::convertShamelaBook(const QString &path)
 {
     DatabaseRemover remover;
 
@@ -254,4 +258,122 @@ QString ConvertThread::getBookType(const QSqlDatabase &bookDB)
     }
 
     return tr("عادي");
+}
+
+void ConvertThread::convertMoltaqaPackage(const QString &path)
+{
+    QFile zipFile(path);
+    QuaZip zip(&zipFile);
+
+    if(!zip.open(QuaZip::mdUnzip)) {
+        qWarning("BookEditor::unZip cant Open zip file %d", zip.getZipError());
+    }
+
+    QuaZipFile contentFile(&zip);
+
+    if(!zip.setCurrentFile("content.xml")) {
+        qWarning("convertMoltaqaPackage: setCurrentFile error %d", zip.getZipError());
+    }
+
+    if(!contentFile.open(QIODevice::ReadOnly)) {
+        qWarning("convertMoltaqaPackage: open error %d", contentFile.getZipError());
+    }
+
+    XmlDomHelper contentDom;
+    contentDom.load(&contentFile);
+
+    QDomElement books = contentDom.rootElement().firstChildElement("books");
+    QDomElement authors = contentDom.rootElement().firstChildElement("authors");
+
+    QDomElement bookElement = books.firstChildElement("book");
+    while(!bookElement.isNull()) {
+        extractMoltaqaBook(zip, bookElement, authors);
+
+        bookElement = bookElement.nextSiblingElement("book");
+    }
+}
+
+void ConvertThread::extractMoltaqaBook(QuaZip &zip, QDomElement &bookElement, QDomElement &authorsElement)
+{
+    ImportModelNode *node = new ImportModelNode(LibraryBook::NormalBook);
+    node->fromDomElement(bookElement);
+    node->setType(node->type);
+
+    if(!node->isQuran()) {
+        AuthorInfoPtr foundAuth = m_authorsManager->getAuthorInfo(node->authorID);
+        if(foundAuth) {
+            node->setAuthor(foundAuth->id, foundAuth->name);
+        } else if(node->authorID) {
+            // Import author's info from the package
+            QDomElement authorElement = authorsElement.firstChildElement("author");
+            while(!authorElement.isNull()) {
+                if(authorElement.attribute("id").toInt() == node->authorID) {
+                    AuthorInfoPtr author = importAuthorInfo(authorElement);
+                    if(author) {
+                        node->setAuthor(author->id, author->name);
+                    }
+
+                    break;
+                }
+
+                authorElement = authorElement.nextSiblingElement("author");
+            }
+        } else {
+            // TODO: set the author to unknow
+            qDebug() << "Author not found for book" << node->title;
+        }
+    }
+
+    // Get categorie info
+    node->setCategories(0);
+
+    QDomElement categoriesElement = bookElement.firstChildElement("categories");
+    if(!categoriesElement.isNull()
+            && categoriesElement.childNodes().size()) {
+        QDomElement cat = categoriesElement.firstChildElement("cat");
+        // TODO: handle books with multi categories
+        if (!cat.isNull()) {
+            QScopedPointer<CategorieInfo> catInfo(m_bookListManager->findCategorie(cat.text(), false));
+            if(catInfo) {
+                node->setCategories(catInfo->catID, catInfo->title);
+            } else {
+                int newCatID = m_bookListManager->addCategorie(cat.text());
+                node->setCategories(newCatID, cat.text());
+            }
+        }
+    }
+
+    QuaZipFile bookFile(&zip);
+
+    if(!zip.setCurrentFile(node->fileName)) {
+        qWarning("extractMoltaqaBook: setCurrentFile error %d", zip.getZipError());
+    }
+
+    if(!bookFile.open(QIODevice::ReadOnly)) {
+        qWarning("extractMoltaqaBook: open error %d", bookFile.getZipError());
+    }
+
+    QDir tempDir(m_libraryManager->libraryInfo()->tempDir());
+    node->path = (tempDir.exists(node->fileName)
+                           ? Utils::Rand::fileName(tempDir.absolutePath(), true)
+                           : tempDir.filePath(node->fileName));
+
+    QFile outBookFile(node->path);
+    if(!outBookFile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+        qWarning() << "extractMoltaqaBook can't open" << outBookFile.fileName()
+                   << "for writing:" << outBookFile.errorString();
+    }
+
+    Utils::Files::copyData(bookFile, outBookFile);
+
+    m_model->appendNode(node);
+}
+
+AuthorInfoPtr ConvertThread::importAuthorInfo(QDomElement &authorElement)
+{
+    AuthorInfoPtr auth(new AuthorInfo());
+    auth->fromDomElement(authorElement);
+
+    int authorID = m_authorsManager->addAuthor(auth);
+    return m_authorsManager->getAuthorInfo(authorID);
 }

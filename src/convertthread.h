@@ -3,6 +3,7 @@
 
 #include <qthread.h>
 #include <qstringlist.h>
+#include "authorinfo.h"
 
 class ImportModel;
 class ImportModelNode;
@@ -10,6 +11,8 @@ class LibraryManager;
 class BookListManager;
 class AuthorsManager;
 class QSqlDatabase;
+class QuaZip;
+class QDomElement;
 
 class ConvertThread : public QThread
 {
@@ -25,12 +28,16 @@ public:
     void run();
 
 protected:
-    void ConvertShamelaBook(const QString &path);
+    void convertShamelaBook(const QString &path);
     /**
       Copy book with BookID from bookDB to a temporary file and set it as the book path
       */
     void copyBookFromShamelaBook(ImportModelNode *node, const QSqlDatabase &bookDB, int bookID);
     QString getBookType(const QSqlDatabase &bookDB);
+
+    void convertMoltaqaPackage(const QString &path);
+    void extractMoltaqaBook(QuaZip &zip, QDomElement &bookElement, QDomElement &authorsElement);
+    AuthorInfoPtr importAuthorInfo(QDomElement &authorElement);
 
 signals:
     void setProgress(int prog);

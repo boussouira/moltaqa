@@ -37,6 +37,8 @@ public:
 
     int categoriesCount();
     int booksCount();
+
+    CategorieInfo *getCategorieInfo(int catID);
     QList<CategorieInfo> bookCategorie(int bookID);
 
     int getNewCategorieID();

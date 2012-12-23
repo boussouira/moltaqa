@@ -51,6 +51,7 @@ private slots:
 
 private:
     Ui::ImportDialog *ui;
+    QStringList m_acceptedTypes;
     ImportModel *m_model;
     LibraryManager *m_libraryManager;
     AuthorDelegate *m_authorDelegate;

@@ -116,6 +116,13 @@ int BookListManager::booksCount()
     return m_booksCatHash.size();
 }
 
+CategorieInfo *BookListManager::getCategorieInfo(int catID)
+{
+    return m_catHash.contains(catID)
+            ? new CategorieInfo(catID, m_catHash[catID])
+            : 0;
+}
+
 QList<CategorieInfo> BookListManager::bookCategorie(int bookID)
 {
     QList<CategorieInfo> list;
