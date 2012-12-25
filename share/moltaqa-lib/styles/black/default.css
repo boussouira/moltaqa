@@ -155,10 +155,10 @@ footnote p {
     background-color: #484848;
     border: 1px solid #929292;
     border-radius: 10px 10px 0 0;
+    cursor: pointer;
     padding: 5px;
 }
 .tafessir_quran .toggale_quran img {
-    cursor: pointer;
     float: left;
 }
 .tafessir_quran .toggale_quran .quran_info {

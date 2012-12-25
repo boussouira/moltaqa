@@ -177,11 +177,11 @@ footnote p {
     background-color: #FFF2F2;
     border: 1px solid #FFD2D2;
     border-radius: 10px 10px 0 0;
+    cursor: pointer;
     padding: 5px;
 }
 
 .tafessir_quran .toggale_quran img {
-    cursor: pointer;
     float: left;
 }
 

@@ -43,13 +43,13 @@ function indexReading()
 
 function toggleQuran()
 {
-    $('.toggale_quran > img').click(function() {
+    $('.toggale_quran').click(function() {
         if($('.quran_text').css('display')!="none") {
             // Hide the quran text
-            $(this).attr('src', 'qrc:/images/add.png');
+            $('.toggale_quran > img').attr('src', 'qrc:/images/add2.png');
             $('.quran_text').slideUp('slow');
         } else {
-            $(this).attr('src', 'qrc:/images/remove.png');
+            $('.toggale_quran > img').attr('src', 'qrc:/images/delete2.png');
             $('.quran_text').slideDown('slow');
         }
     });
