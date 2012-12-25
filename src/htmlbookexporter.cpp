@@ -14,29 +14,9 @@
 #include "stringutils.h"
 #include "mainwindow.h"
 #include "bookreaderhelper.h"
+#include "bookutils.h"
 
 #include <qtextstream.h>
-
-int getPageTitleID(QList<int> &m_pageTitles, int pageID)
-{
-    if(!m_pageTitles.contains(pageID)) {
-        int title = 0;
-        for(int i=0; i<m_pageTitles.size(); i++) {
-            title = m_pageTitles.at(i);
-            if(i == m_pageTitles.size()-1)
-                return m_pageTitles.last();
-            else if(title <= pageID && pageID < m_pageTitles.at(i+1))
-                return title;
-            if(title > pageID)
-                break;
-        }
-
-        if(m_pageTitles.size())
-            return m_pageTitles.first();
-    }
-
-    return pageID;
-}
 
 HtmlBookExporter::HtmlBookExporter(QObject *parent) :
     BookExporter(parent)
@@ -277,7 +257,7 @@ void HtmlBookExporter::writePage(QDir &dir, BookPage *page)
         helper.endLink();
     }
 
-    helper.beginLink(QString("../index.html#id_%1").arg(getPageTitleID(m_pageTitles, page->pageID)));
+    helper.beginLink(QString("../index.html#id_%1").arg(Utils::Book::getPageTitleID(m_pageTitles, page->pageID)));
     helper.insertImage("../../style/go-up.png");
     helper.endLink();
 

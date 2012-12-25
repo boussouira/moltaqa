@@ -126,24 +126,3 @@ void TextBookReader::getPages()
         }
     }
 }
-
-int TextBookReader::getPageTitleID(int pageID)
-{
-    if(!m_titles.contains(pageID)) {
-        int title = 0;
-        for(int i=0; i<m_titles.size(); i++) {
-            title = m_titles.at(i);
-            if(i == m_titles.size()-1)
-                return m_titles.last();
-            else if(title <= pageID && pageID < m_titles.at(i+1))
-                return title;
-            if(title > pageID)
-                break;
-        }
-
-        if(m_titles.size())
-            return m_titles.first();
-    }
-
-    return pageID;
-}

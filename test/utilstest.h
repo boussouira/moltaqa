@@ -39,9 +39,6 @@ private slots:
     void cleanFileName();
 
     void footnoteRegExp();
-
-protected:
-    int getPageTitleID(QList<int> &titles, int pageID);
 };
 
 #endif // UTILSTEST_H

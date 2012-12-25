@@ -2,6 +2,7 @@
 #include "utils.h"
 #include "stringutils.h"
 #include "sqlutils.h"
+#include "bookutils.h"
 #include <qsqldatabase.h>
 #include <QSqlQuery>
 
@@ -186,7 +187,7 @@ void UtilsTest::getPageTitle()
     excpectedTitles << 3 << 3 << 3 << 3 << 3 << 7 << 50 << 100 << 100;
 
     for(int i=0; i<pages.size(); i++)
-        QCOMPARE(getPageTitleID(titles, pages[i]), excpectedTitles[i]);
+        QCOMPARE(Utils::Book::getPageTitleID(titles, pages[i]), excpectedTitles[i]);
 
 }
 
@@ -194,7 +195,7 @@ void UtilsTest::getEmptyPageTitle()
 {
     QList<int> titles;
 
-    QCOMPARE(getPageTitleID(titles, 15), 15);
+    QCOMPARE(Utils::Book::getPageTitleID(titles, 15), 15);
 }
 
 void UtilsTest::formatHTML()
@@ -457,27 +458,6 @@ void UtilsTest::footnoteRegExp()
 
     QCOMPARE(text2.split(footnoteSep, QString::SkipEmptyParts).first(), _u("First line"));
     QCOMPARE(text2.split(footnoteSep, QString::SkipEmptyParts).last(), _u("Second line"));
-}
-
-int UtilsTest::getPageTitleID(QList<int> &titles, int pageID)
-{
-    if(!titles.contains(pageID)) {
-        int title = 0;
-        for(int i=0; i<titles.size(); i++) {
-            title = titles.at(i);
-            if(i == titles.size()-1)
-                return titles.last();
-            else if(title <= pageID && pageID < titles.at(i+1))
-                return title;
-            if(title > pageID)
-                break;
-        }
-
-        if(titles.size())
-            return titles.first();
-    }
-
-    return pageID;
 }
 
 QTEST_MAIN(UtilsTest)

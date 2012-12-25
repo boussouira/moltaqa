@@ -1,6 +1,7 @@
 #include "texttafessirreader.h"
 #include "librarybook.h"
 #include "utils.h"
+#include "bookutils.h"
 
 TextTafessirReader::TextTafessirReader(QObject *parent) :
     TextBookReader(parent)
@@ -23,7 +24,7 @@ void TextTafessirReader::setCurrentPage(QDomElement pageNode)
     if(pageNode.hasAttribute("tid"))
         m_currentPage->titleID = pageNode.attribute("tid").toInt();
     else
-        m_currentPage->titleID = getPageTitleID(m_currentPage->pageID);
+        m_currentPage->titleID = Utils::Book::getPageTitleID(m_titles, m_currentPage->pageID);
 
 //    if(m_titles.contains(m_currentPage->pageID))
 //        m_currentPage->titleID = m_currentPage->pageID;

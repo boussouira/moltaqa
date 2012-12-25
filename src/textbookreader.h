@@ -15,7 +15,6 @@ public:
     virtual void load();
 
 protected:
-    int getPageTitleID(int pageID);
     virtual void getTitles();
     virtual void getPages();
 

@@ -1,6 +1,7 @@
 #include "textsimplebookreader.h"
 #include "librarybook.h"
 #include "utils.h"
+#include "bookutils.h"
 
 TextSimpleBookReader::TextSimpleBookReader(QObject *parent) :
     TextBookReader(parent)
@@ -25,7 +26,7 @@ void TextSimpleBookReader::setCurrentPage(QDomElement pageNode)
     if(pageNode.hasAttribute("tid"))
         m_currentPage->titleID = pageNode.attribute("tid").toInt();
     else
-        m_currentPage->titleID = getPageTitleID(m_currentPage->pageID);
+        m_currentPage->titleID = Utils::Book::getPageTitleID(m_titles, m_currentPage->pageID);
 
     if(m_lastTitleID != m_currentPage->titleID) {
         m_lastTitleID = m_currentPage->titleID;

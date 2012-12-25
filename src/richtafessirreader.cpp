@@ -9,6 +9,7 @@
 #include "librarybookmanager.h"
 #include "utils.h"
 #include "stringutils.h"
+#include "bookutils.h"
 
 #include <qstringlist.h>
 #include <qdebug.h>
@@ -55,7 +56,7 @@ void RichTafessirReader::setCurrentPage(QDomElement pageNode)
     if(pageNode.hasAttribute("tid"))
         m_currentPage->titleID = pageNode.attribute("tid").toInt();
     else
-        getPageTitleID();
+        m_currentPage->titleID = Utils::Book::getPageTitleID(m_pageTitles, m_currentPage->pageID);
 
     // TODO: don't show quran text when browsing tafessir book directly?
     if(m_quranInfo && m_showQuran) {

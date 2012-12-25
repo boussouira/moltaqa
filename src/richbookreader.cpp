@@ -8,6 +8,7 @@
 #include "modelenums.h"
 #include "xmlutils.h"
 #include "stringutils.h"
+#include "bookutils.h"
 
 #include <qstandarditemmodel.h>
 #include <qxmlstream.h>
@@ -67,30 +68,9 @@ bool RichBookReader::scrollToHighlight()
     return (!m_bookInfo->isQuran() && m_query && m_highlightPageID == m_currentPage->pageID);
 }
 
-void RichBookReader::getPageTitleID()
-{
-    m_currentPage->titleID = getPageTitleID(m_currentPage->pageID);
-}
-
 int RichBookReader::getPageTitleID(int pageID)
 {
-    if(!m_pageTitles.contains(pageID)) {
-        int title = 0;
-        for(int i=0; i<m_pageTitles.size(); i++) {
-            title = m_pageTitles.at(i);
-            if(i == m_pageTitles.size()-1)
-                return m_pageTitles.last();
-            else if(title <= pageID && pageID < m_pageTitles.at(i+1))
-                return title;
-            if(title > pageID)
-                break;
-        }
-
-        if(m_pageTitles.size())
-            return m_pageTitles.first();
-    }
-
-    return pageID;
+    return Utils::Book::getPageTitleID(m_pageTitles, pageID);
 }
 
 void RichBookReader::setRemoveTashkil(bool remove)

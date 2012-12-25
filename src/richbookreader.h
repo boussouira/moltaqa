@@ -29,7 +29,6 @@ public:
 
     bool scrollToHighlight();
 
-    void getPageTitleID();
     int getPageTitleID(int pageID);
 
     void setRemoveTashkil(bool remove);
