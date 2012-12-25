@@ -12,11 +12,7 @@
 #define APP_VERSION_STR "0.9a4"
 #define APP_UPDATE_REVISION 4
 
-#if QT_VERSION >= 0x040800
-    #define ML_DEFAULT_STYLE "default"
-#else
-    #define ML_DEFAULT_STYLE "light"
-#endif
+#define ML_DEFAULT_STYLE "default"
 
 class QSqlQuery;
 class QSqlDatabase;
