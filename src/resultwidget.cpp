@@ -98,12 +98,6 @@ void ResultWidget::setupBookReaderView()
 
     toolBarLayout->addWidget(buttonMaxBookView);
 
-    QToolButton * buttonHideBookView = new QToolButton(this);
-    buttonHideBookView->setIcon(QIcon(":/images/delete.png"));
-    buttonHideBookView->setAutoRaise(true);
-
-    toolBarLayout->addWidget(buttonHideBookView);
-
     toolBarLayout->setContentsMargins(9, 0, 9, 0);
     toolBarLayout->setSpacing(0);
     toolBarWidget->setLayout(toolBarLayout);
@@ -116,9 +110,8 @@ void ResultWidget::setupBookReaderView()
     ensureReaderHidden(false);
 
     connect(m_readerview, SIGNAL(lastTabClosed()), SLOT(lastTabClosed()));
-    connect(buttonHideBookView, SIGNAL(clicked()), SLOT(ensureReaderHidden()));
     connect(buttonMaxBookView, SIGNAL(clicked()), SLOT(maximizeBookReader()));
-    connect(buttonMinBookView, SIGNAL(clicked()), SLOT(minimizeBookReader()));
+    connect(buttonMinBookView, SIGNAL(clicked()), SLOT(ensureReaderHidden()));
 }
 
 
