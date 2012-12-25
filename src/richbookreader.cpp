@@ -24,7 +24,6 @@ RichBookReader::RichBookReader(QObject *parent) : AbstractBookReader(parent)
     m_bookmanager = m_libraryManager->bookManager();
 
     m_removeTashekil = Utils::Settings::get("Style/removeTashekil", false).toBool();
-    m_fixShamelaShoorts = Utils::Settings::get("Style/fixShamelaShoorts", true).toBool();
     m_saveReadingHistory = true;
 
     connect(this, SIGNAL(textChanged()), SLOT(updateHistory()));
@@ -47,9 +46,6 @@ QString RichBookReader::proccessPageText(QString text)
 {
     if(m_removeTashekil)
         text = Utils::String::Arabic::removeTashekil(text);
-
-    if(m_fixShamelaShoorts)
-        text = Utils::String::Arabic::fixShamelaShoorts(text);
 
     if(m_query && m_highlightPageID == m_currentPage->pageID)
         text = Utils::CLucene::highlightText(text, m_query, false);

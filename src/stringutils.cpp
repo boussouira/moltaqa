@@ -412,23 +412,6 @@ QString arabicNumbers(const QString &text)
     return arabicNum;
 }
 
-QString fixShamelaShoorts(QString text)
-{
-    text.replace(QRegExp(_u("([\\x0621-\\x06ED]\\W)A\\b")), _u("\\1""صلى الله عليه وسلم"));
-    text.replace(QRegExp(_u("([\\x0621-\\x06ED]\\W)B([هماـ]*)\\b")), _u("\\1""رضي الله عن""\\2"));
-    text.replace(QRegExp(_u("([\\x0621-\\x06ED]\\W)C\\b")), _u("\\1""رحمه الله"));
-    text.replace(QRegExp(_u("([\\x0621-\\x06ED]\\W)D\\b")), _u("\\1""عز وجل"));
-    text.replace(QRegExp(_u("([\\x0621-\\x06ED]\\W)E\\b")), _u("\\1""عليه الصلاة و السلام"));
-
-    text.replace(QRegExp(_u("(>\\W*)A(\\W+[\\x0621-\\x06ED])")), _u("\\1""صلى الله عليه وسلم""\\2"));
-    text.replace(QRegExp(_u("(>\\W*)B([هماـ]*)(\\W+[\\x0621-\\x06ED])")), _u("\\1""رضي الله عن""\\2""\\3"));
-    text.replace(QRegExp(_u("(>\\W*)C(\\W+[\\x0621-\\x06ED])")), _u("\\1""رحمه الله""\\2"));
-    text.replace(QRegExp(_u("(>\\W*)D(\\W+[\\x0621-\\x06ED])")), _u("\\1""عز وجل""\\2"));
-    text.replace(QRegExp(_u("(>\\W*)E(\\W+[\\x0621-\\x06ED])")), _u("\\1""عليه الصلاة و السلام""\\2"));
-
-    return text;
-}
-
 } // Arabic
 } // String
 } // Utils

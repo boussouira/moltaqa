@@ -52,7 +52,6 @@ protected:
     QList<int> m_pageTitles;
     int m_highlightPageID;
     bool m_removeTashekil;
-    bool m_fixShamelaShoorts;
     bool m_saveReadingHistory;
     bool m_stopModelLoad;
 };

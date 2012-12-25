@@ -385,13 +385,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="checkFixShamelaShoorts">
-         <property name="text">
-          <string>تصحيح إختصارات الكلمات المتكررة المستخدمة في كتب الشاملة</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QCheckBox" name="checkShowQuranFirst">
          <property name="text">
           <string>عرض القرآن الكريم في مقدمة لائحة الكتب</string>
