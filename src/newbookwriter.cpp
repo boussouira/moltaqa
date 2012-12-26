@@ -6,6 +6,7 @@
 #include "librarybook.h"
 #include "stringutils.h"
 #include "xmlutils.h"
+#include "bookutils.h"
 
 #include <qdir.h>
 #include <qdatetime.h>
@@ -102,6 +103,9 @@ QString NewBookWriter::processPageText(QString text)
     QString htmlText;
     text = text.replace(QRegExp("[\\r\\n]+"), "\n");
     text = Utils::Html::specialCharsEncode(text);
+
+    if(Utils::Book::hasShamelaShoorts(text))
+        text = Utils::Book::fixShamelaShoorts(text);
 
     QRegExp rxMateen(_u("§([^\"»]+)([»\"])"));
     rxMateen.setMinimal(true);
