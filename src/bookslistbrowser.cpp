@@ -10,6 +10,7 @@
 #include "utils.h"
 #include "bookinfodialog.h"
 #include "librarybookmanager.h"
+#include "bookeditorview.h"
 
 #include <qevent.h>
 #include <qmenu.h>
@@ -245,6 +246,8 @@ void BooksListBrowser::bookListMenu(QPoint /*point*/)
 
     QAction *bookInfoAct = menu.addAction(QIcon(":/images/about.png"),
                                        tr("بطاقة الكتاب"));
+    QAction *editBookAct = menu.addAction(QIcon::fromTheme("document-edit", QIcon(":/images/document-edit.png")),
+                                          tr("تحرير الكتاب"));
     menu.addSeparator();
 
     if(!m_favouritesManager->containsBook(bookID)) {
@@ -288,6 +291,11 @@ void BooksListBrowser::bookListMenu(QPoint /*point*/)
             dialog->setLibraryBook(book);
             dialog->setup();
             dialog->show();
+        } else if(ret == editBookAct) {
+            LibraryBook::Ptr book = LibraryManager::instance()->bookManager()->getLibraryBook(bookID);
+            ml_return_on_fail(book);
+
+            MW->editorView()->editBook(book);
         } else if(ret == removeFromLastOpenedAct) {
             if(m_bookManager->deleteBookFromLastOpen(bookID)) {
                 lastReadBooksModel();
