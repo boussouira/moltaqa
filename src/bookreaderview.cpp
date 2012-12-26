@@ -67,7 +67,7 @@ void BookReaderView::createMenus()
 {
 
     // Edit book action
-    m_actionEditBook = new QAction(QIcon::fromTheme("document-edit"),
+    m_actionEditBook = new QAction(QIcon::fromTheme("document-edit", QIcon(":/images/document-edit.png")),
                                  tr("تحرير الكتاب"), this);
     // General Actions
     m_actionNewTab = new QAction(QIcon::fromTheme("tab-new", QIcon(":/images/tab-new.png")),

@@ -45,5 +45,6 @@
         <file>images/arrow_in.png</file>
         <file>images/arrow_out.png</file>
         <file>images/show-menu.png</file>
+        <file>images/document-edit.png</file>
     </qresource>
 </RCC>
