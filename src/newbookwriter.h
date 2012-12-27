@@ -16,7 +16,8 @@ class NewBookWriter
 public:
     NewBookWriter();
     ~NewBookWriter();
-    void createNewBook(QString bookPath=QString());
+
+    void createNewBook();
     QString bookPath();
 
     /// Begins a transaction on the database
@@ -32,7 +33,7 @@ protected:
     QString processPageText(QString text);
 
 protected:
-    QString m_tempFolder;
+    QString m_booksDir;
     QString m_bookPath;
 
     QuaZip m_zip;

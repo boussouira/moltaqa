@@ -14,7 +14,7 @@
 
 NewBookWriter::NewBookWriter()
 {
-    m_tempFolder = MW->libraryInfo()->tempDir();
+    m_booksDir = MW->libraryInfo()->booksDir();
 }
 
 NewBookWriter::~NewBookWriter()
@@ -26,12 +26,9 @@ QString NewBookWriter::bookPath()
     return m_bookPath;
 }
 
-void NewBookWriter::createNewBook(QString bookPath)
+void NewBookWriter::createNewBook()
 {
-    if(bookPath.isEmpty())
-        m_bookPath = Utils::Rand::fileName(m_tempFolder, true);
-    else
-        m_bookPath = bookPath;
+    m_bookPath = Utils::Rand::newBook(m_booksDir);
 
     while(QFile::exists(m_bookPath)) {
         qWarning() << "NewBookWriter::createNewBook file" << m_bookPath << "already exists";

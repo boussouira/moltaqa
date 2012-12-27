@@ -204,7 +204,7 @@ void LibraryBookManagerWidget::createNewBook()
         }
 
         NewBookWriter bookWrite;
-        bookWrite.createNewBook(Utils::Rand::newBook(MW->libraryInfo()->booksDir()));
+        bookWrite.createNewBook();
 
         bookWrite.startReading();
         bookWrite.addPage(title, 1, 1, 1);

@@ -129,10 +129,9 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
 {
     DatabaseRemover remover;
     QString connName(QString("mdb_%1_%2").arg(m_threadID).arg(book->archive));
-    QString path = Utils::Rand::newBook(m_library->booksDir());
 
     NewBookWriter bookWrite;
-    bookWrite.createNewBook(path);
+    bookWrite.createNewBook();
 
     QSqlDatabase bookDB;
     if(book->archive && book->archive == m_prevArchive) {
@@ -200,7 +199,7 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
     if(!book->archive)
         remover.removeDatabase(connName);
 
-    importBook(book, path);
+    importBook(book, bookWrite.bookPath());
 
     if(book->tafessirName.size()) {
         addTafessir(book);
