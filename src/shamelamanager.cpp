@@ -477,7 +477,6 @@ void ShamelaManager::importShorooh(ShamelaImportDialog *dialog)
                 editor->saveDom();
                 editor->zip();
                 editor->save();
-                editor->removeTemp();
 
                 qApp->processEvents();
 

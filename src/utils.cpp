@@ -424,6 +424,26 @@ bool copyData(QIODevice &inFile, QIODevice &outFile)
 
     return true;
 }
+bool copyData(QByteArray &inData, QIODevice &outFile)
+{
+    return outFile.write(inData) != -1;
+}
+
+bool copyData(QIODevice &inFile, QByteArray &outData)
+{
+    char buf[4096];
+    int len = 0;
+
+    while (!inFile.atEnd()) {
+        len = inFile.read(buf, 4096);
+        outData.append(buf, len);
+
+        if(len <= 0)
+            return false;
+    }
+
+    return true;
+}
 
 quint64 directorySize(const QString &path)
 {

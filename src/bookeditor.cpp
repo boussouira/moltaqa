@@ -20,6 +20,7 @@ BookEditor::BookEditor(QObject *parent) :
     m_lastBookID = 0;
     m_bookReader = 0;
     m_removeReader = false;
+    m_needUnZip = true;
 }
 
 BookEditor::~BookEditor()
@@ -27,8 +28,6 @@ BookEditor::~BookEditor()
     if(m_removeReader) {
         ml_delete_check(m_bookReader);
     }
-
-    removeTemp();
 }
 
 bool BookEditor::open(int bookID)
@@ -78,106 +77,36 @@ void BookEditor::setBookReader(RichBookReader *reader)
     m_book = reader->bookInfo();
 
     if(m_book->id != m_lastBookID) {
-        removeTemp();
-        m_bookTmpDir.clear();
+        m_needUnZip = true;
+        m_zipHelper = ZipHelper();
     }
 
     m_removeReader = false;
 }
 
+ZipHelper *BookEditor::zipHelper()
+{
+    return &m_zipHelper;
+}
+
 void BookEditor::unZip()
 {
-    ml_return_on_fail(m_bookTmpDir.isEmpty());
-    ml_return_on_fail(!QFile::exists(m_bookTmpDir));
+    if(!m_needUnZip && QFile::exists(m_zipHelper.datbasePath()))
+        return;
 
-    QString folder = QFileInfo(m_book->path).baseName();
-    QDir dir(MW->libraryInfo()->tempDir());
+    m_zipHelper.open();
+    m_zipHelper.addFromZip(m_book->path);
 
-    while(dir.exists(folder))
-        folder.append("_");
+    m_needUnZip = false;
 
-    dir.mkdir(folder);
-    dir.cd(folder);
-
-    m_createdDirs.clear();
-
-    QFile zipFile(m_book->path);
-    QuaZip zip(&zipFile);
-
-    if(!zip.open(QuaZip::mdUnzip)) {
-        qWarning("BookEditor::unZip cant Open zip file %d", zip.getZipError());
-    }
-
-    QuaZipFileInfo info;
-    QuaZipFile file(&zip);
-
-    for(bool more=zip.goToFirstFile(); more; more=zip.goToNextFile()) {
-        if(!zip.getCurrentFileInfo(&info)) {
-            qWarning("BookEditor::unZip getCurrentFileInfo Error %d", zip.getZipError());
-            continue;
-        }
-
-        QString outPath = dir.filePath(info.name);
-        QFileInfo fileInfo(outPath);
-        if(!m_createdDirs.contains(fileInfo.path())
-                && dir.mkpath(fileInfo.path()))
-            m_createdDirs.append(fileInfo.path());
-
-        if(fileInfo.isDir())
-            continue;
-
-        if(!file.open(QIODevice::ReadOnly)) {
-            qWarning("BookEditor::unZip open reader Error %d", zip.getZipError());
-            continue;
-        }
-
-        QFile out(dir.filePath(info.name));
-        if(!out.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-            qWarning() << "BookEditor::unZip open" << out.fileName()
-                       << "for writing - Error" << out.errorString();
-            file.close();
-            continue;
-        }
-
-        Utils::Files::copyData(file, out);
-
-        out.close();
-        file.close();
-    }
-
-    m_bookTmpDir = dir.path();
     m_lastBookID = m_book->id;
 }
 
 bool BookEditor::zip()
 {
-    QFile zipFile(QString("%1/%2.zip")
-                  .arg(MW->libraryInfo()->tempDir())
-                  .arg(QFileInfo(m_book->path).baseName()));
+    m_newBookPath = m_zipHelper.zip();
 
-    QuaZip zip(&zipFile);
-    if(!zip.open(QuaZip::mdCreate)) {
-        qWarning("BookEditor::zip open zip error %d", zip.getZipError());
-        return false;
-    }
-
-    QuaZipFile outFile(&zip);
-
-    if(!zipDir(m_bookTmpDir, outFile)) {
-        zip.close();
-        return false;
-    }
-
-    zip.close();
-
-    if(zip.getZipError()!=0) {
-        qWarning("BookEditor::zip close zip error %d", zip.getZipError());
-        return false;
-    }
-
-    m_newBookPath = zipFile.fileName();
-
-    return true;
+    return m_newBookPath.size();
 }
 
 bool BookEditor::save()
@@ -212,28 +141,14 @@ bool BookEditor::save()
     return true;
 }
 
-void BookEditor::removeTemp()
-{
-    if(m_bookTmpDir.size() && QFile::exists(m_bookTmpDir))
-        Utils::Files::removeDir(m_bookTmpDir);
-}
-
 bool BookEditor::saveBookPages(QList<BookPage*> pages)
 {
     foreach(BookPage *page, pages) {
-        QString pagePath = QString("%1/pages/p%2.html").arg(m_bookTmpDir).arg(page->pageID);
+        QString fileName = QString("pages/p%2.html").arg(page->pageID);
         if(m_removedPages.contains(page->pageID)) {
-            if(QFile::exists(pagePath))
-                QFile::remove(pagePath);
-
+            m_zipHelper.remove(fileName);
             m_removedPages.removeAll(page->pageID);
-            continue;
-        }
 
-        QFile file(pagePath);
-        if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-            qWarning() << "BookEditor::saveBookPages: Can't write page"
-                       << page->pageID << "to:" << file.fileName();
             continue;
         }
 
@@ -253,20 +168,21 @@ bool BookEditor::saveBookPages(QList<BookPage*> pages)
             qDebug("BookEditor::saveBookPages no element with id %d", page->pageID);
         }
 
-        QTextStream out(&file);
-        out.setCodec("utf-8");
-
-        out << page->text;
+        m_zipHelper.update(page);
     }
 
-    m_bookReader->pagesDom().save(QString("%1/pages.xml").arg(m_bookTmpDir));
+    m_zipHelper.replaceFromDomHelper("pages.xml",
+                                     m_bookReader->pagesDom(),
+                                     ZipHelper::PrependFile);
 
     return true;
 }
 
 void BookEditor::saveDom()
 {
-    m_bookReader->pagesDom().save(QString("%1/pages.xml").arg(m_bookTmpDir));
+    m_zipHelper.replaceFromDomHelper("pages.xml",
+                                     m_bookReader->pagesDom(),
+                                     ZipHelper::PrependFile);
 }
 
 void BookEditor::addPage(int pageID)
@@ -305,62 +221,6 @@ void BookEditor::removePage()
         m_removedPages.append(removedPage.attribute("id").toInt());
 }
 
-bool BookEditor::zipDir(QString path, QuaZipFile &outFile)
-{
-    QFile inFile;
-    QDir bookDir(path);
-    QFileInfoList files = bookDir.entryInfoList(QDir::AllDirs|QDir::Files|QDir::NoSymLinks|QDir::NoDotAndDotDot, QDir::DirsLast);
-
-    if(files.isEmpty()) {
-        qWarning() << "BookEditor::zipDir Ziping an empty directory" << path;
-    }
-
-    QDir bookTempDir(m_bookTmpDir);
-
-    foreach(QFileInfo file, files) {
-        if(file.isDir()) {
-            if(zipDir(file.filePath(), outFile))
-                continue;
-            else
-                return false;
-        }
-
-        if(!file.isFile()) {
-            qWarning() << "BookEditor::zipDir Can't zip file:" << file.filePath();
-            continue;
-        }
-
-        QString inFilePath = bookTempDir.relativeFilePath(file.filePath());
-
-        inFile.setFileName(file.filePath());
-
-        if(!inFile.open(QIODevice::ReadOnly)) {
-            qWarning("BookEditor::zipDir open input file error %s", qPrintable(inFile.errorString()));
-            return false;
-        }
-
-        if(!outFile.open(QIODevice::WriteOnly, QuaZipNewInfo(inFilePath, inFilePath))) {
-            qWarning("zip outFile.open(): %d", outFile.getZipError());
-            return false;
-        }
-
-        if(!Utils::Files::copyData(inFile, outFile)) {
-            qWarning("BookEditor::zipDir data copy error");
-            return false;
-        }
-
-        outFile.close();
-        inFile.close();
-
-        if(outFile.getZipError()!=UNZ_OK) {
-            qWarning("BookEditor::zipDir outFile error %d", outFile.getZipError());
-            return false;
-        }
-    }
-
-    return true;
-}
-
 int BookEditor::maxPageID()
 {
     int pageID = 0;
@@ -375,13 +235,6 @@ int BookEditor::maxPageID()
     }
 
     return pageID;
-}
-
-QString BookEditor::titlesFile()
-{
-    QDir dir(m_bookTmpDir);
-
-    return dir.absoluteFilePath("titles.xml");
 }
 
 void BookEditor::addPageLink(int sourcPage, int destBook, int destPage)

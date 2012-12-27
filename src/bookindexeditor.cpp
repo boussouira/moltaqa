@@ -6,6 +6,8 @@
 #include "richbookreader.h"
 #include "bookeditorview.h"
 #include "utils.h"
+#include "mainwindow.h"
+#include "libraryinfo.h"
 
 #include <qfile.h>
 #include <qxmlstream.h>
@@ -94,13 +96,17 @@ void BookIndexEditor::writeItem(QStandardItem *item, QXmlStreamWriter *writer)
     writer->writeEndElement();
 }
 
-bool BookIndexEditor::save(QString path)
+QString BookIndexEditor::save()
 {
+    QString path = Utils::Rand::fileName(MW->libraryInfo()->tempDir(),
+                                            true, "book_index_", "xml");
+
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
         qWarning() << "BookIndexEditor::save Can't open file"
                    << path << "for writing" << file.errorString();
-        return false;
+
+        return QString();
     }
 
     QXmlStreamWriter writer(&file);
@@ -111,7 +117,7 @@ bool BookIndexEditor::save(QString path)
 
     m_treeManager->setDataChanged(false);
 
-    return true;
+    return path;
 }
 
 void BookIndexEditor::addTitle()

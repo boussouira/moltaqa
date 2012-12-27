@@ -3,198 +3,256 @@
 #include "mainwindow.h"
 #include "libraryinfo.h"
 #include "utils.h"
-#include <qdebug.h>
+#include "librarymanager.h"
+#include "libraryinfo.h"
 
-ZipHelper::ZipHelper(QObject *parent) :
-    QObject(parent),
-    m_stat(Closed)
+ZipHelper::ZipHelper()
 {
 }
 
 ZipHelper::~ZipHelper()
 {
-}
+    m_remover.removeDatabase(m_db);
 
-void ZipHelper::setPath(const QString &path)
-{
-    m_zipPath = path;
+    if(QFile::exists(m_dbPath))
+        QFile::remove(m_dbPath);
 }
 
 void ZipHelper::open()
 {
-    m_zip.setZipName(m_zipPath);
-
-    if(!m_zip.open(QuaZip::mdUnzip)) {
-        qCritical() << "ZipHelper: open zip file error"
-                    << m_zip.getZipError()
-                    << "Path" << m_zipPath;
-    } else {
-        m_stat = Open;
-    }
+    creatDB();
 }
 
-void ZipHelper::close()
+void ZipHelper::creatDB()
 {
-    m_zip.close();
-    m_stat = Closed;
+    m_dbPath = Utils::Rand::fileName(LibraryManager::instance()->libraryInfo()->tempDir(),
+                                     true, "temp_zip_", "db");
+
+    QString conn = "ZipHelper." + QFileInfo(m_dbPath).baseName();
+    while(m_db.contains(conn))
+        conn.append('_');
+
+    m_db = QSqlDatabase::addDatabase("QSQLITE", conn);
+    m_db.setDatabaseName(m_dbPath);
+
+    ml_open_db(m_db);
+
+    m_query = QSqlQuery(m_db);
+
+    m_appendPos = 0;
+    m_prependPos = 0;
+
+    // Create new table
+    QueryBuilder q;
+    q.setTableName("files_data");
+    q.setIgnoreExistingTable(true);
+    q.setQueryType(QueryBuilder::Create);
+
+    q.set("file_pos", "INT");
+    q.set("file_name", "TEXT");
+    q.set("file_data", "TEXT");
+
+    q.exec(m_query);
+
+    m_query.exec("create unique index file_name_index on files_data (file_name)");
+    m_query.exec("create index file_pos_index on files_data (file_pos)");
 }
 
-QString ZipHelper::unzip()
+QString ZipHelper::datbasePath()
 {
-    m_unzipDirPath= QFileInfo(m_zipPath).baseName();
-    QDir dir(MW->libraryInfo()->tempDir());
+    return m_dbPath;
+}
 
-    while(dir.exists(m_unzipDirPath))
-        m_unzipDirPath.append("_");
+void ZipHelper::add(const QString &filename, const QString &data, InsertOrder order)
+{
+    add(filename, data.toUtf8(), order);
+}
 
-    dir.mkdir(m_unzipDirPath);
+void ZipHelper::add(const QString &filename, const QByteArray &data, ZipHelper::InsertOrder order)
+{
+    QueryBuilder q;
+    q.setTableName("files_data", QueryBuilder::Insert);
 
-    m_unzipDirPath = dir.absoluteFilePath(m_unzipDirPath);
+    q.set("file_pos", (order==AppendFile ? ++m_appendPos : --m_prependPos));
+    q.set("file_name", filename);
+    q.set("file_data", data);
 
-    if(unzip(m_zipPath, m_unzipDirPath)) {
-        m_stat = UnZipped;
-        return m_unzipDirPath;
-    } else {
-        qCritical() << "ZipHelper: Error when unzip file:" << m_zipPath << "in" << m_unzipDirPath;
-        return QString();
+    q.exec(m_query);
+}
+
+void ZipHelper::add(const QString &filename, QIODevice *ioDevice, InsertOrder order)
+{
+    QByteArray out;
+    char buf[4096];
+    int len = 0;
+
+    while (!ioDevice->atEnd()) {
+        len = ioDevice->read(buf, 4096);
+        out.append(buf, len);
+
+        if(len <= 0)
+            break;
     }
+
+    add(filename, out, order);
+}
+
+void ZipHelper::addFromFile(const QString &fileName, const QString &filePath, InsertOrder order)
+{
+    QFile file;
+    file.setFileName(filePath);
+    if(!file.open(QIODevice::ReadOnly)) {
+        qWarning() << "ZipHelper::appendFromFile can't open file for reading:"
+                   << file.errorString();
+        return;
+    }
+
+    add(fileName, &file, order);
+}
+
+void ZipHelper::addFromDomHelper(const QString &filename, XmlDomHelper &domHelper, ZipHelper::InsertOrder order)
+{
+    QString domPath = Utils::Rand::fileName(MW->libraryInfo()->tempDir(),
+                                            true, "temp_dom_", "xml");
+
+    domHelper.save(domPath);
+    addFromFile(filename, domPath, order);
+
+    QFile::remove(domPath);
+}
+
+void ZipHelper::addFromZip(const QString &filePath)
+{
+    QuaZip zip;
+    zip.setZipName(filePath);
+
+    if(!zip.open(QuaZip::mdUnzip)) {
+        qCritical() << "ZipHelper::addFromZip open zip file error" << zip.getZipError()
+                    << "Path" << filePath;
+        return;
+    }
+
+    m_db.transaction();
+
+    QuaZipFileInfo info;
+    QuaZipFile file(&zip);
+    for(bool more=zip.goToFirstFile(); more; more=zip.goToNextFile()) {
+        ml_return_on_fail2(zip.getCurrentFileInfo(&info),
+                           "getPages: getCurrentFileInfo Error" << zip.getZipError());
+
+        if(!file.open(QIODevice::ReadOnly)) {
+            qWarning("ZipHelper::addFromZip zip error %d",
+                     zip.getZipError());
+            continue;
+        }
+
+        add(info.name, &file, AppendFile);
+
+        file.close();
+
+        if(file.getZipError()!=UNZ_OK) {
+            qWarning("ZipHelper::addFromZip Unknow zip error %d",
+                     file.getZipError());
+            continue;
+        }
+    }
+
+    m_db.commit();
+}
+
+void ZipHelper::replace(const QString &filename, const QString &data, ZipHelper::InsertOrder order)
+{
+    remove(filename);
+    add(filename, data, order);
+}
+
+void ZipHelper::replace(const QString &filename, QIODevice *ioDevice, ZipHelper::InsertOrder order)
+{
+    remove(filename);
+    add(filename, ioDevice, order);
+}
+
+void ZipHelper::replaceFromFile(const QString &fileName, const QString &filePath, ZipHelper::InsertOrder order)
+{
+    remove(fileName);
+    addFromFile(fileName, filePath, order);
+}
+
+void ZipHelper::replaceFromDomHelper(const QString &filename, XmlDomHelper &domHelper, ZipHelper::InsertOrder order)
+{
+    remove(filename);
+    addFromDomHelper(filename, domHelper, order);
+}
+
+void ZipHelper::update(BookPage *page)
+{
+    QString filename = QString("pages/p%2.html").arg(page->pageID);
+
+    QueryBuilder q;
+    q.setTableName("files_data", QueryBuilder::Delete);
+    q.where("file_name", filename);
+
+    q.exec(m_query);
+
+    q.setTableName("files_data", QueryBuilder::Insert);
+    q.set("file_pos", page->pageID);
+    q.set("file_name", filename);
+    q.set("file_data", page->text.toUtf8());
+
+    q.exec(m_query);
+}
+
+void ZipHelper::remove(const QString &filename)
+{
+    QueryBuilder q;
+    q.setTableName("files_data", QueryBuilder::Delete);
+    q.where("file_name", filename);
+
+    q.exec(m_query);
 }
 
 QString ZipHelper::zip()
 {
-    if(m_stat != UnZipped) {
-        qDebug("ZipHelper: File is already zipped");
+    QString zipPath = Utils::Rand::fileName(MW->libraryInfo()->tempDir(),
+                                            true, "temp_zip_", "zip");
+
+    QuaZip zip;
+    zip.setZipName(zipPath);
+    if(!zip.open(QuaZip::mdCreate)) {
+        qWarning() << "ZipHelper::zip Can't creat zip file:"
+                   << zipPath << "error:" << zip.getZipError();
+
         return QString();
     }
 
-    QDir tempDir(MW->libraryInfo()->tempDir());
-    QString zipPath = Utils::Rand::fileName(tempDir.absolutePath(), true, QFileInfo(m_zipPath).baseName()+'_');
+    QueryBuilder q;
+    q.setTableName("files_data", QueryBuilder::Select);
+    q.select("file_name");
+    q.select("file_data");
 
-    if(zip(m_unzipDirPath, zipPath))
-        return zipPath;
-    else
-        return QString();
-}
+    q.orderBy("file_pos");
 
-bool ZipHelper::save()
-{
-    QString newZip = zip();
-    QString backupZip = m_zipPath + ".back";
-    if(newZip.size()) {
-        if(QFile::exists(backupZip) && !QFile::remove(backupZip))
-            qWarning() << "ZipHelper: Can't remove backup file:" << backupZip;
-        if(QFile::rename(m_zipPath, backupZip)) {
-            if(QFile::copy(newZip, m_zipPath)) {
-                qDebug() << "ZipHelper: Saved to:" << m_zipPath;
-                return true;
-            } else {
-                qCritical() << "ZipHelper: Can't copy" << newZip << "to" << m_zipPath;
-            }
-        } else {
-            qCritical() << "ZipHelper: Can't create backup file:" << backupZip;
+    q.exec(m_query);
+
+    while(m_query.next()) {
+        QString filename = m_query.value(0).toString();
+        QuaZipFile outFile(&zip);
+
+        if(!outFile.open(QIODevice::WriteOnly, QuaZipNewInfo(filename))) {
+            qWarning() << "ZipHelper::zip Can't add zip file:"
+                       << filename << "error:" << outFile.getZipError();
+
+            return QString();
         }
-    } else {
-        qCritical() << "ZipHelper: Can't compress temp dir:" << m_unzipDirPath;
+
+        QByteArray data = m_query.value(1).toByteArray();
+        Utils::Files::copyData(data, outFile);
     }
 
-    return false;
+    return zipPath;
 }
 
-ZipHelper::ZipStat ZipHelper::zipStat()
-{
-    return m_stat;
-}
 
-QFilePtr ZipHelper::getFile(const QString &fileName, QIODevice::OpenModeFlag mode)
-{
-    QFile *file = 0;
-
-    if(m_stat == UnZipped) {
-        QDir dir(m_unzipDirPath);
-        QString filePath = dir.filePath(fileName);
-        QFileInfo info(filePath);
-
-        if(!dir.exists(info.path()))
-            dir.mkpath(info.path());
-
-        file = new QFile(filePath);
-        if(!file->open(mode)) {
-            qWarning("ZipHelper::getFile Can't open file for writing: %s", qPrintable(file->errorString()));
-            ml_delete(file);
-        }
-    } else {
-        qWarning("ZipHelper::getFile Zip file is not in Open stat");
-    }
-
-    return QFilePtr(file);
-}
-
-QuaZipFilePtr ZipHelper::getZipFile(const QString &fileName)
-{
-    QuaZipFile *file = 0;
-
-    if(m_stat == Open) {
-        if(m_zip.setCurrentFile(fileName)) {
-            if(file->open(QIODevice::ReadOnly))
-                file = new QuaZipFile(&m_zip);
-            else
-                qWarning("ZipHelper::getZipFile open error %d", file->getZipError());
-
-        } else {
-            qWarning("ZipHelper::getZipFile setCurrentFile error %d", m_zip.getZipError());
-        }
-/*
-    } else if(m_stat == UnZipped) {
-        QDir dir(m_unzipDirPath);
-        if(dir.exists(fileName)) {
-            QFile file(dir.filePath(fileName));
-            if(!file.open(QFile::WriteOnly)) {
-                qWarning("getZipFile: Can't open file for writing: %s", qPrintable(file.errorString()));
-            }
-
-        } else {
-            qWarning() << "getZipFile: File doesn't exists:" << dir.filePath(fileName);
-        }
-    }
-*/
-    } else {
-         qWarning("ZipHelper::getZipFile File is not in Open stat");
-    }
-
-    return QuaZipFilePtr(file);
-}
-
-XmlDomHelper::Ptr ZipHelper::getDomHelper(const QString &fileName, const QString &documentName)
-{
-    XmlDomHelper *dom = 0;
-    if(m_stat == Open) {
-        QuaZipFile pagesFile(&m_zip);
-
-        if(m_zip.setCurrentFile(fileName)) {
-            if(pagesFile.open(QIODevice::ReadOnly)) {
-                dom = new XmlDomHelper();
-                dom->load(&pagesFile);
-            } else {
-                qWarning("ZipHelper::getDomHelper open error %d", pagesFile.getZipError());
-            }
-        }
-    } else if(m_stat == UnZipped) {
-        QDir dir(m_unzipDirPath);
-        dom = new XmlDomHelper();
-        dom->setFilePath(dir.filePath(fileName));
-        dom->setDocumentName(documentName);
-
-        if(!dir.exists(fileName))
-            dom->create();
-
-        dom->load();
-        qDebug() << "ZipHelper::getDomHelper Dom path:" << dir.filePath(fileName);
-    } else {
-        qWarning("ZipHelper::getDomHelper File is not in Open or Unzipped stat");
-    }
-
-    return XmlDomHelper::Ptr(dom);
-}
 
 bool ZipHelper::unzip(const QString &zipPath, const QString &outPath)
 {

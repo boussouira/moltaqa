@@ -53,6 +53,8 @@ namespace Files {
 bool move(const QString &sourcePath, const QString &destPath);
 void removeDir(const QString &path);
 bool copyData(QIODevice &inFile, QIODevice &outFile);
+bool copyData(QByteArray &inData, QIODevice &outFile);
+bool copyData(QIODevice &inFile, QByteArray &outData);
 quint64 directorySize(const QString &path);
 QString formatSize(quint64 size);
 QString cleanFileName(QString fileName, bool removeSpace=false);

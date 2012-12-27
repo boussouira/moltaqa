@@ -2,6 +2,7 @@
 #define BOOKEDITOR_H
 
 #include "abstractbookreader.h"
+#include "ziphelper.h"
 
 class RichBookReader;
 class QuaZipFile;
@@ -18,10 +19,11 @@ public:
     bool open(LibraryBook::Ptr book);
     void setBookReader(RichBookReader *reader);
 
+    ZipHelper *zipHelper();
+
     void unZip();
     bool zip();
     bool save();
-    void removeTemp();
 
     bool saveBookPages(QList<BookPage *> pages);
     void saveDom();
@@ -29,17 +31,15 @@ public:
     void removePage();
 
     int maxPageID();
-    QString titlesFile();
 
     void addPageLink(int sourcPage, int destBook, int destPage);
     void removePageLink(int sourcPage, int destBook, int destPage);
 
 protected:
-    bool zipDir(QString path, QuaZipFile &outFile);
-
-protected:
     RichBookReader *m_bookReader;
     LibraryBook::Ptr m_book;
+    ZipHelper m_zipHelper;
+    bool m_needUnZip;
     bool m_removeReader;
     QString m_bookTmpDir;
     QString m_newBookPath;

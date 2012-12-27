@@ -12,7 +12,6 @@ public:
 
 protected:
     AbstractBookReader *m_reader;
-    ZipHelper *m_zip;
 };
 
 #endif // ZIPOPENER_H

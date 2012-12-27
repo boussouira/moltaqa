@@ -1,58 +1,64 @@
 #ifndef ZIPHELPER_H
 #define ZIPHELPER_H
 
-#include <qobject.h>
 #include <qfile.h>
 #include <quazip/quazip.h>
 #include <quazip/quazipfile.h>
+#include <qsqldatabase.h>
+#include <qsqlquery.h>
 
 #include "xmldomhelper.h"
+#include "sqlutils.h"
 
-typedef QSharedPointer<QFile> QFilePtr;
-typedef QSharedPointer<QuaZipFile> QuaZipFilePtr;
+class BookPage;
 
-class ZipHelper : public QObject
+class ZipHelper
 {
-    Q_OBJECT
-
 public:
-    ZipHelper(QObject *parent = 0);
+
+    ZipHelper();
     ~ZipHelper();
 
-    enum OpenMode {
-        ReadOnly,
-        WriteOnly
+    enum InsertOrder{
+        AppendFile,
+        PrependFile
     };
-
-    enum ZipStat {
-        Open,
-        Closed,
-        UnZipped
-    };
-
-    void setPath(const QString &path);
 
     void open();
-    void close();
 
-    QString unzip();
+    QString datbasePath();
+
+    void add(const QString &filename, const QString &data, InsertOrder order);
+    void add(const QString &filename, const QByteArray &data, InsertOrder order);
+    void add(const QString &filename, QIODevice *ioDevice, InsertOrder order);
+    void addFromFile(const QString &fileName, const QString &filePath, InsertOrder order);
+    void addFromDomHelper(const QString &filename, XmlDomHelper& domHelper, InsertOrder order);
+    void addFromZip(const QString &filePath);
+
+    void replace(const QString &filename, const QString &data, InsertOrder order);
+    void replace(const QString &filename, QIODevice *ioDevice, InsertOrder order);
+    void replaceFromFile(const QString &fileName, const QString &filePath, InsertOrder order);
+    void replaceFromDomHelper(const QString &filename, XmlDomHelper& domHelper, InsertOrder order);
+
+    void update(BookPage *page);
+
+    void remove(const QString &filename);
+
     QString zip();
-
-    bool save();
-    ZipStat zipStat();
-
-    QFilePtr getFile(const QString &fileName, QIODevice::OpenModeFlag mode=QIODevice::WriteOnly);
-    QuaZipFilePtr getZipFile(const QString &fileName);
-    XmlDomHelper::Ptr getDomHelper(const QString &fileName, const QString &documentName=QString());
 
     static bool unzip(const QString &zipPath, const QString &outPath);
     static bool zip(const QString &dir, const QString &zipPath);
 
 protected:
-    ZipStat m_stat;
-    QString m_zipPath;
-    QString m_unzipDirPath;
-    QuaZip m_zip;
+    void creatDB();
+
+protected:
+    QString m_dbPath;
+    DatabaseRemover m_remover;
+    QSqlDatabase m_db;
+    QSqlQuery m_query;
+    int m_appendPos;
+    int m_prependPos;
 };
 
 #endif // ZIPHELPER_H

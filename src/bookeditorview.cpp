@@ -311,13 +311,22 @@ void BookEditorView::save()
         dialog.setValue(0);
         dialog.show();
 
+        qApp->processEvents();
+
         m_bookEditor->unZip();
         dialog.setValue(dialog.value()+1);
 
         if(m_bookEditor->saveBookPages(m_pages.values()))
             clearChanges();
 
-        m_indexEditor->save(m_bookEditor->titlesFile());
+        QString titlesFile = m_indexEditor->save();
+        if(titlesFile.size()) {
+            m_bookEditor->zipHelper()->replaceFromFile("titles.xml",
+                                                       titlesFile,
+                                                       ZipHelper::PrependFile);
+
+            QFile::remove(titlesFile);
+        }
 
         dialog.setValue(dialog.value()+1);
 
