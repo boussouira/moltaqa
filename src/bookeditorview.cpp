@@ -330,7 +330,15 @@ void BookEditorView::save()
 
         dialog.setValue(dialog.value()+1);
 
-        m_bookEditor->zip();
+        if(!m_bookEditor->zip()) {
+            dialog.hide();
+
+            QMessageBox::warning(this,
+                                 tr("تحرير الكتاب"),
+                                 tr("حدث خطأ أثناء حفظ التعديلا"));
+            return;
+        }
+
         dialog.setValue(dialog.value()+1);
 
         LibraryBook::Ptr book = m_bookReader->bookInfo();

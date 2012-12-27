@@ -249,6 +249,12 @@ QString ZipHelper::zip()
         Utils::Files::copyData(data, outFile);
     }
 
+    zip.close();
+
+    ml_return_val_on_fail2(zip.getZipError()==0,
+                           "ZipHelper::zip zip file close error" << zip.getZipError(),
+                           QString());
+
     return zipPath;
 }
 
