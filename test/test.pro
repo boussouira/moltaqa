@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = moltaqa-lib_test
-QT += testlib sql
+QT += testlib sql widgets
 
 CONFIG += qtestlib
 DESTDIR = ../bin

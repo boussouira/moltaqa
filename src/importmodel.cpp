@@ -96,7 +96,7 @@ ImportModel::~ImportModel()
 void ImportModel::setRootNode(ImportModelNode *node)
 {
     m_rootNode = node;
-    reset();
+    //reset();
 }
 
 QModelIndex ImportModel::index(int row, int column,

@@ -30,6 +30,7 @@
 #include <qurl.h>
 #include <QTime>
 #include <qtconcurrentrun.h>
+#include <qmimedata.h>
 
 ImportDialog::ImportDialog(QWidget *parent) :
     QDialog(parent),

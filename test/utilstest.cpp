@@ -5,6 +5,7 @@
 #include "bookutils.h"
 #include <qsqldatabase.h>
 #include <QSqlQuery>
+#include <QApplication>
 
 UtilsTest::UtilsTest()
 {

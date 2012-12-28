@@ -14,7 +14,7 @@
 #include <qsettings.h>
 #include <qdatetime.h>
 #include <qdebug.h>
-#include <qdesktopservices.h>
+#include <qstandardpaths.h>
 #include <qmessagebox.h>
 #include <qmutex.h>
 
@@ -37,7 +37,7 @@ QMutex m_mutex;
 QString m_logFilePath;
 
 
-void debugMessageHandler(QtMsgType type, const char *msg)
+void debugMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     QMutexLocker locker(&m_mutex);
 
@@ -53,11 +53,11 @@ void debugMessageHandler(QtMsgType type, const char *msg)
     out.setCodec("utf-8");
 
     QString dateTime = QDateTime::currentDateTime().toString("[dd/MM/yyyy] [hh:mm:ss] ");
-    QString text = QString::fromLocal8Bit(msg);
+    QString text = /*QString::fromLocal8Bit*/(msg);
 
 #ifdef Q_OS_LINUX
     if(text.startsWith("X Error:")) {
-        fprintf(stderr, "%s", msg);
+        fprintf(stderr, "%s", msg.toUtf8().constData());
         return;
     }
 #endif
@@ -85,7 +85,7 @@ void debugMessageHandler(QtMsgType type, const char *msg)
 
 void createLogFileDir()
 {
-    QDir dir(QDesktopServices::storageLocation(QDesktopServices::DataLocation));
+    QDir dir(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
     m_logFilePath = dir.filePath("application.log");
 
     QFileInfo logInfo(m_logFilePath);
@@ -95,7 +95,7 @@ void createLogFileDir()
         }
     }
 
-    qInstallMsgHandler(debugMessageHandler);
+    qInstallMessageHandler(debugMessageHandler);
 }
 
 void showHelp()
@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
         return 0;
 
     app.setLayoutDirection(Qt::RightToLeft);
-    QTextCodec::setCodecForTr(QTextCodec::codecForName("utf-8"));
+//    QTextCodec::setCodecForTr(QTextCodec::codecForName("utf-8"));
 
     QSettings::setDefaultFormat(QSettings::IniFormat);
 

@@ -39,9 +39,9 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
         return false;
     } else if(url.hasFragment()){
         if(m_webView) {
-            QWebElement element = mainFrame()->findFirstElement('#' + url.encodedFragment());
+            QWebElement element = mainFrame()->findFirstElement('#' + url.fragment(QUrl::FullyDecoded));
             if(element.isNull())
-                element = mainFrame()->findFirstElement("[name|=" + url.encodedFragment() + "]");
+                element = mainFrame()->findFirstElement("[name|=" + url.fragment(QUrl::FullyDecoded) + "]");
 
             if(!element.isNull()
                     && url.toString(QUrl::RemoveFragment) == mainFrame()->url().toString(QUrl::RemoveFragment)) {

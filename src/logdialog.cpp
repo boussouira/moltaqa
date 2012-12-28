@@ -3,7 +3,7 @@
 #include "loghighlighter.h"
 #include "utils.h"
 
-#include <qdesktopservices.h>
+#include <qstandardpaths.h>
 #include <qfilesystemwatcher.h>
 #include <qfile.h>
 #include <qtextstream.h>
@@ -18,7 +18,7 @@ LogDialog::LogDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    m_logPath = QDir(QDesktopServices::storageLocation(QDesktopServices::DataLocation)).filePath("application.log");
+    m_logPath = QDir(QStandardPaths::writableLocation(QStandardPaths::DataLocation)).filePath("application.log");
     m_watcher = new QFileSystemWatcher(this);
     m_highlighter = new LogHighlighter(ui->textBrowser->document());
 

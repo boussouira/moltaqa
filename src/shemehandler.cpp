@@ -7,6 +7,7 @@
 #include "authorsview.h"
 #include "tarajemrowatview.h"
 #include "mainwindow.h"
+#include <qurlquery.h>
 
 ShemeHandler::ShemeHandler()
 {
@@ -41,20 +42,22 @@ void ShemeHandler::commandOpen(const QUrl &url)
 
 void ShemeHandler::openBook(const QUrl &url)
 {
-    ml_return_on_fail2(url.hasQueryItem("id"), "MoltaqaShemeHandler::openBook url doesn't have an id query item");
+    QUrlQuery urlQuery(url);
+    ml_return_on_fail2(urlQuery.hasQueryItem("id"), "MoltaqaShemeHandler::openBook url doesn't have an id query item");
 
-    int bookID = url.queryItemValue("id").toInt();
-    int page = url.hasQueryItem("page") ? url.queryItemValue("page").toInt() : -1;
+    int bookID = urlQuery.queryItemValue("id").toInt();
+    int page = urlQuery.hasQueryItem("page") ? urlQuery.queryItemValue("page").toInt() : -1;
 
     MW->bookReaderView()->openBook(bookID, page);
 }
 
 void ShemeHandler::openQuran(const QUrl &url)
 {
-    ml_return_on_fail2(url.hasQueryItem("sora"), "MoltaqaShemeHandler::openQuran url doesn't have a sora query item");
+    QUrlQuery urlQuery(url);
+    ml_return_on_fail2(urlQuery.hasQueryItem("sora"), "MoltaqaShemeHandler::openQuran url doesn't have a sora query item");
 
-    int sora = url.queryItemValue("sora").toInt();
-    int aya = url.hasQueryItem("aya") ? url.queryItemValue("aya").toInt() : 1;
+    int sora = urlQuery.queryItemValue("sora").toInt();
+    int aya = urlQuery.hasQueryItem("aya") ? urlQuery.queryItemValue("aya").toInt() : 1;
 
     LibraryBook::Ptr quranBook = LibraryManager::instance()->bookManager()->getQuranBook();
     ml_return_on_fail2(quranBook, "MoltaqaShemeHandler::openQuran quranBook is null");
@@ -67,16 +70,18 @@ void ShemeHandler::openQuran(const QUrl &url)
 
 void ShemeHandler::openAuthor(const QUrl &url)
 {
-    ml_return_on_fail2(url.hasQueryItem("id"), "MoltaqaShemeHandler::openAuthor url doesn't have an id query item");
-    int author = url.queryItemValue("id").toInt();
+    QUrlQuery urlQuery(url);
+    ml_return_on_fail2(urlQuery.hasQueryItem("id"), "MoltaqaShemeHandler::openAuthor url doesn't have an id query item");
+    int author = urlQuery.queryItemValue("id").toInt();
 
     AuthorsView::instance()->openAuthorInfo(author);
 }
 
 void ShemeHandler::openRawi(const QUrl &url)
 {
-    ml_return_on_fail2(url.hasQueryItem("id"), "MoltaqaShemeHandler::openRawi url doesn't have an id query item");
-    int rawi = url.queryItemValue("id").toInt();
+    QUrlQuery urlQuery(url);
+    ml_return_on_fail2(urlQuery.hasQueryItem("id"), "MoltaqaShemeHandler::openRawi url doesn't have an id query item");
+    int rawi = urlQuery.queryItemValue("id").toInt();
 
     TarajemRowatView::instance()->openRawiInfo(rawi);
 }

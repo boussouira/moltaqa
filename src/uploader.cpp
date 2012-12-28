@@ -26,13 +26,13 @@ void UpLoader::startUpload()
 {
     isAborted = false;
 
-    QByteArray boundaryRegular(QString("--"+QString::number(qrand(), 10)).toAscii());
+    QByteArray boundaryRegular(QString("--"+QString::number(qrand(), 10)).toLatin1());
     QByteArray boundary("\r\n--"+boundaryRegular+"\r\n");
     QByteArray boundaryLast("\r\n--"+boundaryRegular+"--\r\n");
 
     QUrl url(m_uploadUrl);
     QNetworkRequest request(url);
-    request.setRawHeader("Host", url.encodedHost());
+    request.setRawHeader("Host", url.host(QUrl::FullyEncoded).toLatin1());
     request.setRawHeader("Content-Type", QByteArray("multipart/form-data; boundary=").append(boundaryRegular));
 
     QByteArray mimedata1("--"+boundaryRegular+"\r\n");

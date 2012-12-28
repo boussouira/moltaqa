@@ -1,7 +1,7 @@
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
-QT += sql webkit xml
+QT += sql webkit webkitwidgets xml widgets concurrent
 
 MOC_DIR += .moc
 OBJECTS_DIR += .obj

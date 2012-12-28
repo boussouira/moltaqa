@@ -11,30 +11,30 @@ exists(../../../zlib) {
 
 INCLUDEPATH += $$ZLIB_INCLUDE_PATH
 
-HEADERS += crypt.h \
-           ioapi.h \
-           JlCompress.h \
-           quaadler32.h \
-           quachecksum32.h \
-           quacrc32.h \
-           quazip.h \
-           quagzipfile.h \
-           quaziodevice.h \
-           quazipdir.h \
-           quazipfile.h \
-           quazipfileinfo.h \
-           quazipnewinfo.h \
-           unzip.h \
-           zip.h
-SOURCES += qioapi.cpp \
-           JlCompress.cpp \
-           quaadler32.cpp \
-           quacrc32.cpp \
-           quagzipfile.cpp \
-           quaziodevice.cpp \
-           quazip.cpp \
-           quazipdir.cpp \
-           quazipfile.cpp \
-           quazipnewinfo.cpp \
-           unzip.c \
-           zip.c
+HEADERS += $$PWD/crypt.h \
+           $$PWD/ioapi.h \
+           $$PWD/JlCompress.h \
+           $$PWD/quaadler32.h \
+           $$PWD/quachecksum32.h \
+           $$PWD/quacrc32.h \
+           $$PWD/quazip.h \
+           $$PWD/quagzipfile.h \
+           $$PWD/quaziodevice.h \
+           $$PWD/quazipdir.h \
+           $$PWD/quazipfile.h \
+           $$PWD/quazipfileinfo.h \
+           $$PWD/quazipnewinfo.h \
+           $$PWD/unzip.h \
+           $$PWD/zip.h
+SOURCES += $$PWD/qioapi.cpp \
+           $$PWD/JlCompress.cpp \
+           $$PWD/quaadler32.cpp \
+           $$PWD/quacrc32.cpp \
+           $$PWD/quagzipfile.cpp \
+           $$PWD/quaziodevice.cpp \
+           $$PWD/quazip.cpp \
+           $$PWD/quazipdir.cpp \
+           $$PWD/quazipfile.cpp \
+           $$PWD/quazipnewinfo.cpp \
+           $$PWD/unzip.c \
+           $$PWD/zip.c
