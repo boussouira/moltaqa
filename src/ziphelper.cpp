@@ -14,8 +14,10 @@ ZipHelper::~ZipHelper()
 {
     m_remover.removeDatabase(m_db);
 
-    if(QFile::exists(m_dbPath))
-        QFile::remove(m_dbPath);
+    if(QFile::exists(m_dbPath)) {
+        ml_warn_on_fail(QFile::remove(m_dbPath),
+                        "ZipHelper: Can't remove temp file:" << m_dbPath);
+    }
 }
 
 void ZipHelper::open()
@@ -160,6 +162,29 @@ void ZipHelper::addFromZip(const QString &filePath)
     m_db.commit();
 }
 
+void ZipHelper::addFromDomDocument(const QString &filename, QDomDocument &doc, ZipHelper::InsertOrder order)
+{
+    QString domPath = Utils::Rand::fileName(MW->libraryInfo()->tempDir(),
+                                            true, "temp_dom_", "xml");
+
+    QFile file;
+    file.setFileName(domPath);
+    if(!file.open(QFile::WriteOnly | QFile::Truncate)) {
+        qWarning() << "ZipHelper::addFromDomDocument can't open file for writing:"
+                   << file.errorString();
+        return;
+    }
+
+    QTextStream out(&file);
+    out.setCodec("utf-8");
+
+    doc.save(out, 4);
+
+    addFromFile(filename, domPath, order);
+
+    QFile::remove(domPath);
+}
+
 void ZipHelper::replace(const QString &filename, const QString &data, ZipHelper::InsertOrder order)
 {
     remove(filename);
@@ -211,10 +236,11 @@ void ZipHelper::remove(const QString &filename)
     q.exec(m_query);
 }
 
-QString ZipHelper::zip()
+QString ZipHelper::zip(QString zipFilePath)
 {
-    QString zipPath = Utils::Rand::fileName(MW->libraryInfo()->tempDir(),
-                                            true, "temp_zip_", "zip");
+    QString zipPath = zipFilePath.size() ? zipFilePath
+                                         : Utils::Rand::fileName(MW->libraryInfo()->tempDir(),
+                                                                 true, "temp_zip_", "zip");
 
     QuaZip zip;
     zip.setZipName(zipPath);

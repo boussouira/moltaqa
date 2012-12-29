@@ -28,12 +28,16 @@ public:
 
     QString datbasePath();
 
+    inline bool transaction() { return m_db.transaction(); }
+    inline bool commit() { return m_db.commit(); }
+
     void add(const QString &filename, const QString &data, InsertOrder order);
     void add(const QString &filename, const QByteArray &data, InsertOrder order);
     void add(const QString &filename, QIODevice *ioDevice, InsertOrder order);
     void addFromFile(const QString &fileName, const QString &filePath, InsertOrder order);
     void addFromDomHelper(const QString &filename, XmlDomHelper& domHelper, InsertOrder order);
     void addFromZip(const QString &filePath);
+    void addFromDomDocument(const QString &filename, QDomDocument &doc, InsertOrder order);
 
     void replace(const QString &filename, const QString &data, InsertOrder order);
     void replace(const QString &filename, QIODevice *ioDevice, InsertOrder order);
@@ -44,7 +48,7 @@ public:
 
     void remove(const QString &filename);
 
-    QString zip();
+    QString zip(QString zipFilePath=QString());
 
     static bool unzip(const QString &zipPath, const QString &outPath);
     static bool zip(const QString &dir, const QString &zipPath);

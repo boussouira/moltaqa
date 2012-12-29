@@ -5,10 +5,9 @@
 #include <qdatetime.h>
 #include <qfile.h>
 #include <qdom.h>
+#include <qxmlstream.h>
 
-#include <quazip/quazip.h>
-#include <quazip/quazipfile.h>
-
+#include "ziphelper.h"
 #include "sqlutils.h"
 
 class NewBookWriter
@@ -36,14 +35,18 @@ protected:
     QString m_booksDir;
     QString m_bookPath;
 
-    QuaZip m_zip;
-    QDomDocument m_pagesDoc;
-    QDomElement m_pagesElemnent;
-    QDomDocument m_titlesDoc;
-    QDomElement m_titlesElement;
-    QDomElement m_lastTitlesElement;
+    ZipHelper m_zipHelper;
 
-    QHash<int, QDomNode> m_levels;
+    QString m_pagesPath;
+    QFile m_pagesFile;
+    QXmlStreamWriter m_pagesWriter;
+
+    QString m_titlesPath;
+    QFile m_titlesFile;
+    QXmlStreamWriter m_titlesWriter;
+
+    int m_lastLavel;
+    QHash<int, int> m_levels;
 };
 
 #endif // NEWBOOKWRITER_H

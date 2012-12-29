@@ -19,6 +19,8 @@ NewBookWriter::NewBookWriter()
 
 NewBookWriter::~NewBookWriter()
 {
+    QFile::remove(m_pagesPath);
+    QFile::remove(m_titlesPath);
 }
 
 QString NewBookWriter::bookPath()
@@ -35,10 +37,7 @@ void NewBookWriter::createNewBook()
         m_bookPath.replace(".mlb", "_.mlb");
     }
 
-    m_zip.setZipName(m_bookPath);
-    if(!m_zip.open(QuaZip::mdCreate)) {
-        throw BookException(QObject::tr("لا يمكن انشاء كتاب جديد"), m_bookPath, m_zip.getZipError());
-    }
+    m_zipHelper.open();
 }
 
 int NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int partNum,
@@ -50,49 +49,54 @@ int NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int par
     if(pageNum<1)
         pageNum = 1;
 
-    QDomElement page = m_pagesDoc.createElement("item");
-    page.setAttribute("id", pageID);
-    page.setAttribute("page", pageNum);
-    page.setAttribute("part", partNum);
+    m_pagesWriter.writeStartElement("page");
+    m_pagesWriter.writeAttribute("id", QString::number(pageID));
+    m_pagesWriter.writeAttribute("page", QString::number(pageNum));
+    m_pagesWriter.writeAttribute("part", QString::number(partNum));
 
     if(hadditNum)
-        page.setAttribute("haddit", hadditNum);
+        m_pagesWriter.writeAttribute("haddit", QString::number(hadditNum));
 
     if(soraNum && ayaNum) {
-        page.setAttribute("aya", ayaNum);
-        page.setAttribute("sora", soraNum);
+        m_pagesWriter.writeAttribute("aya", QString::number(ayaNum));
+        m_pagesWriter.writeAttribute("sora", QString::number(soraNum));
     }
 
-    QuaZipFile outFile(&m_zip);
-    if(outFile.open(QIODevice::WriteOnly,
-                     QuaZipNewInfo(QString("pages/p%1.html").arg(pageID)))) {
-        QTextStream out(&outFile);
-        out.setCodec("utf-8");
+    m_pagesWriter.writeEndElement();
 
-        out << processPageText(text);
-    } else {
-        throw BookException("NewBookWriter::addPage create new page error",
-                            QString("pages/p%2.html").arg(pageID),
-                            outFile.getZipError());
-    }
+    QString pageText = processPageText(text);
+    m_zipHelper.add(QString("pages/p%1.html").arg(pageID),
+                    pageText.toUtf8(),
+                    ZipHelper::AppendFile);
 
-    m_pagesElemnent.appendChild(page);
 
     return pageID;
 }
 
 void NewBookWriter::addTitle(const QString &title, int tid, int level)
 {
-    QDomElement titleElement = m_titlesDoc.createElement("title");
-    titleElement.setAttribute("pageID", tid);
+    if(m_lastLavel < level) {
+        // write element in new level
+        ++m_lastLavel;
+        m_levels[level] = m_lastLavel;
+    } else if(m_lastLavel > level) {
+        // iter and close elements
+        int toLevel = m_levels[level];
+        for(int i=m_lastLavel; i>=toLevel; i--) {
+            m_titlesWriter.writeEndElement();
+        }
 
-    QDomElement textElement = m_titlesDoc.createElement("text");
-    Utils::Xml::setElementText(textElement, m_titlesDoc, title);
+        m_lastLavel = toLevel;
+    } else {
+        if(m_lastLavel > 0)
+            m_titlesWriter.writeEndElement();
 
-    titleElement.appendChild(textElement);
+    }
 
-    QDomNode parentNode = m_levels.value(level-1, m_titlesElement);
-    m_levels[level] = parentNode.appendChild(titleElement);
+    m_titlesWriter.writeStartElement("title");
+    m_titlesWriter.writeAttribute("pageID", QString::number(tid));
+
+    m_titlesWriter.writeTextElement("text", title);
 }
 
 QString NewBookWriter::processPageText(QString text)
@@ -157,45 +161,62 @@ QString NewBookWriter::processPageText(QString text)
 
 void NewBookWriter::startReading()
 {
-    m_pagesDoc.setContent(QString("<?xml version=\"1.0\" encoding=\"utf-8\" ?><pages></pages>"));
-    m_titlesDoc.setContent(QString("<?xml version=\"1.0\" encoding=\"utf-8\" ?><titles></titles>"));
+    m_pagesPath = Utils::Rand::fileName(MW->libraryInfo()->tempDir(),
+                                        true, "temp_xml_", "xml");
 
-    m_pagesElemnent = m_pagesDoc.documentElement();
-    m_titlesElement = m_titlesDoc.documentElement();
-    m_lastTitlesElement = m_titlesElement;
+    m_pagesFile.setFileName(m_pagesPath);
+    if(!m_pagesFile.open(QIODevice::WriteOnly)) {
+        throw BookException("NewBookWriter::startReading open file error",
+                            m_pagesFile.errorString());
+    }
+
+    m_pagesWriter.setDevice(&m_pagesFile);
+    m_pagesWriter.setAutoFormatting(true);
+
+    m_pagesWriter.writeStartDocument();
+    m_pagesWriter.writeStartElement("pages");
+
+    // Titles file
+    m_titlesPath = Utils::Rand::fileName(MW->libraryInfo()->tempDir(),
+                                        true, "temp_xml_", "xml");
+
+    m_titlesFile.setFileName(m_titlesPath);
+    if(!m_titlesFile.open(QIODevice::WriteOnly)) {
+        throw BookException("NewBookWriter::startReading open file error",
+                            m_titlesFile.errorString());
+    }
+
+    m_titlesWriter.setDevice(&m_titlesFile);
+    m_titlesWriter.setAutoFormatting(true);
+
+    m_titlesWriter.writeStartDocument();
+    m_titlesWriter.writeStartElement("titles");
+
+    m_zipHelper.transaction();
+
+    m_lastLavel = 0;
 }
 
 void NewBookWriter::endReading()
 {
-    QuaZipFile titlesFile(&m_zip);
-    if(titlesFile.open(QIODevice::WriteOnly, QuaZipNewInfo("titles.xml"))) {
-        QTextStream out(&titlesFile);
-        out.setCodec("utf-8");
+    // The titles file
+    m_titlesWriter.writeEndDocument();
+    m_titlesFile.close();
 
-        m_titlesDoc.save(out, 1);
-    } else {
-        throw BookException("NewBookWriter::endReading save DOM error",
-                            "titles.xml",
-                            titlesFile.getZipError());
-    }
+    m_zipHelper.addFromFile("titles.xml", m_titlesPath, ZipHelper::PrependFile);
 
-    QuaZipFile pagesFile(&m_zip);
-    if(pagesFile.open(QIODevice::WriteOnly, QuaZipNewInfo("pages.xml"))) {
-        QTextStream out(&pagesFile);
-        out.setCodec("utf-8");
+    // Pages info file
+    m_pagesWriter.writeEndDocument();
+    m_pagesFile.close();
 
-        m_pagesDoc.save(out, 1);
-    } else {
-        throw BookException("NewBookWriter::endReading save DOM error",
-                            "pages.xml",
-                            pagesFile.getZipError());
-    }
+    m_zipHelper.addFromFile("pages.xml", m_pagesPath, ZipHelper::PrependFile);
 
-    m_zip.close();
+    if(!m_zipHelper.commit())
+        throw BookException("NewBookWriter::endReading database commit error");
 
-    if(m_zip.getZipError()!=0)
-        throw BookException("NewBookWriter::endReading zip file close error",
-                            m_zip.getZipName(),
-                            m_zip.getZipError());
+    m_bookPath = m_zipHelper.zip(m_bookPath);
+
+    if(m_bookPath.isEmpty())
+        throw BookException("NewBookWriter::endReading zip file close error");
 }
 
