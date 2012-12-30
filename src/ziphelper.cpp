@@ -57,7 +57,7 @@ void SimpleZipWriter::add(const QString &fileName, const QByteArray &data)
 {
     QuaZipFile outFile(&m_zip);
     ml_return_on_fail2(outFile.open(QIODevice::WriteOnly, QuaZipNewInfo(fileName)),
-                           "SimpleZipWriter::addFromFile targetFile.open error" << outFile.getZipError());
+                           "SimpleZipWriter::add targetFile.open error" << outFile.getZipError());
 
     outFile.write(data);
 
@@ -87,6 +87,71 @@ void SimpleZipWriter::addFromFile(const QString &fileName, const QString &filePa
 void SimpleZipWriter::addFromZip(const QString &filePath)
 {
     Utils::Zip::copyFromZip(filePath, &m_zip);
+}
+
+/* Zip writer manager */
+ZipWriterManager::ZipWriterManager()
+{
+    m_haveBottomZip = false;
+}
+
+ZipWriterManager::~ZipWriterManager()
+{
+}
+
+bool ZipWriterManager::open(QString zipFilePath)
+{
+    return m_topdZip.open(zipFilePath);
+}
+
+bool ZipWriterManager::close()
+{
+    if(m_haveBottomZip) {
+        ml_return_val_on_fail(m_bottomZip.close(), false);
+        m_haveBottomZip = false;
+
+        m_topdZip.addFromZip(m_bottomZip.zipPath());
+    }
+
+    return m_topdZip.close();
+}
+
+void ZipWriterManager::add(const QString &fileName, const QByteArray &data, ZipWriterManager::InsertOrder order)
+{
+    if(order == ZipWriterManager::AppendFile) {
+        openBottomZip();
+        m_bottomZip.add(fileName, data);
+    } else {
+        m_topdZip.add(fileName, data);
+    }
+}
+
+void ZipWriterManager::addFromFile(const QString &fileName, const QString &filePath, ZipWriterManager::InsertOrder order)
+{
+    if(order == ZipWriterManager::AppendFile) {
+        openBottomZip();
+        m_bottomZip.addFromFile(fileName, filePath);
+    } else {
+        m_topdZip.addFromFile(fileName, filePath);
+    }
+}
+
+void ZipWriterManager::addFromZip(const QString &filePath, ZipWriterManager::InsertOrder order)
+{
+    if(order == ZipWriterManager::AppendFile) {
+        openBottomZip();
+        m_bottomZip.addFromZip(filePath);
+    } else {
+        m_topdZip.addFromZip(filePath);
+    }
+}
+
+void ZipWriterManager::openBottomZip()
+{
+    if(!m_haveBottomZip) {
+        m_bottomZip.open();
+        m_haveBottomZip = true;
+    }
 }
 
 /* Zip helper */

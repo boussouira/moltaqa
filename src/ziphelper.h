@@ -32,6 +32,34 @@ protected:
     bool m_removeZipFile;
 };
 
+class ZipWriterManager {
+public:
+    ZipWriterManager();
+    ~ZipWriterManager();
+
+    enum InsertOrder{
+        AppendFile,
+        PrependFile
+    };
+
+    bool open(QString zipFilePath=QString());
+    bool close();
+
+    QString zipPath() { return m_topdZip.zipPath(); }
+
+    void add(const QString &fileName, const QByteArray &data, InsertOrder order);
+    void addFromFile(const QString &fileName, const QString &filePath, InsertOrder order);
+    void addFromZip(const QString &filePath, InsertOrder order);
+
+protected:
+    void openBottomZip();
+
+protected:
+    SimpleZipWriter m_bottomZip;
+    SimpleZipWriter m_topdZip;
+    bool m_haveBottomZip;
+};
+
 class ZipHelper
 {
 public:
