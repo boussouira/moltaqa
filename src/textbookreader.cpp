@@ -25,14 +25,15 @@ void TextBookReader::firstPage()
 
 void TextBookReader::load()
 {
-    ZipOpener opener(this);
+    ml_return_on_fail(!m_bookInfo->isQuran());
 
-    getTitles();
-    getPages();
+    loadTitles();
+    loadPages();
 }
 
-void TextBookReader::getTitles()
+void TextBookReader::loadTitles()
 {
+    ZipOpener opener(this);
     QuaZipFile titleFile(&m_zip);
 
     ml_return_on_fail2(m_zip.setCurrentFile("titles.xml"), "getTitles: setCurrentFile error" << titleFile.getZipError());
@@ -75,54 +76,4 @@ void TextBookReader::getTitles()
     qSort(m_titles);
 
     titleFile.close();
-}
-
-void TextBookReader::getPages()
-{
-    QuaZipFileInfo info;
-    QuaZipFile file(&m_zip);
-    for(bool more=m_zip.goToFirstFile(); more; more=m_zip.goToNextFile()) {
-        ml_return_on_fail2(m_zip.getCurrentFileInfo(&info), "getPages: getCurrentFileInfo Error" << m_zip.getZipError());
-
-        int id = 0;
-        QString name = info.name;
-        if(name.startsWith("pages/p")) {
-            name = name.remove(0, 7);
-            name = name.remove(".html");
-
-            bool ok;
-            id = name.toInt(&ok);
-            if(!ok) {
-                qDebug("can't convert '%s' to int", qPrintable(name));
-                continue;
-            }
-        } else {
-            continue;
-        }
-
-        if(!file.open(QIODevice::ReadOnly)) {
-            qWarning("TextBookReader::getPages zip error %d", m_zip.getZipError());
-            continue;
-        }
-
-        QByteArray out;
-        char buf[4096];
-        int len = 0;
-
-        while (!file.atEnd()) {
-            len = file.read(buf, 4096);
-            out.append(buf, len);
-
-            if(len <= 0)
-                break;
-        }
-
-        m_pages.insert(id, out);
-
-        file.close();
-        if(file.getZipError()!=UNZ_OK) {
-            qWarning("TextBookReader::getPages Unknow zip error %d", file.getZipError());
-            continue;
-        }
-    }
 }

@@ -15,12 +15,10 @@ public:
     virtual void load();
 
 protected:
-    virtual void getTitles();
-    virtual void getPages();
+    virtual void loadTitles();
 
 protected:
      QList<int> m_titles;
-     QHash<int, QByteArray> m_pages;
      QHash<int, QString> m_titlesText;
      bool m_loadTitlesText;
 };

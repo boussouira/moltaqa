@@ -94,32 +94,19 @@ public:
     virtual bool hasPrev();
 
     virtual int nextPageID();
-
     virtual int prevPageID();
 
+    virtual void loadPages();
+
     int pagesCount();
+
+    QString getFileContent(QString fileName);
+    virtual QString getPageText(int pageID);
 
     inline XmlDomHelper& pagesDom() { return m_pagesDom; }
 
     static QString getFileContent(QuaZip *zip, QString fileName);
-
-    static QString getPageText(QuaZip *zip, int pageID)
-    {
-        return getFileContent(zip, QString("pages/p%1.html").arg(pageID));
-    }
-
-    QString getFileContent(QString fileName)
-    {
-        ZipOpener opener(this);
-        return getFileContent(&m_zip, fileName);
-    }
-
-    QString getPageText(int pageID)
-    {
-        ZipOpener opener(this);
-        return getFileContent(&m_zip, QString("pages/p%1.html").arg(pageID));
-    }
-
+    static QString getPageText(QuaZip *zip, int pageID);
 
 protected:
 
@@ -130,9 +117,7 @@ protected:
       Generate book info
       */
     virtual void getBookInfo();
-
     virtual void connected();
-
     virtual void setCurrentPage(QDomElement pageNode)=0;
 
     QDomElement getPage(int pid);
@@ -147,6 +132,8 @@ protected:
     LibraryManager *m_libraryManager;
     QuaZip m_zip;
     XmlDomHelper m_pagesDom;
+    bool m_pagesLoaded;
+    QHash<int, QByteArray> m_pages;
 };
 
 #endif // ABSTRACTBOOKREADER_H

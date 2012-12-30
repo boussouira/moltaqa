@@ -18,6 +18,7 @@ AbstractBookReader::AbstractBookReader(QObject *parent) : QObject(parent)
 {
     m_currentPage = new BookPage();
     m_libraryManager = LibraryManager::instance();
+    m_pagesLoaded = false;
 }
 
 AbstractBookReader::~AbstractBookReader()
@@ -121,6 +122,62 @@ QDomElement AbstractBookReader::getQuranPageId(int sora, int aya)
     }
 
     return QDomElement();
+}
+
+void AbstractBookReader::loadPages()
+{
+    ml_return_on_fail(!m_bookInfo->isQuran());
+
+    ZipOpener opener(this);
+
+    QuaZipFileInfo info;
+    QuaZipFile file(&m_zip);
+    for(bool more=m_zip.goToFirstFile(); more; more=m_zip.goToNextFile()) {
+        ml_return_on_fail2(m_zip.getCurrentFileInfo(&info), "getPages: getCurrentFileInfo Error" << m_zip.getZipError());
+
+        int id = 0;
+        QString name = info.name;
+        if(name.startsWith("pages/p")) {
+            name = name.remove(0, 7);
+            name = name.remove(".html");
+
+            bool ok;
+            id = name.toInt(&ok);
+            if(!ok) {
+                qDebug("can't convert '%s' to int", qPrintable(name));
+                continue;
+            }
+        } else {
+            continue;
+        }
+
+        if(!file.open(QIODevice::ReadOnly)) {
+            qWarning("TextBookReader::getPages zip error %d", m_zip.getZipError());
+            continue;
+        }
+
+        QByteArray out;
+        char buf[4096];
+        int len = 0;
+
+        while (!file.atEnd()) {
+            len = file.read(buf, 4096);
+            out.append(buf, len);
+
+            if(len <= 0)
+                break;
+        }
+
+        m_pages.insert(id, out);
+
+        file.close();
+        if(file.getZipError()!=UNZ_OK) {
+            qWarning("TextBookReader::getPages Unknow zip error %d", file.getZipError());
+            continue;
+        }
+    }
+
+    m_pagesLoaded = true;
 }
 
 LibraryBook::Ptr AbstractBookReader::bookInfo()
@@ -244,6 +301,23 @@ int AbstractBookReader::pagesCount()
     return m_pagesDom.rootElement().childNodes().size();
 }
 
+QString AbstractBookReader::getFileContent(QString fileName)
+{
+    ZipOpener opener(this);
+    return getFileContent(&m_zip, fileName);
+}
+
+QString AbstractBookReader::getPageText(int pageID)
+{
+    if(m_pagesLoaded) {
+        QString text = QString::fromUtf8(m_pages[pageID]);
+        return text;
+    } else {
+        ZipOpener opener(this);
+        return getFileContent(&m_zip, QString("pages/p%1.html").arg(pageID));
+    }
+}
+
 QString AbstractBookReader::getFileContent(QuaZip *zip, QString fileName)
 {
     QuaZipFile file(zip);
@@ -259,6 +333,11 @@ QString AbstractBookReader::getFileContent(QuaZip *zip, QString fileName)
     }
 
     return QString();
+}
+
+QString AbstractBookReader::getPageText(QuaZip *zip, int pageID)
+{
+    return getFileContent(zip, QString("pages/p%1.html").arg(pageID));
 }
 
 void AbstractBookReader::getBookInfo()

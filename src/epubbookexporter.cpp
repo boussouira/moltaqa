@@ -115,6 +115,7 @@ void EPubBookExporter::writePages()
     reader->setSaveReadingHistory(false);
     reader->setBookInfo(m_book);
     reader->openBook();
+    reader->loadPages();
 
     BookPage *page = reader->page();
 

@@ -19,12 +19,3 @@ void TextQuranReader::setCurrentPage(QDomElement pageNode)
 
     m_currentPage->titleID = m_currentPage->sora;
 }
-
-void TextQuranReader::getTitles()
-{
-}
-
-void TextQuranReader::getPages()
-{
-}
-

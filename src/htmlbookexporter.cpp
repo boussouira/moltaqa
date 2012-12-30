@@ -67,6 +67,7 @@ void HtmlBookExporter::openReader()
     m_reader->setSaveReadingHistory(false);
     m_reader->setBookInfo(m_book);
     m_reader->openBook();
+    m_reader->loadPages();
 }
 
 void HtmlBookExporter::copyStyleTemplate(QString styleDirPath)

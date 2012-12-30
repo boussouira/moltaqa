@@ -6,6 +6,7 @@
 TextTafessirReader::TextTafessirReader(QObject *parent) :
     TextBookReader(parent)
 {
+    m_loadTitlesText = false; // We need only title ids
 }
 
 void TextTafessirReader::setCurrentPage(QDomElement pageNode)

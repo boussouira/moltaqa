@@ -9,10 +9,6 @@ public:
     TextQuranReader(QObject *parent=0);
 
     void setCurrentPage(QDomElement pageNode);
-
-protected:
-    void getTitles();
-    void getPages();
 };
 
 #endif // TEXTQURANREADER_H
