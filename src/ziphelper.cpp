@@ -117,7 +117,7 @@ void ZipHelper::open()
 void ZipHelper::creatDB()
 {
     m_dbPath = Utils::Rand::fileName(LibraryManager::instance()->libraryInfo()->tempDir(),
-                                     true, "temp_zip_", "db");
+                                     true, "temp_db_", "db");
 
     QString conn = "ZipHelper." + QFileInfo(m_dbPath).baseName();
     while(m_db.contains(conn))
