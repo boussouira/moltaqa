@@ -583,9 +583,6 @@ void EPubBookExporter::writePage(BookPage *page)
 
         out << "<body>" << "\n";
 
-        if(!page->text.contains("<div class=\"clear\"></div>"))
-            page->text.replace("<div class=\"clear\">", "<div class=\"clear\"></div>");
-
         if(page->text.contains("<footnote>")) {
             page->text.replace("</footnote>", "</div>");
             page->text.replace("<footnote>", "<div class=\"footnote\">");
