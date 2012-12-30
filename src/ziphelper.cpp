@@ -3,8 +3,93 @@
 #include "mainwindow.h"
 #include "libraryinfo.h"
 #include "utils.h"
+#include "ziputils.h"
 #include "librarymanager.h"
 #include "libraryinfo.h"
+
+/* Simple zip writer */
+
+SimpleZipWriter::SimpleZipWriter()
+{
+}
+
+SimpleZipWriter::~SimpleZipWriter()
+{
+    if(m_removeZipFile) {
+        if(m_zip.isOpen())
+            m_zip.close();
+
+        if(QFile::exists(m_zipPath)) {
+            ml_warn_on_fail(QFile::remove(m_zipPath),
+                            "SimpleZipWriter: Can't remove temp zip file" << m_zipPath);
+        }
+    }
+}
+
+bool SimpleZipWriter::open(QString zipFilePath)
+{
+    m_zipPath = zipFilePath.size()
+            ? zipFilePath
+            : Utils::Rand::fileName(LibraryManager::instance()->libraryInfo()->tempDir(),
+                                    true, "temp_zip_", "zip");
+
+    m_zip.setZipName(m_zipPath);
+    if(!m_zip.open(QuaZip::mdCreate)) {
+        qWarning() << "SimpleZipWriter::open Can't creat zip file:"
+                   << m_zipPath << "error:" << m_zip.getZipError();
+
+        return false;
+    }
+
+    m_removeZipFile = zipFilePath.isEmpty();
+
+    return true;
+}
+
+bool SimpleZipWriter::close()
+{
+    m_zip.close();
+
+    return !m_zip.getZipError();
+}
+
+void SimpleZipWriter::add(const QString &fileName, const QByteArray &data)
+{
+    QuaZipFile outFile(&m_zip);
+    ml_return_on_fail2(outFile.open(QIODevice::WriteOnly, QuaZipNewInfo(fileName)),
+                           "SimpleZipWriter::addFromFile targetFile.open error" << outFile.getZipError());
+
+    outFile.write(data);
+
+    outFile.close();
+}
+
+void SimpleZipWriter::addFromFile(const QString &fileName, const QString &filePath)
+{
+    QFile inFile;
+    inFile.setFileName(filePath);
+    if(!inFile.open(QIODevice::ReadOnly)) {
+        qWarning() << "SimpleZipWriter::addFromFile can't open file for reading:"
+                   << inFile.errorString();
+        return;
+    }
+
+    QuaZipFile outFile(&m_zip);
+    ml_return_on_fail2(outFile.open(QIODevice::WriteOnly, QuaZipNewInfo(fileName)),
+                           "SimpleZipWriter::addFromFile targetFile.open error" << outFile.getZipError());
+
+    Utils::Files::copyData(inFile, outFile);
+
+    outFile.close();
+    inFile.close();
+}
+
+void SimpleZipWriter::addFromZip(const QString &filePath)
+{
+    Utils::Zip::copyFromZip(filePath, &m_zip);
+}
+
+/* Zip helper */
 
 ZipHelper::ZipHelper()
 {

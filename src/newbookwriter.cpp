@@ -37,7 +37,15 @@ void NewBookWriter::createNewBook()
         m_bookPath.replace(".mlb", "_.mlb");
     }
 
-    m_zipHelper.open();
+    if(!m_pagesZipWriter.open()) {
+        throw BookException("NewBookWriter::createNewBook can't create pages zip file",
+                            m_pagesZipWriter.zipPath());
+    }
+
+    if(!m_zipWriter.open(m_bookPath)) {
+        throw BookException("NewBookWriter::createNewBook can't create zip file",
+                            m_zipWriter.zipPath());
+    }
 }
 
 int NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int partNum,
@@ -65,10 +73,8 @@ int NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int par
     m_pagesWriter.writeEndElement();
 
     QString pageText = processPageText(text);
-    m_zipHelper.add(QString("pages/p%1.html").arg(pageID),
-                    pageText.toUtf8(),
-                    ZipHelper::AppendFile);
-
+    m_pagesZipWriter.add(QString("pages/p%1.html").arg(pageID),
+                         pageText.toUtf8());
 
     return pageID;
 }
@@ -192,31 +198,32 @@ void NewBookWriter::startReading()
     m_titlesWriter.writeStartDocument();
     m_titlesWriter.writeStartElement("titles");
 
-    m_zipHelper.transaction();
-
     m_lastLavel = 0;
 }
 
 void NewBookWriter::endReading()
 {
+    if(!m_pagesZipWriter.close())
+        throw BookException("NewBookWriter::endReading pages zip file close error");
+
     // The titles file
     m_titlesWriter.writeEndDocument();
     m_titlesFile.close();
 
-    m_zipHelper.addFromFile("titles.xml", m_titlesPath, ZipHelper::PrependFile);
+    m_zipWriter.addFromFile("titles.xml", m_titlesPath);
 
     // Pages info file
     m_pagesWriter.writeEndDocument();
     m_pagesFile.close();
 
-    m_zipHelper.addFromFile("pages.xml", m_pagesPath, ZipHelper::PrependFile);
+    m_zipWriter.addFromFile("pages.xml", m_pagesPath);
 
-    if(!m_zipHelper.commit())
-        throw BookException("NewBookWriter::endReading database commit error");
+    // Add pages
+    m_zipWriter.addFromZip(m_pagesZipWriter.zipPath());
 
-    m_bookPath = m_zipHelper.zip(m_bookPath);
-
-    if(m_bookPath.isEmpty())
+    if(!m_zipWriter.close())
         throw BookException("NewBookWriter::endReading zip file close error");
+
+    m_bookPath = m_zipWriter.zipPath();
 }
 

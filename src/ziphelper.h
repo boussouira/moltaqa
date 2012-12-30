@@ -12,6 +12,26 @@
 
 class BookPage;
 
+class SimpleZipWriter {
+public:
+    SimpleZipWriter();
+    ~SimpleZipWriter();
+
+    bool open(QString zipFilePath=QString());
+    bool close();
+
+    inline QString zipPath() { return m_zipPath; }
+
+    void add(const QString &fileName, const QByteArray &data);
+    void addFromFile(const QString &fileName, const QString &filePath);
+    void addFromZip(const QString &filePath);
+
+protected:
+    QString m_zipPath;
+    QuaZip m_zip;
+    bool m_removeZipFile;
+};
+
 class ZipHelper
 {
 public:
