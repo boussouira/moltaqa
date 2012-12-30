@@ -212,7 +212,7 @@ void HtmlBookExporter::writePage(QDir &dir, BookPage *page)
     helper.beginHead();
     helper.setCharset("utf-8");
     helper.addCSS("../../style/default.css", true);
-
+    helper.setTitle(m_book->title);
     helper.endHead();
 
     helper.beginBody();
