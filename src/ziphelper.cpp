@@ -97,7 +97,11 @@ ZipHelper::ZipHelper()
 
 ZipHelper::~ZipHelper()
 {
-    m_remover.removeDatabase(m_db);
+    QString db = m_db.connectionName();
+    m_query.clear();
+    m_db = QSqlDatabase();
+
+    QSqlDatabase::removeDatabase(db);
 
     if(QFile::exists(m_dbPath)) {
         ml_warn_on_fail(QFile::remove(m_dbPath),

@@ -78,7 +78,6 @@ protected:
 
 protected:
     QString m_dbPath;
-    DatabaseRemover m_remover;
     QSqlDatabase m_db;
     QSqlQuery m_query;
     int m_appendPos;
