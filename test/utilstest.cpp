@@ -394,6 +394,9 @@ void UtilsTest::cleanFileName()
     QCOMPARE(Utils::Files::cleanFileName("book first.pdf"),
              QString("book first.pdf"));
 
+    QCOMPARE(Utils::Files::cleanFileName("book: first.pdf"),
+             QString("book first.pdf"));
+
     QCOMPARE(Utils::Files::cleanFileName("book first.pdf", true),
              QString("book_first.pdf"));
 

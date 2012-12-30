@@ -482,7 +482,7 @@ QString formatSize(quint64 size)
 QString cleanFileName(QString fileName, bool removeSpace)
 {
     QFileInfo info(fileName);
-    QString baseName = info.baseName().remove(QRegExp("[\\?\\*<>\\(\\)\\[\\]\"']")).simplified();
+    QString baseName = info.baseName().remove(QRegExp("[\\?\\*<>\\(\\)\\[\\]\"':]")).simplified();
     QString ext = info.completeSuffix().trimmed();
 
     if(removeSpace)
