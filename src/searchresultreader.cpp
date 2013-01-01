@@ -99,7 +99,7 @@ bool SearchResultReader::getQuranPage(QuaZip *zip, LibraryBook::Ptr book, BookPa
         bookReader.readNext();
 
         if(bookReader.isStartElement()) {
-            if(bookReader.name() == "item") {
+            if(bookReader.name() == "aya") {
                 if(pid == bookReader.attributes().value("id")) {
                     page->part = bookReader.attributes().value("part").toString().toInt();
                     page->part = qMax(1, page->part);
@@ -153,7 +153,7 @@ bool SearchResultReader::getPageInfo(QuaZip *zip, LibraryBook::Ptr book, BookPag
         reader.readNext();
 
         if(reader.isStartElement()) {
-            if(reader.name() == "item") {
+            if(reader.name() == "page") {
                 if(reader.attributes().value("id") == pageIdStr) {
                     page->part = reader.attributes().value("part").toString().toInt();
                     page->page = reader.attributes().value("page").toString().toInt();

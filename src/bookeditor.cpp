@@ -188,7 +188,7 @@ void BookEditor::saveDom()
 void BookEditor::addPage(int pageID)
 {
     QDomElement e = m_bookReader->pagesDom().currentElement();
-    QDomElement page = m_bookReader->pagesDom().domDocument().createElement("item");
+    QDomElement page = m_bookReader->pagesDom().domDocument().createElement("page");
 
     page.setAttribute("id", pageID);
     page.setAttribute("page", e.attribute("page"));
