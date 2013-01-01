@@ -34,8 +34,7 @@ protected:
     QString m_booksDir;
     QString m_bookPath;
 
-    SimpleZipWriter m_pagesZipWriter;
-    SimpleZipWriter m_zipWriter;
+    ZipWriterManager m_zipWriter;
 
     QString m_pagesPath;
     QFile m_pagesFile;

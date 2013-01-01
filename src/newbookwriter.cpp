@@ -37,11 +37,6 @@ void NewBookWriter::createNewBook()
         m_bookPath.replace(".mlb", "_.mlb");
     }
 
-    if(!m_pagesZipWriter.open()) {
-        throw BookException("NewBookWriter::createNewBook can't create pages zip file",
-                            m_pagesZipWriter.zipPath());
-    }
-
     if(!m_zipWriter.open(m_bookPath)) {
         throw BookException("NewBookWriter::createNewBook can't create zip file",
                             m_zipWriter.zipPath());
@@ -72,8 +67,9 @@ void NewBookWriter::addPage(BookPage *page)
     m_pagesWriter.writeEndElement();
 
     QString pageText = processPageText(page->text);
-    m_pagesZipWriter.add(QString("pages/p%1.html").arg(page->pageID),
-                         pageText.toUtf8());
+    m_zipWriter.add(QString("pages/p%1.html").arg(page->pageID),
+                    pageText.toUtf8(),
+                    ZipWriterManager::AppendFile);
 }
 
 void NewBookWriter::addTitle(const QString &title, int tid, int level)
@@ -200,23 +196,17 @@ void NewBookWriter::startReading()
 
 void NewBookWriter::endReading()
 {
-    if(!m_pagesZipWriter.close())
-        throw BookException("NewBookWriter::endReading pages zip file close error");
-
     // The titles file
     m_titlesWriter.writeEndDocument();
     m_titlesFile.close();
 
-    m_zipWriter.addFromFile("titles.xml", m_titlesPath);
+    m_zipWriter.addFromFile("titles.xml", m_titlesPath, ZipWriterManager::PrependFile);
 
     // Pages info file
     m_pagesWriter.writeEndDocument();
     m_pagesFile.close();
 
-    m_zipWriter.addFromFile("pages.xml", m_pagesPath);
-
-    // Add pages
-    m_zipWriter.addFromZip(m_pagesZipWriter.zipPath());
+    m_zipWriter.addFromFile("pages.xml", m_pagesPath, ZipWriterManager::PrependFile);
 
     if(!m_zipWriter.close())
         throw BookException("NewBookWriter::endReading zip file close error");
