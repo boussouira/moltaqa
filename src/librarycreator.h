@@ -40,9 +40,6 @@ protected:
     void importBook(ShamelaBookInfo *shamelBook, QString path);
     void importQuran(QString path);
 
-    void readSimpleBook(ShamelaBookInfo *book, QSqlQuery &query, NewBookWriter &writer, bool hno);
-    void readTafessirBook(ShamelaBookInfo *book, QSqlQuery &query, NewBookWriter &writer, bool hno);
-
 protected:
     LibraryInfo *m_library;
     ShamelaManager *m_shamelaManager;

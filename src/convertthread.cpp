@@ -138,82 +138,42 @@ void ConvertThread::convertShamelaBook(const QString &path)
 
 void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDatabase &bookDB, int bookID)
 {
-    QSqlQuery query(bookDB);
-
-#ifdef USE_MDBTOOLS
-    query.prepare(QString("SELECT * FROM b%1 LIMIT 1").arg(bookID));
-#else
-    query.prepare(QString("SELECT TOP 1 * FROM b%1").arg(bookID));
-#endif
-
-    ml_throw_on_query_exec_fail(query);
-
-    int hnoCol = query.record().indexOf("hno");
-    int ayaCol = query.record().indexOf("aya");
-    int soraCol = query.record().indexOf("sora");
-
     NewBookWriter writer;
     writer.createNewBook();
     writer.startReading();
 
-    if(ayaCol != -1 && soraCol != -1) {
-        // This is a tafessir book
-        if(hnoCol!=-1) {
-            // We have hno column
-            query.prepare(QString("SELECT id, nass, page, part, aya, sora, hno FROM b%1 ORDER BY id").arg(bookID));
-            ml_throw_on_query_exec_fail(query);
+    QSqlQuery query(bookDB);
+    query.prepare(QString("SELECT * FROM b%1 ORDER BY id").arg(bookID));
+    ml_throw_on_query_exec_fail(query);
 
-            while(query.next()) {
-                writer.addPage(query.value(1).toString(),
-                               query.value(0).toInt(),
-                               query.value(2).toInt(),
-                               query.value(3).toInt(),
-                               query.value(6).toInt(),
-                               query.value(4).toInt(),
-                               query.value(5).toInt());
-            }
-        } else {
-            // We don't have hno column
-            query.prepare(QString("SELECT id, nass, page, part, aya, sora FROM b%1 ORDER BY id").arg(bookID));
-            ml_throw_on_query_exec_fail(query);
+    int IdCol = query.record().indexOf("id");
+    int nassCol = query.record().indexOf("nass");
+    int pageCol = query.record().indexOf("page");
+    int partCol = query.record().indexOf("part");
+    int ayaCol = query.record().indexOf("aya");
+    int soraCol = query.record().indexOf("sora");
+    int hnoCol = query.record().indexOf("hno");
 
-            while(query.next()) {
-                writer.addPage(query.value(1).toString(),
-                               query.value(0).toInt(),
-                               query.value(2).toInt(),
-                               query.value(3).toInt(),
-                               -1,
-                               query.value(4).toInt(),
-                               query.value(5).toInt());
-            }
+    BookPage page;
+    while(query.next()) {
+        page.pageID = query.value(IdCol).toInt();
+        page.text = query.value(nassCol).toString();
+        page.page = query.value(pageCol).toInt();
+        page.part = query.value(partCol).toInt();
+
+        if(soraCol != -1 && ayaCol != -1) {
+            page.aya = query.value(ayaCol).toInt();
+            page.sora = query.value(soraCol).toInt();
         }
-    } else {
-        // This is a simple book
-        if(hnoCol!=-1) {
-            // We have hno column
-            query.prepare(QString("SELECT id, nass, page, part, hno FROM b%1 ORDER BY id").arg(bookID));
-            ml_throw_on_query_exec_fail(query);
 
-            while(query.next()) {
-                writer.addPage(query.value(1).toString(),
-                               query.value(0).toInt(),
-                               query.value(2).toInt(),
-                               query.value(3).toInt(),
-                               query.value(4).toInt());
-            }
-        } else {
-            // We don't have hno column
-            query.prepare(QString("SELECT id, nass, page, part FROM b%1 ORDER BY id").arg(bookID));
-            ml_throw_on_query_exec_fail(query);
-
-            while(query.next()) {
-                writer.addPage(query.value(1).toString(),
-                               query.value(0).toInt(),
-                               query.value(2).toInt(),
-                               query.value(3).toInt());
-            }
+        if(hnoCol != -1) {
+            page.haddit = query.value(hnoCol).toInt();
         }
+
+        writer.addPage(&page);
+        page.clear();
     }
+
 
     query.prepare(QString("SELECT id, tit, lvl, sub FROM t%1 ORDER BY id, sub").arg(bookID));
     ml_throw_on_query_exec_fail(query);

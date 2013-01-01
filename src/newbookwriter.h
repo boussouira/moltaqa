@@ -24,8 +24,7 @@ public:
 
     /// Commits a transaction to the database
     void endReading();
-    int addPage(const QString &text, int pageID, int pageNum, int partNum,
-                int hadditNum=0, int ayaNum=0, int soraNum=0);
+    void addPage(BookPage *page);
     void addTitle(const QString &title, int tid, int level);
 
 protected:

@@ -203,11 +203,17 @@ void LibraryBookManagerWidget::createNewBook()
             book->authorName = authorDialog.selectedAuthorName();
         }
 
+        BookPage page;
+        page.pageID = 1;
+        page.page = 1;
+        page.part = 1;
+        page.text = title;
+
         NewBookWriter bookWrite;
         bookWrite.createNewBook();
 
         bookWrite.startReading();
-        bookWrite.addPage(title, 1, 1, 1);
+        bookWrite.addPage(&page);
         bookWrite.addTitle(title, 1, 0);
         bookWrite.endReading();
 

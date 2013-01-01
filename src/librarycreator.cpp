@@ -130,9 +130,6 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
     DatabaseRemover remover;
     QString connName(QString("mdb_%1_%2").arg(m_threadID).arg(book->archive));
 
-    NewBookWriter bookWrite;
-    bookWrite.createNewBook();
-
     QSqlDatabase bookDB;
     if(book->archive && book->archive == m_prevArchive) {
         bookDB = QSqlDatabase::database(connName);
@@ -163,26 +160,45 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
         ml_throw_on_db_open_fail(bookDB);
     }
 
-    QSqlQuery query(bookDB);
 
-#ifdef USE_MDBTOOLS
-    query.prepare(QString("SELECT * FROM %1 LIMIT 1").arg(book->mainTable));
-#else
-    query.prepare(QString("SELECT TOP 1 * FROM %1").arg(book->mainTable));
-#endif
-
-    ml_throw_on_query_exec_fail(query);
-
-    int hnoCol = query.record().indexOf("hno");
-    int ayaCol = query.record().indexOf("aya");
-    int soraCol = query.record().indexOf("sora");
-
+    NewBookWriter bookWrite;
+    bookWrite.createNewBook();
     bookWrite.startReading();
 
-    if(ayaCol != -1 && soraCol != -1) {
-        readTafessirBook(book, query, bookWrite, hnoCol!=-1);
-    } else {
-        readSimpleBook(book, query, bookWrite, hnoCol!=-1);
+    QSqlQuery query(bookDB);
+    query.prepare(QString("SELECT * FROM %1 ORDER BY id").arg(book->mainTable));
+    ml_throw_on_query_exec_fail(query);
+
+    int IdCol = query.record().indexOf("id");
+    int nassCol = query.record().indexOf("nass");
+    int pageCol = query.record().indexOf("page");
+    int partCol = query.record().indexOf("part");
+    int ayaCol = query.record().indexOf("aya");
+    int soraCol = query.record().indexOf("sora");
+    int hnoCol = query.record().indexOf("hno");
+
+    BookPage page;
+    ShoortsList shoorts = m_shamelaManager->getBookShoorts(book->id);
+    while(query.next()) {
+        page.pageID = query.value(IdCol).toInt();
+        page.text = query.value(nassCol).toString();
+        page.page = query.value(pageCol).toInt();
+        page.part = query.value(partCol).toInt();
+
+        if(soraCol != -1 && ayaCol != -1) {
+            page.aya = query.value(ayaCol).toInt();
+            page.sora = query.value(soraCol).toInt();
+        }
+
+        if(hnoCol != -1) {
+            page.haddit = query.value(hnoCol).toInt();
+        }
+
+        if(shoorts.size())
+            RemoveShamelaShoorts(page.text, shoorts);
+
+        bookWrite.addPage(&page);
+        page.clear();
     }
 
     query.prepare(QString("SELECT id, tit, lvl, sub FROM %1 ORDER BY id, sub").arg(book->tocTable));
@@ -298,82 +314,4 @@ void LibraryCreator::importQuran(QString path)
     book->fileName = fileInfo.fileName();
 
     m_libraryManager->addBook(book, 0);
-}
-
-void LibraryCreator::readSimpleBook(ShamelaBookInfo *book, QSqlQuery &query, NewBookWriter &writer, bool hno)
-{
-    ShoortsList shoorts = m_shamelaManager->getBookShoorts(book->id);
-
-    if(hno) {
-        query.prepare(QString("SELECT id, nass, page, part, hno FROM %1 ORDER BY id").arg(book->mainTable));
-        ml_throw_on_query_exec_fail(query);
-
-        while(query.next()) {
-            QString pageText = query.value(1).toString();
-            RemoveShamelaShoorts(pageText, shoorts);
-
-            writer.addPage(pageText,
-                           query.value(0).toInt(),
-                           query.value(2).toInt(),
-                           query.value(3).toInt(),
-                           query.value(4).toInt());
-        }
-    } else {
-        query.prepare(QString("SELECT id, nass, page, part FROM %1 ORDER BY id").arg(book->mainTable));
-        ml_throw_on_query_exec_fail(query);
-
-        while(query.next()) {
-            QString pageText= query.value(1).toString();
-            RemoveShamelaShoorts(pageText, shoorts);
-
-            writer.addPage(pageText,
-                           query.value(0).toInt(),
-                           query.value(2).toInt(),
-                           query.value(3).toInt());
-        }
-    }
-}
-
-void LibraryCreator::readTafessirBook(ShamelaBookInfo *book, QSqlQuery &query, NewBookWriter &writer, bool hno)
-{
-    ShoortsList shoorts = m_shamelaManager->getBookShoorts(book->id);
-
-    if(hno) {
-        query.prepare(QString("SELECT id, nass, page, part, aya, sora, hno FROM %1 ORDER BY id").arg(book->mainTable));
-        if(query.exec()) {
-            while(query.next()) {
-                QString pageText= query.value(1).toString();
-                RemoveShamelaShoorts(pageText, shoorts);
-
-                writer.addPage(pageText,
-                               query.value(0).toInt(),
-                               query.value(2).toInt(),
-                               query.value(3).toInt(),
-                               query.value(6).toInt(),
-                               query.value(4).toInt(),
-                               query.value(5).toInt());
-            }
-        } else {
-            ml_warn_query_error(query);
-        }
-    } else {
-        query.prepare(QString("SELECT id, nass, page, part, aya, sora FROM %1 ORDER BY id").arg(book->mainTable));
-        if(query.exec()) {
-            while(query.next()) {
-                QString pageText= query.value(1).toString();
-                RemoveShamelaShoorts(pageText, shoorts);
-
-                writer.addPage(pageText,
-                               query.value(0).toInt(),
-                               query.value(2).toInt(),
-                               query.value(3).toInt(),
-                               -1,
-                               query.value(4).toInt(),
-                               query.value(5).toInt());
-            }
-        } else {
-            ml_warn_query_error(query);
-        }
-
-    }
 }

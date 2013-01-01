@@ -48,35 +48,32 @@ void NewBookWriter::createNewBook()
     }
 }
 
-int NewBookWriter::addPage(const QString &text, int pageID, int pageNum, int partNum,
-                           int hadditNum, int ayaNum, int soraNum)
+void NewBookWriter::addPage(BookPage *page)
 {
-    if(partNum<1)
-        partNum = 1;
+    if(page->part<1)
+        page->part = 1;
 
-    if(pageNum<1)
-        pageNum = 1;
+    if(page->page<1)
+        page->page = 1;
 
     m_pagesWriter.writeStartElement("page");
-    m_pagesWriter.writeAttribute("id", QString::number(pageID));
-    m_pagesWriter.writeAttribute("page", QString::number(pageNum));
-    m_pagesWriter.writeAttribute("part", QString::number(partNum));
+    m_pagesWriter.writeAttribute("id", QString::number(page->pageID));
+    m_pagesWriter.writeAttribute("page", QString::number(page->page));
+    m_pagesWriter.writeAttribute("part", QString::number(page->part));
 
-    if(hadditNum)
-        m_pagesWriter.writeAttribute("haddit", QString::number(hadditNum));
+    if(page->haddit)
+        m_pagesWriter.writeAttribute("haddit", QString::number(page->haddit));
 
-    if(soraNum && ayaNum) {
-        m_pagesWriter.writeAttribute("aya", QString::number(ayaNum));
-        m_pagesWriter.writeAttribute("sora", QString::number(soraNum));
+    if(page->sora && page->aya) {
+        m_pagesWriter.writeAttribute("aya", QString::number(page->aya));
+        m_pagesWriter.writeAttribute("sora", QString::number(page->sora));
     }
 
     m_pagesWriter.writeEndElement();
 
-    QString pageText = processPageText(text);
-    m_pagesZipWriter.add(QString("pages/p%1.html").arg(pageID),
+    QString pageText = processPageText(page->text);
+    m_pagesZipWriter.add(QString("pages/p%1.html").arg(page->pageID),
                          pageText.toUtf8());
-
-    return pageID;
 }
 
 void NewBookWriter::addTitle(const QString &title, int tid, int level)
