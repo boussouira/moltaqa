@@ -66,10 +66,20 @@ void NewBookWriter::addPage(BookPage *page)
 
     m_pagesWriter.writeEndElement();
 
-    QString pageText = processPageText(page->text);
-    m_zipWriter.add(QString("pages/p%1.html").arg(page->pageID),
+    if(page->text.size()) {
+        QString pageText = processPageText(page->text);
+        m_zipWriter.add(QString("pages/p%1.html").arg(page->pageID),
+                        pageText.toUtf8(),
+                        ZipWriterManager::AppendFile);
+    }
+}
+
+void NewBookWriter::addPageText(int pageID, const QString &text)
+{
+    QString pageText = processPageText(text);
+    m_zipWriter.add(QString("pages/p%1.html").arg(pageID),
                     pageText.toUtf8(),
-                    ZipWriterManager::AppendFile);
+                    ZipWriterManager::PrependFile);
 }
 
 void NewBookWriter::addTitle(const QString &title, int tid, int level)

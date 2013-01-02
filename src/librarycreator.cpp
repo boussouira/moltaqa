@@ -181,7 +181,6 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
     ShoortsList shoorts = m_shamelaManager->getBookShoorts(book->id);
     while(query.next()) {
         page.pageID = query.value(IdCol).toInt();
-        page.text = query.value(nassCol).toString();
         page.page = query.value(pageCol).toInt();
         page.part = query.value(partCol).toInt();
 
@@ -208,6 +207,16 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
         bookWrite.addTitle(query.value(1).toString(),
                            query.value(0).toInt(),
                            query.value(2).toInt());
+    }
+
+    query.prepare(QString("SELECT id, nass FROM %1").arg(book->mainTable));
+    ml_throw_on_query_exec_fail(query);
+
+    IdCol = query.record().indexOf("id");
+    nassCol = query.record().indexOf("nass");
+    while(query.next()) {
+        bookWrite.addPageText(query.value(IdCol).toInt(),
+                              query.value(nassCol).toString());
     }
 
     bookWrite.endReading();

@@ -157,7 +157,6 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
     BookPage page;
     while(query.next()) {
         page.pageID = query.value(IdCol).toInt();
-        page.text = query.value(nassCol).toString();
         page.page = query.value(pageCol).toInt();
         page.part = query.value(partCol).toInt();
 
@@ -182,6 +181,16 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
         writer.addTitle(query.value(1).toString(),
                         query.value(0).toInt(),
                         query.value(2).toInt());
+    }
+
+    query.prepare(QString("SELECT id, nass FROM b%1").arg(bookID));
+    ml_throw_on_query_exec_fail(query);
+
+    IdCol = query.record().indexOf("id");
+    nassCol = query.record().indexOf("nass");
+    while(query.next()) {
+        writer.addPageText(query.value(IdCol).toInt(),
+                           query.value(nassCol).toString());
     }
 
     writer.endReading();
