@@ -170,7 +170,7 @@ QVariant ImportModel::data(const QModelIndex &index, int role) const
         if (index.column() == 0)
             return node->comment;
     } else if(role == Qt::BackgroundRole) {
-        if (index.column() == 1 && node->authorID == 0)
+        if (index.column() == 1 && (!node->authorID && !node->isQuran()))
             return QColor(0xf5, 0x82, 0x82);
         else
             return node->bgColor;
