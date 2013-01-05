@@ -51,8 +51,6 @@ void ConvertThread::run()
             else
                 qWarning() << "ConvertThread: File" << info.fileName() << "not handeled";
 
-            emit setProgress(++m_convertedFiles);
-
 #ifdef USE_MDBTOOLS
             if(m_tempDB.size()) {
                 QFile::remove(m_tempDB);
@@ -88,6 +86,15 @@ void ConvertThread::convertShamelaBook(const QString &path)
     }
 
     QSqlQuery bookQuery(bookDB);
+
+    bookQuery.prepare("SELECT COUNT(*) FROM Main");
+    ml_throw_on_query_exec_fail(bookQuery);
+
+    if(bookQuery.next()) {
+        int booksCount = bookQuery.value(0).toInt();
+        if(booksCount > 1)
+            emit addBooksToProgress(booksCount-1);
+    }
 
     bookQuery.prepare("SELECT * FROM Main");
     ml_throw_on_query_exec_fail(bookQuery);
@@ -203,6 +210,8 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
     writer.endReading();
 
     node->path = writer.bookPath();
+
+    emit bookConverted(node->title);
 }
 
 QString ConvertThread::getBookType(const QSqlDatabase &bookDB)
@@ -260,6 +269,10 @@ void ConvertThread::convertMoltaqaPackage(const QString &path)
 
     QDomElement books = contentDom.rootElement().firstChildElement("books");
     QDomElement authors = contentDom.rootElement().firstChildElement("authors");
+
+    int booksCount = books.elementsByTagName("book").size();
+    if(booksCount > 1)
+        emit addBooksToProgress(booksCount-1);
 
     QDomElement bookElement = books.firstChildElement("book");
     while(!bookElement.isNull()) {

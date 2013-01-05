@@ -43,6 +43,9 @@ protected slots:
     void startImporting();
     void doneImporting();
 
+    void bookConverted(QString bookName);
+    void addBooksToProgress(int count);
+
 private slots:
     void on_pushNext_clicked();
     void on_pushDeleteFile_clicked();

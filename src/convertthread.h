@@ -40,7 +40,8 @@ protected:
     AuthorInfo::Ptr importAuthorInfo(QDomElement &authorElement);
 
 signals:
-    void setProgress(int prog);
+    void bookConverted(QString bookName);
+    void addBooksToProgress(int count);
 
 protected:
     ImportModel *m_model;
