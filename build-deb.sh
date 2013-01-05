@@ -70,10 +70,11 @@ echo "[*] Create md5 sums"
 cd $TEMP_DIR_PATH/$OUTPUT_DIR
 md5sum -b * > MD5SUMS
 
-cp -rv $TEMP_DIR_PATH/$OUTPUT_DIR "$SOURCE_DIR/_$APP_DIR_NAME"
+mkdir -p "$SOURCE_DIR/$OUTPUT_DIR/$APP_DIR_NAME"
+cp -rv $TEMP_DIR_PATH/$OUTPUT_DIR/* "$SOURCE_DIR/$OUTPUT_DIR/$APP_DIR_NAME"
 
-echo "[*] Generated files in $SOURCE_DIR/$OUTPUT_DIR"
-cat $SOURCE_DIR/$OUTPUT_DIR/MD5SUMS
+echo "[*] Generated files in $SOURCE_DIR/$OUTPUT_DIR/$APP_DIR_NAME"
+cat $SOURCE_DIR/$OUTPUT_DIR/$APP_DIR_NAME/MD5SUMS
 
 echo "[*] Remove build directory"
 cd $SOURCE_DIR
