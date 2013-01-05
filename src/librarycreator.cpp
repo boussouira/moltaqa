@@ -10,6 +10,7 @@
 #include "booklistmanager.h"
 #include "librarybookmanager.h"
 #include "authorsmanager.h"
+#include "bookutils.h"
 
 #ifdef USE_MDBTOOLS
 #include "mdbconverter.h"
@@ -160,13 +161,18 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
         ml_throw_on_db_open_fail(bookDB);
     }
 
-
     NewBookWriter bookWrite;
     bookWrite.createNewBook();
     bookWrite.startReading();
 
+    QString tableName = book->mainTable;
+    QString queryFields = Utils::Book::shamelaQueryFields(bookDB, tableName);
+
     QSqlQuery query(bookDB);
-    query.prepare(QString("SELECT * FROM %1 ORDER BY id").arg(book->mainTable));
+    query.prepare(QString("SELECT %1 FROM %2 ORDER BY id")
+                  .arg(queryFields)
+                  .arg(tableName));
+
     ml_throw_on_query_exec_fail(query);
 
     int IdCol = query.record().indexOf("id");
