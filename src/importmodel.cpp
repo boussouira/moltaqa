@@ -198,9 +198,13 @@ bool ImportModel::setData(const QModelIndex &index, const QVariant &value, int r
     return false;
 }
 
-Qt::ItemFlags ImportModel::flags ( const QModelIndex & /*index*/ ) const
+Qt::ItemFlags ImportModel::flags ( const QModelIndex & index ) const
 {
-    return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    Qt::ItemFlags f = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    if(index.column() != 2)
+        f |= Qt::ItemIsEditable;
+
+     return f;
 }
 
 QVariant ImportModel::headerData(int section,
