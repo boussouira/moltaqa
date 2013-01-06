@@ -16,8 +16,11 @@ void BookPage::clear()
     haddit = 0;
     titleID = 0;
 
-    text.clear();
-    title.clear();
+    if(text.size())
+        text.clear();
+
+    if(title.size())
+        title.clear();
 }
 
 BookPage *BookPage::clone()
