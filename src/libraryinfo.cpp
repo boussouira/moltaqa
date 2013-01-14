@@ -106,6 +106,14 @@ void LibraryInfo::loafInfo(QString path)
     booksDir.cd(m_booksDir);
     m_booksDir = booksDir.absolutePath();
 
+    QString dirsName = "abcdefghijklmnpqrstuvwxyz0123456789";
+    for(int i=0; i<dirsName.size(); i++) {
+        QString dirName = QString("%1").arg(dirsName[i]);
+
+        if(!booksDir.exists(dirName))
+            booksDir.mkdir(dirName);
+    }
+
     QDir tempDir(m_path);
     if(!tempDir.exists(m_tempsDir))
         tempDir.mkdir(m_tempsDir);
