@@ -4,6 +4,7 @@
 #include <qwidget.h>
 #include <qfuture.h>
 #include <qfuturewatcher.h>
+#include "librarybook.h"
 
 class WebView;
 class IndexWidget;
@@ -20,7 +21,7 @@ class BookWidget: public QWidget
     Q_OBJECT
 
 public:
-    BookWidget(RichBookReader *reader, QWidget *parent=0);
+    BookWidget(LibraryBook::Ptr book, QWidget *parent=0);
     ~BookWidget();
 
     void displayInfo();
@@ -31,6 +32,7 @@ public:
     void saveSettings();
 
 protected:
+    void openReader();
     bool eventFilter(QObject *obj, QEvent *event);
     void focusInEvent(QFocusEvent *event);
     void loadSettings();
@@ -79,6 +81,7 @@ protected:
     QVBoxLayout *m_layout;
     WebView *m_view;
     IndexWidget *m_indexWidget;
+    LibraryBook::Ptr m_book;
     RichBookReader *m_reader;
     LibraryBookManager *m_bookManager;
     BookReaderHelper *m_bookHelper;

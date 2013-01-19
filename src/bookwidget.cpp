@@ -4,6 +4,8 @@
 #include "webview.h"
 #include "textformatter.h"
 #include "richsimplebookreader.h"
+#include "richquranreader.h"
+#include "richtafessirreader.h"
 #include "mainwindow.h"
 #include "bookreaderhelper.h"
 #include "modelenums.h"
@@ -24,17 +26,22 @@
 #include <qaction.h>
 #include <qtimer.h>
 
-BookWidget::BookWidget(RichBookReader *reader, QWidget *parent): QWidget(parent), m_reader(reader)
+BookWidget::BookWidget(LibraryBook::Ptr book, QWidget *parent):
+    QWidget(parent),
+    m_book(book),
+    m_reader(0)
 {
+    openReader();
+
     m_layout = new QVBoxLayout(this);
     m_splitter = new QSplitter(this);
     m_view = new WebView(this);
-    m_view->setStopScroll(!m_reader->bookInfo()->isQuran());
-    m_view->setBook(m_reader->bookInfo());
+    m_view->setStopScroll(!m_book->isQuran());
+    m_view->setBook(m_book);
 
     m_indexWidget = new IndexWidget(m_splitter);
-    m_indexWidget->setBookInfo(reader->bookInfo());
-    m_indexWidget->setCurrentPage(reader->page());
+    m_indexWidget->setBookInfo(m_book);
+    m_indexWidget->setCurrentPage(m_reader->page());
 
     m_bookManager = LibraryManager::instance()->bookManager();
     m_bookHelper = MW->readerHelper();
@@ -62,7 +69,7 @@ BookWidget::BookWidget(RichBookReader *reader, QWidget *parent): QWidget(parent)
     connect(m_view->page()->action(QWebPage::Reload), SIGNAL(triggered()), SLOT(reloadCurrentPage()));
     connect(&m_watcher, SIGNAL(finished()), SLOT(indexModelReady()));
 
-    if(!m_reader->bookInfo()->isQuran()) {
+    if(!m_book->isQuran()) {
         connect(m_view, SIGNAL(nextPage()), SLOT(wheelNextPage()));
         connect(m_view, SIGNAL(prevPage()), SLOT(wheelPrevPage()));
     }
@@ -80,7 +87,7 @@ BookWidget::~BookWidget()
         m_watcher.waitForFinished();
     }
 
-    delete m_reader;
+    ml_delete_check(m_reader);
 }
 
 void BookWidget::loadSettings()
@@ -93,6 +100,22 @@ void BookWidget::loadSettings()
 void BookWidget::saveSettings()
 {
     Utils::Settings::set("BookWidget/splitter", m_splitter->saveState());
+}
+
+void BookWidget::openReader()
+{
+    if(m_book->isQuran())
+        m_reader = new RichQuranReader();
+    else if(m_book->isNormal())
+        m_reader = new RichSimpleBookReader();
+    else if(m_book->isTafessir())
+        m_reader = new RichTafessirReader();
+    else
+        throw BookException(tr("لم يتم التعرف على نوع الكتاب"), QString("Book Type: %1").arg(m_book->type));
+
+    m_reader->setBookInfo(m_book);
+
+    m_reader->openBook();
 }
 
 bool BookWidget::search(const QString &text)
@@ -130,21 +153,21 @@ void BookWidget::displayInfo()
 {
     QStandardItemModel *model = 0;
 
-    if(m_reader->bookInfo()->isQuran()) {
+    if(m_book->isQuran()) {
         model = m_reader->indexModel();
     } else {
-        if(!m_bookHelper->containsBookModel(m_reader->bookInfo()->id)) {
+        if(!m_bookHelper->containsBookModel(m_book->id)) {
             m_retModel = QtConcurrent::run(m_reader, &RichBookReader::indexModel);
             m_watcher.setFuture(m_retModel);
         } else {
-            QStandardItemModel *savedModel = m_bookHelper->getBookModel(m_reader->bookInfo()->id);
+            QStandardItemModel *savedModel = m_bookHelper->getBookModel(m_book->id);
             if(savedModel)
                 model = Utils::Model::cloneModel(savedModel);
         }
     }
 
     m_indexWidget->setIndex(model ? model : new QStandardItemModel(this));
-    m_indexWidget->hideAyaSpin(!m_reader->bookInfo()->isNormal());
+    m_indexWidget->hideAyaSpin(!m_book->isNormal());
 }
 
 void BookWidget::indexModelReady()
@@ -156,8 +179,8 @@ void BookWidget::indexModelReady()
 
     m_indexWidget->displayBookInfo();
 
-    if(!m_bookHelper->containsBookModel(m_reader->bookInfo()->id))
-        m_bookHelper->addBookModel(m_reader->bookInfo()->id, Utils::Model::cloneModel(model));
+    if(!m_bookHelper->containsBookModel(m_book->id))
+        m_bookHelper->addBookModel(m_book->id, Utils::Model::cloneModel(model));
 }
 
 void BookWidget::openPage(int id)
@@ -176,7 +199,7 @@ void BookWidget::firstPage()
 
 void BookWidget::lastPage()
 {
-    if(m_reader->bookInfo()->isQuran()) {
+    if(m_book->isQuran()) {
         m_reader->goToSora(112, 1);
         scrollToCurrentAya(true);
     } else {
@@ -214,7 +237,7 @@ void BookWidget::wheelPrevPage()
 
 void BookWidget::scrollDown()
 {
-    if(m_reader->bookInfo()->isQuran()) {
+    if(m_book->isQuran()) {
         int page = m_reader->page()->page;
 
         m_reader->nextAya();
@@ -231,7 +254,7 @@ void BookWidget::scrollDown()
 
 void BookWidget::scrollUp()
 {
-    if(m_reader->bookInfo()->isQuran()) {
+    if(m_book->isQuran()) {
         int page = m_reader->page()->page;
 
         m_reader->prevAya();
@@ -257,7 +280,7 @@ void BookWidget::openPage(int pageNum, int partNum)
 
 void BookWidget::openSora(int sora, int aya)
 {
-    if(m_reader->bookInfo()->isQuran() || m_reader->bookInfo()->isTafessir()) {
+    if(m_book->isQuran() || m_book->isTafessir()) {
         m_reader->goToSora(sora, aya);
         scrollToCurrentAya(true);
     }
@@ -265,13 +288,13 @@ void BookWidget::openSora(int sora, int aya)
 
 void BookWidget::openHaddit(int hadditNum)
 {
-    if(!m_reader->bookInfo()->isQuran())
+    if(!m_book->isQuran())
         m_reader->goToHaddit(hadditNum);
 }
 
 void BookWidget::scrollToCurrentAya(bool timer)
 {
-    ml_return_on_fail(m_reader->bookInfo()->isQuran());
+    ml_return_on_fail(m_book->isQuran());
 
     if(timer)
         QTimer::singleShot(500, this, SLOT(scrollToCurrentAya()));
@@ -302,13 +325,13 @@ void BookWidget::hideIndexWidget()
 void BookWidget::readerTextChanged()
 {
     QString js;
-    if(m_reader->bookInfo()->shorooh.isEmpty()) {
+    if(m_book->shorooh.isEmpty()) {
         js = "setShorooh(false);";
     } else {
 
         js = "setShorooh([";
 
-        foreach(BookShorooh shareeh, m_reader->bookInfo()->shorooh) {
+        foreach(BookShorooh shareeh, m_book->shorooh) {
             LibraryBook::Ptr book = m_bookManager->getLibraryBook(shareeh.bookID);
             if(!book)
                 continue;

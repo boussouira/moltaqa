@@ -252,37 +252,19 @@ BookPage *BookReaderView::currentPage()
 
 BookWidget *BookReaderView::openBook(int bookID, int pageID, CLuceneQuery *query)
 {
-    LibraryBook::Ptr bookInfo;
-    RichBookReader *bookReader = 0;
-    BookWidget *bookWidget = 0;
-
     try {
-        bookInfo = m_bookManager->getLibraryBook(bookID);
-
+        LibraryBook::Ptr bookInfo = m_bookManager->getLibraryBook(bookID);
         if(!bookInfo)
             throw BookException(tr("لم يتم العثور على الكتاب المطلوب"), tr("معرف الكتاب: %1").arg(bookID));
 
         if(!bookInfo->exists())
             throw BookException(tr("لم يتم العثور على ملف"), bookInfo->path);
 
-        if(bookInfo->isQuran())
-            bookReader = new RichQuranReader();
-        else if(bookInfo->isNormal())
-            bookReader = new RichSimpleBookReader();
-        else if(bookInfo->isTafessir())
-            bookReader = new RichTafessirReader();
-        else
-            throw BookException(tr("لم يتم التعرف على نوع الكتاب"), QString("Book Type: %1").arg(bookInfo->type));
-
-        bookReader->setBookInfo(bookInfo);
-
-        bookReader->openBook();
+        BookWidget *bookWidget = new BookWidget(bookInfo, this);
+        m_viewManager->addBook(bookWidget);
 
         if(query && pageID != -1)
-            bookReader->highlightPage(pageID, query);
-
-        bookWidget = new BookWidget(bookReader, this);
-        m_viewManager->addBook(bookWidget);
+            bookWidget->bookReader()->highlightPage(pageID, query);
 
         if(pageID == -1)
             bookWidget->openPage(m_bookManager->bookLastPageID(bookID));
@@ -295,47 +277,34 @@ BookWidget *BookReaderView::openBook(int bookID, int pageID, CLuceneQuery *query
 
         emit showMe();
 
+        return bookWidget;
+
     } catch (BookException &e) {
         QMessageBox::critical(this,
                               tr("فتح كتاب"),
                               e.what());
-
-        ml_delete_check(bookReader);
-        ml_delete_check(bookWidget);
+        return 0;
     }
-
-    return bookWidget;
 }
 
 void BookReaderView::openTafessir()
 {
-    BookWidget *bookWidget = 0;
-    RichTafessirReader *bookdb = 0;
-
     try {
         int tafessirID = m_comboTafasir->itemData(m_comboTafasir->currentIndex(), ItemRole::idRole).toInt();
 
         LibraryBook::Ptr bookInfo = m_bookManager->getLibraryBook(tafessirID);
         ml_return_on_fail(bookInfo && bookInfo->isTafessir() && m_viewManager->activeBook()->isQuran());
 
-        bookdb = new RichTafessirReader();
-        bookdb->setBookInfo(bookInfo);
-
-        bookdb->openBook();
-
         int sora = m_viewManager->activeBookReader()->page()->sora;
         int aya = m_viewManager->activeBookReader()->page()->aya;
 
-        bookWidget = new BookWidget(bookdb, this);
+        BookWidget *bookWidget = new BookWidget(bookInfo, this);
         m_viewManager->addBook(bookWidget);
 
         bookWidget->openSora(sora, aya);
 
         updateActions();
     } catch (BookException &e) {
-        ml_delete_check(bookdb);
-        ml_delete_check(bookWidget);
-
         QMessageBox::warning(this,
                              tr("فتح التفسير"),
                              e.what());
