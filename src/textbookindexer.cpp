@@ -3,79 +3,58 @@
 #include "clutils.h"
 #include "clconstants.h"
 #include "bookexception.h"
-#include "textquranreader.h"
-#include "textsimplebookreader.h"
-#include "texttafessirreader.h"
 #include "stringutils.h"
 #include "utils.h"
 
-TextBookIndexer::TextBookIndexer() :
+BookIndexerBase::BookIndexerBase() :
     m_writer(0),
-    m_doc(0),
+    m_doc(new Document()),
     m_book(0),
-    m_reader(0)
+    m_bookIdW(0)
 {
     m_tokenAndNoStore = Field::STORE_NO | Field::INDEX_TOKENIZED;
     m_storeAndNoToken = Field::STORE_YES | Field::INDEX_UNTOKENIZED;
 }
 
-TextBookIndexer::~TextBookIndexer()
+BookIndexerBase::~BookIndexerBase()
 {
-    ml_delete_check(m_reader);
+    ml_delete_check(m_doc);
+
+    if(m_bookIdW)
+        free(m_bookIdW);
 }
 
-void TextBookIndexer::open()
+void BookIndexerBase::setIndexWriter(IndexWriter *writer)
 {
-    if(m_book->isNormal())
-        m_reader = new TextSimpleBookReader();
-    else if (m_book->isTafessir())
-        m_reader = new TextTafessirReader();
-    else if (m_book->isQuran())
-        m_reader = new TextQuranReader();
-    else
-        throw BookException("Unknow book type", QString("Type: %1").arg(m_book->type));
-
-    m_reader->setBookInfo(m_book);
-    m_reader->openBook();
-    m_reader->load();
+    m_writer = writer;
 }
 
-void TextBookIndexer::start()
+void BookIndexerBase::setLibraryBook(LibraryBook::Ptr book)
 {
-    ml_return_on_fail2(m_reader->pagesCount(), "BookIndexer: Book" << m_book->title << "is empty");
-
-    wchar_t *bookW;
-    wchar_t *pageW;
-
-    m_doc = new Document();
-
-    BookPage *page = m_reader->page();
-    bookW = Utils::CLucene::intToWChar(m_book->id);
-
-    while (m_reader->hasNext()) {
-        m_reader->nextPage();
-
-        if(page->text.isEmpty())
-            continue;
-
-        pageW = Utils::CLucene::intToWChar(page->pageID);
-
-        m_doc->add( *_CLNEW Field(BOOK_ID_FIELD, bookW, m_storeAndNoToken));
-        m_doc->add( *_CLNEW Field(PAGE_ID_FIELD, pageW, m_storeAndNoToken, false));
-
-        indexPageText(page);
-        indexPage(page);
-
-        m_writer->addDocument(m_doc);
-        m_doc->clear();
-    }
-
-    free(bookW);
-    delete m_doc;
+    m_book = book;
+    m_bookIdW = Utils::CLucene::intToWChar(m_book->id);
 }
 
-void TextBookIndexer::indexPageText(BookPage *page)
+void BookIndexerBase::addPageToIndex(BookPage *page)
 {
+    indexPage(page);
+    morePageIndex(page);
+
+    m_writer->addDocument(m_doc);
+
+    m_doc->clear();
+    page->clear();
+}
+
+void BookIndexerBase::indexPage(BookPage *page)
+{
+    m_doc->add( *_CLNEW Field(PAGE_ID_FIELD,
+                              Utils::CLucene::intToWChar(page->pageID),
+                              m_storeAndNoToken, false));
+
+    m_doc->add( *_CLNEW Field(BOOK_ID_FIELD,
+                              m_bookIdW, m_storeAndNoToken));
+
     QString pageText = Utils::Html::removeSpecialChars(page->text);
 
     wchar_t *fullText = Utils::CLucene::QStringToWChar(Utils::Html::removeTags(pageText));
@@ -100,4 +79,9 @@ void TextBookIndexer::indexPageText(BookPage *page)
         m_doc->add( *_CLNEW Field(SHEER_FIELD,
                                   Utils::CLucene::QStringToWChar(sheer),
                                   m_tokenAndNoStore, false));
+}
+
+void BookIndexerBase::morePageIndex(BookPage *page)
+{
+    Q_UNUSED(page);
 }

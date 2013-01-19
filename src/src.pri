@@ -66,7 +66,6 @@ SOURCES += mainwindow.cpp \
     richbookreader.cpp \
     indextracker.cpp \
     indextaskiter.cpp \
-    textbookreader.cpp \
     indexmanager.cpp \
     bookindexer.cpp \
     arabicanalyzer.cpp \
@@ -83,8 +82,6 @@ SOURCES += mainwindow.cpp \
     librarysearcher.cpp \
     searchresult.cpp \
     resultwidget.cpp \
-    textsimplebookreader.cpp \
-    textquranreader.cpp \
     bookreaderhelper.cpp \
     sqlutils.cpp \
     taffesirlistmanagerwidget.cpp \
@@ -92,7 +89,6 @@ SOURCES += mainwindow.cpp \
     booksearchwidget.cpp \
     librarysearchfilter.cpp \
     booksearchfilter.cpp \
-    texttafessirreader.cpp \
     wordtypefilter.cpp \
     bookeditorview.cpp \
     editwebview.cpp \
@@ -211,7 +207,6 @@ HEADERS += mainwindow.h \
     richbookreader.h \
     indextracker.h \
     indextaskiter.h \
-    textbookreader.h \
     indexmanager.h \
     bookindexer.h \
     clheader.h \
@@ -231,8 +226,6 @@ HEADERS += mainwindow.h \
     librarysearcher.h \
     searchresult.h \
     resultwidget.h \
-    textsimplebookreader.h \
-    textquranreader.h \
     bookreaderhelper.h \
     sqlutils.h \
     libraryenums.h \
@@ -241,7 +234,6 @@ HEADERS += mainwindow.h \
     booksearchwidget.h \
     librarysearchfilter.h \
     booksearchfilter.h \
-    texttafessirreader.h \
     wordtypefilter.h \
     bookeditorview.h \
     editwebview.h \

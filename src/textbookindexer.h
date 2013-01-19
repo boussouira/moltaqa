@@ -3,34 +3,34 @@
 
 #include "librarybook.h"
 
-class TextBookReader;
-
 namespace lucene {
     namespace index { class IndexWriter; }
     namespace document { class Document; }
 }
 
-class TextBookIndexer
+class BookIndexerBase
 {
 public:
-    TextBookIndexer();
-    virtual ~TextBookIndexer();
+    BookIndexerBase();
+    virtual ~BookIndexerBase();
 
-    void setIndexWriter(lucene::index::IndexWriter *writer) { m_writer = writer; }
-    void setLibraryBook(LibraryBook::Ptr book) { m_book = book; }
+    void setIndexWriter(lucene::index::IndexWriter *writer);
+    void setLibraryBook(LibraryBook::Ptr book);
 
-    void open();
-    void start();
+    virtual void open()=0;
+    virtual void start()=0;
 
 protected:
-    void indexPageText(BookPage *page);
-    virtual void indexPage(BookPage *page)=0;
+    void addPageToIndex(BookPage *page);
+    void indexPage(BookPage *page);
+
+    virtual void morePageIndex(BookPage *page);
 
 protected:
     lucene::index::IndexWriter *m_writer;
     lucene::document::Document *m_doc;
     LibraryBook::Ptr m_book;
-    TextBookReader *m_reader;
+    wchar_t *m_bookIdW;
     int m_tokenAndNoStore;
     int m_storeAndNoToken;
 };

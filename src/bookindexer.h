@@ -3,7 +3,8 @@
 
 #include <qthread.h>
 #include "indextaskiter.h"
-#include "textbookreader.h"
+
+class LibraryBookManager;
 
 namespace lucene {
     namespace index {
@@ -11,11 +12,11 @@ namespace lucene {
     }
 }
 
-class BookIndexer : public QThread
+class BookIndexerThread : public QThread
 {
     Q_OBJECT
 public:
-    BookIndexer(QObject *parent = 0);
+    BookIndexerThread(QObject *parent = 0);
 
     void setWirter(lucene::index::IndexWriter* writer);
     void setTaskIter(IndexTaskIter *iter);

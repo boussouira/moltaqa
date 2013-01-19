@@ -7,9 +7,11 @@
 #include "simplebookindexer.h"
 #include "quranbookindexer.h"
 #include "librarybookmanager.h"
+#include "librarymanager.h"
+
 #include <exception>
 
-BookIndexer::BookIndexer(QObject *parent) :
+BookIndexerThread::BookIndexerThread(QObject *parent) :
     QThread(parent),
     m_writer(0),
     m_trackerIter(0),
@@ -18,27 +20,27 @@ BookIndexer::BookIndexer(QObject *parent) :
     m_bookManager = LibraryManager::instance()->bookManager();
 }
 
-void BookIndexer::setWirter(IndexWriter *writer)
+void BookIndexerThread::setWirter(IndexWriter *writer)
 {
     m_writer = writer;
 }
 
-void BookIndexer::setTaskIter(IndexTaskIter *iter)
+void BookIndexerThread::setTaskIter(IndexTaskIter *iter)
 {
     m_trackerIter = iter;
 }
 
-void BookIndexer::stop()
+void BookIndexerThread::stop()
 {
     m_stop = true;
 }
 
-void BookIndexer::run()
+void BookIndexerThread::run()
 {
     startIndexing();
 }
 
-void BookIndexer::startIndexing()
+void BookIndexerThread::startIndexing()
 {
     IndexTask *task = m_trackerIter->next();
 
@@ -81,22 +83,21 @@ void BookIndexer::startIndexing()
     emit doneIndexing();
 }
 
-void BookIndexer::indexBook(IndexTask *task)
+void BookIndexerThread::indexBook(IndexTask *task)
 {
-    TextBookIndexer *indexer = 0;
+    BookIndexerBase *indexer = 0;
     if(task->book->isNormal() || task->book->isTafessir())
-        indexer = new SimpleBookIndexer();
+        indexer = new BookIndexerSimple();
     else if (task->book->isQuran())
-        indexer = new QuranBookIndexer();
+        indexer = new BookIndexerQuran();
     else
         throw BookException("Unknow book type", QString("Type: %1").arg(task->book->type));
 
     indexer->setLibraryBook(task->book);
     indexer->setIndexWriter(m_writer);
 
-    indexer->open();
-
     try {
+        indexer->open();
         indexer->start();
     } catch(CLuceneError &err) {
         qCritical("BookIndexer::indexBook CLucene Error: %s", err.what());
@@ -109,7 +110,7 @@ void BookIndexer::indexBook(IndexTask *task)
     delete indexer;
 }
 
-void BookIndexer::deleteBook(IndexTask *task)
+void BookIndexerThread::deleteBook(IndexTask *task)
 {
     try {
         Term *term = new Term(BOOK_ID_FIELD, Utils::CLucene::intToWChar(task->bookID));
@@ -126,7 +127,7 @@ void BookIndexer::deleteBook(IndexTask *task)
     }
 }
 
-void BookIndexer::updateBook(IndexTask *task)
+void BookIndexerThread::updateBook(IndexTask *task)
 {
     deleteBook(task);
     indexBook(task);

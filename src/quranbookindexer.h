@@ -2,14 +2,22 @@
 #define QURANBOOKINDEXER_H
 
 #include "textbookindexer.h"
+#include <quazip.h>
+#include <quazipfile.h>
 
-class QuranBookIndexer : public TextBookIndexer
+class BookIndexerQuran : public BookIndexerBase
 {
 public:
-    QuranBookIndexer();
+    BookIndexerQuran();
+
+    void open();
+    void start();
 
 protected:
-    void indexPage(BookPage *page);
+    void morePageIndex(BookPage *page);
+
+protected:
+    QuaZip m_zip;
 };
 
 #endif // QURANBOOKINDEXER_H

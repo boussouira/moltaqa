@@ -2,12 +2,11 @@
 #define INDEXTASKITER_H
 
 #include "librarybook.h"
-#include "textbookreader.h"
 #include <qmutex.h>
 
 class IndexTask {
 public:
-    IndexTask() : bookID(0), book(0), reader(0), task(Unknow)
+    IndexTask() : bookID(0), book(0), task(Unknow)
     {}
 
     enum Task {
@@ -19,7 +18,6 @@ public:
 
     int bookID;
     LibraryBook::Ptr book;
-    TextBookReader *reader;
     Task task;
 
     bool operator==(const IndexTask &other);

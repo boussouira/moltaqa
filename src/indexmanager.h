@@ -40,7 +40,7 @@ protected:
     IndexWriter *m_writer;
     IndexTracker *m_indexTracker;
     IndexTaskIter *m_taskIter;
-    QList<BookIndexer*> m_threads;
+    QList<BookIndexerThread*> m_threads;
     ArabicAnalyzer *m_analyzer;
     QTime m_indexingTime;
     int m_booksCount;
