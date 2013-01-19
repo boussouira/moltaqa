@@ -1,5 +1,5 @@
-#ifndef TEXTBOOKINDEXER_H
-#define TEXTBOOKINDEXER_H
+#ifndef BOOKINDEXERBASE_H
+#define BOOKINDEXERBASE_H
 
 #include "librarybook.h"
 
@@ -35,4 +35,4 @@ protected:
     int m_storeAndNoToken;
 };
 
-#endif // TEXTBOOKINDEXER_H
+#endif // BOOKINDEXERBASE_H

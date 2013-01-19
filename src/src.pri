@@ -106,9 +106,9 @@ SOURCES += mainwindow.cpp \
     authorsmanagerwidget.cpp \
     xmldomhelper.cpp \
     zipopener.cpp \
-    textbookindexer.cpp \
-    simplebookindexer.cpp \
-    quranbookindexer.cpp \
+    bookindexerbase.cpp \
+    bookindexersimple.cpp \
+    bookindexerquran.cpp \
     stringutils.cpp \
     clucenequery.cpp \
     webpage.cpp \
@@ -251,9 +251,9 @@ HEADERS += mainwindow.h \
     authorsmanagerwidget.h \
     xmldomhelper.h \
     zipopener.h \
-    textbookindexer.h \
-    simplebookindexer.h \
-    quranbookindexer.h \
+    bookindexerbase.h \
+    bookindexersimple.h \
+    bookindexerquran.h \
     stringutils.h \
     clucenequery.h \
     webpage.h \

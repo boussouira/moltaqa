@@ -1,4 +1,4 @@
-#include "quranbookindexer.h"
+#include "bookindexerquran.h"
 #include "clheader.h"
 #include "clutils.h"
 #include "clconstants.h"

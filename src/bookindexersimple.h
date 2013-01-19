@@ -1,7 +1,7 @@
-#ifndef SIMPLEBOOKINDEXER_H
-#define SIMPLEBOOKINDEXER_H
+#ifndef BOOKINDEXERSIMPLE_H
+#define BOOKINDEXERSIMPLE_H
 
-#include "textbookindexer.h"
+#include "bookindexerbase.h"
 #include <quazip.h>
 #include <quazipfile.h>
 
@@ -27,4 +27,4 @@ protected:
     int m_lastTitleID;
 };
 
-#endif // SIMPLEBOOKINDEXER_H
+#endif // BOOKINDEXERSIMPLE_H

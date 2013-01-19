@@ -1,7 +1,7 @@
-#ifndef QURANBOOKINDEXER_H
-#define QURANBOOKINDEXER_H
+#ifndef BOOKINDEXERQURAN_H
+#define BOOKINDEXERQURAN_H
 
-#include "textbookindexer.h"
+#include "bookindexerbase.h"
 #include <quazip.h>
 #include <quazipfile.h>
 
@@ -20,4 +20,4 @@ protected:
     QuaZip m_zip;
 };
 
-#endif // QURANBOOKINDEXER_H
+#endif // BOOKINDEXERQURAN_H

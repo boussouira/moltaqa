@@ -4,8 +4,8 @@
 #include "mainwindow.h"
 #include "clheader.h"
 #include "clutils.h"
-#include "simplebookindexer.h"
-#include "quranbookindexer.h"
+#include "bookindexersimple.h"
+#include "bookindexerquran.h"
 #include "librarybookmanager.h"
 #include "librarymanager.h"
 

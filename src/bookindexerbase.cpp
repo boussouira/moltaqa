@@ -1,4 +1,4 @@
-#include "textbookindexer.h"
+#include "bookindexerbase.h"
 #include "clheader.h"
 #include "clutils.h"
 #include "clconstants.h"
