@@ -7,6 +7,8 @@
 #include "mainwindow.h"
 #include "bookreaderhelper.h"
 #include "xmlutils.h"
+#include "clutils.h"
+#include "clucenequery.h"
 
 #include <qstandarditemmodel.h>
 #include <qstringlistmodel.h>
@@ -19,6 +21,11 @@ AbstractBookReader::AbstractBookReader(QObject *parent) : QObject(parent)
     m_currentPage = new BookPage();
     m_libraryManager = LibraryManager::instance();
     m_pagesLoaded = false;
+
+    m_query = 0;
+    m_highlightPageID = -1;
+
+    m_removeTashekil = Utils::Settings::get("Style/removeTashekil", false).toBool();
 }
 
 AbstractBookReader::~AbstractBookReader()
@@ -299,6 +306,17 @@ int AbstractBookReader::prevPageID()
 int AbstractBookReader::pagesCount()
 {
     return m_pagesDom.rootElement().childNodes().size();
+}
+
+void AbstractBookReader::highlightPage(int pageID, CLuceneQuery *query)
+{
+    m_query = query;
+    m_highlightPageID = pageID;
+}
+
+void AbstractBookReader::setRemoveTashkil(bool remove)
+{
+    m_removeTashekil = remove;
 }
 
 QString AbstractBookReader::getFileContent(QString fileName)

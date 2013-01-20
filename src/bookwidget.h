@@ -9,6 +9,7 @@
 class WebView;
 class IndexWidget;
 class RichBookReader;
+class AbstractBookReader;
 class LibraryBookManager;
 class BookReaderHelper;
 class QSplitter;
@@ -26,7 +27,7 @@ public:
     ~BookWidget();
 
     LibraryBook::Ptr book();
-    RichBookReader *bookReader();
+    AbstractBookReader *bookReader();
     IndexWidget *indexWidget();
     WebViewSearcher *viewSearcher();
 

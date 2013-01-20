@@ -95,7 +95,7 @@ LibraryBook::Ptr BookWidget::book()
     return m_book;
 }
 
-RichBookReader *BookWidget::bookReader()
+AbstractBookReader *BookWidget::bookReader()
 {
     return m_reader;
 }

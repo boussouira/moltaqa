@@ -188,7 +188,7 @@ void ResultWidget::lastTabClosed()
 
 void ResultWidget::moveToReaderView()
 {
-    RichBookReader *reader = m_readerview->bookWidgetManager()->activeBookReader();
+    AbstractBookReader *reader = m_readerview->bookWidgetManager()->activeBookReader();
     ml_return_on_fail(reader);
 
     MW->bookReaderView()->openBook(reader->book()->id, reader->page()->pageID);

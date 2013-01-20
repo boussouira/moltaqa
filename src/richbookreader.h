@@ -2,8 +2,6 @@
 #define RICHBOOKREADER_H
 
 #include "abstractbookreader.h"
-#include "clutils.h"
-#include "clucenequery.h"
 
 class LibraryBookManager;
 class QStandardItemModel;
@@ -25,13 +23,10 @@ public:
 
     TextFormatter *textFormat();
 
-    void highlightPage(int pageID, CLuceneQuery *query);
-
     bool scrollToHighlight();
 
     int getPageTitleID(int pageID);
 
-    void setRemoveTashkil(bool remove);
     void setSaveReadingHistory(bool save);
 
 protected:
@@ -47,11 +42,8 @@ signals:
 protected:
     TextFormatter *m_textFormat;
     QStandardItemModel *m_indexModel;
-    CLuceneQuery *m_query;
     LibraryBookManager *m_bookmanager;
     QList<int> m_pageTitles;
-    int m_highlightPageID;
-    bool m_removeTashekil;
     bool m_saveReadingHistory;
     bool m_stopModelLoad;
 };

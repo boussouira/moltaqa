@@ -161,7 +161,7 @@ LibraryBook::Ptr BookWidgetManager::activeBook()
     return bookWidget ? bookWidget->book() : LibraryBook::Ptr();
 }
 
-RichBookReader *BookWidgetManager::activeBookReader()
+AbstractBookReader *BookWidgetManager::activeBookReader()
 {
     BookWidget *bookWidget = activeBookWidget();
     return bookWidget ? bookWidget->bookReader() : 0;

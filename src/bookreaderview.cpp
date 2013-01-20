@@ -208,7 +208,7 @@ void BookReaderView::updateToolBars()
 
 QString BookReaderView::viewLink()
 {
-    RichBookReader *bookReader = m_viewManager->activeBookReader();
+    AbstractBookReader *bookReader = m_viewManager->activeBookReader();
     ml_return_val_on_fail(bookReader, QString());
 
     QString link = QString("moltaqa://open/");
@@ -245,7 +245,7 @@ LibraryBook::Ptr BookReaderView::currentBook()
 
 BookPage *BookReaderView::currentPage()
 {
-    RichBookReader *bookdb = m_viewManager->activeBookReader();
+    AbstractBookReader *bookdb = m_viewManager->activeBookReader();
 
    return bookdb ? bookdb->page() : 0;
 }

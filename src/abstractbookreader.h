@@ -20,6 +20,7 @@ class BookPage;
 class TextFormatter;
 class QSqlQuery;
 class BookEditor;
+class CLuceneQuery;
 
 class AbstractBookReader : public QObject
 {
@@ -100,6 +101,10 @@ public:
 
     int pagesCount();
 
+    void highlightPage(int pageID, CLuceneQuery *query);
+
+    void setRemoveTashkil(bool remove);
+
     QString getFileContent(QString fileName);
     virtual QString getPageText(int pageID);
 
@@ -134,6 +139,11 @@ protected:
     XmlDomHelper m_pagesDom;
     bool m_pagesLoaded;
     QHash<int, QByteArray> m_pages;
+
+    int m_highlightPageID;
+    CLuceneQuery *m_query;
+
+    bool m_removeTashekil;
 };
 
 #endif // ABSTRACTBOOKREADER_H

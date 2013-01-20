@@ -302,7 +302,7 @@ void WebView::copyWithRefer()
     BookWidget *bookWidget = qobject_cast<BookWidget*>(parent()->parent());
     ml_return_on_fail2(bookWidget, "WebView::copyWithRefer book widget is null");
 
-    RichBookReader *reader = bookWidget->bookReader();
+    AbstractBookReader *reader = bookWidget->bookReader();
 
     QString referText = act->data().toString();
     referText.replace(_u("*النص*"),   selectedText().trimmed());

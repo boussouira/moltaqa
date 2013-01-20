@@ -3,6 +3,7 @@
 #include "librarybook.h"
 #include "bookpage.h"
 #include "utils.h"
+#include "clutils.h"
 #include "librarybookmanager.h"
 #include "libraryinfo.h"
 #include "modelenums.h"
@@ -17,13 +18,10 @@ RichBookReader::RichBookReader(QObject *parent) : AbstractBookReader(parent)
 {
     m_textFormat = 0;
     m_indexModel = 0;
-    m_query = 0;
-    m_highlightPageID = -1;
     m_stopModelLoad = false;
 
     m_bookmanager = m_libraryManager->bookManager();
 
-    m_removeTashekil = Utils::Settings::get("Style/removeTashekil", false).toBool();
     m_saveReadingHistory = true;
 
     connect(this, SIGNAL(textChanged()), SLOT(updateHistory()));
@@ -53,12 +51,6 @@ QString RichBookReader::proccessPageText(QString text)
     return text;
 }
 
-void RichBookReader::highlightPage(int pageID, CLuceneQuery *query)
-{
-    m_query = query;
-    m_highlightPageID = pageID;
-}
-
 bool RichBookReader::scrollToHighlight()
 {
     return (!m_book->isQuran() && m_query && m_highlightPageID == m_currentPage->pageID);
@@ -67,11 +59,6 @@ bool RichBookReader::scrollToHighlight()
 int RichBookReader::getPageTitleID(int pageID)
 {
     return Utils::Book::getPageTitleID(m_pageTitles, pageID);
-}
-
-void RichBookReader::setRemoveTashkil(bool remove)
-{
-    m_removeTashekil = remove;
 }
 
 void RichBookReader::setSaveReadingHistory(bool save)

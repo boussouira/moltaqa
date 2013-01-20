@@ -8,7 +8,7 @@ class BookWidget;
 class LibraryManager;
 class TabWidget;
 class QSplitter;
-class RichBookReader;
+class AbstractBookReader;
 
 class BookWidgetManager : public QWidget
 {
@@ -21,7 +21,7 @@ public:
     BookWidget *bookWidget(int index);
     BookWidget *activeBookWidget();
     LibraryBook::Ptr activeBook();
-    RichBookReader *activeBookReader();
+    AbstractBookReader *activeBookReader();
     TabWidget *activeTab();
     TabWidget *unActiveTab();
     void setActiveTab(QObject *obj);
