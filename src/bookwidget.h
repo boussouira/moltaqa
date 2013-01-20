@@ -1,10 +1,11 @@
 #ifndef BOOKWIDGET_H
 #define BOOKWIDGET_H
 
-#include <qwidget.h>
+#include "bookviewbase.h"
+#include "librarybook.h"
+
 #include <qfuture.h>
 #include <qfuturewatcher.h>
-#include "librarybook.h"
 
 class WebView;
 class IndexWidget;
@@ -18,7 +19,7 @@ class QModelIndex;
 class QStandardItemModel;
 class WebViewSearcher;
 
-class BookWidget: public QWidget
+class BookWidget: public BookViewBase
 {
     Q_OBJECT
 
@@ -86,7 +87,6 @@ protected:
     QVBoxLayout *m_layout;
     WebView *m_view;
     IndexWidget *m_indexWidget;
-    LibraryBook::Ptr m_book;
     RichBookReader *m_reader;
     LibraryBookManager *m_bookManager;
     BookReaderHelper *m_bookHelper;

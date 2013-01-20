@@ -167,17 +167,17 @@ LibraryBook::Ptr WebView::getLibraryBook()
 {
     ml_return_val_on_fail2(parent(), "WebView::getLibraryBook parent is null", LibraryBook::Ptr());
 
-    BookWidget *p;
+    BookViewBase *p;
     QObject *parentObj = parent();
     while (parentObj) {
-        p = qobject_cast<BookWidget*>(parentObj);
+        p = qobject_cast<BookViewBase*>(parentObj);
         if(p)
             break;
 
         parentObj = parentObj->parent();
     }
 
-//    p = qobject_cast<BookWidget*>(parent()->parent()); // QSplitter > BookWidget
+//    p = qobject_cast<BookViewBase*>(parent()->parent()); // QSplitter > BookViewBase
     ml_return_val_on_fail2(p, "WebView::getLibraryBook book widget is null", LibraryBook::Ptr());
 
     return p->book();
@@ -299,7 +299,7 @@ void WebView::copyWithRefer()
 
     ml_return_on_fail2(parent(), "WebView::copyWithRefer parent is null");
 
-    BookWidget *bookWidget = qobject_cast<BookWidget*>(parent()->parent());
+    BookViewBase *bookWidget = qobject_cast<BookViewBase*>(parent()->parent());
     ml_return_on_fail2(bookWidget, "WebView::copyWithRefer book widget is null");
 
     AbstractBookReader *reader = bookWidget->bookReader();

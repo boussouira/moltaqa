@@ -59,7 +59,7 @@ void ShemeHandler::openQuran(const QUrl &url)
     LibraryBook::Ptr quranBook = LibraryManager::instance()->bookManager()->getQuranBook();
     ml_return_on_fail2(quranBook, "MoltaqaShemeHandler::openQuran quranBook is null");
 
-    BookWidget *w = MW->bookReaderView()->openBook(quranBook->id);
+    BookViewBase *w = MW->bookReaderView()->openBook(quranBook->id);
     ml_return_on_fail2(w, "MoltaqaShemeHandler::openQuran quranBook is null");
 
     w->openSora(sora, aya);

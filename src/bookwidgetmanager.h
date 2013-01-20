@@ -4,7 +4,7 @@
 #include <qwidget.h>
 #include "librarybook.h"
 
-class BookWidget;
+class BookViewBase;
 class LibraryManager;
 class TabWidget;
 class QSplitter;
@@ -17,9 +17,9 @@ public:
     BookWidgetManager(QWidget *parent = 0);
     ~BookWidgetManager();
 
-    int addBook(BookWidget* book);
-    BookWidget *bookWidget(int index);
-    BookWidget *activeBookWidget();
+    int addBook(BookViewBase* book);
+    BookViewBase *bookWidget(int index);
+    BookViewBase *activeBookWidget();
     LibraryBook::Ptr activeBook();
     AbstractBookReader *activeBookReader();
     TabWidget *activeTab();
@@ -27,8 +27,8 @@ public:
     void setActiveTab(QObject *obj);
 
     void closeBook(int bookID);
-    BookWidget *getBookWidget(int bookID);
-    QList<BookWidget *> getBookWidgets();
+    BookViewBase *getBookWidget(int bookID);
+    QList<BookViewBase *> getBookWidgets();
     bool showBook(int bookID);
 
     void addTabActions(QList<QAction *> tabActions);

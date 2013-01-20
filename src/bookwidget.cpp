@@ -27,8 +27,7 @@
 #include <qtimer.h>
 
 BookWidget::BookWidget(LibraryBook::Ptr book, QWidget *parent):
-    QWidget(parent),
-    m_book(book),
+    BookViewBase(book, parent),
     m_reader(0)
 {
     openReader();

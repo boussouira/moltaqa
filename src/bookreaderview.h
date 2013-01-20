@@ -6,7 +6,7 @@
 #include "clutils.h"
 #include "bookpage.h"
 
-class BookWidget;
+class BookViewBase;
 class LibraryManager;
 class LibraryBookManager;
 class TaffesirListManager;
@@ -32,14 +32,14 @@ public:
     void updateToolBars();
 
     int currentBookID();
-    BookWidget *currentBookWidget();
+    BookViewBase *currentBookWidget();
     LibraryBook::Ptr currentBook();
     BookPage *currentPage();
 
     BookWidgetManager *bookWidgetManager() { return m_viewManager; }
 
 public slots:
-    BookWidget *openBook(int bookID, int pageID = -1, CLuceneQuery *query=0);
+    BookViewBase *openBook(int bookID, int pageID = -1, CLuceneQuery *query=0);
     void updateActions();
     void showIndexWidget();
     void searchInBook();

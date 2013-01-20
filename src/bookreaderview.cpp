@@ -233,7 +233,7 @@ int BookReaderView::currentBookID()
     return book ? book->id : 0;
 }
 
-BookWidget *BookReaderView::currentBookWidget()
+BookViewBase *BookReaderView::currentBookWidget()
 {
     return m_viewManager->activeBookWidget();
 }
@@ -250,7 +250,7 @@ BookPage *BookReaderView::currentPage()
    return bookdb ? bookdb->page() : 0;
 }
 
-BookWidget *BookReaderView::openBook(int bookID, int pageID, CLuceneQuery *query)
+BookViewBase *BookReaderView::openBook(int bookID, int pageID, CLuceneQuery *query)
 {
     try {
         LibraryBook::Ptr bookInfo = m_bookManager->getLibraryBook(bookID);
@@ -260,7 +260,7 @@ BookWidget *BookReaderView::openBook(int bookID, int pageID, CLuceneQuery *query
         if(!bookInfo->exists())
             throw BookException(tr("لم يتم العثور على ملف"), bookInfo->path);
 
-        BookWidget *bookWidget = new BookWidget(bookInfo, this);
+        BookViewBase *bookWidget = new BookWidget(bookInfo, this);
         m_viewManager->addBook(bookWidget);
 
         if(query && pageID != -1)
@@ -298,7 +298,7 @@ void BookReaderView::openTafessir()
         int sora = m_viewManager->activeBookReader()->page()->sora;
         int aya = m_viewManager->activeBookReader()->page()->aya;
 
-        BookWidget *bookWidget = new BookWidget(bookInfo, this);
+        BookViewBase *bookWidget = new BookWidget(bookInfo, this);
         m_viewManager->addBook(bookWidget);
 
         bookWidget->openSora(sora, aya);
@@ -326,7 +326,7 @@ void BookReaderView::updateActions()
 
 void BookReaderView::showIndexWidget()
 {
-    BookWidget *book = m_viewManager->activeBookWidget();
+    BookViewBase *book = m_viewManager->activeBookWidget();
 
     if(book)
         book->hideIndexWidget();
@@ -372,8 +372,8 @@ void BookReaderView::removeTashkil(bool remove)
 {
     Utils::Settings::set("Style/removeTashekil", remove);
 
-    QList<BookWidget *> list = m_viewManager->getBookWidgets();
-    foreach (BookWidget *book, list) {
+    QList<BookViewBase *> list = m_viewManager->getBookWidgets();
+    foreach (BookViewBase *book, list) {
         book->bookReader()->setRemoveTashkil(remove);
         book->reloadCurrentPage();
     }
