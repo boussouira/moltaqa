@@ -180,7 +180,7 @@ LibraryBook::Ptr WebView::getLibraryBook()
 //    p = qobject_cast<BookWidget*>(parent()->parent()); // QSplitter > BookWidget
     ml_return_val_on_fail2(p, "WebView::getLibraryBook book widget is null", LibraryBook::Ptr());
 
-    return p->bookReader()->bookInfo();
+    return p->bookReader()->book();
 }
 
 void WebView::setText(const QString &text)
@@ -306,8 +306,8 @@ void WebView::copyWithRefer()
 
     QString referText = act->data().toString();
     referText.replace(_u("*النص*"),   selectedText().trimmed());
-    referText.replace(_u("*المؤلف*"), reader->bookInfo()->authorName);
-    referText.replace(_u("*الكتاب*"), reader->bookInfo()->title);
+    referText.replace(_u("*المؤلف*"), reader->book()->authorName);
+    referText.replace(_u("*الكتاب*"), reader->book()->title);
     referText.replace(_u("*الصفحة*"), QString::number(reader->page()->page));
     referText.replace(_u("*الجزء*"),  QString::number(reader->page()->part));
     referText.replace(_u("*الحديث*"), QString::number(reader->page()->haddit));

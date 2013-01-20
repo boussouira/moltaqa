@@ -74,7 +74,7 @@ bool BookEditor::open(LibraryBook::Ptr book)
 void BookEditor::setBookReader(RichBookReader *reader)
 {
     m_bookReader = reader;
-    m_book = reader->bookInfo();
+    m_book = reader->book();
 
     if(m_book->id != m_lastBookID) {
         m_needUnZip = true;

@@ -31,7 +31,7 @@ public:
     void openBook();
     void setBookInfo(LibraryBook::Ptr bi);
 
-    LibraryBook::Ptr bookInfo();
+    LibraryBook::Ptr book();
     BookPage *page();
 
     /**
@@ -127,7 +127,7 @@ protected:
 
 protected:
     friend class ZipOpener;
-    LibraryBook::Ptr m_bookInfo;
+    LibraryBook::Ptr m_book;
     BookPage *m_currentPage;
     LibraryManager *m_libraryManager;
     QuaZip m_zip;

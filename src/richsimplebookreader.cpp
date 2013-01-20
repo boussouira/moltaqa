@@ -62,7 +62,7 @@ void RichSimpleBookReader::setCurrentPage(QDomElement pageNode)
 
 void RichSimpleBookReader::getShorooh()
 {
-    m_bookInfo->shorooh.clear();
+    m_book->shorooh.clear();
 
     QDomElement linkElement = m_pagesDom.currentElement().firstChildElement("link");
     while(!linkElement.isNull()) {
@@ -71,7 +71,7 @@ void RichSimpleBookReader::getShorooh()
 
         LibraryBook::Ptr book = LibraryManager::instance()->bookManager()->getLibraryBook(bookID);
         if(book)
-            m_bookInfo->shorooh.append(BookShorooh(bookID, page, book->title));
+            m_book->shorooh.append(BookShorooh(bookID, page, book->title));
 
         linkElement = linkElement.nextSiblingElement("link");
     }

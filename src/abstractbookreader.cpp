@@ -31,10 +31,10 @@ AbstractBookReader::~AbstractBookReader()
 
 void AbstractBookReader::openBook()
 {
-    ml_return_on_fail2(m_bookInfo, "AbstractBookReader::openBook book is null");
+    ml_return_on_fail2(m_book, "AbstractBookReader::openBook book is null");
 
-    if(!QFile::exists(m_bookInfo->path)) {
-        throw BookException(tr("لم يتم العثور على ملف الكتاب"), bookInfo()->path);
+    if(!QFile::exists(m_book->path)) {
+        throw BookException(tr("لم يتم العثور على ملف الكتاب"), book()->path);
     }
 
     ZipOpener opener(this);
@@ -45,14 +45,14 @@ void AbstractBookReader::openBook()
 
 void AbstractBookReader::openZip()
 {
-    m_zip.setZipName(m_bookInfo->path);
+    m_zip.setZipName(m_book->path);
 
     if(!m_zip.open(QuaZip::mdUnzip)) {
         qCritical() << "AbstractBookReader::openZip open book error"
                     << m_zip.getZipError() << "\n"
-                    << "Book id:" << m_bookInfo->id << "\n"
-                    << "Title:" << m_bookInfo->title << "\n"
-                    << "Path:" << m_bookInfo->path;
+                    << "Book id:" << m_book->id << "\n"
+                    << "Title:" << m_book->title << "\n"
+                    << "Path:" << m_book->path;
     }
 }
 
@@ -63,7 +63,7 @@ void AbstractBookReader::closeZip()
 
 void AbstractBookReader::setBookInfo(LibraryBook::Ptr bi)
 {
-    m_bookInfo = bi;
+    m_book = bi;
 }
 
 void AbstractBookReader::nextAya()
@@ -126,7 +126,7 @@ QDomElement AbstractBookReader::getQuranPageId(int sora, int aya)
 
 void AbstractBookReader::loadPages()
 {
-    ml_return_on_fail(!m_bookInfo->isQuran());
+    ml_return_on_fail(!m_book->isQuran());
 
     ZipOpener opener(this);
 
@@ -180,9 +180,9 @@ void AbstractBookReader::loadPages()
     m_pagesLoaded = true;
 }
 
-LibraryBook::Ptr AbstractBookReader::bookInfo()
+LibraryBook::Ptr AbstractBookReader::book()
 {
-    return m_bookInfo;
+    return m_book;
 }
 
 BookPage * AbstractBookReader::page()

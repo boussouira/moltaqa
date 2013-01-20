@@ -233,7 +233,7 @@ bool BookEditorView::maySave(bool canCancel)
     if(m_pages.size() || m_indexEdited) {
         int rep = QMessageBox::question(this,
                                         tr("حفظ التعديلات"),
-                                        tr("هل تريد حفظ التعديلات التي اجريتها على كتاب:\n%1؟").arg(m_bookReader->bookInfo()->title),
+                                        tr("هل تريد حفظ التعديلات التي اجريتها على كتاب:\n%1؟").arg(m_bookReader->book()->title),
                                         QMessageBox::Yes|(canCancel ? QMessageBox::No|QMessageBox::Cancel : QMessageBox::No),
                                         canCancel ? QMessageBox::Cancel : QMessageBox::No);
         if(rep == QMessageBox::No) {
@@ -341,7 +341,7 @@ void BookEditorView::save()
 
         dialog.setValue(dialog.value()+1);
 
-        LibraryBook::Ptr book = m_bookReader->bookInfo();
+        LibraryBook::Ptr book = m_bookReader->book();
 
         if(m_bookEditor->save())
             IndexTracker::instance()->addTask(book->id, IndexTask::Update, false);
@@ -435,7 +435,7 @@ void BookEditorView::gotoPage()
 {
     if(m_bookReader) {
         OpenPageDialog dialog(this);
-        dialog.setInfo(m_bookReader->bookInfo(), m_bookReader->page());
+        dialog.setInfo(m_bookReader->book(), m_bookReader->page());
 
         if(dialog.exec() == QDialog::Accepted) {
             if(dialog.currentPage() == 0) // Open selected page/part

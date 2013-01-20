@@ -158,7 +158,7 @@ BookWidget *BookWidgetManager::activeBookWidget()
 LibraryBook::Ptr BookWidgetManager::activeBook()
 {
     BookWidget *bookWidget = activeBookWidget();
-    return bookWidget ? bookWidget->bookReader()->bookInfo() : LibraryBook::Ptr();
+    return bookWidget ? bookWidget->bookReader()->book() : LibraryBook::Ptr();
 }
 
 RichBookReader *BookWidgetManager::activeBookReader()
@@ -280,7 +280,7 @@ void BookWidgetManager::closeBook(int bookID)
     for(int i=m_topTab->count()-1; i>=0; i--) {
         BookWidget *bookWidget = qobject_cast<BookWidget*>(m_topTab->widget(i));
         if(bookWidget) {
-            if(bookWidget->bookReader()->bookInfo()->id == bookID) {
+            if(bookWidget->bookReader()->book()->id == bookID) {
                 QObject::metaObject()->invokeMethod(m_topTab, "tabCloseRequested",
                                                     Q_ARG(int, i));
             }
@@ -290,7 +290,7 @@ void BookWidgetManager::closeBook(int bookID)
     for(int i=m_bottomTab->count()-1; i>=0; i--) {
         BookWidget *bookWidget = qobject_cast<BookWidget*>(m_bottomTab->widget(i));
         if(bookWidget) {
-            if(bookWidget->bookReader()->bookInfo()->id == bookID) {
+            if(bookWidget->bookReader()->book()->id == bookID) {
                 QObject::metaObject()->invokeMethod(m_bottomTab, "tabCloseRequested",
                                                     Q_ARG(int, i));
             }
@@ -303,7 +303,7 @@ BookWidget *BookWidgetManager::getBookWidget(int bookID)
     for(int i=0; i<m_topTab->count(); i++) {
         BookWidget *bookWidget = qobject_cast<BookWidget*>(m_topTab->widget(i));
         if(bookWidget) {
-            if(bookWidget->bookReader()->bookInfo()->id == bookID) {
+            if(bookWidget->bookReader()->book()->id == bookID) {
                 return bookWidget;
             }
         }
@@ -312,7 +312,7 @@ BookWidget *BookWidgetManager::getBookWidget(int bookID)
     for(int i=0; i<m_bottomTab->count(); i++) {
         BookWidget *bookWidget = qobject_cast<BookWidget*>(m_bottomTab->widget(i));
         if(bookWidget) {
-            if(bookWidget->bookReader()->bookInfo()->id == bookID) {
+            if(bookWidget->bookReader()->book()->id == bookID) {
                 return bookWidget;
             }
         }
@@ -346,7 +346,7 @@ bool BookWidgetManager::showBook(int bookID)
 {
     for(int i=0; i<m_topTab->count(); i++) {
         BookWidget *bookWidget = qobject_cast<BookWidget*>(m_topTab->widget(i));
-        if(bookWidget && bookWidget->bookReader()->bookInfo()->id == bookID) {
+        if(bookWidget && bookWidget->bookReader()->book()->id == bookID) {
             setActiveTab(m_topTab);
             m_topTab->setCurrentIndex(i);
 
@@ -356,7 +356,7 @@ bool BookWidgetManager::showBook(int bookID)
 
     for(int i=0; i<m_bottomTab->count(); i++) {
         BookWidget *bookWidget = qobject_cast<BookWidget*>(m_bottomTab->widget(i));
-        if(bookWidget && bookWidget->bookReader()->bookInfo()->id == bookID) {
+        if(bookWidget && bookWidget->bookReader()->book()->id == bookID) {
             setActiveTab(m_bottomTab);
             m_bottomTab->setCurrentIndex(i);
 

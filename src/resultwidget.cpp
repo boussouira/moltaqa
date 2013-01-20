@@ -191,7 +191,7 @@ void ResultWidget::moveToReaderView()
     RichBookReader *reader = m_readerview->bookWidgetManager()->activeBookReader();
     ml_return_on_fail(reader);
 
-    MW->bookReaderView()->openBook(reader->bookInfo()->id, reader->page()->pageID);
+    MW->bookReaderView()->openBook(reader->book()->id, reader->page()->pageID);
 }
 
 void ResultWidget::openResult(int resultID)
