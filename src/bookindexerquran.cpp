@@ -1,6 +1,7 @@
 #include "bookindexerquran.h"
 #include "clheader.h"
 #include "clutils.h"
+#include "utils.h"
 #include "clconstants.h"
 #include "bookexception.h"
 
@@ -28,6 +29,8 @@ void BookIndexerQuran::open()
 
 void BookIndexerQuran::start()
 {
+    ml_return_on_fail2(m_bookIdW, "BookIndexerSimple::start m_bookIdW is null");
+
     // Get the page
     QuaZipFile pagesFile(&m_zip);
     if(m_zip.setCurrentFile("pages.xml")) {

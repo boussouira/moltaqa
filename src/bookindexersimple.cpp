@@ -43,6 +43,8 @@ void BookIndexerSimple::open()
 
 void BookIndexerSimple::start()
 {
+    ml_return_on_fail2(m_bookIdW, "BookIndexerSimple::start m_bookIdW is null");
+
     loadTitles();
 
     BookPage page;
