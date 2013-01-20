@@ -55,7 +55,7 @@ BookWidget::BookWidget(LibraryBook::Ptr book, QWidget *parent):
     setAutoFillBackground(true);
 
     loadSettings();
-    displayInfo();
+    loadIndexModel();
 
     m_viewInitialized = false;
     m_indexReading = false;
@@ -149,7 +149,7 @@ void BookWidget::focusInEvent(QFocusEvent *event)
         emit gotFocus();
 }
 
-void BookWidget::displayInfo()
+void BookWidget::loadIndexModel()
 {
     QStandardItemModel *model = 0;
 

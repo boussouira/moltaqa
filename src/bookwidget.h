@@ -24,7 +24,6 @@ public:
     BookWidget(LibraryBook::Ptr book, QWidget *parent=0);
     ~BookWidget();
 
-    void displayInfo();
     RichBookReader *bookReader() { return m_reader; }
     IndexWidget *indexWidget() { return m_indexWidget; }
     WebView *webView() { return m_view; }
@@ -33,6 +32,7 @@ public:
 
 protected:
     void openReader();
+    void loadIndexModel();
     bool eventFilter(QObject *obj, QEvent *event);
     void focusInEvent(QFocusEvent *event);
     void loadSettings();
