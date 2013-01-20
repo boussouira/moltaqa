@@ -100,11 +100,6 @@ AbstractBookReader *BookWidget::bookReader()
     return m_reader;
 }
 
-IndexWidget *BookWidget::indexWidget()
-{
-    return m_indexWidget;
-}
-
 WebViewSearcher *BookWidget::viewSearcher()
 {
     return m_view->searcher();

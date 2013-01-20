@@ -271,7 +271,7 @@ BookWidget *BookReaderView::openBook(int bookID, int pageID, CLuceneQuery *query
         else
             bookWidget->openPage(pageID);
 
-        connect(bookWidget->indexWidget(), SIGNAL(openPage(int)), SLOT(updateActions()));
+        connect(bookWidget, SIGNAL(textChanged()), SLOT(updateActions()));
 
         updateActions();
 

@@ -28,7 +28,6 @@ public:
 
     LibraryBook::Ptr book();
     AbstractBookReader *bookReader();
-    IndexWidget *indexWidget();
     WebViewSearcher *viewSearcher();
 
     void hideIndexWidget();
