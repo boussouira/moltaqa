@@ -223,7 +223,7 @@ QString BookReaderView::viewLink()
 WebViewSearcher *BookReaderView::searcher()
 {
     ml_return_val_on_fail(currentBookWidget(), 0);
-    return currentBookWidget()->webView()->searcher();
+    return currentBookWidget()->viewSearcher();
 }
 
 int BookReaderView::currentBookID()

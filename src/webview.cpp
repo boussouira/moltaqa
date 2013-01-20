@@ -180,7 +180,7 @@ LibraryBook::Ptr WebView::getLibraryBook()
 //    p = qobject_cast<BookWidget*>(parent()->parent()); // QSplitter > BookWidget
     ml_return_val_on_fail2(p, "WebView::getLibraryBook book widget is null", LibraryBook::Ptr());
 
-    return p->bookReader()->book();
+    return p->book();
 }
 
 void WebView::setText(const QString &text)

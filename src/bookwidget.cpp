@@ -90,6 +90,26 @@ BookWidget::~BookWidget()
     ml_delete_check(m_reader);
 }
 
+LibraryBook::Ptr BookWidget::book()
+{
+    return m_book;
+}
+
+RichBookReader *BookWidget::bookReader()
+{
+    return m_reader;
+}
+
+IndexWidget *BookWidget::indexWidget()
+{
+    return m_indexWidget;
+}
+
+WebViewSearcher *BookWidget::viewSearcher()
+{
+    return m_view->searcher();
+}
+
 void BookWidget::loadSettings()
 {
     QByteArray sizes = Utils::Settings::get("BookWidget/splitter").toByteArray();
@@ -209,7 +229,7 @@ void BookWidget::lastPage()
 
 void BookWidget::nextPage()
 {
-    if(bookReader()->hasNext()) {
+    if(m_reader->hasNext()) {
        m_reader->nextPage();
        scrollToCurrentAya(true);
     }
@@ -217,7 +237,7 @@ void BookWidget::nextPage()
 
 void BookWidget::prevPage()
 {
-    if(bookReader()->hasPrev()) {
+    if(m_reader->hasPrev()) {
         m_reader->prevPage();
         scrollToCurrentAya(true);
     }

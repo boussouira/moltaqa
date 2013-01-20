@@ -33,7 +33,7 @@ TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)
 
 int TabWidget::addBookWidget(BookWidget *book)
 {
-    QString bookName = book->bookReader()->book()->title;
+    QString bookName = book->book()->title;
     QString shortBookName = Utils::String::abbreviate(bookName, 30);
 
     int index = addTab(book, shortBookName);

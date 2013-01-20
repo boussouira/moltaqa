@@ -15,6 +15,7 @@ class QSplitter;
 class QVBoxLayout;
 class QModelIndex;
 class QStandardItemModel;
+class WebViewSearcher;
 
 class BookWidget: public QWidget
 {
@@ -24,18 +25,22 @@ public:
     BookWidget(LibraryBook::Ptr book, QWidget *parent=0);
     ~BookWidget();
 
-    RichBookReader *bookReader() { return m_reader; }
-    IndexWidget *indexWidget() { return m_indexWidget; }
-    WebView *webView() { return m_view; }
+    LibraryBook::Ptr book();
+    RichBookReader *bookReader();
+    IndexWidget *indexWidget();
+    WebViewSearcher *viewSearcher();
+
     void hideIndexWidget();
+
     void saveSettings();
+    void loadSettings();
 
 protected:
     void openReader();
     void loadIndexModel();
+
     bool eventFilter(QObject *obj, QEvent *event);
     void focusInEvent(QFocusEvent *event);
-    void loadSettings();
 
 public slots:
     void firstPage();
