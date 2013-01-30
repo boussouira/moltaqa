@@ -141,7 +141,6 @@ SOURCES += mainwindow.cpp \
     updatechecker.cpp \
     updatedialog.cpp \
     statisticsmanager.cpp \
-    upfile.cpp \
     uploader.cpp \
     exportdialog.cpp \
     filechooserwidget.cpp \
@@ -287,7 +286,6 @@ HEADERS += mainwindow.h \
     updatechecker.h \
     updatedialog.h \
     statisticsmanager.h \
-    upfile.h \
     uploader.h \
     exportdialog.h \
     filechooserwidget.h \

@@ -7,8 +7,6 @@
 #include <qnetworkreply.h>
 #include <qurl.h>
 
-#include "upfile.h"
-
 class UpLoader : public QObject
 {
     Q_OBJECT
