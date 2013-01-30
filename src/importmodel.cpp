@@ -54,6 +54,8 @@ void ImportModelNode::setType(LibraryBook::Type bookType)
         typeName = tr("تفسير");
     } else if(type == LibraryBook::NormalBook) {
         typeName = tr("عادي");
+    } else if(type == LibraryBook::PdfBook) {
+        typeName = tr("مصور");
     } else {
         qWarning("ImportModelNode::setType unknow type %d", type);
         typeName = tr("عادي");

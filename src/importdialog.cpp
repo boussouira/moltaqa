@@ -39,6 +39,7 @@ ImportDialog::ImportDialog(QWidget *parent) :
 
     m_acceptedTypes.append("bok");
     m_acceptedTypes.append("mlp");
+    m_acceptedTypes.append("pdf");
 
     m_model = new ImportModel(ui->treeView);
     m_libraryManager = LibraryManager::instance();
@@ -81,8 +82,9 @@ void ImportDialog::on_pushAddFile_clicked()
     QStringList files = QFileDialog::getOpenFileNames(this,
                                                       tr("اختر الكتب التي تريد استيرادها:"),
                                                       lastPath,
-                                                      "Supported formats(*.mlp *.bok);;"
-                                                      "Moltaqa Library(*.mlp);;"
+                                                      "Supported formats(*.mlp *.pdf *.bok);;"
+                                                      "Moltaqa Library (*.mlp);;"
+                                                      "PDF (*.pdf);;"
                                                       "Shamela books (*.bok)");
     foreach(QString file, files) {
         addFile(file);

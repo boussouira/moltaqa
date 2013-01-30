@@ -29,7 +29,8 @@ public:
     enum Type {
         QuranBook = 1,
         TafessirBook,
-        NormalBook
+        NormalBook,
+        PdfBook
     };
 
     enum IndexFlags {

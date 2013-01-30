@@ -48,6 +48,8 @@ void ConvertThread::run()
                 convertShamelaBook(file);
             else if(fileType == "mlp")
                 convertMoltaqaPackage(file);
+            else if(fileType == "pdf")
+                convertPDF(file);
             else
                 qWarning() << "ConvertThread: File" << info.fileName() << "not handeled";
 
@@ -365,4 +367,25 @@ AuthorInfo::Ptr ConvertThread::importAuthorInfo(QDomElement &authorElement)
 
     int authorID = m_authorsManager->addAuthor(auth);
     return m_authorsManager->getAuthorInfo(authorID);
+}
+
+void ConvertThread::convertPDF(const QString &path)
+{
+    ImportModelNode *node = new ImportModelNode(LibraryBook::PdfBook);
+    node->setType(node->type);
+
+    node->fileName = QFileInfo(path).fileName();
+    node->title = node->fileName;
+
+    QDir tempDir(m_libraryManager->libraryInfo()->tempDir());
+    node->path = (tempDir.exists(node->fileName)
+                  ? Utils::Rand::fileName(tempDir.absolutePath(), true, "book_", "pdf")
+                  : tempDir.filePath(node->fileName));
+
+    if(QFile::copy(path, node->path)) {
+        m_model->appendNode(node);
+    } else {
+        qWarning() << "ConvertThread::convertPDF can't copy file"
+                   << path << "to" << node->path;
+    }
 }

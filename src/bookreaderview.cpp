@@ -18,6 +18,7 @@
 #include "librarybookmanager.h"
 #include "filterlineedit.h"
 #include "webview.h"
+#include "bookviewpdf.h"
 
 #include <qmainwindow.h>
 #include <qmenubar.h>
@@ -260,7 +261,12 @@ BookViewBase *BookReaderView::openBook(int bookID, int pageID, CLuceneQuery *que
         if(!bookInfo->exists())
             throw BookException(tr("لم يتم العثور على ملف"), bookInfo->path);
 
-        BookViewBase *bookWidget = new BookWidget(bookInfo, this);
+        BookViewBase *bookWidget = 0;
+        if(bookInfo->type != LibraryBook::PdfBook)
+            bookWidget = new BookWidget(bookInfo, this);
+        else
+            bookWidget = new BookViewPdf(bookInfo, this);
+
         m_viewManager->addBook(bookWidget);
 
         if(query && pageID != -1)
@@ -314,8 +320,9 @@ void BookReaderView::openTafessir()
 void BookReaderView::updateActions()
 {
     if(m_viewManager->activeBookWidget()) {
-        bool hasNext = m_viewManager->activeBookReader()->hasNext();
-        bool hasPrev = m_viewManager->activeBookReader()->hasPrev();
+        AbstractBookReader *reader = m_viewManager->activeBookReader();
+        bool hasNext = ((reader && reader->hasNext()) || !reader);
+        bool hasPrev = ((reader && reader->hasPrev()) || !reader);
 
         m_actionNextPage->setEnabled(hasNext);
         m_actionLastPage->setEnabled(hasNext);

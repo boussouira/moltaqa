@@ -39,6 +39,8 @@ protected:
     void extractMoltaqaBook(QuaZip &zip, QDomElement &bookElement, QDomElement &authorsElement);
     AuthorInfo::Ptr importAuthorInfo(QDomElement &authorElement);
 
+    void convertPDF(const QString &path);
+
 signals:
     void bookConverted(QString bookName);
     void addBooksToProgress(int count);

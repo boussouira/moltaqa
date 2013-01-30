@@ -65,7 +65,8 @@ INCLUDEPATH += $$CLUCENE_SOURCE_PATH/src/core \
 LIBS += -lclucene-core$$CLUCENE_LIB_SUFFIX \
         -lclucene-shared$$CLUCENE_LIB_SUFFIX \
         -lclucene-contribs-lib$$CLUCENE_LIB_SUFFIX \
-        -L$$CLUCENE_LIBS_PATH
+        -L$$CLUCENE_LIBS_PATH \
+        -lpoppler-qt4
 
 unix {
 

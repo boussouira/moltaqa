@@ -1,4 +1,5 @@
 #include "bookviewbase.h"
+#include <QMouseEvent>
 
 BookViewBase::BookViewBase(LibraryBook::Ptr book, QWidget *parent) :
     QWidget(parent)
@@ -21,4 +22,10 @@ void BookViewBase::saveSettings()
 
 void BookViewBase::loadSettings()
 {
+}
+
+void BookViewBase::focusInEvent(QFocusEvent *event)
+{
+    if(event->gotFocus())
+        emit gotFocus();
 }

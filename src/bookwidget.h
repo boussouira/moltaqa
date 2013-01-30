@@ -27,7 +27,6 @@ public:
     BookWidget(LibraryBook::Ptr book, QWidget *parent=0);
     ~BookWidget();
 
-    LibraryBook::Ptr book();
     AbstractBookReader *bookReader();
     WebViewSearcher *viewSearcher();
 
@@ -41,7 +40,6 @@ protected:
     void loadIndexModel();
 
     bool eventFilter(QObject *obj, QEvent *event);
-    void focusInEvent(QFocusEvent *event);
 
 public slots:
     void firstPage();
@@ -76,10 +74,6 @@ public slots:
 
 protected slots:
     void viewObjectCleared();
-
-signals:
-    void gotFocus();
-    void textChanged();
 
 protected:
     QSplitter *m_splitter;

@@ -89,11 +89,6 @@ BookWidget::~BookWidget()
     ml_delete_check(m_reader);
 }
 
-LibraryBook::Ptr BookWidget::book()
-{
-    return m_book;
-}
-
 AbstractBookReader *BookWidget::bookReader()
 {
     return m_reader;
@@ -155,12 +150,6 @@ bool BookWidget::eventFilter(QObject *obj, QEvent *event)
     }
 
     return false;
-}
-
-void BookWidget::focusInEvent(QFocusEvent *event)
-{
-    if(event->gotFocus())
-        emit gotFocus();
 }
 
 void BookWidget::loadIndexModel()

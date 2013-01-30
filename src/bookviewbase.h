@@ -23,6 +23,9 @@ public:
     virtual void saveSettings();
     virtual void loadSettings();
 
+protected:
+    void focusInEvent(QFocusEvent *event);
+
 public slots:
     virtual void firstPage()=0;
     virtual void lastPage()=0;
@@ -38,6 +41,10 @@ public slots:
     virtual void scrollUp()=0;
 
     virtual void reloadCurrentPage()=0;
+
+signals:
+    void gotFocus();
+    void textChanged();
 
 protected:
     LibraryBook::Ptr m_book;
