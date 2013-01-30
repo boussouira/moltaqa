@@ -34,7 +34,7 @@ signals:
     void uploadSuccess();
 
 private:
-    UpFile *upf;
+    QHttpMultiPart *m_multiPart;
     QNetworkAccessManager *manager;
     QNetworkReply *reply;
     QString m_uploadUrl;
