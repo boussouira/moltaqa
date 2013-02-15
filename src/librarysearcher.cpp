@@ -11,6 +11,8 @@
 
 #include <qdatetime.h>
 #include <qsqlquery.h>
+#include <qtconcurrentmap.h>
+#include <qfuture.h>
 
 LibrarySearcher::LibrarySearcher(QObject *parent)
     : QThread(parent),
@@ -132,75 +134,97 @@ void LibrarySearcher::search()
     m_pageCount = ceil((resultsCount()/(double)m_resultParPage));
     m_currentPage = 0;
 
+    m_stop = false;
+
     emit doneSearching();
 }
+
+class ResultReader
+{
+public:
+    ResultReader(LibrarySearcher *searcher) : m_searcher(searcher) { }
+
+    typedef void result_type;
+
+    void operator()(int &rid)
+    {
+        m_searcher->fetechResult(rid);
+    }
+
+    LibrarySearcher *m_searcher;
+};
 
 void LibrarySearcher::fetech()
 {
     emit startFeteching();
 
-    int start = m_currentPage * m_resultParPage;
-    int maxResult  = qMin(start+m_resultParPage, resultsCount());
-    bool searchIsInTitle = (m_cluceneQuery->searchField == "title");
+    m_stop = false;
 
-    for(int i=start; i < maxResult;i++){
-
-        SearchResult *savedResult = m_resultsHash.object(i);
-        if(savedResult) {
-            emit gotResult(savedResult);
-            continue;
-        }
-
-        Document &doc = m_hits->doc(i);
-        int entryID = Utils::CLucene::WCharToInt(doc.get(PAGE_ID_FIELD));
-        int bookID = Utils::CLucene::WCharToInt(doc.get(BOOK_ID_FIELD));
-        int score = (int) (m_hits->score(i) * 100.0);
-
-        LibraryBook::Ptr book = m_libraryManager->bookManager()->getLibraryBook(bookID);
-
-        if(!book) {
-            qCritical("LibrarySearcher::fetech: No book with id %d where found", bookID);
-            continue;
-        }
-
-        BookPage *page = new BookPage();
-        page->pageID = entryID;
-
-        if(!book->isQuran()) {
-            page->titleID = Utils::CLucene::WCharToInt(doc.get(TITLE_ID_FIELD));
-        }
-
-        bool gotPage = m_resultReader->getBookPage(book, page);
-
-        if(gotPage) {
-            SearchResult *result = new SearchResult(book, page);
-            if(searchIsInTitle) {
-                result->page->title = Utils::CLucene::highlightText(page->title, m_cluceneQuery, true);
-                result->snippet = Utils::String::abbreviate(page->text, 120);
-            } else {
-                result->snippet = Utils::CLucene::highlightText(page->text, m_cluceneQuery, true);
-
-                if(result->snippet.endsWith("</p"))
-                    result->snippet.append('>');
-            }
-
-            result->resultID = i;
-            result->score = score;
-
-            m_resultsHash.insert(i, result);
-
-            if(m_stop) {
-                m_stop = false;
-                return;
-            } else {
-                emit gotResult(result);
-            }
-        } else {
-            qWarning("LibrarySearcher::fetech No result found for id %d book %d", entryID, bookID);
-        }
-    }
+    QList<int> results = resultsToFetch();
+    QtConcurrent::blockingMap(results, ResultReader(this));
 
     emit doneFeteching();
+}
+
+void LibrarySearcher::fetechResult(int rid)
+{
+    if(m_stop)
+        return;
+
+    SearchResult *savedResult = m_resultsHash.object(rid);
+
+    if(savedResult) {
+        emit gotResult(savedResult);
+        return;
+    }
+
+    bool searchIsInTitle = (m_cluceneQuery->searchField == "title");
+
+    Document &doc = m_hits->doc(rid);
+    int entryID = Utils::CLucene::WCharToInt(doc.get(PAGE_ID_FIELD));
+    int bookID = Utils::CLucene::WCharToInt(doc.get(BOOK_ID_FIELD));
+    int score = (int) (m_hits->score(rid) * 100.0);
+
+    LibraryBook::Ptr book = m_libraryManager->bookManager()->getLibraryBook(bookID);
+
+    if(!book) {
+        qCritical("LibrarySearcher::fetech: No book with id %d where found", bookID);
+        return;
+    }
+
+    BookPage *page = new BookPage();
+    page->pageID = entryID;
+
+    if(!book->isQuran()) {
+        page->titleID = Utils::CLucene::WCharToInt(doc.get(TITLE_ID_FIELD));
+    }
+
+    bool gotPage = m_resultReader->getBookPage(book, page);
+
+    if(gotPage) {
+        SearchResult *result = new SearchResult(book, page);
+        if(searchIsInTitle) {
+            result->page->title = Utils::CLucene::highlightText(page->title, m_cluceneQuery, true);
+            result->snippet = Utils::String::abbreviate(page->text, 120);
+        } else {
+            result->snippet = Utils::CLucene::highlightText(page->text, m_cluceneQuery, true);
+
+            if(result->snippet.endsWith("</p"))
+                result->snippet.append('>');
+        }
+
+        result->resultID = rid;
+        result->score = score;
+        result->toHtml();
+
+        m_resultsHash.insert(rid, result);
+
+        if(!m_stop)
+            emit gotResult(result);
+
+    } else {
+        qWarning("LibrarySearcher::fetech No result found for id %d book %d", entryID, bookID);
+    }
 }
 
 void LibrarySearcher::setQuery(CLuceneQuery *query)
@@ -237,7 +261,7 @@ int LibrarySearcher::currentPage()
 
 int LibrarySearcher::resultsCount()
 {
-    return m_hits->length();
+    return m_hits ? m_hits->length() : 0;
 }
 
 int LibrarySearcher::searchTime()
@@ -248,6 +272,28 @@ int LibrarySearcher::searchTime()
 int LibrarySearcher::resultsPeerPage()
 {
     return m_resultParPage;
+}
+
+int LibrarySearcher::fetchStart()
+{
+    return m_currentPage * m_resultParPage;
+}
+
+int LibrarySearcher::fetchEnd()
+{
+    return qMin(fetchStart()+m_resultParPage, resultsCount());
+}
+
+QList<int> LibrarySearcher::resultsToFetch()
+{
+    QList<int> list;
+    int start = fetchStart();
+    int end = fetchEnd();
+
+    for(int i=start; i < end; i++)
+        list.append(i);
+
+    return list;
 }
 
 void LibrarySearcher::nextPage()

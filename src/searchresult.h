@@ -18,6 +18,9 @@ public:
     QString bgColor;
     int resultID;
     int score;
+
+protected:
+    QString m_html;
 };
 
 #endif // SEARCHRESULT_H

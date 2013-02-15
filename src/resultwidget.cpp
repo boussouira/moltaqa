@@ -294,7 +294,10 @@ void ResultWidget::searchFinnished()
 
 void ResultWidget::fetechStarted()
 {
-    m_view->execJS("fetechStarted();");
+    m_view->execJS(QString("fetechStarted(%1, %2);")
+                   .arg(m_searcher->fetchStart())
+                   .arg(m_searcher->fetchEnd()));
+
     showProgressBar(true);
 
     ui->progressBar->setMaximum(Utils::Settings::get("Search/resultPeerPage", 10).toInt());
@@ -318,7 +321,9 @@ void ResultWidget::fetechFinnished()
 
 void ResultWidget::gotResult(SearchResult *result)
 {
-    m_view->execJS(QString("addResult('%1')").arg(Utils::Html::jsEscape(result->toHtml())));
+    m_view->execJS(QString("addResult(%1, '%2')")
+                   .arg(result->resultID)
+                   .arg(Utils::Html::jsEscape(result->toHtml())));
 
     ui->progressBar->setValue(ui->progressBar->value()+1);
 }

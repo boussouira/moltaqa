@@ -1,5 +1,6 @@
 #include "searchresult.h"
 #include "htmlhelper.h"
+#include "utils.h"
 
 SearchResult::SearchResult(LibraryBook::Ptr _book, BookPage *_page) :
     book(_book),
@@ -11,12 +12,16 @@ SearchResult::SearchResult(LibraryBook::Ptr _book, BookPage *_page) :
 
 SearchResult::~SearchResult()
 {
-    if(page)
-        delete page;
+    ml_delete_check(page);
 }
 
 QString SearchResult::toHtml()
 {
+    ml_return_val_on_fail(page, QString());
+
+    if(m_html.size())
+        return m_html;
+
     HtmlHelper helper;
     helper.beginDiv(".result");
 
@@ -57,5 +62,7 @@ QString SearchResult::toHtml()
 
     helper.endAll();
 
-    return helper.html();
+    m_html = helper.html();
+
+    return m_html;
 }

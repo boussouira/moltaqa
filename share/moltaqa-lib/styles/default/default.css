@@ -194,6 +194,12 @@ footnote p {
 div.clear {
     clear: both;
 }
+.result_loading {
+    border:1px #333 solid;
+    font-size: 0.7em;
+    margin: 5px 0;
+    padding: 0 10px;
+}
 .result {
     background: none repeat scroll 0 0 #FFFFFF;
     border: 1px solid #AAAAAA;

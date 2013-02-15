@@ -15,7 +15,7 @@ function bookNameClick()
     });
 }
 
-function addResult(str)
+function addResult(rid, str)
 {
     var result = $(str);
     result.find('.resultText').click(function() {
@@ -28,7 +28,7 @@ function addResult(str)
         scroll(p.position().left, p.position().top);
     });
 
-    $('#searchResult').append(result);
+    $('.r_'+rid).removeClass('result_loading').replaceWith(result);
 }
 
 function searchStarted()
@@ -45,11 +45,18 @@ function searchFinnished()
     clearBody = false;
 }
 
-function fetechStarted()
+function fetechStarted(start, end)
 {
     if(clearBody) {
         clear('#searchResult');
         clear('#pagination');
+    }
+
+    for(i=start; i<end; i++) {
+        $('#searchResult').append($('<div>', {
+                                        'text': 'جاري تحميل النتيجة...',
+                                        'class': 'result_loading r_'+i
+                                    }));
     }
 }
 
