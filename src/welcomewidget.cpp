@@ -111,7 +111,7 @@ void WelcomeWidget::open(QString vid)
     } else if(vid == "favourites") {
         MW->showBooksList(BooksListBrowser::FavoritesModel);
     } else if(vid == "bookslist") {
-        MW->showBooksList(BooksListBrowser::AllBooksModel);
+        MW->showBooksList(BooksListBrowser::CategoriesModel);
     } else if(vid == "moltaqa-lib") {
         m_webView->setUrl(QUrl("http://www.ahlalhdeeth.com/vb/forumdisplay.php?f=75"));
     } else {

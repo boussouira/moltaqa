@@ -29,9 +29,10 @@ BooksListBrowser::BooksListBrowser(QWidget *parent) :
     m_favouritesManager(LibraryManager::instance()->favouritesManager()),
     m_bookManager(LibraryManager::instance()->bookManager()),
     m_currentModel(0),
-    m_bookListModel(0),
+    m_categoriesModel(0),
     m_favouritesModel(0),
-    m_lastReadedModel(0),
+    m_recentOpenModel(0),
+    m_allBooksModel(0),
     m_bookListFilter(new ModelViewFilter(this)),
     ui(new Ui::BooksListBrowser)
 {
@@ -39,14 +40,14 @@ BooksListBrowser::BooksListBrowser(QWidget *parent) :
 
     loadSettings();
 
-    readBookListModel();
-    readFavouritesModel();
-    lastReadBooksModel();
+    getCategoriesModel();
+    getFavouritesModel();
+    getRecentOpenModel();
 
     ui->checkSortAsc->setChecked(Utils::Settings::get("BooksListWidget/sortAsc", true).toBool());
 
-    connect(m_bookListManager, SIGNAL(ModelsReady()), SLOT(readBookListModel()));
-    connect(m_favouritesManager, SIGNAL(ModelsReady()), SLOT(readFavouritesModel()));
+    connect(m_bookListManager, SIGNAL(ModelsReady()), SLOT(getCategoriesModel()));
+    connect(m_favouritesManager, SIGNAL(ModelsReady()), SLOT(getFavouritesModel()));
     connect(ui->treeBookList, SIGNAL(doubleClicked(QModelIndex)), SLOT(itemClicked(QModelIndex)));
     connect(ui->comboCurrentList, SIGNAL(currentIndexChanged(int)), SLOT(currentListChanged(int)));
     connect(ui->comboListSorting, SIGNAL(currentIndexChanged(int)), SLOT(listSortingChanged(int)));
@@ -71,9 +72,10 @@ BooksListBrowser::BooksListBrowser(QWidget *parent) :
 
 BooksListBrowser::~BooksListBrowser()
 {
-    ml_delete_check(m_bookListModel);
+    ml_delete_check(m_categoriesModel);
     ml_delete_check(m_favouritesModel);
-    ml_delete_check(m_lastReadedModel);
+    ml_delete_check(m_recentOpenModel);
+    ml_delete_check(m_allBooksModel);
 
     delete ui;
 }
@@ -124,14 +126,18 @@ void BooksListBrowser::setupListFilter()
 
 void BooksListBrowser::currentListChanged(int index)
 {
-    if(index == AllBooksModel) {
-        m_currentModel = m_bookListModel;
+    if(index == CategoriesModel) {
+        m_currentModel = m_categoriesModel;
     } else if(index == FavoritesModel) {
         m_currentModel = m_favouritesModel;
     } else if(index == LastOpenModel) {
         m_currentModel = 0; // don't call setupListFilter()
-        lastReadBooksModel();
-        m_currentModel = m_lastReadedModel;
+        getRecentOpenModel();
+        m_currentModel = m_recentOpenModel;
+    } else if(index == AllBooksModel) {
+        m_currentModel = 0; // don't call setupListFilter()
+        getAllBooksModel();
+        m_currentModel = m_allBooksModel;
     } else {
         qWarning() << "BooksListBrowser::currentListChanged unknow list index"
                    << index;
@@ -175,37 +181,49 @@ void BooksListBrowser::sortOrderChanged(bool checked)
     listSortingChanged(ui->comboListSorting->currentIndex());
 }
 
-void BooksListBrowser::readBookListModel()
+void BooksListBrowser::getCategoriesModel()
 {
-    bool reload = (m_currentModel && m_currentModel == m_bookListModel);
-    ml_delete_check(m_bookListModel);
+    bool reload = (m_currentModel && m_currentModel == m_categoriesModel);
+    ml_delete_check(m_categoriesModel);
 
-    m_bookListModel = Utils::Model::cloneModel(m_bookListManager->bookListModel());
-    ml_return_on_fail2(m_bookListModel, "BooksListBrowser::readBookListModel model is null");
+    m_categoriesModel = Utils::Model::cloneModel(m_bookListManager->bookListModel());
+    ml_return_on_fail2(m_categoriesModel, "BooksListBrowser::getCategoriesModel model is null");
 
     if(reload)
         setupListFilter();
 }
 
-void BooksListBrowser::readFavouritesModel()
+void BooksListBrowser::getFavouritesModel()
 {
-    bool reload = (m_currentModel && m_currentModel == m_bookListModel);
+    bool reload = (m_currentModel && m_currentModel == m_categoriesModel);
     ml_delete_check(m_favouritesModel);
 
     m_favouritesModel = Utils::Model::cloneModel(m_favouritesManager->bookListModel());
-    ml_return_on_fail2(m_favouritesModel, "BooksListBrowser::readFavouritesModel model is null");
+    ml_return_on_fail2(m_favouritesModel, "BooksListBrowser::getFavouritesModel model is null");
 
     if(reload)
         setupListFilter();
 }
 
-void BooksListBrowser::lastReadBooksModel()
+void BooksListBrowser::getRecentOpenModel()
 {
-    bool reload = (m_currentModel && m_currentModel == m_bookListModel);
-    ml_delete_check(m_lastReadedModel);
+    bool reload = (m_currentModel && m_currentModel == m_categoriesModel);
+    ml_delete_check(m_recentOpenModel);
 
-    m_lastReadedModel = Utils::Model::cloneModel(m_bookManager->getLastOpendModel().data());
-    ml_return_on_fail2(m_lastReadedModel, "BooksListBrowser::lastReadBooksModel model is null");
+    m_recentOpenModel = Utils::Model::cloneModel(m_bookManager->getLastOpendModel().data());
+    ml_return_on_fail2(m_recentOpenModel, "BooksListBrowser::getRecentOpenModel model is null");
+
+    if(reload)
+        setupListFilter();
+}
+
+void BooksListBrowser::getAllBooksModel()
+{
+    bool reload = (m_currentModel && m_currentModel == m_categoriesModel);
+    ml_delete_check(m_allBooksModel);
+
+    m_allBooksModel = Utils::Model::cloneModel(m_bookManager->getModel().data());
+    ml_return_on_fail2(m_allBooksModel, "BooksListBrowser::getAllBooksModel model is null");
 
     if(reload)
         setupListFilter();
@@ -219,7 +237,7 @@ void BooksListBrowser::itemClicked(QModelIndex index)
 
     ml_return_on_fail(bookType != ItemType::CategorieItem);
 
-    if(m_currentModel != m_lastReadedModel)
+    if(m_currentModel != m_recentOpenModel)
         emit bookSelected(bookID);
     else
         emit bookSelected(bookID, pageID);
@@ -265,7 +283,7 @@ void BooksListBrowser::bookListMenu(QPoint /*point*/)
     QAction *searchInBookAct = menu.addAction(QIcon::fromTheme("edit-find", QIcon(":/images/find.png")),
                                            tr("بحث في الكتاب"));
 
-    if(m_currentModel == m_lastReadedModel) {
+    if(m_currentModel == m_recentOpenModel) {
         menu.addSeparator();
 
         removeFromLastOpenedAct = menu.addAction(QIcon(":/images/remove.png"),
@@ -298,7 +316,7 @@ void BooksListBrowser::bookListMenu(QPoint /*point*/)
             MW->editorView()->editBook(book);
         } else if(ret == removeFromLastOpenedAct) {
             if(m_bookManager->deleteBookFromLastOpen(bookID)) {
-                lastReadBooksModel();
+                getRecentOpenModel();
             } else {
                 QMessageBox::warning(this,
                                      tr("أحدث الكتب تصفحا"),

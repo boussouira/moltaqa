@@ -49,6 +49,11 @@
          <string>الأحدث تصفحا</string>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>كل الكتب</string>
+        </property>
+       </item>
       </widget>
      </item>
      <item>
