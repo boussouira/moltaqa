@@ -199,9 +199,6 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
             page.haddit = query.value(hnoCol).toInt();
         }
 
-        if(shoorts.size())
-            RemoveShamelaShoorts(page.text, shoorts);
-
         bookWrite.addPage(&page);
         page.clear();
     }
@@ -221,8 +218,13 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
     IdCol = query.record().indexOf("id");
     nassCol = query.record().indexOf("nass");
     while(query.next()) {
+        QString pageText = query.value(nassCol).toString();
+
+        if(shoorts.size())
+            RemoveShamelaShoorts(pageText, shoorts);
+
         bookWrite.addPageText(query.value(IdCol).toInt(),
-                              query.value(nassCol).toString());
+                              pageText);
     }
 
     bookWrite.endReading();
