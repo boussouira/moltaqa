@@ -125,7 +125,7 @@ QString NewBookWriter::processPageText(QString text)
 
     QString specialChar(_u("§"));
     // Separete footnote
-    QRegExp footnoteSep("\\n+_{6,}\\n+");
+    QRegExp footnoteSep(_u("\\n+¬?_{6,}[ \\n]+"));
     QStringList pageTextList = text.split(footnoteSep, QString::SkipEmptyParts);
     if(pageTextList.isEmpty())
         return htmlText;
@@ -134,10 +134,10 @@ QString NewBookWriter::processPageText(QString text)
         QString pageText = pageTextList.first();
         QString footnoteText = pageTextList.last().trimmed();
 
-        pageText.replace(QRegExp(_u("\\(¬?([0-9]{1,2})\\)")),
+        pageText.replace(QRegExp(_u("\\(¬?([0-9]{1,2})¬?\\)")),
                              "<sup class=\"fnn\"><a class=\"footn\" id=\"fnb\\1\" href=\"#fn\\1\">(\\1)</a></sup>");
 
-        footnoteText.replace(QRegExp(_u("\\(¬?([0-9]{1,2})\\)")),
+        footnoteText.replace(QRegExp(_u("\\(¬?([0-9]{1,2})¬?\\)")),
                              "<sup class=\"fnb\"><a href=\"#fnb\\1\" id=\"fn\\1\">(\\1)</a></sup>");
         footnoteText.replace("\n", "<br />");
 
