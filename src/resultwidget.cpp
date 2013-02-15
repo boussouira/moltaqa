@@ -211,7 +211,7 @@ void ResultWidget::openResult(int resultID)
 
 void ResultWidget::goToPage(int page)
 {
-    m_searcher->fetechResults(page);
+    m_searcher->page(page);
 }
 
 void ResultWidget::showBookMenu(int bookID)

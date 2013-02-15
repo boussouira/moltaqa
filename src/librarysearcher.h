@@ -44,7 +44,7 @@ public:
     void prevPage();
     void firstPage();
     void lastPage();
-    void fetechResults(int page);
+    void page(int page);
 
 protected:
     void open();

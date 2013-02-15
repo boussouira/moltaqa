@@ -294,7 +294,7 @@ void LibrarySearcher::lastPage()
     }
 }
 
-void LibrarySearcher::fetechResults(int page)
+void LibrarySearcher::page(int page)
 {
     if(!isRunning()) {
         if(page < pageCount()) {
