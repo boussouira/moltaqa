@@ -214,7 +214,7 @@ LibraryBook::Ptr LibraryBookManager::findBook(QString bookName)
     QueryBuilder q;
     q.setTableName("books", QueryBuilder::Select);
     q.select("id");
-    q.like("title", bookName);
+    q.where("title", bookName);
 
     QSqlQuery query(m_db);
     if(q.exec(query) && query.next())
