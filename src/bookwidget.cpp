@@ -60,6 +60,7 @@ BookWidget::BookWidget(LibraryBook::Ptr book, QWidget *parent):
     m_indexReading = false;
 
     connect(m_indexWidget, SIGNAL(openPage(int)), this, SLOT(openPage(int)));
+    connect(m_indexWidget, SIGNAL(scrollToElement(QString,bool)), m_view, SLOT(scrollToElement(QString,bool)));
     connect(m_indexWidget, SIGNAL(openSora(int,int)), SLOT(openSora(int,int)));
     connect(m_view->page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()), SLOT(viewObjectCleared()));
     connect(m_reader, SIGNAL(textChanged()), SLOT(readerTextChanged()));

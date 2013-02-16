@@ -189,23 +189,27 @@ void WebView::setText(const QString &text)
     emit textChanged();
 }
 
-void WebView::scrollToElement(QString elementQuery)
+void WebView::scrollToElement(QString elementQuery, bool center)
 {
     QWebElement element = m_frame->findFirstElement(elementQuery);
     if(!element.isNull()) {
-        QRect highElement = element.geometry();
-        // m_frame heihgt
-        int frameHeihgt = m_frame->geometry().height() / 2;
-        // The height that should be added to center the selected aya
-        int addHeight = highElement.height() / 2 ;
-        // it must be less than frameHeight
-        while (frameHeihgt < addHeight )
-            addHeight = addHeight / 2;
-        // The aya position equal ((ayaHeight - frameHeight) + addHeight)
-        int ayaPosition = (highElement.y() - frameHeihgt) + addHeight;
+        QRect elementRect = element.geometry();
+        int elementPosition = elementRect.y();
+
+        if(center) {
+            // m_frame heihgt
+            int frameHeihgt = m_frame->geometry().height() / 2;
+            // The height that should be added to center the selected aya
+            int addHeight = elementRect.height() / 2 ;
+            // it must be less than frameHeight
+            while (frameHeihgt < addHeight )
+                addHeight = addHeight / 2;
+            // The aya position equal ((ayaHeight - frameHeight) + addHeight)
+            elementPosition = (elementRect.y() - frameHeihgt) + addHeight;
+        }
 
         // Animation the scrolling to the selected AYA
-        scrollToPosition(QPoint(0, ayaPosition));
+        scrollToPosition(QPoint(0, elementPosition));
     }
 }
 

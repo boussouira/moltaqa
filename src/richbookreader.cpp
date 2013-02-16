@@ -102,6 +102,7 @@ QStandardItemModel *RichBookReader::indexModel()
         if(reader.isStartElement()) {
             if(reader.name() == "title") {
                 int pageID = reader.attributes().value("pageID").toString().toInt();
+                QString tid = reader.attributes().value("tid").toString();
 
                 if(reader.readNext() == QXmlStreamReader::Characters
                         && reader.readNext() == QXmlStreamReader::StartElement
@@ -110,6 +111,7 @@ QStandardItemModel *RichBookReader::indexModel()
                     if(reader.readNext() == QXmlStreamReader::Characters) {
                         QStandardItem *item = new QStandardItem(reader.text().toString());
                         item->setData(pageID, ItemRole::idRole);
+                        item->setData(tid, ItemRole::titleIdRole);
                         rootItem->appendRow(item);
 
                         m_pageTitles.append(pageID);

@@ -10,6 +10,14 @@
 #include "ziphelper.h"
 #include "sqlutils.h"
 
+struct BookTitle
+{
+    int pageID;
+    int level;
+    QString title;
+    QString tid;
+};
+
 class NewBookWriter
 {
 public:
@@ -29,7 +37,7 @@ public:
     void addTitle(const QString &title, int tid, int level);
 
 protected:
-    QString processPageText(QString text);
+    QString processPageText(int pageID, QString text);
 
 protected:
     QString m_booksDir;
@@ -44,6 +52,8 @@ protected:
     QString m_titlesPath;
     QFile m_titlesFile;
     QXmlStreamWriter m_titlesWriter;
+    QHash<int, QList<BookTitle> > m_titles;
+    int m_titlesCount;
 
     int m_lastLavel;
     QHash<int, int> m_levels;

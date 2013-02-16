@@ -67,7 +67,7 @@ void NewBookWriter::addPage(BookPage *page)
     m_pagesWriter.writeEndElement();
 
     if(page->text.size()) {
-        QString pageText = processPageText(page->text);
+        QString pageText = processPageText(page->pageID, page->text);
         m_zipWriter.add(QString("pages/p%1.html").arg(page->pageID),
                         pageText.toUtf8(),
                         ZipWriterManager::AppendFile);
@@ -76,7 +76,7 @@ void NewBookWriter::addPage(BookPage *page)
 
 void NewBookWriter::addPageText(int pageID, const QString &text)
 {
-    QString pageText = processPageText(text);
+    QString pageText = processPageText(pageID, text);
     m_zipWriter.add(QString("pages/p%1.html").arg(pageID),
                     pageText.toUtf8(),
                     ZipWriterManager::PrependFile);
@@ -102,13 +102,24 @@ void NewBookWriter::addTitle(const QString &title, int tid, int level)
 
     }
 
+    QString tuid = QString("t_%1").arg(++m_titlesCount);
+
     m_titlesWriter.writeStartElement("title");
     m_titlesWriter.writeAttribute("pageID", QString::number(tid));
+    m_titlesWriter.writeAttribute("tid", tuid);
 
     m_titlesWriter.writeTextElement("text", title);
+
+    BookTitle bookTitle;
+    bookTitle.pageID = tid;
+    bookTitle.level = level;
+    bookTitle.title = Utils::String::Arabic::clean(title);
+    bookTitle.tid = tuid;
+
+    m_titles[tid].append(bookTitle);
 }
 
-QString NewBookWriter::processPageText(QString text)
+QString NewBookWriter::processPageText(int pageID, QString text)
 {
     QString htmlText;
     text = text.replace(QRegExp("[\\r\\n]+"), "\n");
@@ -150,20 +161,42 @@ QString NewBookWriter::processPageText(QString text)
         pageTextList[0] = text;
     }
 
+    QList<BookTitle> pageTitles = m_titles[pageID];
     QStringList paragraphs = pageTextList[0].split(QRegExp("\\n+"), QString::SkipEmptyParts);
     foreach(QString p, paragraphs) {
-        htmlText.append("<p>");
+        QString pTag = "p";
+        QString pAttr;
 
-        htmlText.append(p.simplified()
-                        .replace(rxMateen, "<mateen>\\1</mateen>\\2")
-                        .replace(rxSheer, "<sheer>\\1</sheer>")
-                        .remove(specialChar));
+        p.remove(specialChar);
 
-        htmlText.append("</p>");
+        if(pageTitles.size()) {
+            QString cleanP = Utils::String::Arabic::clean(p);
+            for(int i=0; i<pageTitles.size(); i++) {
+                const BookTitle &title = pageTitles.at(i);
+                if((cleanP.size() - title.title.size() < 5)
+                        && cleanP.contains(title.title)) {
+                    pTag = QString("h%1").arg(title.level);
+                    pAttr = QString(" id=\"%1\"").arg(title.tid);
+
+                    pageTitles.removeAt(i);
+                    break;
+                }
+            }
+        }
+
+        htmlText.append("<"+pTag+pAttr+">");
+
+        htmlText.append(p.replace(rxMateen, "<mateen>\\1</mateen>\\2")
+                        .replace(rxSheer, "<sheer>\\1</sheer>"));
+
+        htmlText.append("</"+pTag+">");
     }
 
     if(pageTextList.size() == 2)
         htmlText.append(pageTextList[1]);
+
+    if(pageTitles.size())
+        m_titles.remove(pageID);
 
     return htmlText;
 }
@@ -202,6 +235,8 @@ void NewBookWriter::startReading()
     m_titlesWriter.writeStartElement("titles");
 
     m_lastLavel = 0;
+    m_titlesCount = 0;
+    m_titles.clear();
 }
 
 void NewBookWriter::endReading()

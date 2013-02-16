@@ -14,7 +14,8 @@ namespace ItemRole {
         authorIdRole,
         itemTypeRole,
         bookIdRole,
-        pageIdRole
+        pageIdRole,
+        titleIdRole
     };
 }
 

@@ -36,10 +36,12 @@ public slots:
 
 private slots:
     void listClicked(QModelIndex index);
+    void scrollToTitle();
 
 signals:
     void openSora(int sora, int aya);
     void openPage(int pageID);
+    void scrollToElement(QString selector, bool center);
 
     void bookInfoChanged();
 
@@ -50,6 +52,7 @@ private:
     BookPage *m_page;
     Ui::IndexWidget *ui;
     bool sendSignals;
+    QString m_tid;
 };
 
 #endif // INDEXWIDGET_H
