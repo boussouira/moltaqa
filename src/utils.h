@@ -85,6 +85,7 @@ QString localeDir();
 QString dataDir();
 
 QString currentStyle(const QString &fileName=QString());
+QString currentStyleName();
 
 QString id();
 }

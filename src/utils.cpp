@@ -734,6 +734,11 @@ QString currentStyle(const QString &fileName)
     return dir.absolutePath();
 }
 
+QString currentStyleName()
+{
+    return Utils::Settings::get("Style/name", ML_DEFAULT_STYLE).toString();
+}
+
 QString id()
 {
     if(!Utils::Settings::contains("Update/token"))

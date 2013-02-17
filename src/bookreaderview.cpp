@@ -18,6 +18,7 @@
 #include "librarybookmanager.h"
 #include "filterlineedit.h"
 #include "webview.h"
+#include "libraryinfo.h"
 
 #include <qmainwindow.h>
 #include <qmenubar.h>
@@ -31,6 +32,8 @@
 #include <qmessagebox.h>
 #include <qkeysequence.h>
 #include <QCompleter>
+#include <qprogressdialog.h>
+#include <qfile.h>
 
 BookReaderView::BookReaderView(LibraryManager *libraryManager, QWidget *parent): AbstarctView(parent)
 {
@@ -112,6 +115,8 @@ void BookReaderView::createMenus()
     m_removeTashekilAct->setCheckable(true);
     m_removeTashekilAct->setChecked(Utils::Settings::get("Style/removeTashekil", false).toBool());
 
+    QAction *getSheerAct = new QAction(tr("الأبيات الشعرية"), this);
+
     m_actionNextAYA->setShortcut(QKeySequence("J"));
     m_actionPrevAYA->setShortcut(QKeySequence("K"));
     m_actionNextPage->setShortcut(QKeySequence("N"));
@@ -161,6 +166,8 @@ void BookReaderView::createMenus()
     m_navActions << actionSeparator(this);
     m_navActions << m_bookInfoAct;
     m_navActions << readHistoryAct;
+    m_navActions << actionSeparator(this);
+    m_navActions << getSheerAct;
 
     m_toolBars << m_toolBarGeneral;
     m_toolBars << m_toolBarNavigation;
@@ -180,6 +187,7 @@ void BookReaderView::createMenus()
     connect(m_actionGotToPage, SIGNAL(triggered()), m_viewManager, SLOT(goToPage()));
     connect(m_bookInfoAct, SIGNAL(triggered()), m_viewManager, SLOT(showBookInfo()));
     connect(readHistoryAct, SIGNAL(triggered()), m_viewManager, SLOT(showBookHistory()));
+    connect(getSheerAct, SIGNAL(triggered()), SLOT(getSheer()));
     connect(m_removeTashekilAct, SIGNAL(triggered(bool)), SLOT(removeTashkil(bool)));
 
     // Generale actions
@@ -377,6 +385,185 @@ void BookReaderView::removeTashkil(bool remove)
         book->bookReader()->setRemoveTashkil(remove);
         book->reloadCurrentPage();
     }
+}
+
+void BookReaderView::getSheer()
+{
+    LibraryBook::Ptr book = currentBook();
+    ml_return_on_fail(book);
+    ml_return_on_fail(currentBookWidget());
+
+    AbstractBookReader *reader = currentBookWidget()->bookReader();
+    ml_return_on_fail(reader);
+
+    QuaZip zip;
+    zip.setZipName(book->path);
+
+    if(!zip.open(QuaZip::mdUnzip)) {
+        qDebug() << "BookReaderView::getSheer Can't zip file" << book->path
+                 << "Error:" << zip.getZipError();
+        return;
+    }
+
+    QProgressDialog dialog(this);
+    dialog.setWindowTitle(book->title);
+    dialog.setLabelText(tr("جاري البحث عن الأبيات..."));
+    dialog.setMaximum(reader->pagesCount());
+    dialog.setMinimumDuration(0);
+    dialog.setValue(0);
+    dialog.setModal(true);
+    dialog.show();
+
+    QString tempDir = LibraryManager::instance()->libraryInfo()->tempDir();
+    QString filePath = Utils::Rand::fileName(tempDir, true, "sheer_", "html");
+
+    QFile outFile(filePath);
+    if(!outFile.open(QIODevice::WriteOnly)) {
+        qDebug() << "writePage::writeContent error when writing to " << filePath
+                 << "Error:" << outFile.errorString();
+        return;
+    }
+
+    QTextStream outStream(&outFile);
+    outStream.setCodec("utf-8");
+
+    outStream << "<html>"
+                 "<head>"
+                 "<title>" << book->title <<"</title>"
+                 "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />" "\n"
+                 "<style>"
+                 "body { direction:rtl;";
+
+    if(App::currentStyleName().toLower() == "black")
+        outStream << "background-color:black; color: #ccc;";
+
+    outStream << " }" "\n";
+    outStream << "ul { list-style: decimal inside none; font-weight: bold;";
+
+    if(App::currentStyleName().toLower() == "black")
+        outStream << "color: #757DA7;";
+    else
+        outStream << "color: #273A9D;";
+
+    outStream << "}";
+    outStream << "a { border-bottom: 1px solid #CCCCCC; display: block; "
+                 "font-size: 0.8em; text-align: left; text-decoration: none; "
+                 "color: #7DA2FF; }";
+    outStream << "a:visited { color: #7DA2FF; }";
+    outStream << "</style>"
+                 "<head>"
+                 "<body>";
+
+    int count = 0;
+    int sheerCount = 0;
+
+    BookPage page;
+    QuaZipFileInfo info;
+    QuaZipFile file(&zip);
+    for(bool more=zip.goToFirstFile(); more; more=zip.goToNextFile()) {
+        ml_return_on_fail2(zip.getCurrentFileInfo(&info),
+                            "BookReaderView::getSheer getCurrentFileInfo Error" << zip.getZipError());
+
+        int id = 0;
+        QString name = info.name;
+        if(name.startsWith("pages/p")) {
+            name = name.remove(0, 7);
+            name = name.remove(".html");
+
+            bool ok;
+            id = name.toInt(&ok);
+            if(!ok) {
+                qDebug("BookReaderView::getSheer can't convert '%s' to int", qPrintable(name));
+                continue;
+            }
+        } else {
+            continue;
+        }
+
+        if(!file.open(QIODevice::ReadOnly)) {
+            qWarning("BookReaderView::getSheer zip error %d", zip.getZipError());
+            continue;
+        }
+
+        QByteArray out;
+        char buf[4096];
+        int len = 0;
+
+        while (!file.atEnd()) {
+            len = file.read(buf, 4096);
+            out.append(buf, len);
+
+            if(len <= 0)
+                break;
+        }
+
+        page.pageID = id;
+        page.text = QString::fromUtf8(out);
+
+        QWebPage webPage;
+        webPage.mainFrame()->setHtml(page.text);
+
+        QList<QWebElement> list = webPage.mainFrame()->findAllElements("sheer").toList();
+        for(int i=0; i<list.count(); i++) {
+            QWebElement element = list[i];
+            QString html = "<ul>" "\n" "<li>" + element.toPlainText()+ "</li>"  "\n";
+
+            QWebElement child = element.parent().nextSibling().firstChild();
+            while(child.tagName().toLower() == "sheer") {
+                html.append("<li>");
+                html.append(child.toPlainText());
+                html.append("</li>" "\n");
+
+                list.removeAll(child);
+
+                child = child.parent().nextSibling().firstChild();
+            }
+
+            html.append("</ul>");
+
+            QWebElement paraElement = element.parent().previousSibling();
+
+            html.prepend("<p>" "\n" + paraElement.toPlainText() + "\n");
+            html.append("</p>" "\n");
+
+            outStream << html;
+        }
+
+        if(list.count()) {
+            outStream << QString("<a href=\"#\" onclick=\"bookView.openPageID(%1); return false\">%2 (%1)</a>")
+                         .arg(id).arg(tr("فتح الصفحة"));
+        }
+
+        file.close();
+
+        dialog.setValue(dialog.value()+1);
+
+        ++sheerCount;
+        if(++count > 100) {
+            qApp->processEvents();
+            count = 0;
+        }
+
+        if(dialog.wasCanceled())
+            break;
+
+        if(file.getZipError()!=UNZ_OK) {
+            qWarning("BookReaderView::getSheer Unknow zip error %d", file.getZipError());
+            continue;
+        }
+    }
+
+    outStream << "</body>" "</html>";
+
+    outStream.flush();
+    outFile.close();
+
+    QWebView *view = new QWebView();
+    view->setWindowTitle(tr("%1 - عدد الأبيات الشعرية: %2").arg(book->title).arg(sheerCount));
+    view->setUrl(QUrl::fromLocalFile(filePath));
+    view->show();
+
+    view->page()->mainFrame()->addToJavaScriptWindowObject("bookView", currentBookWidget());
 }
 
 void BookReaderView::editCurrentBook()
