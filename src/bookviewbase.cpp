@@ -22,3 +22,8 @@ void BookViewBase::saveSettings()
 void BookViewBase::loadSettings()
 {
 }
+
+void BookViewBase::openPageID(int id)
+{
+    openPage(id);
+}

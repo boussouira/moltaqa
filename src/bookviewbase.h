@@ -29,6 +29,10 @@ public slots:
     virtual void nextPage()=0;
     virtual void prevPage()=0;
 
+    /**
+     * @brief openPageID seem as openPage, so we can call this function from javascript envirement
+    */
+    virtual void openPageID(int id);
     virtual void openPage(int id)=0;
     virtual void openPage(int pageNum, int partNum)=0;
     virtual void openSora(int sora, int aya)=0;

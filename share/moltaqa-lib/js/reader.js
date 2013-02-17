@@ -37,7 +37,7 @@ function indexReading()
     });
 
     $('.bookIndex > img').click(function(){
-        bookWidget.openPage($(this).attr('tid'));
+        bookWidget.openPageID($(this).attr('tid'));
     });
 }
 
