@@ -200,7 +200,8 @@ void BookWidget::indexModelReady()
 
 void BookWidget::openPage(int id)
 {
-    m_reader->goToPage(id);
+    if(m_reader->page()->pageID != id)
+        m_reader->goToPage(id);
 
     scrollToCurrentAya(true);
 }
