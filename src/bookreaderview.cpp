@@ -515,6 +515,7 @@ void BookReaderView::getSheer()
                 html.append("</li>" "\n");
 
                 list.removeAll(child);
+                ++sheerCount;
 
                 child = child.parent().nextSibling().firstChild();
             }
@@ -538,7 +539,6 @@ void BookReaderView::getSheer()
 
         dialog.setValue(dialog.value()+1);
 
-        ++sheerCount;
         if(++count > 100) {
             qApp->processEvents();
             count = 0;
@@ -558,12 +558,20 @@ void BookReaderView::getSheer()
     outStream.flush();
     outFile.close();
 
-    QWebView *view = new QWebView();
-    view->setWindowTitle(tr("%1 - عدد الأبيات الشعرية: %2").arg(book->title).arg(sheerCount));
-    view->setUrl(QUrl::fromLocalFile(filePath));
-    view->show();
+    if(sheerCount) {
+        QWebView *view = new QWebView();
+        view->setWindowTitle(tr("%1 - عدد الأبيات الشعرية: %2").arg(book->title).arg(sheerCount));
+        view->setUrl(QUrl::fromLocalFile(filePath));
+        view->show();
 
-    view->page()->mainFrame()->addToJavaScriptWindowObject("bookView", currentBookWidget());
+        view->page()->mainFrame()->addToJavaScriptWindowObject("bookView", currentBookWidget());
+    } else {
+        QMessageBox::warning(this,
+                             book->title,
+                             tr("لم يتم العثور على أي بيت شعري في هذا الكتاب!"));
+
+        QFile::remove(filePath);
+    }
 }
 
 void BookReaderView::editCurrentBook()
