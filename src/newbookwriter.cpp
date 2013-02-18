@@ -175,7 +175,7 @@ QString NewBookWriter::processPageText(int pageID, QString text)
                 const BookTitle &title = pageTitles.at(i);
                 if((cleanP.size() - title.title.size() < 5)
                         && cleanP.contains(title.title)) {
-                    pTag = QString("h%1").arg(title.level);
+                    pTag = QString("h%1").arg(qBound(1, title.level, 6));
                     pAttr = QString(" id=\"%1\"").arg(title.tid);
 
                     pageTitles.removeAt(i);

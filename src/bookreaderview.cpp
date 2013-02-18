@@ -424,6 +424,18 @@ void BookReaderView::getSheer()
         return;
     }
 
+    QString ulColor;
+    QString bodyColor;
+    QString aBorderColor;
+    if(App::currentStyleName().toLower() == "black") {
+        bodyColor = "background-color:black; color: #ccc;";
+        ulColor = "#757DA7";
+        aBorderColor = "#555555";
+    } else {
+        ulColor = "#273A9D";
+        aBorderColor = "#AAAAAA";
+    }
+
     QTextStream outStream(&outFile);
     outStream.setCodec("utf-8");
 
@@ -431,28 +443,22 @@ void BookReaderView::getSheer()
                  "<head>"
                  "<title>" << book->title <<"</title>"
                  "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />" "\n"
-                 "<style>"
-                 "body { direction:rtl;";
+                 "<style>" "\n";
 
-    if(App::currentStyleName().toLower() == "black")
-        outStream << "background-color:black; color: #ccc;";
+    outStream <<"body { direction:rtl;" << bodyColor << " }" "\n";
 
-    outStream << " }" "\n";
-    outStream << "ul { list-style: decimal inside none; font-weight: bold;";
+    outStream << "ul { list-style: decimal inside none; font-weight: bold; "
+                 "color: " << ulColor << "}" "\n";
 
-    if(App::currentStyleName().toLower() == "black")
-        outStream << "color: #757DA7;";
-    else
-        outStream << "color: #273A9D;";
+    outStream << "a { border-bottom: 1px solid " << aBorderColor << ";"
+              << "display: block; font-size: 0.8em; text-align: left; "
+              << "text-decoration: none; color: #7DA2FF; }" "\n";
 
-    outStream << "}";
-    outStream << "a { border-bottom: 1px solid #CCCCCC; display: block; "
-                 "font-size: 0.8em; text-align: left; text-decoration: none; "
-                 "color: #7DA2FF; }";
-    outStream << "a:visited { color: #7DA2FF; }";
+    outStream << "a:visited { color: #7DA2FF; }" "\n";
+
     outStream << "</style>"
                  "<head>"
-                 "<body>";
+                 "<body>" "\n";
 
     int count = 0;
     int sheerCount = 0;
