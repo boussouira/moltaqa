@@ -52,11 +52,14 @@ public:
 
 protected:
     void closeEvent(QCloseEvent *event);
+    void setupProgressWidget();
     void setupActions();
     void loadSettings();
 
 public slots:
     void handleMessage(const QString&);
+
+    void stopIndexing();
 
     void openBook(int bookID, int pageID = -1);
 
@@ -78,8 +81,8 @@ public slots:
     void exportBooks();
 
 protected slots:
-    void startIndexing();
-    void stopIndexing();
+    void indexingStart();
+    void indexingStop();
     void indexProgress(int value, int max);
     void showLogDialog();
     void showLibraryInfo();
@@ -100,6 +103,7 @@ private:
     IndexTracker *m_indexTracker;
     IndexManager *m_indexManager;
     QProgressBar *m_indexBar;
+    QWidget *m_progressWidget;
     SearchView *m_searchView;
     BookReaderHelper *m_readerHelper;
     BookEditorView *m_editorView;
