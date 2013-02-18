@@ -239,7 +239,7 @@ bool SearchResultReader::getPageTitle(QuaZip *zip, LibraryBook::Ptr book, BookPa
                 }
             }
         } else if(m_hierarchyTitle && reader.isEndElement()) {
-            if(reader.name() == "title") {
+            if(reader.name() == "title" && !titles.isEmpty()) {
                 titles.pop();
             }
         }
