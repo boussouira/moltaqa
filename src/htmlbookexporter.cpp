@@ -152,13 +152,15 @@ void HtmlBookExporter::writeTOC()
 void HtmlBookExporter::writeTocItem(QTextStream &out, QDomElement &element)
 {
     int pageID = element.attribute("pageID").toInt();
+    QString tid = element.attribute("tid");
     QString text = element.firstChildElement("text").text();
+
     if(m_removeTashkil)
         text = Utils::String::Arabic::removeTashekil(text);
 
     out << "<li><a id=\"id_"
         << pageID << "\" href=\"pages/p"
-        << pageID << ".html\">"
+        << pageID << ".html#" << tid << "\">"
         << text << "</a></li>"
         << "\n";
 
