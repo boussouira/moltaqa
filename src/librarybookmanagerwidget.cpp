@@ -294,13 +294,13 @@ void LibraryBookManagerWidget::reindexBook()
                 QMessageBox::information(this,
                                          tr("إعادة فهرسة كتاب"),
                                          tr("ستتم إعادة فهرسة هذا الكتاب عند إعادة تشغيل البرنامج"));
+            } else {
+                QMessageBox::warning(this,
+                                     tr("حذف كتاب"),
+                                     tr("لم تقم باختيار اي كتاب"));
             }
-        } else {
-        QMessageBox::warning(this,
-                             tr("حذف كتاب"),
-                             tr("لم تقم باختيار اي كتاب"));
+        }
     }
-}
 }
 
 void LibraryBookManagerWidget::lastReaderTabClosed()
