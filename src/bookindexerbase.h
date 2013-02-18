@@ -20,6 +20,8 @@ public:
     virtual void open()=0;
     virtual void start()=0;
 
+    void stop();
+
 protected:
     void addPageToIndex(BookPage *page);
     void indexPage(BookPage *page);
@@ -33,6 +35,7 @@ protected:
     wchar_t *m_bookIdW;
     int m_tokenAndNoStore;
     int m_storeAndNoToken;
+    bool m_stop;
 };
 
 #endif // BOOKINDEXERBASE_H

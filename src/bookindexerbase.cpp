@@ -14,6 +14,7 @@ BookIndexerBase::BookIndexerBase() :
 {
     m_tokenAndNoStore = Field::STORE_NO | Field::INDEX_TOKENIZED;
     m_storeAndNoToken = Field::STORE_YES | Field::INDEX_UNTOKENIZED;
+    m_stop = false;
 }
 
 BookIndexerBase::~BookIndexerBase()
@@ -33,6 +34,11 @@ void BookIndexerBase::setLibraryBook(LibraryBook::Ptr book)
 {
     m_book = book;
     m_bookIdW = Utils::CLucene::intToWChar(m_book->id);
+}
+
+void BookIndexerBase::stop()
+{
+    m_stop = true;
 }
 
 void BookIndexerBase::addPageToIndex(BookPage *page)

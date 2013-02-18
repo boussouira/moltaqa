@@ -8,6 +8,7 @@
 #include "bookindexerquran.h"
 #include "librarybookmanager.h"
 #include "librarymanager.h"
+#include "utils.h"
 
 #include <exception>
 
@@ -15,6 +16,7 @@ BookIndexerThread::BookIndexerThread(QObject *parent) :
     QThread(parent),
     m_writer(0),
     m_trackerIter(0),
+    m_indexer(0),
     m_stop(false)
 {
     m_bookManager = LibraryManager::instance()->bookManager();
@@ -33,6 +35,9 @@ void BookIndexerThread::setTaskIter(IndexTaskIter *iter)
 void BookIndexerThread::stop()
 {
     m_stop = true;
+
+    if(m_indexer)
+        m_indexer->stop();
 }
 
 void BookIndexerThread::run()
@@ -75,7 +80,8 @@ void BookIndexerThread::startIndexing()
             qCritical() << "BookIndexer: Indexing std error:" << e.what();
         }
 
-        emit taskDone(task);
+        if(!(m_stop && task->task == IndexTask::Update))
+            emit taskDone(task);
 
         task = m_trackerIter->next();
     }
@@ -85,20 +91,20 @@ void BookIndexerThread::startIndexing()
 
 void BookIndexerThread::indexBook(IndexTask *task)
 {
-    BookIndexerBase *indexer = 0;
+    m_indexer = 0;
     if(task->book->isNormal() || task->book->isTafessir())
-        indexer = new BookIndexerSimple();
+        m_indexer = new BookIndexerSimple();
     else if (task->book->isQuran())
-        indexer = new BookIndexerQuran();
+        m_indexer = new BookIndexerQuran();
     else
         throw BookException("Unknow book type", QString("Type: %1").arg(task->book->type));
 
-    indexer->setLibraryBook(task->book);
-    indexer->setIndexWriter(m_writer);
+    m_indexer->setLibraryBook(task->book);
+    m_indexer->setIndexWriter(m_writer);
 
     try {
-        indexer->open();
-        indexer->start();
+        m_indexer->open();
+        m_indexer->start();
     } catch(CLuceneError &err) {
         qCritical("BookIndexer::indexBook CLucene Error: %s", err.what());
     } catch(std::exception &err) {
@@ -107,7 +113,7 @@ void BookIndexerThread::indexBook(IndexTask *task)
         qCritical("BookIndexer::indexBook Unkonw error");
     }
 
-    delete indexer;
+    ml_delete_check(m_indexer);
 }
 
 void BookIndexerThread::deleteBook(IndexTask *task)

@@ -7,6 +7,7 @@
 #include "bookexception.h"
 #include "bookutils.h"
 #include "utils.h"
+#include "indextracker.h"
 
 #include <qdebug.h>
 #include <qxmlstream.h>
@@ -106,6 +107,12 @@ void BookIndexerSimple::start()
         if(file.getZipError()!=UNZ_OK) {
             qWarning("BookIndexerSimple::start Unknow zip error %d", file.getZipError());
             continue;
+        }
+
+        if(m_stop) {
+            IndexTracker::instance()->addTask(m_book->id, IndexTask::Update, false);
+            m_stop = false;
+            break;
         }
     }
 }

@@ -5,6 +5,7 @@
 #include "indextaskiter.h"
 
 class LibraryBookManager;
+class BookIndexerBase;
 
 namespace lucene {
     namespace index {
@@ -37,6 +38,7 @@ protected:
     lucene::index::IndexWriter *m_writer;
     IndexTaskIter *m_trackerIter;
     LibraryBookManager *m_bookManager;
+    BookIndexerBase *m_indexer;
     bool m_stop;
 };
 
