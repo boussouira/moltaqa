@@ -38,43 +38,42 @@ void ConvertThread::run()
     QTime time;
     time.start();
 
-    m_convertedFiles = 0;
+    m_convertedFiles = m_files.size();
 
-    foreach(QString file, m_files){
-        try {
-            QFileInfo info(file);
-            QString fileType = info.suffix().toLower();
-            if(fileType == "bok")
-                convertShamelaBook(file);
-            else if(fileType == "mlp")
-                convertMoltaqaPackage(file);
-            else
-                qWarning() << "ConvertThread: File" << info.fileName() << "not handeled";
-
-#ifdef USE_MDBTOOLS
-            if(m_tempDB.size()) {
-                QFile::remove(m_tempDB);
-                m_tempDB.clear();
-            }
-#endif
-        } catch(BookException &e) {
-             e.print();
-        }
+    foreach(QString file, m_files) {
+        convert(file);
     }
 
     m_convertTime = time.elapsed();
 }
 
+void ConvertThread::convert(const QString &path)
+{
+    try {
+        QFileInfo info(path);
+        QString fileType = info.suffix().toLower();
+        if(fileType == "bok")
+            convertShamelaBook(path);
+        else if(fileType == "mlp")
+            convertMoltaqaPackage(path);
+        else
+            qWarning() << "ConvertThread: File" << info.fileName() << "not handeled";
+
+
+    } catch(BookException &e) {
+         e.print();
+    }
+}
+
 void ConvertThread::convertShamelaBook(const QString &path)
 {
-    DatabaseRemover remover;
-
 #ifdef USE_MDBTOOLS
     MdbConverter mdb;
-    m_tempDB = mdb.exportFromMdb(path);
+    QString tempFile = mdb.exportFromMdb(path);
 
-    QSqlDatabase bookDB = QSqlDatabase::addDatabase("QSQLITE", "mdb");
-    bookDB.setDatabaseName(m_tempDB);
+    QString conn = "mdb_" + Utils::Rand::string(10, false);
+    QSqlDatabase bookDB = QSqlDatabase::addDatabase("QSQLITE", conn);
+    bookDB.setDatabaseName(tempFile);
 #else
     QSqlDatabase bookDB = QSqlDatabase::addDatabase("QODBC", "mdb");
     bookDB.setDatabaseName(QString("DRIVER={Microsoft Access Driver (*.mdb)};FIL={MS Access};DBQ=%1").arg(path));
@@ -141,7 +140,14 @@ void ConvertThread::convertShamelaBook(const QString &path)
         m_model->appendNode(node);
     }
 
-    remover.removeDatabase("mdb");
+    Utils::Sql::removeDatabase(bookDB);
+
+#ifdef USE_MDBTOOLS
+        if(tempFile.size()) {
+            QFile::remove(tempFile);
+            tempFile.clear();
+        }
+#endif
 }
 
 void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDatabase &bookDB, int bookID)

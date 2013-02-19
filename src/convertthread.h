@@ -28,6 +28,8 @@ public:
     void run();
 
 protected:
+    void convert(const QString &path);
+
     void convertShamelaBook(const QString &path);
     /**
       Copy book with BookID from bookDB to a temporary file and set it as the book path
@@ -49,7 +51,6 @@ protected:
     BookListManager *m_bookListManager;
     AuthorsManager *m_authorsManager;
     QStringList m_files;
-    QString m_tempDB;
     int m_convertTime;
     int m_convertedFiles;
 };
