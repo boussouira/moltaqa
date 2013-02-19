@@ -12,10 +12,15 @@ public:
     EditWebView(QWidget* parent = 0);
 
     void setupEditor(const QString &text=QString());
+
     void setEditorText(QString text);
     QString editorText();
+
     bool pageModified();
+
     void resetUndo();
+
+    void makeSelectTextTitle(QString text, int level, QString tagID);
 };
 
 #endif // EDITWEBVIEW_H

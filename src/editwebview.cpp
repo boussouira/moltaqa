@@ -68,3 +68,11 @@ void EditWebView::resetUndo()
 {
     execJS("editor.resetUndo()");
 }
+
+void EditWebView::makeSelectTextTitle(QString text, int level, QString tagID)
+{
+    execJS(QString("makeSelectionTitle('%1', %2, '%3')")
+           .arg(Utils::Html::jsEscape(text))
+           .arg(level)
+           .arg(Utils::Html::jsEscape(tagID)));
+}
