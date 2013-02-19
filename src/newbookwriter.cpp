@@ -106,7 +106,7 @@ void NewBookWriter::addTitle(const QString &title, int tid, int level)
 
     m_titlesWriter.writeStartElement("title");
     m_titlesWriter.writeAttribute("pageID", QString::number(tid));
-    m_titlesWriter.writeAttribute("tid", tuid);
+    m_titlesWriter.writeAttribute("tagID", tuid);
 
     m_titlesWriter.writeTextElement("text", title);
 

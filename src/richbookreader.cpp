@@ -102,7 +102,7 @@ QStandardItemModel *RichBookReader::indexModel()
         if(reader.isStartElement()) {
             if(reader.name() == "title") {
                 int pageID = reader.attributes().value("pageID").toString().toInt();
-                QString tid = reader.attributes().value("tid").toString();
+                QString tid = reader.attributes().value("tagID").toString();
 
                 if(reader.readNext() == QXmlStreamReader::Characters
                         && reader.readNext() == QXmlStreamReader::StartElement

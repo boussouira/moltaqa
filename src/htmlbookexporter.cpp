@@ -152,7 +152,7 @@ void HtmlBookExporter::writeTOC()
 void HtmlBookExporter::writeTocItem(QTextStream &out, QDomElement &element)
 {
     int pageID = element.attribute("pageID").toInt();
-    QString tid = element.attribute("tid");
+    QString tid = element.attribute("tagID");
     QString text = element.firstChildElement("text").text();
 
     if(m_removeTashkil)
