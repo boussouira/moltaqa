@@ -21,7 +21,7 @@ function makeSelectionTitle(text, level, tagID)
             var n = editor.document.createElement('h' + level);
             n.setAttribute('id', tagID);
             n.setText(text);
-            n.insertAfter(element);
+            n.insertBefore(element);
         }
     }
 }
