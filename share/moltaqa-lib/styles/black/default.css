@@ -7,6 +7,10 @@ a {
     color: #4777DD;
     text-decoration: none;
 }
+a[href^="moltaqa"] {
+    background: url("qrc:/images/external.png") no-repeat scroll left top transparent;
+    padding-left: 12px;
+}
 #quran {
     border: 1px solid #333333;
     padding: 15px;
@@ -435,10 +439,6 @@ abbr {
 #tooltip h3 {
     margin: 0;
     padding: 2px;
-}
-a.ext {
-    background: url("qrc:/images/external.png") no-repeat scroll left top transparent;
-    padding-left: 12px;
 }
 sanad {
     color: #BE8A8A;

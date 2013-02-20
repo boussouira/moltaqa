@@ -5,6 +5,11 @@ a {
     text-decoration: none;
 }
 
+a[href^="moltaqa"] {
+    background: url("qrc:/images/external.png") no-repeat scroll left top transparent;
+    padding-left: 12px;
+}
+
 /* Reader */
 
 #quran {
@@ -492,11 +497,6 @@ abbr {
 #tooltip h3 {
     margin: 0;
     padding: 2px;
-}
-
-a.ext {
-    background: url("qrc:/images/external.png") no-repeat scroll left top transparent;
-    padding-left: 12px;
 }
 
 sanad {

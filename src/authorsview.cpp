@@ -198,8 +198,7 @@ void AuthorsView::setCurrentAuth(AuthorInfo::Ptr info)
     html.addJS("jquery.tooltip.js");
     html.addJS("scripts.js");
 
-    html.addJSCode("setupToolTip();"
-                   "moltaqaLink();");
+    html.addJSCode("setupToolTip();");
 
     html.endAll();
 
