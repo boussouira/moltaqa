@@ -15,7 +15,6 @@
 #include "htmlhelper.h"
 
 #include <qtextstream.h>
-#include <quuid.h>
 
 EPubBookExporter::EPubBookExporter(QObject *parent) :
     BookExporter(parent)
@@ -65,7 +64,7 @@ void EPubBookExporter::closeZip()
 void EPubBookExporter::init()
 {
     m_sowarPages.clear();
-    m_bookUID = QUuid::createUuid().toString().remove('{').remove('}');
+    m_bookUID = Utils::Rand::uuid();
 
     write("mimetype", "application/epub+zip", true);
     write("META-INF/container.xml", "<?xml version=\"1.0\"?>" "\n"

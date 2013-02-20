@@ -14,6 +14,7 @@
 #include <qtreeview.h>
 #include <qheaderview.h>
 #include <qtoolbar.h>
+#include <quuid.h>
 
 static QString appRootPath;
 static uint m_randSlat = QDateTime::currentDateTime().toTime_t();
@@ -66,6 +67,14 @@ QString newBook(const QString &path)
     dir.cd(bookDir);
 
     return fileName(dir.absolutePath(), true, QString("book_")+bookDir);
+}
+
+QString uuid()
+{
+    return QUuid::createUuid()
+            .toString()
+            .remove('{')
+            .remove('}');
 }
 
 QString string(int size, bool upperChar, bool lowerChar, bool numbers)
