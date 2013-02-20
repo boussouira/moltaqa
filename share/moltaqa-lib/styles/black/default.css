@@ -118,6 +118,7 @@ a[href^="moltaqa"] {
     display: none;
     font-size: 18px;
     padding: 0 10px;
+    margin-bottom: 20px;
 }
 #simpleBook #shorooh .shoroohBooks p {
     color: #0A4311;
