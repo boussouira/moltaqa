@@ -330,7 +330,7 @@ void MainWindow::setupProgressWidget()
     QToolButton *button = new QToolButton(m_progressWidget);
     button->setIcon(QIcon(":/images/stop.png"));
     button->setAutoRaise(true);
-    button->setText(tr("إيقاف تحديث الفهرس"));
+    button->setToolTip(tr("إيقاف تحديث الفهرس"));
 
     QHBoxLayout *layout = new QHBoxLayout;
     layout->addStretch();
