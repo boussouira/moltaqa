@@ -121,7 +121,7 @@ void EPubBookExporter::writePages()
             if(page->text.isEmpty())
                 continue;
 
-            if(m_book->isQuran())
+            if(m_book->isQuran() && !m_sowarPages.contains(page->sora))
                 m_sowarPages[page->sora] = page->pageID;
 
             writePage(page);
@@ -521,9 +521,15 @@ void EPubBookExporter::writeQuranBookTOC(QTextStream &out)
         if(sora) {
             m_titleCount++;
 
+            int k = i;
+            int pageNum = m_sowarPages[k];
+            while(!pageNum && k >= 0) {
+                pageNum = m_sowarPages[--k];
+            }
+
             out << "<navPoint id=\"nav_" << m_titleCount << "\" playOrder=\"" << m_titleCount << "\">" << "\n";
             out << "<navLabel><text>" << sora->name << "</text></navLabel>" << "\n";
-            out << "<content src=\"Text/page_" << m_sowarPages[i]+1 << ".xhtml\"/>" << "\n";
+            out << "<content src=\"Text/page_" << pageNum << ".xhtml\"/>" << "\n";
             out << "</navPoint>" << "\n";
         }
     }
