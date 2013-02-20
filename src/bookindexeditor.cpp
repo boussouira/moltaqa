@@ -143,9 +143,10 @@ void BookIndexEditor::addTitle()
         Utils::Model::selectIndex(ui->treeView, m_model->index(row, 0, index.parent()));
 
         int count = 1;
-        while (index.isValid()) {
+        QModelIndex parent = index.parent();
+        while (parent.isValid()) {
             ++count;
-            index = index.parent();
+            parent = parent.parent();
         }
 
         m_editView->m_webView->makeSelectTextTitle(text, qBound(1, count, 6), tagID);
