@@ -33,6 +33,7 @@ LibraryBook *LibraryBook::clone()
 void LibraryBook::fromDomElement(QDomElement &bookElement)
 {
     id = bookElement.attribute("id").toInt();
+    uuid = bookElement.attribute("uuid");
     authorID = bookElement.attribute("author").toInt();
     type = static_cast<LibraryBook::Type>(bookElement.attribute("type").toInt());
     bookFlags = static_cast<LibraryBook::BookFlags>(bookElement.attribute("flags").toInt());
@@ -49,6 +50,7 @@ void LibraryBook::fromDomElement(QDomElement &bookElement)
 void LibraryBook::toDomElement(XmlDomHelper &domHeleper, QDomElement &bookElement)
 {
     bookElement.setAttribute("id", id);
+    bookElement.setAttribute("uuid", uuid);
     bookElement.setAttribute("type", type);
     bookElement.setAttribute("author", authorID);
     bookElement.setAttribute("flags", bookFlags);
@@ -80,6 +82,7 @@ QDebug operator<<(QDebug dbg, LibraryBook::Ptr &info)
 {
     dbg.nospace() << "BookInfo(\n\t"
                   << "ID: " << info->id << "\n\t"
+                  << "UUID: " << info->uuid << "\n\t"
                   << "Type: " << info->type << "\n\t"
                   << "Book name: " << info->title << "\n\t"
                   << "File name: " << info->fileName << "\n\t"

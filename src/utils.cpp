@@ -149,6 +149,7 @@ void createDatabases(const QString &path)
         q.setTableName("books", QueryBuilder::Create);
 
         q.set("id", "INTEGER PRIMARY KEY NOT NULL");
+        q.set("uuid", "TEXT");
         q.set("title", "TEXT");
         q.set("otherTitles", "TEXT");
         q.set("type", "INT");
@@ -164,6 +165,9 @@ void createDatabases(const QString &path)
         q.set("filename", "TEXT");
 
         q.exec(query);
+
+        query.prepare("CREATE UNIQUE INDEX uuuid_index ON books (uuid)");
+        ml_query_exec(query);
 
         q.setTableName("history", QueryBuilder::Create);
 

@@ -224,11 +224,11 @@ QString BookReaderView::viewLink()
     AbstractBookReader *bookReader = m_viewManager->activeBookReader();
     ml_return_val_on_fail(bookReader, QString());
 
-    QString link = QString("moltaqa://open/");
+    QString link = QString("moltaqa://?c=open&t=");
     if(bookReader->book()->isQuran())
-        link.append(QString("quran?sora=%1&aya=%2").arg(bookReader->page()->sora).arg(bookReader->page()->aya));
+        link.append(QString("quran&sora=%1&aya=%2").arg(bookReader->page()->sora).arg(bookReader->page()->aya));
     else
-        link.append(QString("book?id=%1&page=%2").arg(bookReader->book()->id).arg(bookReader->page()->pageID));
+        link.append(QString("book&id=%1&page=%2").arg(bookReader->book()->uuid).arg(bookReader->page()->pageID));
 
     return link;
 }

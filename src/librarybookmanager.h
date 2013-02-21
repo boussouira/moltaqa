@@ -30,6 +30,7 @@ public:
     StandardItemModelPtr getBookHistoryModel(int bookID);
 
     LibraryBook::Ptr getLibraryBook(int bookID);
+    LibraryBook::Ptr getLibraryBook(QString bookUUID);
     LibraryBook::Ptr getQuranBook();
 
     LibraryBook::Ptr findBook(QString bookName);
@@ -59,6 +60,7 @@ protected:
     LibraryInfo *m_libraryInfo;
     AuthorsManager *m_authorsManager;
     QHash<int, LibraryBook::Ptr> m_books;
+    QHash<QString, int> m_uuid;
     LibraryBook::Ptr m_quranBook;
 };
 

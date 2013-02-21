@@ -155,5 +155,5 @@ void HtmlHelper::addExtraAttr(QString attr)
 
 void HtmlHelper::insertAuthorLink(const QString &authorName, int authorID)
 {
-    insertLink(authorName, QString("moltaqa://open/author?id=%1").arg(authorID));
+    insertLink(authorName, QString("moltaqa://?c=open&t=author&id=%1").arg(authorID));
 }

@@ -312,7 +312,7 @@ void EPubBookExporter::writeAuthorInfo()
                 bookHtml.insertBr();
 
             bookHtml.beginHtmlTag("a", "",
-                                  QString("href='moltaqa://open/book?id=%1'").arg(books[i]->id));
+                                  QString("href='moltaqa://?c=open&t=book&id=%1'").arg(books[i]->uuid));
             bookHtml.append(books[i]->title);
             bookHtml.endHtmlTag();
 

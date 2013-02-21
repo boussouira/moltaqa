@@ -248,11 +248,12 @@ SearchManager *LibraryManager::searchManager()
 
 void LibraryManager::addHelpBook()
 {
-    if(!m_bookmanager->getLibraryBook(HELP_BOOK_ID)) {
+    if(!m_bookmanager->getLibraryBook(helpBookID())) {
         qDebug("LibraryManager::addHelpBook add help book to the current library...");
 
         LibraryBook::Ptr book(new LibraryBook());
-        book->id = HELP_BOOK_ID;
+        book->id = helpBookID();
+        book->uuid = helpBookUUID();
         book->type = LibraryBook::NormalBook;
         book->title = tr("شرح البرنامج");
         book->info = tr("شرح استخدام برنامج مكتبة الملتقى");

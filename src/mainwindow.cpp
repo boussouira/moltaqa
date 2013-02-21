@@ -536,7 +536,7 @@ void MainWindow::showLibraryInfo()
 
 void MainWindow::showHelp()
 {
-    openBook(LibraryManager::HELP_BOOK_ID);
+    openBook(LibraryManager::helpBookID());
 }
 
 void MainWindow::checkFinnished()

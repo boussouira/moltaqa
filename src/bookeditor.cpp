@@ -237,25 +237,25 @@ int BookEditor::maxPageID()
     return pageID;
 }
 
-void BookEditor::addPageLink(int sourcPage, int destBook, int destPage)
+void BookEditor::addPageLink(int sourcPage, QString destBookUUID, int destPage)
 {
     QDomElement pageElement = m_bookReader->pagesDom().findElement("id", sourcPage);
     if(!pageElement.isNull()) {
         QDomElement linkElement = m_bookReader->pagesDom().domDocument().createElement("link");
-        linkElement.setAttribute("book", destBook);
+        linkElement.setAttribute("book", destBookUUID);
         linkElement.setAttribute("page", destPage);
 
         pageElement.appendChild(linkElement);
     }
 }
 
-void BookEditor::removePageLink(int sourcPage, int destBook, int destPage)
+void BookEditor::removePageLink(int sourcPage, QString destBookUUID, int destPage)
 {
     QDomElement pageElement = m_bookReader->pagesDom().findElement("id", sourcPage);
     if(!pageElement.isNull()) {
         QDomElement linkElement = pageElement.firstChildElement("link");
         while(!pageElement.isNull()) {
-            if(linkElement.attribute("book").toInt() == destBook
+            if(linkElement.attribute("book") == destBookUUID
                     && linkElement.attribute("page").toInt() == destPage) {
                 pageElement.removeChild(linkElement);
                 break;

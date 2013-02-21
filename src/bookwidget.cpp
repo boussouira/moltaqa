@@ -348,14 +348,10 @@ void BookWidget::readerTextChanged()
         js = "setShorooh([";
 
         foreach(BookShorooh shareeh, m_book->shorooh) {
-            LibraryBook::Ptr book = m_bookManager->getLibraryBook(shareeh.bookID);
-            if(!book)
-                continue;
-
             js += "{";
-            js += QString("'bookName' : '%1', ").arg(Utils::Html::jsEscape(book->title));
-            js += QString("'bookID' : '%1', ").arg(shareeh.bookID);
-            js += QString("'pageID' : '%1'").arg(shareeh.pageID);
+            js += QString("'title' : '%1', ").arg(Utils::Html::jsEscape(shareeh.title));
+            js += QString("'uuid' : '%1', ").arg(shareeh.bookUUID);
+            js += QString("'page' : '%1'").arg(shareeh.pageID);
             js += "},";
         }
 

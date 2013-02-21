@@ -39,6 +39,7 @@ void LibraryBookManager::loadModels()
 void LibraryBookManager::clear()
 {
     m_books.clear();
+    m_uuid.clear();
 }
 
 StandardItemModelPtr LibraryBookManager::getModel(bool bookIcon)
@@ -147,7 +148,7 @@ LibraryBook::Ptr LibraryBookManager::getLibraryBook(int bookID)
         return book;
 
     QSqlQuery query(m_db);
-    query.prepare("SELECT id, title, type, authorID, author, info, bookFlags, indexFlags, filename, "
+    query.prepare("SELECT id, uuid, title, type, authorID, author, info, bookFlags, indexFlags, filename, "
                   "otherTitles, edition, publisher, mohaqeq, comment "
                   "FROM books WHERE id = ?");
     query.bindValue(0, bookID);
@@ -157,35 +158,57 @@ LibraryBook::Ptr LibraryBookManager::getLibraryBook(int bookID)
     if(query.next()) {
         LibraryBook::Ptr book(new LibraryBook());
         book->id = query.value(0).toInt();
-        book->title = query.value(1).toString();
-        book->type = static_cast<LibraryBook::Type>(query.value(2).toInt());
-        book->info = query.value(5).toString();
-        book->comment = query.value(13).toString();
+        book->uuid = query.value(1).toString();
+        book->title = query.value(2).toString();
+        book->type = static_cast<LibraryBook::Type>(query.value(3).toInt());
+        book->info = query.value(6).toString();
+        book->comment = query.value(14).toString();
 
-        book->otherTitles = query.value(9).toString();
-        book->edition = query.value(10).toString();
-        book->publisher = query.value(11).toString();
-        book->mohaqeq = query.value(12).toString();
+        book->otherTitles = query.value(10).toString();
+        book->edition = query.value(11).toString();
+        book->publisher = query.value(12).toString();
+        book->mohaqeq = query.value(13).toString();
 
-        book->bookFlags = static_cast<LibraryBook::BookFlags>(query.value(6).toInt());
-        book->indexFlags = static_cast<LibraryBook::IndexFlags>(query.value(7).toInt());
+        book->bookFlags = static_cast<LibraryBook::BookFlags>(query.value(7).toInt());
+        book->indexFlags = static_cast<LibraryBook::IndexFlags>(query.value(8).toInt());
 
-        book->fileName = query.value(8).toString();
+        book->fileName = query.value(9).toString();
         book->path = m_libraryInfo->bookPath(book->fileName);
 
         if(!book->isQuran()) {
-            book->authorID = query.value(3).toInt();
+            book->authorID = query.value(4).toInt();
 
             if(book->authorID) {
                 book->authorName = m_authorsManager->getAuthorName(book->authorID);
             } else {
-                book->authorName = query.value(4).toString();
+                book->authorName = query.value(5).toString();
             }
         }
 
         m_books.insert(book->id, book);
 
         return book;
+    }
+
+    return LibraryBook::Ptr();
+}
+
+LibraryBook::Ptr LibraryBookManager::getLibraryBook(QString bookUUID)
+{
+    if(m_uuid.contains(bookUUID))
+        return getLibraryBook(m_uuid[bookUUID]);
+
+    QSqlQuery query(m_db);
+    query.prepare("SELECT id FROM books WHERE uuid = ?");
+    query.bindValue(0, bookUUID);
+
+    ml_query_exec(query);
+
+    if(query.next()) {
+        int bookID = query.value(0).toInt();
+        m_uuid[bookUUID] = bookID;
+
+        return getLibraryBook(bookID);
     }
 
     return LibraryBook::Ptr();
@@ -242,6 +265,9 @@ int LibraryBookManager::addBook(LibraryBook::Ptr book)
     if(!book->id || getLibraryBook(book->id))
         book->id = getNewBookID();
 
+    if(book->uuid.isEmpty())
+        book->uuid = Utils::Rand::uuid();
+
     QSqlQuery query(m_db);
 
     QueryBuilder q;
@@ -249,6 +275,7 @@ int LibraryBookManager::addBook(LibraryBook::Ptr book)
     q.setQueryType(QueryBuilder::Insert);
 
     q.set("id", book->id);
+    q.set("uuid", book->uuid);
     q.set("title", book->title);
     q.set("otherTitles", book->otherTitles);
     q.set("type", book->type);
@@ -313,7 +340,7 @@ bool LibraryBookManager::removeBook(int bookID)
 
     MW->bookReaderView()->bookWidgetManager()->closeBook(bookID);
 
-    if(book->id != LibraryManager::HELP_BOOK_ID) {
+    if(book->id != LibraryManager::helpBookID()) {
         ml_warn_on_fail(QFile::remove(book->path),
                         "LibraryBookManager::removeBook can't remove file" << book->path);
     }
