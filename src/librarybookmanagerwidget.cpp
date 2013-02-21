@@ -207,14 +207,18 @@ void LibraryBookManagerWidget::createNewBook()
         page.pageID = 1;
         page.page = 1;
         page.part = 1;
-        page.text = title;
 
         NewBookWriter bookWrite;
         bookWrite.createNewBook();
 
         bookWrite.startReading();
+
         bookWrite.addPage(&page);
         bookWrite.addTitle(title, 1, 0);
+        bookWrite.writeMetaFiles();
+
+        bookWrite.addPageText(1, title);
+
         bookWrite.endReading();
 
         book->path = bookWrite.bookPath();

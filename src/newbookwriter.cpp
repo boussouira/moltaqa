@@ -67,6 +67,8 @@ void NewBookWriter::addPage(BookPage *page)
     m_pagesWriter.writeEndElement();
 
     if(page->text.size()) {
+        qWarning("NewBookWriter::addPage Insert page text before inserting titles");
+
         QString pageText = processPageText(page->pageID, page->text);
         m_zipWriter.add(QString("pages/p%1.html").arg(page->pageID),
                         pageText.toUtf8(),
@@ -234,12 +236,14 @@ void NewBookWriter::startReading()
     m_titlesWriter.writeStartDocument();
     m_titlesWriter.writeStartElement("titles");
 
+    m_writeMeta = true;
+
     m_lastLavel = 0;
     m_titlesCount = 0;
     m_titles.clear();
 }
 
-void NewBookWriter::endReading()
+void NewBookWriter::writeMetaFiles()
 {
     // The titles file
     m_titlesWriter.writeEndDocument();
@@ -252,6 +256,18 @@ void NewBookWriter::endReading()
     m_pagesFile.close();
 
     m_zipWriter.addFromFile("pages.xml", m_pagesPath, ZipWriterManager::PrependFile);
+
+    m_writeMeta = false;
+}
+
+void NewBookWriter::endReading()
+{
+    if(m_writeMeta) {
+        qWarning("NewBookWriter::endReading meta files need to be "
+                 "written before closing the zip");
+
+        writeMetaFiles();
+    }
 
     if(!m_zipWriter.close())
         throw BookException("NewBookWriter::endReading zip file close error");

@@ -212,6 +212,8 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
                            query.value(2).toInt());
     }
 
+    bookWrite.writeMetaFiles();
+
     query.prepare(QString("SELECT id, nass FROM %1").arg(book->mainTable));
     ml_throw_on_query_exec_fail(query);
 

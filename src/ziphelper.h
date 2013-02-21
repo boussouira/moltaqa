@@ -37,6 +37,7 @@ public:
     ZipWriterManager();
     ~ZipWriterManager();
 
+    // TODO: renmae to Top and Bottom
     enum InsertOrder{
         AppendFile,
         PrependFile

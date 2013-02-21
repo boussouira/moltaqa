@@ -27,13 +27,18 @@ public:
     void createNewBook();
     QString bookPath();
 
-    /// Begins a transaction on the database
+    /// Prepare zip and xml files
     void startReading();
 
-    /// Commits a transaction to the database
+    /// Close the zip file
     void endReading();
+
+    /// Write titles.xml and  pages.xml to the zip file
+    void writeMetaFiles();
+
     void addPage(BookPage *page);
     void addPageText(int pageID, const QString &text);
+
     void addTitle(const QString &title, int tid, int level);
 
 protected:
@@ -57,6 +62,8 @@ protected:
 
     int m_lastLavel;
     QHash<int, int> m_levels;
+
+    bool m_writeMeta;
 };
 
 #endif // NEWBOOKWRITER_H

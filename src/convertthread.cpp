@@ -203,6 +203,8 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
                         query.value(2).toInt());
     }
 
+    writer.writeMetaFiles();
+
     query.prepare(QString("SELECT id, nass FROM b%1").arg(bookID));
     ml_throw_on_query_exec_fail(query);
 
