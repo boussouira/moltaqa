@@ -105,7 +105,7 @@ void BookReaderView::createMenus()
                                  tr("الصفحة الاخيرة"),
                                  this);
     m_actionGotToPage = new QAction(QIcon::fromTheme("go-jump", QIcon(":/images/go-jump.png")),
-                                    tr("انتقل الى..."),
+                                    tr("الصفحة..."),
                                     this);
 
     m_bookInfoAct = new QAction(tr("بطاقة الكتاب"), this);
@@ -154,13 +154,18 @@ void BookReaderView::createMenus()
 
     updateSearchNavigation();
 
+    QMenu *navMenu = new QMenu(this);
+    navMenu->setTitle(tr("انتقل إلى"));
+    navMenu->addAction(m_actionFirstPage);
+    navMenu->addAction(m_actionPrevPage);
+    navMenu->addAction(m_actionNextPage);
+    navMenu->addAction(m_actionLastPage);
+    navMenu->addSeparator();
+    navMenu->addAction(m_actionGotToPage);
+
     m_navActions << m_actionEditBook;
     m_navActions << actionSeparator(this);
-    m_navActions << m_actionFirstPage;
-    m_navActions << m_actionPrevPage;
-    m_navActions << m_actionNextPage;
-    m_navActions << m_actionLastPage;
-    m_navActions << m_actionGotToPage;
+    m_navActions << navMenu->menuAction();
     m_navActions << actionSeparator(this);
     m_navActions << m_removeTashekilAct;
     m_navActions << actionSeparator(this);
