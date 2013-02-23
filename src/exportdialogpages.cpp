@@ -238,7 +238,7 @@ void ExportPage::openOutDir()
 {
     if(m_checkOpenOutFolder->isChecked()) {
         QString outDir = field("export.outdir").toString();
-        QDesktopServices::openUrl(QUrl(outDir));
+        QDesktopServices::openUrl(QUrl::fromLocalFile(outDir));
     }
 
     Utils::Settings::set("ExportDialog/openOutDit", m_checkOpenOutFolder->isChecked());
