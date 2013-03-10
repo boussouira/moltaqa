@@ -588,10 +588,12 @@ void EPubBookExporter::writePage(BookPage *page)
 
     out += page->text;
 
-    if(m_addPageNumber && !m_book->isQuran()) {
+    if(m_addPageNumber && !m_book->isQuran()
+            && page->page && page->part) {
         out += "\n" "<p class=\"center\">";
-        out += tr("الصفحة: ") + page->page + " - ";
-        out += tr("الجزء: ") + page->part;
+        out += tr("الصفحة: %1").arg(page->page);
+        out += " - ";
+        out += tr("الجزء: %1").arg(page->part);
         out += "</p>" "\n";
     }
 
