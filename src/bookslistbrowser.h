@@ -35,7 +35,7 @@ protected:
     void closeEvent(QCloseEvent *event);
     void loadSettings();
     void saveSettings();
-    void setupListFilter();
+    void setupListFilter(QStandardItemModel *sourceModel);
 
 protected slots:
     void currentListChanged(int index);
@@ -44,8 +44,8 @@ protected slots:
 
     void getCategoriesModel();
     void getFavouritesModel();
-    void getRecentOpenModel();
-    void getAllBooksModel();
+    void getRecentOpenModel(bool setupFilter);
+    void getAllBooksModel(bool setupFilter);
 
     void itemClicked(QModelIndex index);
     void bookListMenu(QPoint);
