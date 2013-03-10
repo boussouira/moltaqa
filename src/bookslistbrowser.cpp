@@ -128,22 +128,30 @@ void BooksListBrowser::setupListFilter(QStandardItemModel *sourceModel)
 
 void BooksListBrowser::currentListChanged(int index)
 {
-    if(index == CategoriesModel) {
-        m_currentModel = m_categoriesModel;
-    } else if(index == FavoritesModel) {
-        m_currentModel = m_favouritesModel;
-    } else if(index == LastOpenModel) {
+    switch (index) {
+    case CategoriesModel:
+        setupListFilter(m_categoriesModel);
+        break;
+
+    case FavoritesModel:
+        setupListFilter(m_favouritesModel);
+        break;
+
+    case LastOpenModel:
         getRecentOpenModel(false);
-        m_currentModel = m_recentOpenModel;
-    } else if(index == AllBooksModel) {
+        setupListFilter(m_recentOpenModel);
+        break;
+
+    case AllBooksModel:
         getAllBooksModel(false);
-        m_currentModel = m_allBooksModel;
-    } else {
+        setupListFilter(m_allBooksModel);
+        break;
+
+    default:
         qWarning() << "BooksListBrowser::currentListChanged unknow list index"
                    << index;
+        break;
     }
-
-    setupListFilter(m_currentModel);
 
     Utils::Settings::set("BooksListWidget/currentList", index);
 }
@@ -155,18 +163,28 @@ void BooksListBrowser::listSortingChanged(int index)
     Qt::SortOrder sort = (ui->checkSortAsc->isChecked()
                           ? Qt::AscendingOrder : Qt::DescendingOrder);
 
-    if(index == OrderSort) {
+    switch (index) {
+    case OrderSort:
         column = -1;
-    } else if(index == BookTitleSort) {
+        break;
+
+    case BookTitleSort:
         column = 0;
-    } else if(index == AuthorNameSort) {
+        break;
+
+    case AuthorNameSort:
         column = 1;
-    } else if(index == AuthorDeathSort) {
+        break;
+
+    case AuthorDeathSort:
         column = 1;
         role = ItemRole::authorDeathRole;
-    } else {
+        break;
+
+    default:
         qWarning() << "BooksListBrowser::listSortingChanged unknow list index"
                    << index;
+        break;
     }
 
     m_bookListFilter->setSorting(column, role, sort);
