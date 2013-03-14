@@ -83,7 +83,6 @@ bool CustomNetworkReply::isSequential() const
     return true;
 }
 
-
 qint64 CustomNetworkReply::readData(char *data, qint64 maxSize)
 {
     if (d->offset >= d->content.size())
@@ -108,7 +107,6 @@ WebPageNAM::WebPageNAM(QObject *parent) :
 
 QNetworkReply *WebPageNAM::getFileContent(const QString &fileName)
 {
-    //qDebug() << "WebPageNAM::getFileContent" << fileName << "from" << m_book->path;
     CustomNetworkReply *reply = new CustomNetworkReply();
 
     if(m_book) {
@@ -131,14 +129,24 @@ QNetworkReply *WebPageNAM::getFileContent(const QString &fileName)
 
                 return reply;
             } else {
+#ifdef DEV_BUILD
                 qWarning() << "WebPageNAM::getFileContent: open error:" << file.getZipError()
                            << "\nFile name:" << fileName << "\n"
                            << "\nBook:" << qPrintable(m_book->path);
+#else
+                qWarning() << "WebPageNAM::getFileContent File not found:"
+                           << fileName << "in:" << m_book->path;
+#endif
             }
         } else {
+#ifdef DEV_BUILD
             qWarning() << "WebPageNAM::getFileContent: setCurrentFile error:"<< zip.getZipError()
                        << "\nFile name:" << fileName
                        << "\nBook:" << qPrintable(m_book->path);
+#else
+            qWarning() << "WebPageNAM::getFileContent File open error:"
+                       << fileName << "book:" << m_book->path;
+#endif
         }
     }
 
@@ -167,9 +175,11 @@ QNetworkReply *WebPageNAM::createRequest(Operation op, const QNetworkRequest &re
         else if(filename.startsWith("book://"))
             filename.remove(0, QString("book://").size());
 
-//        qDebug() << "GET:" << qPrintable(req.url().toString())
-//                 << "->" << qPrintable(filename)
-//                 << "->" << qPrintable(Utils::Mimes::fileTypeFromFileName(filename));
+#ifdef DEV_BUILD
+        qDebug() << "WebPageNAM: GET" << qPrintable(req.url().toString())
+                 << "->" << qPrintable(filename)
+                 << "->" << qPrintable(Utils::Mimes::fileTypeFromFileName(filename));
+#endif
 
         return getFileContent(filename);
     }

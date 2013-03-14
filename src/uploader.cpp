@@ -78,11 +78,19 @@ void UpLoader::replyFinished()
         emit finished(false, true, QString());
     } else if (reply->error()>0) {
         emit finished(true, false, tr("Network error\nCode: %1\n%2").arg(QString::number(reply->error())).arg(reply->errorString()));
-        //qDebug() << reply->errorString();
+
+#ifdef DEV_BUILD
+        qDebug() << "UpLoader::replyFinished Network replay error:"
+                 << reply->errorString();
+#endif
     } else {
         QString rep = QString::fromUtf8(reply->readAll());
-        //qDebug() << rep;
-
+#ifdef DEV_BUILD
+        qDebug() << "UpLoader::replyFinished Server replay:"
+                 << "\n>>>>>>\n"
+                 << rep
+                 << "\n<<<<<<";
+#endif
         if (rep.contains("{{ok}}", Qt::CaseInsensitive)) {
             emit finished(false, false, QString());
             emit uploadSuccess();

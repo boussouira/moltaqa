@@ -54,6 +54,12 @@ exists(../.git/HEAD) {
     }
 }
 
+DEVELOPER_BUILD = $$(MOLTAQA_DEV_BUILD)
+!isEmpty(DEVELOPER_BUILD) {
+    message(Developer build)
+    DEFINES += DEV_BUILD
+}
+
 DEFINES += _REENTRANT _UCS2 _UNICODE
 
 INCLUDEPATH += $$CLUCENE_SOURCE_PATH/src/core \

@@ -130,8 +130,10 @@ int main(int argc, char *argv[])
     app.setApplicationName("Moltaqa-Library");
     app.setApplicationVersion("0.5");
 
+#ifndef DEV_BUILD
     if(!app.arguments().contains("--debug"))
         createLogFileDir();
+#endif
 
     Utils::Rand::srand();
 

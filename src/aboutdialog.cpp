@@ -13,9 +13,14 @@ AboutDialog::AboutDialog(QWidget *parent) :
 
     QString info;
 #ifdef GITVERSION
-    info += QString("Rev: %1, ").arg(GITVERSION);
+    info += QString("Rev: %1 ").arg(GITVERSION);
 #endif
 
+#ifdef DEV_BUILD
+    info += " (Developer Build)";
+#endif
+
+    info += "<br>";
     info += QString("Qt: %1, ").arg(qVersion());
     info += QString("CLucene: %1").arg(_CL_VERSION);
 
@@ -27,6 +32,10 @@ void AboutDialog::printVersion()
     qDebug("Moltaqa library: %s"
 #ifdef GITVERSION
            " (%s)"
+#endif
+
+#ifdef DEV_BUILD
+           " Developer Build"
 #endif
            , App::version()
 #ifdef GITVERSION

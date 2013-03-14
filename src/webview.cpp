@@ -31,6 +31,11 @@ WebView::WebView(QWidget *parent) :
     m_searcher = new WebViewSearcher(this);
 
     m_animation = new QPropertyAnimation(m_frame, "scrollPosition", this);
+
+#ifdef DEV_BUILD
+    settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
+#endif
+
     connect(m_page, SIGNAL(openMoltaqaLink(QString)), SLOT(openMoltaqaLink(QString)));
     connect(m_frame, SIGNAL(contentsSizeChanged(QSize)), m_animation, SLOT(stop()));
     connect(m_frame, SIGNAL(javaScriptWindowObjectCleared()),
