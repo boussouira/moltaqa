@@ -559,6 +559,8 @@ sheer {
 hr.fns {
     width: 20%;
     float: right;
+    border-width: 0px;
+    border-bottom: 1px solid #666;
 }
 dl {
     margin-bottom: 18px;
