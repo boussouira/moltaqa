@@ -86,6 +86,7 @@ void EPubBookExporter::init()
           ".footn { color: green; font-size: 0.8em; padding-bottom: 4px; }" "\n"
           "sanad { color: #000080; }  mateen { color: green; }  sheer { color: #273A9D; }" "\n"
           "hr.fns { width: 20%; float: right; }" "\n"
+          "div.clear { clear: both; }" "\n"
           ".center { text-align: center;}" "\n", true);
 }
 
@@ -312,7 +313,7 @@ void EPubBookExporter::writeAuthorInfo()
                 bookHtml.insertBr();
 
             bookHtml.beginHtmlTag("a", "",
-                                  QString("href='moltaqa://?c=open&t=book&id=%1'").arg(books[i]->uuid));
+                                  QString("href='moltaqa://?c=open&amp;t=book&amp;id=%1'").arg(books[i]->uuid));
             bookHtml.append(books[i]->title);
             bookHtml.endHtmlTag();
 
