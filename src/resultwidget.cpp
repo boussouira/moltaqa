@@ -11,6 +11,7 @@
 #include "mainwindow.h"
 #include "richbookreader.h"
 #include "stringutils.h"
+#include "webpagenam.h"
 
 #include <qdir.h>
 #include <qplaintextedit.h>
@@ -135,7 +136,7 @@ void ResultWidget::setupWebView()
 
     helper.endAll();
 
-    m_view->setHtml(helper.html());
+    m_view->setHtml(helper.html(), QUrl(WebPageNAM::baseUrl()));
 }
 
 void ResultWidget::showProgressBar(bool show)

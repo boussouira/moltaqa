@@ -14,6 +14,7 @@
 #include "bookreaderview.h"
 #include "utils.h"
 #include "stringutils.h"
+#include "webpagenam.h"
 
 #include <qsplitter.h>
 #include <qboxlayout.h>
@@ -366,7 +367,8 @@ void BookWidget::readerTextChanged()
 
         m_view->execJS(js);
     } else {
-        m_view->setHtml(m_reader->textFormat()->getHtmlView(m_reader->page()->text, js));
+        m_view->setHtml(m_reader->textFormat()->getHtmlView(m_reader->page()->text, js),
+                        QUrl(WebPageNAM::baseUrl()));
         m_viewInitialized = true;
 
         if(m_reader->scrollToHighlight())

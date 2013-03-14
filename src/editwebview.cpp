@@ -4,6 +4,7 @@
 #include "bookeditorview.h"
 #include "htmlhelper.h"
 #include "stringutils.h"
+#include "webpagenam.h"
 
 #include <QDebug>
 
@@ -45,7 +46,7 @@ void EditWebView::setupEditor(const QString &text)
 
     helper.endAll();
 
-    setHtml(helper.html());
+    setHtml(helper.html(), QUrl(WebPageNAM::baseUrl()));
 }
 
 void EditWebView::setEditorText(QString text)
