@@ -15,7 +15,7 @@ ShemeHandler::ShemeHandler()
 
 void ShemeHandler::open(const QUrl &url)
 {
-    QString command = url.queryItemValue("c").toLower();
+    QString command = QUrlQuery(url).queryItemValue("c").toLower();
 
     if(command == "open") {
         commandOpen(url);
@@ -26,7 +26,7 @@ void ShemeHandler::open(const QUrl &url)
 
 void ShemeHandler::commandOpen(const QUrl &url)
 {
-    QString type = url.queryItemValue("t").toLower();
+    QString type = QUrlQuery(url).queryItemValue("t").toLower();
     if(type == "book") {
         openBook(url);
     } else if(type == "quran") {
