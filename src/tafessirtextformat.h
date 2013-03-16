@@ -1,17 +1,15 @@
 #ifndef TAFESSIRTEXTFORMAT_H
 #define TAFESSIRTEXTFORMAT_H
 
-#include "textformatter.h"
+#include "qurantextformat.h"
 
-class TafessirTextFormat : public TextFormatter
+class TafessirTextFormat : public QuranTextFormat
 {
 public:
     TafessirTextFormat();
-    void insertAyaText(const QString &pAyaText, int pAyaNumber, int pSoraNumber);
 
     void beginQuran(QString soraName, int firstAya, int lastAya);
     void endQuran();
-
 };
 
 #endif // TAFESSIRTEXTFORMAT_H
