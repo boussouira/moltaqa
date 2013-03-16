@@ -131,8 +131,8 @@ QNetworkReply *WebPageNAM::getFileContent(const QString &fileName)
             } else {
 #ifdef DEV_BUILD
                 qWarning() << "WebPageNAM::getFileContent: open error:" << file.getZipError()
-                           << "\nFile name:" << fileName << "\n"
-                           << "\nBook:" << qPrintable(m_book->path);
+                           << "File name:" << fileName << "\n"
+                           << "Book:" << qPrintable(m_book->path);
 #else
                 qWarning() << "WebPageNAM::getFileContent File not found:"
                            << fileName << "in:" << m_book->path;
@@ -140,9 +140,9 @@ QNetworkReply *WebPageNAM::getFileContent(const QString &fileName)
             }
         } else {
 #ifdef DEV_BUILD
-            qWarning() << "WebPageNAM::getFileContent: setCurrentFile error:"<< zip.getZipError()
-                       << "\nFile name:" << fileName
-                       << "\nBook:" << qPrintable(m_book->path);
+            qWarning() << "WebPageNAM::getFileContent: setCurrentFile error:" << zip.getZipError()
+                       << "File name:" << fileName
+                       << "Book:" << qPrintable(m_book->path);
 #else
             qWarning() << "WebPageNAM::getFileContent File open error:"
                        << fileName << "book:" << m_book->path;
