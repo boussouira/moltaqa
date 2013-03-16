@@ -74,7 +74,7 @@ bool BookEditor::open(LibraryBook::Ptr book)
 void BookEditor::setBookReader(RichBookReader *reader)
 {
     m_bookReader = reader;
-    m_book = reader->bookInfo();
+    m_book = reader->book();
 
     if(m_book->id != m_lastBookID) {
         m_needUnZip = true;
@@ -188,7 +188,7 @@ void BookEditor::saveDom()
 void BookEditor::addPage(int pageID)
 {
     QDomElement e = m_bookReader->pagesDom().currentElement();
-    QDomElement page = m_bookReader->pagesDom().domDocument().createElement("item");
+    QDomElement page = m_bookReader->pagesDom().domDocument().createElement("page");
 
     page.setAttribute("id", pageID);
     page.setAttribute("page", e.attribute("page"));
@@ -237,25 +237,25 @@ int BookEditor::maxPageID()
     return pageID;
 }
 
-void BookEditor::addPageLink(int sourcPage, int destBook, int destPage)
+void BookEditor::addPageLink(int sourcPage, QString destBookUUID, int destPage)
 {
     QDomElement pageElement = m_bookReader->pagesDom().findElement("id", sourcPage);
     if(!pageElement.isNull()) {
         QDomElement linkElement = m_bookReader->pagesDom().domDocument().createElement("link");
-        linkElement.setAttribute("book", destBook);
+        linkElement.setAttribute("book", destBookUUID);
         linkElement.setAttribute("page", destPage);
 
         pageElement.appendChild(linkElement);
     }
 }
 
-void BookEditor::removePageLink(int sourcPage, int destBook, int destPage)
+void BookEditor::removePageLink(int sourcPage, QString destBookUUID, int destPage)
 {
     QDomElement pageElement = m_bookReader->pagesDom().findElement("id", sourcPage);
     if(!pageElement.isNull()) {
         QDomElement linkElement = pageElement.firstChildElement("link");
         while(!pageElement.isNull()) {
-            if(linkElement.attribute("book").toInt() == destBook
+            if(linkElement.attribute("book") == destBookUUID
                     && linkElement.attribute("page").toInt() == destPage) {
                 pageElement.removeChild(linkElement);
                 break;

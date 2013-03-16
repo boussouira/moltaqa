@@ -10,7 +10,7 @@ class TabWidget : public QTabWidget
     Q_OBJECT
 public:
     TabWidget(QWidget *parent = 0);
-    int addBookWidget(BookWidget *book);
+    int addBookWidget(BookViewBase *book);
     void setCanMoveToOtherTabWidget(bool canMove);
     void setEnableTabBar(bool enable);
     void setAutoTabClose(bool autoClose);

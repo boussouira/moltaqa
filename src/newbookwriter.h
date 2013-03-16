@@ -5,11 +5,18 @@
 #include <qdatetime.h>
 #include <qfile.h>
 #include <qdom.h>
+#include <qxmlstream.h>
 
-#include <quazip/quazip.h>
-#include <quazip/quazipfile.h>
-
+#include "ziphelper.h"
 #include "sqlutils.h"
+
+struct BookTitle
+{
+    int pageID;
+    int level;
+    QString title;
+    QString tid;
+};
 
 class NewBookWriter
 {
@@ -20,30 +27,43 @@ public:
     void createNewBook();
     QString bookPath();
 
-    /// Begins a transaction on the database
+    /// Prepare zip and xml files
     void startReading();
 
-    /// Commits a transaction to the database
+    /// Close the zip file
     void endReading();
-    int addPage(const QString &text, int pageID, int pageNum, int partNum,
-                int hadditNum=0, int ayaNum=0, int soraNum=0);
+
+    /// Write titles.xml and  pages.xml to the zip file
+    void writeMetaFiles();
+
+    void addPage(BookPage *page);
+    void addPageText(int pageID, const QString &text);
+
     void addTitle(const QString &title, int tid, int level);
 
 protected:
-    QString processPageText(QString text);
+    QString processPageText(int pageID, QString text);
 
 protected:
     QString m_booksDir;
     QString m_bookPath;
 
-    QuaZip m_zip;
-    QDomDocument m_pagesDoc;
-    QDomElement m_pagesElemnent;
-    QDomDocument m_titlesDoc;
-    QDomElement m_titlesElement;
-    QDomElement m_lastTitlesElement;
+    ZipWriterManager m_zipWriter;
 
-    QHash<int, QDomNode> m_levels;
+    QString m_pagesPath;
+    QFile m_pagesFile;
+    QXmlStreamWriter m_pagesWriter;
+
+    QString m_titlesPath;
+    QFile m_titlesFile;
+    QXmlStreamWriter m_titlesWriter;
+    QHash<int, QList<BookTitle> > m_titles;
+    int m_titlesCount;
+
+    int m_lastLavel;
+    QHash<int, int> m_levels;
+
+    bool m_writeMeta;
 };
 
 #endif // NEWBOOKWRITER_H

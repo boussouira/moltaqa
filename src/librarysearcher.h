@@ -40,17 +40,22 @@ public:
     int searchTime();
     int resultsPeerPage();
 
+    int fetchStart();
+    int fetchEnd();
+    QList<int> resultsToFetch();
+
     void nextPage();
     void prevPage();
     void firstPage();
     void lastPage();
-    void fetechResults(int page);
+    void page(int page);
 
 protected:
     void open();
     void buildQuery();
     void search();
     void fetech();
+    void fetechResult(int rid);
 
 signals:
     void startSearching();
@@ -59,6 +64,9 @@ signals:
     void doneFeteching();
     void gotResult(SearchResult *result);
     void gotException(QString what, int id);
+
+protected:
+    friend class ResultReader;
 
 protected:
     LibraryInfo *m_libraryInfo;

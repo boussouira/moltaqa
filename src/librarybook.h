@@ -12,10 +12,11 @@ class XmlDomHelper;
 class BookShorooh
 {
 public:
-    BookShorooh(int bid, int pid, QString bname) : bookID(bid), pageID(pid), bookName(bname){}
-    int bookID;
+    BookShorooh() : pageID(0) {}
+
+    QString bookUUID;
+    QString title;
     int pageID;
-    QString bookName;
 };
 
 class LibraryBook
@@ -68,6 +69,7 @@ public:
 
 public:
     LibraryBook::Type type;
+    QString uuid;
     QString path;
     QString fileName;
     QString title;

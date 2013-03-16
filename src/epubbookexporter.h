@@ -2,8 +2,7 @@
 #define EPUBBOOKEXPORTER_H
 
 #include "bookexporter.h"
-#include "quazip/quazip.h"
-#include "quazip/quazipfile.h"
+#include "ziphelper.h"
 
 class EPubBookExporter : public BookExporter
 {
@@ -31,11 +30,11 @@ protected:
     void writeQuranBookTOC(QTextStream &out);
     void writeTocItem(class QDomElement &element, QTextStream &out);
 
-    void write(const QString &fileName, const QString &data);
+    void write(const QString &fileName, const QString &data, bool prepend);
     void writePage(BookPage *page);
 
 protected:
-    QuaZip m_zip;
+    ZipWriterManager m_zipWriter;
     QStringList m_page;
     QString m_bookUID;
     int m_titleCount;

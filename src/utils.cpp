@@ -14,6 +14,7 @@
 #include <qtreeview.h>
 #include <qheaderview.h>
 #include <qtoolbar.h>
+#include <quuid.h>
 
 static QString appRootPath;
 static uint m_randSlat = QDateTime::currentDateTime().toTime_t();
@@ -66,6 +67,14 @@ QString newBook(const QString &path)
     dir.cd(bookDir);
 
     return fileName(dir.absolutePath(), true, QString("book_")+bookDir);
+}
+
+QString uuid()
+{
+    return QUuid::createUuid()
+            .toString()
+            .remove('{')
+            .remove('}');
 }
 
 QString string(int size, bool upperChar, bool lowerChar, bool numbers)
@@ -140,6 +149,7 @@ void createDatabases(const QString &path)
         q.setTableName("books", QueryBuilder::Create);
 
         q.set("id", "INTEGER PRIMARY KEY NOT NULL");
+        q.set("uuid", "TEXT");
         q.set("title", "TEXT");
         q.set("otherTitles", "TEXT");
         q.set("type", "INT");
@@ -155,6 +165,9 @@ void createDatabases(const QString &path)
         q.set("filename", "TEXT");
 
         q.exec(query);
+
+        query.prepare("CREATE UNIQUE INDEX uuuid_index ON books (uuid)");
+        ml_query_exec(query);
 
         q.setTableName("history", QueryBuilder::Create);
 
@@ -482,7 +495,7 @@ QString formatSize(quint64 size)
 QString cleanFileName(QString fileName, bool removeSpace)
 {
     QFileInfo info(fileName);
-    QString baseName = info.baseName().remove(QRegExp("[\\?\\*<>\\(\\)\\[\\]\"']")).simplified();
+    QString baseName = info.baseName().remove(QRegExp("[\\?\\*<>\\(\\)\\[\\]\"':]")).simplified();
     QString ext = info.completeSuffix().trimmed();
 
     if(removeSpace)
@@ -732,6 +745,11 @@ QString currentStyle(const QString &fileName)
     }
 
     return dir.absolutePath();
+}
+
+QString currentStyleName()
+{
+    return Utils::Settings::get("Style/name", ML_DEFAULT_STYLE).toString();
 }
 
 QString id()

@@ -8,16 +8,3 @@ function setupToolTip() {
         positionLeft: true
     });
 }
-
-function moltaqaLink() {
-    $('a').each(function(index) {
-        link = $(this).attr('href');
-        if(typeof(link) != "undefined") {
-            scheme = link.substring(0, link.indexOf(':'));
-
-            if(scheme == 'moltaqa') {
-                $(this).addClass('ext');
-            }
-        }
-    });
-}

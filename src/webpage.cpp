@@ -34,6 +34,11 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
     QUrl url = request.url();
 
     if(url.scheme() == "moltaqa") {
+
+#ifdef DEV_BUILD
+        qDebug() << qPrintable(QString("WebPage: openMoltaqaLink(%1)").arg(url.toString()));
+#endif
+
         emit openMoltaqaLink(url.toString());
 
         return false;

@@ -7,6 +7,7 @@
 #include "modelviewfilter.h"
 
 #include <qstandarditemmodel.h>
+#include <qtimer.h>
 
 IndexWidget::IndexWidget(QWidget *parent) :
     QWidget(parent),
@@ -105,12 +106,26 @@ void IndexWidget::listClicked(QModelIndex index)
 {
     if(sendSignals) {
         int id = index.data(ItemRole::idRole).toInt();
+        QString tid = index.data(ItemRole::titleIdRole).toString();
 
-        if(m_bookInfo->isQuran())
+        if(m_bookInfo->isQuran()) {
             emit openSora(id, 1);
-        else
+        } else {
             emit openPage(id);
 
+            if (tid.size()) {
+                m_tid = QString("#%1").arg(tid);
+                QTimer::singleShot(500, this, SLOT(scrollToTitle()));
+            }
+        }
+    }
+}
+
+void IndexWidget::scrollToTitle()
+{
+    if(m_tid.size()) {
+        emit scrollToElement(m_tid, false);
+        m_tid.clear();
     }
 }
 

@@ -134,8 +134,7 @@ void BookInfoDialog::setup()
     html.addJS("jquery.tooltip.js");
     html.addJS("scripts.js");
 
-    html.addJSCode("setupToolTip();"
-                   "moltaqaLink();");
+    html.addJSCode("setupToolTip();");
 
     html.endAll();
 

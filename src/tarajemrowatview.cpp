@@ -58,7 +58,7 @@ QString TarajemRowatView::viewLink()
 {
     ml_return_val_on_fail(m_currentRawi, QString());
 
-    return QString("moltaqa://open/rawi?id=%1").arg(m_currentRawi->id);
+    return QString("moltaqa://?c=open&t=rawi&id=%1").arg(m_currentRawi->id);
 }
 
 void TarajemRowatView::aboutToShow()
@@ -186,8 +186,7 @@ void TarajemRowatView::setCurrentRawi(RawiInfo::Ptr info)
     html.addJS("jquery.tooltip.js");
     html.addJS("scripts.js");
 
-    html.addJSCode("setupToolTip();"
-                   "moltaqaLink();");
+    html.addJSCode("setupToolTip();");
 
     html.endAll();
 

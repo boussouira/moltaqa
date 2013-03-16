@@ -40,7 +40,7 @@ void newQuranWriter::startReading()
 {
     m_pageId = 0;
 
-    m_pagesDoc.setContent(QString("<?xml version=\"1.0\" encoding=\"utf-8\" ?><pages></pages>"));
+    m_pagesDoc.setContent(QString("<?xml version=\"1.0\" encoding=\"utf-8\" ?><ayat></ayat>"));
     m_pagesElemnent = m_pagesDoc.documentElement();
 }
 
@@ -70,7 +70,7 @@ void newQuranWriter::addPage(const QString &text, int soraNum, int ayaNum, int p
 {
     m_pageId++;
 
-    QDomElement page = m_pagesDoc.createElement("item");
+    QDomElement page = m_pagesDoc.createElement("aya");
     page.setAttribute("id", m_pageId);
     page.setAttribute("sora", soraNum);
     page.setAttribute("aya", ayaNum);

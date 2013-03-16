@@ -11,6 +11,7 @@
 #include "mainwindow.h"
 #include "richbookreader.h"
 #include "stringutils.h"
+#include "webpagenam.h"
 
 #include <qdir.h>
 #include <qplaintextedit.h>
@@ -135,7 +136,7 @@ void ResultWidget::setupWebView()
 
     helper.endAll();
 
-    m_view->setHtml(helper.html());
+    m_view->setHtml(helper.html(), QUrl(WebPageNAM::baseUrl()));
 }
 
 void ResultWidget::showProgressBar(bool show)
@@ -188,16 +189,16 @@ void ResultWidget::lastTabClosed()
 
 void ResultWidget::moveToReaderView()
 {
-    RichBookReader *reader = m_readerview->bookWidgetManager()->activeBookReader();
+    AbstractBookReader *reader = m_readerview->bookWidgetManager()->activeBookReader();
     ml_return_on_fail(reader);
 
-    MW->bookReaderView()->openBook(reader->bookInfo()->id, reader->page()->pageID);
+    MW->bookReaderView()->openBook(reader->book()->id, reader->page()->pageID);
 }
 
 void ResultWidget::openResult(int resultID)
 {
     SearchResult *result = m_searcher->getResult(resultID);
-    BookWidget *bookWidget = m_readerview->openBook(result->book->id,
+    BookViewBase *bookWidget = m_readerview->openBook(result->book->id,
                                                     result->page->pageID,
                                                     m_searcher->getSearchQuery());
 
@@ -211,7 +212,7 @@ void ResultWidget::openResult(int resultID)
 
 void ResultWidget::goToPage(int page)
 {
-    m_searcher->fetechResults(page);
+    m_searcher->page(page);
 }
 
 void ResultWidget::showBookMenu(int bookID)
@@ -294,7 +295,10 @@ void ResultWidget::searchFinnished()
 
 void ResultWidget::fetechStarted()
 {
-    m_view->execJS("fetechStarted();");
+    m_view->execJS(QString("fetechStarted(%1, %2);")
+                   .arg(m_searcher->fetchStart())
+                   .arg(m_searcher->fetchEnd()));
+
     showProgressBar(true);
 
     ui->progressBar->setMaximum(Utils::Settings::get("Search/resultPeerPage", 10).toInt());
@@ -318,7 +322,9 @@ void ResultWidget::fetechFinnished()
 
 void ResultWidget::gotResult(SearchResult *result)
 {
-    m_view->execJS(QString("addResult('%1')").arg(Utils::Html::jsEscape(result->toHtml())));
+    m_view->execJS(QString("addResult(%1, '%2')")
+                   .arg(result->resultID)
+                   .arg(Utils::Html::jsEscape(result->toHtml())));
 
     ui->progressBar->setValue(ui->progressBar->value()+1);
 }

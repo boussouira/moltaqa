@@ -108,7 +108,7 @@ void IndexManager::start()
                                            .arg(m_threadCount));
 
     for(int i=0;i<m_threadCount;i++) {
-        BookIndexer *indexThread = new BookIndexer();
+        BookIndexerThread *indexThread = new BookIndexerThread();
         connect(indexThread, SIGNAL(taskDone(IndexTask*)), SLOT(taskDone(IndexTask*)));
         connect(indexThread, SIGNAL(doneIndexing()), SLOT(threadDoneIndexing()));
 
@@ -125,11 +125,11 @@ void IndexManager::start()
 void IndexManager::stop()
 {
     qDebug("IndexManager: Stop indexer...");
-    foreach (BookIndexer *thread, m_threads) {
+    foreach (BookIndexerThread *thread, m_threads) {
             thread->stop();
     }
 
-    foreach (BookIndexer *thread, m_threads) {
+    foreach (BookIndexerThread *thread, m_threads) {
         if(thread->isRunning()) {
             qDebug("IndexManager: Wait for thread to finnish...");
             thread->wait();

@@ -16,6 +16,7 @@ public:
     void run();
     void stop();
     void setImportQuran(bool importQuran) { m_importQuran = importQuran; }
+    void setThreadId(int tid) { m_threadID = tid; }
 
 protected:
     void importBooks();

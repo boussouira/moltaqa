@@ -1,39 +1,47 @@
 #ifndef BOOKWIDGET_H
 #define BOOKWIDGET_H
 
-#include <qwidget.h>
+#include "bookviewbase.h"
+#include "librarybook.h"
+
 #include <qfuture.h>
 #include <qfuturewatcher.h>
 
 class WebView;
 class IndexWidget;
 class RichBookReader;
+class AbstractBookReader;
 class LibraryBookManager;
 class BookReaderHelper;
 class QSplitter;
 class QVBoxLayout;
 class QModelIndex;
 class QStandardItemModel;
+class WebViewSearcher;
 
-class BookWidget: public QWidget
+class BookWidget: public BookViewBase
 {
     Q_OBJECT
 
 public:
-    BookWidget(RichBookReader *reader, QWidget *parent=0);
+    BookWidget(LibraryBook::Ptr book, QWidget *parent=0);
     ~BookWidget();
 
-    void displayInfo();
-    RichBookReader *bookReader() { return m_reader; }
-    IndexWidget *indexWidget() { return m_indexWidget; }
-    WebView *webView() { return m_view; }
+    LibraryBook::Ptr book();
+    AbstractBookReader *bookReader();
+    WebViewSearcher *viewSearcher();
+
     void hideIndexWidget();
+
     void saveSettings();
+    void loadSettings();
 
 protected:
+    void openReader();
+    void loadIndexModel();
+
     bool eventFilter(QObject *obj, QEvent *event);
     void focusInEvent(QFocusEvent *event);
-    void loadSettings();
 
 public slots:
     void firstPage();

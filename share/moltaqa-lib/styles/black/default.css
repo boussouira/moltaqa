@@ -7,6 +7,10 @@ a {
     color: #4777DD;
     text-decoration: none;
 }
+a[href^="moltaqa"] {
+    background: url("qrc:/images/external.png") no-repeat scroll left top transparent;
+    padding-left: 12px;
+}
 #quran {
     border: 1px solid #333333;
     padding: 15px;
@@ -114,6 +118,7 @@ a {
     display: none;
     font-size: 18px;
     padding: 0 10px;
+    margin-bottom: 20px;
 }
 #simpleBook #shorooh .shoroohBooks p {
     color: #0A4311;
@@ -167,6 +172,13 @@ footnote p {
 div.clear {
     clear: both;
 }
+.result_loading {
+    border:1px #ccc solid;
+    font-size: 0.7em;
+    margin: 5px 0;
+    padding: 0 10px;
+}
+
 .result {
     background: none repeat scroll 0 0 #111111;
     border: 1px solid #5B5B5B;
@@ -429,10 +441,6 @@ abbr {
     margin: 0;
     padding: 2px;
 }
-a.ext {
-    background: url("qrc:/images/external.png") no-repeat scroll left top transparent;
-    padding-left: 12px;
-}
 sanad {
     color: #BE8A8A;
 }
@@ -484,6 +492,8 @@ sheer {
 hr.fns {
     width: 20%;
     float: right;
+    border-width: 0px;
+    border-bottom: 1px solid #777;
 }
 dl {
     margin-bottom: 18px;
@@ -507,4 +517,50 @@ dd {
 }
 .dl-horizontal dd {
     margin-right: 130px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-family: inherit;
+  font-weight: bold;
+  color: inherit;
+  text-rendering: optimizelegibility;
+  border-bottom: 1px solid #555555;
+}
+
+h1 {
+  font-size: 45px;
+  line-height: 50px;
+}
+
+h2 {
+  font-size: 40px;
+  line-height: 45px;
+  margin-right: 20px;
+}
+
+
+h3 {
+  font-size: 35px;
+  line-height: 40px;
+  margin-right: 35px;
+}
+
+h4, h5, h6 {
+  line-height: 45px;
+}
+
+h4 {
+  font-size: 30px;
+  margin-right: 50px;
+}
+
+h5 {
+  font-size: 25px;
+  margin-right: 65px;
+}
+
+h6 {
+  font-size: 20px;
+  margin-right: 75px;
 }

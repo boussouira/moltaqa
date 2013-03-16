@@ -4,6 +4,7 @@
 #include "bookeditorview.h"
 #include "htmlhelper.h"
 #include "stringutils.h"
+#include "webpagenam.h"
 
 #include <QDebug>
 
@@ -45,7 +46,7 @@ void EditWebView::setupEditor(const QString &text)
 
     helper.endAll();
 
-    setHtml(helper.html());
+    setHtml(helper.html(), QUrl(WebPageNAM::baseUrl()));
 }
 
 void EditWebView::setEditorText(QString text)
@@ -67,4 +68,12 @@ bool EditWebView::pageModified()
 void EditWebView::resetUndo()
 {
     execJS("editor.resetUndo()");
+}
+
+void EditWebView::makeSelectTextTitle(QString text, int level, QString tagID)
+{
+    execJS(QString("makeSelectionTitle('%1', %2, '%3')")
+           .arg(Utils::Html::jsEscape(text))
+           .arg(level)
+           .arg(Utils::Html::jsEscape(tagID)));
 }

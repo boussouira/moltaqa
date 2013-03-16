@@ -55,13 +55,6 @@ void debugMessageHandler(QtMsgType type, const QMessageLogContext &context, cons
     QString dateTime = QDateTime::currentDateTime().toString("[dd/MM/yyyy] [hh:mm:ss] ");
     QString text = /*QString::fromLocal8Bit*/(msg);
 
-#ifdef Q_OS_LINUX
-    if(text.startsWith("X Error:")) {
-        fprintf(stderr, "%s", msg.toUtf8().constData());
-        return;
-    }
-#endif
-
     if(text.contains('\n'))
         text = text.replace('\n', "\n\t\t\t").trimmed();
 
@@ -137,8 +130,10 @@ int main(int argc, char *argv[])
     app.setApplicationName("Moltaqa-Library");
     app.setApplicationVersion("0.5");
 
+#ifndef DEV_BUILD
     if(!app.arguments().contains("--debug"))
         createLogFileDir();
+#endif
 
     Utils::Rand::srand();
 

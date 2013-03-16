@@ -4,41 +4,48 @@
 #include "mainwindow.h"
 #include "clheader.h"
 #include "clutils.h"
-#include "simplebookindexer.h"
-#include "quranbookindexer.h"
+#include "bookindexersimple.h"
+#include "bookindexerquran.h"
 #include "librarybookmanager.h"
+#include "librarymanager.h"
+#include "utils.h"
+
 #include <exception>
 
-BookIndexer::BookIndexer(QObject *parent) :
+BookIndexerThread::BookIndexerThread(QObject *parent) :
     QThread(parent),
     m_writer(0),
     m_trackerIter(0),
+    m_indexer(0),
     m_stop(false)
 {
     m_bookManager = LibraryManager::instance()->bookManager();
 }
 
-void BookIndexer::setWirter(IndexWriter *writer)
+void BookIndexerThread::setWirter(IndexWriter *writer)
 {
     m_writer = writer;
 }
 
-void BookIndexer::setTaskIter(IndexTaskIter *iter)
+void BookIndexerThread::setTaskIter(IndexTaskIter *iter)
 {
     m_trackerIter = iter;
 }
 
-void BookIndexer::stop()
+void BookIndexerThread::stop()
 {
     m_stop = true;
+
+    if(m_indexer)
+        m_indexer->stop();
 }
 
-void BookIndexer::run()
+void BookIndexerThread::run()
 {
     startIndexing();
 }
 
-void BookIndexer::startIndexing()
+void BookIndexerThread::startIndexing()
 {
     IndexTask *task = m_trackerIter->next();
 
@@ -73,7 +80,8 @@ void BookIndexer::startIndexing()
             qCritical() << "BookIndexer: Indexing std error:" << e.what();
         }
 
-        emit taskDone(task);
+        if(!(m_stop && task->task == IndexTask::Update))
+            emit taskDone(task);
 
         task = m_trackerIter->next();
     }
@@ -81,23 +89,22 @@ void BookIndexer::startIndexing()
     emit doneIndexing();
 }
 
-void BookIndexer::indexBook(IndexTask *task)
+void BookIndexerThread::indexBook(IndexTask *task)
 {
-    TextBookIndexer *indexer = 0;
+    m_indexer = 0;
     if(task->book->isNormal() || task->book->isTafessir())
-        indexer = new SimpleBookIndexer();
+        m_indexer = new BookIndexerSimple();
     else if (task->book->isQuran())
-        indexer = new QuranBookIndexer();
+        m_indexer = new BookIndexerQuran();
     else
         throw BookException("Unknow book type", QString("Type: %1").arg(task->book->type));
 
-    indexer->setLibraryBook(task->book);
-    indexer->setIndexWriter(m_writer);
-
-    indexer->open();
+    m_indexer->setLibraryBook(task->book);
+    m_indexer->setIndexWriter(m_writer);
 
     try {
-        indexer->start();
+        m_indexer->open();
+        m_indexer->start();
     } catch(CLuceneError &err) {
         qCritical("BookIndexer::indexBook CLucene Error: %s", err.what());
     } catch(std::exception &err) {
@@ -106,10 +113,10 @@ void BookIndexer::indexBook(IndexTask *task)
         qCritical("BookIndexer::indexBook Unkonw error");
     }
 
-    delete indexer;
+    ml_delete_check(m_indexer);
 }
 
-void BookIndexer::deleteBook(IndexTask *task)
+void BookIndexerThread::deleteBook(IndexTask *task)
 {
     try {
         Term *term = new Term(BOOK_ID_FIELD, Utils::CLucene::intToWChar(task->bookID));
@@ -126,7 +133,7 @@ void BookIndexer::deleteBook(IndexTask *task)
     }
 }
 
-void BookIndexer::updateBook(IndexTask *task)
+void BookIndexerThread::updateBook(IndexTask *task)
 {
     deleteBook(task);
     indexBook(task);

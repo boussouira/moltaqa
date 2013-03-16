@@ -4,6 +4,22 @@
 #include <qsqlquery.h>
 #include <qsqlerror.h>
 
+namespace Utils {
+namespace Sql {
+
+void removeDatabase(QSqlDatabase &db)
+{
+    QString conn = db.connectionName();
+
+    db.close();
+    db = QSqlDatabase();
+
+    QSqlDatabase::removeDatabase(conn);
+}
+
+}
+}
+
 DatabaseRemover::DatabaseRemover()
 {
 }

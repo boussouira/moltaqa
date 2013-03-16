@@ -30,6 +30,7 @@ void createDatabases(const QString &path);
 namespace Rand {
 void srand();
 int number(int smin, int smax);
+QString uuid();
 QString string(int size, bool upperChar=true, bool lowerChar=true, bool numbers=true);
 QString fileName(const QString &path, bool fullPath=false, QString namePrefix="book_", QString ext="mlb");
 QString newBook(const QString &path);
@@ -85,6 +86,7 @@ QString localeDir();
 QString dataDir();
 
 QString currentStyle(const QString &fileName=QString());
+QString currentStyleName();
 
 QString id();
 }

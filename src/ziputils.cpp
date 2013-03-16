@@ -138,6 +138,47 @@ bool zip(const QString &dir, const QString &zipPath)
 
     return true;
 }
+
+bool copyFromZip(const QString &sourcZipPath, QuaZip *targetZip)
+{
+    QuaZip sourceZip;
+    sourceZip.setZipName(sourcZipPath);
+
+    if(!sourceZip.open(QuaZip::mdUnzip)) {
+        qCritical() << "ZipHelper::addFromZip open zip file error"
+                    << sourceZip.getZipError() << "Path" << sourcZipPath;
+        return false;
+    }
+
+    QuaZipFileInfo sourceInfo;
+    QuaZipFile sourceFile(&sourceZip);
+    for(bool more=sourceZip.goToFirstFile(); more; more=sourceZip.goToNextFile()) {
+        ml_return_val_on_fail2(sourceZip.getCurrentFileInfo(&sourceInfo),
+                               "copyFromZip: sourceZip.getCurrentFileInfo error" << sourceZip.getZipError(),
+                               false);
+
+        ml_return_val_on_fail2(sourceFile.open(QIODevice::ReadOnly),
+                               "copyFromZip: sourceFile.open error" << sourceZip.getZipError(),
+                               false);
+
+        QuaZipFile targetFile(targetZip);
+        ml_return_val_on_fail2(targetFile.open(QIODevice::WriteOnly, QuaZipNewInfo(sourceInfo.name)),
+                               "copyFromZip: targetFile.open error" << targetFile.getZipError(),
+                               false);
+
+        Utils::Files::copyData(sourceFile, targetFile);
+
+        targetFile.close();
+        sourceFile.close();
+
+        ml_return_val_on_fail2(sourceFile.getZipError()==UNZ_OK,
+                               "copyFromZip: sourceFile.getZipError error" << sourceFile.getZipError(),
+                               false);
+    }
+
+    return true;
+}
+
 }
 
 }

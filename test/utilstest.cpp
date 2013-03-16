@@ -395,6 +395,9 @@ void UtilsTest::cleanFileName()
     QCOMPARE(Utils::Files::cleanFileName("book first.pdf"),
              QString("book first.pdf"));
 
+    QCOMPARE(Utils::Files::cleanFileName("book: first.pdf"),
+             QString("book first.pdf"));
+
     QCOMPARE(Utils::Files::cleanFileName("book first.pdf", true),
              QString("book_first.pdf"));
 
@@ -450,12 +453,20 @@ void UtilsTest::footnoteRegExp()
             "تحفة الناسك في احكام المناسك\n"
             "http://www.4shared.com/get/218171027/68c4599e/____________.html\n");
 
+    QString text4 = _u("[النساء: 163]" "\n"
+                       "__________ W [ ش (أوحينا) أنزلنا عليك الرسالة");
+
+    QString text5 = _u("عبدِ اللهِ بْنِ الْمُقَفَِّعِ (¬1)." "\n"
+                       "¬_________" "\n"
+                       "(¬1) كان عبد الله بن المقفع");
     // Separete footnote
-    QRegExp footnoteSep("\\n+_{6,}\\n+");
+    QRegExp footnoteSep(_u("\\n+¬?_{6,}[ \\n]+"));
 
     QCOMPARE(text1.split(footnoteSep, QString::SkipEmptyParts).size() , 2);
     QCOMPARE(text2.split(footnoteSep, QString::SkipEmptyParts).size() , 2);
     QCOMPARE(text3.split(footnoteSep, QString::SkipEmptyParts).size() , 1);
+    QCOMPARE(text4.split(footnoteSep, QString::SkipEmptyParts).size() , 2);
+    QCOMPARE(text5.split(footnoteSep, QString::SkipEmptyParts).size() , 2);
 
     QCOMPARE(text2.split(footnoteSep, QString::SkipEmptyParts).first(), _u("First line"));
     QCOMPARE(text2.split(footnoteSep, QString::SkipEmptyParts).last(), _u("Second line"));

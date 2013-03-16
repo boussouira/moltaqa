@@ -133,8 +133,9 @@ void ImportDialog::convertBooks()
     thread->setModel(m_model);
     thread->setLibraryManager(m_libraryManager);
 
-    connect(thread, SIGNAL(finished()), this, SLOT(doneConverting()));
-    connect(thread, SIGNAL(setProgress(int)), ui->progressBar, SLOT(setValue(int)));
+    connect(thread, SIGNAL(finished()), SLOT(doneConverting()));
+    connect(thread, SIGNAL(bookConverted(QString)), SLOT(bookConverted(QString)));
+    connect(thread, SIGNAL(addBooksToProgress(int)), SLOT(addBooksToProgress(int)));
 
     setEnabled(false);
 
@@ -262,6 +263,18 @@ void ImportDialog::doneImporting()
     ui->stackedWidget->setCurrentIndex(2);
 
     m_libraryManager->reloadManagers();
+}
+
+void ImportDialog::bookConverted(QString bookName)
+{
+    Q_UNUSED(bookName);
+
+    ui->progressBar->setValue(ui->progressBar->value()+1);
+}
+
+void ImportDialog::addBooksToProgress(int count)
+{
+    ui->progressBar->setMaximum(ui->progressBar->maximum() + count);
 }
 
 bool ImportDialog::checkNodes(QList<ImportModelNode *> nodesList)

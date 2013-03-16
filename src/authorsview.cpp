@@ -55,7 +55,7 @@ QString AuthorsView::viewLink()
 {
     ml_return_val_on_fail(m_currentAuthor, QString());
 
-    return QString("moltaqa://open/author?id=%1").arg(m_currentAuthor->id);
+    return QString("moltaqa://?c=open&t=author&id=%1").arg(m_currentAuthor->id);
 }
 
 void AuthorsView::aboutToShow()
@@ -178,7 +178,7 @@ void AuthorsView::setCurrentAuth(AuthorInfo::Ptr info)
                 bookHtml.insertBr();
 
             bookHtml.beginHtmlTag("a", "",
-                                  QString("href='moltaqa://open/book?id=%1'").arg(books[i]->id));
+                                  QString("href='moltaqa://?c=open&t=book&id=%1'").arg(books[i]->uuid));
             bookHtml.append(books[i]->title);
             bookHtml.endHtmlTag();
 
@@ -198,8 +198,7 @@ void AuthorsView::setCurrentAuth(AuthorInfo::Ptr info)
     html.addJS("jquery.tooltip.js");
     html.addJS("scripts.js");
 
-    html.addJSCode("setupToolTip();"
-                   "moltaqaLink();");
+    html.addJSCode("setupToolTip();");
 
     html.endAll();
 

@@ -5,7 +5,6 @@ function pageTextChanged()
 
     toggleQuran();
     indexReading();
-    moltaqaLink();
     setupToolTip();
 }
 
@@ -37,7 +36,7 @@ function indexReading()
     });
 
     $('.bookIndex > img').click(function(){
-        bookWidget.openPage($(this).attr('tid'));
+        bookWidget.openPageID($(this).attr('tid'));
     });
 }
 
@@ -76,19 +75,16 @@ function setShorooh(shorooh)
         $('#shorooh .shoroohBooks').html('');
 
         for(i in shorooh) {
-            $('#shorooh .shoroohBooks').append($('<p>',
-                                                 {'text': shorooh[i].bookName,
-                                                  'book': shorooh[i].bookID,
-                                                  'page': shorooh[i].pageID}));
+            var book = shorooh[i];
+            var pageLink = 'moltaqa://?c=open&t=book&id=' + book.uuid + '&page=' + book.page;
+            if(i > 0)
+                $('#shorooh .shoroohBooks').append($('<br/>'));
+
+            $('#shorooh .shoroohBooks').append($('<a>',
+                                                 {'text': book.title,
+                                                  'href': pageLink}));
             ++shoroohCount;
         }
-
-        $('#shorooh .shoroohBooks p').click(function() {
-                                                book = $(this).attr('book');;
-                                                page = $(this).attr('page');;
-
-                                                bookReaderView.openBook(book, page);
-                                            });
 
         infoSpin.removeClass('disabled');
         $('#shorooh').show();

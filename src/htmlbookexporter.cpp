@@ -67,6 +67,7 @@ void HtmlBookExporter::openReader()
     m_reader->setSaveReadingHistory(false);
     m_reader->setBookInfo(m_book);
     m_reader->openBook();
+    m_reader->loadPages();
 }
 
 void HtmlBookExporter::copyStyleTemplate(QString styleDirPath)
@@ -91,14 +92,15 @@ void HtmlBookExporter::writeTOC()
 
     QTextStream out(&file);
     out.setCodec("utf-8");
-    out << "<!DOCTYPE html>"
-        << "<html>"
-        << "<head>"
-        << "<link href= \"../style/default.css\" rel=\"stylesheet\" type=\"text/css\"/>"
-        << "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />"
-        << "<title>" << tr("كتاب") << " "
-        << m_book->title
-        << "</title></head><body>";
+    out << "<!DOCTYPE html>" "\n"
+        << "<html>" "\n"
+        << "<head>" "\n"
+        << "<link href= \"../style/default.css\" rel=\"stylesheet\" type=\"text/css\"/>" "\n"
+        << "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />" "\n"
+        << "<title>" << tr("كتاب") << " " << m_book->title
+        << "</title>" "\n"
+           "</head>" "\n"
+           "<body>""\n";
 
     out << "<ul>""\n";
 
@@ -106,9 +108,15 @@ void HtmlBookExporter::writeTOC()
         for(int i=1; i<=114; i++) {
             QuranSora *sora = MW->readerHelper()->getQuranSora(i);
             if(sora) {
-                out << "<li><a href=\"pages/p"
-                    << m_sowarPages[i]+1 << ".html\">"
-                    << sora->name << "</a></li>" << "\n";
+                int k = i;
+                int pageNum = m_sowarPages[k];
+                while(!pageNum && k >= 0) {
+                    pageNum = m_sowarPages[--k];
+                }
+
+                QString pageSrc = QString("pages/p%1.html").arg(pageNum);
+                out << "<li><a href=\"" << pageSrc << "\">"<< sora->name
+                    << "</a></li>" << "\n";
             }
         }
     } else {
@@ -151,13 +159,15 @@ void HtmlBookExporter::writeTOC()
 void HtmlBookExporter::writeTocItem(QTextStream &out, QDomElement &element)
 {
     int pageID = element.attribute("pageID").toInt();
+    QString tid = element.attribute("tagID");
     QString text = element.firstChildElement("text").text();
+
     if(m_removeTashkil)
         text = Utils::String::Arabic::removeTashekil(text);
 
+    QString pageSrc = QString("pages/p%1.html#%2").arg(pageID).arg(tid);
     out << "<li><a id=\"id_"
-        << pageID << "\" href=\"pages/p"
-        << pageID << ".html\">"
+        << pageID << "\" href=\"" << pageSrc << "\">"
         << text << "</a></li>"
         << "\n";
 
@@ -189,7 +199,7 @@ void HtmlBookExporter::writePages()
         if(page->text.isEmpty())
             continue;
 
-        if(m_book->isQuran())
+        if(m_book->isQuran() && !m_sowarPages.contains(page->sora))
             m_sowarPages[page->sora] = page->page;
 
         writePage(dir, page);
@@ -211,7 +221,7 @@ void HtmlBookExporter::writePage(QDir &dir, BookPage *page)
     helper.beginHead();
     helper.setCharset("utf-8");
     helper.addCSS("../../style/default.css", true);
-
+    helper.setTitle(m_book->title);
     helper.endHead();
 
     helper.beginBody();

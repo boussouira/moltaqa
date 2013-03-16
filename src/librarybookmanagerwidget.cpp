@@ -203,12 +203,22 @@ void LibraryBookManagerWidget::createNewBook()
             book->authorName = authorDialog.selectedAuthorName();
         }
 
+        BookPage page;
+        page.pageID = 1;
+        page.page = 1;
+        page.part = 1;
+
         NewBookWriter bookWrite;
         bookWrite.createNewBook();
 
         bookWrite.startReading();
-        bookWrite.addPage(title, 1, 1, 1);
+
+        bookWrite.addPage(&page);
         bookWrite.addTitle(title, 1, 0);
+        bookWrite.writeMetaFiles();
+
+        bookWrite.addPageText(1, title);
+
         bookWrite.endReading();
 
         book->path = bookWrite.bookPath();
@@ -288,13 +298,13 @@ void LibraryBookManagerWidget::reindexBook()
                 QMessageBox::information(this,
                                          tr("إعادة فهرسة كتاب"),
                                          tr("ستتم إعادة فهرسة هذا الكتاب عند إعادة تشغيل البرنامج"));
+            } else {
+                QMessageBox::warning(this,
+                                     tr("حذف كتاب"),
+                                     tr("لم تقم باختيار اي كتاب"));
             }
-        } else {
-        QMessageBox::warning(this,
-                             tr("حذف كتاب"),
-                             tr("لم تقم باختيار اي كتاب"));
+        }
     }
-}
 }
 
 void LibraryBookManagerWidget::lastReaderTabClosed()

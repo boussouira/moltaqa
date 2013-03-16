@@ -31,6 +31,11 @@ WebView::WebView(QWidget *parent) :
     m_searcher = new WebViewSearcher(this);
 
     m_animation = new QPropertyAnimation(m_frame, "scrollPosition", this);
+
+#ifdef DEV_BUILD
+    settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
+#endif
+
     connect(m_page, SIGNAL(openMoltaqaLink(QString)), SLOT(openMoltaqaLink(QString)));
     connect(m_frame, SIGNAL(contentsSizeChanged(QSize)), m_animation, SLOT(stop()));
     connect(m_frame, SIGNAL(javaScriptWindowObjectCleared()),
@@ -167,20 +172,20 @@ LibraryBook::Ptr WebView::getLibraryBook()
 {
     ml_return_val_on_fail2(parent(), "WebView::getLibraryBook parent is null", LibraryBook::Ptr());
 
-    BookWidget *p;
+    BookViewBase *p;
     QObject *parentObj = parent();
     while (parentObj) {
-        p = qobject_cast<BookWidget*>(parentObj);
+        p = qobject_cast<BookViewBase*>(parentObj);
         if(p)
             break;
 
         parentObj = parentObj->parent();
     }
 
-//    p = qobject_cast<BookWidget*>(parent()->parent()); // QSplitter > BookWidget
+//    p = qobject_cast<BookViewBase*>(parent()->parent()); // QSplitter > BookViewBase
     ml_return_val_on_fail2(p, "WebView::getLibraryBook book widget is null", LibraryBook::Ptr());
 
-    return p->bookReader()->bookInfo();
+    return p->book();
 }
 
 void WebView::setText(const QString &text)
@@ -189,23 +194,27 @@ void WebView::setText(const QString &text)
     emit textChanged();
 }
 
-void WebView::scrollToElement(QString elementQuery)
+void WebView::scrollToElement(QString elementQuery, bool center)
 {
     QWebElement element = m_frame->findFirstElement(elementQuery);
     if(!element.isNull()) {
-        QRect highElement = element.geometry();
-        // m_frame heihgt
-        int frameHeihgt = m_frame->geometry().height() / 2;
-        // The height that should be added to center the selected aya
-        int addHeight = highElement.height() / 2 ;
-        // it must be less than frameHeight
-        while (frameHeihgt < addHeight )
-            addHeight = addHeight / 2;
-        // The aya position equal ((ayaHeight - frameHeight) + addHeight)
-        int ayaPosition = (highElement.y() - frameHeihgt) + addHeight;
+        QRect elementRect = element.geometry();
+        int elementPosition = elementRect.y();
+
+        if(center) {
+            // m_frame heihgt
+            int frameHeihgt = m_frame->geometry().height() / 2;
+            // The height that should be added to center the selected aya
+            int addHeight = elementRect.height() / 2 ;
+            // it must be less than frameHeight
+            while (frameHeihgt < addHeight )
+                addHeight = addHeight / 2;
+            // The aya position equal ((ayaHeight - frameHeight) + addHeight)
+            elementPosition = (elementRect.y() - frameHeihgt) + addHeight;
+        }
 
         // Animation the scrolling to the selected AYA
-        scrollToPosition(QPoint(0, ayaPosition));
+        scrollToPosition(QPoint(0, elementPosition));
     }
 }
 
@@ -299,15 +308,15 @@ void WebView::copyWithRefer()
 
     ml_return_on_fail2(parent(), "WebView::copyWithRefer parent is null");
 
-    BookWidget *bookWidget = qobject_cast<BookWidget*>(parent()->parent());
+    BookViewBase *bookWidget = qobject_cast<BookViewBase*>(parent()->parent());
     ml_return_on_fail2(bookWidget, "WebView::copyWithRefer book widget is null");
 
-    RichBookReader *reader = bookWidget->bookReader();
+    AbstractBookReader *reader = bookWidget->bookReader();
 
     QString referText = act->data().toString();
     referText.replace(_u("*النص*"),   selectedText().trimmed());
-    referText.replace(_u("*المؤلف*"), reader->bookInfo()->authorName);
-    referText.replace(_u("*الكتاب*"), reader->bookInfo()->title);
+    referText.replace(_u("*المؤلف*"), reader->book()->authorName);
+    referText.replace(_u("*الكتاب*"), reader->book()->title);
     referText.replace(_u("*الصفحة*"), QString::number(reader->page()->page));
     referText.replace(_u("*الجزء*"),  QString::number(reader->page()->part));
     referText.replace(_u("*الحديث*"), QString::number(reader->page()->haddit));

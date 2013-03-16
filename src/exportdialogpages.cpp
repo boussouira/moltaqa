@@ -192,7 +192,8 @@ ExportPage::ExportPage(QWidget *parent) : QWizardPage(parent)
     m_treeWidget = new QListWidget(this);
     layout->addWidget(m_treeWidget);
 
-    m_checkOpenOutFolder = new QCheckBox(tr("فتح مجلد وضع الملفات عند الانتهاء من التصدير"), this);
+    m_checkOpenOutFolder = new QCheckBox(tr("فتح مجلد وضع الملفات"), this);
+    m_checkOpenOutFolder->setToolTip(tr("فتح مجلد وضع الملفات عند الانتهاء من التصدير"));
     m_checkOpenOutFolder->setChecked(Utils::Settings::get("ExportDialog/openOutDit", true).toBool());
     layout->addWidget(m_checkOpenOutFolder);
 
@@ -238,7 +239,7 @@ void ExportPage::openOutDir()
 {
     if(m_checkOpenOutFolder->isChecked()) {
         QString outDir = field("export.outdir").toString();
-        QDesktopServices::openUrl(QUrl(outDir));
+        QDesktopServices::openUrl(QUrl::fromLocalFile(outDir));
     }
 
     Utils::Settings::set("ExportDialog/openOutDit", m_checkOpenOutFolder->isChecked());

@@ -36,7 +36,7 @@
       <widget class="QComboBox" name="comboCurrentList">
        <item>
         <property name="text">
-         <string>كل الكتب</string>
+         <string>الأقسام</string>
         </property>
        </item>
        <item>
@@ -47,6 +47,11 @@
        <item>
         <property name="text">
          <string>الأحدث تصفحا</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>كل الكتب</string>
         </property>
        </item>
       </widget>

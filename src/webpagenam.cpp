@@ -83,7 +83,6 @@ bool CustomNetworkReply::isSequential() const
     return true;
 }
 
-
 qint64 CustomNetworkReply::readData(char *data, qint64 maxSize)
 {
     if (d->offset >= d->content.size())
@@ -108,7 +107,6 @@ WebPageNAM::WebPageNAM(QObject *parent) :
 
 QNetworkReply *WebPageNAM::getFileContent(const QString &fileName)
 {
-    //qDebug() << "WebPageNAM::getFileContent" << fileName << "from" << m_book->path;
     CustomNetworkReply *reply = new CustomNetworkReply();
 
     if(m_book) {
@@ -131,14 +129,24 @@ QNetworkReply *WebPageNAM::getFileContent(const QString &fileName)
 
                 return reply;
             } else {
+#ifdef DEV_BUILD
                 qWarning() << "WebPageNAM::getFileContent: open error:" << file.getZipError()
                            << "\nFile name:" << fileName << "\n"
                            << "\nBook:" << qPrintable(m_book->path);
+#else
+                qWarning() << "WebPageNAM::getFileContent File not found:"
+                           << fileName << "in:" << m_book->path;
+#endif
             }
         } else {
+#ifdef DEV_BUILD
             qWarning() << "WebPageNAM::getFileContent: setCurrentFile error:"<< zip.getZipError()
                        << "\nFile name:" << fileName
                        << "\nBook:" << qPrintable(m_book->path);
+#else
+            qWarning() << "WebPageNAM::getFileContent File open error:"
+                       << fileName << "book:" << m_book->path;
+#endif
         }
     }
 
@@ -157,20 +165,21 @@ QNetworkReply *WebPageNAM::getFileContent(const QString &fileName)
 
 QNetworkReply *WebPageNAM::createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData)
 {
-    if(req.url().toString().startsWith("../")
-            || req.url().scheme() == "book") {
-
-//        qDebug() << "WebPageNAM::createRequest handling:" << req.url().toString();
+    if(req.url().scheme() == "book"
+            && req.url().toString() != baseUrl()) {
 
         QString filename = req.url().toString();
 
-        if(filename.startsWith("book://"))
-            filename.remove(0, req.url().scheme().size()+3);
+        if(filename.startsWith(baseUrl()))
+            filename.remove(0, baseUrl().size() + 1); // Add 1 for the '/'
+        else if(filename.startsWith("book://"))
+            filename.remove(0, QString("book://").size());
 
-        if(filename.startsWith("../"))
-            filename.remove(0, 3);
-
-//        qDebug() << filename << "->" << Utils::Mimes::fileTypeFromFileName(filename);
+#ifdef DEV_BUILD
+        qDebug() << "WebPageNAM: GET" << qPrintable(req.url().toString())
+                 << "->" << qPrintable(filename)
+                 << "->" << qPrintable(Utils::Mimes::fileTypeFromFileName(filename));
+#endif
 
         return getFileContent(filename);
     }

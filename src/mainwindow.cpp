@@ -35,6 +35,7 @@
 #include <qwebsettings.h>
 #include <qtextbrowser.h>
 #include <qlabel.h>
+#include <qtoolbutton.h>
 
 static MainWindow *m_instance = 0;
 
@@ -63,6 +64,7 @@ MainWindow::MainWindow(QWidget *parent):
     m_updateChecker = new UpdateChecker(this);
 
     setWindowTitle(App::name());
+    setupProgressWidget();
     loadSettings();
 
     connect(ui->actionLogDialog, SIGNAL(triggered()), SLOT(showLogDialog()));
@@ -143,14 +145,6 @@ bool MainWindow::init()
         // IndexTracker should be created before the IndexManager
         m_indexTracker = new IndexTracker(this);
         m_indexManager = new IndexManager(this);
-
-        m_indexBar = new QProgressBar(statusBar());
-        m_indexBar->setMaximumWidth(200);
-        m_indexBar->setFormat("%v/%m");
-        m_indexBar->setAlignment(Qt::AlignCenter);
-        m_indexBar->setToolTip(tr("تقدم تحديث الفهرس"));
-        m_indexBar->hide();
-        statusBar()->addPermanentWidget(m_indexBar);
 
         m_welcomeWidget = new WelcomeWidget(this);
         m_viewManager->addView(m_welcomeWidget);
@@ -237,8 +231,8 @@ void MainWindow::setupActions()
     connect(ui->actionAuthorsView, SIGNAL(triggered()), SLOT(showAuthorsView()));
 
     connect(m_indexManager, SIGNAL(progress(int,int)), SLOT(indexProgress(int,int)));
-    connect(m_indexManager, SIGNAL(started()), SLOT(startIndexing()));
-    connect(m_indexManager, SIGNAL(done()), SLOT(stopIndexing()));
+    connect(m_indexManager, SIGNAL(started()), SLOT(indexingStart()));
+    connect(m_indexManager, SIGNAL(done()), SLOT(indexingStop()));
 
     if(Utils::Settings::get("Search/autoUpdateIndex", true).toBool())
         connect(m_indexTracker, SIGNAL(gotTask()), m_indexManager, SLOT(start()));
@@ -324,6 +318,33 @@ void MainWindow::closeEvent(QCloseEvent *event)
     event->accept();
 }
 
+void MainWindow::setupProgressWidget()
+{
+    m_progressWidget = new QWidget(statusBar());
+    m_indexBar = new QProgressBar(m_progressWidget);
+    m_indexBar->setMaximumWidth(200);
+    m_indexBar->setFormat("%v/%m");
+    m_indexBar->setAlignment(Qt::AlignCenter);
+    m_indexBar->setToolTip(tr("تقدم تحديث الفهرس"));
+
+    QToolButton *button = new QToolButton(m_progressWidget);
+    button->setIcon(QIcon(":/images/stop.png"));
+    button->setAutoRaise(true);
+    button->setToolTip(tr("إيقاف تحديث الفهرس"));
+
+    QHBoxLayout *layout = new QHBoxLayout;
+    layout->addStretch();
+    layout->addWidget(m_indexBar);
+    layout->addWidget(button);
+
+    m_progressWidget->setLayout(layout);
+    m_progressWidget->hide();
+
+    connect(button, SIGNAL(clicked()), SLOT(stopIndexing()));
+
+    statusBar()->addPermanentWidget(m_progressWidget);
+}
+
 void MainWindow::loadSettings()
 {
     Utils::Widget::restore(this, "MainWindow", true);
@@ -352,6 +373,13 @@ void MainWindow::loadSettings()
 
 void MainWindow::handleMessage(const QString &)
 {
+}
+
+void MainWindow::stopIndexing()
+{
+    Q_CHECK_PTR(m_indexManager);
+
+    m_indexManager->stop();
 }
 
 LibraryInfo *MainWindow::libraryInfo()
@@ -439,14 +467,14 @@ void MainWindow::exportBooks()
     exportDialog.exec();
 }
 
-void MainWindow::startIndexing()
+void MainWindow::indexingStart()
 {
-    m_indexBar->show();
+    m_progressWidget->show();
 }
 
-void MainWindow::stopIndexing()
+void MainWindow::indexingStop()
 {
-    m_indexBar->hide();
+    m_progressWidget->hide();
 }
 
 void MainWindow::indexProgress(int value, int max)
@@ -508,7 +536,7 @@ void MainWindow::showLibraryInfo()
 
 void MainWindow::showHelp()
 {
-    openBook(LibraryManager::HELP_BOOK_ID);
+    openBook(LibraryManager::helpBookID());
 }
 
 void MainWindow::checkFinnished()

@@ -7,6 +7,7 @@
 #include "bookreaderhelper.h"
 #include "modelenums.h"
 #include "utils.h"
+#include "clutils.h"
 
 RichQuranReader::RichQuranReader(QObject *parent) : RichBookReader(parent)
 {

@@ -170,7 +170,7 @@ QVariant ImportModel::data(const QModelIndex &index, int role) const
         if (index.column() == 0)
             return node->comment;
     } else if(role == Qt::BackgroundRole) {
-        if (index.column() == 1 && node->authorID == 0)
+        if (index.column() == 1 && (!node->authorID && !node->isQuran()))
             return QColor(0xf5, 0x82, 0x82);
         else
             return node->bgColor;
@@ -198,9 +198,13 @@ bool ImportModel::setData(const QModelIndex &index, const QVariant &value, int r
     return false;
 }
 
-Qt::ItemFlags ImportModel::flags ( const QModelIndex & /*index*/ ) const
+Qt::ItemFlags ImportModel::flags ( const QModelIndex & index ) const
 {
-    return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    Qt::ItemFlags f = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    if(index.column() != 2)
+        f |= Qt::ItemIsEditable;
+
+     return f;
 }
 
 QVariant ImportModel::headerData(int section,

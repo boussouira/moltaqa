@@ -32,8 +32,8 @@ public:
 
     int maxPageID();
 
-    void addPageLink(int sourcPage, int destBook, int destPage);
-    void removePageLink(int sourcPage, int destBook, int destPage);
+    void addPageLink(int sourcPage, QString destBookUUID, int destPage);
+    void removePageLink(int sourcPage, QString destBookUUID, int destPage);
 
 protected:
     RichBookReader *m_bookReader;

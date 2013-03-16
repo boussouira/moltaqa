@@ -441,13 +441,23 @@ void ShamelaManager::importShorooh(ShamelaImportDialog *dialog)
                     qApp->processEvents();
                 }
 
-                LibraryBook::Ptr mi = bookManager->getLibraryBook(mateen_libID);
-                LibraryBook::Ptr si = bookManager->getLibraryBook(shareeh_LibID);
+                LibraryBook::Ptr mateenBook = bookManager->getLibraryBook(mateen_libID);
+                LibraryBook::Ptr shareehBook = bookManager->getLibraryBook(shareeh_LibID);
 
-                if(mi && si) {
+                if(mateenBook && shareehBook) {
                     dialog->addDebugInfo(QObject::tr("ربط المتن '%1' بالشرح '%2'")
-                                         .arg(mi->title)
-                                         .arg(si->title));
+                                         .arg(mateenBook->title)
+                                         .arg(shareehBook->title));
+                } else {
+                    if(!mateenBook)
+                        qWarning("ShamelaManager::importShorooh Can't find mateen book: %d", mateen_libID);
+
+                    if(!shareehBook)
+                        qWarning("ShamelaManager::importShorooh Can't find shareeh book: %d", shareeh_LibID);
+
+                    ml_delete_check(editor);
+
+                    continue;
                 }
 
                 // Start linking...
@@ -460,7 +470,7 @@ void ShamelaManager::importShorooh(ShamelaImportDialog *dialog)
                     while(specialQuery.next()) {
                         if(!linked.contains(specialQuery.value(1).toInt())) {
                             editor->addPageLink(specialQuery.value(0).toInt(),
-                                                shareeh_LibID,
+                                                shareehBook->uuid,
                                                 specialQuery.value(1).toInt());
                             linked << specialQuery.value(1).toInt();
                         }

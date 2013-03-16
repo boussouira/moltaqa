@@ -39,6 +39,8 @@ public:
     void setBook(LibraryBook::Ptr book) { m_book = book; }
     QNetworkReply *getFileContent(const QString &fileName);
 
+    static QString baseUrl() { return "book://data"; }
+
 protected:
     QNetworkReply *createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0);
 

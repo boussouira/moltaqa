@@ -84,6 +84,7 @@ void BookIndexEditor::writeItem(QStandardItem *item, QXmlStreamWriter *writer)
 {
     writer->writeStartElement("title");
     writer->writeAttribute("pageID", item->data(ItemRole::idRole).toString());
+    writer->writeAttribute("tagID", item->data(ItemRole::titleIdRole).toString());
     writer->writeTextElement("text", item->text());
 
     if(item->hasChildren()) {
@@ -125,18 +126,30 @@ void BookIndexEditor::addTitle()
     bool ok;
     QString text = QInputDialog::getText(this, tr("عنوان جديد"),
                                          tr("العنوان الجديد:"), QLineEdit::Normal,
-                                         m_editView->m_webView->selectedText(), &ok);
+                                         m_editView->m_webView->selectedText().simplified(), &ok);
     if(ok && text.size()) {
         QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
         QStandardItem *title = new QStandardItem(text);
+
         int pageID = (m_editView->m_currentPage ? m_editView->m_currentPage->pageID : 1);
+        QString tagID = Utils::Rand::string(6, false);
         title->setData(pageID, ItemRole::idRole);
+        title->setData(tagID, ItemRole::titleIdRole);
 
         QStandardItem *parentItem = Utils::Model::itemFromIndex(m_model, index.parent());
         int row = index.isValid() ? index.row()+1 : parentItem->rowCount();
 
         parentItem->insertRow(row, title);
         Utils::Model::selectIndex(ui->treeView, m_model->index(row, 0, index.parent()));
+
+        int count = 1;
+        QModelIndex parent = index.parent();
+        while (parent.isValid()) {
+            ++count;
+            parent = parent.parent();
+        }
+
+        m_editView->m_webView->makeSelectTextTitle(text, qBound(1, count, 6), tagID);
 
         emit indexEdited();
     }

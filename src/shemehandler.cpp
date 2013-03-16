@@ -15,7 +15,7 @@ ShemeHandler::ShemeHandler()
 
 void ShemeHandler::open(const QUrl &url)
 {
-    QString command = url.host().toLower();
+    QString command = url.queryItemValue("c").toLower();
 
     if(command == "open") {
         commandOpen(url);
@@ -26,7 +26,7 @@ void ShemeHandler::open(const QUrl &url)
 
 void ShemeHandler::commandOpen(const QUrl &url)
 {
-    QString type = url.path().remove('/').toLower();
+    QString type = url.queryItemValue("t").toLower();
     if(type == "book") {
         openBook(url);
     } else if(type == "quran") {
@@ -45,10 +45,13 @@ void ShemeHandler::openBook(const QUrl &url)
     QUrlQuery urlQuery(url);
     ml_return_on_fail2(urlQuery.hasQueryItem("id"), "MoltaqaShemeHandler::openBook url doesn't have an id query item");
 
-    int bookID = urlQuery.queryItemValue("id").toInt();
+    QString bookUUID = urlQuery.queryItemValue("id");
     int page = urlQuery.hasQueryItem("page") ? urlQuery.queryItemValue("page").toInt() : -1;
 
-    MW->bookReaderView()->openBook(bookID, page);
+    LibraryBook::Ptr book = LibraryManager::instance()->bookManager()->getLibraryBook(bookUUID);
+    ml_return_on_fail2(book, "MoltaqaShemeHandler::openBook can't find book:" << qPrintable(bookUUID));
+
+    MW->bookReaderView()->openBook(book->id, page);
 }
 
 void ShemeHandler::openQuran(const QUrl &url)
@@ -62,7 +65,7 @@ void ShemeHandler::openQuran(const QUrl &url)
     LibraryBook::Ptr quranBook = LibraryManager::instance()->bookManager()->getQuranBook();
     ml_return_on_fail2(quranBook, "MoltaqaShemeHandler::openQuran quranBook is null");
 
-    BookWidget *w = MW->bookReaderView()->openBook(quranBook->id);
+    BookViewBase *w = MW->bookReaderView()->openBook(quranBook->id);
     ml_return_on_fail2(w, "MoltaqaShemeHandler::openQuran quranBook is null");
 
     w->openSora(sora, aya);

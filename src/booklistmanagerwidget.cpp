@@ -60,7 +60,7 @@ BookListManagerWidget::~BookListManagerWidget()
 
 QString BookListManagerWidget::title()
 {
-    return tr("لائحة الكتب");
+    return tr("الأقسام");
 }
 
 void BookListManagerWidget::aboutToShow()

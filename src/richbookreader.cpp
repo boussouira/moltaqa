@@ -3,6 +3,7 @@
 #include "librarybook.h"
 #include "bookpage.h"
 #include "utils.h"
+#include "clutils.h"
 #include "librarybookmanager.h"
 #include "libraryinfo.h"
 #include "modelenums.h"
@@ -17,13 +18,10 @@ RichBookReader::RichBookReader(QObject *parent) : AbstractBookReader(parent)
 {
     m_textFormat = 0;
     m_indexModel = 0;
-    m_query = 0;
-    m_highlightPageID = -1;
     m_stopModelLoad = false;
 
     m_bookmanager = m_libraryManager->bookManager();
 
-    m_removeTashekil = Utils::Settings::get("Style/removeTashekil", false).toBool();
     m_saveReadingHistory = true;
 
     connect(this, SIGNAL(textChanged()), SLOT(updateHistory()));
@@ -37,7 +35,7 @@ RichBookReader::~RichBookReader()
 
 void RichBookReader::connected()
 {
-    m_textFormat->setData(m_bookInfo, m_currentPage);
+    m_textFormat->setData(m_book, m_currentPage);
 
     AbstractBookReader::connected();
 }
@@ -53,25 +51,14 @@ QString RichBookReader::proccessPageText(QString text)
     return text;
 }
 
-void RichBookReader::highlightPage(int pageID, CLuceneQuery *query)
-{
-    m_query = query;
-    m_highlightPageID = pageID;
-}
-
 bool RichBookReader::scrollToHighlight()
 {
-    return (!m_bookInfo->isQuran() && m_query && m_highlightPageID == m_currentPage->pageID);
+    return (!m_book->isQuran() && m_query && m_highlightPageID == m_currentPage->pageID);
 }
 
 int RichBookReader::getPageTitleID(int pageID)
 {
     return Utils::Book::getPageTitleID(m_pageTitles, pageID);
-}
-
-void RichBookReader::setRemoveTashkil(bool remove)
-{
-    m_removeTashekil = remove;
 }
 
 void RichBookReader::setSaveReadingHistory(bool save)
@@ -82,14 +69,14 @@ void RichBookReader::setSaveReadingHistory(bool save)
 QStandardItemModel *RichBookReader::indexModel()
 {
     QuaZip zip;
-    zip.setZipName(m_bookInfo->path);
+    zip.setZipName(m_book->path);
 
     if(!zip.open(QuaZip::mdUnzip)) {
         qCritical() << "AbstractBookReader::openZip open book error"
                     << zip.getZipError() << "\n"
-                    << "Book id:" << m_bookInfo->id << "\n"
-                    << "Title:" << m_bookInfo->title << "\n"
-                    << "Path:" << m_bookInfo->path;
+                    << "Book id:" << m_book->id << "\n"
+                    << "Title:" << m_book->title << "\n"
+                    << "Path:" << m_book->path;
         return 0;
     }
 
@@ -115,6 +102,7 @@ QStandardItemModel *RichBookReader::indexModel()
         if(reader.isStartElement()) {
             if(reader.name() == "title") {
                 int pageID = reader.attributes().value("pageID").toString().toInt();
+                QString tid = reader.attributes().value("tagID").toString();
 
                 if(reader.readNext() == QXmlStreamReader::Characters
                         && reader.readNext() == QXmlStreamReader::StartElement
@@ -123,6 +111,7 @@ QStandardItemModel *RichBookReader::indexModel()
                     if(reader.readNext() == QXmlStreamReader::Characters) {
                         QStandardItem *item = new QStandardItem(reader.text().toString());
                         item->setData(pageID, ItemRole::idRole);
+                        item->setData(tid, ItemRole::titleIdRole);
                         rootItem->appendRow(item);
 
                         m_pageTitles.append(pageID);
@@ -131,8 +120,8 @@ QStandardItemModel *RichBookReader::indexModel()
                     } else {
                         if(reader.tokenType() != QXmlStreamReader::EndElement) { // Ignore empty titles
                             qWarning() << "RichBookReader::indexModel Unexpected token type"
-                                       << reader.tokenString() << "- Book:" << m_bookInfo->id
-                                       << m_bookInfo->title << m_bookInfo->fileName;
+                                       << reader.tokenString() << "- Book:" << m_book->id
+                                       << m_book->title << m_book->fileName;
                         }
 
                         break;
@@ -157,7 +146,7 @@ QStandardItemModel *RichBookReader::indexModel()
 
     if(reader.hasError()) {
         qDebug() << "RichBookReader::indexModel QXmlStreamReader error:" << reader.errorString()
-                 << "- Book:" << m_bookInfo->id << m_bookInfo->title << m_bookInfo->fileName;
+                 << "- Book:" << m_book->id << m_book->title << m_book->fileName;
     }
 
     qSort(m_pageTitles);
@@ -177,7 +166,7 @@ void RichBookReader::updateHistory()
     if(m_saveReadingHistory) {
         QtConcurrent::run(m_bookmanager,
                           &LibraryBookManager::addBookHistory,
-                          m_bookInfo->id,
+                          m_book->id,
                           m_currentPage->pageID);
     }
 }

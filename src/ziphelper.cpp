@@ -3,8 +3,158 @@
 #include "mainwindow.h"
 #include "libraryinfo.h"
 #include "utils.h"
+#include "ziputils.h"
 #include "librarymanager.h"
 #include "libraryinfo.h"
+
+/* Simple zip writer */
+
+SimpleZipWriter::SimpleZipWriter()
+{
+}
+
+SimpleZipWriter::~SimpleZipWriter()
+{
+    if(m_removeZipFile) {
+        if(m_zip.isOpen())
+            m_zip.close();
+
+        if(QFile::exists(m_zipPath)) {
+            ml_warn_on_fail(QFile::remove(m_zipPath),
+                            "SimpleZipWriter: Can't remove temp zip file" << m_zipPath);
+        }
+    }
+}
+
+bool SimpleZipWriter::open(QString zipFilePath)
+{
+    m_zipPath = zipFilePath.size()
+            ? zipFilePath
+            : Utils::Rand::fileName(LibraryManager::instance()->libraryInfo()->tempDir(),
+                                    true, "temp_zip_", "zip");
+
+    m_zip.setZipName(m_zipPath);
+    if(!m_zip.open(QuaZip::mdCreate)) {
+        qWarning() << "SimpleZipWriter::open Can't creat zip file:"
+                   << m_zipPath << "error:" << m_zip.getZipError();
+
+        return false;
+    }
+
+    m_removeZipFile = zipFilePath.isEmpty();
+
+    return true;
+}
+
+bool SimpleZipWriter::close()
+{
+    m_zip.close();
+
+    return !m_zip.getZipError();
+}
+
+void SimpleZipWriter::add(const QString &fileName, const QByteArray &data)
+{
+    QuaZipFile outFile(&m_zip);
+    ml_return_on_fail2(outFile.open(QIODevice::WriteOnly, QuaZipNewInfo(fileName)),
+                           "SimpleZipWriter::add targetFile.open error" << outFile.getZipError());
+
+    outFile.write(data);
+
+    outFile.close();
+}
+
+void SimpleZipWriter::addFromFile(const QString &fileName, const QString &filePath)
+{
+    QFile inFile;
+    inFile.setFileName(filePath);
+    if(!inFile.open(QIODevice::ReadOnly)) {
+        qWarning() << "SimpleZipWriter::addFromFile can't open file for reading:"
+                   << inFile.errorString();
+        return;
+    }
+
+    QuaZipFile outFile(&m_zip);
+    ml_return_on_fail2(outFile.open(QIODevice::WriteOnly, QuaZipNewInfo(fileName)),
+                           "SimpleZipWriter::addFromFile targetFile.open error" << outFile.getZipError());
+
+    Utils::Files::copyData(inFile, outFile);
+
+    outFile.close();
+    inFile.close();
+}
+
+void SimpleZipWriter::addFromZip(const QString &filePath)
+{
+    Utils::Zip::copyFromZip(filePath, &m_zip);
+}
+
+/* Zip writer manager */
+ZipWriterManager::ZipWriterManager()
+{
+    m_haveBottomZip = false;
+}
+
+ZipWriterManager::~ZipWriterManager()
+{
+}
+
+bool ZipWriterManager::open(QString zipFilePath)
+{
+    return m_topdZip.open(zipFilePath);
+}
+
+bool ZipWriterManager::close()
+{
+    if(m_haveBottomZip) {
+        ml_return_val_on_fail(m_bottomZip.close(), false);
+        m_haveBottomZip = false;
+
+        m_topdZip.addFromZip(m_bottomZip.zipPath());
+    }
+
+    return m_topdZip.close();
+}
+
+void ZipWriterManager::add(const QString &fileName, const QByteArray &data, ZipWriterManager::InsertOrder order)
+{
+    if(order == ZipWriterManager::AppendFile) {
+        openBottomZip();
+        m_bottomZip.add(fileName, data);
+    } else {
+        m_topdZip.add(fileName, data);
+    }
+}
+
+void ZipWriterManager::addFromFile(const QString &fileName, const QString &filePath, ZipWriterManager::InsertOrder order)
+{
+    if(order == ZipWriterManager::AppendFile) {
+        openBottomZip();
+        m_bottomZip.addFromFile(fileName, filePath);
+    } else {
+        m_topdZip.addFromFile(fileName, filePath);
+    }
+}
+
+void ZipWriterManager::addFromZip(const QString &filePath, ZipWriterManager::InsertOrder order)
+{
+    if(order == ZipWriterManager::AppendFile) {
+        openBottomZip();
+        m_bottomZip.addFromZip(filePath);
+    } else {
+        m_topdZip.addFromZip(filePath);
+    }
+}
+
+void ZipWriterManager::openBottomZip()
+{
+    if(!m_haveBottomZip) {
+        m_bottomZip.open();
+        m_haveBottomZip = true;
+    }
+}
+
+/* Zip helper */
 
 ZipHelper::ZipHelper()
 {
@@ -12,10 +162,16 @@ ZipHelper::ZipHelper()
 
 ZipHelper::~ZipHelper()
 {
-    m_remover.removeDatabase(m_db);
+    QString db = m_db.connectionName();
+    m_query.clear();
+    m_db = QSqlDatabase();
 
-    if(QFile::exists(m_dbPath))
-        QFile::remove(m_dbPath);
+    QSqlDatabase::removeDatabase(db);
+
+    if(QFile::exists(m_dbPath)) {
+        ml_warn_on_fail(QFile::remove(m_dbPath),
+                        "ZipHelper: Can't remove temp file:" << m_dbPath);
+    }
 }
 
 void ZipHelper::open()
@@ -26,7 +182,7 @@ void ZipHelper::open()
 void ZipHelper::creatDB()
 {
     m_dbPath = Utils::Rand::fileName(LibraryManager::instance()->libraryInfo()->tempDir(),
-                                     true, "temp_zip_", "db");
+                                     true, "temp_db_", "db");
 
     QString conn = "ZipHelper." + QFileInfo(m_dbPath).baseName();
     while(m_db.contains(conn))
@@ -160,6 +316,29 @@ void ZipHelper::addFromZip(const QString &filePath)
     m_db.commit();
 }
 
+void ZipHelper::addFromDomDocument(const QString &filename, QDomDocument &doc, ZipHelper::InsertOrder order)
+{
+    QString domPath = Utils::Rand::fileName(MW->libraryInfo()->tempDir(),
+                                            true, "temp_dom_", "xml");
+
+    QFile file;
+    file.setFileName(domPath);
+    if(!file.open(QFile::WriteOnly | QFile::Truncate)) {
+        qWarning() << "ZipHelper::addFromDomDocument can't open file for writing:"
+                   << file.errorString();
+        return;
+    }
+
+    QTextStream out(&file);
+    out.setCodec("utf-8");
+
+    doc.save(out, 4);
+
+    addFromFile(filename, domPath, order);
+
+    QFile::remove(domPath);
+}
+
 void ZipHelper::replace(const QString &filename, const QString &data, ZipHelper::InsertOrder order)
 {
     remove(filename);
@@ -211,10 +390,11 @@ void ZipHelper::remove(const QString &filename)
     q.exec(m_query);
 }
 
-QString ZipHelper::zip()
+QString ZipHelper::zip(QString zipFilePath)
 {
-    QString zipPath = Utils::Rand::fileName(MW->libraryInfo()->tempDir(),
-                                            true, "temp_zip_", "zip");
+    QString zipPath = zipFilePath.size() ? zipFilePath
+                                         : Utils::Rand::fileName(MW->libraryInfo()->tempDir(),
+                                                                 true, "temp_zip_", "zip");
 
     QuaZip zip;
     zip.setZipName(zipPath);

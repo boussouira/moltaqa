@@ -64,7 +64,9 @@ public:
     FavouritesManager *favouritesManager();
     SearchManager *searchManager();
 
-    static const int HELP_BOOK_ID = 101;
+    static int helpBookID() { return 101; }
+    static QString helpBookUUID() { return "3491b579-a5e6-4eb7-b5b3-08a66f361849"; }
+
     void addHelpBook();
 
 protected:

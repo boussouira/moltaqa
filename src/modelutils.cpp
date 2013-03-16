@@ -108,7 +108,9 @@ void selectIndex(QTreeView *tree, const QModelIndex &index)
     if(index.isValid()) {
         tree->scrollTo(index, QAbstractItemView::EnsureVisible);
         tree->selectionModel()->setCurrentIndex(index,
-                                                QItemSelectionModel::SelectCurrent|QItemSelectionModel::Rows);
+                                                QItemSelectionModel::Clear
+                                                |QItemSelectionModel::SelectCurrent
+                                                |QItemSelectionModel::Rows);
     }
 }
 

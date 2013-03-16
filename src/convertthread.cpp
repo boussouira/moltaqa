@@ -11,6 +11,7 @@
 #include "xmldomhelper.h"
 #include "xmlutils.h"
 #include "libraryinfo.h"
+#include "bookutils.h"
 
 #ifdef USE_MDBTOOLS
 #include "mdbconverter.h"
@@ -37,45 +38,42 @@ void ConvertThread::run()
     QTime time;
     time.start();
 
-    m_convertedFiles = 0;
+    m_convertedFiles = m_files.size();
 
-    foreach(QString file, m_files){
-        try {
-            QFileInfo info(file);
-            QString fileType = info.suffix().toLower();
-            if(fileType == "bok")
-                convertShamelaBook(file);
-            else if(fileType == "mlp")
-                convertMoltaqaPackage(file);
-            else
-                qWarning() << "ConvertThread: File" << info.fileName() << "not handeled";
-
-            emit setProgress(++m_convertedFiles);
-
-#ifdef USE_MDBTOOLS
-            if(m_tempDB.size()) {
-                QFile::remove(m_tempDB);
-                m_tempDB.clear();
-            }
-#endif
-        } catch(BookException &e) {
-             e.print();
-        }
+    foreach(QString file, m_files) {
+        convert(file);
     }
 
     m_convertTime = time.elapsed();
 }
 
+void ConvertThread::convert(const QString &path)
+{
+    try {
+        QFileInfo info(path);
+        QString fileType = info.suffix().toLower();
+        if(fileType == "bok")
+            convertShamelaBook(path);
+        else if(fileType == "mlp")
+            convertMoltaqaPackage(path);
+        else
+            qWarning() << "ConvertThread: File" << info.fileName() << "not handeled";
+
+
+    } catch(BookException &e) {
+         e.print();
+    }
+}
+
 void ConvertThread::convertShamelaBook(const QString &path)
 {
-    DatabaseRemover remover;
-
 #ifdef USE_MDBTOOLS
     MdbConverter mdb;
-    m_tempDB = mdb.exportFromMdb(path);
+    QString tempFile = mdb.exportFromMdb(path);
 
-    QSqlDatabase bookDB = QSqlDatabase::addDatabase("QSQLITE", "mdb");
-    bookDB.setDatabaseName(m_tempDB);
+    QString conn = "mdb_" + Utils::Rand::string(10, false);
+    QSqlDatabase bookDB = QSqlDatabase::addDatabase("QSQLITE", conn);
+    bookDB.setDatabaseName(tempFile);
 #else
     QSqlDatabase bookDB = QSqlDatabase::addDatabase("QODBC", "mdb");
     bookDB.setDatabaseName(QString("DRIVER={Microsoft Access Driver (*.mdb)};FIL={MS Access};DBQ=%1").arg(path));
@@ -87,6 +85,15 @@ void ConvertThread::convertShamelaBook(const QString &path)
     }
 
     QSqlQuery bookQuery(bookDB);
+
+    bookQuery.prepare("SELECT COUNT(*) FROM Main");
+    ml_throw_on_query_exec_fail(bookQuery);
+
+    if(bookQuery.next()) {
+        int booksCount = bookQuery.value(0).toInt();
+        if(booksCount > 1)
+            emit addBooksToProgress(booksCount-1);
+    }
 
     bookQuery.prepare("SELECT * FROM Main");
     ml_throw_on_query_exec_fail(bookQuery);
@@ -133,87 +140,59 @@ void ConvertThread::convertShamelaBook(const QString &path)
         m_model->appendNode(node);
     }
 
-    remover.removeDatabase("mdb");
+    Utils::Sql::removeDatabase(bookDB);
+
+#ifdef USE_MDBTOOLS
+        if(tempFile.size()) {
+            QFile::remove(tempFile);
+            tempFile.clear();
+        }
+#endif
 }
 
 void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDatabase &bookDB, int bookID)
 {
-    QSqlQuery query(bookDB);
-
-#ifdef USE_MDBTOOLS
-    query.prepare(QString("SELECT * FROM b%1 LIMIT 1").arg(bookID));
-#else
-    query.prepare(QString("SELECT TOP 1 * FROM b%1").arg(bookID));
-#endif
-
-    ml_throw_on_query_exec_fail(query);
-
-    int hnoCol = query.record().indexOf("hno");
-    int ayaCol = query.record().indexOf("aya");
-    int soraCol = query.record().indexOf("sora");
-
     NewBookWriter writer;
     writer.createNewBook();
     writer.startReading();
 
-    if(ayaCol != -1 && soraCol != -1) {
-        // This is a tafessir book
-        if(hnoCol!=-1) {
-            // We have hno column
-            query.prepare(QString("SELECT id, nass, page, part, aya, sora, hno FROM b%1 ORDER BY id").arg(bookID));
-            ml_throw_on_query_exec_fail(query);
+    QString tableName = QString("b%1").arg(bookID);
+    QString queryFields = Utils::Book::shamelaQueryFields(bookDB, tableName);
 
-            while(query.next()) {
-                writer.addPage(query.value(1).toString(),
-                               query.value(0).toInt(),
-                               query.value(2).toInt(),
-                               query.value(3).toInt(),
-                               query.value(6).toInt(),
-                               query.value(4).toInt(),
-                               query.value(5).toInt());
-            }
-        } else {
-            // We don't have hno column
-            query.prepare(QString("SELECT id, nass, page, part, aya, sora FROM b%1 ORDER BY id").arg(bookID));
-            ml_throw_on_query_exec_fail(query);
+    QSqlQuery query(bookDB);
+    query.prepare(QString("SELECT %1 FROM %2 ORDER BY id")
+                  .arg(queryFields)
+                  .arg(tableName));
 
-            while(query.next()) {
-                writer.addPage(query.value(1).toString(),
-                               query.value(0).toInt(),
-                               query.value(2).toInt(),
-                               query.value(3).toInt(),
-                               -1,
-                               query.value(4).toInt(),
-                               query.value(5).toInt());
-            }
+    ml_throw_on_query_exec_fail(query);
+
+    int IdCol = query.record().indexOf("id");
+    int nassCol = query.record().indexOf("nass");
+    int pageCol = query.record().indexOf("page");
+    int partCol = query.record().indexOf("part");
+    int ayaCol = query.record().indexOf("aya");
+    int soraCol = query.record().indexOf("sora");
+    int hnoCol = query.record().indexOf("hno");
+
+    BookPage page;
+    while(query.next()) {
+        page.pageID = query.value(IdCol).toInt();
+        page.page = query.value(pageCol).toInt();
+        page.part = query.value(partCol).toInt();
+
+        if(soraCol != -1 && ayaCol != -1) {
+            page.aya = query.value(ayaCol).toInt();
+            page.sora = query.value(soraCol).toInt();
         }
-    } else {
-        // This is a simple book
-        if(hnoCol!=-1) {
-            // We have hno column
-            query.prepare(QString("SELECT id, nass, page, part, hno FROM b%1 ORDER BY id").arg(bookID));
-            ml_throw_on_query_exec_fail(query);
 
-            while(query.next()) {
-                writer.addPage(query.value(1).toString(),
-                               query.value(0).toInt(),
-                               query.value(2).toInt(),
-                               query.value(3).toInt(),
-                               query.value(4).toInt());
-            }
-        } else {
-            // We don't have hno column
-            query.prepare(QString("SELECT id, nass, page, part FROM b%1 ORDER BY id").arg(bookID));
-            ml_throw_on_query_exec_fail(query);
-
-            while(query.next()) {
-                writer.addPage(query.value(1).toString(),
-                               query.value(0).toInt(),
-                               query.value(2).toInt(),
-                               query.value(3).toInt());
-            }
+        if(hnoCol != -1) {
+            page.haddit = query.value(hnoCol).toInt();
         }
+
+        writer.addPage(&page);
+        page.clear();
     }
+
 
     query.prepare(QString("SELECT id, tit, lvl, sub FROM t%1 ORDER BY id, sub").arg(bookID));
     ml_throw_on_query_exec_fail(query);
@@ -224,9 +203,23 @@ void ConvertThread::copyBookFromShamelaBook(ImportModelNode *node, const QSqlDat
                         query.value(2).toInt());
     }
 
+    writer.writeMetaFiles();
+
+    query.prepare(QString("SELECT id, nass FROM b%1").arg(bookID));
+    ml_throw_on_query_exec_fail(query);
+
+    IdCol = query.record().indexOf("id");
+    nassCol = query.record().indexOf("nass");
+    while(query.next()) {
+        writer.addPageText(query.value(IdCol).toInt(),
+                           query.value(nassCol).toString());
+    }
+
     writer.endReading();
 
     node->path = writer.bookPath();
+
+    emit bookConverted(node->title);
 }
 
 QString ConvertThread::getBookType(const QSqlDatabase &bookDB)
@@ -284,6 +277,10 @@ void ConvertThread::convertMoltaqaPackage(const QString &path)
 
     QDomElement books = contentDom.rootElement().firstChildElement("books");
     QDomElement authors = contentDom.rootElement().firstChildElement("authors");
+
+    int booksCount = books.elementsByTagName("book").size();
+    if(booksCount > 1)
+        emit addBooksToProgress(booksCount-1);
 
     QDomElement bookElement = books.firstChildElement("book");
     while(!bookElement.isNull()) {

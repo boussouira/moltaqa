@@ -109,7 +109,7 @@ void RichTafessirReader::openQuranBook()
     ml_return_on_fail2(m_quranInfo, "RichTafessirReader::openQuranBook Quran book is null");
 
     if(!QFile::exists(m_quranInfo->path)) {
-        throw BookException(tr("لم يتم العثور على ملف الكتاب"), bookInfo()->path);
+        throw BookException(tr("لم يتم العثور على ملف الكتاب"), book()->path);
     }
 
     QuaZip quranZip;

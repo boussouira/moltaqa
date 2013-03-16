@@ -594,3 +594,49 @@ dd {
 #pageNav a {
     margin: 0 5px;
 }
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-family: inherit;
+  font-weight: bold;
+  color: inherit;
+  text-rendering: optimizelegibility;
+  border-bottom: 1px solid #CCCCCC;
+}
+
+h1 {
+  font-size: 45px;
+  line-height: 50px;
+}
+
+h2 {
+  font-size: 40px;
+  line-height: 45px;
+  margin-right: 20px;
+}
+
+
+h3 {
+  font-size: 35px;
+  line-height: 40px;
+  margin-right: 35px;
+}
+
+h4, h5, h6 {
+  line-height: 45px;
+}
+
+h4 {
+  font-size: 30px;
+  margin-right: 50px;
+}
+
+h5 {
+  font-size: 25px;
+  margin-right: 65px;
+}
+
+h6 {
+  font-size: 20px;
+  margin-right: 75px;
+}

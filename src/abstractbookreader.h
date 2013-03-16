@@ -20,6 +20,7 @@ class BookPage;
 class TextFormatter;
 class QSqlQuery;
 class BookEditor;
+class CLuceneQuery;
 
 class AbstractBookReader : public QObject
 {
@@ -31,7 +32,7 @@ public:
     void openBook();
     void setBookInfo(LibraryBook::Ptr bi);
 
-    LibraryBook::Ptr bookInfo();
+    LibraryBook::Ptr book();
     BookPage *page();
 
     /**
@@ -94,32 +95,23 @@ public:
     virtual bool hasPrev();
 
     virtual int nextPageID();
-
     virtual int prevPageID();
 
+    virtual void loadPages();
+
     int pagesCount();
+
+    void highlightPage(int pageID, CLuceneQuery *query);
+
+    void setRemoveTashkil(bool remove);
+
+    QString getFileContent(QString fileName);
+    virtual QString getPageText(int pageID);
 
     inline XmlDomHelper& pagesDom() { return m_pagesDom; }
 
     static QString getFileContent(QuaZip *zip, QString fileName);
-
-    static QString getPageText(QuaZip *zip, int pageID)
-    {
-        return getFileContent(zip, QString("pages/p%1.html").arg(pageID));
-    }
-
-    QString getFileContent(QString fileName)
-    {
-        ZipOpener opener(this);
-        return getFileContent(&m_zip, fileName);
-    }
-
-    QString getPageText(int pageID)
-    {
-        ZipOpener opener(this);
-        return getFileContent(&m_zip, QString("pages/p%1.html").arg(pageID));
-    }
-
+    static QString getPageText(QuaZip *zip, int pageID);
 
 protected:
 
@@ -130,9 +122,7 @@ protected:
       Generate book info
       */
     virtual void getBookInfo();
-
     virtual void connected();
-
     virtual void setCurrentPage(QDomElement pageNode)=0;
 
     QDomElement getPage(int pid);
@@ -142,11 +132,18 @@ protected:
 
 protected:
     friend class ZipOpener;
-    LibraryBook::Ptr m_bookInfo;
+    LibraryBook::Ptr m_book;
     BookPage *m_currentPage;
     LibraryManager *m_libraryManager;
     QuaZip m_zip;
     XmlDomHelper m_pagesDom;
+    bool m_pagesLoaded;
+    QHash<int, QByteArray> m_pages;
+
+    int m_highlightPageID;
+    CLuceneQuery *m_query;
+
+    bool m_removeTashekil;
 };
 
 #endif // ABSTRACTBOOKREADER_H

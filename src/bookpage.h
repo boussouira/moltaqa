@@ -19,6 +19,8 @@ public:
     QString text; ///< Page Text
     QString title; ///< Page title
 
+    void clear();
+
     BookPage *clone();
 };
 

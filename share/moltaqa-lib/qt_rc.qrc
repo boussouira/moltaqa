@@ -46,5 +46,7 @@
         <file>images/arrow_out.png</file>
         <file>images/show-menu.png</file>
         <file>images/document-edit.png</file>
+        <file>images/clear2.png</file>
+        <file>images/stop.png</file>
     </qresource>
 </RCC>

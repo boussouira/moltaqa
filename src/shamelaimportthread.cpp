@@ -16,11 +16,14 @@ ShamelaImportThread::ShamelaImportThread(QObject *parent) :
 
     m_stop = false;
     m_importQuran = false;
+    m_threadID = 0;
 }
 
 void ShamelaImportThread::run()
 {
-    m_threadID = (int)currentThreadId();
+    if(!m_threadID)
+        m_threadID = (int)currentThreadId();
+
     m_creator.setThreadID(m_threadID);
     m_creator.openDB();
 
@@ -44,7 +47,7 @@ void ShamelaImportThread::importBooks()
 
         try {
             m_creator.addBook(book);
-            emit bookImported(book->name);
+            emit bookImported(QString("[%2] %1").arg(book->name).arg(m_threadID));
         } catch (BookException &e) {
             e.print();
             emit BookImportError(book->name);

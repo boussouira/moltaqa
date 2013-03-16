@@ -1,5 +1,7 @@
 #include "bookutils.h"
 #include <qregexp.h>
+#include <qsqldatabase.h>
+#include <qsqlrecord.h>
 
 #define _u(x) QString::fromUtf8(x)
 
@@ -47,6 +49,21 @@ QString fixShamelaShoorts(QString text)
     text.replace(QRegExp(_u("([\\x0621-\\x06ED]\\W)E\\b")), _u("\\1""عليه الصلاة و السلام"));
 
     return text;
+}
+
+QString shamelaQueryFields(const QSqlDatabase &db, QString tableName)
+{
+    QSqlRecord rec = db.record(tableName);
+
+    QString queryFields = "id, page, part";
+
+    if(rec.indexOf("aya") != -1 && rec.indexOf("sora") != -1)
+        queryFields.append(", aya, sora");
+
+    if(rec.indexOf("hno") != -1)
+        queryFields.append(", hno");
+
+    return queryFields;
 }
 
 }

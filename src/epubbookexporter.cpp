@@ -15,7 +15,6 @@
 #include "htmlhelper.h"
 
 #include <qtextstream.h>
-#include <quuid.h>
 
 EPubBookExporter::EPubBookExporter(QObject *parent) :
     BookExporter(parent)
@@ -49,10 +48,8 @@ void EPubBookExporter::openZip()
         bookPath.replace(".epub", "_.epub");
     }
 
-    m_zip.setZipName(bookPath);
-
-    if(!m_zip.open(QuaZip::mdCreate))
-        throw BookException("EPubBookExporter::openZip Can't creat zip file", bookPath, m_zip.getZipError());
+    if(!m_zipWriter.open(bookPath))
+        throw BookException("EPubBookExporter::openZip Can't creat zip file", bookPath);
 
 
     m_genereatedPath = bookPath;
@@ -60,24 +57,22 @@ void EPubBookExporter::openZip()
 
 void EPubBookExporter::closeZip()
 {
-    m_zip.close();
-
-    if(m_zip.getZipError()!=0)
-        throw BookException("EPubBookExporter::closeZip close zip", m_zip.getZipError());
+    if(!m_zipWriter.close())
+        throw BookException("EPubBookExporter::closeZip close zip", m_zipWriter.zipPath());
 }
 
 void EPubBookExporter::init()
 {
     m_sowarPages.clear();
-    m_bookUID = QUuid::createUuid().toString().remove('{').remove('}');
+    m_bookUID = Utils::Rand::uuid();
 
-    write("mimetype", "application/epub+zip");
+    write("mimetype", "application/epub+zip", true);
     write("META-INF/container.xml", "<?xml version=\"1.0\"?>" "\n"
           "<container version=\"1.0\" xmlns=\"urn:oasis:names:tc:opendocument:xmlns:container\">" "\n"
           "    <rootfiles>" "\n"
           "        <rootfile full-path=\"OEBPS/content.opf\" media-type=\"application/oebps-package+xml\"/>" "\n"
           "    </rootfiles>" "\n"
-          "</container>");
+          "</container>", true);
 
     write("OEBPS/Styles/main.css", "body { direction: rtl; text-align: right; margin: 2%;}" "\n"
           ".soraname { border: 1px solid #CCCCCC; color: #444444; font-size: 30px; "
@@ -91,7 +86,8 @@ void EPubBookExporter::init()
           ".footn { color: green; font-size: 0.8em; padding-bottom: 4px; }" "\n"
           "sanad { color: #000080; }  mateen { color: green; }  sheer { color: #273A9D; }" "\n"
           "hr.fns { width: 20%; float: right; }" "\n"
-          ".center { text-align: center;}" "\n");
+          "div.clear { clear: both; }" "\n"
+          ".center { text-align: center;}" "\n", true);
 }
 
 void EPubBookExporter::writePages()
@@ -115,6 +111,7 @@ void EPubBookExporter::writePages()
     reader->setSaveReadingHistory(false);
     reader->setBookInfo(m_book);
     reader->openBook();
+    reader->loadPages();
 
     BookPage *page = reader->page();
 
@@ -124,7 +121,7 @@ void EPubBookExporter::writePages()
             if(page->text.isEmpty())
                 continue;
 
-            if(m_book->isQuran())
+            if(m_book->isQuran() && !m_sowarPages.contains(page->sora))
                 m_sowarPages[page->sora] = page->pageID;
 
             writePage(page);
@@ -245,7 +242,7 @@ void EPubBookExporter::writeBookInfo()
     xhtml += "\n</html>";
 
 
-    write("OEBPS/book_info.xhtml", xhtml);
+    write("OEBPS/book_info.xhtml", xhtml, true);
 }
 
 void EPubBookExporter::writeAuthorInfo()
@@ -316,7 +313,7 @@ void EPubBookExporter::writeAuthorInfo()
                 bookHtml.insertBr();
 
             bookHtml.beginHtmlTag("a", "",
-                                  QString("href='moltaqa://open/book?id=%1'").arg(books[i]->id));
+                                  QString("href='moltaqa://?c=open&amp;t=book&amp;id=%1'").arg(books[i]->uuid));
             bookHtml.append(books[i]->title);
             bookHtml.endHtmlTag();
 
@@ -343,7 +340,7 @@ void EPubBookExporter::writeAuthorInfo()
     xhtml += "\n</html>";
 
 
-    write("OEBPS/author_info.xhtml", xhtml);
+    write("OEBPS/author_info.xhtml", xhtml, true);
 }
 
 void EPubBookExporter::writeIntro()
@@ -377,112 +374,121 @@ void EPubBookExporter::writeIntro()
     xhtml += html.html();
     xhtml += "\n</html>";
 
-    write("OEBPS/Text/intro.xhtml", xhtml);
+    write("OEBPS/Text/intro.xhtml", xhtml, true);
 }
 
 void EPubBookExporter::writeContent()
 {
-    QuaZipFile file(&m_zip);
-    if(file.open(QIODevice::WriteOnly, QuaZipNewInfo("OEBPS/content.opf"))) {
-        QTextStream out(&file);
-        out.setCodec("utf-8");
+    QString filePath = Utils::Rand::fileName(m_tempDir, true, "content_", "opf");
 
-        out << "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" << "\n"
-            << "<package xmlns=\"http://www.idpf.org/2007/opf\" unique-identifier=\"BookId\" version=\"2.0\">" << "\n"
-            << "    <metadata xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:opf=\"http://www.idpf.org/2007/opf\">" << "\n"
-            << "        <dc:title>" << m_book->title << "</dc:title>" << "\n"
-            << "        <dc:creator opf:role=\"aut\">" << m_book->authorName << "</dc:creator>" << "\n"
-            << "        <dc:publisher>" << tr("مكتبة الملتقى") << "</dc:publisher>" << "\n"
-            << "        <dc:language>ar</dc:language>" << "\n"
-            << "        <dc:subject>Islam, Religion</dc:subject>" << "\n"
-            << "        <dc:identifier id=\"BookId\" opf:scheme=\"UUID\">" << m_bookUID << "</dc:identifier>" << "\n"
-            << "        <meta content=\"" << App::version() << "\" name=\"Moltaqa library\" />" << "\n"
-            << "    </metadata>" << "\n"
-            << "    <manifest>" << "\n"
-            << "        <item href=\"toc.ncx\" id=\"ncx\" media-type=\"application/x-dtbncx+xml\" />" << "\n"
-            << "        <item id=\"stylesheet\" href=\"Styles/main.css\" media-type=\"text/css\" />" << "\n"
-            << "        <item id=\"author_info\" href=\"author_info.xhtml\" media-type=\"application/xhtml+xml\" />" << "\n"
-            << "        <item id=\"book_info\" href=\"book_info.xhtml\" media-type=\"application/xhtml+xml\" />" << "\n";
+    QFile file(filePath);
+    if(!file.open(QIODevice::WriteOnly))
+        throw BookException("writePage::writeContent error when writing to OEBPS/content.opf", filePath);
 
-        if(!m_book->isQuran())
-            out << "        <item id=\"intro\" href=\"Text/intro.xhtml\" media-type=\"application/xhtml+xml\" />" << "\n";
+    QTextStream out(&file);
+    out.setCodec("utf-8");
 
-        foreach (QString p, m_page) {
-            out << "        "
-                << QString("<item id=\"%1\" href=\"Text/%1.xhtml\" media-type=\"application/xhtml+xml\" />").arg(p)
-                << "\n";
-        }
+    out << "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" << "\n"
+        << "<package xmlns=\"http://www.idpf.org/2007/opf\" unique-identifier=\"BookId\" version=\"2.0\">" << "\n"
+        << "    <metadata xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:opf=\"http://www.idpf.org/2007/opf\">" << "\n"
+        << "        <dc:title>" << m_book->title << "</dc:title>" << "\n"
+        << "        <dc:creator opf:role=\"aut\">" << m_book->authorName << "</dc:creator>" << "\n"
+        << "        <dc:publisher>" << tr("مكتبة الملتقى") << "</dc:publisher>" << "\n"
+        << "        <dc:language>ar</dc:language>" << "\n"
+        << "        <dc:subject>Islam, Religion</dc:subject>" << "\n"
+        << "        <dc:identifier id=\"BookId\" opf:scheme=\"UUID\">" << m_bookUID << "</dc:identifier>" << "\n"
+        << "        <meta content=\"" << App::version() << "\" name=\"Moltaqa library\" />" << "\n"
+        << "    </metadata>" << "\n"
+        << "    <manifest>" << "\n"
+        << "        <item href=\"toc.ncx\" id=\"ncx\" media-type=\"application/x-dtbncx+xml\" />" << "\n"
+        << "        <item id=\"stylesheet\" href=\"Styles/main.css\" media-type=\"text/css\" />" << "\n"
+        << "        <item id=\"author_info\" href=\"author_info.xhtml\" media-type=\"application/xhtml+xml\" />" << "\n"
+        << "        <item id=\"book_info\" href=\"book_info.xhtml\" media-type=\"application/xhtml+xml\" />" << "\n";
 
-        out << "    </manifest>" << "\n"
-            << "    <spine toc=\"ncx\">" << "\n";
+    if(!m_book->isQuran())
+        out << "        <item id=\"intro\" href=\"Text/intro.xhtml\" media-type=\"application/xhtml+xml\" />" << "\n";
 
-        if(!m_book->isQuran())
-            out << "        <itemref idref=\"intro\" />" << "\n";
-
-        foreach (QString p, m_page) {
-            out << "        <itemref idref=\"" << p << "\" />" << "\n";
-        }
-
-        out << "    </spine>" << "\n"
-            << "    <guide>" << "\n"
-            << "        <reference type=\"bibliography\" title=\"Author info\" href=\"Text/author_info.xhtml\" />" << "\n"
-            << "        <reference type=\"title-page\" title=\"Book info\" href=\"Text/book_info.xhtml\" />" << "\n"
-            << "    </guide>" << "\n"
-            << "</package>";
-
-        out.flush();
-        file.close();
-    } else {
-        throw BookException("writePage::writeContent error when writing to OEBPS/content.opf", file.getZipError());
+    foreach (QString p, m_page) {
+        out << "        "
+            << QString("<item id=\"%1\" href=\"Text/%1.xhtml\" media-type=\"application/xhtml+xml\" />").arg(p)
+            << "\n";
     }
+
+    out << "    </manifest>" << "\n"
+        << "    <spine toc=\"ncx\">" << "\n";
+
+    if(!m_book->isQuran())
+        out << "        <itemref idref=\"intro\" />" << "\n";
+
+    foreach (QString p, m_page) {
+        out << "        <itemref idref=\"" << p << "\" />" << "\n";
+    }
+
+    out << "    </spine>" << "\n"
+        << "    <guide>" << "\n"
+        << "        <reference type=\"bibliography\" title=\"Author info\" href=\"Text/author_info.xhtml\" />" << "\n"
+        << "        <reference type=\"title-page\" title=\"Book info\" href=\"Text/book_info.xhtml\" />" << "\n"
+        << "    </guide>" << "\n"
+        << "</package>";
+
+    out.flush();
+    file.close();
+
+    m_zipWriter.addFromFile("OEBPS/content.opf", filePath, ZipWriterManager::PrependFile);
+
+    QFile::remove(filePath);
 }
 
 void EPubBookExporter::writeTOC()
 {
-    QuaZipFile file(&m_zip);
-    if(file.open(QIODevice::WriteOnly, QuaZipNewInfo("OEBPS/toc.ncx"))) {
-        QTextStream out(&file);
-        out.setCodec("utf-8");
+    QString filePath = Utils::Rand::fileName(m_tempDir, true, "toc_", "ncx");
 
-        out << "<?xml version=\"1.0\" encoding=\"utf-8\"?>" << "\n"
-            << "<!DOCTYPE ncx PUBLIC \"-//NISO//DTD ncx 2005-1//EN\" " << "\n"
-            << "   \"http://www.daisy.org/z3986/2005/ncx-2005-1.dtd\">" << "\n"
-            << "<ncx xmlns=\"http://www.daisy.org/z3986/2005/ncx/\" version=\"2005-1\">" << "\n"
-            << "<head>" << "\n"
-            << "   <meta name=\"dtb:uid\" content=\"" << m_bookUID << "\" />" << "\n"
-            << "   <meta name=\"dtb:depth\" content=\"1\" />" << "\n"
-            << "   <meta name=\"dtb:totalPageCount\" content=\"0\" />" << "\n"
-            << "   <meta name=\"dtb:maxPageNumber\" content=\"0\" />" << "\n"
-            << "</head>" << "\n"
-            << "<docTitle>" << "\n"
-            << "   <text>" << m_book->title << "</text>" << "\n"
-            << "</docTitle>" << "\n"
-            << "<docAuthor>" << "\n"
-            << "   <text>" << m_book->authorName << "</text>" << "\n"
-            << "</docAuthor>" << "\n"
+    QFile file(filePath);
+    if(!file.open(QIODevice::WriteOnly))
+        throw BookException("writePage::writeTOC error when writing to OEBPS/toc.ncx", filePath);
 
-            << "<navMap>" << "\n";
+    QTextStream out(&file);
+    out.setCodec("utf-8");
 
-        m_titleCount = 0;
+    out << "<?xml version=\"1.0\" encoding=\"utf-8\"?>" << "\n"
+        << "<!DOCTYPE ncx PUBLIC \"-//NISO//DTD ncx 2005-1//EN\" " << "\n"
+        << "   \"http://www.daisy.org/z3986/2005/ncx-2005-1.dtd\">" << "\n"
+        << "<ncx xmlns=\"http://www.daisy.org/z3986/2005/ncx/\" version=\"2005-1\">" << "\n"
+        << "<head>" << "\n"
+        << "   <meta name=\"dtb:uid\" content=\"" << m_bookUID << "\" />" << "\n"
+        << "   <meta name=\"dtb:depth\" content=\"1\" />" << "\n"
+        << "   <meta name=\"dtb:totalPageCount\" content=\"0\" />" << "\n"
+        << "   <meta name=\"dtb:maxPageNumber\" content=\"0\" />" << "\n"
+        << "</head>" << "\n"
+        << "<docTitle>" << "\n"
+        << "   <text>" << m_book->title << "</text>" << "\n"
+        << "</docTitle>" << "\n"
+        << "<docAuthor>" << "\n"
+        << "   <text>" << m_book->authorName << "</text>" << "\n"
+        << "</docAuthor>" << "\n"
 
-        if(m_book->isQuran())
-            writeQuranBookTOC(out);
-        else
-            writeSimpleBookTOC(out);
+        << "<navMap>" << "\n";
 
-        out << "</navMap>" << "\n"
-            << "</ncx>";
+    m_titleCount = 0;
 
-        out.flush();
-        file.close();
-    } else {
-        throw BookException("EPubBookExporter::writeTOC error when writing to OEBPS/toc.ncx", file.getZipError());
-    }
+    if(m_book->isQuran())
+        writeQuranBookTOC(out);
+    else
+        writeSimpleBookTOC(out);
+
+    out << "</navMap>" << "\n"
+        << "</ncx>";
+
+    out.flush();
+    file.close();
+
+    m_zipWriter.addFromFile("OEBPS/toc.ncx", filePath, ZipWriterManager::PrependFile);
+
+    QFile::remove(filePath);
 }
 
 void EPubBookExporter::writeSimpleBookTOC(QTextStream &out)
 {
-
     QuaZip bookZip(m_book->path);
     if(!bookZip.open(QuaZip::mdUnzip)) {
         throw BookException("EPubBookExporter::writeTOC error when book",
@@ -515,9 +521,15 @@ void EPubBookExporter::writeQuranBookTOC(QTextStream &out)
         if(sora) {
             m_titleCount++;
 
+            int k = i;
+            int pageNum = m_sowarPages[k];
+            while(!pageNum && k >= 0) {
+                pageNum = m_sowarPages[--k];
+            }
+
             out << "<navPoint id=\"nav_" << m_titleCount << "\" playOrder=\"" << m_titleCount << "\">" << "\n";
             out << "<navLabel><text>" << sora->name << "</text></navLabel>" << "\n";
-            out << "<content src=\"Text/page_" << m_sowarPages[i]+1 << ".xhtml\"/>" << "\n";
+            out << "<content src=\"Text/page_" << pageNum << ".xhtml\"/>" << "\n";
             out << "</navPoint>" << "\n";
         }
     }
@@ -545,67 +557,49 @@ void EPubBookExporter::writeTocItem(QDomElement &element, QTextStream &out)
     out << "</navPoint>" << "\n";
 }
 
-void EPubBookExporter::write(const QString &fileName, const QString &data)
+void EPubBookExporter::write(const QString &fileName, const QString &data, bool prepend)
 {
-    QuaZipFile file(&m_zip);
-    if(file.open(QIODevice::WriteOnly, QuaZipNewInfo(fileName))) {
-        QTextStream out(&file);
-        out.setCodec("utf-8");
-        out << data;
-        out.flush();
-
-        file.close();
-    } else {
-        throw BookException("EPubBookExporter::write error when writing to info.xml", file.getZipError());
-    }
+    ZipWriterManager::InsertOrder order = (prepend ? ZipWriterManager::PrependFile : ZipWriterManager::AppendFile);
+    m_zipWriter.add(fileName, data.toUtf8(), order);
 }
 
 void EPubBookExporter::writePage(BookPage *page)
 {
     QString fileName = QString("page_%1").arg(page->pageID);
-    QuaZipFile file(&m_zip);
-    if(file.open(QIODevice::WriteOnly, QuaZipNewInfo("OEBPS/Text/" + fileName + ".xhtml"))) {
-        QTextStream out(&file);
-        out.setCodec("utf-8");
+    QString out;
 
-        out << "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?>" << "\n";
-        out << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" " << "\n"
-            << "    \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">" << "\n\n";
+    out += "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?>" "\n";
+    out += "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" " "\n"
+            "    \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">" "\n\n";
 
-        out << "<html xmlns=\"http://www.w3.org/1999/xhtml\">" << "\n";
+    out += "<html xmlns=\"http://www.w3.org/1999/xhtml\">" "\n";
 
-        out << "<head>" << "\n";
-        out << "<title></title>" << "\n";
-        out << "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>" << "\n";
-        out << "<link href=\"../Styles/main.css\" rel=\"stylesheet\" type=\"text/css\" />" << "\n";
-        out << "</head>" << "\n\n";
+    out += "<head>" "\n";
+    out += "<title></title>" "\n";
+    out += "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>" "\n";
+    out += "<link href=\"../Styles/main.css\" rel=\"stylesheet\" type=\"text/css\" />" "\n";
+    out += "</head>" "\n\n";
 
-        out << "<body>" << "\n";
+    out += "<body>" "\n";
 
-        if(!page->text.contains("<div class=\"clear\"></div>"))
-            page->text.replace("<div class=\"clear\">", "<div class=\"clear\"></div>");
-
-        if(page->text.contains("<footnote>")) {
-            page->text.replace("</footnote>", "</div>");
-            page->text.replace("<footnote>", "<div class=\"footnote\">");
-        }
-
-        out << page->text << "\n";
-
-        if(m_addPageNumber && !m_book->isQuran()) {
-            out << "<p class=\"center\">"
-                << tr("الصفحة: ") << page->page << " - "
-                << tr("الجزء: ") << page->part
-                << "</p>" << "\n";
-        }
-
-        out << "</body>\n</html>";
-
-        out.flush();
-        file.close();
-
-        m_page.append(fileName);
-    } else {
-        throw BookException("writePage::write error when writing to info.xml", file.getZipError());
+    if(page->text.contains("<footnote>")) {
+        page->text.replace("</footnote>", "</div>");
+        page->text.replace("<footnote>", "<div class=\"footnote\">");
     }
+
+    out += page->text;
+
+    if(m_addPageNumber && !m_book->isQuran()
+            && page->page && page->part) {
+        out += "\n" "<p class=\"center\">";
+        out += tr("الصفحة: %1").arg(page->page);
+        out += " - ";
+        out += tr("الجزء: %1").arg(page->part);
+        out += "</p>" "\n";
+    }
+
+    out += "\n" "</body>\n</html>";
+
+    write(QString("OEBPS/Text/%1.xhtml").arg(fileName), out, false);
+    m_page.append(fileName);
 }

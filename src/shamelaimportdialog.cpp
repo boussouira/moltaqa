@@ -375,6 +375,7 @@ void ShamelaImportDialog::startImporting()
         m_importThreads.append(thread);
 
         thread->setImportQuran(addQuarn);
+        thread->setThreadId(i+1);
         thread->start();
 
         addQuarn = false;

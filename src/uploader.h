@@ -7,8 +7,6 @@
 #include <qnetworkreply.h>
 #include <qurl.h>
 
-#include "upfile.h"
-
 class UpLoader : public QObject
 {
     Q_OBJECT
@@ -34,7 +32,7 @@ signals:
     void uploadSuccess();
 
 private:
-    UpFile *upf;
+    QHttpMultiPart *m_multiPart;
     QNetworkAccessManager *manager;
     QNetworkReply *reply;
     QString m_uploadUrl;

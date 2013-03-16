@@ -8,6 +8,15 @@
 class QSqlDatabase;
 class QSqlQuery;
 
+namespace Utils {
+namespace Sql {
+
+void removeDatabase(QSqlDatabase &db);
+
+}
+}
+
+
 class DatabaseRemover
 {
 public:

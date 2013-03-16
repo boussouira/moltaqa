@@ -43,7 +43,7 @@ protected:
 
 public slots:
     void setText(const QString &text);
-    void scrollToElement(QString elementQuery);
+    void scrollToElement(QString elementQuery, bool center=true);
     void scrollToPosition(const QPoint &pos, int duration=1000);
     void pageDown();
     void pageUp();
