@@ -7,17 +7,6 @@ TafessirTextFormat::TafessirTextFormat()
     m_cssID = "simpleBook";
 }
 
-void TafessirTextFormat::insertSoraName(const QString &pSoraName)
-{
-    QString soraName = tr("سورة %1").arg(pSoraName);
-    m_htmlHelper.insertDiv(soraName, "soraname");
-}
-
-void TafessirTextFormat::insertBassemala()
-{
-    m_htmlHelper.insertDiv(tr("بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ"), ".bassemala");
-}
-
 void TafessirTextFormat::insertAyaText(const QString &pAyaText, int pAyaNumber, int pSoraNumber)
 {
     m_htmlHelper.beginSpan(".aya");
