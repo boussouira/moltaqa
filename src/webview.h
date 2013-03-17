@@ -59,6 +59,9 @@ protected slots:
     void searchInLibrary();
     void copyWithRefer();
 
+    void downloadRequested(const QNetworkRequest &request);
+    void downloadingFileFinished();
+
 signals:
     void textChanged();
     void nextPage();

@@ -13,6 +13,9 @@
 #include <qdesktopservices.h>
 #include <qclipboard.h>
 #include <qapplication.h>
+#include <qnetworkrequest.h>
+#include <qfiledialog.h>
+#include <qnetworkreply.h>
 
 WebView::WebView(QWidget *parent) :
     QWebView(parent)
@@ -36,6 +39,8 @@ WebView::WebView(QWidget *parent) :
     settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
 #endif
 
+    connect(m_page, SIGNAL(downloadRequested(QNetworkRequest)),
+            SLOT(downloadRequested(QNetworkRequest)));
     connect(m_page, SIGNAL(openMoltaqaLink(QString)), SLOT(openMoltaqaLink(QString)));
     connect(m_frame, SIGNAL(contentsSizeChanged(QSize)), m_animation, SLOT(stop()));
     connect(m_frame, SIGNAL(javaScriptWindowObjectCleared()),
@@ -325,6 +330,48 @@ void WebView::copyWithRefer()
     clipboard->setText(referText);
 }
 
+void WebView::downloadRequested(const QNetworkRequest &request)
+{
+    // First prompted with a file dialog to make sure
+    // they want the file and to select a download
+    // location and name.
+    QString defaultFileName = QFileInfo(request.url().toString()).fileName();
+    QString fileName = QFileDialog::getSaveFileName(this,
+                                                    tr("حفظ ملف"),
+                                                    defaultFileName);
+    if (fileName.isEmpty())
+        return;
+
+    // Construct a new request that stores the
+    // file name that should be used when the
+    // download is complete
+    QNetworkRequest newRequest = request;
+    newRequest.setAttribute(QNetworkRequest::User, fileName);
+
+    // Ask the network manager to download
+    // the file and connect to the progress
+    // and finished signals.
+    QNetworkReply *reply = page()->networkAccessManager()->get(newRequest);
+
+    connect(reply, SIGNAL(finished()), SLOT(downloadingFileFinished()));
+}
+
+void WebView::downloadingFileFinished()
+{
+    QNetworkReply *replay = qobject_cast<QNetworkReply*>(sender());
+    ml_return_on_fail(replay);
+
+    QNetworkRequest request = replay->request();
+    QString fileName = request.attribute(QNetworkRequest::User).toString();
+    ml_return_on_fail(fileName.size());
+
+    QFile file(fileName);
+    ml_return_on_fail2(file.open(QFile::WriteOnly),
+                       "WebView::downloadingFileFinished Can't open file for writing:" << file.errorString());
+
+    Utils::Files::copyData((*replay), file);
+}
+
 void WebView::wheelEvent(QWheelEvent *event)
 {
     if(m_animation->state() == QPropertyAnimation::Running)
@@ -359,6 +406,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     QWebHitTestResult r = page()->mainFrame()->hitTestContent(event->pos());
     if (!r.linkUrl().isEmpty()) {
         if(r.linkUrl().scheme() != "moltaqa") {
+            menu.addAction(pageAction(QWebPage::OpenLinkInNewWindow));
             menu.addAction(tr("فتح الرابط في المتصفح"), this, SLOT(openLinkInBrowser()));
             menu.addSeparator();
         }

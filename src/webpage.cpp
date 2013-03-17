@@ -5,6 +5,8 @@
 #include <qdebug.h>
 #include <qnetworkrequest.h>
 #include <qwebelement.h>
+#include <qfiledialog.h>
+#include <qboxlayout.h>
 
 WebPage::WebPage(WebView *parent) :
     QWebPage(parent)
@@ -58,4 +60,37 @@ bool WebPage::acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &r
     }
 
     return QWebPage::acceptNavigationRequest(frame, request, type);
+}
+
+QString WebPage::chooseFile(QWebFrame *parentFrame, const QString &suggestedFile)
+{
+    Q_UNUSED(parentFrame);
+
+    QString fileName = QFileDialog::getOpenFileName(0, tr("Open File"),
+                                                    suggestedFile,
+                                                    tr("All files (*.*)"));
+
+    return fileName;
+}
+
+QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
+{
+    QWidget *widget = new QWidget(0);
+    widget->setWindowTitle(tr("جاري التحميل..."));
+
+    if(type == WebModalDialog)
+        widget->setWindowModality(Qt::ApplicationModal);
+
+    WebView *webView = new WebView(widget);
+
+    QHBoxLayout *layout = new QHBoxLayout;
+    layout->setMargin(0);
+    layout->addWidget(webView);
+
+    widget->setLayout(layout);
+    widget->show();
+
+    connect(webView, SIGNAL(titleChanged(QString)), widget, SLOT(setWindowTitle(QString)));
+
+    return webView->page();
 }

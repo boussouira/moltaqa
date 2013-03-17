@@ -18,6 +18,8 @@ public:
 protected:
     void javaScriptConsoleMessage ( const QString & message, int lineNumber, const QString & sourceID );
     bool acceptNavigationRequest(QWebFrame *frame, const QNetworkRequest &request, NavigationType type);
+    QString chooseFile(QWebFrame * parentFrame, const QString &suggestedFile);
+    QWebPage *createWindow(WebWindowType type);
 
 signals:
     void openMoltaqaLink(const QString &url);
