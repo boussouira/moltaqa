@@ -124,6 +124,7 @@ void SettingsDialog::loadSettings()
     ui->checkSingleIndexClick->setChecked(settings.value("singleIndexClick", false).toBool());
     ui->checkRemoveTashekil->setChecked(settings.value("removeTashekil", false).toBool());
     ui->checkShowQuranFirst->setChecked(settings.value("showQuranFirst", true).toBool());
+    ui->checkDrawAyatNumber->setChecked(settings.value("drawAyatNumber", true).toBool());
 
     loadSearchFields();
 }
@@ -309,6 +310,7 @@ void SettingsDialog::saveSettings()
     saveSetting(settings, "Style", "singleIndexClick", ui->checkSingleIndexClick->isChecked(), true);
     saveSetting(settings, "Style", "removeTashekil", ui->checkRemoveTashekil->isChecked(), true);
     saveSetting(settings, "Style", "showQuranFirst", ui->checkShowQuranFirst->isChecked(), true);
+    saveSetting(settings, "Style", "drawAyatNumber", ui->checkDrawAyatNumber->isChecked(), true);
 
 
     QWebSettings *webSettings = QWebSettings::globalSettings();

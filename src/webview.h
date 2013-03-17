@@ -58,6 +58,7 @@ protected slots:
     void searchInQuran();
     void searchInLibrary();
     void copyWithRefer();
+    void copyHtml();
 
     void downloadRequested(const QNetworkRequest &request);
     void downloadingFileFinished();

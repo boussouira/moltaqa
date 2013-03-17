@@ -3,6 +3,7 @@
 #include "quazip/quazipfile.h"
 #include "utils.h"
 #include "mimeutils.h"
+#include "stringutils.h"
 
 #include <qnetworkrequest.h>
 #include <QNetworkAccessManager>
@@ -11,7 +12,11 @@
 #include <QTimer>
 #include <qfile.h>
 #include <qwebelement.h>
-
+#include <qimage.h>
+#include <qpainter.h>
+#include <qsettings.h>
+#include <qbuffer.h>
+#include "qurantextformat.h"
 
 struct QCustomNetworkReplyPrivate
 {
@@ -168,20 +173,51 @@ QNetworkReply *WebPageNAM::createRequest(Operation op, const QNetworkRequest &re
     if(req.url().scheme() == "book"
             && req.url().toString() != baseUrl()) {
 
-        QString filename = req.url().toString();
+        if(req.url().host() == "quran") {
+            QString ayaNumber = req.url().toString();
 
-        if(filename.startsWith(baseUrl()))
-            filename.remove(0, baseUrl().size() + 1); // Add 1 for the '/'
-        else if(filename.startsWith("book://"))
-            filename.remove(0, QString("book://").size());
+            int slashOffset = ayaNumber.lastIndexOf('/');
+            int len = ayaNumber.lastIndexOf('.')-slashOffset-1;
+
+            bool ok = false;
+            int aya = ayaNumber.mid(slashOffset+1, len).toInt(&ok);
+
+            if(!ok) {
+                qWarning() << "WebPageNAM::createRequest Can't get aya number from"
+                           << req.url().toString();
+                aya = 1;
+            }
+
+            QByteArray imageData = QuranTextFormat::getAyaNumberImage(aya, ":/images/aya_background.png");
+
+            CustomNetworkReply *reply = new CustomNetworkReply();
+            reply->setHttpStatusCode(200, "OK");
+            reply->setContentType("image/png");
+            reply->setContent(imageData);
 
 #ifdef DEV_BUILD
-        qDebug() << "WebPageNAM: GET" << qPrintable(req.url().toString())
-                 << "->" << qPrintable(filename)
-                 << "->" << qPrintable(Utils::Mimes::fileTypeFromFileName(filename));
+            qDebug() << "WebPageNAM: GET" << qPrintable(req.url().toString())
+                     << "->" << "Aya number" << aya;
 #endif
 
-        return getFileContent(filename);
+            return reply;
+        } else {
+
+            QString filename = req.url().toString();
+
+            if(filename.startsWith(baseUrl()))
+                filename.remove(0, baseUrl().size() + 1); // Add 1 for the '/'
+            else if(filename.startsWith("book://"))
+                filename.remove(0, QString("book://").size());
+
+#ifdef DEV_BUILD
+            qDebug() << "WebPageNAM: GET" << qPrintable(req.url().toString())
+                     << "->" << qPrintable(filename)
+                     << "->" << qPrintable(Utils::Mimes::fileTypeFromFileName(filename));
+#endif
+
+            return getFileContent(filename);
+        }
     }
 
     return QNetworkAccessManager::createRequest(op, req, outgoingData);

@@ -1,5 +1,6 @@
 body {
     direction: rtl;
+    margin: 0;
 }
 a {
     text-decoration: none;
@@ -13,16 +14,30 @@ a[href^="moltaqa"] {
 /* Reader */
 
 #quran {
-    border: 1px solid #CCCCCC;
+    border-radius: 10px;
+    border-width: 40px;
+    -webkit-border-image: url("images/quran_border.png") 118 round;
+    border-image: url("images/quran_border.png") 118 round;
+    border-style: solid;
     padding: 15px;
     text-align: center;
+    border-color: #CCE;
 }
-#simpleBook {
-    padding: 15px;
-    text-align: right;
+
+.soraname {
+    font-size: 1.2em;
+    color: black;
+    text-shadow: -3px 3px 1px #979797;
+    background-image: url("images/suraname_border.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    margin: 50px;
+    text-align: center;
+    padding: 10px;
+    width: auto;
 }
 .soraname {
-    border: 1px solid #CCCCCC;
     color: #444444;
     font-size: 30px;
     margin-bottom: 25px;
@@ -32,8 +47,9 @@ a[href^="moltaqa"] {
 }
 .ayanumber {
     color: Teal;
-    margin-left: 4px;
-    margin-right: 4px;
+    margin-left: 5px;
+    margin-right: 5px;
+    vertical-align: middle;
 }
 .ayatxt {
     text-align: justify;
@@ -47,7 +63,8 @@ a[href^="moltaqa"] {
     color: #003BCC;
 }
 
-#simpleBook #pageText {
+#simpleBook {
+    padding: 10px;
 }
 
 #simpleBook #pageHeader {

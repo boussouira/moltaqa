@@ -48,5 +48,6 @@
         <file>images/document-edit.png</file>
         <file>images/clear2.png</file>
         <file>images/stop.png</file>
+        <file>images/aya_background.png</file>
     </qresource>
 </RCC>

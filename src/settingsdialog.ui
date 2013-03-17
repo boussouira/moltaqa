@@ -392,6 +392,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QCheckBox" name="checkDrawAyatNumber">
+         <property name="text">
+          <string>زخرفة أرقام الآيات في القرآن الكريم</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QGroupBox" name="groupBox_7">
          <property name="title">
           <string>أدوات</string>

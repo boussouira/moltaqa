@@ -330,6 +330,31 @@ void WebView::copyWithRefer()
     clipboard->setText(referText);
 }
 
+void WebView::copyHtml()
+{
+    QClipboard *clipboard = QApplication::clipboard();
+
+    QMimeData *mimeData = new QMimeData;
+    mimeData->setHtml(selectedHtml());
+
+    QString text = selectedHtml();
+    text.remove(QRegExp("src=\"[^\"]+\""));
+
+    QRegExp rx("<img .* alt=\"([^\"]+)\"[^>]*>");
+    rx.setMinimal(true);
+    text.replace(rx, "\\1");
+    text = Utils::Html::removeHTMLFormat(text.replace("</p>", "\n\n").replace("</div>", "\n"));
+    text = Utils::Html::removeTags(text);
+
+    text.replace(QRegExp("\n +"), "\n");
+    text.replace(QRegExp("\n{3,}"), "\n\n");
+    text.replace(QRegExp(" {2,}"), " ");
+
+    mimeData->setText(Utils::Html::removeTags(text));
+
+    clipboard->setMimeData(mimeData);
+}
+
 void WebView::downloadRequested(const QNetworkRequest &request)
 {
     // First prompted with a file dialog to make sure
@@ -435,6 +460,8 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
 
             menu.addSeparator();
         }
+
+        menu.addAction(tr("نسخ مع التنسيق"), this, SLOT(copyHtml()));
 
         menu.addAction(pageAction(QWebPage::Copy));
     }
