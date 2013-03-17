@@ -415,7 +415,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
     }
 
     if(selectedText().trimmed().size()) {
-        QMenu *searchMenu = menu.addMenu(tr("بحث عن النص المحدد في"));
+        QMenu *searchMenu = menu.addMenu(tr("بحث في"));
 
         if(m_book)
             searchMenu->addAction(tr("الكتاب الحالي"), this, SLOT(searchInCurrentBook()));
@@ -427,7 +427,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         menu.addSeparator();
 
         if(m_book && !m_book->isQuran()) {
-            QMenu *referMenu = menu.addMenu(tr("نسخ النص مع العزو"));
+            QMenu *referMenu = menu.addMenu(tr("نسخ مع العزو"));
             foreach(QAction *act, LibraryManager::instance()->textRefersActions()) {
                 referMenu->addAction(act);
                 connect(act, SIGNAL(triggered()), SLOT(copyWithRefer()));
