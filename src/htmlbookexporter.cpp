@@ -17,6 +17,7 @@
 #include "bookutils.h"
 
 #include <qtextstream.h>
+#include <qsettings.h>
 
 HtmlBookExporter::HtmlBookExporter(QObject *parent) :
     BookExporter(parent)
@@ -81,6 +82,28 @@ void HtmlBookExporter::copyStyleTemplate(QString styleDirPath)
     foreach (QString file, list) {
         QFile::copy(dir.filePath(file), styleDir.filePath(file));
     }
+
+    QFile fontSyleFile(styleDir.absoluteFilePath("fonts.css"));
+    ml_return_on_fail2(fontSyleFile.open(QIODevice::WriteOnly),
+                       "HtmlBookExporter::copyStyleTemplate Can't open:"
+                            << fontSyleFile.fileName() << "Error:"
+                            << fontSyleFile.errorString());
+
+    QSettings settings;
+    settings.beginGroup("Style");
+    QString fontString = settings.value("fontFamily", "Lotus Linotype").toString();
+    int fontSize = settings.value("fontSize", 24).toInt();
+
+    QFont font;
+    font.fromString(fontString);
+
+    QTextStream out(&fontSyleFile);
+    out.setCodec("utf-8");
+
+    out << "body {" "\n"
+           "    font-family: '" << font.family() << "';" "\n"
+           "    font-size: " << fontSize << "px;" "\n"
+           "}" "\n";
 }
 
 void HtmlBookExporter::writeTOC()
@@ -95,6 +118,7 @@ void HtmlBookExporter::writeTOC()
     out << "<!DOCTYPE html>" "\n"
         << "<html>" "\n"
         << "<head>" "\n"
+        << "<link href= \"../style/fonts.css\" rel=\"stylesheet\" type=\"text/css\"/>" "\n"
         << "<link href= \"../style/default.css\" rel=\"stylesheet\" type=\"text/css\"/>" "\n"
         << "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />" "\n"
         << "<title>" << tr("كتاب") << " " << m_book->title
@@ -220,6 +244,7 @@ void HtmlBookExporter::writePage(QDir &dir, BookPage *page)
 
     helper.beginHead();
     helper.setCharset("utf-8");
+    helper.addCSS("../../style/fonts.css", true);
     helper.addCSS("../../style/default.css", true);
     helper.setTitle(m_book->title);
     helper.endHead();

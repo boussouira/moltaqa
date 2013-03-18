@@ -1,5 +1,6 @@
 body {
     direction: rtl;
+    margin: 0;
 }
 a {
     text-decoration: none;
@@ -8,10 +9,15 @@ a {
 /* Reader */
 
 #quran {
-    border: 1px solid #CCCCCC;
-    margin-bottom: 20px;
+    border-radius: 10px;
+    border-width: 40px;
+    -webkit-border-image: url("quran_border.png") 118 round;
+    border-image: url("quran_border.png") 118 round;
+    border-style: solid;
     padding: 15px;
     text-align: center;
+    border-color: #CCE;
+    margin-bottom: 30px;
 }
 #simpleBook {
     margin-bottom: 20px;
@@ -19,18 +25,23 @@ a {
     text-align: right;
 }
 .soraname {
-    border: 1px solid #CCCCCC;
-    color: #444444;
-    font-size: 30px;
-    margin-bottom: 25px;
-    margin-left: 5px;
-    margin-right: 5px;
+    font-size: 1.2em;
+    color: black;
+    text-shadow: -3px 3px 1px #979797;
+    background-image: url("suraname_border.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    margin: 50px;
     text-align: center;
+    padding: 10px;
+    width: auto;
 }
 .ayanumber {
     color: Teal;
-    margin-left: 4px;
-    margin-right: 4px;
+    margin-left: 5px;
+    margin-right: 5px;
+    vertical-align: middle;
 }
 .ayatxt {
     text-align: justify;
@@ -593,6 +604,10 @@ dd {
 
 #pageNav a {
     margin: 0 5px;
+}
+
+#pageNav a img {
+    vertical-align: text-top;;
 }
 
 h1, h2, h3, h4, h5, h6 {
