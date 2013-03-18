@@ -49,5 +49,7 @@
         <file>images/clear2.png</file>
         <file>images/stop.png</file>
         <file>images/aya_background.png</file>
+        <file>images/arrow-down-double.png</file>
+        <file>images/arrow-up-double.png</file>
     </qresource>
 </RCC>

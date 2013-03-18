@@ -25,7 +25,8 @@ void TafessirTextFormat::beginQuran(QString soraName, int firstAya, int lastAya)
 
     m_htmlHelper.beginDiv(".toggale_quran");
     m_htmlHelper.insertSpan(quranTextInfo, ".quran_info");
-    m_htmlHelper.insertImage("qrc:/images/add2.png");
+    m_htmlHelper.insertImage("qrc:/images/arrow-down-double.png", QString(),
+                             "style='width:16px; height: 16px;'");
     m_htmlHelper.endDiv();
 
     m_htmlHelper.beginDiv(".quran_text");

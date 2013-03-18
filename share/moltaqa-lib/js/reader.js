@@ -45,10 +45,10 @@ function toggleQuran()
     $('.toggale_quran').click(function() {
         if($('.quran_text').css('display')!="none") {
             // Hide the quran text
-            $('.toggale_quran > img').attr('src', 'qrc:/images/add2.png');
+            $('.toggale_quran > img').attr('src', 'qrc:/images/arrow-down-double.png');
             $('.quran_text').slideUp('slow');
         } else {
-            $('.toggale_quran > img').attr('src', 'qrc:/images/delete2.png');
+            $('.toggale_quran > img').attr('src', 'qrc:/images/arrow-up-double.png');
             $('.quran_text').slideDown('slow');
         }
     });
