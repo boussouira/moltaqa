@@ -18,7 +18,7 @@ public:
     virtual AbstractBookReader *bookReader()=0;
     virtual WebViewSearcher *viewSearcher()=0;
 
-    virtual void hideIndexWidget();
+    virtual void toggleIndexWidget();
 
     virtual void saveSettings();
     virtual void loadSettings();

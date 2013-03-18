@@ -31,7 +31,7 @@ public:
     AbstractBookReader *bookReader();
     WebViewSearcher *viewSearcher();
 
-    void hideIndexWidget();
+    void toggleIndexWidget();
 
     void saveSettings();
     void loadSettings();

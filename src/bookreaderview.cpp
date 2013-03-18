@@ -196,7 +196,7 @@ void BookReaderView::createMenus()
     connect(m_removeTashekilAct, SIGNAL(triggered(bool)), SLOT(removeTashkil(bool)));
 
     // Generale actions
-    connect(m_actionIndexDock, SIGNAL(triggered()), SLOT(showIndexWidget()));
+    connect(m_actionIndexDock, SIGNAL(triggered()), SLOT(toggleIndexWidget()));
     connect(m_actionNewTab, SIGNAL(triggered()), MW, SLOT(showBooksList()));
     connect(m_actionSearchInBook, SIGNAL(triggered()), this, SLOT(searchInBook()));
 
@@ -337,12 +337,12 @@ void BookReaderView::updateActions()
     }
 }
 
-void BookReaderView::showIndexWidget()
+void BookReaderView::toggleIndexWidget()
 {
     BookViewBase *book = m_viewManager->activeBookWidget();
 
     if(book)
-        book->hideIndexWidget();
+        book->toggleIndexWidget();
 }
 
 void BookReaderView::searchInBook()

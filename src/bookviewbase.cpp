@@ -11,7 +11,7 @@ LibraryBook::Ptr BookViewBase::book()
     return m_book;
 }
 
-void BookViewBase::hideIndexWidget()
+void BookViewBase::toggleIndexWidget()
 {
 }
 

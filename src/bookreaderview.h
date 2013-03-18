@@ -41,7 +41,7 @@ public:
 public slots:
     BookViewBase *openBook(int bookID, int pageID = -1, CLuceneQuery *query=0);
     void updateActions();
-    void showIndexWidget();
+    void toggleIndexWidget();
     void searchInBook();
     void openTafessir();
     void tabChanged(int newIndex);

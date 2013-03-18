@@ -319,7 +319,7 @@ void BookWidget::scrollToCurrentAya(bool timer)
         m_view->scrollToAya(m_reader->page()->sora, m_reader->page()->aya);
 }
 
-void BookWidget::hideIndexWidget()
+void BookWidget::toggleIndexWidget()
 {
     QList<int> sizes;
 
