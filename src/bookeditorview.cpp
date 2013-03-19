@@ -96,11 +96,11 @@ void BookEditorView::editBook(LibraryBook::Ptr book, int pageID)
         throw BookException(tr("لا يمكن تحرير القرآن الكريم"));
 
     if(!QFileInfo(book->path).isWritable()) {
-        throw BookException(tr("ملف الكتاب غير قابل للتعديل، من فضلك شغل البرنامج "
+        throw BookException(tr("ملف الكتاب غير قابل للتعديل، من فضلك شغل البرنامج") + QString(" ") +
                        #ifdef Q_OS_WIN
-                               "كمسؤول"));
+                               tr("كمسؤول"));
                        #else
-                               "بالصلاحيات المناسبة"));
+                               tr("بالصلاحيات المناسبة"));
                        #endif
     }
 
