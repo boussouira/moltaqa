@@ -77,16 +77,8 @@ void BookIndexerSimple::start()
         }
 
         QByteArray out;
-        char buf[4096];
-        int len = 0;
-
-        while (!file.atEnd()) {
-            len = file.read(buf, 4096);
-            out.append(buf, len);
-
-            if(len <= 0)
-                break;
-        }
+        if(!Utils::Files::copyData(file, out))
+            break;
 
         page.pageID = id;
         page.text = QString::fromUtf8(out);
