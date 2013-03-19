@@ -30,15 +30,15 @@ BookIndexerSimple::~BookIndexerSimple()
 void BookIndexerSimple::open()
 {
     if(!m_book)
-        throw BookException("BookIndexerQuran::open book is null");
+        throw BookException("BookIndexerSimple::open book is null");
 
     if(!QFile::exists(m_book->path))
-               throw BookException("BookIndexerQuran::open file doesn't exists", m_book->path);
+               throw BookException("BookIndexerSimple::open file doesn't exists", m_book->path);
 
     m_zip.setZipName(m_book->path);
 
     if(!m_zip.open(QuaZip::mdUnzip))
-        throw BookException("BookIndexerQuran::open Can't zip file",
+        throw BookException("BookIndexerSimple::open Can't zip file",
                                 m_book->path, m_zip.getZipError());
 }
 
