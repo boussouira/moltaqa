@@ -185,7 +185,7 @@ void BookEditor::saveDom()
                                      ZipHelper::PrependFile);
 }
 
-void BookEditor::addPage(int pageID)
+void BookEditor::addPage(int pageID, bool insertAfterCurrent)
 {
     QDomElement e = m_bookReader->pagesDom().currentElement();
     QDomElement page = m_bookReader->pagesDom().domDocument().createElement("page");
@@ -201,7 +201,11 @@ void BookEditor::addPage(int pageID)
 
     page.setAttribute("tid", m_bookReader->getPageTitleID(e.attribute("id").toInt()));
 
-    QDomElement newPage = m_bookReader->pagesDom().rootElement().insertAfter(page, e).toElement();
+    QDomElement newPage;
+    if(insertAfterCurrent)
+        newPage = m_bookReader->pagesDom().rootElement().insertAfter(page, e).toElement();
+    else
+        newPage = m_bookReader->pagesDom().rootElement().insertBefore(page, e).toElement();
 
     if(!newPage.isNull())
         m_bookReader->goToPage(pageID);

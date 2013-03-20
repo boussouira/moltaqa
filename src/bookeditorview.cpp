@@ -25,6 +25,7 @@
 #include <qprogressdialog.h>
 #include <qsplitter.h>
 #include <qtimer.h>
+#include <qmenu.h>
 
 BookEditorView::BookEditorView(QWidget *parent) :
     AbstarctView(parent),
@@ -373,6 +374,19 @@ void BookEditorView::cancel()
 
 void BookEditorView::addPage()
 {
+    QMenu menu(this);
+    QAction *afterAction = menu.addAction(tr("بعد الصفحة الحالية"));
+    QAction *beforeAction = menu.addAction(tr("قبل الصفحة الحالية"));
+
+    bool insertAfter = true;
+    QAction *ret = menu.exec(QCursor::pos());
+    if(ret) {
+         if(ret == afterAction)
+             insertAfter = true;
+         else if(ret == beforeAction)
+             insertAfter = false;
+    }
+
     int pageID = m_bookEditor->maxPageID()+1;
     BookPage *page = (m_currentPage ? m_currentPage->clone() : new BookPage);
     page->pageID = pageID;
@@ -380,7 +394,7 @@ void BookEditorView::addPage()
 
     m_pages.insert(pageID, page);
 
-    m_bookEditor->addPage(pageID);
+    m_bookEditor->addPage(pageID, insertAfter);
 }
 
 void BookEditorView::removePage()

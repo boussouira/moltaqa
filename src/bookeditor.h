@@ -27,7 +27,7 @@ public:
 
     bool saveBookPages(QList<BookPage *> pages);
     void saveDom();
-    void addPage(int pageID);
+    void addPage(int pageID, bool insertAfterCurrent);
     void removePage();
 
     int maxPageID();
