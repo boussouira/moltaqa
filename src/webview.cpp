@@ -15,7 +15,6 @@
 #include <qapplication.h>
 #include <qnetworkrequest.h>
 #include <qfiledialog.h>
-#include <qnetworkreply.h>
 
 WebView::WebView(QWidget *parent) :
     QWebView(parent)
@@ -373,28 +372,53 @@ void WebView::downloadRequested(const QNetworkRequest &request)
     QNetworkRequest newRequest = request;
     newRequest.setAttribute(QNetworkRequest::User, fileName);
 
+    QWebSettings::globalSettings()->clearMemoryCaches();
+
+
+    m_downloadFile.setFileName(fileName);
+    ml_return_on_fail2(m_downloadFile.open(QFile::WriteOnly | QFile::Truncate),
+                       "WebView::downloadRequested Can't open file for writing:"
+                       << m_downloadFile.errorString());
+
     // Ask the network manager to download
     // the file and connect to the progress
     // and finished signals.
     QNetworkReply *reply = page()->networkAccessManager()->get(newRequest);
 
     connect(reply, SIGNAL(finished()), SLOT(downloadingFileFinished()));
+    connect(reply, SIGNAL(readyRead()), SLOT(httpReadyRead()));
+    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
+            SLOT(downloadingError(QNetworkReply::NetworkError)));
 }
 
 void WebView::downloadingFileFinished()
 {
     QNetworkReply *replay = qobject_cast<QNetworkReply*>(sender());
-    ml_return_on_fail(replay);
+    ml_return_on_fail2(replay, "WebView::downloadingFileFinished Can't get QNetworkReply");
 
-    QNetworkRequest request = replay->request();
-    QString fileName = request.attribute(QNetworkRequest::User).toString();
-    ml_return_on_fail(fileName.size());
+    m_downloadFile.close();
 
-    QFile file(fileName);
-    ml_return_on_fail2(file.open(QFile::WriteOnly),
-                       "WebView::downloadingFileFinished Can't open file for writing:" << file.errorString());
+    if(replay->error() != QNetworkReply::NoError) {
+             qWarning() << "WebView::downloadingFileFinished download error:"
+                        << replay->errorString();
+    }
+}
 
-    Utils::Files::copyData((*replay), file);
+void WebView::downloadingError(QNetworkReply::NetworkError code)
+{
+    QNetworkReply *replay = qobject_cast<QNetworkReply*>(sender());
+    ml_return_on_fail2(replay, "WebView::downloadingError Can't get QNetworkReply");
+
+    qWarning() << "WebView: Downloading file error:" << replay->errorString()
+               << "Code:" << code;
+}
+
+void WebView::httpReadyRead()
+{
+    QNetworkReply *replay = qobject_cast<QNetworkReply*>(sender());
+    ml_return_on_fail2(replay, "WebView::httpReadyRead Can't get QNetworkReply");
+
+    m_downloadFile.write(replay->readAll());
 }
 
 void WebView::wheelEvent(QWheelEvent *event)

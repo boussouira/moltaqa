@@ -7,6 +7,7 @@
 #include <qwebelement.h>
 #include <qfiledialog.h>
 #include <qboxlayout.h>
+#include <qaction.h>
 
 WebPage::WebPage(WebView *parent) :
     QWebPage(parent)
@@ -75,6 +76,15 @@ QString WebPage::chooseFile(QWebFrame *parentFrame, const QString &suggestedFile
 
 QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
 {
+    // Try to get the sender WebView
+    WebView *senderView = 0;
+    QAction *senderAction = qobject_cast<QAction*>(sender());
+    if(senderAction && senderAction->parent()) {
+        QWebPage *senderPage = qobject_cast<QWebPage*>(senderAction->parent());
+        if(senderPage)
+            senderView = qobject_cast<WebView*>(senderPage->view());
+    }
+
     QWidget *widget = new QWidget(0);
     widget->setWindowTitle(tr("جاري التحميل..."));
 
@@ -82,6 +92,8 @@ QWebPage *WebPage::createWindow(QWebPage::WebWindowType type)
         widget->setWindowModality(Qt::ApplicationModal);
 
     WebView *webView = new WebView(widget);
+    if(senderView)
+        webView->setBook(senderView->getLibraryBook());
 
     QHBoxLayout *layout = new QHBoxLayout;
     layout->setMargin(0);

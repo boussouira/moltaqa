@@ -5,7 +5,10 @@
 #include <qwebframe.h>
 #include <qwebelement.h>
 #include <qpropertyanimation.h>
-#include <QTime>
+#include <qdatetime.h>
+#include <qnetworkreply.h>
+#include <qfile.h>
+
 #include "shemehandler.h"
 #include "webviewsearcher.h"
 #include "librarybook.h"
@@ -62,6 +65,8 @@ protected slots:
 
     void downloadRequested(const QNetworkRequest &request);
     void downloadingFileFinished();
+    void downloadingError(QNetworkReply::NetworkError code);
+    void httpReadyRead();
 
 signals:
     void textChanged();
@@ -79,6 +84,7 @@ protected:
     bool m_stopScrolling;
     LibraryBook::Ptr m_book;
     WebViewSearcher *m_searcher;
+    QFile m_downloadFile;
 };
 
 #endif // KWEBVIEW_H
