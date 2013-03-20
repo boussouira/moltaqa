@@ -408,6 +408,12 @@ void BookEditorView::removePage()
         return;
     }
 
+    ml_return_on_fail(QMessageBox::question(this,
+                                            tr("حذف الصفحة"),
+                                            tr("هل انت متأكد من انك تريد حذف هذه الصفحة؟"),
+                                            QMessageBox::Yes|QMessageBox::No,
+                                            QMessageBox::No)==QMessageBox::Yes);
+
     BookPage *page = m_currentPage->clone();
     m_pages.insert(page->pageID, page);
 
