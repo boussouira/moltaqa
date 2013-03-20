@@ -319,6 +319,8 @@ void SettingsDialog::saveSettings()
     webSettings->setFontSize(QWebSettings::DefaultFontSize,
                              ui->comboFontSize->currentText().toInt());
 
+    webSettings->clearMemoryCaches();
+
     if(m_needAppRestart) {
         QMessageBox::information(this,
                                  windowTitle(),
@@ -409,6 +411,8 @@ void SettingsDialog::fontSettingChange()
                                ui->fontComboBox->currentFont().toString());
     webSettings->setFontSize(QWebSettings::DefaultFontSize,
                              ui->comboFontSize->currentText().toInt());
+
+    webSettings->clearMemoryCaches();
 }
 
 void SettingsDialog::hideCancelButton(bool hide)
