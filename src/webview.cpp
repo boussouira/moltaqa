@@ -339,7 +339,7 @@ void WebView::copyHtml()
     QString text = selectedHtml();
     text.remove(QRegExp("src=\"[^\"]+\""));
 
-    QRegExp rx("<img .* alt=\"([^\"]+)\"[^>]*>");
+    QRegExp rx("<img .*\\s*alt\\s*=\\s*\"([^\"]+)\"[^>]*>");
     rx.setMinimal(true);
     text.replace(rx, "\\1");
     text = Utils::Html::removeHTMLFormat(text.replace("</p>", "\n\n").replace("</div>", "\n"));
@@ -485,7 +485,8 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
             menu.addSeparator();
         }
 
-        menu.addAction(tr("نسخ مع التنسيق"), this, SLOT(copyHtml()));
+        if(selectedHtml().contains("<img", Qt::CaseInsensitive))
+            menu.addAction(tr("نسخ مع التنسيق"), this, SLOT(copyHtml()));
 
         menu.addAction(pageAction(QWebPage::Copy));
     }
