@@ -147,8 +147,16 @@ void HtmlHelper::addSelector(QString selector)
 void HtmlHelper::addExtraAttr(QString attr)
 {
     if(attr.size()) {
+        QString randString("_QwEEE$$$%2223FGF{{{{77_");
+        while(attr.contains(randString))
+            randString.append('_');
+
         m_html.append(' ');
+
+        attr.replace("''", randString);
         attr.replace('\'', '"');
+        attr.replace(randString, "'");
+
         m_html.append(attr);
     }
 }
