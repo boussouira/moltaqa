@@ -130,10 +130,12 @@ int main(int argc, char *argv[])
     app.setApplicationName("Moltaqa-Library");
     app.setApplicationVersion("0.5");
 
-#ifndef DEV_BUILD
-    if(!app.arguments().contains("--debug"))
-        createLogFileDir();
+    if(!app.arguments().contains("--debug")) {
+#ifdef DEV_BUILD
+        qWarning() << "Debug messages will be saved in application.log file";
 #endif
+        createLogFileDir();
+    }
 
     Utils::Rand::srand();
 
