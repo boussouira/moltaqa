@@ -87,32 +87,32 @@ void BookMediaEditor::saveChanges(BookEditor *bookEditor)
 
     bookEditor->zipHelper()->transaction();
 
-        foreach(BookMediaResource *media, removedMedia) {
-            bookEditor->zipHelper()->remove(media->path);
-            media->data.clear();
-            m_resources.removeAll(media);
+    foreach(BookMediaResource *media, removedMedia) {
+        bookEditor->zipHelper()->remove(media->path);
+        media->data.clear();
+        m_resources.removeAll(media);
 
 #ifdef DEV_BUILD
-            qDebug() << "BookMediaEditor::saveChanges Remove image:"
-                     << qPrintable(media->path);
+        qDebug() << "BookMediaEditor::saveChanges Remove image:"
+                 << qPrintable(media->path);
 #endif
-            delete media;
-        }
+        delete media;
+    }
 
-        foreach(BookMediaResource *media, addedMedia) {
-            bookEditor->zipHelper()->add(media->path,
-                                         media->data,
-                                         ZipHelper::AppendFile);
+    foreach(BookMediaResource *media, addedMedia) {
+        bookEditor->zipHelper()->add(media->path,
+                                     media->data,
+                                     ZipHelper::AppendFile);
 
-            media->op = BookMediaResource::None;
+        media->op = BookMediaResource::None;
 
 #ifdef DEV_BUILD
-            qDebug() << "BookMediaEditor::saveChanges Add image:"
-                     << qPrintable(media->path);
+        qDebug() << "BookMediaEditor::saveChanges Add image:"
+                 << qPrintable(media->path);
 #endif
-        }
+    }
 
-        bookEditor->zipHelper()->commit();
+    bookEditor->zipHelper()->commit();
 
     m_mediaEdited = false;
 }
