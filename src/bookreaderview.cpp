@@ -562,12 +562,20 @@ void BookReaderView::getSheer()
     outFile.close();
 
     if(sheerCount) {
-        WebView *view = new WebView();
-        view->setWindowTitle(tr("%1 - عدد الأبيات الشعرية: %2").arg(book->title).arg(sheerCount));
+        QDialog *dialog = new QDialog(0);
+        dialog->setWindowIcon(windowIcon());
+        dialog->setWindowTitle(tr("%1 - عدد الأبيات الشعرية: %2").arg(book->title).arg(sheerCount));
+
+        WebView *view = new WebView(dialog);
         view->autoObjectAdd("bookView", currentBookWidget());
         view->setUrl(QUrl::fromLocalFile(filePath));
-        view->show();
 
+        QVBoxLayout *layout = new QVBoxLayout;
+        layout->setMargin(0);
+        layout->addWidget(view);
+
+        dialog->setLayout(layout);
+        dialog->show();
     } else {
         QMessageBox::warning(this,
                              book->title,
