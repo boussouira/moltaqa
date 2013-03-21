@@ -18,6 +18,8 @@
 #include "bookindexeditor.h"
 #include "indextracker.h"
 #include "bookreaderhelper.h"
+#include "bookmediaeditor.h"
+#include "webpagenam.h"
 
 #include <qstatusbar.h>
 #include <qtabwidget.h>
@@ -38,6 +40,8 @@ BookEditorView::BookEditorView(QWidget *parent) :
     ui->setupUi(this);
 
     m_bookEditor = new BookEditor(this);
+    m_mediaEditor = new BookMediaEditor(0);
+    m_mediaEditor->setWindowIcon(windowIcon());
 
     setupView();
     setupToolBar();
@@ -48,6 +52,7 @@ BookEditorView::~BookEditorView()
     Utils::Settings::set("BookEditorView/splitter", m_splitter->saveState());
 
     ml_delete_check(m_bookReader);
+    ml_delete_check(m_mediaEditor);
 
     delete ui;
 }
@@ -85,6 +90,10 @@ void BookEditorView::setupView()
     connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)), SLOT(closeTab(int)));
     connect(m_timer, SIGNAL(timeout()), SLOT(checkPageModified()));
     connect(m_indexEditor, SIGNAL(indexEdited()), SLOT(indexChanged()));
+    connect(m_mediaEditor, SIGNAL(insertImage(QString)),
+            m_webView, SLOT(insertImage(QString)));
+    connect(m_mediaEditor, SIGNAL(insertImage(QString)),
+            SLOT(activateWindowSlot()));
 }
 
 void BookEditorView::editBook(LibraryBook::Ptr book, int pageID)
@@ -125,10 +134,7 @@ void BookEditorView::editBook(LibraryBook::Ptr book, int pageID)
     m_bookReader->openBook();
 
     m_indexEditor->setup();
-
-    connect(m_bookReader, SIGNAL(textChanged()), SLOT(readerTextChange()));
-
-    m_bookReader->goToPage(pageID);
+    m_mediaEditor->setBook(book);
 
     ui->tabWidget->setTabText(0, Utils::String::abbreviate(book->title, 40));
     ui->tabWidget->setTabToolTip(0, book->title);
@@ -136,8 +142,14 @@ void BookEditorView::editBook(LibraryBook::Ptr book, int pageID)
     m_bookEditor->setBookReader(m_bookReader);
     m_webView->setBook(book);
 
+    WebPageNAM *nam = qobject_cast<WebPageNAM*>(m_webView->page()->networkAccessManager());
+    nam->setBookMedia(m_mediaEditor);
+
     m_indexEdited = false;
     m_timer->start();
+
+    connect(m_bookReader, SIGNAL(textChanged()), SLOT(readerTextChange()));
+    m_bookReader->goToPage(pageID);
 
     emit showMe();
 }
@@ -155,12 +167,17 @@ void BookEditorView::setupToolBar()
     m_actionSave = bar->addAction(QIcon::fromTheme("document-save", QIcon(":/images/document-save.png")),
                                   tr("حفظ التغييرات"), this, SLOT(save()));
     bar->addSeparator();
+
     m_actionFirstPage = bar->addAction(firstIcon, tr("الصفحة الاولى"), this, SLOT(firstPage()));
     m_actionPrevPage = bar->addAction(prevIcon, tr("الصفحة السابقة"), this, SLOT(prevPage()));
     m_actionNextPage = bar->addAction(nextIcon, tr("الصفحة التالية"), this, SLOT(nextPage()));
     m_actionLastPage = bar->addAction(lastIcon, tr("الصفحة الاخيرة"), this, SLOT(lastPage()));
     m_actionGotToPage = bar->addAction(gotoIcon, tr("انتقل الى..."), this, SLOT(gotoPage()));
     bar->addSeparator();
+
+    bar->addAction(QIcon(":/images/insert-image.png"), tr("اضافة الصور"), this, SLOT(editImages()));
+    bar->addSeparator();
+
     m_actionAddPage = bar->addAction(QIcon(":/images/add.png"), tr("اضافة صفحة"), this, SLOT(addPage()));
     m_actionRemovePage = bar->addAction(QIcon(":/images/remove.png"), tr("حذف الصفحة"), this, SLOT(removePage()));
 
@@ -178,7 +195,7 @@ void BookEditorView::updateActions()
         m_actionFirstPage->setEnabled(m_bookReader->hasPrev());
     }
 
-    m_actionSave->setEnabled(m_pages.size() || m_indexEdited);
+    m_actionSave->setEnabled(bookEdited());
 
     // If we have some saved pages then 'Save' action will be always enabled
     // m_timer is no more needed
@@ -231,7 +248,7 @@ bool BookEditorView::maySave(bool canCancel)
     saveCurrentPage();
     updateActions();
 
-    if(m_pages.size() || m_indexEdited) {
+    if(bookEdited()) {
         int rep = QMessageBox::question(this,
                                         tr("حفظ التعديلات"),
                                         tr("هل تريد حفظ التعديلات التي اجريتها على كتاب:\n%1؟").arg(m_bookReader->book()->title),
@@ -247,6 +264,14 @@ bool BookEditorView::maySave(bool canCancel)
     }
 
     return true;
+}
+
+bool BookEditorView::bookEdited()
+{
+    return m_pages.size()
+            || m_indexEdited
+            || m_webView->pageModified()
+            || m_mediaEditor->mediaEdited();
 }
 
 void BookEditorView::closeBook(bool hide)
@@ -290,7 +315,7 @@ void BookEditorView::readerTextChange()
 
 void BookEditorView::checkPageModified()
 {
-    m_actionSave->setEnabled(m_pages.size() || m_indexEdited || m_webView->pageModified());
+    m_actionSave->setEnabled(bookEdited());
 }
 
 void BookEditorView::indexChanged()
@@ -299,11 +324,17 @@ void BookEditorView::indexChanged()
     checkPageModified();
 }
 
+void BookEditorView::activateWindowSlot()
+{
+    if(!isActiveWindow())
+        activateWindow();
+}
+
 void BookEditorView::save()
 {
     saveCurrentPage();
 
-    if(m_pages.size() || m_indexEdited) {
+    if(bookEdited()) {
         QProgressDialog dialog(this);
         dialog.setWindowTitle(tr("حفظ التغييرات"));
         dialog.setLabelText(tr("جاري حفظ التغييرات..."));
@@ -328,6 +359,8 @@ void BookEditorView::save()
 
             QFile::remove(titlesFile);
         }
+
+        m_mediaEditor->saveChanges(m_bookEditor);
 
         dialog.setValue(dialog.value()+1);
 
@@ -425,6 +458,12 @@ void BookEditorView::closeTab(int)
     if(maySave()) {
         closeBook();
     }
+}
+
+void BookEditorView::editImages()
+{
+    m_mediaEditor->setBook(m_bookReader->book());
+    m_mediaEditor->show();
 }
 
 void BookEditorView::nextPage()

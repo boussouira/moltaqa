@@ -4,6 +4,8 @@
 #include "utils.h"
 #include "mimeutils.h"
 #include "stringutils.h"
+#include "qurantextformat.h"
+#include "bookmediaeditor.h"
 
 #include <qnetworkrequest.h>
 #include <QNetworkAccessManager>
@@ -16,7 +18,6 @@
 #include <qpainter.h>
 #include <qsettings.h>
 #include <qbuffer.h>
-#include "qurantextformat.h"
 
 struct QCustomNetworkReplyPrivate
 {
@@ -108,11 +109,26 @@ qint64 CustomNetworkReply::readData(char *data, qint64 maxSize)
 WebPageNAM::WebPageNAM(QObject *parent) :
     QNetworkAccessManager(parent)
 {
+    m_bookMedia = 0;
 }
 
 QNetworkReply *WebPageNAM::getFileContent(const QString &fileName)
 {
     CustomNetworkReply *reply = new CustomNetworkReply();
+
+    if(m_bookMedia) {
+        BookMediaResource *media = m_bookMedia->getMediaByPath(fileName);
+        if(media) {
+            reply->setHttpStatusCode(200, "OK");
+            reply->setContentType(Utils::Mimes::fileTypeFromFileName(fileName).toUtf8());
+            reply->setContent(media->data);
+#ifdef DEV_BUILD
+            qDebug() << "WebPageNAM: Get file content from BookMediaEditor:"
+                     << qPrintable(fileName);
+#endif
+            return reply;
+        }
+    }
 
     if(m_book) {
         QuaZip zip;
@@ -153,6 +169,9 @@ QNetworkReply *WebPageNAM::getFileContent(const QString &fileName)
                        << fileName << "book:" << m_book->path;
 #endif
         }
+    } else {
+        qWarning() << "WebPageNAM::getFileContent book is not set, can't get"
+                   << fileName;
     }
 
     reply->setHttpStatusCode(404, "Not Found");
@@ -221,4 +240,9 @@ QNetworkReply *WebPageNAM::createRequest(Operation op, const QNetworkRequest &re
     }
 
     return QNetworkAccessManager::createRequest(op, req, outgoingData);
+}
+
+void WebPageNAM::setBookMedia(BookMediaEditor *bookMedia)
+{
+    m_bookMedia = bookMedia;
 }

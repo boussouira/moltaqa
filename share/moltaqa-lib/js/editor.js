@@ -25,3 +25,11 @@ function makeSelectionTitle(text, level, tagID)
         }
     }
 }
+
+function inserImage(imageSrc)
+{
+    var element = editor.document.createElement('img');
+    element.setAttribute('src', imageSrc);
+
+    editor.insertElement(element);
+}

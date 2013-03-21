@@ -21,6 +21,10 @@ public:
     void resetUndo();
 
     void makeSelectTextTitle(QString text, int level, QString tagID);
+
+public slots:
+    void insertImage(QString src);
+
 };
 
 #endif // EDITWEBVIEW_H

@@ -51,5 +51,6 @@
         <file>images/aya_background.png</file>
         <file>images/arrow-down-double.png</file>
         <file>images/arrow-up-double.png</file>
+        <file>images/insert-image.png</file>
     </qresource>
 </RCC>

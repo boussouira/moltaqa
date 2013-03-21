@@ -5,6 +5,8 @@
 #include <qnetworkreply.h>
 #include "librarybook.h"
 
+class BookMediaEditor;
+
 class CustomNetworkReply : public QNetworkReply
 {
     Q_OBJECT
@@ -33,6 +35,8 @@ private:
 
 class WebPageNAM : public QNetworkAccessManager
 {
+    Q_OBJECT
+
 public:
     WebPageNAM(QObject *parent = 0);
 
@@ -41,10 +45,13 @@ public:
 
     static QString baseUrl() { return "book://data"; }
 
+    void setBookMedia(BookMediaEditor *bookMedia);
+
 protected:
     QNetworkReply *createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0);
 
     LibraryBook::Ptr m_book;
+    BookMediaEditor *m_bookMedia;
 };
 
 

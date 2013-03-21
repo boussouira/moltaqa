@@ -14,6 +14,7 @@ class EditWebView;
 class RichBookReader;
 class QTabWidget;
 class BookIndexEditor;
+class BookMediaEditor;
 class QSplitter;
 
 class BookEditorView : public AbstarctView
@@ -26,6 +27,8 @@ public:
     QString title();
     void editBook(LibraryBook::Ptr book, int pageID=-1);
     bool maySave(bool canCancel=true);
+
+    bool bookEdited();
 
 protected:
     void setupView();
@@ -43,6 +46,8 @@ protected slots:
     void cancel();
     void closeTab(int);
 
+    void editImages();
+
     void addPage();
     void removePage();
 
@@ -56,12 +61,15 @@ protected slots:
     void checkPageModified();
     void indexChanged();
 
+    void activateWindowSlot();
+
 protected:
     friend class BookIndexEditor;
 
     Ui::BookEditorView *ui;
     QTabWidget *m_tabWidget;
     BookIndexEditor *m_indexEditor;
+    BookMediaEditor *m_mediaEditor;
     QAction *m_actionSave;
     QAction *m_actionAddPage;
     QAction *m_actionRemovePage;

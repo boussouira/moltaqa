@@ -157,7 +157,8 @@ SOURCES += mainwindow.cpp \
     htmlbookexporter.cpp \
     authorinfo.cpp \
     bookutils.cpp \
-    bookviewbase.cpp
+    bookviewbase.cpp \
+    bookmediaeditor.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -303,7 +304,8 @@ HEADERS += mainwindow.h \
     htmlbookexporter.h \
     authorinfo.h \
     bookutils.h \
-    bookviewbase.h
+    bookviewbase.h \
+    bookmediaeditor.h
 
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
@@ -335,7 +337,8 @@ FORMS += mainwindow.ui settingsdialog.ui \
     selectbooksdialog.ui \
     logdialog.ui \
     updatedialog.ui \
-    searchquerywidget.ui
+    searchquerywidget.ui \
+    bookmediaeditor.ui
 
 RESOURCES += ../share/moltaqa-lib/qt_rc.qrc
 win32:RC_FILE = ../share/moltaqa-lib/win_rc.rc

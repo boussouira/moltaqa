@@ -77,3 +77,8 @@ void EditWebView::makeSelectTextTitle(QString text, int level, QString tagID)
            .arg(level)
            .arg(Utils::Html::jsEscape(tagID)));
 }
+
+void EditWebView::insertImage(QString src)
+{
+    execJS(QString("inserImage('%1')").arg(Utils::Html::jsEscape(src)));
+}
