@@ -70,7 +70,7 @@ void BookMediaEditor::setBook(LibraryBook::Ptr book)
     m_mediaEdited = false;
     m_book = book;
 
-    openBook();
+    loadImages();
 }
 
 void BookMediaEditor::saveChanges(BookEditor *bookEditor)
@@ -84,6 +84,8 @@ void BookMediaEditor::saveChanges(BookEditor *bookEditor)
             removedMedia.append(media);
         }
     }
+
+    bookEditor->zipHelper()->transaction();
 
         foreach(BookMediaResource *media, removedMedia) {
             bookEditor->zipHelper()->remove(media->path);
@@ -109,6 +111,8 @@ void BookMediaEditor::saveChanges(BookEditor *bookEditor)
                      << qPrintable(media->path);
 #endif
         }
+
+        bookEditor->zipHelper()->commit();
 
     m_mediaEdited = false;
 }
@@ -168,22 +172,22 @@ void BookMediaEditor::openBook()
     ml_return_on_fail2(QFile::exists(m_book->path),
                        "BookMediaEditor::openBook file doesn't exists" << m_book->path);
 
-    if(m_zip.isOpen())
-        m_zip.close();
-
     m_zip.setZipName(m_book->path);
 
     ml_return_on_fail2(m_zip.open(QuaZip::mdUnzip),
                        "BookMediaEditor::openBook Can't zip file" << m_book->path
                        << "Error" << m_zip.getZipError());
+}
 
-    if(m_resources.isEmpty()) {
-        loadImages();
-    }
+void BookMediaEditor::closeBook()
+{
+    if(m_zip.isOpen())
+        m_zip.close();
 }
 
 void BookMediaEditor::loadImages()
 {
+    openBook();
     setupModel();
 
     QuaZipFileInfo info;
@@ -225,6 +229,8 @@ void BookMediaEditor::loadImages()
 #ifdef DEV_BUILD
     qDebug("BookMediaEditor::loadImages %d files", m_resources.size());
 #endif
+
+    closeBook();
 }
 
 void BookMediaEditor::addImage(QString path)

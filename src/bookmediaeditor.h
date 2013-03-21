@@ -35,11 +35,11 @@ public:
 class BookMediaEditor : public QDialog
 {
     Q_OBJECT
-    
+
 public:
     BookMediaEditor(QWidget *parent = 0);
     ~BookMediaEditor();
-    
+
     void setBook(LibraryBook::Ptr book);
 
     void saveChanges(BookEditor *bookEditor);
@@ -52,6 +52,7 @@ public:
 protected:
     void setupModel();
     void openBook();
+    void closeBook();
     void loadImages();
     void addImage(QString path);
 
