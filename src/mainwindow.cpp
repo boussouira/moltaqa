@@ -141,6 +141,7 @@ bool MainWindow::init()
         m_libraryManager = new LibraryManager(m_libraryInfo);
 
         m_booksList = new BooksListBrowser(0);
+        m_booksList->setWindowIcon(windowIcon());
 
         // IndexTracker should be created before the IndexManager
         m_indexTracker = new IndexTracker(this);
