@@ -58,12 +58,10 @@ WelcomeWidget::WelcomeWidget(QWidget *parent) :
     layout->setMargin(0);
 
     m_webView = new WebView(this);
+    m_webView->autoObjectAdd("welcome", this);
+
     layout->addWidget(m_webView);
-
     setLayout(layout);
-
-    connect(m_webView->page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()),
-            SLOT(jsCleared()));
 
     setupHTML();
 }
@@ -117,11 +115,6 @@ void WelcomeWidget::open(QString vid)
     } else {
         qWarning() << "WelcomeWidget::open unknow id" << vid;
     }
-}
-
-void WelcomeWidget::jsCleared()
-{
-    m_webView->page()->mainFrame()->addToJavaScriptWindowObject("welcome", this);
 }
 
 void WelcomeWidget::showStatistics()

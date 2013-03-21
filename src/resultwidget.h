@@ -40,7 +40,6 @@ private slots:
     void fetechFinnished();
     void gotResult(SearchResult *result);
     void gotException(QString what, int id);
-    void populateJavaScriptWindowObject();
 
     void ensureReaderVisible();
     void ensureReaderHidden(bool accessible=true);

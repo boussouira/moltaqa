@@ -74,9 +74,6 @@ public slots:
     void searchNext();
     void searchPrevious();
 
-protected slots:
-    void viewObjectCleared();
-
 signals:
     void gotFocus();
     void textChanged();

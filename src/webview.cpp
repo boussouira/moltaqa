@@ -34,6 +34,8 @@ WebView::WebView(QWidget *parent) :
 
     m_animation = new QPropertyAnimation(m_frame, "scrollPosition", this);
 
+    autoObjectAdd("webView", this);
+
 #ifdef DEV_BUILD
     settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
 #endif
@@ -167,6 +169,11 @@ void WebView::addObject(const QString &name, QObject *object)
     m_frame->addToJavaScriptWindowObject(name, object);
 }
 
+void WebView::autoObjectAdd(QString objectName, QObject *object)
+{
+    m_autoObjectAdd.insert(objectName, object);
+}
+
 QString WebView::toHtml()
 {
     return m_frame->toHtml();
@@ -246,7 +253,12 @@ void WebView::openMoltaqaLink(QString link)
 
 void WebView::populateJavaScriptWindowObject()
 {
-    addObject("webView", this);
+    QHashIterator<QString, QObject*> i(m_autoObjectAdd);
+     while (i.hasNext()) {
+         i.next();
+
+         addObject(i.key(), i.value());
+     }
 }
 
 void WebView::openLinkInBrowser()

@@ -60,10 +60,12 @@ BookWidget::BookWidget(LibraryBook::Ptr book, QWidget *parent):
     m_viewInitialized = false;
     m_indexReading = false;
 
+    m_view->autoObjectAdd("bookWidget", this);
+    m_view->autoObjectAdd("bookReaderView", MW->bookReaderView());
+
     connect(m_indexWidget, SIGNAL(openPage(int)), this, SLOT(openPage(int)));
     connect(m_indexWidget, SIGNAL(scrollToElement(QString,bool)), m_view, SLOT(scrollToElement(QString,bool)));
     connect(m_indexWidget, SIGNAL(openSora(int,int)), SLOT(openSora(int,int)));
-    connect(m_view->page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()), SLOT(viewObjectCleared()));
     connect(m_reader, SIGNAL(textChanged()), SLOT(readerTextChanged()));
     connect(m_reader, SIGNAL(textChanged()), SIGNAL(textChanged()));
     connect(m_reader, SIGNAL(textChanged()), m_indexWidget, SLOT(displayBookInfo()));
@@ -462,10 +464,4 @@ QString BookWidget::getBreadcrumbs()
     }
 
     return h.html();
-}
-
-void BookWidget::viewObjectCleared()
-{
-    m_view->addObject("bookWidget", this);
-    m_view->addObject("bookReaderView", MW->bookReaderView());
 }

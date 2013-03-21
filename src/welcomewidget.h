@@ -25,7 +25,6 @@ public slots:
     void open(QString vid);
 
 protected slots:
-    void jsCleared();
     void showStatistics();
 
 private:

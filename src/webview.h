@@ -34,6 +34,8 @@ public:
 
     QVariant execJS(const QString &js);
     void addObject(const QString &name, QObject *object);
+    void autoObjectAdd(QString objectName, QObject *object);
+
     QString toHtml();
 
     WebViewSearcher *searcher() { return m_searcher; }
@@ -85,6 +87,7 @@ protected:
     LibraryBook::Ptr m_book;
     WebViewSearcher *m_searcher;
     QFile m_downloadFile;
+    QHash<QString, QObject*> m_autoObjectAdd;
 };
 
 #endif // KWEBVIEW_H

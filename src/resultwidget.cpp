@@ -31,9 +31,7 @@ ResultWidget::ResultWidget(QWidget *parent) :
 
     m_moveToReaderViewAct = new QAction(tr("نقل الى نافذة عرض الكتب"), this);
 
-    connect(m_view->page()->mainFrame(),
-            SIGNAL(javaScriptWindowObjectCleared()),
-            SLOT(populateJavaScriptWindowObject()));
+    m_view->autoObjectAdd("resultWidget", this);
 
     connect(m_moveToReaderViewAct, SIGNAL(triggered()), SLOT(moveToReaderView()));
 
@@ -353,9 +351,4 @@ void ResultWidget::gotException(QString what, int id)
                    .arg(Utils::Html::jsEscape(errorDesc)));
 
     showProgressBar(false);
-}
-
-void ResultWidget::populateJavaScriptWindowObject()
-{
-    m_view->addObject("resultWidget", this);
 }
