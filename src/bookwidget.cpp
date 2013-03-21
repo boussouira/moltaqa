@@ -377,6 +377,7 @@ void BookWidget::readerTextChanged()
             QTimer::singleShot(800, m_view, SLOT(scrollToSearch()));
     }
 
+    activateWindow();
     m_indexReading = false;
 }
 
