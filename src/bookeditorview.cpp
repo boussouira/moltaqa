@@ -467,6 +467,9 @@ void BookEditorView::editImages()
 {
     m_mediaEditor->setBook(m_bookReader->book());
     m_mediaEditor->show();
+
+    if(!m_mediaEditor->isActiveWindow())
+        m_mediaEditor->activateWindow();
 }
 
 void BookEditorView::nextPage()
