@@ -4,6 +4,7 @@
 #include "utils.h"
 #include "modelutils.h"
 #include "htmlhelper.h"
+#include "webpagenam.h"
 
 #include <bookeditor.h>
 #include <qfiledialog.h>
@@ -44,6 +45,11 @@ BookMediaEditor::BookMediaEditor(QWidget *parent) :
 
     m_webView = new WebView(this);
     m_webView->autoObjectAdd("bookMediaEditor", this);
+    WebPageNAM *nam = m_webView->getPageNAM();
+    if(nam)
+        nam->setBookMedia(this);
+    else
+        qWarning() << "BookMediaEditor: Can't get WebPageNAM";
 
     ui->verticalLayout->insertWidget(0, m_webView);
 
@@ -298,6 +304,11 @@ void BookMediaEditor::addResoourceToModel(BookMediaResource *resources)
 
 void BookMediaEditor::imageGallery()
 {
+    if(m_resources.isEmpty()) {
+        m_webView->setHtml("");
+        return;
+    }
+
     HtmlHelper html;
     html.beginHead();
     html.setCharset();
@@ -313,14 +324,13 @@ void BookMediaEditor::imageGallery()
 
     foreach(BookMediaResource *media, m_resources) {
         if(media->op != BookMediaResource::Remove) {
-            QString imageSrc = QString::fromLatin1(media->data.toBase64());
 
             html.beginSpan("", QString("style='cursor:pointer; display:block; float: left; margin:5px; padding: 5px; "
                                        "border:1px solid #ccc; text-align:center; background-color: #fff; "
                                        "width:200px; height:200px;' onclick='bookMediaEditor.insertImage(''%1'')'")
                            .arg(media->path));
 
-            html.insertImage(QString("data:image/png;base64,%1").arg(imageSrc), "",
+            html.insertImage(media->path, "",
                              "style='display:block; border:1px solid #000; "
                              "max-width:180px;max-height:180px;"
                              "margin-left: auto; margin-right: auto; margin-bottom: 6px;'");
@@ -335,7 +345,7 @@ void BookMediaEditor::imageGallery()
 
     html.endAll();
 
-    m_webView->setHtml(html.html());
+    m_webView->setHtml(html.html(), WebPageNAM::baseUrl());
 }
 
 void BookMediaEditor::addMedia()
