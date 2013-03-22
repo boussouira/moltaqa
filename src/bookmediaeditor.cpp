@@ -264,30 +264,13 @@ void BookMediaEditor::addImage(QString path)
 
 void BookMediaEditor::addResoourceToModel(BookMediaResource *resources)
 {
-    QList<QStandardItem*> rowItems;
+    QStandardItem *item = new QStandardItem(resources->fileName);
+    item->setToolTip(resources->path);
+    item->setData(resources->fileName, FileNameRole);
+    item->setData(resources->path, FilePathRole);
+    item->setData(resources->data, FileDataRole);
 
-    QStandardItem *nameItem = new QStandardItem(resources->fileName);
-    nameItem->setToolTip(resources->path);
-    nameItem->setData(resources->fileName, FileNameRole);
-    nameItem->setData(resources->path, FilePathRole);
-    nameItem->setData(resources->data, FileDataRole);
-    rowItems << nameItem;
-/*
-    QPixmap pixmap;
-    pixmap.loadFromData(resources->data, qPrintable(QFileInfo(resources->fileName).suffix()));
-
-    if (pixmap.height() > 100 || pixmap.width() > 100) {
-        pixmap = pixmap.scaled(QSize(100, 100), Qt::KeepAspectRatio);
-    }
-
-    QStandardItem *iconItem = new QStandardItem();
-    iconItem->setIcon(QIcon(pixmap));
-    iconItem->setEditable(false);
-    rowItems << iconItem;
-    //m_model->setColumnCount(2);
-*/
-
-    m_imagesItem->appendRow(rowItems);
+    m_imagesItem->appendRow(item);
 }
 
 void BookMediaEditor::previewImage(const QModelIndex &index)
