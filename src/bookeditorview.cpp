@@ -248,6 +248,8 @@ void BookEditorView::clearChanges()
 
 bool BookEditorView::maySave(bool canCancel)
 {
+    ml_return_val_on_fail(m_bookReader, true);
+
     saveCurrentPage();
     updateActions();
 
