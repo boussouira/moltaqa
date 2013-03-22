@@ -122,10 +122,10 @@ QNetworkReply *WebPageNAM::getFileContent(const QString &fileName)
             reply->setHttpStatusCode(200, "OK");
             reply->setContentType(Utils::Mimes::fileTypeFromFileName(fileName).toUtf8());
             reply->setContent(media->data);
-#ifdef DEV_BUILD
-            qDebug() << "WebPageNAM: Get file content from BookMediaEditor:"
-                     << qPrintable(fileName);
-#endif
+//#ifdef DEV_BUILD
+//            qDebug() << "WebPageNAM: Get file content from BookMediaEditor:"
+//                     << qPrintable(fileName);
+//#endif
             return reply;
         }
     }
