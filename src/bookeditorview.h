@@ -59,7 +59,6 @@ protected slots:
 
     void readerTextChange();
     void checkPageModified();
-    void indexChanged();
 
     void activateWindowSlot();
 
@@ -85,7 +84,6 @@ protected:
     QHash<int, BookPage*> m_pages;
     BookPage *m_currentPage;
     QTimer *m_timer;
-    bool m_indexEdited;
 };
 
 #endif // BOOKEDITORVIEW_H

@@ -34,8 +34,7 @@ BookEditorView::BookEditorView(QWidget *parent) :
     ui(new Ui::BookEditorView),
     m_splitter(0),
     m_bookReader(0),
-    m_currentPage(0),
-    m_indexEdited(false)
+    m_currentPage(0)
 {
     ui->setupUi(this);
 
@@ -89,7 +88,7 @@ void BookEditorView::setupView()
 
     connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)), SLOT(closeTab(int)));
     connect(m_timer, SIGNAL(timeout()), SLOT(checkPageModified()));
-    connect(m_indexEditor, SIGNAL(indexEdited()), SLOT(indexChanged()));
+    connect(m_indexEditor, SIGNAL(indexDataChanged()), SLOT(checkPageModified()));
     connect(m_mediaEditor, SIGNAL(insertImage(QString)),
             m_webView, SLOT(insertImage(QString)));
     connect(m_mediaEditor, SIGNAL(insertImage(QString)),
@@ -148,7 +147,6 @@ void BookEditorView::editBook(LibraryBook::Ptr book, int pageID)
     else
         qWarning() << "BookEditorView::editBook Can't get WebPageNAM";
 
-    m_indexEdited = false;
     m_timer->start();
 
     connect(m_bookReader, SIGNAL(textChanged()), SLOT(readerTextChange()));
@@ -202,7 +200,7 @@ void BookEditorView::updateActions()
 
     // If we have some saved pages then 'Save' action will be always enabled
     // m_timer is no more needed
-    if(m_pages.size() || m_indexEdited)
+    if(m_pages.size() || m_indexEditor->indexEdited())
         m_timer->stop();
 }
 
@@ -242,7 +240,7 @@ void BookEditorView::clearChanges()
     m_pages.clear();
 
     m_currentPage = 0;
-    m_indexEdited = false;
+    m_indexEditor->setIndexEdited(false);
     m_timer->start();
 }
 
@@ -274,7 +272,7 @@ bool BookEditorView::maySave(bool canCancel)
 bool BookEditorView::bookEdited()
 {
     return m_pages.size()
-            || m_indexEdited
+            || m_indexEditor->indexEdited()
             || m_webView->pageModified()
             || m_mediaEditor->mediaEdited();
 }
@@ -323,12 +321,6 @@ void BookEditorView::checkPageModified()
     m_actionSave->setEnabled(bookEdited());
 }
 
-void BookEditorView::indexChanged()
-{
-    m_indexEdited = true;
-    checkPageModified();
-}
-
 void BookEditorView::activateWindowSlot()
 {
     if(!isActiveWindow())
@@ -353,17 +345,9 @@ void BookEditorView::save()
         m_bookEditor->unZip();
         dialog.setValue(dialog.value()+1);
 
-        if(m_bookEditor->saveBookPages(m_pages.values()))
-            clearChanges();
+        m_bookEditor->saveBookPages(m_pages.values());
 
-        QString titlesFile = m_indexEditor->save();
-        if(titlesFile.size()) {
-            m_bookEditor->zipHelper()->replaceFromFile("titles.xml",
-                                                       titlesFile,
-                                                       ZipHelper::PrependFile);
-
-            QFile::remove(titlesFile);
-        }
+        m_indexEditor->save(m_bookEditor->zipHelper());
 
         m_mediaEditor->saveChanges(m_bookEditor);
 
@@ -386,6 +370,8 @@ void BookEditorView::save()
             IndexTracker::instance()->addTask(book->id, IndexTask::Update, false);
 
         dialog.setValue(dialog.value()+1);
+
+        clearChanges();
 
         m_webView->resetUndo();
         m_bookReader->goToPage(m_bookReader->page()->pageID);

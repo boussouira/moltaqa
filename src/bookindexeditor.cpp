@@ -29,6 +29,8 @@ BookIndexEditor::BookIndexEditor(BookEditorView *parent) :
     m_treeManager->setMoveRightButton(ui->toolMoveRight);
     m_treeManager->setRemovButton(ui->toolRemoveTitle);
 
+    m_indexEdited = false;
+
     connect(ui->toolAddTitle, SIGNAL(clicked()), SLOT(addTitle()));
     connect(ui->toolLinkTitle, SIGNAL(clicked()), SLOT(linkTitle()));
     connect(ui->treeView, SIGNAL(doubleClicked(QModelIndex)), SLOT(openPage(QModelIndex)));
@@ -59,7 +61,10 @@ void BookIndexEditor::setModel(QStandardItemModel *model)
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             SLOT(updateActions()));
 
-    connect(m_treeManager, SIGNAL(modelDataChanged()), SIGNAL(indexEdited()));
+    connect(m_treeManager, SIGNAL(modelDataChanged()), SIGNAL(indexDataChanged()));
+    connect(m_treeManager, SIGNAL(modelDataChanged()), SLOT(indexEditedSlot()));
+
+    m_indexEdited = false;
 
     updateActions();
 }
@@ -97,8 +102,16 @@ void BookIndexEditor::writeItem(QStandardItem *item, QXmlStreamWriter *writer)
     writer->writeEndElement();
 }
 
-QString BookIndexEditor::save()
+bool BookIndexEditor::save(ZipHelper *zipHelper)
 {
+    if(!m_indexEdited) {
+#ifdef DEV_BUILD
+        qWarning() << "BookIndexEditor::save No need to save titles model";
+#endif
+
+        return true;
+    }
+
     QString path = Utils::Rand::fileName(MW->libraryInfo()->tempDir(),
                                             true, "book_index_", "xml");
 
@@ -107,7 +120,7 @@ QString BookIndexEditor::save()
         qWarning() << "BookIndexEditor::save Can't open file"
                    << path << "for writing" << file.errorString();
 
-        return QString();
+        return false;
     }
 
     QXmlStreamWriter writer(&file);
@@ -116,9 +129,33 @@ QString BookIndexEditor::save()
 
     saveModel(&writer);
 
-    m_treeManager->setDataChanged(false);
+    file.close();
 
-    return path;
+    zipHelper->replaceFromFile("titles.xml",
+                               path,
+                               ZipHelper::PrependFile);
+
+    file.remove();
+
+    m_treeManager->setDataChanged(false);
+    m_indexEdited = false;
+
+    return true;
+}
+
+bool BookIndexEditor::indexEdited() const
+{
+    return m_indexEdited;
+}
+
+void BookIndexEditor::setIndexEdited(bool edited)
+{
+#ifdef DEV_BUILD
+    if(m_indexEdited && !edited)
+        qDebug("BookIndexEditor::setIndexEdited model need to be saved");
+#endif
+
+    m_indexEdited = edited;
 }
 
 void BookIndexEditor::addTitle()
@@ -151,7 +188,7 @@ void BookIndexEditor::addTitle()
 
         m_editView->m_webView->makeSelectTextTitle(text, qBound(1, count, 6), tagID);
 
-        emit indexEdited();
+        emit indexDataChanged();
     }
 }
 
@@ -170,7 +207,7 @@ void BookIndexEditor::linkTitle()
     if(!pageElement.isNull())
         pageElement.removeAttribute("tid");
 
-    emit indexEdited();
+    emit indexDataChanged();
 }
 
 void BookIndexEditor::updateActions()
@@ -183,4 +220,9 @@ void BookIndexEditor::updateActions()
 void BookIndexEditor::openPage(QModelIndex index)
 {
     m_editView->m_bookReader->goToPage(index.data(ItemRole::idRole).toInt());
+}
+
+void BookIndexEditor::indexEditedSlot()
+{
+    m_indexEdited = true;
 }
