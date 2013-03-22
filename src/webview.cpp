@@ -7,6 +7,7 @@
 #include "mainwindow.h"
 #include "bookwidget.h"
 #include "richbookreader.h"
+#include "webpagenam.h"
 
 #include <qevent.h>
 #include <qmenu.h>
@@ -197,6 +198,11 @@ LibraryBook::Ptr WebView::getLibraryBook()
     ml_return_val_on_fail2(p, "WebView::getLibraryBook book widget is null", LibraryBook::Ptr());
 
     return p->book();
+}
+
+WebPageNAM *WebView::getPageNAM()
+{
+    return qobject_cast<WebPageNAM*>(page()->networkAccessManager());
 }
 
 void WebView::setText(const QString &text)

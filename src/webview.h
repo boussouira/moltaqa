@@ -14,6 +14,7 @@
 #include "librarybook.h"
 
 class WebPage;
+class WebPageNAM;
 
 class WebView : public QWebView
 {
@@ -40,6 +41,8 @@ public:
 
     WebViewSearcher *searcher() { return m_searcher; }
     LibraryBook::Ptr getLibraryBook();
+
+    WebPageNAM *getPageNAM();
 
 protected:
     void wheelEvent(QWheelEvent *event);

@@ -142,8 +142,11 @@ void BookEditorView::editBook(LibraryBook::Ptr book, int pageID)
     m_bookEditor->setBookReader(m_bookReader);
     m_webView->setBook(book);
 
-    WebPageNAM *nam = qobject_cast<WebPageNAM*>(m_webView->page()->networkAccessManager());
-    nam->setBookMedia(m_mediaEditor);
+    WebPageNAM *nam = m_webView->getPageNAM();
+    if(nam)
+        nam->setBookMedia(m_mediaEditor);
+    else
+        qWarning() << "BookEditorView::editBook Can't get WebPageNAM";
 
     m_indexEdited = false;
     m_timer->start();
