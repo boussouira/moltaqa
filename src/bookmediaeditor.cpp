@@ -14,18 +14,6 @@
 
 #define IMAGES_PREFIX "images/"
 
-const QString IMAGE_HTML_BASE_PREVIEW =
-    "<html>"
-    "<head>"
-    "<style type=\"text/css\">"
-    "body { -webkit-user-select: none; }"
-    "img { display: block; margin-left: auto; margin-right: auto; border-style: solid; border-width: 1px; max-width: 95%; max-height: 95%}"
-    "</style>"
-    "<body>"
-    "<div><img src=\"data:image/png;base64,%1\" /></div>"
-    "</body>"
-    "</html>";
-
 enum {
     FileNameRole = Qt::UserRole + 10,
     FilePathRole,
@@ -302,6 +290,57 @@ void BookMediaEditor::addResoourceToModel(BookMediaResource *resources)
     m_imagesItem->appendRow(rowItems);
 }
 
+void BookMediaEditor::previewImage(const QModelIndex &index)
+{
+    QString imagePath = index.data(FilePathRole).toString();
+    QByteArray imageData = index.data(FileDataRole).toByteArray();
+
+    const double ffsize = imageData.size() / 1024.0;
+    const QString fsize = QLocale().toString(ffsize, 'f', 2);
+
+    QImage img = QImage::fromData(imageData,
+                                  qPrintable(QFileInfo(imagePath).suffix()));
+
+    QString details = QString("%1x%2px | %3 KB | %4").arg(img.width())
+            .arg(img.height()).arg(fsize)
+            .arg(imagePath);
+
+    ui->labelDetails->setText(details);
+
+    HtmlHelper html;
+    html.beginHead();
+    html.setCharset();
+    html.setTitle(m_book->title);
+
+    html.beginStyle();
+
+    html.beginStyleSelector("body")
+            .addStyleRule("-webkit-user-select", "none")
+            .endStyleSelector();
+
+    html.beginStyleSelector("img")
+            .addStyleRule("border-style", "solid")
+            .addStyleRule("border-width", "1px")
+            .addStyleRule("display", "block")
+            .addStyleRule("margin-left", "auto")
+            .addStyleRule("margin-right", "auto")
+            .addStyleRule("max-height", "95%")
+            .addStyleRule("max-width", "95%")
+            .endStyleSelector();
+
+    html.endStyle();
+
+    html.beginBody();
+    html.beginDiv();
+
+    html.insertImage(imagePath);
+
+    html.endAll();
+
+    QWebSettings::clearMemoryCaches();
+    m_webView->setHtml(html.html(), WebPageNAM::baseUrl());
+}
+
 void BookMediaEditor::imageGallery()
 {
     if(m_resources.isEmpty()) {
@@ -314,9 +353,41 @@ void BookMediaEditor::imageGallery()
     html.setCharset();
     html.setTitle(m_book->title);
 
-    html.beginHtmlTag("style");
-    html.appendText("body {background-color: #aaa}");
-    html.endHtmlTag();
+    html.beginStyle();
+
+    html.beginStyleSelector("body")
+            .addStyleRule("background-color", "#aaa")
+            .endStyleSelector();
+
+    html.beginStyleSelector(".book_img")
+            .addStyleRule("background-color", "#fff")
+            .addStyleRule("border", "1px solid #ccc")
+            .addStyleRule("cursor", "pointer")
+            .addStyleRule("display", "block")
+            .addStyleRule("float", "left")
+            .addStyleRule("height", "200px")
+            .addStyleRule("margin", "5px")
+            .addStyleRule("padding", "5px")
+            .addStyleRule("text-align", "center")
+            .addStyleRule("width", "200px")
+            .endStyleSelector();
+
+    html.beginStyleSelector(".book_img img")
+            .addStyleRule("border", "1px solid #000")
+            .addStyleRule("display", "block")
+            .addStyleRule("margin-bottom", "6px")
+            .addStyleRule("margin-left", "auto")
+            .addStyleRule("margin-right", "auto")
+            .addStyleRule("max-height", "180px")
+            .addStyleRule("max-width", "180px")
+            .endStyleSelector();
+
+    html.beginStyleSelector(".book_img .img_desc")
+            .addStyleRule("font-size", "0.6em")
+            .addStyleRule("margin-top", "5px")
+            .endStyleSelector();
+
+    html.endStyle();
 
     html.endHead();
 
@@ -325,19 +396,11 @@ void BookMediaEditor::imageGallery()
     foreach(BookMediaResource *media, m_resources) {
         if(media->op != BookMediaResource::Remove) {
 
-            html.beginSpan("", QString("style='cursor:pointer; display:block; float: left; margin:5px; padding: 5px; "
-                                       "border:1px solid #ccc; text-align:center; background-color: #fff; "
-                                       "width:200px; height:200px;' onclick='bookMediaEditor.insertImage(''%1'')'")
-                           .arg(media->path));
+            html.beginSpan(".book_img",
+                           QString("onclick='bookMediaEditor.insertImage(''%1'')'").arg(media->path));
 
-            html.insertImage(media->path, "",
-                             "style='display:block; border:1px solid #000; "
-                             "max-width:180px;max-height:180px;"
-                             "margin-left: auto; margin-right: auto; margin-bottom: 6px;'");
-
-            html.beginSpan("", "style='margin-top:5px; font-size:0.6em;'");
-            html.appendText(media->fileName);
-            html.endSpan();
+            html.insertImage(media->path);
+            html.insertSpan(media->fileName, ".img_desc");
 
             html.endSpan();
         }
@@ -406,23 +469,7 @@ void BookMediaEditor::modelSelectionChanged(const QModelIndex &current, const QM
             m_webView->setHtml("");
         }
     } else {
-        QByteArray imageData = current.data(FileDataRole).toByteArray();
-        QString imageSrc = QString::fromLatin1(imageData.toBase64());
-
-        const double ffsize = imageData.size() / 1024.0;
-        const QString fsize = QLocale().toString(ffsize, 'f', 2);
-        //const double ffmbsize = ffsize / 1024.0;
-        //const QString fmbsize = QLocale().toString(ffmbsize, 'f', 2);
-
-        QImage img = QImage::fromData(imageData, qPrintable(QFileInfo(current.data(FileNameRole).toString()).suffix()));
-        QString details = QString("%1x%2px | %3 KB | %4").arg(img.width())
-                .arg(img.height()).arg(fsize)
-                .arg(current.data(FilePathRole).toString());
-
-        QWebSettings::clearMemoryCaches();
-
-        ui->labelDetails->setText(details);
-        m_webView->setHtml(IMAGE_HTML_BASE_PREVIEW.arg(imageSrc));
+        previewImage(current);
     }
 }
 

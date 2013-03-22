@@ -14,6 +14,40 @@ void HtmlHelper::clear()
     m_openTags.clear();
 }
 
+HtmlHelper &HtmlHelper::beginStyleSelector(QString selector)
+{
+    ml_warn_on_fail(m_styleSelector.isEmpty(),
+                    "HtmlHelper::beginStyleSelector a style selector is already open");
+
+    m_styleSelector = selector;
+
+    m_html.append(QString("\n%1 {\n").arg(selector));
+    return (*this);
+}
+
+HtmlHelper &HtmlHelper::addStyleRule(QString name, QString value)
+{
+    m_html.append(QString("\t%1: %2;\n").arg(name).arg(value));
+    return (*this);
+}
+
+HtmlHelper &HtmlHelper::addStyleRules(QString styleRules)
+{
+    m_html.append(QString("%1; \n").arg(styleRules));
+    return (*this);
+}
+
+HtmlHelper &HtmlHelper::endStyleSelector()
+{
+    ml_warn_on_fail(m_styleSelector.size(),
+                    "HtmlHelper::endStyleSelector no style selector were set");
+
+    m_styleSelector.clear();
+
+    m_html.append("}\n");
+    return (*this);
+}
+
 void HtmlHelper::insertHtmlTag(const QString &tag, const QString &text, const QString &selector, const QString &attr)
 {
     m_html.append(QString("<%1").arg(tag));

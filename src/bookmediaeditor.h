@@ -58,6 +58,7 @@ protected:
 
     void addResoourceToModel(BookMediaResource *resources);
 
+    void previewImage(const QModelIndex &index);
     void imageGallery();
 
 protected slots:

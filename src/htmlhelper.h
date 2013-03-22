@@ -32,9 +32,17 @@ public:
     inline void beginHtml() { beginHtmlTag("html"); }
     inline void beginBody() { beginHtmlTag("body"); }
     inline void beginHead() { beginHtmlTag("head"); }
+    inline void beginStyle() { beginHtmlTag("style", "", "type='text/css'"); }
+
     inline void endHtml() { endHtmlTag(); }
     inline void endBody() { endHtmlTag(); }
     inline void endHead() { endHtmlTag(); }
+    inline void endStyle() { endHtmlTag(); }
+
+    HtmlHelper& beginStyleSelector(QString selector);
+    HtmlHelper& addStyleRule(QString name, QString value);
+    HtmlHelper& addStyleRules(QString styleRules);
+    HtmlHelper& endStyleSelector();
 
     inline void setTitle(const QString &title) { insertHtmlTag("title", title); }
 
@@ -119,6 +127,7 @@ protected:
     QString m_html;
     QDir m_jsDir;
     QStack<QString> m_openTags;
+    QString m_styleSelector;
 };
 
 #endif // HTMLHELPER_H
