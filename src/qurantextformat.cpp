@@ -45,7 +45,7 @@ void QuranTextFormat::insertAyaText(const QString &pAyaText, int pAyaNumber, int
 
     } else {
         m_htmlHelper.beginSpan(".ayanumber", QString("ayaimage='%1'").arg(pAyaNumber));
-        m_htmlHelper.append(_u(" ﴿%1﴾ ").arg(Utils::String::Arabic::arabicNumbers(pAyaNumber)));
+        m_htmlHelper.appendText(_u(" ﴿%1﴾ ").arg(Utils::String::Arabic::arabicNumbers(pAyaNumber)));
         m_htmlHelper.endSpan();
     }
 

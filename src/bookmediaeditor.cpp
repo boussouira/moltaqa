@@ -315,7 +315,7 @@ void BookMediaEditor::imageGallery()
     html.setTitle(m_book->title);
 
     html.beginHtmlTag("style");
-    html.append("body {background-color: #aaa}");
+    html.appendText("body {background-color: #aaa}");
     html.endHtmlTag();
 
     html.endHead();
@@ -336,7 +336,7 @@ void BookMediaEditor::imageGallery()
                              "margin-left: auto; margin-right: auto; margin-bottom: 6px;'");
 
             html.beginSpan("", "style='margin-top:5px; font-size:0.6em;'");
-            html.append(media->fileName);
+            html.appendText(media->fileName);
             html.endSpan();
 
             html.endSpan();

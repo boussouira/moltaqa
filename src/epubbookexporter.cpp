@@ -314,7 +314,7 @@ void EPubBookExporter::writeAuthorInfo()
 
             bookHtml.beginHtmlTag("a", "",
                                   QString("href='moltaqa://?c=open&amp;t=book&amp;id=%1'").arg(books[i]->uuid));
-            bookHtml.append(books[i]->title);
+            bookHtml.appendText(books[i]->title);
             bookHtml.endHtmlTag();
 
         }
@@ -355,12 +355,12 @@ void EPubBookExporter::writeIntro()
     html.beginBody();
 
     html.beginParagraph();
-    html.append(tr("الكتاب: "));
+    html.appendText(tr("الكتاب: "));
     html.insertLink(m_book->title, "../book_info.xhtml");
     html.endParagraph();
 
     html.beginParagraph();
-    html.append(tr("المؤلف: "));
+    html.appendText(tr("المؤلف: "));
     html.insertLink(m_book->authorName, "../author_info.xhtml");
     html.endParagraph();
 

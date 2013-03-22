@@ -279,7 +279,7 @@ void HtmlBookExporter::writePage(QDir &dir, BookPage *page)
     }
 
     helper.beginDiv("#pageText");
-    helper.append(page->text);
+    helper.appendText(page->text);
     helper.endDiv();
 
     helper.endDiv(); // div#m_cssID

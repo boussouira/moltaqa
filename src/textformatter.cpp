@@ -31,7 +31,7 @@ QString TextFormatter::getText()
 
 void TextFormatter::insertText(QString text)
 {
-    m_htmlHelper.append(text);
+    m_htmlHelper.appendText(text);
 }
 
 QString TextFormatter::getHtmlView(const QString &text, const QString &jsCode)

@@ -463,7 +463,7 @@ QString BookWidget::getBreadcrumbs()
         h.insertHtmlTag("span", list.at(i).second, "", QString("tid='%1'").arg(list.at(i).first));
 
         if(i)
-            h.append(" > ");
+            h.appendText(" > ");
     }
 
     return h.html();

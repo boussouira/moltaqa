@@ -26,7 +26,7 @@ public:
 
     void clear();
     inline QString html() { return m_html; }
-    inline void append(QString text) { m_html.append(text); }
+    inline void appendText(QString text) { m_html.append(text); }
 
     inline void addDoctype() { m_html.append("<!DOCTYPE html>"); }
     inline void beginHtml() { beginHtmlTag("html"); }

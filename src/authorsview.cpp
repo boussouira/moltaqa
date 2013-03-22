@@ -179,7 +179,7 @@ void AuthorsView::setCurrentAuth(AuthorInfo::Ptr info)
 
             bookHtml.beginHtmlTag("a", "",
                                   QString("href='moltaqa://?c=open&t=book&id=%1'").arg(books[i]->uuid));
-            bookHtml.append(books[i]->title);
+            bookHtml.appendText(books[i]->title);
             bookHtml.endHtmlTag();
 
         }
