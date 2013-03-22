@@ -9,6 +9,7 @@ class WindowsView;
 
 class AbstarctView;
 class QListWidget;
+class QListWidgetItem;
 class QModelIndex;
 
 class WindowsView : public QDialog
@@ -29,6 +30,7 @@ protected:
 
 protected slots:
     void currentViewChanged(const QModelIndex &current, const QModelIndex &previous);
+    void itemClicked(QListWidgetItem *item);
 
 signals:
     void selectView(QString title);

@@ -46,6 +46,9 @@ void WindowsView::selectCurrentView()
     connect(m_listWidget->selectionModel(),
             SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             SLOT(currentViewChanged(QModelIndex,QModelIndex)));
+
+    connect(m_listWidget, SIGNAL(itemClicked(QListWidgetItem*)),
+            SLOT(itemClicked(QListWidgetItem*)));
 }
 
 void WindowsView::selectNextItem(int summand)
@@ -89,5 +92,13 @@ void WindowsView::currentViewChanged(const QModelIndex &current, const QModelInd
 
     if(current.isValid()) {
         emit selectView(current.data().toString());
+    }
+}
+
+void WindowsView::itemClicked(QListWidgetItem *item)
+{
+    if(item) {
+        selectView(item->text());
+        accept();
     }
 }
