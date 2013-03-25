@@ -242,7 +242,7 @@ void EPubBookExporter::writeBookInfo()
     xhtml += "\n</html>";
 
 
-    write("OEBPS/book_info.xhtml", xhtml, true);
+    write("OEBPS/Text/book_info.xhtml", xhtml, true);
 }
 
 void EPubBookExporter::writeAuthorInfo()
@@ -340,7 +340,7 @@ void EPubBookExporter::writeAuthorInfo()
     xhtml += "\n</html>";
 
 
-    write("OEBPS/author_info.xhtml", xhtml, true);
+    write("OEBPS/Text/author_info.xhtml", xhtml, true);
 }
 
 void EPubBookExporter::writeIntro()
@@ -356,12 +356,12 @@ void EPubBookExporter::writeIntro()
 
     html.beginParagraph();
     html.appendText(tr("الكتاب: "));
-    html.insertLink(m_book->title, "../book_info.xhtml");
+    html.insertLink(m_book->title, "book_info.xhtml");
     html.endParagraph();
 
     html.beginParagraph();
     html.appendText(tr("المؤلف: "));
-    html.insertLink(m_book->authorName, "../author_info.xhtml");
+    html.insertLink(m_book->authorName, "author_info.xhtml");
     html.endParagraph();
 
     html.endAll();
@@ -402,8 +402,8 @@ void EPubBookExporter::writeContent()
         << "    <manifest>" << "\n"
         << "        <item href=\"toc.ncx\" id=\"ncx\" media-type=\"application/x-dtbncx+xml\" />" << "\n"
         << "        <item id=\"stylesheet\" href=\"Styles/main.css\" media-type=\"text/css\" />" << "\n"
-        << "        <item id=\"author_info\" href=\"author_info.xhtml\" media-type=\"application/xhtml+xml\" />" << "\n"
-        << "        <item id=\"book_info\" href=\"book_info.xhtml\" media-type=\"application/xhtml+xml\" />" << "\n";
+        << "        <item id=\"author_info\" href=\"Text/author_info.xhtml\" media-type=\"application/xhtml+xml\" />" << "\n"
+        << "        <item id=\"book_info\" href=\"Text/book_info.xhtml\" media-type=\"application/xhtml+xml\" />" << "\n";
 
     if(!m_book->isQuran())
         out << "        <item id=\"intro\" href=\"Text/intro.xhtml\" media-type=\"application/xhtml+xml\" />" << "\n";
