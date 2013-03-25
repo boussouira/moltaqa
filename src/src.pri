@@ -158,7 +158,8 @@ SOURCES += mainwindow.cpp \
     authorinfo.cpp \
     bookutils.cpp \
     bookviewbase.cpp \
-    bookmediaeditor.cpp
+    bookmediaeditor.cpp \
+    bookfilesreader.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -305,7 +306,8 @@ HEADERS += mainwindow.h \
     authorinfo.h \
     bookutils.h \
     bookviewbase.h \
-    bookmediaeditor.h
+    bookmediaeditor.h \
+    bookfilesreader.h
 
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \

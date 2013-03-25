@@ -33,12 +33,18 @@ protected:
     void write(const QString &fileName, const QString &data, bool prepend);
     void writePage(BookPage *page);
 
+    void writeImages();
+
 protected:
+    friend class EPubImageReader;
+
     ZipWriterManager m_zipWriter;
     QStringList m_page;
     QString m_bookUID;
     int m_titleCount;
     QHash<int, int> m_sowarPages; ///< Key: Sora number, Value: page number
+    QHash<QString, QString> m_images;
+    bool m_bookHasImages;
 };
 
 #endif // EPUBBOOKEXPORTER_H

@@ -24,11 +24,13 @@ protected:
     void writeTocItem(QTextStream &out, QDomElement &element);
     void writePages();
     void writePage(QDir &dir, BookPage *page);
+    void writeImages();
 
 protected:
     RichBookReader *m_reader;
     QList<int> m_pageTitles;
     QHash<int, int> m_sowarPages; ///< Key: Sora number, Value: page number
+    bool m_bookHasImages;
 };
 
 #endif // HTMLBOOKEXPORTER_H

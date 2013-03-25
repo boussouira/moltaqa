@@ -13,12 +13,46 @@
 #include "mainwindow.h"
 #include "bookreaderhelper.h"
 #include "htmlhelper.h"
+#include "bookfilesreader.h"
+#include "mimeutils.h"
 
 #include <qtextstream.h>
+
+#define IMAGES_PREFIX "images/"
+#define IMAGES_PREFIX_size 7
+
+class EPubImageReader : public BookFilesReader
+{
+public:
+    EPubImageReader(EPubBookExporter *exporter) : m_exporter(exporter) {}
+
+    bool acceptFile(QString filePath)
+    {
+        return filePath.startsWith(IMAGES_PREFIX)
+                && filePath.size() > IMAGES_PREFIX_size;
+    }
+
+    bool readFile(QString filePath, QIODevice &file)
+    {
+        QByteArray out;
+        Utils::Files::copyData(file, out);
+
+        m_exporter->m_zipWriter.add(QString("OEBPS/%1").arg(filePath), out,
+                                    ZipWriterManager::AppendFile);
+
+        m_exporter->m_images.insert(QString(filePath).replace(IMAGES_PREFIX, "x"),
+                                    filePath);
+
+        return true;
+    }
+
+    EPubBookExporter *m_exporter;
+};
 
 EPubBookExporter::EPubBookExporter(QObject *parent) :
     BookExporter(parent)
 {
+    m_bookHasImages = false;
 }
 
 void EPubBookExporter::start()
@@ -27,6 +61,10 @@ void EPubBookExporter::start()
 
     init();
     writePages();
+
+    if(m_bookHasImages)
+        writeImages();
+
     writeContent();
 
     if(!m_book->isQuran()) {
@@ -414,6 +452,14 @@ void EPubBookExporter::writeContent()
             << "\n";
     }
 
+    QHashIterator<QString, QString> i(m_images);
+     while (i.hasNext()) {
+         i.next();
+         out << "        "
+             << "<item id=\"" << i.key() << "\" href=\"" << i.value()
+             << "\" media-type=\"" << Utils::Mimes::fileTypeFromFileName(i.key()) << "\" />" << "\n";
+     }
+
     out << "    </manifest>" << "\n"
         << "    <spine toc=\"ncx\">" << "\n";
 
@@ -587,6 +633,12 @@ void EPubBookExporter::writePage(BookPage *page)
         page->text.replace("<footnote>", "<div class=\"footnote\">");
     }
 
+    QRegExp rx("src\\s*=\\s*\"images/");
+    if(m_bookHasImages || page->text.contains(rx)) {
+        page->text.replace(rx, "src=\"../images/");
+        m_bookHasImages = true;
+    }
+
     out += page->text;
 
     if(m_addPageNumber && !m_book->isQuran()
@@ -602,4 +654,11 @@ void EPubBookExporter::writePage(BookPage *page)
 
     write(QString("OEBPS/Text/%1.xhtml").arg(fileName), out, false);
     m_page.append(fileName);
+}
+
+void EPubBookExporter::writeImages()
+{
+    EPubImageReader reader(this);
+    reader.setBook(m_book);
+    reader.start();
 }

@@ -15,20 +15,61 @@
 #include "mainwindow.h"
 #include "bookreaderhelper.h"
 #include "bookutils.h"
+#include "bookfilesreader.h"
 
 #include <qtextstream.h>
 #include <qsettings.h>
+
+#define IMAGES_PREFIX "images/"
+#define IMAGES_PREFIX_size 7
+
+class HtmlImageReader : public BookFilesReader
+{
+public:
+    HtmlImageReader(HtmlBookExporter *exporter) : m_exporter(exporter) {}
+
+    bool acceptFile(QString filePath)
+    {
+        return filePath.startsWith(IMAGES_PREFIX)
+                && filePath.size() > IMAGES_PREFIX_size;
+    }
+
+    bool readFile(QString filePath, QIODevice &file)
+    {
+        QDir dir(m_exporter->genereatedPath());
+
+        QFile outFile(dir.absoluteFilePath(filePath));
+        ml_return_val_on_fail2(outFile.open(QIODevice::WriteOnly),
+                               "HtmlImageReader::readFile Can't open file" << outFile.fileName()
+                               << "Error:" << outFile.errorString(),
+                               true);
+
+
+        Utils::Files::copyData(file, outFile);
+
+        outFile.close();
+
+        return true;
+    }
+
+    HtmlBookExporter *m_exporter;
+};
 
 HtmlBookExporter::HtmlBookExporter(QObject *parent) :
     BookExporter(parent)
 {
     m_reader = 0;
+    m_bookHasImages = false;
 }
 
 void HtmlBookExporter::start()
 {
     openReader();
     writePages();
+
+    if(m_bookHasImages)
+        writeImages();
+
     writeTOC();
 }
 
@@ -278,6 +319,12 @@ void HtmlBookExporter::writePage(QDir &dir, BookPage *page)
         helper.endDiv(); // div#pageHeader
     }
 
+    QRegExp rx("src\\s*=\\s*\"images/");
+    if(m_bookHasImages || page->text.contains(rx)) {
+        page->text.replace(rx, "src=\"../images/");
+        m_bookHasImages = true;
+    }
+
     helper.beginDiv("#pageText");
     helper.appendText(page->text);
     helper.endDiv();
@@ -313,3 +360,14 @@ void HtmlBookExporter::writePage(QDir &dir, BookPage *page)
     out.flush();
     file.close();
 }
+
+void HtmlBookExporter::writeImages()
+{
+    QDir dir(m_genereatedPath);
+    dir.mkdir("images");
+
+    HtmlImageReader reader(this);
+    reader.setBook(m_book);
+    reader.start();
+}
+
