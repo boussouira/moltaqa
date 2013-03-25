@@ -53,7 +53,7 @@ public:
     bool isDataChanged() { return m_dataChanged; }
     void setDataChanged(bool changed) { m_dataChanged = changed; }
 
-protected slots:
+public slots:
     void dataChanged();
     void updateActions();
 

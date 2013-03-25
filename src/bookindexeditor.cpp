@@ -226,3 +226,57 @@ void BookIndexEditor::indexEditedSlot()
 {
     m_indexEdited = true;
 }
+
+void BookIndexEditor::on_toolButton_clicked()
+{
+    ui->treeView->selectionModel()->clear();
+
+    bool ok;
+    QString text = m_editView->m_webView->selectedText().simplified();
+
+    if(text.isEmpty())
+        text = QInputDialog::getText(this, tr("عنوان جديد"),
+                                     tr("العنوان الجديد:"), QLineEdit::Normal,
+                                     "", &ok).trimmed();
+    if(text.size()) {
+
+        qDebug() << "[*] Selecting:" << text;
+        for(int i=0; i<m_model->rowCount(); i++) {
+            QStandardItem *item = m_model->item(i);
+            selectItem(item, text);
+        }
+    }
+
+    int count = ui->treeView->selectionModel()->selectedRows().count();
+    if (count < 1)
+        return;
+
+    qDebug() << "[*] Selected rows count:" << count;
+    QModelIndex index = ui->treeView->selectionModel()->selectedRows().first();
+    m_model->insertRow(index.row(), index.parent());
+
+    QMap<int, QVariant> map;
+    map.insert(Qt::DisplayRole, QString("%1 (%2)").arg(text.remove('&').remove('#').trimmed()).arg(count));
+    m_model->setItemData(index, map);
+
+    qDebug() << "[*] Move to the left";
+    m_treeManager->moveLeft();
+
+    qDebug() << "[*] Done" << '\n';
+}
+
+void BookIndexEditor::selectItem(QStandardItem *item, QString text)
+{
+    if(item->text().startsWith(text)) {
+        ui->treeView->selectionModel()->select(item->index(),
+                                               QItemSelectionModel::Select|QItemSelectionModel::Rows);
+        item->setText(item->text().remove(0, text.size()).remove('&').remove('#').trimmed());
+    }
+
+    if(item->hasChildren()) {
+        for(int i=0; i<item->rowCount(); i++) {
+            QStandardItem *child = item->child(i);
+            selectItem(child, text);
+        }
+    }
+}

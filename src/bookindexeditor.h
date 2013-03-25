@@ -40,9 +40,13 @@ protected slots:
 protected:
      void setModel(QStandardItemModel *model);
      void writeItem(QStandardItem *item, QXmlStreamWriter *writer);
+     void selectItem(QStandardItem *item, QString text);
 
 signals:
      void indexDataChanged();
+
+private slots:
+     void on_toolButton_clicked();
 
 private:
     Ui::BookIndexEditor *ui;
