@@ -1,4 +1,4 @@
-﻿[Setup]
+[Setup]
 AppId={{15FA1AB7-9C81-43E8-9882-C7145422FE7E}
 AppName=مكتبة الملتقى
 AppVerName=مكتبة الملتقى 0.9a4
@@ -53,6 +53,7 @@ Source: "bin\QtXml4.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 ; Other stuff
 Source: "share\moltaqa-lib\*"; DestDir: "{app}\share\moltaqa-lib"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "bin\sqldrivers\*"; DestDir: "{app}\bin\sqldrivers"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "bin\imageformats\*"; DestDir: "{app}\bin\imageformats"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 ; Fonts
 Source: "share\fonts\moltaqa-lib\*"; DestDir: "{fonts}"; Flags: ignoreversion
