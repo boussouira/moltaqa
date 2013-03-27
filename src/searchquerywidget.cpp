@@ -91,6 +91,20 @@ void SearchQueryWidget::setSearchQuery(const QString &text)
         ui->lineDefaultQuery->setText(text);
 }
 
+QString SearchQueryWidget::searchQueryStr(bool clean)
+{
+    if(clean && m_searchQuery.size() > 2) {
+        QString str = m_searchQuery;
+        str.remove(0, 1);
+        str.remove(str.size()-1, 1);
+        str.replace("][", " ");
+
+        return str;
+    }
+
+    return m_searchQuery;
+}
+
 void SearchQueryWidget::loadSettings()
 {
     QSettings settings;
@@ -193,6 +207,8 @@ Query *SearchQueryWidget::defaultQuery(const wchar_t *searchField)
     QueryParser queryPareser(searchField, &analyzer);
     queryPareser.setAllowLeadingWildcard(true);
 
+    m_searchQuery = QString("[%1]").arg(qureyStr);
+
     return Utils::CLucene::parse(&queryPareser,
                                  qureyStr,
                                  ui->checkDefaultQuery->isChecked());
@@ -252,6 +268,12 @@ Query *SearchQueryWidget::advancedQuery(const wchar_t *searchField)
 
     if(withoutQuery)
         query->add(withoutQuery, BooleanClause::MUST_NOT);
+
+    m_searchQuery = QString("[%1][%2][%3][%4]")
+            .arg(ui->lineAllWordsQuery->text().trimmed())
+            .arg(ui->lineAnyWordQuery->text().trimmed())
+            .arg(ui->lineExactQuery->text().trimmed())
+            .arg(ui->lineWithoutQuery->text().trimmed());
 
     return query;
 }

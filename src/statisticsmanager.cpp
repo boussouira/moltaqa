@@ -110,7 +110,7 @@ void StatisticsManager::dequeue(QString type, QString data, bool printDebug)
 void StatisticsManager::printStatistics(QString type, QString data)
 {
     type[0] = type[0].toUpper();
-    qDebug() << qPrintable(type + ":") << data;
+    qDebug() << qPrintable(type + ":") << qPrintable(data);
 }
 
 void StatisticsManager::maySendStatistics()

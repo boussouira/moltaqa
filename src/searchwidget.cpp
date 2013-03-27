@@ -293,6 +293,13 @@ void SearchWidget::doneSearching()
 
     ui->searchQueryWidget->saveSearchQuery();
 
+    QString log = QString("query: %1, take %2 ms, results count %3")
+            .arg(ui->searchQueryWidget->searchQueryStr().trimmed())
+            .arg(m_searcher ? m_searcher->searchTime() : -1)
+            .arg(m_searcher ? m_searcher->resultsCount() : -1);
+
+    StatisticsManager::instance()->add("search", log);
+
     if(m_searcher
             && Utils::Settings::get("Search/returnToSearchWidget", true).toBool()
             && !m_searcher->resultsCount()) {

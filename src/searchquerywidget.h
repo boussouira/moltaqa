@@ -27,6 +27,7 @@ public:
     lucene::search::Query *searchQuery(const wchar_t *searchField);
 
     void setSearchQuery(const QString &text);
+    QString searchQueryStr(bool clean=false);
 
     void loadSettings();
     void saveSettings();
@@ -53,6 +54,7 @@ private:
     Ui::SearchQueryWidget *ui;
     QStringListModel *m_completerModel;
     QCompleter *m_completer;
+    QString m_searchQuery;
     bool m_advancedSearch;
 };
 
