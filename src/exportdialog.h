@@ -11,8 +11,8 @@ class ExportDialog : public QWizard
 public:
     ExportDialog(QWidget *parent = 0);
 
-    void setBooksToImport(QList<int> list) { m_bookToImport = list; }
-    QList<int> booksToImport() { return m_bookToImport; }
+    void setBooksToImport(QList<int> list);
+    QList<int> booksToImport();
 
 protected:
     QList<int> m_bookToImport;

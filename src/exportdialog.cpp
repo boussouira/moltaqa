@@ -16,4 +16,14 @@ ExportDialog::ExportDialog(QWidget *parent) :
     addPage(new ExportPage(this));
 }
 
+void ExportDialog::setBooksToImport(QList<int> list)
+{
+    m_bookToImport = list;
+}
+
+QList<int> ExportDialog::booksToImport()
+{
+    return m_bookToImport;
+}
+
 
