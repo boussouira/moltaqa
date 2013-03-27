@@ -9,6 +9,7 @@
 #include "utils.h"
 #include "exportdialog.h"
 #include "exportformats.h"
+#include "stringutils.h"
 
 #include <qboxlayout.h>
 #include <qlabel.h>
@@ -266,7 +267,11 @@ void ExportPage::bookExported(QString book)
 void ExportPage::doneExporting()
 {
     wizard()->setOption(QWizard::NoCancelButton);
-    m_progressBar->setValue(m_progressBar->maximum());
+    m_progressBar->hide();
+    int exportCount = m_treeWidget->model() ? m_treeWidget->model()->rowCount() : 0;
+    m_label->setText(tr("تم تصدير %1 بنجاح")
+                     .arg(Utils::String::Arabic::plural(exportCount,
+                                                        Utils::String::Arabic::BOOK)));
     m_doneExport = true;
 
     emit completeChanged();
