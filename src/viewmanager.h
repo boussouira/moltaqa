@@ -23,8 +23,6 @@ public:
     void setCurrentView(AbstarctView *view);
     void setDefautView(AbstarctView *view);
 
-    void setWindowsMenu(QMenu *menu);
-    void setNavigationMenu(QMenu *menu);
     void setupWindowsActions();
 
 protected slots:

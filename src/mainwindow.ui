@@ -107,9 +107,17 @@
     <property name="title">
      <string>بحث</string>
     </property>
+    <widget class="QMenu" name="menuSearchForAll">
+     <property name="title">
+      <string>بحث عن كل</string>
+     </property>
+     <addaction name="actionSearchAllSheer"/>
+    </widget>
     <addaction name="actionSearchInBook"/>
     <addaction name="actionSearchFavourites"/>
     <addaction name="actionSearchView"/>
+    <addaction name="separator"/>
+    <addaction name="menuSearchForAll"/>
    </widget>
    <addaction name="menuLibrary"/>
    <addaction name="menuNavigation"/>
@@ -244,6 +252,11 @@
    </property>
    <property name="shortcut">
     <string>F11</string>
+   </property>
+  </action>
+  <action name="actionSearchAllSheer">
+   <property name="text">
+    <string>الأبيات الشعرية</string>
    </property>
   </action>
  </widget>

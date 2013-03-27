@@ -131,8 +131,6 @@ bool MainWindow::init()
     }
 
     m_viewManager = new ViewManager(this);
-    m_viewManager->setWindowsMenu(ui->menuWindows);
-    m_viewManager->setNavigationMenu(ui->menuNavigation);
     setCentralWidget(m_viewManager);
 
     try {
@@ -440,6 +438,31 @@ BookEditorView *MainWindow::editorView()
     Q_CHECK_PTR(m_editorView);
 
     return m_editorView;
+}
+
+QAction *MainWindow::getAction(QString actionId)
+{
+    if(actionId == "search.all.sheer")
+        return ui->actionSearchAllSheer;
+
+#ifdef DEV_BUILD
+    qWarning() << "MainWindow::getAction no Action found for:" << actionId;
+#endif
+        return 0;
+}
+
+QMenu *MainWindow::getMenu(QString menuId)
+{
+    if(menuId == "menu.navigation")
+        return ui->menuNavigation;
+    else if( menuId == "menu.windows")
+        return ui->menuWindows;
+
+#ifdef DEV_BUILD
+    qWarning() << "MainWindow::getMenu no Menu found for:" << menuId;
+#endif
+
+    return 0;
 }
 
 void MainWindow::controlCenter()

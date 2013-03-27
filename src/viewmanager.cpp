@@ -12,13 +12,20 @@
 ViewManager::ViewManager(QWidget *parent) :
     QStackedWidget(parent),
      m_mainWindow(MW),
-     m_windowsMenu(0),
-     m_navigationsMenu(0),
      m_copyLinkAction(0),
      m_defautView(0),
      m_currentView(0)
 {
     m_copyLinkAction = new QAction(tr("نسخ رابط الشاشة"), this);
+
+    m_windowsMenu = MW->getMenu("menu.windows");
+
+    m_navigationsMenu = MW->getMenu("menu.navigation");
+    if(m_navigationsMenu)
+        m_navigationsMenu->addAction(m_copyLinkAction);
+
+    ml_warn_on_fail(m_windowsMenu, "ViewManager: Can't get Windows menu");
+    ml_warn_on_fail(m_navigationsMenu, "ViewManager: Can't get Navigation menu");
 
     connect(m_copyLinkAction, SIGNAL(triggered()), SLOT(copyViewLink()));
 }
@@ -105,17 +112,6 @@ void ViewManager::setCurrentView(int index)
     AbstarctView *view = qobject_cast<AbstarctView*>(widget(index));
     if(view)
         setCurrentView(view);
-}
-
-void ViewManager::setWindowsMenu(QMenu *menu)
-{
-    m_windowsMenu = menu;
-}
-
-void ViewManager::setNavigationMenu(QMenu *menu)
-{
-    m_navigationsMenu = menu;
-    menu->addAction(m_copyLinkAction);
 }
 
 void ViewManager::setupWindowsActions()

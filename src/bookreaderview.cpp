@@ -115,8 +115,6 @@ void BookReaderView::createMenus()
     m_removeTashekilAct->setCheckable(true);
     m_removeTashekilAct->setChecked(Utils::Settings::get("Style/removeTashekil", false).toBool());
 
-    QAction *getSheerAct = new QAction(tr("الأبيات الشعرية"), this);
-
     m_actionNextAYA->setShortcut(QKeySequence("J"));
     m_actionPrevAYA->setShortcut(QKeySequence("K"));
     m_actionNextPage->setShortcut(QKeySequence("N"));
@@ -171,8 +169,6 @@ void BookReaderView::createMenus()
     m_navActions << actionSeparator(this);
     m_navActions << m_bookInfoAct;
     m_navActions << readHistoryAct;
-    m_navActions << actionSeparator(this);
-    m_navActions << getSheerAct;
 
     m_toolBars << m_toolBarGeneral;
     m_toolBars << m_toolBarNavigation;
@@ -181,6 +177,10 @@ void BookReaderView::createMenus()
 
     connect(m_viewManager, SIGNAL(pageChanged()), SLOT(updateActions()));
     connect(m_actionEditBook, SIGNAL(triggered()), SLOT(editCurrentBook()));
+
+    QAction *getSheerAct = MW->getAction("search.all.sheer");
+    if(getSheerAct)
+        connect(getSheerAct, SIGNAL(triggered()), SLOT(getSheer()));
 
     // Navigation actions
     connect(m_actionNextPage, SIGNAL(triggered()), m_viewManager, SLOT(nextPage()));
@@ -192,7 +192,6 @@ void BookReaderView::createMenus()
     connect(m_actionGotToPage, SIGNAL(triggered()), m_viewManager, SLOT(goToPage()));
     connect(m_bookInfoAct, SIGNAL(triggered()), m_viewManager, SLOT(showBookInfo()));
     connect(readHistoryAct, SIGNAL(triggered()), m_viewManager, SLOT(showBookHistory()));
-    connect(getSheerAct, SIGNAL(triggered()), SLOT(getSheer()));
     connect(m_removeTashekilAct, SIGNAL(triggered(bool)), SLOT(removeTashkil(bool)));
 
     // Generale actions

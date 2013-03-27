@@ -50,6 +50,9 @@ public:
     SearchView *searchView();
     BookEditorView *editorView();
 
+    QAction *getAction(QString actionId);
+    QMenu *getMenu(QString menuId);
+
 protected:
     void closeEvent(QCloseEvent *event);
     void setupProgressWidget();
