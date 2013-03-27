@@ -228,6 +228,11 @@ void ExportPage::initializePage()
     m_thread->setOutDir(outDir);
 
     m_thread->start();
+
+    wizard()->button(QWizard::CancelButton)->disconnect();
+
+    connect(wizard()->button(QWizard::CancelButton), SIGNAL(clicked()), m_thread, SLOT(stop()));
+    connect(wizard()->button(QWizard::FinishButton), SIGNAL(clicked()), SLOT(openOutDir()));
 }
 
 bool ExportPage::isComplete() const
@@ -260,6 +265,7 @@ void ExportPage::bookExported(QString book)
 
 void ExportPage::doneExporting()
 {
+    wizard()->setOption(QWizard::NoCancelButton);
     m_progressBar->setValue(m_progressBar->maximum());
     m_doneExport = true;
 

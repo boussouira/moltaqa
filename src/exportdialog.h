@@ -14,12 +14,7 @@ public:
     void setBooksToImport(QList<int> list) { m_bookToImport = list; }
     QList<int> booksToImport() { return m_bookToImport; }
 
-protected slots:
-    void pageChanged(int pageID);
-    void cancelExport();
-
 protected:
-    ExportPage *m_exportPage;
     QList<int> m_bookToImport;
 };
 
