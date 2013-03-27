@@ -474,20 +474,23 @@ void MainWindow::controlCenter()
 void MainWindow::importBookDialog()
 {
     ImportDialog *dialog = new ImportDialog(0);
-    connect(dialog, SIGNAL(openBook(int)), this, SLOT(openBook(int)));
-
+    dialog->setWindowIcon(windowIcon());
     dialog->show();
+
+    connect(dialog, SIGNAL(openBook(int)), this, SLOT(openBook(int)));
 }
 
 void MainWindow::importFromShamela()
 {
     ShamelaImportDialog importDialog;
+    importDialog.setWindowIcon(windowIcon());
     importDialog.exec();
 }
 
 void MainWindow::exportBooks()
 {
     ExportDialog exportDialog;
+    exportDialog.setWindowIcon(windowIcon());
     exportDialog.exec();
 }
 

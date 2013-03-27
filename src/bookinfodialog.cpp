@@ -3,10 +3,12 @@
 #include "utils.h"
 #include "authorsmanager.h"
 #include "librarymanager.h"
+#include "mainwindow.h"
 #include <qboxlayout.h>
 
 BookInfoDialog::BookInfoDialog(QWidget *parent) : QWidget(parent)
 {
+    setWindowIcon(MW->windowIcon());
     setAttribute(Qt::WA_DeleteOnClose);
 
     m_view = new WebView(this);
