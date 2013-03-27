@@ -54,6 +54,8 @@ BookWidget::BookWidget(LibraryBook::Ptr book, QWidget *parent):
     setLayout(m_layout);
     setAutoFillBackground(true);
 
+    connect(&m_watcher, SIGNAL(finished()), SLOT(indexModelReady()));
+
     loadSettings();
     loadIndexModel();
 
@@ -70,7 +72,6 @@ BookWidget::BookWidget(LibraryBook::Ptr book, QWidget *parent):
     connect(m_reader, SIGNAL(textChanged()), SIGNAL(textChanged()));
     connect(m_reader, SIGNAL(textChanged()), m_indexWidget, SLOT(displayBookInfo()));
     connect(m_view->page()->action(QWebPage::Reload), SIGNAL(triggered()), SLOT(reloadCurrentPage()));
-    connect(&m_watcher, SIGNAL(finished()), SLOT(indexModelReady()));
 
     if(!m_book->isQuran()) {
         connect(m_view, SIGNAL(nextPage()), SLOT(wheelNextPage()));
