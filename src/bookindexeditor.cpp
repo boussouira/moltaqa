@@ -133,7 +133,7 @@ bool BookIndexEditor::save(ZipHelper *zipHelper)
 
     zipHelper->replaceFromFile("titles.xml",
                                path,
-                               ZipHelper::PrependFile);
+                               ZipHelper::Top);
 
     file.remove();
 

@@ -72,7 +72,7 @@ void NewBookWriter::addPage(BookPage *page)
         QString pageText = processPageText(page->pageID, page->text);
         m_zipWriter.add(QString("pages/p%1.html").arg(page->pageID),
                         pageText.toUtf8(),
-                        ZipWriterManager::AppendFile);
+                        ZipWriterManager::Bottom);
     }
 }
 
@@ -81,7 +81,7 @@ void NewBookWriter::addPageText(int pageID, const QString &text)
     QString pageText = processPageText(pageID, text);
     m_zipWriter.add(QString("pages/p%1.html").arg(pageID),
                     pageText.toUtf8(),
-                    ZipWriterManager::PrependFile);
+                    ZipWriterManager::Top);
 }
 
 void NewBookWriter::addTitle(const QString &title, int tid, int level)
@@ -249,13 +249,13 @@ void NewBookWriter::writeMetaFiles()
     m_titlesWriter.writeEndDocument();
     m_titlesFile.close();
 
-    m_zipWriter.addFromFile("titles.xml", m_titlesPath, ZipWriterManager::PrependFile);
+    m_zipWriter.addFromFile("titles.xml", m_titlesPath, ZipWriterManager::Top);
 
     // Pages info file
     m_pagesWriter.writeEndDocument();
     m_pagesFile.close();
 
-    m_zipWriter.addFromFile("pages.xml", m_pagesPath, ZipWriterManager::PrependFile);
+    m_zipWriter.addFromFile("pages.xml", m_pagesPath, ZipWriterManager::Top);
 
     m_writeMeta = false;
 }

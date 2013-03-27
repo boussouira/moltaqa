@@ -118,7 +118,7 @@ bool ZipWriterManager::close()
 
 void ZipWriterManager::add(const QString &fileName, const QByteArray &data, ZipWriterManager::InsertOrder order)
 {
-    if(order == ZipWriterManager::AppendFile) {
+    if(order == ZipWriterManager::Bottom) {
         openBottomZip();
         m_bottomZip.add(fileName, data);
     } else {
@@ -128,7 +128,7 @@ void ZipWriterManager::add(const QString &fileName, const QByteArray &data, ZipW
 
 void ZipWriterManager::addFromFile(const QString &fileName, const QString &filePath, ZipWriterManager::InsertOrder order)
 {
-    if(order == ZipWriterManager::AppendFile) {
+    if(order == ZipWriterManager::Bottom) {
         openBottomZip();
         m_bottomZip.addFromFile(fileName, filePath);
     } else {
@@ -138,7 +138,7 @@ void ZipWriterManager::addFromFile(const QString &fileName, const QString &fileP
 
 void ZipWriterManager::addFromZip(const QString &filePath, ZipWriterManager::InsertOrder order)
 {
-    if(order == ZipWriterManager::AppendFile) {
+    if(order == ZipWriterManager::Bottom) {
         openBottomZip();
         m_bottomZip.addFromZip(filePath);
     } else {
@@ -195,8 +195,8 @@ void ZipHelper::creatDB()
 
     m_query = QSqlQuery(m_db);
 
-    m_appendPos = 0;
-    m_prependPos = 0;
+    m_bottomPos = 0;
+    m_topPos = 0;
 
     // Create new table
     QueryBuilder q;
@@ -229,7 +229,7 @@ void ZipHelper::add(const QString &filename, const QByteArray &data, ZipHelper::
     QueryBuilder q;
     q.setTableName("files_data", QueryBuilder::Insert);
 
-    q.set("file_pos", (order==AppendFile ? ++m_appendPos : --m_prependPos));
+    q.set("file_pos", (order==Bottom ? ++m_bottomPos : --m_topPos));
     q.set("file_name", filename);
     q.set("file_data", data);
 
@@ -302,7 +302,7 @@ void ZipHelper::addFromZip(const QString &filePath)
             continue;
         }
 
-        add(info.name, &file, AppendFile);
+        add(info.name, &file, Bottom);
 
         file.close();
 

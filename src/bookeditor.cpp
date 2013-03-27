@@ -173,7 +173,7 @@ bool BookEditor::saveBookPages(QList<BookPage*> pages)
 
     m_zipHelper.replaceFromDomHelper("pages.xml",
                                      m_bookReader->pagesDom(),
-                                     ZipHelper::PrependFile);
+                                     ZipHelper::Top);
 
     return true;
 }
@@ -182,7 +182,7 @@ void BookEditor::saveDom()
 {
     m_zipHelper.replaceFromDomHelper("pages.xml",
                                      m_bookReader->pagesDom(),
-                                     ZipHelper::PrependFile);
+                                     ZipHelper::Top);
 }
 
 void BookEditor::addPage(int pageID, bool insertAfterCurrent)

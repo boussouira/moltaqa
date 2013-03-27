@@ -96,7 +96,7 @@ void BookMediaEditor::saveChanges(BookEditor *bookEditor)
     foreach(BookMediaResource *media, addedMedia) {
         bookEditor->zipHelper()->add(media->path,
                                      media->data,
-                                     ZipHelper::AppendFile);
+                                     ZipHelper::Bottom);
 
         media->op = BookMediaResource::None;
 

@@ -38,7 +38,7 @@ public:
         Utils::Files::copyData(file, out);
 
         m_exporter->m_zipWriter.add(QString("OEBPS/%1").arg(filePath), out,
-                                    ZipWriterManager::AppendFile);
+                                    ZipWriterManager::Bottom);
 
         m_exporter->m_images.insert(QString(filePath).replace(IMAGES_PREFIX, "x"),
                                     filePath);
@@ -480,7 +480,7 @@ void EPubBookExporter::writeContent()
     out.flush();
     file.close();
 
-    m_zipWriter.addFromFile("OEBPS/content.opf", filePath, ZipWriterManager::PrependFile);
+    m_zipWriter.addFromFile("OEBPS/content.opf", filePath, ZipWriterManager::Top);
 
     QFile::remove(filePath);
 }
@@ -528,7 +528,7 @@ void EPubBookExporter::writeTOC()
     out.flush();
     file.close();
 
-    m_zipWriter.addFromFile("OEBPS/toc.ncx", filePath, ZipWriterManager::PrependFile);
+    m_zipWriter.addFromFile("OEBPS/toc.ncx", filePath, ZipWriterManager::Top);
 
     QFile::remove(filePath);
 }
@@ -605,7 +605,7 @@ void EPubBookExporter::writeTocItem(QDomElement &element, QTextStream &out)
 
 void EPubBookExporter::write(const QString &fileName, const QString &data, bool prepend)
 {
-    ZipWriterManager::InsertOrder order = (prepend ? ZipWriterManager::PrependFile : ZipWriterManager::AppendFile);
+    ZipWriterManager::InsertOrder order = (prepend ? ZipWriterManager::Top : ZipWriterManager::Bottom);
     m_zipWriter.add(fileName, data.toUtf8(), order);
 }
 

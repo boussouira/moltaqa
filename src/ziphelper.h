@@ -37,10 +37,9 @@ public:
     ZipWriterManager();
     ~ZipWriterManager();
 
-    // TODO: renmae to Top and Bottom
     enum InsertOrder{
-        AppendFile,
-        PrependFile
+        Bottom,
+        Top
     };
 
     bool open(QString zipFilePath=QString());
@@ -69,8 +68,8 @@ public:
     ~ZipHelper();
 
     enum InsertOrder{
-        AppendFile,
-        PrependFile
+        Bottom,
+        Top
     };
 
     void open();
@@ -109,8 +108,8 @@ protected:
     QString m_dbPath;
     QSqlDatabase m_db;
     QSqlQuery m_query;
-    int m_appendPos;
-    int m_prependPos;
+    int m_bottomPos;
+    int m_topPos;
 };
 
 #endif // ZIPHELPER_H
