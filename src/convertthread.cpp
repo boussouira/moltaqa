@@ -140,6 +140,7 @@ void ConvertThread::convertShamelaBook(const QString &path)
         m_model->appendNode(node);
     }
 
+    bookQuery.clear();
     Utils::Sql::removeDatabase(bookDB);
 
 #ifdef USE_MDBTOOLS
