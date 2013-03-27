@@ -47,6 +47,17 @@ void BookInfoDialog::setup()
     html.beginDiv("#info");
     html.beginDL(".dl-horizontal");
 
+#ifdef DEV_BUILD
+    html.beginDiv("", "style='direction:ltr; text-align:left; "
+                  "font-family: Tahoma; font-size: 16px;'");
+
+    html.insertParagraph(QString("ID: %1").arg(m_book->id));
+    html.insertParagraph(QString("UUID: %1").arg(m_book->uuid));
+    html.insertParagraph(QString("PATH: %1").arg(m_book->path));
+
+    html.endDiv();
+#endif
+
     html.insertDT(tr("الكتاب:"));
     html.insertDD(m_book->title);
 
