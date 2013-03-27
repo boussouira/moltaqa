@@ -55,9 +55,9 @@ function toggleQuran()
 
     if(document.getElementById('quran')) {
         // Fill entier page with the border image
-        var borderWith = 118 * 2;
-        var paddingWidth = 15;
-        var minHeight = (window.outerHeight - borderWith - paddingWidth) + 'px';
+        var borderWith = 118;
+        var paddingWidth = 15 / 2;
+        var minHeight = (window.innerHeight - borderWith + paddingWidth) + 'px';
 
         if($('#quran').css('min-height') !== minHeight) {
             $('#quran').css('min-height', minHeight);
