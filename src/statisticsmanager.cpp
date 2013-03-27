@@ -117,13 +117,13 @@ void StatisticsManager::maySendStatistics()
 {
     uint current = QDateTime::currentDateTime().toTime_t();
     uint lastSend = Utils::Settings::get("Statistics/last", 0).toUInt();
-    if(current - lastSend > 604800) // A week
+    if(current - lastSend > 86400) // A day
         sendStatistics();
 }
 
 void StatisticsManager::sendStatistics()
 {
-    if(m_dom.rootElement().elementsByTagName("info").count() > 3) {
+    if(m_dom.rootElement().elementsByTagName("info").count() > 1) {
         QString url = Utils::Settings::get("Statistics/url", UPLOAD_URL).toString();
 
         url.replace("{ID}", App::id());
@@ -141,10 +141,6 @@ void StatisticsManager::sendStatistics()
         m_uploader->startUpload();
 
         connect(m_uploader, SIGNAL(uploadSuccess()), SLOT(sendSuccess()));
-    } else {
-        // See you next week :)
-        Utils::Settings::set("Statistics/last",
-                             QDateTime::currentDateTime().toTime_t());
     }
 }
 

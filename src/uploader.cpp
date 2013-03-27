@@ -77,7 +77,12 @@ void UpLoader::replyFinished()
     if (isAborted) {
         emit finished(false, true, QString());
     } else if (reply->error()>0) {
-        emit finished(true, false, tr("Network error\nCode: %1\n%2").arg(QString::number(reply->error())).arg(reply->errorString()));
+        emit finished(true, false, tr("Network error\nCode: %1\n%2")
+                      .arg(QString::number(reply->error()))
+                      .arg(reply->errorString()));
+
+        Utils::Settings::set("Statistics/last",
+                             QDateTime::currentDateTime().toTime_t());
 
 #ifdef DEV_BUILD
         qDebug() << "UpLoader::replyFinished Network replay error:"
