@@ -53,7 +53,7 @@ void debugMessageHandler(QtMsgType type, const char *msg)
     out.setCodec("utf-8");
 
     QString dateTime = QDateTime::currentDateTime().toString("[dd/MM/yyyy] [hh:mm:ss] ");
-    QString text = QString::fromLocal8Bit(msg);
+    QString text = QString::fromUtf8(msg);
 
     if(text.contains('\n'))
         text = text.replace('\n', "\n\t\t\t").trimmed();
@@ -118,6 +118,8 @@ int main(int argc, char *argv[])
 
     app.setLayoutDirection(Qt::RightToLeft);
     QTextCodec::setCodecForTr(QTextCodec::codecForName("utf-8"));
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf-8"));
+    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("utf-8"));
 
     QSettings::setDefaultFormat(QSettings::IniFormat);
 

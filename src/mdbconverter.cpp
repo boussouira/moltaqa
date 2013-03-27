@@ -245,7 +245,7 @@ QString MdbConverter::sanitizeName(QString str)
 
 void MdbConverter::print_col(QString &str,gchar *col_val, bool quote_text, int col_type)
 {
-    QString value = QString::fromLocal8Bit(col_val);
+    QString value = QString::fromUtf8(col_val);
     if (quote_text && is_text_type(col_type)) {
         str.append('"');
         str.append(value.replace('"', "\"\""));

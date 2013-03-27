@@ -136,13 +136,15 @@ void SettingsDialog::loadStyles()
         QDir styleDir(dir.absoluteFilePath(style));
         if(styleDir.exists("config.cfg")) {
             QSettings cfg(styleDir.absoluteFilePath("config.cfg"), QSettings::IniFormat);
+            cfg.setIniCodec("utf-8");
+
             if(cfg.contains("name") && cfg.contains("description")) {
                 QHash<QString, QVariant> styleInfo;
-                styleInfo["name"] = _u(cfg.value("name").toByteArray());
-                styleInfo["description"] = _u(cfg.value("description").toByteArray());
+                styleInfo["name"] = cfg.value("name");
+                styleInfo["description"] = cfg.value("description");
                 styleInfo["dir"] = style;
 
-                ui->comboStyles->addItem(styleInfo["name"].toString(), styleInfo);
+                ui->comboStyles->addItem(_u(cfg.value("name").toByteArray()), styleInfo);
             }
         }
     }
