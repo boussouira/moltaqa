@@ -320,26 +320,33 @@ void MainWindow::closeEvent(QCloseEvent *event)
 void MainWindow::setupProgressWidget()
 {
     m_progressWidget = new QWidget(statusBar());
+    m_progressWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+
     m_indexBar = new QProgressBar(m_progressWidget);
+    m_indexBar->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     m_indexBar->setMaximumWidth(200);
     m_indexBar->setFormat("%v/%m");
     m_indexBar->setAlignment(Qt::AlignCenter);
     m_indexBar->setToolTip(tr("تقدم تحديث الفهرس"));
 
-    QToolButton *button = new QToolButton(m_progressWidget);
-    button->setIcon(QIcon(":/images/stop.png"));
-    button->setAutoRaise(true);
-    button->setToolTip(tr("إيقاف تحديث الفهرس"));
+    m_indexStopButton = new QToolButton(m_progressWidget);
+    m_indexStopButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+    m_indexStopButton->setIcon(QIcon(":/images/stop.png"));
+    m_indexStopButton->setIconSize(QSize(16, 10));
+    m_indexStopButton->setAutoRaise(true);
+    m_indexStopButton->setToolTip(tr("إيقاف تحديث الفهرس"));
 
     QHBoxLayout *layout = new QHBoxLayout;
+    layout->setMargin(0);
     layout->addStretch();
     layout->addWidget(m_indexBar);
-    layout->addWidget(button);
+    layout->addWidget(m_indexStopButton);
 
     m_progressWidget->setLayout(layout);
-    m_progressWidget->hide();
+    m_indexBar->hide();
+    m_indexStopButton->hide();
 
-    connect(button, SIGNAL(clicked()), SLOT(stopIndexing()));
+    connect(m_indexStopButton, SIGNAL(clicked()), SLOT(stopIndexing()));
 
     statusBar()->addPermanentWidget(m_progressWidget);
 }
@@ -496,12 +503,14 @@ void MainWindow::exportBooks()
 
 void MainWindow::indexingStart()
 {
-    m_progressWidget->show();
+    m_indexBar->show();
+    m_indexStopButton->show();
 }
 
 void MainWindow::indexingStop()
 {
-    m_progressWidget->hide();
+    m_indexBar->hide();
+    m_indexStopButton->hide();
 }
 
 void MainWindow::indexProgress(int value, int max)

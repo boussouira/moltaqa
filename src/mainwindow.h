@@ -21,6 +21,7 @@ class IndexTracker;
 class IndexManager;
 class BookReaderHelper;
 class QProgressBar;
+class QToolButton;
 class LogDialog;
 class UpdateChecker;
 
@@ -106,6 +107,7 @@ private:
     IndexTracker *m_indexTracker;
     IndexManager *m_indexManager;
     QProgressBar *m_indexBar;
+    QToolButton *m_indexStopButton;
     QWidget *m_progressWidget;
     SearchView *m_searchView;
     BookReaderHelper *m_readerHelper;
