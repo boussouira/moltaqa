@@ -75,12 +75,15 @@ QByteArray QuranTextFormat::getAyaNumberImage(int ayaNumber, QString bgImage)
                          Qt::KeepAspectRatio,
                          Qt::SmoothTransformation);
 
-    font.setPointSizeF(fontSize/2.5);
+    double factor = (ayaNumberStr.size()==1 ? 2.2 : (ayaNumberStr.size()==2 ? 2.5 : 2.9));
+    font.setPointSizeF(fontSize/factor);
 
+    QFontMetrics fontMetrics(font);
     QPainter painter(&image);
     painter.setFont(font);
-    painter.drawText(0, 2, image.width(), image.height(),
-                     Qt::AlignCenter|Qt::AlignVCenter, ayaNumberStr);
+    painter.drawText(image.width()/2 - fontMetrics.width(ayaNumberStr)/2,
+                     image.height()/2 + fontMetrics.descent()/2,
+                     ayaNumberStr);
 
     QBuffer buffer;
     buffer.open(QIODevice::ReadWrite);
