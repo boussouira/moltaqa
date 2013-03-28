@@ -1,4 +1,4 @@
-[Setup]
+﻿[Setup]
 AppId={{15FA1AB7-9C81-43E8-9882-C7145422FE7E}
 AppName=مكتبة الملتقى
 AppVerName=مكتبة الملتقى 0.9a4
