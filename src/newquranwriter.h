@@ -17,7 +17,7 @@ class newQuranWriter
 {
 public:
     newQuranWriter();
-    void createNewBook(QString bookPath=QString());
+    void createNewBook();
     QString bookPath();
 
     /// Begins a transaction on the database
@@ -28,7 +28,6 @@ public:
     void addPage(const QString &text, int soraNum, int ayaNum, int pageNum);
 
 protected:
-    QString m_tempFolder;
     QString m_bookPath;
     QuaZip m_zip;
     QDomDocument m_pagesDoc;

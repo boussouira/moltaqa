@@ -244,12 +244,12 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
 void LibraryCreator::addQuran()
 {
     QString connName(QString("shamela_quran_%1").arg(m_threadID));
-    QString path = Utils::Rand::fileName(m_library->tempDir(), true);
+    QString path;
     QString tempDB;
 
     {
         newQuranWriter quranWrite;
-        quranWrite.createNewBook(path);
+        quranWrite.createNewBook();
 #ifdef USE_MDBTOOLS
         MdbConverter mdb(true);
         tempDB = mdb.exportFromMdb(m_shamelaInfo->shamelaSpecialDbPath());
@@ -278,6 +278,8 @@ void LibraryCreator::addQuran()
         }
 
         quranWrite.endReading();
+
+        path = quranWrite.bookPath();
     }
 
     QSqlDatabase::removeDatabase(QString("newQuranDB_%1").arg(m_threadID));
@@ -300,8 +302,6 @@ void LibraryCreator::done()
 
 void LibraryCreator::importBook(ShamelaBookInfo *shamelBook, QString path)
 {
-    QFileInfo fileInfo(path);
-
     ShamelaAuthorInfo *auth = m_shamelaManager->getAuthorInfo(shamelBook->authorID);
     if(auth) {
         addAuthor(auth, true);
@@ -315,7 +315,8 @@ void LibraryCreator::importBook(ShamelaBookInfo *shamelBook, QString path)
     book->info = shamelBook->info;
     book->authorID = m_mapper->mapFromShamelaAuthor(shamelBook->authorID);
     book->authorName = shamelBook->authName;
-    book->fileName = fileInfo.fileName();
+    book->fileName = QFileInfo(path).fileName();
+    book->path = path;
 
     m_libraryManager->addBook(book, m_mapper->mapFromShamelaCat(shamelBook->cat));
 
@@ -324,13 +325,12 @@ void LibraryCreator::importBook(ShamelaBookInfo *shamelBook, QString path)
 
 void LibraryCreator::importQuran(QString path)
 {
-    QFileInfo fileInfo(path);
-
     LibraryBook::Ptr book(new LibraryBook());
     book->type = LibraryBook::QuranBook;
     book->title = tr("القرآن الكريم");
     book->info = tr("القرآن الكريم");
-    book->fileName = fileInfo.fileName();
+    book->fileName = QFileInfo(path).fileName();
+    book->path = path;
 
     m_libraryManager->addBook(book, 0);
 }

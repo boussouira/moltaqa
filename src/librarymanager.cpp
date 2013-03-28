@@ -115,21 +115,21 @@ int LibraryManager::addBook(ImportModelNode *node)
     QString bookPath = (book->fileName.startsWith("book_")
                         ? m_libraryInfo->bookPath(book->fileName) : QString());
 
-    if(bookPath.isEmpty() || QFile::exists(bookPath)) {
+    if(bookPath.isEmpty() || bookPath != book->path) {
         bookPath = Utils::Rand::newBook(m_libraryInfo->booksDir());
-        book->fileName = QFileInfo(bookPath).fileName();
-    }
-
-    if(QFile::rename(book->path, bookPath)){
         book->path = bookPath;
-        addBook(book, node->catID);
+        book->fileName = QFileInfo(bookPath).fileName();
 
-        return book->id;
-    } else {
-        qWarning() << "LibraryManager::addBook Can't rename" << book->path
-                   << "to" << bookPath;
-        return -1;
+        if(!QFile::rename(book->path, bookPath)){
+            qWarning() << "LibraryManager::addBook Can't rename" << book->path
+                       << "to" << bookPath;
+            return -1;
+        }
     }
+
+    addBook(book, node->catID);
+
+    return book->id;
 }
 
 void LibraryManager::addBook(LibraryBook::Ptr book, int catID)

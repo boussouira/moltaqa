@@ -10,15 +10,11 @@
 
 newQuranWriter::newQuranWriter()
 {
-    m_tempFolder = MW->libraryInfo()->tempDir();
 }
 
-void newQuranWriter::createNewBook(QString bookPath)
+void newQuranWriter::createNewBook()
 {
-    if(bookPath.isEmpty())
-        m_bookPath = Utils::Rand::fileName(m_tempFolder, true);
-    else
-        m_bookPath = bookPath;
+    m_bookPath = Utils::Rand::newBook(MW->libraryInfo()->booksDir());
 
     while(QFile::exists(m_bookPath)) {
         qWarning() << "newQuranWriter::createNewBook file" << m_bookPath << "already exists";
