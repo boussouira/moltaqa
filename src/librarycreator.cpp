@@ -244,7 +244,7 @@ void LibraryCreator::addBook(ShamelaBookInfo *book)
 void LibraryCreator::addQuran()
 {
     QString connName(QString("shamela_quran_%1").arg(m_threadID));
-    QString path = Utils::Rand::newBook(m_library->booksDir());
+    QString path = Utils::Rand::fileName(m_library->tempDir(), true);
     QString tempDB;
 
     {

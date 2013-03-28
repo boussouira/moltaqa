@@ -108,25 +108,26 @@ void LibraryManager::reloadManagers()
 int LibraryManager::addBook(ImportModelNode *node)
 {
     LibraryBook::Ptr book = node->toLibraryBook();
-    QString bookPath = (book->fileName.startsWith("book_") ? m_libraryInfo->bookPath(book->fileName) :  QString());
 
-    QString newPath;
-    if(bookPath.isEmpty() || book->fileName.isEmpty() || QFile::exists(bookPath)) {
-        newPath = Utils::Rand::newBook(m_libraryInfo->booksDir());
-        book->fileName = QFileInfo(newPath).fileName();
-    } else {
-        newPath = bookPath;
+    if(book->fileName.isEmpty())
+        book->fileName = QFileInfo(book->path).fileName();
+
+    QString bookPath = (book->fileName.startsWith("book_")
+                        ? m_libraryInfo->bookPath(book->fileName) : QString());
+
+    if(bookPath.isEmpty() || QFile::exists(bookPath)) {
+        bookPath = Utils::Rand::newBook(m_libraryInfo->booksDir());
+        book->fileName = QFileInfo(bookPath).fileName();
     }
 
-    if(QFile::copy(node->path, newPath)){
-        if(!QFile::remove(node->path))
-            qWarning() << "LibraryManager::addBook Can't remove:" << node->path;
-
+    if(QFile::rename(book->path, bookPath)){
+        book->path = bookPath;
         addBook(book, node->catID);
 
         return book->id;
     } else {
-        qWarning() << "LibraryManager::addBook Can't copy" << node->path << "to" << newPath;
+        qWarning() << "LibraryManager::addBook Can't rename" << book->path
+                   << "to" << bookPath;
         return -1;
     }
 }

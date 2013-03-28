@@ -10,6 +10,8 @@
 #include "ziphelper.h"
 #include "sqlutils.h"
 
+class LibraryInfo;
+
 struct BookTitle
 {
     int pageID;
@@ -45,7 +47,7 @@ protected:
     QString processPageText(int pageID, QString text);
 
 protected:
-    QString m_booksDir;
+    LibraryInfo *m_libraryInfo;
     QString m_bookPath;
 
     ZipWriterManager m_zipWriter;
