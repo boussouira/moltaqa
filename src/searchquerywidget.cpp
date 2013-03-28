@@ -164,23 +164,6 @@ void SearchQueryWidget::saveSearchQuery()
 
     LibraryManager::instance()->searchManager()->saveSearchQueries(list);
 
-    /*
-    QString queryStr;
-    for(int i=0; i<list.size(); i++) {
-        if(list[i].size()) {
-            queryStr += ((i==0) ? "+(" : ((i==2) ? "-(" : "("));
-            queryStr += list[i];
-            queryStr += ") ";
-        }
-    }
-    QString log = QString("query: [%1] take %2 ms, results count %3")
-            .arg(queryStr.trimmed())
-            .arg(m_searcher->searchTime())
-            .arg(m_searcher->resultsCount());
-
-    StatisticsManager::instance()->add("search", log);
-    */
-
     QStringList words = m_completerModel->stringList();
     if(m_completerModel) {
         foreach (QString q, list) {
