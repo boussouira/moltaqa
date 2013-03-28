@@ -113,8 +113,13 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    if (app.sendMessage("Activate!"))
+    if (app.sendMessage("Activate!")) {
+#ifdef DEV_BUILD
+        qWarning("Another instance is already running");
+#else
         return 0;
+#endif
+    }
 
     app.setLayoutDirection(Qt::RightToLeft);
     QTextCodec::setCodecForTr(QTextCodec::codecForName("utf-8"));
