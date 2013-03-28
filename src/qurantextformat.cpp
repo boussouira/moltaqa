@@ -37,8 +37,7 @@ void QuranTextFormat::insertAyaText(const QString &pAyaText, int pAyaNumber, int
     m_htmlHelper.insertSpan(pAyaText, QString(".ayatxt|#s%1a%2").arg(pSoraNumber).arg(pAyaNumber));
 
     if(m_drawAyaNumber) {
-        //QString("book://quran/aya/1.png").arg(pAyaNumber)
-        m_htmlHelper.insertImage(getAyaNumberImage(pAyaNumber), ".ayanumber",
+        m_htmlHelper.insertImage(QString("book://quran/aya/%1.png").arg(pAyaNumber), ".ayanumber",
                                  QString("alt='(%1)' ayaimage='%2'")
                                  .arg(Utils::String::Arabic::arabicNumbers(pAyaNumber))
                                  .arg(pAyaNumber));
