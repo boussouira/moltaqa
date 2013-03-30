@@ -29,7 +29,11 @@
 
 BookWidget::BookWidget(LibraryBook::Ptr book, QWidget *parent):
     BookViewBase(book, parent),
-    m_reader(0)
+    m_reader(0),
+    m_bookManager(LibraryManager::instance()->bookManager()),
+    m_bookHelper(MW->readerHelper()),
+    m_viewInitialized(false),
+    m_indexReading(false)
 {
     openReader();
 
@@ -43,9 +47,6 @@ BookWidget::BookWidget(LibraryBook::Ptr book, QWidget *parent):
     m_indexWidget->setBookInfo(m_book);
     m_indexWidget->setCurrentPage(m_reader->page());
 
-    m_bookManager = LibraryManager::instance()->bookManager();
-    m_bookHelper = MW->readerHelper();
-
     m_splitter->addWidget(m_indexWidget);
     m_splitter->addWidget(m_view);
     m_layout->addWidget(m_splitter);
@@ -58,9 +59,6 @@ BookWidget::BookWidget(LibraryBook::Ptr book, QWidget *parent):
 
     loadSettings();
     loadIndexModel();
-
-    m_viewInitialized = false;
-    m_indexReading = false;
 
     m_view->autoObjectAdd("bookWidget", this);
     m_view->autoObjectAdd("bookReaderView", MW->bookReaderView());
@@ -133,7 +131,6 @@ void BookWidget::openReader()
         throw BookException(tr("لم يتم التعرف على نوع الكتاب"), QString("Book Type: %1").arg(m_book->type));
 
     m_reader->setBookInfo(m_book);
-
     m_reader->openBook();
 }
 
