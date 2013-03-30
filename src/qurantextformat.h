@@ -12,10 +12,10 @@ public:
     void insertBassemala();
     void insertAyaText(const QString &pAyaText, int pAyaNumber, int pSoraNumber);
 
-    static QByteArray getAyaNumberImage(int aya, QString bgImage);
+    static QByteArray getAyaNumberImage(int aya, QString bgImage=QString());
 
 protected:
-    QString getAyaNumberImage(int aya);
+    QString getAyaNumberImageData(int aya);
 
 protected:
     QDir m_styleDir;

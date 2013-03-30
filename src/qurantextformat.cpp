@@ -7,6 +7,8 @@
 #include <qimage.h>
 #include <qpainter.h>
 
+QString ayaImagePath;
+
 QuranTextFormat::QuranTextFormat()
 {
     m_cssID = "quran";
@@ -18,6 +20,9 @@ QuranTextFormat::QuranTextFormat()
     } else {
         m_drawAyaNumber = false;
     }
+
+    if(m_drawAyaNumber)
+        ayaImagePath = m_styleDir.absoluteFilePath("images/aya_border.png");
 }
 
 void QuranTextFormat::insertSoraName(const QString &pSoraName)
@@ -53,6 +58,13 @@ void QuranTextFormat::insertAyaText(const QString &pAyaText, int pAyaNumber, int
 
 QByteArray QuranTextFormat::getAyaNumberImage(int ayaNumber, QString bgImage)
 {
+    if(bgImage.isEmpty()) {
+        if(ayaImagePath.size())
+            bgImage = ayaImagePath;
+        else
+            bgImage = ":/images/aya_background.png";
+    }
+
     QString  ayaNumberStr = Utils::String::Arabic::arabicNumbers(ayaNumber);
 
     QSettings settings;
@@ -93,7 +105,7 @@ QByteArray QuranTextFormat::getAyaNumberImage(int ayaNumber, QString bgImage)
     return buffer.readAll();
 }
 
-QString QuranTextFormat::getAyaNumberImage(int ayaNumber)
+QString QuranTextFormat::getAyaNumberImageData(int ayaNumber)
 {
     QByteArray imageData = getAyaNumberImage(ayaNumber, m_styleDir.absoluteFilePath("images/aya_border.png"));
     QString data("data:image/png;base64,");

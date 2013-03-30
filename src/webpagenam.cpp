@@ -207,7 +207,7 @@ QNetworkReply *WebPageNAM::createRequest(Operation op, const QNetworkRequest &re
                 aya = 1;
             }
 
-            QByteArray imageData = QuranTextFormat::getAyaNumberImage(aya, ":/images/aya_background.png");
+            QByteArray imageData = QuranTextFormat::getAyaNumberImage(aya);
 
             CustomNetworkReply *reply = new CustomNetworkReply();
             reply->setHttpStatusCode(200, "OK");
