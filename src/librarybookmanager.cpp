@@ -265,8 +265,8 @@ int LibraryBookManager::addBook(LibraryBook::Ptr book)
     if(!book->id || getLibraryBook(book->id))
         book->id = getNewBookID();
 
-    if(book->uuid.isEmpty())
-        book->uuid = Utils::Rand::uuid();
+    if(book->uuid.isEmpty() || getLibraryBook(book->uuid))
+        book->uuid = getNewBookUUID();
 
     QSqlQuery query(m_db);
 
@@ -484,5 +484,16 @@ int LibraryBookManager::getNewBookID()
     } while(getLibraryBook(bookID));
 
     return bookID;
+}
+
+QString LibraryBookManager::getNewBookUUID()
+{
+    QString bookUUID;
+
+    do {
+        bookUUID = Utils::Rand::uuid();
+    } while(getLibraryBook(bookUUID));
+
+    return bookUUID;
 }
 

@@ -55,6 +55,7 @@ public:
 
 protected:
     int getNewBookID();
+    QString getNewBookUUID();
 
 protected:
     LibraryInfo *m_libraryInfo;
