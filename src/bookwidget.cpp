@@ -132,6 +132,8 @@ void BookWidget::openReader()
 
     m_reader->setBookInfo(m_book);
     m_reader->openBook();
+
+    m_bookManager->increaseOpenCount(m_book->id);
 }
 
 bool BookWidget::search(const QString &text)

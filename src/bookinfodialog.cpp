@@ -4,6 +4,7 @@
 #include "authorsmanager.h"
 #include "librarymanager.h"
 #include "mainwindow.h"
+#include "librarybookmanager.h"
 #include <qboxlayout.h>
 
 BookInfoDialog::BookInfoDialog(QWidget *parent) : QWidget(parent)
@@ -32,6 +33,8 @@ void BookInfoDialog::setup()
 
     setWindowTitle(m_book->title);
 
+    LibraryBookMeta::Ptr bookMeta = LibraryManager::instance()->bookManager()->getLibraryBookMeta(m_book->id);
+
     HtmlHelper html;
     html.beginHtml();
     html.beginHead();
@@ -46,17 +49,6 @@ void BookInfoDialog::setup()
 
     html.beginDiv("#info");
     html.beginDL(".dl-horizontal");
-
-#ifdef DEV_BUILD
-    html.beginDiv("", "style='direction:ltr; text-align:left; "
-                  "font-family: Tahoma; font-size: 16px;'");
-
-    html.insertParagraph(QString("ID: %1").arg(m_book->id));
-    html.insertParagraph(QString("UUID: %1").arg(m_book->uuid));
-    html.insertParagraph(QString("PATH: %1").arg(m_book->path));
-
-    html.endDiv();
-#endif
 
     html.insertDT(tr("الكتاب:"));
     html.insertDD(m_book->title);
@@ -133,6 +125,20 @@ void BookInfoDialog::setup()
         html.insertDD(QString(m_book->comment).replace("\n", "<br>"));
     }
 
+    if(bookMeta) {
+        html.insertDT(tr("تاريخ الاضافة:"));
+        html.insertDD(bookMeta->importDateStr());
+
+        html.insertDT(tr("آخر تحديث:"));
+        html.insertDD(bookMeta->updateDateStr());
+
+        html.insertDT(tr("عدد مرات تصفح الكتاب:"));
+        html.insertDD(QString::number(bookMeta->openCount));
+
+        html.insertDT(tr("عدد مرات تعديل الكتاب:"));
+        html.insertDD(QString::number(bookMeta->updateCount));
+    }
+
     html.endDL(); // .dl-horizontal
     html.endDiv(); // #info
 
@@ -140,6 +146,19 @@ void BookInfoDialog::setup()
         html.insertHead(4, tr("نبذة حول الكتاب"));
         html.insertDiv(m_book->info, ".head-info");
     }
+
+    html.insertDiv(tr("معلومات اضافية"), ".book-extra-info");
+    html.beginDiv(".book-extra-info-data");
+
+    html.insertParagraph(QString("ID: %1").arg(m_book->id));
+    html.insertParagraph(QString("UUID: %1").arg(m_book->uuid));
+
+    if(bookMeta)
+        html.insertParagraph(QString("MD5: %1").arg(bookMeta->fileChecksum));
+
+    html.insertParagraph(QString("PATH: %1").arg(m_book->path));
+
+    html.endDiv();
 
     html.endDiv(); // .rawi-info
 

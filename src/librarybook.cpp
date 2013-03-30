@@ -5,6 +5,37 @@
 #include <qstringlist.h>
 #include <qdom.h>
 
+LibraryBookMeta::LibraryBookMeta()
+{
+    id = 0;
+    createDate = 0;
+    importDate = 0;
+    updateDate = 0;
+    openCount = 0;
+    updateCount = 0;
+    resultOpenCount = 0;
+}
+
+QString LibraryBookMeta::createDateStr()
+{
+    return formatDate(createDate);
+}
+
+QString LibraryBookMeta::importDateStr()
+{
+    return formatDate(importDate);
+}
+
+QString LibraryBookMeta::updateDateStr()
+{
+    return formatDate(updateDate);
+}
+
+QString LibraryBookMeta::formatDate(uint timestamp)
+{
+    return QDateTime::fromTime_t(timestamp).toString("dd/MM/yyyy - hh:mm:ss");
+}
+
 LibraryBook::LibraryBook()
 {
     id = 0;

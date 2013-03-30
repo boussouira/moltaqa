@@ -15,6 +15,7 @@
 #include <qheaderview.h>
 #include <qtoolbar.h>
 #include <quuid.h>
+#include <qcryptographichash.h>
 
 static QString appRootPath;
 static uint m_randSlat = QDateTime::currentDateTime().toTime_t();
@@ -168,6 +169,19 @@ void createDatabases(const QString &path)
 
         query.prepare("CREATE UNIQUE INDEX uuuid_index ON books (uuid)");
         ml_query_exec(query);
+
+        q.setTableName("books_meta", QueryBuilder::Create);
+
+        q.set("id", "INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL");
+        q.set("create_date", "INT");
+        q.set("import_date", "INT");
+        q.set("update_date", "INT");
+        q.set("open_count", "INT");
+        q.set("update_count", "INT");
+        q.set("result_open_count", "INT");
+        q.set("file_checksum", "TEXT");
+
+        q.exec(query);
 
         q.setTableName("history", QueryBuilder::Create);
 
@@ -545,6 +559,29 @@ QString ensureFileExistsNot(QString path)
     } while(QFile::exists(newPath));
 
     return newPath;
+}
+
+QByteArray fileMd5(const QString &path)
+{
+    QFile file(path);
+    ml_return_val_on_fail2(file.open(QFile::ReadOnly),
+                           "File::fileMd5 Can't open file" << path <<
+                           "Error:" << file.errorString(),
+                           QByteArray());
+
+    QCryptographicHash crypto(QCryptographicHash::Md5);
+    char buf[8192];
+    int len = 0;
+
+    while (!file.atEnd()) {
+        len = file.read(buf, 8192);
+        crypto.addData(buf, len);
+
+        if(len <= 0)
+            return QByteArray();
+    }
+
+    return crypto.result().toHex();
 }
 
 } // Files

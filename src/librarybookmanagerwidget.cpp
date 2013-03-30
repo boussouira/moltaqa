@@ -320,7 +320,7 @@ void LibraryBookManagerWidget::save()
         m_manager->transaction();
 
         foreach(LibraryBook::Ptr book, m_editedBookInfo.values()) {
-            m_manager->updateBook(book);
+            m_manager->updateBook(book, false);
         }
 
         m_manager->commit();

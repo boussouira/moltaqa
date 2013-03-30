@@ -19,6 +19,30 @@ public:
     int pageID;
 };
 
+class LibraryBookMeta
+{
+public:
+    LibraryBookMeta();
+
+    typedef QSharedPointer<LibraryBookMeta> Ptr;
+
+    int id;
+    uint createDate;
+    uint importDate;
+    uint updateDate;
+    int openCount;
+    int updateCount;
+    int resultOpenCount;
+    QString fileChecksum;
+
+    QString createDateStr();
+    QString importDateStr();
+    QString updateDateStr();
+
+protected:
+    QString formatDate(uint timestamp);
+};
+
 class LibraryBook
 {
 public:

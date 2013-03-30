@@ -200,6 +200,8 @@ void ResultWidget::openResult(int resultID)
                                                     result->page->pageID,
                                                     m_searcher->getSearchQuery());
 
+    LibraryManager::instance()->bookManager()->increaseResultOpenCount(result->book->id);
+
     if(bookWidget) {
         ensureReaderVisible();
 

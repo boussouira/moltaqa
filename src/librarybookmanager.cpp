@@ -8,9 +8,12 @@
 #include "timeutils.h"
 #include "authorsmanager.h"
 #include "bookreaderview.h"
+#include "quazip.h"
+#include "quazipfile.h"
 
 #include <qdir.h>
 #include <qstandarditemmodel.h>
+#include <xmldomhelper.h>
 
 LibraryBookManager::LibraryBookManager(QObject *parent) :
     DatabaseManager(parent),
@@ -82,6 +85,7 @@ StandardItemModelPtr LibraryBookManager::getModel(bool bookIcon)
 
 StandardItemModelPtr LibraryBookManager::getLastOpendModel()
 {
+    // TODO: use history table instead
     QStandardItemModel *model = new QStandardItemModel();
 
     QSqlQuery query(m_db);//    0              1                 2                 3
@@ -234,6 +238,34 @@ LibraryBook::Ptr LibraryBookManager::getQuranBook()
     return LibraryBook::Ptr();
 }
 
+LibraryBookMeta::Ptr LibraryBookManager::getLibraryBookMeta(int bookID)
+{
+    QSqlQuery query(m_db);
+    query.prepare("SELECT create_date, import_date, update_date, open_count, "
+                  "update_count, result_open_count, file_checksum "
+                  "FROM books_meta WHERE id = ?");
+
+    query.bindValue(0, bookID);
+
+    ml_query_exec(query);
+
+    if(query.next()) {
+        LibraryBookMeta::Ptr meta(new LibraryBookMeta());
+        meta->id = bookID;
+        meta->createDate = query.value(0).toUInt();
+        meta->importDate = query.value(1).toUInt();
+        meta->updateDate = query.value(2).toUInt();
+        meta->openCount = query.value(3).toInt();
+        meta->updateCount = query.value(4).toInt();
+        meta->resultOpenCount = query.value(5).toInt();
+        meta->fileChecksum = query.value(6).toString();
+
+        return meta;
+    }
+
+    return LibraryBookMeta::Ptr();
+}
+
 LibraryBook::Ptr LibraryBookManager::findBook(QString bookName)
 {
     QueryBuilder q;
@@ -292,10 +324,29 @@ int LibraryBookManager::addBook(LibraryBook::Ptr book)
 
     ml_return_val_on_fail(q.exec(query), 0);
 
+    // Add book metadata
+    uint createDate = QFileInfo(book->path).created().toTime_t();
+    uint currentDate = QDateTime::currentDateTime().toTime_t();
+
+    q.setTableName("books_meta", QueryBuilder::Insert);
+    q.set("id", book->id);
+
+    q.set("create_date", createDate);
+    q.set("import_date", currentDate);
+    q.set("update_date", currentDate);
+
+    q.set("open_count", 0);
+    q.set("update_count", 0);
+    q.set("result_open_count", 0);
+
+    q.set("file_checksum", Utils::Files::fileMd5(book->path));
+
+    ml_return_val_on_fail(q.exec(query), 0);
+
     return book->id;
 }
 
-bool LibraryBookManager::updateBook(LibraryBook::Ptr book)
+bool LibraryBookManager::updateBook(LibraryBook::Ptr book, bool updateMeta)
 {
     QSqlQuery query(m_db);
 
@@ -321,7 +372,26 @@ bool LibraryBookManager::updateBook(LibraryBook::Ptr book)
 
     ml_return_val_on_fail(q.exec(query), false);
 
+    if(updateMeta) {
+        // Update book metadata
+        uint updateDate = QFileInfo(book->path).lastModified().toTime_t();
+
+        q.setTableName("books_meta", QueryBuilder::Update);
+        q.set("update_date", updateDate);
+        q.set("file_checksum", Utils::Files::fileMd5(book->path));
+        q.where("id", book->id);
+
+        ml_return_val_on_fail(q.exec(query), 0);
+
+        // Increase update count by one
+        query.prepare(QString("update books_meta set update_count = update_count + 1 "
+                              "WHERE id = %1").arg(book->id));
+
+        ml_query_exec(query);
+    }
+
     m_books.insert(book->id, book);
+
     return true;
 }
 
@@ -332,6 +402,13 @@ bool LibraryBookManager::removeBook(int bookID)
 
     QSqlQuery query(m_db);
     query.prepare("DELETE FROM books WHERE id = ?");
+    query.bindValue(0, bookID);
+    if(!query.exec()) {
+        ml_warn_query_error(query);
+        return false;
+    }
+
+    query.prepare("DELETE FROM books_meta WHERE id = ?");
     query.bindValue(0, bookID);
     if(!query.exec()) {
         ml_warn_query_error(query);
@@ -412,6 +489,28 @@ QList<LibraryBook::Ptr> LibraryBookManager::getAuthorBooks(int authorID)
     }
 
     return list;
+}
+
+void LibraryBookManager::increaseOpenCount(int bookID)
+{
+    QSqlQuery query(m_db);
+
+    // Increase update count by one
+    query.prepare(QString("update books_meta set open_count = open_count + 1 "
+                          "WHERE id = %1").arg(bookID));
+
+    ml_query_exec(query);
+}
+
+void LibraryBookManager::increaseResultOpenCount(int bookID)
+{
+    QSqlQuery query(m_db);
+
+    // Increase update count by one
+    query.prepare(QString("update books_meta set result_open_count = result_open_count + 1 "
+                          "WHERE id = %1").arg(bookID));
+
+    ml_query_exec(query);
 }
 
 void LibraryBookManager::addBookHistory(int bookID, int pageID)

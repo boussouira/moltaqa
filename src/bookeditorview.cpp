@@ -20,6 +20,7 @@
 #include "bookreaderhelper.h"
 #include "bookmediaeditor.h"
 #include "webpagenam.h"
+#include "librarybookmanager.h"
 
 #include <qstatusbar.h>
 #include <qtabwidget.h>
@@ -376,6 +377,8 @@ void BookEditorView::save()
         m_webView->resetUndo();
         m_bookReader->goToPage(m_bookReader->page()->pageID);
         MW->readerHelper()->removeBookModel(book->id);
+
+        LibraryManager::instance()->bookManager()->updateBook(book, true);
 
         m_timer->start();
     }

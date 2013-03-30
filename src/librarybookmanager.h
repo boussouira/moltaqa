@@ -33,18 +33,23 @@ public:
     LibraryBook::Ptr getLibraryBook(QString bookUUID);
     LibraryBook::Ptr getQuranBook();
 
+    LibraryBookMeta::Ptr getLibraryBookMeta(int bookID);
+
     LibraryBook::Ptr findBook(QString bookName);
     int booksCount();
 
     int addBook(LibraryBook::Ptr book);
 
-    bool updateBook(LibraryBook::Ptr book);
+    bool updateBook(LibraryBook::Ptr book, bool updateMeta);
     bool removeBook(int bookID);
 
     QList<int> getBooksWithIndexStat(LibraryBook::IndexFlags indexFlag);
     void setBookIndexStat(int bookID, LibraryBook::IndexFlags indexFlag);
 
     QList<LibraryBook::Ptr> getAuthorBooks(int authorID);
+
+    void increaseOpenCount(int bookID);
+    void increaseResultOpenCount(int bookID);
 
     void addBookHistory(int bookID, int pageID);
     /// Get the last readed for the given book

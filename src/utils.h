@@ -60,6 +60,7 @@ quint64 directorySize(const QString &path);
 QString formatSize(quint64 size);
 QString cleanFileName(QString fileName, bool removeSpace=false);
 QString ensureFileExistsNot(QString path);
+QByteArray fileMd5(const QString &path);
 }
 
 namespace Settings {
