@@ -48,7 +48,7 @@ Token* WordTypeFilter::next(Token* token)
         bool doneFromToken = false;
         StringBuffer *output = new StringBuffer(termLen*2);
 
-        for(int32_t j = 0; j < termLen; j++) {
+        for(int32_t j = 0; j < termLen; ++j) {
             TCHAR c = chars[j];
             CharType chartype = getCharType(c);
 

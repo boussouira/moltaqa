@@ -27,7 +27,7 @@ Token* ArabicFilter::next(Token* token)
         }
 
         StringBuffer output(l*2);
-        for (int32_t j = 0; j < l; j++) {
+        for (int32_t j = 0; j < l; ++j) {
             TCHAR c = chars[j];
             if(0x064B <= c && c <= 0x0653)
                 continue;

@@ -16,6 +16,8 @@ class QSqlQuery;
 
 class MdbConverter : public QObject
 {
+    Q_OBJECT
+
 public:
     MdbConverter(bool cache=false);
     ~MdbConverter();

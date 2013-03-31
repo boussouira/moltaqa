@@ -20,7 +20,7 @@ public:
     LibraryBook::Ptr book;
     Task task;
 
-    bool operator==(const IndexTask &other);
+    bool operator==(const IndexTask &other) const;
     static Task stringToTask(QString task);
     static QString taskToString(const Task &task);
 };

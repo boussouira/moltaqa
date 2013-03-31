@@ -11,7 +11,7 @@ IndexTaskIter::~IndexTaskIter()
     m_tasks.clear();
 }
 
-bool IndexTask::operator ==(const IndexTask &other)
+bool IndexTask::operator==(const IndexTask &other)  const
 {
     return bookID == other.bookID && task == other.task;
 }

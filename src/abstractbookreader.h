@@ -24,6 +24,7 @@ class CLuceneQuery;
 
 class AbstractBookReader : public QObject
 {
+    Q_OBJECT
 
 public:
     AbstractBookReader(QObject *parent=0);
