@@ -29,7 +29,6 @@
 #include <qfuture.h>
 #include <qtconcurrentrun.h>
 #include <qstandarditemmodel.h>
-#include <qmessagebox.h>
 #include <qevent.h>
 #include <qscrollbar.h>
 #include <qprogressdialog.h>

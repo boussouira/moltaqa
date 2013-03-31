@@ -12,7 +12,6 @@
 #include <qstringlist.h>
 #include <qhash.h>
 #include <qdebug.h>
-#include <qmutex.h>
 #include <qstandarditemmodel.h>
 
 typedef QList<QPair<QString, QString> > ShoortsList;

@@ -5,7 +5,6 @@
 #include "utils.h"
 #include "ziputils.h"
 #include "librarymanager.h"
-#include "libraryinfo.h"
 
 /* Simple zip writer */
 

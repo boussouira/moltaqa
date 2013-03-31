@@ -13,7 +13,6 @@
 #include "xmlutils.h"
 #include "stringutils.h"
 #include "mainwindow.h"
-#include "bookreaderhelper.h"
 #include "bookutils.h"
 #include "bookfilesreader.h"
 

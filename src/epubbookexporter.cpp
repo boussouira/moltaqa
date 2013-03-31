@@ -9,7 +9,6 @@
 #include "richsimplebookreader.h"
 #include "richquranreader.h"
 #include "richtafessirreader.h"
-#include "xmldomhelper.h"
 #include "mainwindow.h"
 #include "bookreaderhelper.h"
 #include "htmlhelper.h"
