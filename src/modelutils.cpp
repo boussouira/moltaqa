@@ -315,9 +315,9 @@ void TreeViewEditor::setup()
 
     // Detect model editing
     connect(m_model, SIGNAL(itemChanged(QStandardItem*)), SLOT(dataChanged()));
-    connect(m_model, SIGNAL(rowsInserted(QModelIndex, int, int)), SLOT(dataChanged()));
-    connect(m_model, SIGNAL(rowsRemoved(QModelIndex, int, int)), SLOT(dataChanged()));
-    connect(m_model, SIGNAL(rowsMoved(QModelIndex, int, int, QModelIndex, int)), SLOT(dataChanged()));
+    connect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)), SLOT(dataChanged()));
+    connect(m_model, SIGNAL(rowsRemoved(QModelIndex,int,int)), SLOT(dataChanged()));
+    connect(m_model, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)), SLOT(dataChanged()));
 
     connect(m_model,
             SIGNAL(layoutChanged()),

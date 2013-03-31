@@ -24,7 +24,7 @@ TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)
     installEventFilter(this);
     m_tabBar->installEventFilter(this);
 
-    connect(m_tabBar, SIGNAL(tabMoved(int, int)), this, SIGNAL(tabMoved(int,int)));
+    connect(m_tabBar, SIGNAL(tabMoved(int,int)), this, SIGNAL(tabMoved(int,int)));
     connect(m_tabBar, SIGNAL(customContextMenuRequested(QPoint)), SLOT(showTabBarMenu(QPoint)));
     connect(this, SIGNAL(tabCloseRequested(int)), SLOT(closeTab(int)));
     connect(this, SIGNAL(currentChanged(int)), SLOT(setTabClosable()));

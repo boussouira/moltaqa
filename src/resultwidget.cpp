@@ -59,7 +59,7 @@ void ResultWidget::search(LibrarySearcher *searcher)
     connect(m_searcher, SIGNAL(doneSearching()), SLOT(searchFinnished()));
     connect(m_searcher, SIGNAL(startFeteching()), SLOT(fetechStarted()));
     connect(m_searcher, SIGNAL(doneFeteching()), SLOT(fetechFinnished()));
-    connect(m_searcher, SIGNAL(gotException(QString, int)), SLOT(gotException(QString, int)));
+    connect(m_searcher, SIGNAL(gotException(QString,int)), SLOT(gotException(QString,int)));
 
     m_searcher->start();
 }
