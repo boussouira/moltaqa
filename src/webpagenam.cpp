@@ -226,7 +226,7 @@ QNetworkReply *WebPageNAM::createRequest(Operation op, const QNetworkRequest &re
 
             if(filename.startsWith(baseUrl()))
                 filename.remove(0, baseUrl().size() + 1); // Add 1 for the '/'
-            else if(filename.startsWith("book://"))
+            else if(filename.startsWith(QLatin1String("book://")))
                 filename.remove(0, QString("book://").size());
 
 #ifdef DEV_BUILD

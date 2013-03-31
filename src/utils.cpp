@@ -516,7 +516,7 @@ QString cleanFileName(QString fileName, bool removeSpace)
          baseName.replace(' ', '_');
 
     QString path = info.dir().filePath(baseName + '.' + ext);
-    if(path.startsWith("./"))
+    if(path.startsWith(QLatin1String("./")))
         path = path.remove(0, 2);
 
     return path;

@@ -476,7 +476,7 @@ void BookReaderView::getSheer()
 
         int id = 0;
         QString name = info.name;
-        if(name.startsWith("pages/p")) {
+        if(name.startsWith(QLatin1String("pages/p"))) {
             name = name.remove(0, 7);
             name = name.remove(".html");
 

@@ -112,7 +112,7 @@ int LibraryManager::addBook(ImportModelNode *node)
     if(book->fileName.isEmpty())
         book->fileName = QFileInfo(book->path).fileName();
 
-    QString bookPath = (book->fileName.startsWith("book_")
+    QString bookPath = (book->fileName.startsWith(QLatin1String("book_"))
                         ? m_libraryInfo->bookPath(book->fileName) : QString());
 
     if(bookPath.isEmpty() || bookPath != book->path) {
