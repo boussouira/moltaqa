@@ -4,7 +4,7 @@
 #include "mainwindow.h"
 #include "utils.h"
 #include <qfile.h>
-#include <quazip.h>
+#include "quazip.h"
 #include <qxmlstream.h>
 #include <qstack.h>
 

@@ -4,7 +4,6 @@
 #include <QDialog>
 #include <qicon.h>
 #include <qdatetime.h>
-#include "libraryinfo.h"
 
 namespace Ui {
     class ShamelaImportDialog;
@@ -20,6 +19,7 @@ class LibraryBookManager;
 class BookListManager;
 class ModelViewFilter;
 class QProgressDialog;
+class LibraryInfo;
 
 class ShamelaImportDialog : public QDialog
 {

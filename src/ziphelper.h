@@ -2,8 +2,8 @@
 #define ZIPHELPER_H
 
 #include <qfile.h>
-#include <quazip/quazip.h>
-#include <quazip/quazipfile.h>
+#include "quazip/quazip.h"
+#include "quazip/quazipfile.h"
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
 

@@ -2,10 +2,11 @@
 #define BOOKINDEXER_H
 
 #include <qthread.h>
-#include "indextaskiter.h"
 
 class LibraryBookManager;
 class BookIndexerBase;
+class IndexTaskIter;
+class IndexTask;
 
 namespace lucene {
     namespace index {

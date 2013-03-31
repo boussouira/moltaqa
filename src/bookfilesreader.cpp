@@ -2,7 +2,7 @@
 #include "utils.h"
 
 #include <qfile.h>
-#include <quazipfile.h>
+#include "quazipfile.h"
 
 #define PAGE_FILE_PREFIX "pages/p"
 #define PAGE_FILE_SUFFIX ".html"

@@ -1,7 +1,6 @@
 #ifndef WEBPAGENAM_H
 #define WEBPAGENAM_H
 
-#include <qnetworkaccessmanager.h>
 #include <qnetworkreply.h>
 #include "librarybook.h"
 

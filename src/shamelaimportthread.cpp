@@ -3,6 +3,7 @@
 #include "shamelamanager.h"
 #include "librarycreator.h"
 #include "shamelaimportdialog.h"
+#include "shamelaimportinfo.h"
 #include "utils.h"
 #include "bookexception.h"
 

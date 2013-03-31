@@ -2,8 +2,6 @@
 #define EDITTAFFASIRLISTWIDGET_H
 
 #include "controlcenterwidget.h"
-#include "modelviewsearcher.h"
-#include <qstandarditemmodel.h>
 
 namespace Ui {
 class TaffesirListManagerWidget;
@@ -12,6 +10,8 @@ class TaffesirListManagerWidget;
 class LibraryManager;
 class TaffesirListManager;
 class TreeViewEditor;
+class ModelViewSearcher;
+class QStandardItemModel;
 
 class TaffesirListManagerWidget : public ControlCenterWidget
 {

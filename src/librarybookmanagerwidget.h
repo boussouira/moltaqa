@@ -4,7 +4,7 @@
 #include "controlcenterwidget.h"
 #include "librarybook.h"
 #include <qhash.h>
-#include <QModelIndex>
+#include <qabstractitemmodel.h>
 
 namespace Ui {
     class LibraryBookManagerWidget;

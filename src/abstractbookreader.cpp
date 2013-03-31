@@ -2,6 +2,7 @@
 #include "libraryinfo.h"
 #include "librarybook.h"
 #include "bookexception.h"
+#include "librarymanager.h"
 #include "textformatter.h"
 #include "utils.h"
 #include "mainwindow.h"

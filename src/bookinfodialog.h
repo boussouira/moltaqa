@@ -2,9 +2,10 @@
 #define BOOKINFODIALOG_H
 
 #include <qdialog.h>
-#include <qevent.h>
 #include "librarybook.h"
-#include "webview.h"
+
+class WebView;
+class QCloseEvent;
 
 class BookInfoDialog : public QWidget
 {

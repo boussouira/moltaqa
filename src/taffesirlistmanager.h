@@ -2,7 +2,8 @@
 #define TAFFESIRLISTMANAGER_H
 
 #include "xmlmanager.h"
-#include <qstandarditemmodel.h>
+
+class QStandardItemModel;
 
 class TaffesirListManager : public XmlManager
 {

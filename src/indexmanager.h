@@ -3,11 +3,13 @@
 
 #include <QObject>
 #include <qdatetime.h>
-#include "bookindexer.h"
 #include "clheader.h"
-#include "libraryinfo.h"
-#include "indextracker.h"
 
+class BookIndexerThread;
+class LibraryInfo;
+class IndexTracker;
+class IndexTaskIter;
+class IndexTask;
 class ArabicAnalyzer;
 
 class IndexManager : public QObject

@@ -2,15 +2,14 @@
 #define LIBRARYSEARCHER_H
 
 #include <qthread.h>
-#include <qsqldatabase.h>
 #include <qcache.h>
 #include "clheader.h"
-#include "libraryinfo.h"
-#include "librarymanager.h"
-#include "searchresult.h"
-#include "clucenequery.h"
 
+class LibraryInfo;
+class LibraryManager;
+class SearchResult;
 class SearchResultReader;
+class CLuceneQuery;
 
 class LibrarySearcher : public QThread
 {

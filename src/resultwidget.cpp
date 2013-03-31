@@ -5,6 +5,7 @@
 #include "bookreaderview.h"
 #include "librarybookmanager.h"
 #include "bookwidget.h"
+#include "bookwidgetmanager.h"
 #include "htmlhelper.h"
 #include "bookinfodialog.h"
 #include "clconstants.h"
@@ -12,12 +13,17 @@
 #include "richbookreader.h"
 #include "stringutils.h"
 #include "webpagenam.h"
+#include "librarymanager.h"
+#include "searchresult.h"
+#include "clucenequery.h"
+#include "librarysearcher.h"
 
 #include <qdir.h>
 #include <qplaintextedit.h>
 #include <qboxlayout.h>
 #include <qtoolbutton.h>
 #include <qmenu.h>
+#include <qtoolbar.h>
 
 ResultWidget::ResultWidget(QWidget *parent) :
     QWidget(parent),
@@ -197,8 +203,8 @@ void ResultWidget::openResult(int resultID)
 {
     SearchResult *result = m_searcher->getResult(resultID);
     BookViewBase *bookWidget = m_readerview->openBook(result->book->id,
-                                                    result->page->pageID,
-                                                    m_searcher->getSearchQuery());
+                                                      result->page->pageID,
+                                                      m_searcher->getSearchQuery());
 
     LibraryManager::instance()->bookManager()->increaseResultOpenCount(result->book->id);
 

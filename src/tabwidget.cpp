@@ -1,12 +1,15 @@
 #include "tabwidget.h"
-#include <qevent.h>
-#include <qmenu.h>
-#include <qaction.h>
 #include "librarybook.h"
+#include "bookviewbase.h"
 #include "richbookreader.h"
 #include "webview.h"
 #include "utils.h"
 #include "stringutils.h"
+
+#include <qtabbar.h>
+#include <qevent.h>
+#include <qmenu.h>
+#include <qaction.h>
 
 TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)
 {

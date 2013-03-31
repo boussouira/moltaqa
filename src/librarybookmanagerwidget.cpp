@@ -14,6 +14,8 @@
 #include "booklistmanager.h"
 #include "bookreaderview.h"
 #include "authorsmanager.h"
+#include "bookwidgetmanager.h"
+#include "sortfilterproxymodel.h"
 
 #include <qdebug.h>
 #include <qlineedit.h>
@@ -22,6 +24,7 @@
 #include <QInputDialog>
 #include <QHBoxLayout>
 #include <indextracker.h>
+#include <qtoolbar.h>
 
 LibraryBookManagerWidget::LibraryBookManagerWidget(QWidget *parent) :
     ControlCenterWidget(parent),

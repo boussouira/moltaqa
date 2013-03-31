@@ -2,6 +2,7 @@
 #include "filechooserwidget.h"
 #include "librarymanager.h"
 #include "booklistmanager.h"
+#include "bookexporterthread.h"
 #include "filterlineedit.h"
 #include "modelutils.h"
 #include "modelviewfilter.h"
@@ -10,6 +11,7 @@
 #include "exportdialog.h"
 #include "exportformats.h"
 #include "stringutils.h"
+#include "sortfilterproxymodel.h"
 
 #include <qboxlayout.h>
 #include <qlabel.h>
@@ -239,6 +241,11 @@ void ExportPage::initializePage()
 bool ExportPage::isComplete() const
 {
     return m_doneExport;
+}
+
+BookExporterThread *ExportPage::exportThread()
+{
+    return m_thread;
 }
 
 void ExportPage::openOutDir()

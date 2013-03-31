@@ -9,10 +9,12 @@
 #include "stringutils.h"
 #include "resultwidget.h"
 #include "webview.h"
+#include "librarymanager.h"
 
 #include <qboxlayout.h>
 #include <qmessagebox.h>
 #include <qaction.h>
+#include <qtoolbar.h>
 
 SearchView::SearchView(QWidget *parent) : AbstarctView(parent)
 {

@@ -8,6 +8,10 @@
 #include "abstractbookreader.h"
 #include "librarybookmanager.h"
 #include "searchresultreader.h"
+#include "librarymanager.h"
+#include "libraryinfo.h"
+#include "clucenequery.h"
+#include "searchresult.h"
 
 #include <qdatetime.h>
 #include <qsqlquery.h>

@@ -5,10 +5,11 @@
 #include "utils.h"
 #include "mainwindow.h"
 #include "libraryinfo.h"
+#include "librarymanager.h"
 #include "librarybookmanager.h"
 
-#include <quazip/quazip.h>
-#include <quazip/quazipfile.h>
+#include "quazip/quazip.h"
+#include "quazip/quazipfile.h"
 #include "richquranreader.h"
 #include "richsimplebookreader.h"
 #include "richtafessirreader.h"

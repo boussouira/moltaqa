@@ -9,6 +9,9 @@
 #include "searchfiltermanager.h"
 #include "librarysearchfilter.h"
 #include "librarysearcher.h"
+#include "sortfilterproxymodel.h"
+
+#include <qtreeview.h>
 #include <qmessagebox.h>
 
 LibrarySearchWidget::LibrarySearchWidget(QWidget *parent) :

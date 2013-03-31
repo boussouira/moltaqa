@@ -3,6 +3,7 @@
 #include "favouritessearchfilter.h"
 #include "utils.h"
 #include "resultwidget.h"
+#include "sortfilterproxymodel.h"
 
 FavouritesSearchWidget::FavouritesSearchWidget(QWidget *parent) :
     SearchWidget(parent)

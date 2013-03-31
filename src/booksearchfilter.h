@@ -7,8 +7,8 @@
 #include <qdom.h>
 #include <qfile.h>
 
-#include <quazip/quazip.h>
-#include <quazip/quazipfile.h>
+#include "quazip/quazip.h"
+#include "quazip/quazipfile.h"
 
 class BookSearchFilter : public SearchFilterManager
 {

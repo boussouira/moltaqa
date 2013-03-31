@@ -15,6 +15,9 @@
 
 class WebPage;
 class WebPageNAM;
+class QWebFrame;
+class QPropertyAnimation;
+class WebViewSearcher;
 
 class WebView : public QWebView
 {
@@ -39,7 +42,7 @@ public:
 
     QString toHtml();
 
-    WebViewSearcher *searcher() { return m_searcher; }
+    WebViewSearcher *searcher();
     LibraryBook::Ptr getLibraryBook();
 
     WebPageNAM *getPageNAM();

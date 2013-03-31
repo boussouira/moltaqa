@@ -7,7 +7,7 @@
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qdir.h>
-#include <QDomDocument>
+#include <qdom.h>
 
 LibraryInfo::LibraryInfo(QString booksPath)
 {

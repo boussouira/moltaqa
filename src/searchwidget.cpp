@@ -14,11 +14,13 @@
 #include "searchfieldsdialog.h"
 #include "statisticsmanager.h"
 #include "searchresultreader.h"
+#include "librarymanager.h"
 
 #include <qmessagebox.h>
 #include <qinputdialog.h>
 #include <qcompleter.h>
 #include <qsettings.h>
+#include <qmenu.h>
 
 SearchWidget::SearchWidget(QWidget *parent) :
     QWidget(parent),

@@ -1,6 +1,8 @@
 #include "searchfieldsdialog.h"
 #include "ui_searchfieldsdialog.h"
 #include "librarymanager.h"
+#include "searchmanager.h"
+
 #include <qmessagebox.h>
 #include <qinputdialog.h>
 

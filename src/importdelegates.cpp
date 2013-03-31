@@ -4,6 +4,12 @@
 #include "selectauthordialog.h"
 #include "shamelamanager.h"
 #include "modelenums.h"
+
+#include "shamelainfo.h"
+#include "shamelaimportinfo.h"
+#include "shamelamapper.h"
+#include <qstandarditemmodel.h>
+
 #include <qcombobox.h>
 
 /* Book type delegate */

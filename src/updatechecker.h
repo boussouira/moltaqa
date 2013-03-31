@@ -2,10 +2,7 @@
 #define UPDATECHECKER_H
 
 #include <qobject.h>
-#include <qnetworkaccessmanager.h>
-#include <qnetworkrequest.h>
 #include <qnetworkreply.h>
-#include <qurl.h>
 
 class UpdateInfo {
 public:

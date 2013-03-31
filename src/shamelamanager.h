@@ -1,9 +1,6 @@
 #ifndef SHAMELAMANAGER_H
 #define SHAMELAMANAGER_H
 
-#include "shamelainfo.h"
-#include "shamelaimportinfo.h"
-#include "shamelamapper.h"
 #include "sqlutils.h"
 
 #include <qthread.h>
@@ -11,12 +8,17 @@
 #include <qsqldatabase.h>
 #include <qstringlist.h>
 #include <qhash.h>
-#include <qdebug.h>
-#include <qstandarditemmodel.h>
 
 typedef QList<QPair<QString, QString> > ShoortsList;
 
 class ShamelaImportDialog;
+class ShamelaInfo;
+class ShamelaMapper;
+class ShamelaCategorieInfo;
+class ShamelaAuthorInfo;
+class ShamelaBookInfo;
+class QStandardItemModel;
+class QStandardItem;
 
 class ShamelaManager
 {

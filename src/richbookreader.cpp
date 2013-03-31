@@ -4,6 +4,7 @@
 #include "bookpage.h"
 #include "utils.h"
 #include "clutils.h"
+#include "librarymanager.h"
 #include "librarybookmanager.h"
 #include "libraryinfo.h"
 #include "modelenums.h"

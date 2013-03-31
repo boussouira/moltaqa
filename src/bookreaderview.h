@@ -2,9 +2,8 @@
 #define BOOKREADERVIEW_H
 
 #include "abstarctview.h"
-#include "bookwidgetmanager.h"
 #include "clutils.h"
-#include "bookpage.h"
+#include "librarybook.h"
 
 class BookViewBase;
 class LibraryManager;
@@ -17,6 +16,7 @@ class QMenu;
 class QComboBox;
 class CLuceneQuery;
 class FilterLineEdit;
+class BookWidgetManager;
 
 class BookReaderView : public AbstarctView
 {
@@ -36,7 +36,7 @@ public:
     LibraryBook::Ptr currentBook();
     BookPage *currentPage();
 
-    BookWidgetManager *bookWidgetManager() { return m_viewManager; }
+    BookWidgetManager *bookWidgetManager();
 
 public slots:
     BookViewBase *openBook(int bookID, int pageID = -1, CLuceneQuery *query=0);

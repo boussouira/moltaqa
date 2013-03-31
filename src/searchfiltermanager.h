@@ -1,13 +1,8 @@
 #ifndef SEARCHFILTERMANAGER_H
 #define SEARCHFILTERMANAGER_H
 
-#include "sortfilterproxymodel.h"
-#include "filterlineedit.h"
-#include "libraryinfo.h"
-#include <qstandarditemmodel.h>
-#include <qmenu.h>
+#include <qobject.h>
 #include <qsqldatabase.h>
-#include <qtreeview.h>
 
 #include <CLucene/StdHeader.h>
 #include <CLucene/search/BooleanClause.h>
@@ -19,6 +14,16 @@ namespace lucene {
 }
 
 class SearchFilter;
+class SortFilterProxyModel;
+class FilterLineEdit;
+class LibraryInfo;
+class QStandardItem;
+class QStandardItemModel;
+class QAbstractItemModel;
+class QModelIndex;
+class QMenu;
+class QAction;
+class QTreeView;
 
 class SearchFilterManager : public QObject
 {

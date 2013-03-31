@@ -3,6 +3,7 @@
 #include "filterlineedit.h"
 #include "utils.h"
 #include <qaction.h>
+#include <qtoolbar.h>
 
 AbstarctView::AbstarctView(QWidget *parent) :
     QWidget(parent),
@@ -10,8 +11,8 @@ AbstarctView::AbstarctView(QWidget *parent) :
     m_crtlKey(false)
 {
     // Search toolbar
-    m_toolBarSearch = new QToolBar(tr("البحث"),
-                                   0);
+    m_toolBarSearch = new QToolBar(tr("البحث"), 0);
+
     // Search line
     m_searchEdit = new FilterLineEdit(m_toolBarSearch);
     m_searchEdit->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);

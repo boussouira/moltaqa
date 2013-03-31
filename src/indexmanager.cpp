@@ -8,6 +8,8 @@
 #include "stringutils.h"
 #include "bookexception.h"
 #include "statisticsmanager.h"
+#include "indextracker.h"
+#include "libraryinfo.h"
 
 #include <qdir.h>
 #include <qthread.h>

@@ -2,15 +2,17 @@
 #define AUTHORSVIEW_H
 
 #include "abstarctview.h"
-#include "authorsmanager.h"
-#include <qstandarditemmodel.h>
+#include "authorinfo.h"
 
 namespace Ui {
 class AuthorsView;
 }
 
+class AuthorsManager;
 class ModelViewFilter;
 class LibraryBookManager;
+class QStandardItemModel;
+class QModelIndex;
 
 class AuthorsView : public AbstarctView
 {

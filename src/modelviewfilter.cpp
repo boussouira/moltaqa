@@ -1,7 +1,11 @@
 #include "modelviewfilter.h"
 #include "stringutils.h"
 #include "utils.h"
+#include "sortfilterproxymodel.h"
+#include "filterlineedit.h"
 
+#include <qstandarditemmodel.h>
+#include <qtreeview.h>
 #include <qicon.h>
 #include <qheaderview.h>
 #include <qevent.h>

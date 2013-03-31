@@ -5,6 +5,7 @@
 #include "librarymanager.h"
 #include "taffesirlistmanager.h"
 #include "utils.h"
+#include "modelviewsearcher.h"
 
 TaffesirListManagerWidget::TaffesirListManagerWidget(QWidget *parent) :
     ControlCenterWidget(parent),

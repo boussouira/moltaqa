@@ -7,6 +7,7 @@
 #include "timeutils.h"
 #include "shamelaimportthread.h"
 #include "mainwindow.h"
+#include "libraryinfo.h"
 #include "librarymanager.h"
 #include "librarybook.h"
 #include "sortfilterproxymodel.h"
@@ -18,6 +19,8 @@
 #include "bookeditor.h"
 #include "modelviewfilter.h"
 #include "statisticsmanager.h"
+#include "shamelamapper.h"
+#include "shamelaimportinfo.h"
 
 #ifdef USE_MDBTOOLS
 #include "mdbconverter.h"

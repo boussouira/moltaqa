@@ -2,15 +2,16 @@
 #define TARAJEMROWATMANAGERWIDGET_H
 
 #include "controlcenterwidget.h"
-#include "editwebview.h"
 #include "tarajemrowatmanager.h"
-#include <qstandarditemmodel.h>
 
 namespace Ui {
 class TarajemRowatManagerWidget;
 }
 
 class ModelViewFilter;
+class EditWebView;
+class QStandardItemModel;
+class QModelIndex;
 
 class TarajemRowatManagerWidget : public ControlCenterWidget
 {

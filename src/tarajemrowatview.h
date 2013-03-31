@@ -3,13 +3,14 @@
 
 #include "abstarctview.h"
 #include "tarajemrowatmanager.h"
-#include <qstandarditemmodel.h>
 
 namespace Ui {
 class TarajemRowatView;
 }
 
 class ModelViewFilter;
+class QStandardItemModel;
+class QModelIndex;
 
 class TarajemRowatView : public AbstarctView
 {

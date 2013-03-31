@@ -3,19 +3,20 @@
 
 #include "abstarctview.h"
 #include "librarybook.h"
-#include "bookpage.h"
-#include "bookeditor.h"
 
 namespace Ui {
     class BookEditorView;
 }
 
+class BookPage;
 class EditWebView;
+class BookEditor;
 class RichBookReader;
 class QTabWidget;
 class BookIndexEditor;
 class BookMediaEditor;
 class QSplitter;
+class QTimer;
 
 class BookEditorView : public AbstarctView
 {

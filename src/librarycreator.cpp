@@ -11,6 +11,12 @@
 #include "librarybookmanager.h"
 #include "authorsmanager.h"
 #include "bookutils.h"
+#include "libraryinfo.h"
+#include "shamelamanager.h"
+#include "librarymanager.h"
+#include "shamelamapper.h"
+#include "newbookwriter.h"
+#include "shamelaimportinfo.h"
 
 #ifdef USE_MDBTOOLS
 #include "mdbconverter.h"

@@ -2,8 +2,8 @@
 #define EXPORTDIALOGPAGES_H
 
 #include <qwizard.h>
-#include "bookexporterthread.h"
 
+class BookExporterThread;
 class QCheckBox;
 class QLabel;
 class QListWidget;
@@ -47,7 +47,7 @@ public:
     void initializePage();
     bool isComplete() const;
 
-    BookExporterThread *exportThread() { return m_thread; }
+    BookExporterThread *exportThread();
 
 public slots:
     void openOutDir();

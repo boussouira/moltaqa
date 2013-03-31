@@ -5,6 +5,7 @@
 #include "xmlutils.h"
 #include "utils.h"
 #include "shamelaimportinfo.h"
+
 #include <qfile.h>
 #include <qxmlstream.h>
 #include <qdir.h>

@@ -1,11 +1,13 @@
 #ifndef BOOKEDITOR_H
 #define BOOKEDITOR_H
 
-#include "abstractbookreader.h"
+#include <qobject.h>
+#include "librarybook.h"
 #include "ziphelper.h"
 
 class RichBookReader;
 class QuaZipFile;
+class ZipHelper;
 
 class BookEditor : public QObject
 {

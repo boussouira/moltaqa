@@ -8,6 +8,7 @@
 #include "timeutils.h"
 #include "authorsmanager.h"
 #include "bookreaderview.h"
+#include "bookwidgetmanager.h"
 #include "quazip.h"
 #include "quazipfile.h"
 

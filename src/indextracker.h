@@ -2,12 +2,14 @@
 #define INDEXTRACKER_H
 
 #include <qobject.h>
+#include <qrunnable.h>
 #include <qdom.h>
-
-#include "libraryinfo.h"
-#include "librarymanager.h"
 #include "indextaskiter.h"
-#include <xmldomhelper.h>
+#include "xmldomhelper.h"
+
+class LibraryInfo;
+class LibraryManager;
+class LibraryBookManager;
 
 class IndexTracker : public QObject, public QRunnable
 {

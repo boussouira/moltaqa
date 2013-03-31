@@ -2,11 +2,12 @@
 #define ABSTARCTVIEW_H
 
 #include <qwidget.h>
-#include <qtoolbar.h>
 #include <qevent.h>
 
 class FilterLineEdit;
 class WebViewSearcher;
+class QToolBar;
+class QKeyEvent;
 
 class AbstarctView : public QWidget
 {

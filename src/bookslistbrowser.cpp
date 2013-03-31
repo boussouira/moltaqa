@@ -11,6 +11,7 @@
 #include "bookinfodialog.h"
 #include "librarybookmanager.h"
 #include "bookeditorview.h"
+#include "searchview.h"
 
 #include <qevent.h>
 #include <qmenu.h>

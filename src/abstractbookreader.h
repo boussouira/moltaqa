@@ -6,17 +6,17 @@
 #include <qfile.h>
 #include <qdom.h>
 
-#include "librarymanager.h"
+#include "librarybook.h"
 #include "sqlutils.h"
 #include "xmldomhelper.h"
 #include "zipopener.h"
 
-#include <quazip/quazip.h>
-#include <quazip/quazipfile.h>
+#include "quazip/quazip.h"
+#include "quazip/quazipfile.h"
 
 class LibraryInfo;
-class LibraryBook;
 class BookPage;
+class LibraryManager;
 class TextFormatter;
 class QSqlQuery;
 class BookEditor;

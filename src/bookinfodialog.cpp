@@ -5,6 +5,9 @@
 #include "librarymanager.h"
 #include "mainwindow.h"
 #include "librarybookmanager.h"
+#include "webview.h"
+
+#include <qevent.h>
 #include <qboxlayout.h>
 
 BookInfoDialog::BookInfoDialog(QWidget *parent) : QWidget(parent)

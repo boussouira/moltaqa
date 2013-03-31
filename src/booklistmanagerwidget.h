@@ -2,14 +2,18 @@
 #define EDITCATWIDGET_H
 
 #include "controlcenterwidget.h"
-#include "librarymanager.h"
-#include "modelviewsearcher.h"
+#include "librarybook.h"
+#include <qabstractitemmodel.h>
 
 namespace Ui {
     class BookListManagerWidget;
 }
 
 class TreeViewEditor;
+class ModelViewSearcher;
+class BookListManager;
+class QStandardItemModel;
+class QStandardItem;
 
 class BookListManagerWidget : public ControlCenterWidget
 {

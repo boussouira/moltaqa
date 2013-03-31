@@ -7,6 +7,7 @@
 #include "modelutils.h"
 #include "timeutils.h"
 #include "modelviewfilter.h"
+#include "editwebview.h"
 
 #include <qstandarditemmodel.h>
 #include <qinputdialog.h>

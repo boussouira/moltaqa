@@ -8,6 +8,7 @@
 #include "bookwidget.h"
 #include "richbookreader.h"
 #include "webpagenam.h"
+#include "searchview.h"
 
 #include <qevent.h>
 #include <qmenu.h>
@@ -178,6 +179,11 @@ void WebView::autoObjectAdd(QString objectName, QObject *object)
 QString WebView::toHtml()
 {
     return m_frame->toHtml();
+}
+
+WebViewSearcher *WebView::searcher()
+{
+    return m_searcher;
 }
 
 LibraryBook::Ptr WebView::getLibraryBook()

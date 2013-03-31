@@ -24,6 +24,7 @@
 #include "webview.h"
 #include "updatedialog.h"
 #include "exportdialog.h"
+#include "searchview.h"
 
 #include <qmessagebox.h>
 #include <qsettings.h>

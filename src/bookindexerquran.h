@@ -2,8 +2,8 @@
 #define BOOKINDEXERQURAN_H
 
 #include "bookindexerbase.h"
-#include <quazip.h>
-#include <quazipfile.h>
+#include "quazip.h"
+#include "quazipfile.h"
 
 class BookIndexerQuran : public BookIndexerBase
 {

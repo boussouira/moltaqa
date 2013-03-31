@@ -2,7 +2,6 @@
 #define RESULTWIDGET_H
 
 #include <QWidget>
-#include "librarysearcher.h"
 
 namespace Ui {
 class ResultWidget;
@@ -10,6 +9,8 @@ class ResultWidget;
 
 class BookReaderView;
 class WebView;
+class LibrarySearcher;
+class SearchResult;
 
 class ResultWidget : public QWidget
 {

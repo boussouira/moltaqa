@@ -4,6 +4,9 @@
 #include "librarybookmanager.h"
 #include "utils.h"
 #include "xmlutils.h"
+#include "libraryinfo.h"
+#include "librarymanager.h"
+#include "librarybookmanager.h"
 
 #include <qfile.h>
 #include <qtextstream.h>

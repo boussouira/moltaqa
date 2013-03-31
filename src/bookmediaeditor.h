@@ -2,11 +2,10 @@
 #define BOOKMEDIAEDITOR_H
 
 #include <qdialog.h>
-#include "librarybook.h"
 
-#include <qstandarditemmodel.h>
-#include <quazip.h>
-#include <quazipfile.h>
+#include "librarybook.h"
+#include "quazip.h"
+#include "quazipfile.h"
 
 namespace Ui {
 class BookMediaEditor;
@@ -14,6 +13,9 @@ class BookMediaEditor;
 
 class WebView;
 class BookEditor;
+class QStandardItemModel;
+class QStandardItem;
+class QModelIndex;
 
 class BookMediaResource
 {

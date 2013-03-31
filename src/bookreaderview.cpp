@@ -19,6 +19,7 @@
 #include "filterlineedit.h"
 #include "webview.h"
 #include "libraryinfo.h"
+#include "searchview.h"
 
 #include <qmainwindow.h>
 #include <qmenubar.h>
@@ -259,7 +260,12 @@ BookPage *BookReaderView::currentPage()
 {
     AbstractBookReader *bookdb = m_viewManager->activeBookReader();
 
-   return bookdb ? bookdb->page() : 0;
+    return bookdb ? bookdb->page() : 0;
+}
+
+BookWidgetManager *BookReaderView::bookWidgetManager()
+{
+    return m_viewManager;
 }
 
 BookViewBase *BookReaderView::openBook(int bookID, int pageID, CLuceneQuery *query)

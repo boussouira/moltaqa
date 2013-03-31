@@ -10,6 +10,7 @@
 #include "bookreaderhelper.h"
 #include "modelenums.h"
 #include "modelutils.h"
+#include "librarymanager.h"
 #include "librarybookmanager.h"
 #include "bookreaderview.h"
 #include "utils.h"

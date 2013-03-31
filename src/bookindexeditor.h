@@ -2,7 +2,7 @@
 #define BOOKINDEXEDITOR_H
 
 #include <qwidget.h>
-#include <qstandarditemmodel.h>
+#include <qabstractitemmodel.h>
 
 namespace Ui {
 class BookIndexEditor;
@@ -14,6 +14,8 @@ class RichBookReader;
 class BookEditorView;
 class TreeViewEditor;
 class ZipHelper;
+class QStandardItemModel;
+class QStandardItem;
 
 class BookIndexEditor : public QWidget
 {

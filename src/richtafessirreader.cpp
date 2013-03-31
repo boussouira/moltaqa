@@ -6,6 +6,7 @@
 #include "mainwindow.h"
 #include "bookreaderhelper.h"
 #include "xmlutils.h"
+#include "librarymanager.h"
 #include "librarybookmanager.h"
 #include "utils.h"
 #include "stringutils.h"

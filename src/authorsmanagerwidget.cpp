@@ -1,6 +1,7 @@
 #include "authorsmanagerwidget.h"
 #include "ui_authorsmanagerwidget.h"
 #include "librarymanager.h"
+#include "authorsmanager.h"
 #include "modelenums.h"
 #include "utils.h"
 #include "modelutils.h"

@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <qmainwindow.h>
-#include "searchview.h"
 #include "bookslistbrowser.h"
 
 #define MW MainWindow::instance()
@@ -11,7 +10,6 @@ class ViewManager;
 class LibraryManager;
 class SettingsDialog;
 class BookReaderView;
-class BooksListBrowser;
 class WelcomeWidget;
 class BookEditorView;
 class TarajemRowatView;
@@ -24,6 +22,7 @@ class QProgressBar;
 class QToolButton;
 class LogDialog;
 class UpdateChecker;
+class SearchView;
 
 namespace Ui
 {

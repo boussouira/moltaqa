@@ -12,9 +12,13 @@
 #include "librarybookmanager.h"
 #include "bookinfodialog.h"
 #include "bookreaderview.h"
+#include "sortfilterproxymodel.h"
+#include "filterlineedit.h"
 
+#include <qtreeview.h>
 #include <qsqlquery.h>
 #include <qitemselectionmodel.h>
+#include <qmenu.h>
 #include <qdebug.h>
 
 SearchFilterManager::SearchFilterManager(QObject *parent)

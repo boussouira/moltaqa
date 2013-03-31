@@ -4,6 +4,7 @@
 #include "bookexception.h"
 #include "simpletextformat.h"
 #include "libraryinfo.h"
+#include "librarymanager.h"
 #include "librarybookmanager.h"
 #include "stringutils.h"
 #include "bookutils.h"

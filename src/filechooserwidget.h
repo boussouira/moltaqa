@@ -2,8 +2,10 @@
 #define FILECHOOSERWIDGET_H
 
 #include <qwidget.h>
-#include <qlineedit.h>
-#include <qlabel.h>
+
+class QToolButton;
+class QLabel;
+class QLineEdit;
 
 class FileChooserWidget : public QWidget
 {
@@ -11,17 +13,17 @@ class FileChooserWidget : public QWidget
 public:
     FileChooserWidget(QWidget *parent = 0);
 
-    void setLabelText(const QString &text) { m_label->setText(text); }
-    void setSettingName(const QString &name) { m_settingName = name;}
+    void setLabelText(const QString &text);
+    void setSettingName(const QString &name);
 
-    QString getPath() { return m_edit->text(); }
-    QLineEdit *lineEdit() { return m_edit; }
+    QString getPath();
+    QLineEdit *lineEdit();
 
 protected slots:
     void chooseFolder();
 
 protected:
-    class QToolButton *m_button;
+    QToolButton *m_button;
     QLabel *m_label;
     QLineEdit *m_edit;
     QString m_settingName;

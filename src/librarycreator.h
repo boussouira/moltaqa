@@ -1,18 +1,21 @@
 #ifndef LIBRARYCREATOR_H
 #define LIBRARYCREATOR_H
 
-#include <qsqldatabase.h>
-#include <qsqlquery.h>
-#include <qsqlerror.h>
 #include <qcoreapplication.h>
 #include <qmutex.h>
+#include <qhash.h>
 
-#include "libraryinfo.h"
-#include "shamelamanager.h"
-#include "newbookwriter.h"
-#include "shamelamapper.h"
-#include "librarymanager.h"
-#include "sqlutils.h"
+class LibraryInfo;
+class ShamelaManager;
+class ShamelaMapper;
+class LibraryManager;
+class AuthorsManager;
+class BookListManager;
+class TaffesirListManager;
+class ShamelaInfo;
+class ShamelaCategorieInfo;
+class ShamelaAuthorInfo;
+class ShamelaBookInfo;
 
 class LibraryCreator
 {

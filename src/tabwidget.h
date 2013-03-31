@@ -2,8 +2,9 @@
 #define TABWIDGET_H
 
 #include <qtabwidget.h>
-#include <qtabbar.h>
-#include "bookwidget.h"
+
+class BookViewBase;
+class QTabBar;
 
 class TabWidget : public QTabWidget
 {

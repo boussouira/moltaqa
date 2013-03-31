@@ -2,11 +2,11 @@
 #define MODELVIEWSEARCHER_H
 
 #include <qobject.h>
-#include <qabstractitemmodel.h>
-#include <qtreeview.h>
-#include <qstandarditemmodel.h>
 
-#include "filterlineedit.h"
+class FilterLineEdit;
+class QTreeView;
+class QStandardItemModel;
+class QStandardItem;
 
 class ModelViewSearcher : public QObject
 {

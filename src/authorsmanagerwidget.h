@@ -2,7 +2,7 @@
 #define AUTHORSMANAGERWIDGET_H
 
 #include "controlcenterwidget.h"
-#include "authorsmanager.h"
+#include "authorinfo.h"
 #include <qhash.h>
 
 namespace Ui {

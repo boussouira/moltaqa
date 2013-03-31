@@ -15,7 +15,7 @@ DESTDIR = ../bin
 
 exists(../../clucene) {
     CLUCENE_SOURCE_PATH = ../../clucene
-    CLUCENE_BUILD_PATH = ../../clucene
+    CLUCENE_BUILD_PATH = ../../clucene-build
 
     message(Using CLucene found at $$CLUCENE_BUILD_PATH)
 } else {

@@ -8,6 +8,7 @@
 #include "bookindexerquran.h"
 #include "librarybookmanager.h"
 #include "librarymanager.h"
+#include "indextaskiter.h"
 #include "utils.h"
 
 #include <exception>

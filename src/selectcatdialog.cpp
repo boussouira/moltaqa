@@ -6,6 +6,7 @@
 #include "modelenums.h"
 #include "modelutils.h"
 #include "utils.h"
+#include "sortfilterproxymodel.h"
 
 #include <qstandarditemmodel.h>
 #include <qmessagebox.h>

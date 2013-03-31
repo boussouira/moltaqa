@@ -21,6 +21,7 @@
 #include "bookmediaeditor.h"
 #include "webpagenam.h"
 #include "librarybookmanager.h"
+#include "bookeditor.h"
 
 #include <qstatusbar.h>
 #include <qtabwidget.h>
@@ -29,6 +30,7 @@
 #include <qsplitter.h>
 #include <qtimer.h>
 #include <qmenu.h>
+#include <qtoolbar.h>
 
 BookEditorView::BookEditorView(QWidget *parent) :
     AbstarctView(parent),

@@ -9,6 +9,8 @@
 #include "modelenums.h"
 #include "utils.h"
 #include "timeutils.h"
+#include "librarymanager.h"
+#include "modelviewsearcher.h"
 
 #include <qabstractitemmodel.h>
 #include <qmessagebox.h>

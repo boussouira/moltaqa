@@ -1,6 +1,8 @@
 #include "filechooserwidget.h"
 #include "utils.h"
 
+#include <qlineedit.h>
+#include <qlabel.h>
 #include <qboxlayout.h>
 #include <qtoolbutton.h>
 #include <qfiledialog.h>
@@ -24,6 +26,26 @@ FileChooserWidget::FileChooserWidget(QWidget *parent) :
     setLayout(layout);
 
     connect(m_button, SIGNAL(clicked()), SLOT(chooseFolder()));
+}
+
+void FileChooserWidget::setLabelText(const QString &text)
+{
+    m_label->setText(text);
+}
+
+void FileChooserWidget::setSettingName(const QString &name)
+{
+    m_settingName = name;
+}
+
+QString FileChooserWidget::getPath()
+{
+    return m_edit->text();
+}
+
+QLineEdit *FileChooserWidget::lineEdit()
+{
+    return m_edit;
 }
 
 void FileChooserWidget::chooseFolder()

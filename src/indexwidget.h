@@ -1,17 +1,18 @@
 #ifndef INDEXWIDGET_H
 #define INDEXWIDGET_H
 
+#include <qwidget.h>
+#include <qabstractitemmodel.h>
 #include "librarybook.h"
-#include <qdockwidget.h>
-#include <qstandarditemmodel.h>
 
 namespace Ui {
     class IndexWidget;
 }
 
 class BookPage;
-class QTreeView;
 class ModelViewFilter;
+class QTreeView;
+class QStandardItemModel;
 
 class IndexWidget : public QWidget
 {

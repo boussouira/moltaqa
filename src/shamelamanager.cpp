@@ -7,6 +7,9 @@
 #include "librarybookmanager.h"
 #include "librarybook.h"
 #include "shamelaimportdialog.h"
+#include "shamelainfo.h"
+#include "shamelamapper.h"
+#include "shamelaimportinfo.h"
 
 #ifdef USE_MDBTOOLS
 #include"mdbconverter.h"

@@ -2,7 +2,7 @@
 #define BOOKSLISTBROWSER_H
 
 #include <qdialog.h>
-#include <qstandarditemmodel.h>
+#include <qabstractitemmodel.h>
 
 class BookListManager;
 class LibraryManager;
@@ -10,6 +10,7 @@ class FavouritesManager;
 class LibraryBookManager;
 class ModelViewFilter;
 class SortFilterProxyModel;
+class QStandardItemModel;
 
 namespace Ui {
     class BooksListBrowser;

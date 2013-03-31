@@ -2,14 +2,15 @@
 #define MODELVIEWFILTER_H
 
 #include <qobject.h>
-#include <qabstractitemmodel.h>
-#include <qtreeview.h>
-#include <qstandarditemmodel.h>
-
-#include "sortfilterproxymodel.h"
-#include "filterlineedit.h"
+#include <qhash.h>
 
 class QActionGroup;
+class QTreeView;
+class SortFilterProxyModel;
+class FilterLineEdit;
+class QStandardItemModel;
+class QAction;
+class QMenu;
 
 class FilterInfo
 {

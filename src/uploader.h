@@ -2,10 +2,10 @@
 #define UPLOADER_H
 
 #include <qobject.h>
-#include <qnetworkaccessmanager.h>
-#include <qnetworkrequest.h>
-#include <qnetworkreply.h>
-#include <qurl.h>
+
+class QNetworkAccessManager;
+class QNetworkReply;
+class QHttpMultiPart;
 
 class UpLoader : public QObject
 {

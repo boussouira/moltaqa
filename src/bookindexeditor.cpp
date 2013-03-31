@@ -8,6 +8,7 @@
 #include "utils.h"
 #include "mainwindow.h"
 #include "libraryinfo.h"
+#include "ziphelper.h"
 
 #include <qfile.h>
 #include <qxmlstream.h>

@@ -4,6 +4,7 @@
 #include "modelutils.h"
 #include "modelenums.h"
 #include "utils.h"
+#include "librarymanager.h"
 
 #include <qabstractitemmodel.h>
 #include <qmessagebox.h>

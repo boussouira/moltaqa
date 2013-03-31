@@ -2,11 +2,12 @@
 #define SEARCHFIELDSDIALOG_H
 
 #include <qdialog.h>
-#include "searchmanager.h"
 
 namespace Ui {
     class SearchFieldsDialog;
 }
+
+class SearchManager;
 
 class SearchFieldsDialog : public QDialog
 {
