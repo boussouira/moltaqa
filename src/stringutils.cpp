@@ -330,13 +330,13 @@ bool fuzzyContains(QString first, QString second)
 
 class ArabicFindMatch {
 public:
-    ArabicFindMatch() : offset(0), lenght(0) {}
-    ArabicFindMatch(int _offset, int _lenght) : offset(_offset), lenght(_lenght) {}
+    ArabicFindMatch() : offset(0), length(0) {}
+    ArabicFindMatch(int _offset, int _length) : offset(_offset), length(_length) {}
 
     typedef QSharedPointer<ArabicFindMatch> Ptr;
 
     int offset;
-    int lenght;
+    int length;
 };
 
 ArabicFindMatch::Ptr arabicFind(const QString &text, const QString & pattern, int pos) {
@@ -387,8 +387,8 @@ QStringList getMatchString(const QString &text, QString searchText)
     for(int i=0; i<text.size();i++) {
         ArabicFindMatch::Ptr match = arabicFind(text, searchText, i);
         if(match) {
-            matches.append(text.mid(match->offset, match->lenght));
-            i = match->offset+match->lenght-1;
+            matches.append(text.mid(match->offset, match->length));
+            i = match->offset+match->length-1;
         }
     }
 

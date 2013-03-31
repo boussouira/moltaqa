@@ -15,7 +15,7 @@ public:
     ~RichBookReader();
 
     /**
-      Get the full index model of the curren book
+      Get the full index model of the current book
       */
     virtual QStandardItemModel *indexModel();
 

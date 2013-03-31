@@ -136,7 +136,7 @@ QString NewBookWriter::processPageText(int pageID, QString text)
     rxSheer.setMinimal(true);
 
     QString specialChar(_u("§"));
-    // Separete footnote
+    // Separate footnote
     QRegExp footnoteSep(_u("\\n+¬?_{6,}[ \\n]+"));
     QStringList pageTextList = text.split(footnoteSep, QString::SkipEmptyParts);
     if(pageTextList.isEmpty())

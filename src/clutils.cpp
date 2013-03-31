@@ -37,7 +37,7 @@ QString highlightText(QString orignalText, lucene::search::Query *query,
     CssFormatter formatter;
 
     int maxNumFragments = fragment ? 5 : 100; // Fragment count
-    int fragmentSize = fragment ? 100 : 10000; // Fragment lenght
+    int fragmentSize = fragment ? 100 : 10000; // Fragment length
     const wchar_t* fragmentSeparator = _T("...");
 
     Highlighter highlighter(&formatter, &scorer);
