@@ -36,6 +36,10 @@ void FileChooserWidget::setLabelText(const QString &text)
 void FileChooserWidget::setSettingName(const QString &name)
 {
     m_settingName = name;
+
+#ifdef DEV_BUILD
+    m_edit->setText(Utils::Settings::get("SavedPath/"+m_settingName).toString());
+#endif
 }
 
 QString FileChooserWidget::getPath()
