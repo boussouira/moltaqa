@@ -226,6 +226,11 @@ QString LibraryInfo::bookPath(QString bookName)
     }
 }
 
+QString LibraryInfo::bookPath(LibraryBook::Ptr book)
+{
+    return bookPath(book->fileName);
+}
+
 QString LibraryInfo::tempDir()
 {
     return m_tempsDir;

@@ -178,7 +178,7 @@ LibraryBook::Ptr LibraryBookManager::getLibraryBook(int bookID)
         book->indexFlags = static_cast<LibraryBook::IndexFlags>(query.value(8).toInt());
 
         book->fileName = query.value(9).toString();
-        book->path = m_libraryInfo->bookPath(book->fileName);
+        book->path = m_libraryInfo->bookPath(book);
 
         if(!book->isQuran()) {
             book->authorID = query.value(4).toInt();
@@ -340,7 +340,7 @@ int LibraryBookManager::addBook(LibraryBook::Ptr book)
     q.set("update_count", 0);
     q.set("result_open_count", 0);
 
-    q.set("file_checksum", Utils::Files::fileMd5(book->path));
+    q.set("file_checksum", Utils::Files::fileMd5(m_libraryInfo->bookPath(book)));
 
     ml_return_val_on_fail(q.exec(query), 0);
 
@@ -379,7 +379,7 @@ bool LibraryBookManager::updateBook(LibraryBook::Ptr book, bool updateMeta)
 
         q.setTableName("books_meta", QueryBuilder::Update);
         q.set("update_date", updateDate);
-        q.set("file_checksum", Utils::Files::fileMd5(book->path));
+        q.set("file_checksum", Utils::Files::fileMd5(m_libraryInfo->bookPath(book)));
         q.where("id", book->id);
 
         ml_return_val_on_fail(q.exec(query), 0);

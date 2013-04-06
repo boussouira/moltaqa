@@ -3,6 +3,7 @@
 
 #include <qobject.h>
 #include <qcoreapplication.h>
+#include "librarybook.h"
 
 class LibraryInfo
 {
@@ -59,6 +60,7 @@ public:
       @param bookName The name of book file
       */
     QString bookPath(QString bookName);
+    QString bookPath(LibraryBook::Ptr book);
 
 protected:
     void loafInfo(QString path);
