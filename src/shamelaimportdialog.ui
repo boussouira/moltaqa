@@ -1,359 +1,261 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>ShamelaImportDialog</class>
- <widget class="QDialog" name="ShamelaImportDialog">
+ <widget class="QWizard" name="ShamelaImportDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>593</width>
-    <height>407</height>
+    <width>552</width>
+    <height>383</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>الاستيراد من الشاملة</string>
+   <string>Wizard</string>
   </property>
   <property name="layoutDirection">
    <enum>Qt::RightToLeft</enum>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_4">
-   <property name="leftMargin">
-    <number>1</number>
+  <widget class="QWizardPage" name="pageImportOption">
+   <property name="title">
+    <string>خيارات الاستيراد</string>
    </property>
-   <property name="rightMargin">
-    <number>1</number>
-   </property>
-   <item>
-    <widget class="QStackedWidget" name="stackedWidget">
-     <widget class="QWidget" name="page">
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <property name="margin">
-        <number>9</number>
-       </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="FileChooserWidget" name="fileChooser" native="true"/>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox_5">
+      <property name="title">
+       <string>أقسام الكتب</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_11">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>مجلد المكتبة الشاملة:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="lineShamelaDir">
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="buttonSelectShamela">
-           <property name="text">
-            <string>...</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="groupImportOptions">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="title">
-          <string>خيارات الاستيراد:</string>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <item>
-           <widget class="QGroupBox" name="groupBox_5">
-            <property name="title">
-             <string>أقسام الكتب:</string>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout_11">
-             <item>
-              <widget class="QRadioButton" name="radioUseShamelaCat">
-               <property name="toolTip">
-                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <widget class="QRadioButton" name="radioUseShamelaCat">
+         <property name="toolTip">
+          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p dir='rtl' style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;سيتم استخدام أقسام المكتبة الشاملة، وسيتم اضافة أقسام جديدة الى هذه المكتبة تحمل نفس العنوان الذي في المكتبة الشاملة&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="text">
-                <string>استخدم أقسام المكتبة الشاملة</string>
-               </property>
-               <property name="checked">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="radioUseThisLibCat">
-               <property name="toolTip">
-                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+         </property>
+         <property name="text">
+          <string>استخدم أقسام المكتبة الشاملة</string>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="radioUseThisLibCat">
+         <property name="toolTip">
+          <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p dir='rtl' style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;سيتم استخدام أقسام المكتبة الحالية&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="text">
-                <string>استخدم أقسام المكتبة الحالية</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QGroupBox" name="groupBox">
-            <property name="title">
-             <string>خطوط الاستيراد:</string>
-            </property>
-            <layout class="QFormLayout" name="formLayout">
-             <property name="labelAlignment">
-              <set>Qt::AlignJustify|Qt::AlignVCenter</set>
-             </property>
-             <item row="0" column="0">
-              <layout class="QHBoxLayout" name="horizontalLayout_5">
-               <item>
-                <widget class="QLabel" name="label_5">
-                 <property name="text">
-                  <string>عدد خطوط الاستيراد:</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QSpinBox" name="spinImportThreads">
-                 <property name="minimum">
-                  <number>1</number>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="labelShamelaArchive">
-               <property name="styleSheet">
-                <string notr="true">color: rgb(192, 0, 0);</string>
-               </property>
-               <property name="text">
-                <string>ملاحظة: إخراج الكتب من الأرشيف سيجعل عملية الإستيراد أسرع بكثير.</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
+         </property>
+         <property name="text">
+          <string>استخدم أقسام المكتبة الحالية</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_2">
-      <layout class="QVBoxLayout" name="verticalLayout_5">
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox">
+      <property name="title">
+       <string>خطوط الاستيراد</string>
+      </property>
+      <layout class="QFormLayout" name="formLayout">
+       <property name="labelAlignment">
+        <set>Qt::AlignJustify|Qt::AlignVCenter</set>
+       </property>
+       <item row="0" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
          <item>
-          <widget class="QLabel" name="label_2">
+          <widget class="QLabel" name="label_5">
            <property name="text">
-            <string>بحث:</string>
+            <string>عدد خطوط الاستيراد:</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="FilterLineEdit" name="lineBookSearch"/>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="QTreeView" name="treeView">
-         <property name="sortingEnabled">
-          <bool>true</bool>
-         </property>
-         <property name="animated">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
-         <item>
-          <widget class="QPushButton" name="pushSelectNew">
-           <property name="toolTip">
-            <string>اختيار الكتب الجديدة فقط</string>
-           </property>
-           <property name="text">
-            <string>الكتب الجديدة</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushSelectAll">
-           <property name="text">
-            <string>اختيار الكل</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushUnSelectAll">
-           <property name="text">
-            <string>إلغاء الكل</string>
+          <widget class="QSpinBox" name="spinImportThreads">
+           <property name="minimum">
+            <number>1</number>
            </property>
           </widget>
          </item>
         </layout>
        </item>
-       <item>
-        <widget class="QCheckBox" name="checkImportQuran">
+       <item row="1" column="0">
+        <widget class="QLabel" name="labelShamelaArchive">
+         <property name="styleSheet">
+          <string notr="true">color: rgb(192, 0, 0);</string>
+         </property>
          <property name="text">
-          <string>استيراد القران الكريم</string>
+          <string>ملاحظة: إخراج الكتب من الأرشيف سيجعل عملية الإستيراد أسرع بكثير.</string>
          </property>
         </widget>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="pageMapCats">
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>قم بتحديد الأقسام التي تريد استيراد الكتب اليها:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QTableView" name="tableView"/>
-       </item>
-      </layout>
+    </item>
+    <item>
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="pageBookSelection">
+   <property name="title">
+    <string>اختيار الكتب</string>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>بحث:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="FilterLineEdit" name="lineBookSearch"/>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QTreeView" name="treeView">
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
+      <property name="animated">
+       <bool>true</bool>
+      </property>
      </widget>
-     <widget class="QWidget" name="page_4">
-      <layout class="QVBoxLayout" name="verticalLayout_10">
-       <item>
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>جاري الاستيراد...</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="groupStep">
-         <property name="title">
-          <string>استيراد الكتب:</string>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_9">
-          <item>
-           <widget class="QProgressBar" name="progressBar">
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-            <property name="format">
-             <string>%p% (%v/%m)</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QListWidget" name="listDebug"/>
-       </item>
-      </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <item>
+       <widget class="QPushButton" name="pushSelectNew">
+        <property name="toolTip">
+         <string>اختيار الكتب الجديدة فقط</string>
+        </property>
+        <property name="text">
+         <string>الكتب الجديدة</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushSelectAll">
+        <property name="text">
+         <string>اختيار الكل</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushUnSelectAll">
+        <property name="text">
+         <string>إلغاء الكل</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QCheckBox" name="checkImportQuran">
+      <property name="text">
+       <string>استيراد القران الكريم</string>
+      </property>
      </widget>
-    </widget>
-   </item>
-   <item>
-    <widget class="Line" name="line">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <property name="leftMargin">
-      <number>9</number>
-     </property>
-     <property name="rightMargin">
-      <number>9</number>
-     </property>
-     <item>
-      <widget class="QPushButton" name="pushCancel">
-       <property name="text">
-        <string>إلغاء</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushDone">
-       <property name="text">
-        <string>انتهى</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushNext">
-       <property name="text">
-        <string>التالي</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-  </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="pageCategoriesLink">
+   <property name="title">
+    <string>ربط الكتب بالأقسام</string>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_3">
+    <item>
+     <widget class="QLabel" name="label_4">
+      <property name="text">
+       <string>قم بتحديد الأقسام التي تريد استيراد الكتب اليها:</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QTableView" name="tableView"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="WizardPage" name="pageImportProgress">
+   <property name="title">
+    <string>جاري الإستيراد من المكتبة الشاملة</string>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_4">
+    <item>
+     <widget class="QProgressBar" name="progressBar">
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="format">
+       <string>%p% (%v/%m)</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QListWidget" name="listDebug"/>
+    </item>
+   </layout>
+  </widget>
  </widget>
  <customwidgets>
   <customwidget>
    <class>FilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>filterlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>FileChooserWidget</class>
+   <extends>QWidget</extends>
+   <header>filechooserwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>WizardPage</class>
+   <extends>QWizardPage</extends>
+   <header>wizardpage.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

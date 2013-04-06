@@ -1,7 +1,7 @@
 #ifndef SHAMELAIMPORTDIALOG_H
 #define SHAMELAIMPORTDIALOG_H
 
-#include <QDialog>
+#include <qwizard.h>
 #include <qicon.h>
 #include <qdatetime.h>
 
@@ -21,13 +21,21 @@ class ModelViewFilter;
 class QProgressDialog;
 class LibraryInfo;
 
-class ShamelaImportDialog : public QDialog
+class ShamelaImportDialog : public QWizard
 {
     Q_OBJECT
 
 public:
     ShamelaImportDialog(QWidget *parent = 0);
     ~ShamelaImportDialog();
+
+    enum {
+        Page_ImportOption,
+        Page_BookSelection,
+        Page_CategoriesLink,
+        Page_ImportProgress
+    };
+
     static ShamelaImportDialog *instance();
     ShamelaManager *shamelaManager();
     ShamelaInfo *shamelaInfo();
@@ -35,34 +43,31 @@ public:
 
     void setLibraryInfo(LibraryInfo *info);
 
+    bool validateCurrentPage();
+    int nextId() const;
+
 protected:
     void closeEvent(QCloseEvent *event);
-    QString getFolderPath(const QString &defaultPath);
-    void openShamelaDB();
-    /**
-      Show page at the given index
-      @param index Index of page, if it eqaul -1 then go to next page
-      */
-    void goPage(int index=-1);
-    void setupCategories();
-    void setupImporting();
-    void startImporting();
+    void initializePage(int id);
+
     void showBooks();
     bool createFilter();
+
+    void setupCategories();
     bool categorieLinked();
 
+    void setupImporting();
+    void startImporting();
+
 public slots:
-    void setStepTitle(const QString &title);
     void addDebugInfo(const QString &text, QIcon icon=QIcon(":/images/about.png"));
     void bookImported(const QString &text);
     void BookImportError(const QString &text);
 
 private slots:
-    void nextStep();
-    void selectShamela();
     void doneImporting();
-    bool cancel();
     void importShorooh();
+    bool cancel();
 
     void itemChanged(QStandardItem *item);
     void selectAllBooks();
@@ -71,6 +76,8 @@ private slots:
     int selectNewBook(QStandardItem *item, QProgressDialog *progress);
 
 private:
+    Ui::ShamelaImportDialog *ui;
+
     int m_importThreadCount;
     int m_importedBooksCount;
     QStringList m_importError; ///< Titles of non-imported books
@@ -83,7 +90,6 @@ private:
     QStandardItemModel *m_booksModel;
     ModelViewFilter *m_bookFilter;
     QList<ShamelaImportThread*> m_importThreads;
-    Ui::ShamelaImportDialog *ui;
     QTime m_importTime;
     bool m_proccessItemChange;
 };
