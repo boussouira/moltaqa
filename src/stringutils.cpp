@@ -245,7 +245,7 @@ QString plural(int count, Words word, bool html)
     else
         qWarning("Utils::Arabic::plural word %d is not handled", word);
 
-    if(count <= 1)
+    if(count == 1)
         str = list.at(0);
     else if(count == 2)
         str = list.at(1);
@@ -254,7 +254,7 @@ QString plural(int count, Words word, bool html)
     else if (count > 10)
         str = QString("%1 %2").arg(count).arg(list.at(3));
     else
-        str = QString();
+        str = QLatin1String("0");
 
     return html ? QString("<strong>%1</strong>").arg(str) : str;
 }
