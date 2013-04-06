@@ -85,7 +85,11 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
 
 ShamelaImportDialog::~ShamelaImportDialog()
 {
+    delete m_shamela;
+    delete m_manager;
     delete ui;
+
+    m_instance = 0;
 }
 
 ShamelaImportDialog *ShamelaImportDialog::instance()
