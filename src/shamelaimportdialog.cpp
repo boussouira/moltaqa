@@ -445,7 +445,7 @@ void ShamelaImportDialog::doneImporting()
 #endif
 
         ui->pageImportProgress->setComplete(true);
-        button(CancelButton)->setEnabled(false);
+        button(CancelButton)->hide();
 
         Utils::Settings::set("ShamelaImportDialog/threadCount",
                              ui->spinImportThreads->value());

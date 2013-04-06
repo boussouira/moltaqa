@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Wizard</string>
+   <string>استيراد من المكتبة الشاملة</string>
   </property>
   <property name="layoutDirection">
    <enum>Qt::RightToLeft</enum>
@@ -19,6 +19,9 @@
   <widget class="QWizardPage" name="pageImportOption">
    <property name="title">
     <string>خيارات الاستيراد</string>
+   </property>
+   <property name="subTitle">
+    <string>حدد مجلد المكتبة الشاملة</string>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
@@ -126,6 +129,9 @@ p, li { white-space: pre-wrap; }
    <property name="title">
     <string>اختيار الكتب</string>
    </property>
+   <property name="subTitle">
+    <string>اختر الكتب التي تريد استيراها من المكتبة الشاملة</string>
+   </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -205,14 +211,10 @@ p, li { white-space: pre-wrap; }
    <property name="title">
     <string>ربط الكتب بالأقسام</string>
    </property>
+   <property name="subTitle">
+    <string>قم بتحديد الأقسام التي تريد استيراد الكتب اليها</string>
+   </property>
    <layout class="QVBoxLayout" name="verticalLayout_3">
-    <item>
-     <widget class="QLabel" name="label_4">
-      <property name="text">
-       <string>قم بتحديد الأقسام التي تريد استيراد الكتب اليها:</string>
-      </property>
-     </widget>
-    </item>
     <item>
      <widget class="QTableView" name="tableView"/>
     </item>
