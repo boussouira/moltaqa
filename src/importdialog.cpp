@@ -116,16 +116,6 @@ bool ImportDialog::validateCurrentPage()
                                  tr("لم تقم باختيار أي ملف ليتم استيراده"));
             return false;
         }
-    } else if (currentId() == Page_ImportOption) {
-        if(!checkNodes(m_model->nodeFromIndex()->childrenNode)) {
-            int rep = QMessageBox::question(this,
-                                            tr("خطأ عند الاستيراد"),
-                                            tr("لم تقم باختيار أقسام بعض الكتب" "\n"
-                                               "هل تريد المتابعة؟"),
-                                            QMessageBox::Yes|QMessageBox::No, QMessageBox::No);
-            if(rep == QMessageBox::No)
-                return false;
-        }
     }
 
     return true;
@@ -215,6 +205,16 @@ void ImportDialog::convertBooks()
 
 void ImportDialog::importBooks()
 {
+    if(!checkNodes(m_model->nodeFromIndex()->childrenNode)) {
+        int rep = QMessageBox::question(this,
+                                        tr("خطأ عند الاستيراد"),
+                                        tr("لم تقم باختيار أقسام بعض الكتب" "\n"
+                                           "هل تريد المتابعة؟"),
+                                        QMessageBox::Yes|QMessageBox::No, QMessageBox::No);
+        if(rep == QMessageBox::No)
+            return;
+    }
+
     m_progress.setMaximum(m_model->nodeFromIndex()->childrenNode.count());
     m_progress.setValue(0);
     m_progress.show();
