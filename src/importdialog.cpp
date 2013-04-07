@@ -63,8 +63,7 @@ ImportDialog::ImportDialog(QWidget *parent) :
     ui->treeView->setModel(m_model);
 
     m_progress.setWindowTitle(tr("استيراد الكتب"));
-    m_progress.setWindowIcon(windowIcon());
-    m_progress.setWindowModality(Qt::WindowModal);
+    m_progress.setWindowModality(Qt::ApplicationModal);
     m_progress.setCancelButton(0);
     m_progress.hide();
 
@@ -195,6 +194,7 @@ void ImportDialog::convertBooks()
     connect(thread, SIGNAL(bookConverted(QString)), SLOT(bookConverted(QString)));
     connect(thread, SIGNAL(addBooksToProgress(int)), SLOT(addBooksToProgress(int)));
 
+    m_progress.setWindowIcon(windowIcon());
     m_progress.setLabelText(tr("جاري تحويل الكتب"));
     m_progress.setMaximum(files.count());
     m_progress.setValue(0);
