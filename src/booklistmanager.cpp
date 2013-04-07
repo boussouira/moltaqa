@@ -29,6 +29,8 @@ BookListManager::BookListManager(QObject *parent)
     m_dom.setFilePath(dataDir.filePath("bookslist.xml"));
     m_authorsManager = LibraryManager::instance()->authorsManager();
 
+    m_showCatBookCount = Utils::Settings::get("Style/catBookCount", true).toBool();
+
     Q_CHECK_PTR(m_authorsManager);
 }
 
@@ -279,6 +281,14 @@ void BookListManager::readNode(QStandardItem *parentItem, QDomElement &element, 
         m_lastCatId = currentCat;
 
         child = child.nextSiblingElement();
+    }
+
+    if (m_showCatBookCount
+            && rows.size()
+            && element.tagName() == QLatin1String("cat")) {
+        QStandardItem *item = rows.first();
+        item->setText(item->text().append(QLatin1String(" [%1]"))
+                      .arg(item->rowCount()));
     }
 }
 
