@@ -471,7 +471,7 @@ bool ShamelaImportDialog::cancel()
         int rep = QMessageBox::question(this,
                                         tr("ايقاف الاستيراد"),
                                         tr("هل تريد ايقاف استيراد الكتب؟"),
-                                        QMessageBox::Yes|QMessageBox::No);
+                                        QMessageBox::Yes|QMessageBox::No, QMessageBox::No);
         if(rep == QMessageBox::Yes) {
             addDebugInfo(tr("جاري ايقاف الاستيراد..."));
             button(CancelButton)->setEnabled(false);
