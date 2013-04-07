@@ -260,9 +260,9 @@ bool BookListManager::containsBook(int bookID)
 void BookListManager::readNode(QStandardItem *parentItem, QDomElement &element, bool withBooks)
 {
     QList<QStandardItem*> rows;
-    if(element.tagName() == "cat")
+    if(element.tagName() == QLatin1String("cat"))
         rows = readCatNode(element);
-    else if(withBooks && element.tagName() == "book")
+    else if(withBooks && element.tagName() == QLatin1String("book"))
         rows = readBookNode(element);
 
     if(rows.size())
@@ -273,7 +273,7 @@ void BookListManager::readNode(QStandardItem *parentItem, QDomElement &element, 
     int currentCat = m_lastCatId;
     QDomElement child = element.firstChildElement();
     while(!child.isNull()) {
-        if(child.tagName() == "book" || child.tagName() == "cat")
+        if(child.tagName() == QLatin1String("book") || child.tagName() == QLatin1String("cat"))
             readNode(newParentItem, child, withBooks);
 
         m_lastCatId = currentCat;
