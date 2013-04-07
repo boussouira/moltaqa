@@ -7,6 +7,7 @@ ExportDialog::ExportDialog(QWidget *parent) :
     QWizard(parent)
 {
     setWindowTitle(tr("تصدير الكتب"));
+    resize(600, 400);
     setOption(QWizard::DisabledBackButtonOnLastPage);
 
     addPage(new IntroPage(this));

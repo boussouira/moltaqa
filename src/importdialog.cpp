@@ -70,8 +70,6 @@ ImportDialog::ImportDialog(QWidget *parent) :
 
     button(NextButton)->disconnect();
 
-    Utils::Widget::restore(this, "ImportDialog");
-
     connect(button(NextButton), SIGNAL(clicked()), SLOT(nextPage()));
     connect(ui->pushAddFile, SIGNAL(clicked()), SLOT(selectFiles()));
     connect(ui->pushDeleteFile, SIGNAL(clicked()), SLOT(deleteFiles()));

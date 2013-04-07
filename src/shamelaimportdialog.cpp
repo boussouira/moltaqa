@@ -71,8 +71,6 @@ ShamelaImportDialog::ShamelaImportDialog(QWidget *parent) :
     ui->pageImportProgress->setComplete(false);
     button(CancelButton)->disconnect();
 
-    Utils::Widget::restore(this, "ShamelaImportDialog");
-
 #ifndef USE_MDBTOOLS
     ui->labelShamelaArchive->hide();
 #endif
