@@ -26,6 +26,8 @@ public:
     bool hasAuthorInfo(int authorID);
     QString getAuthorName(int authorID);
 
+    QString formatAuthorName(QSharedPointer<AuthorInfo> author);
+
     AuthorInfo::Ptr findAuthor(QString name, bool fazzySearch);
 
     void updateAuthor(AuthorInfo::Ptr auth);

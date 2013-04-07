@@ -180,6 +180,16 @@ QString AuthorsManager::getAuthorName(int authorID)
     return auth ? auth->name : QString();
 }
 
+QString AuthorsManager::formatAuthorName(QSharedPointer<AuthorInfo> author)
+{
+    if(!author->unknowBirth && !author->unknowDeath)
+        return _u("%1 (%2 - %3)").arg(author->name).arg(author->birthStr.remove(_u(" هـ"))).arg(author->deathStr);
+    else if(!author->unknowDeath)
+        return _u("%1 (%2)").arg(author->name).arg(author->deathStr);
+    else
+        return author->name;
+}
+
 AuthorInfo::Ptr AuthorsManager::findAuthor(QString name, bool fazzySearch)
 {
     AuthorInfo::Ptr auth;

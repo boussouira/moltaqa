@@ -55,13 +55,3 @@ void AuthorInfo::toDomElement(XmlDomHelper &domHeleper, QDomElement &authorEleme
     domHeleper.setElementText(authorElement, "birth", birthStr).setAttribute("year", birthYear);
     domHeleper.setElementText(authorElement, "death", deathStr).setAttribute("year", deathYear);
 }
-
-QString AuthorInfo::formatAuthorName(QSharedPointer<AuthorInfo> author)
-{
-    if(!author->unknowBirth && !author->unknowDeath)
-        return _u("%1، %2 - %3").arg(author->name).arg(author->birthStr.remove(_u(" هـ"))).arg(author->deathStr);
-    else if(!author->unknowDeath)
-        return _u("%1، %2").arg(author->name).arg(author->deathStr);
-    else
-        return author->name;
-}

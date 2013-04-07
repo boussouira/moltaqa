@@ -22,8 +22,6 @@ public:
     void fromDomElement(QDomElement &authorElement);
     void toDomElement(XmlDomHelper &domHeleper, QDomElement &authorElement);
 
-    static QString formatAuthorName(QSharedPointer<AuthorInfo> author);
-
     inline AuthorInfo *clone() { return new AuthorInfo(*this); }
 
 public:

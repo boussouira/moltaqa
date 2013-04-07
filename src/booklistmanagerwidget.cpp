@@ -312,7 +312,7 @@ void BookListManagerWidget::addBookItem(LibraryBook::Ptr book, const QModelIndex
         QStandardItem *authItem = new QStandardItem();
         AuthorInfo::Ptr auth = LibraryManager::instance()->authorsManager()->getAuthorInfo(book->authorID);
         if(auth) {
-            authItem->setText(AuthorInfo::formatAuthorName(auth));
+            authItem->setText(LibraryManager::instance()->authorsManager()->formatAuthorName(auth));
             authItem->setData(book->authorID, ItemRole::authorIdRole);
             authItem->setData(auth->deathYear, ItemRole::authorDeathRole);
         }
@@ -412,7 +412,7 @@ void BookListManagerWidget::updateItem(QModelIndex index)
             if(authorID && !isQuran) {
                 AuthorInfo::Ptr author = LibraryManager::instance()->authorsManager()->getAuthorInfo(authorID);
                 if(author) {
-                    QString authorStr = AuthorInfo::formatAuthorName(author);
+                    QString authorStr = LibraryManager::instance()->authorsManager()->formatAuthorName(author);
                     if(authorStr != authorIndex.data().toString()) {
                         bookItems << new QStandardItem(tr("تغيير اسم المؤلف من '%1' الى '%2'")
                                                        .arg(authorIndex.data().toString())
