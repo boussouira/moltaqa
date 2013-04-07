@@ -1,13 +1,15 @@
 #ifndef IMPORTDIALOG_H
 #define IMPORTDIALOG_H
 
-#include <qdialog.h>
+#include <qwizard.h>
 #include <qhash.h>
 #include <qfuturewatcher.h>
+#include <qprogressdialog.h>
 
 namespace Ui {
-    class ImportDialog;
+class ImportDialog;
 }
+
 class ImportModel;
 class ImportModelNode;
 class LibraryManager;
@@ -17,40 +19,51 @@ class CategorieDelegate;
 class QSignalMapper;
 class QSqlDatabase;
 
-class ImportDialog : public QDialog {
+class ImportDialog : public QWizard
+{
     Q_OBJECT
+
 public:
     ImportDialog(QWidget *parent = 0);
     ~ImportDialog();
 
+    enum {
+        Page_BookSelection,
+        Page_ImportOption,
+        Page_ImportedBooks
+    };
+
     void addFile(const QString &path);
     void addDir(const QString &path);
 
+    bool validateCurrentPage();
+
 protected:
-    bool checkNodes(QList<ImportModelNode *> nodesList);
-    void convertBooks();
-    void importBooks();
-    bool fileExsistInList(const QString &);
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
     void closeEvent(QCloseEvent *event);
 
-signals:
-    void openBook(int id);
+    bool fileExsistInList(const QString &path);
+    bool checkNodes(QList<ImportModelNode *> nodesList);
+
+    void convertBooks();
+    void importBooks();
 
 protected slots:
+    void selectFiles();
+    void deleteFiles();
+    void nextPage();
+
     void doneConverting();
+
     void startImporting();
     void doneImporting();
 
     void bookConverted(QString bookName);
     void addBooksToProgress(int count);
 
-private slots:
-    void on_pushNext_clicked();
-    void on_pushDeleteFile_clicked();
-    void on_pushAddFile_clicked();
-    void on_pushCancel_clicked();
+signals:
+    void openBook(int id);
 
 private:
     Ui::ImportDialog *ui;
@@ -63,6 +76,7 @@ private:
     QHash<int, QString> m_booksList;
     QFutureWatcher<void> m_importWatcher;
     QSignalMapper *m_signalMapper;
+    QProgressDialog m_progress;
 };
 
 #endif // IMPORTDIALOG_H
