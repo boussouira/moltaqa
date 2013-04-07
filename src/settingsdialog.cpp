@@ -192,7 +192,10 @@ void SettingsDialog::resetSettings()
          << "Search/hierarchyTitle"
          << "Search/maxBookToUpdate"
          << "Search/defaultField"
+         << "Search/returnToSearchWidget"
          << "Update/autoCheck"
+         << "Update/lastCheck"
+         << "Statistics/last"
          << "SearchWidget/saveSearchOptions"
          << "SearchWidget/sortSearch"
          << "SearchWidget/searchField"
@@ -207,6 +210,8 @@ void SettingsDialog::resetSettings()
          << "Style/singleIndexClick"
          << "Style/removeTashekil"
          << "Style/showQuranFirst"
+         << "Style/fixShamelaShoorts"
+         << "Style/drawAyatNumber"
          << "BookWidget/splitter"
          << "ShamelaImportDialog/threadCount"
          << "WelcomeWidget/tab"
@@ -216,11 +221,19 @@ void SettingsDialog::resetSettings()
          << "RowatView/splitter"
          << "BookEditorView/splitter"
          << "RowatManagerWidget/splitter"
+         << "WebView/zoom"
+         << "BookWidgetManager/splitter"
+         << "AuthorsView/last"
+         << "AuthorsManagerWidget/splitter"
+         << "ExportDialog/exportInOnePackage"
+         << "ExportDialog/openOutDit"
 
             // Groups
          << "WidgetStat"
          << "ToolBars"
          << "BooksListWidget"
+         << "SearchWidget"
+         << "SavedPath"
          << "TreeViewStat";
 
     foreach (QString key, keys) {
