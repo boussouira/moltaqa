@@ -280,15 +280,14 @@ void BooksListBrowser::bookListMenu(QPoint /*point*/)
     QAction *removeFromLastOpenedAct = 0;
 
     QAction *bookInfoAct = menu.addAction(ml_theme_icon("help-about", ":/images/about.png"),
-                                       tr("بطاقة الكتاب"));
+                                          tr("بطاقة الكتاب"));
     QAction *editBookAct = menu.addAction(ml_theme_icon("document-edit", ":/images/document-edit.png"),
                                           tr("تحرير الكتاب"));
     menu.addSeparator();
 
     if(!m_favouritesManager->containsBook(bookID)) {
         addToFavouriteAct = new QAction(ml_theme_icon("bookmark-new", ":/images/bookmark-new.png"),
-                                        tr("اضافة الى المفضلة"),
-                                        &menu);
+                                        tr("اضافة الى المفضلة"), &menu);
 
         menu.addAction(addToFavouriteAct);
     } else {

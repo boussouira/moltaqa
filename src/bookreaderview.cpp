@@ -72,42 +72,41 @@ void BookReaderView::createMenus()
 
     // Edit book action
     m_actionEditBook = new QAction(ml_theme_icon("document-edit", ":/images/document-edit.png"),
-                                 tr("تحرير الكتاب"), this);
+                                   tr("تحرير الكتاب"), this);
     // General Actions
     m_actionNewTab = new QAction(ml_theme_icon("tab-new", ":/images/tab-new.png"),
-                                        tr("تبويب جديد"),
-                                        this);
+                                 tr("تبويب جديد"),
+                                 this);
 
     m_actionIndexDock = new QAction(QIcon(":/images/edit_fahrass.png"),
-                                           tr("نافذة الفهرس"),
-                                           this);
+                                    tr("نافذة الفهرس"),
+                                    this);
 
     m_actionSearchInBook = new QAction(ml_theme_icon("edit-find", ":/images/find.png"),
-                                            tr("بحث متقدم في هذا الكتاب"),
-                                            this);
+                                       tr("بحث متقدم في هذا الكتاب"),
+                                       this);
 
     // Navigation actions
     m_actionNextAYA = new QAction(ml_theme_icon("go-down", ":/images/go-down.png"),
-                                tr("الآية التالية"),
-                                this);
+                                  tr("الآية التالية"), this);
+
     m_actionNextPage = new QAction(ml_theme_icon("go-previous", ":/images/go-previous.png"),
-                                 tr("الصفحة التالية"),
-                                 this);
+                                   tr("الصفحة التالية"), this);
+
     m_actionPrevAYA = new QAction(ml_theme_icon("go-up", ":/images/go-up.png"),
-                                tr("الآية السابقة"),
-                                this);
+                                  tr("الآية السابقة"), this);
+
     m_actionPrevPage = new QAction(ml_theme_icon("go-next", ":/images/go-next.png"),
-                                 tr("الصفحة السابقة"),
-                                 this);
+                                   tr("الصفحة السابقة"), this);
+
     m_actionFirstPage = new QAction(ml_theme_icon("go-last", ":/images/go-last.png"),
-                                tr("الصفحة الاولى"),
-                                this);
+                                    tr("الصفحة الاولى"), this);
+
     m_actionLastPage = new QAction(ml_theme_icon("go-first", ":/images/go-first.png"),
-                                 tr("الصفحة الاخيرة"),
-                                 this);
+                                   tr("الصفحة الاخيرة"), this);
+
     m_actionGotToPage = new QAction(ml_theme_icon("go-jump", ":/images/go-jump.png"),
-                                    tr("الصفحة..."),
-                                    this);
+                                    tr("الصفحة..."), this);
 
     m_bookInfoAct = new QAction(tr("بطاقة الكتاب"), this);
     QAction *readHistoryAct = new QAction(tr("تاريخ تصفح الكتاب"), this);
@@ -124,8 +123,8 @@ void BookReaderView::createMenus()
 
     // Tafressir actions
     m_openSelectedTafsir =  new QAction(QIcon(":/images/arrow-left.png"),
-                                               tr("فتح تفسير الاية"),
-                                               this);
+                                        tr("فتح تفسير الاية"), this);
+
     m_comboTafasir = new QComboBox(this);
 
     // Add action to their toolbars
