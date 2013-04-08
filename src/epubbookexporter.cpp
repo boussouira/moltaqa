@@ -14,6 +14,7 @@
 #include "htmlhelper.h"
 #include "bookfilesreader.h"
 #include "mimeutils.h"
+#include "qurantextformat.h"
 
 #include <qtextstream.h>
 
@@ -131,7 +132,9 @@ void EPubBookExporter::writePages()
 {
     RichBookReader *reader = 0;
     if(m_book->isQuran()) {
-        reader = new RichQuranReader();
+        RichQuranReader *quran = new RichQuranReader();
+        quran->quranFormatter()->setDrawAyaNumber(false);
+        reader = quran;
     } else if(m_book->isNormal()) {
         RichSimpleBookReader *simple = new RichSimpleBookReader();
         simple->setShowShorooh(false);

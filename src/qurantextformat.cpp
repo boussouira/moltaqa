@@ -23,6 +23,8 @@ QuranTextFormat::QuranTextFormat()
 
     if(m_drawAyaNumber)
         ayaImagePath = m_styleDir.absoluteFilePath("images/aya_border.png");
+
+    m_useDataProtocol = false;
 }
 
 void QuranTextFormat::insertSoraName(const QString &pSoraName)
@@ -42,7 +44,11 @@ void QuranTextFormat::insertAyaText(const QString &pAyaText, int pAyaNumber, int
     m_htmlHelper.insertSpan(pAyaText, QString(".ayatxt|#s%1a%2").arg(pSoraNumber).arg(pAyaNumber));
 
     if(m_drawAyaNumber) {
-        m_htmlHelper.insertImage(QString("book://quran/aya/%1.png").arg(pAyaNumber), ".ayanumber",
+        QString imageSrc = (m_useDataProtocol
+                            ? getAyaNumberImageData(pAyaNumber)
+                            : QString("book://quran/aya/%1.png").arg(pAyaNumber));
+
+        m_htmlHelper.insertImage(imageSrc, ".ayanumber",
                                  QString("alt='(%1)' ayaimage='%2'")
                                  .arg(Utils::String::Arabic::arabicNumbers(pAyaNumber))
                                  .arg(pAyaNumber));
@@ -103,6 +109,16 @@ QByteArray QuranTextFormat::getAyaNumberImage(int ayaNumber, QString bgImage)
     buffer.seek(0);
 
     return buffer.readAll();
+}
+
+void QuranTextFormat::setDrawAyaNumber(bool drawAyaNumber)
+{
+    m_drawAyaNumber = drawAyaNumber;
+}
+
+void QuranTextFormat::setUseDataProtocol(bool useDataProtocol)
+{
+    m_useDataProtocol = useDataProtocol;
 }
 
 QString QuranTextFormat::getAyaNumberImageData(int ayaNumber)

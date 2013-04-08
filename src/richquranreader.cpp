@@ -172,3 +172,8 @@ int RichQuranReader::prevPageID()
 {
     return m_currentPage->page - 1;
 }
+
+QuranTextFormat *RichQuranReader::quranFormatter()
+{
+    return m_formatter;
+}

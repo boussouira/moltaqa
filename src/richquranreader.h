@@ -26,6 +26,8 @@ public:
     int nextPageID();
     int prevPageID();
 
+    QuranTextFormat *quranFormatter();
+
 protected:
     QuranTextFormat *m_formatter;
 };

@@ -15,6 +15,7 @@
 #include "mainwindow.h"
 #include "bookutils.h"
 #include "bookfilesreader.h"
+#include "qurantextformat.h"
 
 #include <qtextstream.h>
 #include <qsettings.h>
@@ -91,7 +92,9 @@ void HtmlBookExporter::openReader()
     dir.mkdir("pages");
 
     if(m_book->isQuran()) {
-        m_reader = new RichQuranReader();
+        RichQuranReader *quran = new RichQuranReader();
+        quran->quranFormatter()->setUseDataProtocol(true);
+        m_reader = quran;
     } else if(m_book->isNormal()) {
         RichSimpleBookReader *simple = new RichSimpleBookReader();
         simple->setShowShorooh(false);

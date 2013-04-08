@@ -14,12 +14,16 @@ public:
 
     static QByteArray getAyaNumberImage(int aya, QString bgImage=QString());
 
+    void setDrawAyaNumber(bool drawAyaNumber);
+    void setUseDataProtocol(bool useDataProtocol);
+
 protected:
     QString getAyaNumberImageData(int aya);
 
 protected:
     QDir m_styleDir;
     bool m_drawAyaNumber;
+    bool m_useDataProtocol;
 };
 
 #endif // QURANTEXTFORMAT_H
