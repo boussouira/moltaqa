@@ -279,14 +279,14 @@ void BooksListBrowser::bookListMenu(QPoint /*point*/)
     QAction *removeFromFavouriteAct = 0;
     QAction *removeFromLastOpenedAct = 0;
 
-    QAction *bookInfoAct = menu.addAction(QIcon(":/images/about.png"),
+    QAction *bookInfoAct = menu.addAction(ml_theme_icon("help-about", ":/images/about.png"),
                                        tr("بطاقة الكتاب"));
-    QAction *editBookAct = menu.addAction(QIcon::fromTheme("document-edit", QIcon(":/images/document-edit.png")),
+    QAction *editBookAct = menu.addAction(ml_theme_icon("document-edit", ":/images/document-edit.png"),
                                           tr("تحرير الكتاب"));
     menu.addSeparator();
 
     if(!m_favouritesManager->containsBook(bookID)) {
-        addToFavouriteAct = new QAction(QIcon::fromTheme("bookmark-new", QIcon(":/images/bookmark-new.png")),
+        addToFavouriteAct = new QAction(ml_theme_icon("bookmark-new", ":/images/bookmark-new.png"),
                                         tr("اضافة الى المفضلة"),
                                         &menu);
 
@@ -297,7 +297,7 @@ void BooksListBrowser::bookListMenu(QPoint /*point*/)
         menu.addAction(removeFromFavouriteAct);
     }
 
-    QAction *searchInBookAct = menu.addAction(QIcon::fromTheme("edit-find", QIcon(":/images/find.png")),
+    QAction *searchInBookAct = menu.addAction(ml_theme_icon("edit-find", ":/images/find.png"),
                                            tr("بحث في الكتاب"));
 
     if(m_currentModel == m_recentOpenModel) {

@@ -50,7 +50,7 @@ BookWidgetManager::BookWidgetManager(QWidget *parent) :
 
     m_moveAct = new QAction(tr("نقل الى نافذة اخرى"), this);
     m_revAct = new QAction(tr("عكس تجاور النوافذ"), this);
-    m_favouriteAct = new QAction(QIcon::fromTheme("bookmark-new", QIcon(":/images/bookmark-new.png")),
+    m_favouriteAct = new QAction(ml_theme_icon("bookmark-new", ":/images/bookmark-new.png"),
                                                   tr("اضافة الى المفضلة"), this);
 
     m_bookInfoAct = new QAction(tr("بطاقة الكتاب"), this);

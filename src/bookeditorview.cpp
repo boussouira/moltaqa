@@ -162,13 +162,13 @@ void BookEditorView::setupToolBar()
 {
     QToolBar *bar = new QToolBar(tr("تحرير الكتاب"), this);
 
-    QIcon nextIcon  = QIcon::fromTheme("go-previous", QIcon(":/images/go-previous.png"));
-    QIcon prevIcon  = QIcon::fromTheme("go-next", QIcon(":/images/go-next.png"));
-    QIcon firstIcon = QIcon::fromTheme("go-last", QIcon(":/images/go-last.png"));
-    QIcon lastIcon  = QIcon::fromTheme("go-first", QIcon(":/images/go-first.png"));
-    QIcon gotoIcon  = QIcon::fromTheme("go-jump", QIcon(":/images/go-jump.png"));
+    QIcon nextIcon  = ml_theme_icon("go-previous", ":/images/go-previous.png");
+    QIcon prevIcon  = ml_theme_icon("go-next", ":/images/go-next.png");
+    QIcon firstIcon = ml_theme_icon("go-last", ":/images/go-last.png");
+    QIcon lastIcon  = ml_theme_icon("go-first", ":/images/go-first.png");
+    QIcon gotoIcon  = ml_theme_icon("go-jump", ":/images/go-jump.png");
 
-    m_actionSave = bar->addAction(QIcon::fromTheme("document-save", QIcon(":/images/document-save.png")),
+    m_actionSave = bar->addAction(ml_theme_icon("document-save", ":/images/document-save.png"),
                                   tr("حفظ التغييرات"), this, SLOT(save()));
     bar->addSeparator();
 
