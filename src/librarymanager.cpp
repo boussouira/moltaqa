@@ -258,7 +258,7 @@ void LibraryManager::addHelpBook()
         book->type = LibraryBook::NormalBook;
         book->title = tr("شرح البرنامج");
         book->info = tr("شرح استخدام برنامج مكتبة الملتقى");
-        book->authorName = tr("مكتبة الملتقى");
+        book->authorID = AuthorsManager::MoltaqaAuthorID();
         book->fileName = "${DATA_DIR}/help/help.mlb";
 
         int bookID = m_bookmanager->addBook(book);

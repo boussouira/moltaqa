@@ -33,6 +33,7 @@ public:
     void updateAuthor(AuthorInfo::Ptr auth);
 
     static int unknowAuthorID() { return 112; }
+    static int MoltaqaAuthorID() { return 212; }
 
 protected:
     int getNewAuthorID();
