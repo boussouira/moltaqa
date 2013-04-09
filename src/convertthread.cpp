@@ -125,7 +125,7 @@ void ConvertThread::convertShamelaBook(const QString &path)
         }
 
         if(betakaCol != -1)
-             node->comment = bookQuery.value(betakaCol).toString();
+             node->comment = bookQuery.value(betakaCol).toString().replace(QRegExp("[\\r\\n]+"), "\n");
 
         if(infoCol != -1)
             node->info = Utils::Html::format(bookQuery.value(infoCol).toString());
