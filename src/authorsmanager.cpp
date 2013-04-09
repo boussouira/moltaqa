@@ -192,6 +192,9 @@ QString AuthorsManager::formatAuthorName(QSharedPointer<AuthorInfo> author)
 
 AuthorInfo::Ptr AuthorsManager::findAuthor(QString name, bool fazzySearch)
 {
+    if (name == QLatin1String("-"))
+        return getAuthorInfo(unknowAuthorID());
+
     AuthorInfo::Ptr auth;
     QHash<int, AuthorInfo::Ptr>::const_iterator i = m_authors.constBegin();
 
