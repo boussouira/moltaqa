@@ -175,10 +175,10 @@ bool MainWindow::init()
         m_libraryManager->addHelpBook();
 
     } catch(BookException &e) {
-        QMessageBox::information(this,
-                                 App::name(),
-                                 tr("حدث خطأ أثناء تحميل البرنامج:"
-                                    "<br>%1").arg(e.what()));
+        QMessageBox::critical(this,
+                              App::name(),
+                              tr("حدث خطأ أثناء تحميل البرنامج:" "<br>"
+                                 "%1").arg(e.what()));
         return false;
     }
 
@@ -583,10 +583,10 @@ void MainWindow::checkFinnished()
             settings.setValue("Update/lastCheck", QDateTime::currentDateTime().toTime_t());
         } else {
             if(m_updateChecker->hasError) {
-                QMessageBox::information(this,
-                                         tr("تحديث البرنامج"),
-                                         tr("حدث خطأ اثناء البحث عن التحديث:" "\n")
-                                         + m_updateChecker->errorString);
+                QMessageBox::warning(this,
+                                     tr("تحديث البرنامج"),
+                                     tr("حدث خطأ اثناء البحث عن التحديث:" "\n")
+                                     + m_updateChecker->errorString);
             } else {
                 QMessageBox::information(this,
                                          tr("تحديث البرنامج"),

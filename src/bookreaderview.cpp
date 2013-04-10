@@ -322,9 +322,9 @@ void BookReaderView::openTafessir()
 
         updateActions();
     } catch (BookException &e) {
-        QMessageBox::warning(this,
-                             tr("فتح التفسير"),
-                             e.what());
+        QMessageBox::critical(this,
+                              tr("فتح التفسير"),
+                              e.what());
     }
 }
 
@@ -600,10 +600,10 @@ void BookReaderView::editCurrentBook()
         try {
             MW->editorView()->editBook(book, pageID);
         } catch (BookException &e) {
-            QMessageBox::information(this,
-                                     App::name(),
-                                     tr("حدث خطأ أثناء محاولة تحرير الكتاب الحالي:"
-                                        "<br>%1").arg(e.what()));
+            QMessageBox::warning(this,
+                                 App::name(),
+                                 tr("حدث خطأ أثناء محاولة تحرير الكتاب الحالي:"
+                                    "<br>%1").arg(e.what()));
         }
     }
 }
