@@ -267,12 +267,13 @@ void LibraryBookManagerWidget::removeBook()
 {
     QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
     if(index.isValid()) {
-        if(QMessageBox::question(this,
-                                 tr("حذف كتاب"),
-                                 tr("هل انت متأكد من انك تريد حذف '%1'؟")
-                                 .arg(index.data().toString()),
-                                 QMessageBox::Yes|QMessageBox::No,
-                                 QMessageBox::No)==QMessageBox::Yes) {
+        int rep = QMessageBox::question(this,
+                                        tr("حذف كتاب"),
+                                        tr("هل انت متأكد من انك تريد حذف '%1'؟")
+                                        .arg(index.data().toString()),
+                                        QMessageBox::Yes|QMessageBox::No,
+                                        QMessageBox::No);
+        if(rep == QMessageBox::Yes) {
             int bookId = index.data(ItemRole::idRole).toInt();
             QModelIndex sourceIndex = m_filter->filterModel()->mapToSource(index);
             m_model->removeRow(sourceIndex.row(), sourceIndex.parent());
