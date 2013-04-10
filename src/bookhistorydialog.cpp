@@ -3,6 +3,7 @@
 #include "librarymanager.h"
 #include "utils.h"
 #include "modelenums.h"
+#include "checkablemessagebox.h"
 
 #include <qmessagebox.h>
 
@@ -42,12 +43,13 @@ void BookHistoryDialog::deleteBookHistory()
 {
     ml_return_on_fail2(m_book, "BookHistoryDialog::setup book is null");
 
-    int ret = QMessageBox::question(this,
-                                    tr("حذف تاريخ تصفح الكتاب"),
-                                    tr("هل تريد حذف تاريخ تصفح كتاب '%1'؟").arg(m_book->title),
-                                    QMessageBox::Yes|QMessageBox::No, QMessageBox::No);
+    int ret = CheckableMessageBox::question(this,
+                                            tr("حذف تاريخ تصفح الكتاب"),
+                                            tr("هل تريد حذف تاريخ تصفح كتاب '%1'؟").arg(m_book->title),
+                                            "CheckableMessageBox/deleteBookHistory",
+                                            QDialogButtonBox::Yes);
 
-    if(ret == QMessageBox::Yes) {
+    if(ret == QDialogButtonBox::Yes) {
         if(LibraryManager::instance()->bookManager()->deleteBookHistory(m_book->id)) {
             setup();
         } else {

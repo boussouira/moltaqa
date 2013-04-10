@@ -11,6 +11,7 @@
 #include <qdir.h>
 #include <qmessagebox.h>
 #include <qdebug.h>
+#include "checkablemessagebox.h"
 
 LogDialog::LogDialog(QWidget *parent) :
     QDialog(parent),
@@ -58,15 +59,18 @@ void LogDialog::fileChanged(const QString &path)
 
 void LogDialog::clearLog()
 {
-    ml_return_on_fail(QMessageBox::question(this,
+    int rep = CheckableMessageBox::question(this,
                                             windowTitle(),
                                             tr("نافذة الأخطاء تحتوي على معلومات قد تساعد في تصحيح أخطاء البرنامج" "\n"
                                                "هل تريد مسح الأخطاء الموجودة في هذه النافذة؟"),
-                                            QMessageBox::Yes|QMessageBox::No,
-                                            QMessageBox::No) == QMessageBox::Yes);
-
-    QFile log(m_logPath);
-    log.open(QFile::WriteOnly | QFile::Text | QFile::Truncate);
+                                            "CheckableMessageBox/LogDialogClear",
+                                            QDialogButtonBox::Yes);
+    if(rep == QDialogButtonBox::Yes) {
+        QFile log(m_logPath);
+        ml_warn_on_fail(log.remove(),
+                        "LogDialog::clearLog Error when deleting log file"
+                        << log.errorString());
+    }
 }
 
 void LogDialog::closeEvent(QCloseEvent *event)

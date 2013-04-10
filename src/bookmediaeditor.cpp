@@ -5,6 +5,7 @@
 #include "modelutils.h"
 #include "htmlhelper.h"
 #include "webpagenam.h"
+#include "checkablemessagebox.h"
 
 #include <bookeditor.h>
 #include <qfiledialog.h>
@@ -418,12 +419,12 @@ void BookMediaEditor::removeMedia()
     QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
     if(index.isValid()
             && index.data(FilePathRole).toString().size()) {
-        if(QMessageBox::question(this,
-                                 tr("حذف صورة"),
-                                 tr("هل انت متأكد من انك تريد الصورة '%1'؟")
-                                 .arg(index.data().toString()),
-                                 QMessageBox::Yes|QMessageBox::No,
-                                 QMessageBox::No)==QMessageBox::Yes) {
+        if(CheckableMessageBox::question(this,
+                                         tr("حذف صورة"),
+                                         tr("هل انت متأكد من انك تريد حذف الصورة '%1'؟")
+                                         .arg(index.data().toString()),
+                                         "CheckableMessageBox/removeMedia",
+                                         QDialogButtonBox::Yes) == QDialogButtonBox::Yes) {
             QString path = index.data(FilePathRole).toString();
 
             for(int i=0; i<m_resources.count(); i++) {

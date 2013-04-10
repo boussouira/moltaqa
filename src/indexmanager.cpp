@@ -10,6 +10,7 @@
 #include "statisticsmanager.h"
 #include "indextracker.h"
 #include "libraryinfo.h"
+#include "checkablemessagebox.h"
 
 #include <qdir.h>
 #include <qthread.h>
@@ -85,13 +86,15 @@ void IndexManager::start()
     ml_return_on_fail(m_taskIter->taskCount());
 
     if(m_taskIter->taskCount() > 100) {
-        ml_return_on_fail(QMessageBox::question(MW,
-                                 tr("تحديث الفهرس"),
-                                 tr("يجب تحديث %1" "\n" "هل تريد تحديث الفهرس الآن؟")
-                                 .arg(Utils::String::Arabic::plural(m_taskIter->taskCount(),
-                                                                    Utils::String::Arabic::BOOK)),
-                                 QMessageBox::Yes|QMessageBox::No,
-                                 QMessageBox::No) == QMessageBox::Yes);
+        int ret = CheckableMessageBox::question(MW,
+                                                tr("تحديث الفهرس"),
+                                                tr("يجب تحديث %1" "\n" "هل تريد تحديث الفهرس الآن؟")
+                                                .arg(Utils::String::Arabic::plural(m_taskIter->taskCount(),
+                                                                                   Utils::String::Arabic::BOOK)),
+                                                "CheckableMessageBox/IndexManagerStart",
+                                                QDialogButtonBox::Yes);
+        if (ret == QDialogButtonBox::No)
+            return;
     }
 
     ml_return_on_fail2(openWriter(), "IndexManager: Can't open IndexWriter");

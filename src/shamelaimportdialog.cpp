@@ -21,6 +21,7 @@
 #include "statisticsmanager.h"
 #include "shamelamapper.h"
 #include "shamelaimportinfo.h"
+#include "checkablemessagebox.h"
 
 #ifdef USE_MDBTOOLS
 #include "mdbconverter.h"
@@ -141,11 +142,12 @@ bool ShamelaImportDialog::validateCurrentPage()
         }
     } else if(currentId() == Page_CategoriesLink) {
         if(ui->radioUseThisLibCat->isChecked() && !categorieLinked()) {
-            if(QMessageBox::question(this,
-                                     tr("الاستيراد من الشاملة"),
-                                     tr("لم تقم باختيار بعض الأقسام" "\n"
-                                        "هل تريد المتابعة؟"),
-                                     QMessageBox::Yes|QMessageBox::No, QMessageBox::No) == QMessageBox::No)
+            int rep = CheckableMessageBox::question(this,
+                                                    tr("الاستيراد من الشاملة"),
+                                                    tr("لم تقم باختيار بعض الأقسام" "\n" "هل تريد المتابعة؟"),
+                                                    "CheckableMessageBox/ShamelaImportCatLink",
+                                                    QDialogButtonBox::Yes);
+            if(rep == QDialogButtonBox::No)
                 return false;
         }
     }
@@ -452,9 +454,10 @@ void ShamelaImportDialog::doneImporting()
         Utils::Settings::set("ShamelaImportDialog/threadCount",
                              ui->spinImportThreads->value());
 
-        QMessageBox::information(this,
-                                 tr("الاستيراد من الشاملة"),
-                                 tr("سيتم فهرسة الكتب التي تم استيرادها بعد اعادة تشغيل البرنامج"));
+        CheckableMessageBox::information(this,
+                                         tr("الاستيراد من الشاملة"),
+                                         tr("سيتم فهرسة الكتب التي تم استيرادها بعد اعادة تشغيل البرنامج"),
+                                         "CheckableMessageBox/ShamelaImportDone");
     }
 }
 

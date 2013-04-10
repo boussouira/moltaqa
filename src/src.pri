@@ -160,6 +160,7 @@ SOURCES += mainwindow.cpp \
     bookviewbase.cpp \
     bookmediaeditor.cpp \
     bookfilesreader.cpp \
+    checkablemessagebox.cpp \
     wizardpage.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
@@ -309,6 +310,7 @@ HEADERS += mainwindow.h \
     bookviewbase.h \
     bookmediaeditor.h \
     bookfilesreader.h \
+    checkablemessagebox.h \
     wizardpage.h
 
 FORMS += mainwindow.ui settingsdialog.ui \

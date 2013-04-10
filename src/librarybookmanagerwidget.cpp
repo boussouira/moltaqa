@@ -16,6 +16,7 @@
 #include "authorsmanager.h"
 #include "bookwidgetmanager.h"
 #include "sortfilterproxymodel.h"
+#include "checkablemessagebox.h"
 
 #include <qdebug.h>
 #include <qlineedit.h>
@@ -289,18 +290,20 @@ void LibraryBookManagerWidget::reindexBook()
 {
     QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
     if(index.isValid()) {
-        if(QMessageBox::question(this,
-                                 tr("إعادة فهرسة كتاب"),
-                                 tr("هل تريد إعادة فهرس كتاب '%1'؟")
-                                 .arg(index.data().toString()),
-                                 QMessageBox::Yes|QMessageBox::No,
-                                 QMessageBox::No)==QMessageBox::Yes) {
+        int rep = CheckableMessageBox::question(this,
+                                                tr("إعادة فهرسة كتاب"),
+                                                tr("هل تريد إعادة فهرس كتاب '%1'؟")
+                                                .arg(index.data().toString()),
+                                                "CheckableMessageBox/BookManagerReindexBook",
+                                                QDialogButtonBox::Yes);
+        if(rep == QDialogButtonBox::Yes) {
             int bookId = index.data(ItemRole::idRole).toInt();
             if(bookId) {
                 IndexTracker::instance()->addTask(bookId, IndexTask::Update, false);
-                QMessageBox::information(this,
-                                         tr("إعادة فهرسة كتاب"),
-                                         tr("ستتم إعادة فهرسة هذا الكتاب عند إعادة تشغيل البرنامج"));
+                CheckableMessageBox::information(this,
+                                                 tr("إعادة فهرسة كتاب"),
+                                                 tr("ستتم إعادة فهرسة هذا الكتاب عند إعادة تشغيل البرنامج"),
+                                                 "CheckableMessageBox/BookManagerReindexBookInfo");
             } else {
                 QMessageBox::warning(this,
                                      tr("حذف كتاب"),

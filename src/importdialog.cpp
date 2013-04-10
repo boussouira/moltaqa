@@ -12,6 +12,7 @@
 #include "indextracker.h"
 #include "booklistmanager.h"
 #include "taffesirlistmanager.h"
+#include "checkablemessagebox.h"
 
 #ifdef USE_MDBTOOLS
     #include "mdbconverter.h"
@@ -206,12 +207,13 @@ void ImportDialog::convertBooks()
 void ImportDialog::importBooks()
 {
     if(!checkNodes(m_model->nodeFromIndex()->childrenNode)) {
-        int rep = QMessageBox::question(this,
-                                        tr("خطأ عند الاستيراد"),
-                                        tr("لم تقم باختيار أقسام بعض الكتب" "\n"
-                                           "هل تريد المتابعة؟"),
-                                        QMessageBox::Yes|QMessageBox::No, QMessageBox::No);
-        if(rep == QMessageBox::No)
+        int rep = CheckableMessageBox::question(this,
+                                                tr("خطأ عند الاستيراد"),
+                                                tr("لم تقم باختيار أقسام بعض الكتب" "\n"
+                                                   "هل تريد المتابعة؟"),
+                                                "CheckableMessageBox/importBooks",
+                                                QDialogButtonBox::Yes);
+        if(rep == QDialogButtonBox::No)
             return;
     }
 

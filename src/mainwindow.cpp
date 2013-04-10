@@ -25,6 +25,7 @@
 #include "updatedialog.h"
 #include "exportdialog.h"
 #include "searchview.h"
+#include "checkablemessagebox.h"
 
 #include <qmessagebox.h>
 #include <qsettings.h>
@@ -291,17 +292,13 @@ void MainWindow::searchInFavourites()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    if(Utils::Settings::get("showCloseWarning", true).toBool()) {
-        int ret = QMessageBox::question(this,
-                                        windowTitle(),
-                                        tr("هل تريد إغلاق البرنامج؟"),
-                                        QMessageBox::Yes|QMessageBox::No,
-                                        QMessageBox::No);
-
-        if(ret == QMessageBox::No) {
-            event->ignore();
-            return;
-        }
+    int ret = CheckableMessageBox::question(this, windowTitle(),
+                                            tr("هل تريد إغلاق البرنامج؟"),
+                                            "showCloseWarning",
+                                            QDialogButtonBox::Yes);
+    if(ret == QDialogButtonBox::No) {
+        event->ignore();
+        return;
     }
 
     if(!isFullScreen())
