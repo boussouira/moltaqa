@@ -9,8 +9,17 @@ RPM_TEMP_DIR="rpm-temp-dir"
 OUTPUT_DIR="dist"
 SOURCE_ARCHIVE="${APP_NAME}-${APP_VERSION}.tar.gz"
 SOURCE_ARCHIVE_ORIG="${APP_NAME}_${APP_VERSION}.orig.tar.gz"
-SOURCE_DIR=`pwd`
+
+if [ -n "$WORKSPACE" ];
+then
+    SOURCE_DIR="$WORKSPACE"
+else
+    SOURCE_DIR=`pwd`
+fi
+
 TEMP_DIR_PATH=$SOURCE_DIR/$TEMP_DIR
+
+cd $SOURCE_DIR
 
 echo "********************************"
 echo " Package: $APP_NAME"
@@ -41,7 +50,12 @@ echo "[*] Enter application directory"
 cd $TEMP_DIR/$APP_DIR_NAME
 
 echo "[*] Start building deb"
-debuild
+if [ -n $WORKSPACE ];
+then
+    debuild -us -uc
+else
+    debuild
+fi
 
 cd $TEMP_DIR_PATH
 
