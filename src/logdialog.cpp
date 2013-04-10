@@ -70,6 +70,11 @@ void LogDialog::clearLog()
         ml_warn_on_fail(log.remove(),
                         "LogDialog::clearLog Error when deleting log file"
                         << log.errorString());
+
+        // Create an empty log file
+        ml_warn_on_fail(log.open(QFile::WriteOnly | QFile::Text | QFile::Truncate),
+                        "LogDialog::clearLog Error when creating empty log file"
+                        << log.errorString());
     }
 }
 
