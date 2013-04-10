@@ -698,11 +698,20 @@ QString appDir()
 
             missingFiles = checkDir(false);
             if(missingFiles.size()) {
+                QStringList missingFileToShow;
+                for (int i=0; i<qMin(6, missingFiles.size()); i++)
+                    missingFileToShow.append(missingFiles[i]);
+
+                if (missingFiles.size() > 6)
+                    missingFileToShow.append("...");
+
                 QMessageBox::critical(0,
                                       App::name(),
                                       QObject::tr("لم يتم العثور على بعض الملفات في مجلد البرنامج""\n"
                                                   "من فضلك قم باعادة تتبيث البرنامج""\n"
-                                                  "الملفات الناقصة:""\n") + missingFiles.join("\n"));
+                                                  "الملفات الناقصة (%1):""\n""%2")
+                                      .arg(missingFiles.size())
+                                      .arg(missingFileToShow.join("\n")));
 
                 qFatal("Some files are messing:\n\t%s", qPrintable(missingFiles.join("\n\t")));
             }
