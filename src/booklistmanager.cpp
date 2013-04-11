@@ -280,6 +280,11 @@ void BookListManager::readNode(QStandardItem *parentItem, QDomElement &element, 
 
         child = child.nextSiblingElement();
     }
+
+    if (rows.size() && element.tagName() == QLatin1String("cat")) {
+        QStandardItem *item = rows.first();
+        item->setToolTip(tr("عدد الكتب: %1").arg(item->rowCount()));
+    }
 }
 
 QList<QStandardItem*> BookListManager::readCatNode(QDomElement &element)
