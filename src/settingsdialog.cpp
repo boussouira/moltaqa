@@ -34,8 +34,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
 
     connect(ui->pushBooksDir, SIGNAL(clicked()), this, SLOT(changeBooksDir()));
     connect(ui->pushResetSettings, SIGNAL(clicked()), this, SLOT(resetSettings()));
-    connect(ui->pushSaveSettings, SIGNAL(clicked()), this, SLOT(saveSettings()));
-    connect(ui->pushCancel, SIGNAL(clicked()), this, SLOT(reject()));
+    connect(ui->buttonBox->button(QDialogButtonBox::Save), SIGNAL(clicked()), this, SLOT(saveSettings()));
+    connect(ui->buttonBox->button(QDialogButtonBox::Cancel), SIGNAL(clicked()), this, SLOT(reject()));
     connect(ui->pushDeleteSavedSearch, SIGNAL(clicked()), SLOT(deleteSavedSearch()));
     connect(ui->pushOptimizeIndex, SIGNAL(clicked()), SLOT(optimizeIndex()));
     connect(ui->pushUpdateIndex, SIGNAL(clicked()), SLOT(updateIndex()));
