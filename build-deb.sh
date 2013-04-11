@@ -79,9 +79,13 @@ cp -v $TEMP_DIR_PATH/$APP_DIR_NAME/bin/moltaqa-lib.run $APP_DIR_NAME/bin
 tar -zcf $TEMP_DIR_PATH/$OUTPUT_DIR/$APP_DIR_NAME.tar.gz $APP_DIR_NAME
 #tar -jcf $TEMP_DIR_PATH/$OUTPUT_DIR/$APP_DIR_NAME.tar.bz2 *
 
-echo "[*] Create md5 sums"
-
+echo "[*] Rename files"
 cd $TEMP_DIR_PATH/$OUTPUT_DIR
+
+mv -v *.deb "$APP_DIR_NAME.deb"
+mv -v *.rpm "$APP_DIR_NAME.rpm"
+
+echo "[*] Create md5 sums"
 md5sum -b * > MD5SUMS
 
 mkdir -p "$SOURCE_DIR/$OUTPUT_DIR/$APP_DIR_NAME"
