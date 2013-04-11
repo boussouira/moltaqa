@@ -392,13 +392,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="checkCatBookCount">
-         <property name="text">
-          <string>إظهار عدد الكتب الموجودة في كل قسم</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QCheckBox" name="checkDrawAyatNumber">
          <property name="text">
           <string>زخرفة أرقام الآيات في القرآن الكريم</string>

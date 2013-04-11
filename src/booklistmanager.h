@@ -71,7 +71,6 @@ protected:
     int m_lastCatId;
     QIcon m_bookIcon;
     QIcon m_catIcon;
-    bool m_showCatBookCount;
 };
 
 #endif // BOOKLISTMANAGER_H

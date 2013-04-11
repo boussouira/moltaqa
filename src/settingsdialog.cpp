@@ -125,7 +125,6 @@ void SettingsDialog::loadSettings()
     ui->checkRemoveTashekil->setChecked(settings.value("removeTashekil", false).toBool());
     ui->checkShowQuranFirst->setChecked(settings.value("showQuranFirst", true).toBool());
     ui->checkDrawAyatNumber->setChecked(settings.value("drawAyatNumber", true).toBool());
-    ui->checkCatBookCount->setChecked(settings.value("catBookCount", true).toBool());
 
     loadSearchFields();
 }
@@ -213,7 +212,6 @@ void SettingsDialog::resetSettings()
          << "Style/showQuranFirst"
          << "Style/fixShamelaShoorts"
          << "Style/drawAyatNumber"
-         << "Style/catBookCount"
          << "BookWidget/splitter"
          << "ShamelaImportDialog/threadCount"
          << "WelcomeWidget/tab"
@@ -328,7 +326,6 @@ void SettingsDialog::saveSettings()
     saveSetting(settings, "Style", "removeTashekil", ui->checkRemoveTashekil->isChecked(), true);
     saveSetting(settings, "Style", "showQuranFirst", ui->checkShowQuranFirst->isChecked(), true);
     saveSetting(settings, "Style", "drawAyatNumber", ui->checkDrawAyatNumber->isChecked(), true);
-    saveSetting(settings, "Style", "catBookCount", ui->checkCatBookCount->isChecked(), true);
 
 
     QWebSettings *webSettings = QWebSettings::globalSettings();
