@@ -433,11 +433,6 @@ void SettingsDialog::fontSettingChange()
     webSettings->clearMemoryCaches();
 }
 
-void SettingsDialog::hideCancelButton(bool hide)
-{
-    ui->pushCancel->setHidden(hide);
-}
-
 void SettingsDialog::on_pushEditRefer_clicked()
 {
     BookRefereDialog dialog(this);

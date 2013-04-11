@@ -15,7 +15,6 @@ class SettingsDialog : public QDialog {
 public:
     SettingsDialog(QWidget *parent = 0);
     ~SettingsDialog();
-    void hideCancelButton(bool hide);
 
 protected:
     void loadSettings();
