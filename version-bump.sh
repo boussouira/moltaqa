@@ -35,6 +35,7 @@ sed -i 's/\(set OUTDIR=moltaqa-lib-\)[^\W]\+/\1'$version'/' build-win.bat
 
 echo [+] Change installer.iss
 sed -i 's/\(AppVerName=[^ ]\+ [^ ]\+\) [^\w]\+/\1 '$version'/' installer.iss
+sed -i 's/\(OutputBaseFilename=[^0-9]\+-\)[^\w]\+/\1'$version'/' installer.iss
 
 echo
 
