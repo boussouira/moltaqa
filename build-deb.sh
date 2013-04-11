@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 APP_NAME="moltaqa-lib"
 APP_VERSION="0.9a4"

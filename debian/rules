@@ -12,7 +12,7 @@
 include /usr/share/quilt/quilt.make
 
 export CLUCENE_SOURCE_PATH=/home/naruto/Programming/clucene
-export CLUCENE_BUILD_PATH=/home/naruto/Programming/clucene
+export CLUCENE_BUILD_PATH=/home/naruto/Programming/clucene-release
 export DEFAULT_INSTALL_PREFIX=/usr
 export QMAKE=qmake
 

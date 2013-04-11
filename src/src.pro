@@ -15,12 +15,25 @@ DESTDIR = ../bin
 
 exists(../../clucene) {
     CLUCENE_SOURCE_PATH = ../../clucene
-    CLUCENE_BUILD_PATH = ../../clucene-build
+    CLUCENE_BUILD_PATH = ../../clucene
 
-    message(Using CLucene found at $$CLUCENE_BUILD_PATH)
+    CONFIG(debug, debug|release):exists(../../clucene-debug) {
+        CLUCENE_BUILD_PATH = ../../clucene-debug
+    }
+
+    CONFIG(release, debug|release):exists(../../clucene-release) {
+        CLUCENE_BUILD_PATH = ../../clucene-release
+    }
 } else {
     CLUCENE_SOURCE_PATH = $$(CLUCENE_SOURCE_PATH)
     CLUCENE_BUILD_PATH = $$(CLUCENE_BUILD_PATH)
+}
+
+!exists($$CLUCENE_SOURCE_PATH)|!exists($$CLUCENE_BUILD_PATH) {
+    error(CLucene not found: [$$CLUCENE_SOURCE_PATH] [$$CLUCENE_BUILD_PATH])
+} else {
+    message(CLucene source: $$CLUCENE_SOURCE_PATH)
+    message(CLucene build: $$CLUCENE_BUILD_PATH)
 }
 
 win32 {
