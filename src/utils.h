@@ -9,8 +9,8 @@
 
 #include "bookexception.h"
 
-#define APP_VERSION_STR "0.9a4"
-#define APP_UPDATE_REVISION 4
+#define APP_VERSION_STR "1.0b1"
+#define APP_UPDATE_REVISION 5
 
 #define ML_DEFAULT_STYLE "default"
 
