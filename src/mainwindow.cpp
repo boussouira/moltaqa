@@ -88,7 +88,7 @@ bool MainWindow::init()
             // We have a path to the library but it is invalid
             message = tr("لم يتم العثور على المكتبة في المجلد:") + QDir(libDir).absolutePath() + "<br>";
         } else {
-            message = tr("لم يتم بانشاء مكتبة بعد،") + " ";
+            message = tr("لم تقم بانشاء مكتبة بعد،") + " ";
         }
 
         ret = QMessageBox::question(this,
