@@ -14,7 +14,9 @@ public:
         Load information from an info.xml file
         @param booksPath Path where info.xml exsists
     */
-    LibraryInfo(QString booksPath);
+    LibraryInfo();
+
+    void load(const QString &path);
 
     QString name();
     QString path();
@@ -50,21 +52,20 @@ public:
       */
     QString trackerFile();
 
-    void setName(QString name);
-    void setPath(QString path);
-    void setBooksDir(QString dir);
+    void setName(const QString &name);
+    void setPath(const QString &path);
+    void setBooksDir(const QString &dir);
 
     /**
       Get book path
       @note This function doesn't check if the file exists
       @param bookName The name of book file
       */
-    QString bookPath(QString bookName);
+    QString bookPath(QString fileName);
     QString bookPath(LibraryBook::Ptr book);
 
 protected:
-    void loafInfo(QString path);
-    void checkDataFiles(QString dataDirPath);
+    void checkDataFiles(const QString &dataDirPath);
 
 protected:
     QString m_name;         ///< Library name

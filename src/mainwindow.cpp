@@ -83,7 +83,6 @@ bool MainWindow::init()
     QString message;
 
     if(!Utils::Library::isValidLibrary(libDir)) {
-        int ret;
         if(libDir.size()) {
             // We have a path to the library but it is invalid
             message = tr("لم يتم العثور على المكتبة في المجلد:") + QDir(libDir).absolutePath() + "<br>";
@@ -91,52 +90,29 @@ bool MainWindow::init()
             message = tr("لم تقم بانشاء مكتبة بعد،") + " ";
         }
 
-        ret = QMessageBox::question(this,
-                                    App::name(),
-                                    message +
-                                    tr("ما الذي تريد القيام به؟"),
-                                    tr("تغيير مجلد المكتبة"), tr("انشاء مكتبة مفرغة"), tr("خروج"),
-                                    2);
-        if(ret == 2) {
-            // Exist
-            return false;
-        } else if(ret == 1){
-            // Create new empty library
-            NewLibraryDialog dialog(this);
-            if(dialog.exec() == QDialog::Accepted) {
-                libDir = dialog.libraryDir();
-                Utils::Settings::set("library_dir", libDir);
-            } else {
-                QMessageBox::critical(this,
-                                      App::name(),
-                                      tr("لم يتم انشاء المكتبة بشكل صحيح" "\n"
-                                         "من فضلك أعد تشغيل البرنامج وحاول انشاء المكتبة من جديد"));
-                return false;
-            }
-        } else if(ret == 0) {
-            // Update library path
-            QString path = QFileDialog::getExistingDirectory(this,
-                                                             tr("اختر مجلد المكتبة"),
-                                                             QDir::homePath());
-            if(path.size() && Utils::Library::isValidLibrary(path)) {
-                libDir = path;
-                Utils::Settings::set("library_dir", libDir);
-            } else {
-                QMessageBox::critical(this,
-                                      App::name(),
-                                      tr("لم يتم تحديث مجلد المكتبة بشكل صحيح" "\n"
-                                         "من فضلك أعد تشغيل البرنامج وحاول  تحديث مجلد المكتبة من جديد"));
-                return false;
+        libDir = createLibrary(message);
 
-            }
-        }
+        ml_return_val_on_fail(libDir.size(), false);
+    }
+
+    try {
+        m_libraryInfo = new LibraryInfo();
+        m_libraryInfo->load(libDir);
+    } catch(BookException &e) {
+        QMessageBox::critical(this,
+                              App::name(),
+                              tr("حدث خطأ أثناء فتح المكتبة" "<br>%1<br>"
+                                 "من فضلك أعد تشغيل البرنامج").arg(e.format(true)));
+
+        Utils::Settings::remove("library_dir");
+
+        return false;
     }
 
     m_viewManager = new ViewManager(this);
     setCentralWidget(m_viewManager);
 
     try {
-        m_libraryInfo = new LibraryInfo(libDir);
 
         m_libraryManager = new LibraryManager(m_libraryInfo);
 
@@ -313,6 +289,53 @@ void MainWindow::closeEvent(QCloseEvent *event)
     m_viewManager->aboutToClose();
 
     event->accept();
+}
+
+QString MainWindow::createLibrary(const QString &messageText)
+{
+    QString libDir;
+
+    int ret = QMessageBox::question(this,
+                                App::name(),
+                                messageText +
+                                tr("ما الذي تريد القيام به؟"),
+                                tr("تغيير مجلد المكتبة"), tr("انشاء مكتبة مفرغة"), tr("خروج"),
+                                2);
+    if(ret == 2) {
+        // Exist
+        return QString();
+    } else if(ret == 1){
+        // Create new empty library
+        NewLibraryDialog dialog(this);
+        if(dialog.exec() == QDialog::Accepted) {
+            libDir = dialog.libraryDir();
+            Utils::Settings::set("library_dir", libDir);
+        } else {
+            QMessageBox::critical(this,
+                                  App::name(),
+                                  tr("لم يتم انشاء المكتبة بشكل صحيح" "\n"
+                                     "من فضلك أعد تشغيل البرنامج وحاول انشاء المكتبة من جديد"));
+            return QString();
+        }
+    } else if(ret == 0) {
+        // Update library path
+        QString path = QFileDialog::getExistingDirectory(this,
+                                                         tr("اختر مجلد المكتبة"),
+                                                         QDir::homePath());
+        if(path.size() && Utils::Library::isValidLibrary(path)) {
+            libDir = path;
+            Utils::Settings::set("library_dir", libDir);
+        } else {
+            QMessageBox::critical(this,
+                                  App::name(),
+                                  tr("لم يتم تحديث مجلد المكتبة بشكل صحيح" "\n"
+                                     "من فضلك أعد تشغيل البرنامج وحاول  تحديث مجلد المكتبة من جديد"));
+            return QString();
+
+        }
+    }
+
+    return libDir;
 }
 
 void MainWindow::setupProgressWidget()

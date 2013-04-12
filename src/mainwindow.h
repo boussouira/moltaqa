@@ -59,6 +59,8 @@ protected:
     void setupActions();
     void loadSettings();
 
+    QString createLibrary(const QString &messageText);
+
 public slots:
     void handleMessage(const QString&);
 

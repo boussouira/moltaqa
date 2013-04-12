@@ -9,9 +9,8 @@
 #include <qdir.h>
 #include <qdom.h>
 
-LibraryInfo::LibraryInfo(QString booksPath)
+LibraryInfo::LibraryInfo()
 {
-    loafInfo(booksPath);
 }
 
 QString LibraryInfo::name()
@@ -34,22 +33,22 @@ QString LibraryInfo::booksDir()
     return m_booksDir;
 }
 
-void LibraryInfo::setPath(QString path)
+void LibraryInfo::setPath(const QString &path)
 {
     m_path = path;
 }
 
-void LibraryInfo::setBooksDir(QString dir)
+void LibraryInfo::setBooksDir(const QString &dir)
 {
     m_booksDir = dir;
 }
 
-void LibraryInfo::setName(QString name)
+void LibraryInfo::setName(const QString &name)
 {
     m_name = name;
 }
 
-void LibraryInfo::loafInfo(QString path)
+void LibraryInfo::load(const QString &path)
 {
     QDir dir(path);
     QString infoFile = dir.filePath("info.xml");
@@ -89,6 +88,10 @@ void LibraryInfo::loafInfo(QString path)
             m_indexDataDir = e.text();
 
         e = e.nextSiblingElement();
+    }
+
+    if(root.attribute("revision").toInt() != 1) {
+        throw BookException(tr("اصدار المكتبة غير متوافق مع هذا الاصدار من البرنامج"));
     }
 
     QDir dataDir(m_path);
@@ -149,7 +152,7 @@ void LibraryInfo::loafInfo(QString path)
     m_indexDataDir = indexDir.absolutePath();
 }
 
-void LibraryInfo::checkDataFiles(QString dataDirPath)
+void LibraryInfo::checkDataFiles(const QString &dataDirPath)
 {
     QDir dataDir(dataDirPath);
 
@@ -212,17 +215,17 @@ void LibraryInfo::checkDataFiles(QString dataDirPath)
     }
 }
 
-QString LibraryInfo::bookPath(QString bookName)
+QString LibraryInfo::bookPath(QString fileName)
 {
-    if(bookName.contains("${")) {
-        return bookName.replace("${DATA_DIR}", App::dataDir());
+    if(fileName.contains(QLatin1String("${"))) {
+        return fileName.replace("${DATA_DIR}", App::dataDir());
     } else {
         QDir dir(m_booksDir);
-        QString bookDir = bookName.split('_').last().at(0);
+        QString bookDir = fileName.split('_').last().at(0);
 
         dir.cd(bookDir);
 
-        return dir.filePath(bookName);
+        return dir.filePath(fileName);
     }
 }
 
