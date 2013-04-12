@@ -68,7 +68,12 @@ void UpdateChecker::httpFinished()
 
         emit checkFinished();
     } else if (!redirectionTarget.isNull()) {
-            QUrl url = url.resolved(redirectionTarget.toUrl());
+#ifdef DEV_BUILD
+        qDebug() << "UpdateChecker::httpFinished Redirect from:"
+                 << redirectionTarget.toUrl().toString() << "To:"
+                 << m_reply->url().toString();
+#endif
+            QUrl url = m_reply->url().resolved(redirectionTarget.toUrl());
             m_reply->deleteLater();
             m_replayText.clear();
 
