@@ -178,7 +178,7 @@ bool MainWindow::init()
         QMessageBox::critical(this,
                               App::name(),
                               tr("حدث خطأ أثناء تحميل البرنامج:" "<br>"
-                                 "%1").arg(e.what()));
+                                 "%1").arg(e.format(true)));
         return false;
     }
 

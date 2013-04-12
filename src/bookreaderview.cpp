@@ -299,7 +299,7 @@ BookViewBase *BookReaderView::openBook(int bookID, int pageID, CLuceneQuery *que
     } catch (BookException &e) {
         QMessageBox::critical(this,
                               tr("فتح كتاب"),
-                              e.what());
+                              e.format(true));
         return 0;
     }
 }
@@ -324,7 +324,7 @@ void BookReaderView::openTafessir()
     } catch (BookException &e) {
         QMessageBox::critical(this,
                               tr("فتح التفسير"),
-                              e.what());
+                              e.format(true));
     }
 }
 
