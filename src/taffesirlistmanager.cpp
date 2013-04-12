@@ -68,8 +68,12 @@ QStandardItemModel *TaffesirListManager::getModel(bool allTaffasir)
         if(allTaffasir || checkStat) {
             QStandardItem *item = new QStandardItem();
             item->setText(e.firstChildElement("title").text());
+            item->setToolTip(item->text());
             item->setData(e.attribute("bookID").toInt(), ItemRole::idRole);
             item->setIcon(QIcon(":/images/book.png"));
+
+            if(!allTaffasir)
+                item->setText(Utils::String::abbreviate(item->text(), 35));
 
             QStandardItem *item2 = new QStandardItem();
             item2->setCheckable(true);
