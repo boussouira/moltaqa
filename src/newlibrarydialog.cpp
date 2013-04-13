@@ -1,7 +1,8 @@
 #include "newlibrarydialog.h"
 #include "ui_newlibrarydialog.h"
-#include "utils.h"
 #include "librarycreator.h"
+#include "utils.h"
+
 #include <qfiledialog.h>
 #include <qmessagebox.h>
 #include <qtextstream.h>

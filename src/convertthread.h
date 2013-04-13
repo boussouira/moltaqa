@@ -1,9 +1,10 @@
 #ifndef CONVERTTHREAD_H
 #define CONVERTTHREAD_H
 
-#include <qthread.h>
-#include <qstringlist.h>
 #include "authorinfo.h"
+
+#include <qstringlist.h>
+#include <qthread.h>
 
 class ImportModel;
 class ImportModelNode;

@@ -1,14 +1,14 @@
 #include "bookinfodialog.h"
-#include "htmlhelper.h"
-#include "utils.h"
 #include "authorsmanager.h"
+#include "htmlhelper.h"
+#include "librarybookmanager.h"
 #include "librarymanager.h"
 #include "mainwindow.h"
-#include "librarybookmanager.h"
+#include "utils.h"
 #include "webview.h"
 
-#include <qevent.h>
 #include <qboxlayout.h>
+#include <qevent.h>
 
 BookInfoDialog::BookInfoDialog(QWidget *parent) : QWidget(parent)
 {

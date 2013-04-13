@@ -1,8 +1,8 @@
 #ifndef BOOKINDEXEDITOR_H
 #define BOOKINDEXEDITOR_H
 
-#include <qwidget.h>
 #include <qabstractitemmodel.h>
+#include <qwidget.h>
 
 namespace Ui {
 class BookIndexEditor;

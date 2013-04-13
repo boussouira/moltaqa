@@ -1,7 +1,8 @@
 #include "timeutils.h"
 #include "stringutils.h"
-#include <qobject.h>
+
 #include <qdatetime.h>
+#include <qobject.h>
 
 namespace Utils {
 

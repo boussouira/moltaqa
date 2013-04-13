@@ -2,11 +2,12 @@
 #define IMPORTMODEL_H
 
 #include "librarybook.h"
-#include <qobject.h>
+
 #include <qabstractitemmodel.h>
-#include <qicon.h>
 #include <qbrush.h>
 #include <qcoreapplication.h>
+#include <qicon.h>
+#include <qobject.h>
 
 class ImportModelNode : public LibraryBook
 {

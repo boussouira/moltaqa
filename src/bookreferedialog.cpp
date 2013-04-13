@@ -1,14 +1,14 @@
 #include "bookreferedialog.h"
 #include "ui_bookreferedialog.h"
-#include "ui_addbookreferdialog.h"
 #include "librarymanager.h"
 #include "modelenums.h"
 #include "modelutils.h"
+#include "ui_addbookreferdialog.h"
 #include "utils.h"
 
-#include <qstandarditemmodel.h>
 #include <qlabel.h>
 #include <qmessagebox.h>
+#include <qstandarditemmodel.h>
 
 static int ReferTextRole = Qt::UserRole + 100;
 

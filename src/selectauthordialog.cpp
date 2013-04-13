@@ -1,14 +1,14 @@
 #include "selectauthordialog.h"
 #include "ui_selectauthordialog.h"
-#include "librarymanager.h"
-#include "modelviewfilter.h"
 #include "authorsmanager.h"
+#include "librarymanager.h"
 #include "modelenums.h"
 #include "modelutils.h"
+#include "modelviewfilter.h"
 #include "utils.h"
 
-#include <qstandarditemmodel.h>
 #include <qmessagebox.h>
+#include <qstandarditemmodel.h>
 
 selectAuthorDialog::selectAuthorDialog(QWidget *parent) :
     QDialog(parent),

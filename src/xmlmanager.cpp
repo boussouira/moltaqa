@@ -1,6 +1,7 @@
 #include "xmlmanager.h"
-#include "xmlutils.h"
 #include "utils.h"
+#include "xmlutils.h"
+
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qxmlstream.h>

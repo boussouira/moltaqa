@@ -1,8 +1,8 @@
 #ifndef FANCYLINEEDIT_H
 #define FANCYLINEEDIT_H
 
-#include <QLineEdit>
 #include <QAbstractButton>
+#include <QLineEdit>
 
 class FancyLineEditPrivate;
 

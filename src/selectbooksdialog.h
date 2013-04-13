@@ -1,8 +1,9 @@
 #ifndef SELECTBOOKSDIALOG_H
 #define SELECTBOOKSDIALOG_H
 
-#include <qdialog.h>
 #include "librarybookmanager.h"
+
+#include <qdialog.h>
 
 namespace Ui {
 class selectBooksDialog;

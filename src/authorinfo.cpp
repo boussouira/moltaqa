@@ -1,6 +1,7 @@
 #include "authorinfo.h"
 #include "utils.h"
 #include "xmldomhelper.h"
+
 #include <qdom.h>
 
 AuthorInfo::AuthorInfo()  :

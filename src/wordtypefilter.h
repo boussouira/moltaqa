@@ -2,6 +2,7 @@
 #define WORDTYPEFILTER_H
 
 #include "clheader.h"
+
 #include <qqueue.h>
 
 class WordTypeFilter: public TokenFilter {

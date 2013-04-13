@@ -1,22 +1,22 @@
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
-#include "utils.h"
-#include "clconstants.h"
-#include "librarymanager.h"
-#include "searchmanager.h"
-#include "indexmanager.h"
-#include "mainwindow.h"
-#include "timeutils.h"
 #include "bookreferedialog.h"
+#include "clconstants.h"
+#include "indexmanager.h"
 #include "librarybookmanager.h"
+#include "librarymanager.h"
+#include "mainwindow.h"
+#include "searchmanager.h"
+#include "timeutils.h"
+#include "utils.h"
 
-#include <qsettings.h>
 #include <qfile.h>
-#include <qmessagebox.h>
 #include <qfiledialog.h>
+#include <qfont.h>
+#include <qmessagebox.h>
+#include <qsettings.h>
 #include <qthread.h>
 #include <qvariant.h>
-#include <qfont.h>
 #include <qwebsettings.h>
 
 SettingsDialog::SettingsDialog(QWidget *parent) :

@@ -3,8 +3,8 @@
 #include "librarymanager.h"
 #include "searchmanager.h"
 
-#include <qmessagebox.h>
 #include <qinputdialog.h>
+#include <qmessagebox.h>
 
 SearchFieldsDialog::SearchFieldsDialog(QWidget *parent) :
     QDialog(parent),

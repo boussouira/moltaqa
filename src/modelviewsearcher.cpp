@@ -1,11 +1,11 @@
 #include "modelviewsearcher.h"
+#include "filterlineedit.h"
+#include "modelutils.h"
 #include "stringutils.h"
 #include "utils.h"
-#include "modelutils.h"
-#include "filterlineedit.h"
 
-#include <qtreeview.h>
 #include <qstandarditemmodel.h>
+#include <qtreeview.h>
 
 ModelViewSearcher::ModelViewSearcher(QObject *parent) :
     QObject(parent)

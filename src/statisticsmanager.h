@@ -2,6 +2,7 @@
 #define STATISTICSMANAGER_H
 
 #include "xmlmanager.h"
+
 #include <qhash.h>
 
 class UpLoader;

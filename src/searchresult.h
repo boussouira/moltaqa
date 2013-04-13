@@ -1,8 +1,9 @@
 #ifndef SEARCHRESULT_H
 #define SEARCHRESULT_H
 
-#include <qstring.h>
 #include "librarybook.h"
+
+#include <qstring.h>
 
 class SearchResult
 {

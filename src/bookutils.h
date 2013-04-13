@@ -1,8 +1,8 @@
 #ifndef BOOKUTILS_H
 #define BOOKUTILS_H
 
-#include <qstring.h>
 #include <qlist.h>
+#include <qstring.h>
 
 class QSqlDatabase;
 

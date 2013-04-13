@@ -1,26 +1,26 @@
 #include "booklistmanagerwidget.h"
 #include "ui_booklistmanagerwidget.h"
-#include "mainwindow.h"
-#include "selectcatdialog.h"
-#include "selectbooksdialog.h"
-#include "booklistmanager.h"
 #include "authorsmanager.h"
-#include "modelutils.h"
-#include "modelenums.h"
-#include "utils.h"
-#include "timeutils.h"
 #include "librarymanager.h"
+#include "mainwindow.h"
+#include "modelenums.h"
+#include "modelutils.h"
 #include "modelviewsearcher.h"
+#include "selectbooksdialog.h"
+#include "selectcatdialog.h"
+#include "timeutils.h"
+#include "utils.h"
+#include "booklistmanager.h"
 
 #include <qabstractitemmodel.h>
-#include <qmessagebox.h>
-#include <qmenu.h>
 #include <qaction.h>
-#include <qinputdialog.h>
 #include <qboxlayout.h>
-#include <qpushbutton.h>
+#include <qinputdialog.h>
 #include <qlabel.h>
+#include <qmenu.h>
+#include <qmessagebox.h>
 #include <qprogressdialog.h>
+#include <qpushbutton.h>
 
 BookListManagerWidget::BookListManagerWidget(QWidget *parent) :
     ControlCenterWidget(parent),

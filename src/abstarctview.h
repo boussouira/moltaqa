@@ -1,8 +1,8 @@
 #ifndef ABSTARCTVIEW_H
 #define ABSTARCTVIEW_H
 
-#include <qwidget.h>
 #include <qevent.h>
+#include <qwidget.h>
 
 class FilterLineEdit;
 class WebViewSearcher;

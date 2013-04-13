@@ -1,13 +1,13 @@
 #ifndef NEWQURANWRITER_H
 #define NEWQURANWRITER_H
 
-#include <qsqldatabase.h>
-#include <qsqlquery.h>
-#include <qsqlerror.h>
-#include <qhash.h>
 #include <qapplication.h>
-#include <qfile.h>
 #include <qdom.h>
+#include <qfile.h>
+#include <qhash.h>
+#include <qsqldatabase.h>
+#include <qsqlerror.h>
+#include <qsqlquery.h>
 
 #include "quazip.h"
 #include "quazipfile.h"

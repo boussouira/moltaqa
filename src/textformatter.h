@@ -2,9 +2,9 @@
 #define TEXTFORMATTER_H
 
 #include <qobject.h>
-#include <qstring.h>
 #include <qregexp.h>
 #include <qstack.h>
+#include <qstring.h>
 
 #include "htmlhelper.h"
 #include "librarybook.h"

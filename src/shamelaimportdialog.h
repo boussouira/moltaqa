@@ -1,9 +1,9 @@
 #ifndef SHAMELAIMPORTDIALOG_H
 #define SHAMELAIMPORTDIALOG_H
 
-#include <qwizard.h>
-#include <qicon.h>
 #include <qdatetime.h>
+#include <qicon.h>
+#include <qwizard.h>
 
 namespace Ui {
     class ShamelaImportDialog;

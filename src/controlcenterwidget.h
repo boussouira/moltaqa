@@ -1,8 +1,9 @@
 #ifndef ABSTRACTEDITWIDGET_H
 #define ABSTRACTEDITWIDGET_H
 
-#include <qwidget.h>
 #include "libraryinfo.h"
+
+#include <qwidget.h>
 
 class LibraryManager;
 

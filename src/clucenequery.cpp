@@ -1,5 +1,6 @@
 #include "clucenequery.h"
 #include "utils.h"
+
 #include <CLucene/analysis/Analyzers.h>
 #include <CLucene/search/Query.h>
 

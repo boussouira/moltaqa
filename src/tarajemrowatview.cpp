@@ -1,15 +1,15 @@
 #include "tarajemrowatview.h"
 #include "ui_tarajemrowatview.h"
-#include "tarajemrowatmanager.h"
-#include "modelenums.h"
 #include "htmlhelper.h"
 #include "librarymanager.h"
-#include "utils.h"
-#include "stringutils.h"
+#include "modelenums.h"
 #include "modelviewfilter.h"
+#include "stringutils.h"
+#include "tarajemrowatmanager.h"
+#include "utils.h"
 
-#include <qstandarditemmodel.h>
 #include <qdir.h>
+#include <qstandarditemmodel.h>
 #include <qurl.h>
 #include <qwebview.h>
 

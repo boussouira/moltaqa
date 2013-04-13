@@ -1,19 +1,19 @@
 #include "bookindexeditor.h"
 #include "ui_bookindexeditor.h"
+#include "bookeditorview.h"
+#include "editwebview.h"
+#include "libraryinfo.h"
+#include "mainwindow.h"
 #include "modelenums.h"
 #include "modelutils.h"
-#include "editwebview.h"
 #include "richbookreader.h"
-#include "bookeditorview.h"
 #include "utils.h"
-#include "mainwindow.h"
-#include "libraryinfo.h"
 #include "ziphelper.h"
 
 #include <qfile.h>
-#include <qxmlstream.h>
-#include <qmessagebox.h>
 #include <qinputdialog.h>
+#include <qmessagebox.h>
+#include <qxmlstream.h>
 
 BookIndexEditor::BookIndexEditor(BookEditorView *parent) :
     QWidget(parent),

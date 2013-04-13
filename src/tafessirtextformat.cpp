@@ -1,6 +1,6 @@
 #include "tafessirtextformat.h"
-#include "utils.h"
 #include "stringutils.h"
+#include "utils.h"
 
 TafessirTextFormat::TafessirTextFormat()
 {

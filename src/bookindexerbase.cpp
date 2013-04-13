@@ -1,8 +1,8 @@
 #include "bookindexerbase.h"
+#include "bookexception.h"
+#include "clconstants.h"
 #include "clheader.h"
 #include "clutils.h"
-#include "clconstants.h"
-#include "bookexception.h"
 #include "stringutils.h"
 #include "utils.h"
 

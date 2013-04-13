@@ -1,26 +1,26 @@
 #include "searchwidget.h"
 #include "ui_searchwidget.h"
-#include "searchfiltermanager.h"
-#include "resultwidget.h"
-#include "clheader.h"
-#include "clutils.h"
-#include "clconstants.h"
 #include "arabicanalyzer.h"
-#include "librarysearcher.h"
 #include "booksearchfilter.h"
+#include "clconstants.h"
+#include "clheader.h"
 #include "clucenequery.h"
-#include "utils.h"
-#include "searchmanager.h"
-#include "searchfieldsdialog.h"
-#include "statisticsmanager.h"
-#include "searchresultreader.h"
+#include "clutils.h"
 #include "librarymanager.h"
+#include "librarysearcher.h"
+#include "resultwidget.h"
+#include "searchfieldsdialog.h"
+#include "searchfiltermanager.h"
+#include "searchmanager.h"
+#include "searchresultreader.h"
+#include "statisticsmanager.h"
+#include "utils.h"
 
-#include <qmessagebox.h>
-#include <qinputdialog.h>
 #include <qcompleter.h>
-#include <qsettings.h>
+#include <qinputdialog.h>
 #include <qmenu.h>
+#include <qmessagebox.h>
+#include <qsettings.h>
 
 SearchWidget::SearchWidget(QWidget *parent) :
     QWidget(parent),

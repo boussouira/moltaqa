@@ -1,19 +1,19 @@
 #include "searchview.h"
-#include "tabwidget.h"
-#include "librarysearchwidget.h"
-#include "favouritessearchwidget.h"
 #include "booksearchwidget.h"
-#include "mainwindow.h"
+#include "favouritessearchwidget.h"
 #include "indexmanager.h"
 #include "librarybookmanager.h"
-#include "stringutils.h"
-#include "resultwidget.h"
-#include "webview.h"
 #include "librarymanager.h"
+#include "librarysearchwidget.h"
+#include "mainwindow.h"
+#include "resultwidget.h"
+#include "stringutils.h"
+#include "tabwidget.h"
+#include "webview.h"
 
+#include <qaction.h>
 #include <qboxlayout.h>
 #include <qmessagebox.h>
-#include <qaction.h>
 #include <qtoolbar.h>
 
 SearchView::SearchView(QWidget *parent) : AbstarctView(parent)

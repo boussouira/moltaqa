@@ -1,9 +1,10 @@
 #ifndef INDEXWIDGET_H
 #define INDEXWIDGET_H
 
-#include <qwidget.h>
-#include <qabstractitemmodel.h>
 #include "librarybook.h"
+
+#include <qabstractitemmodel.h>
+#include <qwidget.h>
 
 namespace Ui {
     class IndexWidget;

@@ -1,13 +1,13 @@
 #include "libraryinfo.h"
 #include "bookexception.h"
-#include "xmlutils.h"
 #include "utils.h"
+#include "xmlutils.h"
 #include "ziputils.h"
 
-#include <qfile.h>
-#include <qtextstream.h>
 #include <qdir.h>
 #include <qdom.h>
+#include <qfile.h>
+#include <qtextstream.h>
 
 LibraryInfo::LibraryInfo()
 {

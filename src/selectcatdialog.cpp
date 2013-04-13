@@ -1,15 +1,15 @@
 #include "selectcatdialog.h"
 #include "ui_selectcatdialog.h"
-#include "librarymanager.h"
-#include "modelviewfilter.h"
 #include "booklistmanager.h"
+#include "librarymanager.h"
 #include "modelenums.h"
 #include "modelutils.h"
-#include "utils.h"
+#include "modelviewfilter.h"
 #include "sortfilterproxymodel.h"
+#include "utils.h"
 
-#include <qstandarditemmodel.h>
 #include <qmessagebox.h>
+#include <qstandarditemmodel.h>
 
 selectCatDialog::selectCatDialog(QWidget *parent) :
     QDialog(parent), ui(new Ui::selectCatDialog)

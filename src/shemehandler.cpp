@@ -1,12 +1,12 @@
 #include "shemehandler.h"
-#include "utils.h"
-#include "librarymanager.h"
-#include "bookreaderview.h"
-#include "librarybookmanager.h"
-#include "bookwidget.h"
 #include "authorsview.h"
-#include "tarajemrowatview.h"
+#include "bookreaderview.h"
+#include "bookwidget.h"
+#include "librarybookmanager.h"
+#include "librarymanager.h"
 #include "mainwindow.h"
+#include "tarajemrowatview.h"
+#include "utils.h"
 
 ShemeHandler::ShemeHandler()
 {

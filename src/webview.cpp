@@ -1,22 +1,22 @@
 #include "webview.h"
-#include "webpage.h"
-#include "utils.h"
-#include "stringutils.h"
-#include "librarymanager.h"
-#include "librarybookmanager.h"
-#include "mainwindow.h"
 #include "bookwidget.h"
+#include "librarybookmanager.h"
+#include "librarymanager.h"
+#include "mainwindow.h"
 #include "richbookreader.h"
-#include "webpagenam.h"
 #include "searchview.h"
+#include "stringutils.h"
+#include "utils.h"
+#include "webpage.h"
+#include "webpagenam.h"
 
-#include <qevent.h>
-#include <qmenu.h>
-#include <qdesktopservices.h>
-#include <qclipboard.h>
 #include <qapplication.h>
-#include <qnetworkrequest.h>
+#include <qclipboard.h>
+#include <qdesktopservices.h>
+#include <qevent.h>
 #include <qfiledialog.h>
+#include <qmenu.h>
+#include <qnetworkrequest.h>
 
 WebView::WebView(QWidget *parent) :
     QWebView(parent)

@@ -1,19 +1,19 @@
 #include "utils.h"
 #include "sqlutils.h"
 
-#include <qsqlquery.h>
-#include <qsqldatabase.h>
-#include <qsqlerror.h>
-#include <qfileinfo.h>
-#include <qdir.h>
 #include <qapplication.h>
+#include <qcryptographichash.h>
+#include <qdir.h>
+#include <qfileinfo.h>
+#include <qheaderview.h>
 #include <qmessagebox.h>
 #include <qsettings.h>
-#include <qtreeview.h>
-#include <qheaderview.h>
+#include <qsqldatabase.h>
+#include <qsqlerror.h>
+#include <qsqlquery.h>
 #include <qtoolbar.h>
+#include <qtreeview.h>
 #include <quuid.h>
-#include <qcryptographichash.h>
 
 static QString appRootPath;
 static uint m_randSlat = QDateTime::currentDateTime().toTime_t();

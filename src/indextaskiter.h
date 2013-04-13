@@ -2,6 +2,7 @@
 #define INDEXTASKITER_H
 
 #include "librarybook.h"
+
 #include <qmutex.h>
 
 class IndexTask {

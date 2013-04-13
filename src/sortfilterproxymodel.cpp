@@ -1,7 +1,7 @@
 #include "sortfilterproxymodel.h"
-#include "stringutils.h"
-#include "modelenums.h"
 #include "librarybook.h"
+#include "modelenums.h"
+#include "stringutils.h"
 #include "utils.h"
 
 SortFilterProxyModel::SortFilterProxyModel(QObject *parent) : QSortFilterProxyModel(parent)

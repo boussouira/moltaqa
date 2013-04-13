@@ -1,9 +1,9 @@
 #include "bookindexerquran.h"
+#include "bookexception.h"
+#include "clconstants.h"
 #include "clheader.h"
 #include "clutils.h"
 #include "utils.h"
-#include "clconstants.h"
-#include "bookexception.h"
 
 #include <qfile.h>
 #include <qxmlstream.h>

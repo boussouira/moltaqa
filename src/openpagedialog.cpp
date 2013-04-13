@@ -1,7 +1,7 @@
 #include "openpagedialog.h"
 #include "ui_openpagedialog.h"
-#include "mainwindow.h"
 #include "bookreaderhelper.h"
+#include "mainwindow.h"
 
 OpenPageDialog::OpenPageDialog(QWidget *parent) :
     QDialog(parent),

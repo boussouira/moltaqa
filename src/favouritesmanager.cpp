@@ -1,11 +1,12 @@
 #include "favouritesmanager.h"
-#include "mainwindow.h"
+#include "authorsmanager.h"
+#include "librarybook.h"
 #include "libraryinfo.h"
+#include "mainwindow.h"
+#include "modelenums.h"
 #include "utils.h"
 #include "xmlutils.h"
-#include "modelenums.h"
-#include "librarybook.h"
-#include "authorsmanager.h"
+
 #include <qstandarditemmodel.h>
 #include <qxmlstream.h>
 

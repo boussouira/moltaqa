@@ -1,17 +1,17 @@
 #include "bookmediaeditor.h"
 #include "ui_bookmediaeditor.h"
-#include "webview.h"
-#include "utils.h"
-#include "modelutils.h"
-#include "htmlhelper.h"
-#include "webpagenam.h"
 #include "checkablemessagebox.h"
+#include "htmlhelper.h"
+#include "modelutils.h"
+#include "utils.h"
+#include "webpagenam.h"
+#include "webview.h"
 
 #include <bookeditor.h>
 #include <qfiledialog.h>
+#include <qinputdialog.h>
 #include <qmessagebox.h>
 #include <qpushbutton.h>
-#include <qinputdialog.h>
 
 #define IMAGES_PREFIX "images/"
 

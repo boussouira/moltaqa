@@ -5,8 +5,8 @@
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
 
-#include <mdbtools.h>
 #include <glib.h>
+#include <mdbtools.h>
 
 #include <sqlutils.h>
 

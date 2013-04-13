@@ -3,6 +3,7 @@
 
 #include "databasemanager.h"
 #include "qsharedpointer.h"
+
 #include <qhash.h>
 
 class RawiInfo

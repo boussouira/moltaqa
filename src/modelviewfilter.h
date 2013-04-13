@@ -1,8 +1,8 @@
 #ifndef MODELVIEWFILTER_H
 #define MODELVIEWFILTER_H
 
-#include <qobject.h>
 #include <qhash.h>
+#include <qobject.h>
 
 class QActionGroup;
 class QTreeView;

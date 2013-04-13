@@ -1,12 +1,13 @@
 #include "controlcenterdialog.h"
 #include "ui_controlcenterdialog.h"
+#include "authorsmanagerwidget.h"
 #include "booklistmanagerwidget.h"
+#include "favouritesmanagerwidget.h"
 #include "librarybookmanagerwidget.h"
 #include "taffesirlistmanagerwidget.h"
-#include "authorsmanagerwidget.h"
 #include "tarajemrowatmanagerwidget.h"
-#include "favouritesmanagerwidget.h"
 #include "utils.h"
+
 #include <qevent.h>
 
 ControlCenterDialog::ControlCenterDialog(QWidget *parent) :

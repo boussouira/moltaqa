@@ -1,14 +1,14 @@
 #include "clutils.h"
+#include "arabicanalyzer.h"
 #include "clconstants.h"
 #include "clheader.h"
-#include "arabicanalyzer.h"
-#include "cssformatter.h"
 #include "clucenequery.h"
+#include "cssformatter.h"
 #include "stringutils.h"
 #include "utils.h"
 
-#include <stdlib.h>
 #include <qregexp.h>
+#include <stdlib.h>
 
 namespace Utils {
 namespace CLucene {

@@ -1,8 +1,9 @@
 #ifndef BOOKINFODIALOG_H
 #define BOOKINFODIALOG_H
 
-#include <qdialog.h>
 #include "librarybook.h"
+
+#include <qdialog.h>
 
 class WebView;
 class QCloseEvent;

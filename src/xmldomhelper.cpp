@@ -1,6 +1,7 @@
 #include "xmldomhelper.h"
-#include "xmlutils.h"
 #include "utils.h"
+#include "xmlutils.h"
+
 #include <qtextstream.h>
 
 XmlDomHelper::XmlDomHelper() :

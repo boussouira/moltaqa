@@ -1,9 +1,10 @@
 #include "librarybook.h"
 #include "utils.h"
 #include "xmldomhelper.h"
+
+#include <qdom.h>
 #include <qfile.h>
 #include <qstringlist.h>
-#include <qdom.h>
 
 LibraryBookMeta::LibraryBookMeta()
 {

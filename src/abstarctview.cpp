@@ -1,7 +1,8 @@
 #include "abstarctview.h"
-#include "webviewsearcher.h"
 #include "filterlineedit.h"
 #include "utils.h"
+#include "webviewsearcher.h"
+
 #include <qaction.h>
 #include <qtoolbar.h>
 

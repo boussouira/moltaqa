@@ -2,9 +2,10 @@
 #define LIBRARYBOOK_H
 
 #include "bookpage.h"
+
+#include <qdebug.h>
 #include <qhash.h>
 #include <qsharedpointer.h>
-#include <qdebug.h>
 
 class QDomElement;
 class XmlDomHelper;

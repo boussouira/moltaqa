@@ -1,9 +1,9 @@
 #ifndef HTMLHELPER_H
 #define HTMLHELPER_H
 
-#include <qstring.h>
-#include <qstack.h>
 #include <qdir.h>
+#include <qstack.h>
+#include <qstring.h>
 
 class HtmlHelper
 {

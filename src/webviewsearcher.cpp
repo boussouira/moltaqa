@@ -2,8 +2,8 @@
 #include "stringutils.h"
 #include "utils.h"
 
-#include <qwebview.h>
 #include <qwebframe.h>
+#include <qwebview.h>
 
 WebViewSearcher::WebViewSearcher(QWebView *view) :
     m_webView(view),

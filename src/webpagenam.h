@@ -1,8 +1,9 @@
 #ifndef WEBPAGENAM_H
 #define WEBPAGENAM_H
 
-#include <qnetworkreply.h>
 #include "librarybook.h"
+
+#include <qnetworkreply.h>
 
 class BookMediaEditor;
 

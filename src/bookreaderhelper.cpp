@@ -1,11 +1,11 @@
 #include "bookreaderhelper.h"
-#include "utils.h"
 #include "modelutils.h"
+#include "utils.h"
 
 #include <qdir.h>
 #include <qsqlquery.h>
-#include <qvariant.h>
 #include <qstandarditemmodel.h>
+#include <qvariant.h>
 
 BookReaderHelper::BookReaderHelper()
 {

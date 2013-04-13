@@ -1,16 +1,16 @@
 #include "bookindexersimple.h"
-#include "clheader.h"
-#include "clutils.h"
-#include "clconstants.h"
-#include "librarymanager.h"
 #include "authorsmanager.h"
 #include "bookexception.h"
 #include "bookutils.h"
-#include "utils.h"
+#include "clconstants.h"
+#include "clheader.h"
+#include "clutils.h"
 #include "indextracker.h"
+#include "librarymanager.h"
+#include "utils.h"
 
-#include <qxmlstream.h>
 #include <qfile.h>
+#include <qxmlstream.h>
 
 BookIndexerSimple::BookIndexerSimple() :
     m_authorDeath(0),

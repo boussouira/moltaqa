@@ -1,8 +1,8 @@
 #ifndef BOOKSLISTBROWSER_H
 #define BOOKSLISTBROWSER_H
 
-#include <qdialog.h>
 #include <qabstractitemmodel.h>
+#include <qdialog.h>
 
 class BookListManager;
 class LibraryManager;

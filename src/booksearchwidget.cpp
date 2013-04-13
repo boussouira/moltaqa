@@ -1,11 +1,11 @@
 #include "booksearchwidget.h"
-#include "ui_searchwidget.h"
-#include "resultwidget.h"
-#include "mainwindow.h"
 #include "booksearchfilter.h"
 #include "librarybookmanager.h"
 #include "librarymanager.h"
+#include "mainwindow.h"
+#include "resultwidget.h"
 #include "sortfilterproxymodel.h"
+#include "ui_searchwidget.h"
 
 BookSearchWidget::BookSearchWidget(QWidget *parent) :
     SearchWidget(parent)

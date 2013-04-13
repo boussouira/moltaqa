@@ -1,9 +1,10 @@
 #ifndef INDEXMANAGER_H
 #define INDEXMANAGER_H
 
-#include <qobject.h>
-#include <qdatetime.h>
 #include "clheader.h"
+
+#include <qdatetime.h>
+#include <qobject.h>
 
 class BookIndexerThread;
 class LibraryInfo;

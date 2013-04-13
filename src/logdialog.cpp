@@ -3,14 +3,15 @@
 #include "loghighlighter.h"
 #include "utils.h"
 
-#include <qdesktopservices.h>
-#include <qfilesystemwatcher.h>
-#include <qfile.h>
-#include <qtextstream.h>
-#include <qevent.h>
-#include <qdir.h>
-#include <qmessagebox.h>
 #include "checkablemessagebox.h"
+
+#include <qdesktopservices.h>
+#include <qdir.h>
+#include <qevent.h>
+#include <qfile.h>
+#include <qfilesystemwatcher.h>
+#include <qmessagebox.h>
+#include <qtextstream.h>
 
 LogDialog::LogDialog(QWidget *parent) :
     QDialog(parent),

@@ -1,17 +1,17 @@
 #include "authorsmanagerwidget.h"
 #include "ui_authorsmanagerwidget.h"
-#include "librarymanager.h"
 #include "authorsmanager.h"
-#include "modelenums.h"
-#include "utils.h"
-#include "modelutils.h"
-#include "timeutils.h"
 #include "editwebview.h"
+#include "librarymanager.h"
+#include "modelenums.h"
+#include "modelutils.h"
 #include "modelviewfilter.h"
+#include "timeutils.h"
+#include "utils.h"
 
-#include <qstandarditemmodel.h>
 #include <qinputdialog.h>
 #include <qmessagebox.h>
+#include <qstandarditemmodel.h>
 
 AuthorsManagerWidget::AuthorsManagerWidget(QWidget *parent) :
     ControlCenterWidget(parent),

@@ -1,9 +1,10 @@
 #ifndef CONNECTIONINFO_H
 #define CONNECTIONINFO_H
 
-#include <qobject.h>
-#include <qcoreapplication.h>
 #include "librarybook.h"
+
+#include <qcoreapplication.h>
+#include <qobject.h>
 
 class LibraryInfo
 {

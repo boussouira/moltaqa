@@ -1,8 +1,8 @@
 #ifndef LISTMANAGER_H
 #define LISTMANAGER_H
 
-#include <qobject.h>
 #include <qmutex.h>
+#include <qobject.h>
 
 class ListManager : public QObject
 {

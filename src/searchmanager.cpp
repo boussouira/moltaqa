@@ -1,8 +1,9 @@
 #include "searchmanager.h"
-#include "mainwindow.h"
-#include "librarymanager.h"
 #include "libraryinfo.h"
+#include "librarymanager.h"
+#include "mainwindow.h"
 #include "utils.h"
+
 #include <qdir.h>
 #include <qstringlistmodel.h>
 

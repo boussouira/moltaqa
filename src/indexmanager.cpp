@@ -1,21 +1,21 @@
 #include "indexmanager.h"
-#include "mainwindow.h"
 #include "arabicanalyzer.h"
-#include "bookindexer.h"
-#include "utils.h"
-#include "timeutils.h"
-#include "clconstants.h"
-#include "stringutils.h"
 #include "bookexception.h"
-#include "statisticsmanager.h"
+#include "bookindexer.h"
+#include "checkablemessagebox.h"
+#include "clconstants.h"
 #include "indextracker.h"
 #include "libraryinfo.h"
-#include "checkablemessagebox.h"
+#include "mainwindow.h"
+#include "statisticsmanager.h"
+#include "stringutils.h"
+#include "timeutils.h"
+#include "utils.h"
 
 #include <qdir.h>
+#include <qmessagebox.h>
 #include <qthread.h>
 #include <qvariant.h>
-#include <qmessagebox.h>
 
 IndexManager::IndexManager(QObject *parent) :
     QObject(parent),

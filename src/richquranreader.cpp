@@ -1,13 +1,13 @@
 #include "richquranreader.h"
-#include "librarybook.h"
 #include "bookexception.h"
-#include "qurantextformat.h"
+#include "bookreaderhelper.h"
+#include "clutils.h"
+#include "librarybook.h"
 #include "libraryinfo.h"
 #include "mainwindow.h"
-#include "bookreaderhelper.h"
 #include "modelenums.h"
+#include "qurantextformat.h"
 #include "utils.h"
-#include "clutils.h"
 
 RichQuranReader::RichQuranReader(QObject *parent) : RichBookReader(parent)
 {

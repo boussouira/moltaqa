@@ -1,10 +1,11 @@
 #ifndef SEARCHRESULTREADER_H
 #define SEARCHRESULTREADER_H
 
-#include <qobject.h>
-#include <qcache.h>
 #include "librarybook.h"
 #include "xmldomhelper.h"
+
+#include <qcache.h>
+#include <qobject.h>
 
 class QuaZip;
 class BookReaderHelper;

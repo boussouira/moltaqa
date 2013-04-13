@@ -1,9 +1,9 @@
 #ifndef CLUCENEQUERY_H
 #define CLUCENEQUERY_H
 
-#include <qstring.h>
 #include <CLucene/StdHeader.h>
 #include <CLucene/search/BooleanClause.h>
+#include <qstring.h>
 
 namespace lucene {
     namespace search {

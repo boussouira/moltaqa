@@ -1,5 +1,6 @@
 #include "arabictokenizer.h"
 #include "clconstants.h"
+
 #include <qdebug.h>
 
 ArabicTokenizer::ArabicTokenizer(Reader* in) : CharTokenizer(in)

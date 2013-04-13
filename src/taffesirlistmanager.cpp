@@ -1,15 +1,15 @@
 #include "taffesirlistmanager.h"
-#include "mainwindow.h"
 #include "libraryinfo.h"
+#include "mainwindow.h"
 #include "modelenums.h"
-#include "xmlutils.h"
-#include "utils.h"
 #include "shamelaimportinfo.h"
+#include "utils.h"
+#include "xmlutils.h"
 
-#include <qfile.h>
-#include <qxmlstream.h>
 #include <qdir.h>
 #include <qdom.h>
+#include <qfile.h>
+#include <qxmlstream.h>
 
 static TaffesirListManager *m_instance = 0;
 

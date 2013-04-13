@@ -2,6 +2,7 @@
 #define HTMLBOOKEXPORTER_H
 
 #include "bookexporter.h"
+
 #include <qdom.h>
 
 class QDir;

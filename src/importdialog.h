@@ -1,10 +1,10 @@
 #ifndef IMPORTDIALOG_H
 #define IMPORTDIALOG_H
 
-#include <qwizard.h>
-#include <qhash.h>
 #include <qfuturewatcher.h>
+#include <qhash.h>
 #include <qprogressdialog.h>
+#include <qwizard.h>
 
 namespace Ui {
 class ImportDialog;

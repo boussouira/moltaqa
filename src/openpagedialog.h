@@ -1,8 +1,9 @@
 #ifndef OPENPAGEDIALOG_H
 #define OPENPAGEDIALOG_H
 
-#include <qdialog.h>
 #include "librarybook.h"
+
+#include <qdialog.h>
 
 namespace Ui {
     class OpenPageDialog;

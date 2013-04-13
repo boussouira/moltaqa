@@ -1,12 +1,12 @@
 #include "tarajemrowatmanager.h"
-#include "mainwindow.h"
-#include "librarymanager.h"
-#include "libraryinfo.h"
-#include "modelenums.h"
-#include "utils.h"
-#include "timeutils.h"
-#include "stringutils.h"
 #include "authorsmanager.h"
+#include "libraryinfo.h"
+#include "librarymanager.h"
+#include "mainwindow.h"
+#include "modelenums.h"
+#include "stringutils.h"
+#include "timeutils.h"
+#include "utils.h"
 
 #include <qdir.h>
 #include <qstandarditemmodel.h>

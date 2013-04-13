@@ -1,7 +1,7 @@
 #include "xmlutils.h"
 
-#include <qfile.h>
 #include <qdebug.h>
+#include <qfile.h>
 
 namespace Utils {
 namespace Xml {

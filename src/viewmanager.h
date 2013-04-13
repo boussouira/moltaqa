@@ -1,8 +1,8 @@
 #ifndef VIEWMANAGER_H
 #define VIEWMANAGER_H
 
-#include <qstackedwidget.h>
 #include <qset.h>
+#include <qstackedwidget.h>
 
 class MainWindow;
 class AbstarctView;

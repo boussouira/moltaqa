@@ -1,8 +1,9 @@
 #ifndef AUTHORSMANAGERWIDGET_H
 #define AUTHORSMANAGERWIDGET_H
 
-#include "controlcenterwidget.h"
 #include "authorinfo.h"
+#include "controlcenterwidget.h"
+
 #include <qhash.h>
 
 namespace Ui {

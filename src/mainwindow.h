@@ -1,8 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <qmainwindow.h>
 #include "bookslistbrowser.h"
+
+#include <qmainwindow.h>
 
 #define MW MainWindow::instance()
 

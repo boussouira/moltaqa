@@ -1,7 +1,8 @@
 #include "stringutils.h"
 #include "clconstants.h"
-#include <qstringlist.h>
+
 #include <qsharedpointer.h>
+#include <qstringlist.h>
 
 #define _u QString::fromUtf8
 

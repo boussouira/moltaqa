@@ -1,14 +1,15 @@
 #ifndef ZIPHELPER_H
 #define ZIPHELPER_H
 
-#include <qfile.h>
 #include "quazip.h"
 #include "quazipfile.h"
+
+#include <qfile.h>
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
 
-#include "xmldomhelper.h"
 #include "sqlutils.h"
+#include "xmldomhelper.h"
 
 class BookPage;
 

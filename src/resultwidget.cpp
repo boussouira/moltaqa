@@ -1,29 +1,29 @@
 #include "resultwidget.h"
 #include "ui_resultwidget.h"
-#include "utils.h"
-#include "webview.h"
+#include "bookinfodialog.h"
 #include "bookreaderview.h"
-#include "librarybookmanager.h"
 #include "bookwidget.h"
 #include "bookwidgetmanager.h"
-#include "htmlhelper.h"
-#include "bookinfodialog.h"
 #include "clconstants.h"
+#include "clucenequery.h"
+#include "htmlhelper.h"
+#include "librarybookmanager.h"
+#include "librarymanager.h"
+#include "librarysearcher.h"
 #include "mainwindow.h"
 #include "richbookreader.h"
-#include "stringutils.h"
-#include "webpagenam.h"
-#include "librarymanager.h"
 #include "searchresult.h"
-#include "clucenequery.h"
-#include "librarysearcher.h"
+#include "stringutils.h"
+#include "utils.h"
+#include "webpagenam.h"
+#include "webview.h"
 
-#include <qdir.h>
-#include <qplaintextedit.h>
 #include <qboxlayout.h>
-#include <qtoolbutton.h>
+#include <qdir.h>
 #include <qmenu.h>
+#include <qplaintextedit.h>
 #include <qtoolbar.h>
+#include <qtoolbutton.h>
 
 ResultWidget::ResultWidget(QWidget *parent) :
     QWidget(parent),

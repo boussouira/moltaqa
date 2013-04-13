@@ -1,16 +1,16 @@
 #include "indextracker.h"
-#include "mainwindow.h"
 #include "bookexception.h"
 #include "librarybookmanager.h"
-#include "utils.h"
-#include "xmlutils.h"
+#include "librarybookmanager.h"
 #include "libraryinfo.h"
 #include "librarymanager.h"
-#include "librarybookmanager.h"
+#include "mainwindow.h"
+#include "utils.h"
+#include "xmlutils.h"
 
+#include <qdir.h>
 #include <qfile.h>
 #include <qtextstream.h>
-#include <qdir.h>
 
 bool operator ==(const QDomElement &node, IndexTask *task)
 {

@@ -3,6 +3,7 @@
 
 #include "controlcenterwidget.h"
 #include "librarybook.h"
+
 #include <qabstractitemmodel.h>
 
 namespace Ui {

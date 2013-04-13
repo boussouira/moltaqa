@@ -1,9 +1,10 @@
 #ifndef BOOKEDITOR_H
 #define BOOKEDITOR_H
 
-#include <qobject.h>
 #include "librarybook.h"
 #include "ziphelper.h"
+
+#include <qobject.h>
 
 class RichBookReader;
 class QuaZipFile;

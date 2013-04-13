@@ -1,10 +1,10 @@
 #include "indexwidget.h"
 #include "ui_indexwidget.h"
-#include "modelenums.h"
 #include "bookpage.h"
+#include "modelenums.h"
 #include "modelutils.h"
-#include "utils.h"
 #include "modelviewfilter.h"
+#include "utils.h"
 
 #include <qstandarditemmodel.h>
 #include <qtimer.h>

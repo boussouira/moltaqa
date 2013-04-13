@@ -1,21 +1,21 @@
+#include "aboutdialog.h"
 #include "mainwindow.h"
 #include "utils.h"
-#include "aboutdialog.h"
 
 #ifdef USE_MDBTOOLS
 #include "mdbconverter.h"
 #endif
 
-#include <qtsingleapplication.h>
 #include <qapplication.h>
-#include <qtranslator.h>
-#include <qlocale.h>
-#include <qtextcodec.h>
-#include <qsettings.h>
 #include <qdatetime.h>
 #include <qdesktopservices.h>
+#include <qlocale.h>
 #include <qmessagebox.h>
 #include <qmutex.h>
+#include <qsettings.h>
+#include <qtextcodec.h>
+#include <qtranslator.h>
+#include <qtsingleapplication.h>
 
 #ifdef Q_OS_WIN
 #include <Windows.h>

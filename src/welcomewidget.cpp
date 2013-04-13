@@ -1,26 +1,26 @@
 #include "welcomewidget.h"
-#include "librarymanager.h"
-#include "modelenums.h"
-#include "modelutils.h"
-#include "mainwindow.h"
+#include "authorsmanager.h"
 #include "booklistmanager.h"
 #include "favouritesmanager.h"
-#include "modelviewfilter.h"
-#include "librarybookmanager.h"
-#include "utils.h"
 #include "htmlhelper.h"
-#include "authorsmanager.h"
+#include "librarybookmanager.h"
+#include "librarymanager.h"
+#include "mainwindow.h"
+#include "modelenums.h"
+#include "modelutils.h"
+#include "modelviewfilter.h"
 #include "tarajemrowatmanager.h"
-#include "webview.h"
+#include "utils.h"
 #include "webpage.h"
+#include "webview.h"
 
-#include <qsettings.h>
+#include <qboxlayout.h>
 #include <qmenu.h>
+#include <qrunnable.h>
+#include <qsettings.h>
+#include <qtimer.h>
 #include <qurl.h>
 #include <qwebframe.h>
-#include <qrunnable.h>
-#include <qtimer.h>
-#include <qboxlayout.h>
 
 class LibraryInfoThread : public QRunnable {
 public:

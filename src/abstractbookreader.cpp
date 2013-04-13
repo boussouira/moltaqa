@@ -1,15 +1,15 @@
 #include "abstractbookreader.h"
-#include "libraryinfo.h"
-#include "librarybook.h"
 #include "bookexception.h"
+#include "bookreaderhelper.h"
+#include "clucenequery.h"
+#include "clutils.h"
+#include "librarybook.h"
+#include "libraryinfo.h"
 #include "librarymanager.h"
+#include "mainwindow.h"
 #include "textformatter.h"
 #include "utils.h"
-#include "mainwindow.h"
-#include "bookreaderhelper.h"
 #include "xmlutils.h"
-#include "clutils.h"
-#include "clucenequery.h"
 
 #include <qstandarditemmodel.h>
 #include <qstringlistmodel.h>

@@ -1,8 +1,9 @@
 #ifndef BOOKWIDGETMANAGER_H
 #define BOOKWIDGETMANAGER_H
 
-#include <qwidget.h>
 #include "librarybook.h"
+
+#include <qwidget.h>
 
 class BookViewBase;
 class LibraryManager;

@@ -1,7 +1,8 @@
 #include "updatechecker.h"
 #include "utils.h"
-#include <qmessagebox.h>
+
 #include <qdom.h>
+#include <qmessagebox.h>
 
 UpdateChecker::UpdateChecker(QObject *parent) :
     QObject(parent)

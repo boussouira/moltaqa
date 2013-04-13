@@ -1,8 +1,9 @@
 #ifndef SHAMELAIMPORTTHREAD_H
 #define SHAMELAIMPORTTHREAD_H
 
-#include <qthread.h>
 #include "librarycreator.h"
+
+#include <qthread.h>
 
 class ShamelaInfo;
 class ShamelaManager;

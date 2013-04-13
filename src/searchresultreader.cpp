@@ -2,11 +2,12 @@
 #include "abstractbookreader.h"
 #include "bookreaderhelper.h"
 #include "mainwindow.h"
-#include "utils.h"
-#include <qfile.h>
 #include "quazip.h"
-#include <qxmlstream.h>
+#include "utils.h"
+
+#include <qfile.h>
 #include <qstack.h>
+#include <qxmlstream.h>
 
 SearchResultReader::SearchResultReader(QObject *parent) :
     QObject(parent)

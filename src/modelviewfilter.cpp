@@ -1,16 +1,16 @@
 #include "modelviewfilter.h"
+#include "filterlineedit.h"
+#include "sortfilterproxymodel.h"
 #include "stringutils.h"
 #include "utils.h"
-#include "sortfilterproxymodel.h"
-#include "filterlineedit.h"
 
+#include <qaction.h>
+#include <qevent.h>
+#include <qheaderview.h>
+#include <qicon.h>
+#include <qmenu.h>
 #include <qstandarditemmodel.h>
 #include <qtreeview.h>
-#include <qicon.h>
-#include <qheaderview.h>
-#include <qevent.h>
-#include <qaction.h>
-#include <qmenu.h>
 
 Q_DECLARE_METATYPE(FilterInfo)
 

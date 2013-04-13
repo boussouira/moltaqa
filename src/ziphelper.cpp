@@ -1,10 +1,10 @@
 #include "ziphelper.h"
 #include "JlCompress.h"
-#include "mainwindow.h"
 #include "libraryinfo.h"
+#include "librarymanager.h"
+#include "mainwindow.h"
 #include "utils.h"
 #include "ziputils.h"
-#include "librarymanager.h"
 
 /* Simple zip writer */
 

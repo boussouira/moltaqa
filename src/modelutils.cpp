@@ -2,9 +2,9 @@
 #include "modelenums.h"
 #include "utils.h"
 
-#include <qtreeview.h>
 #include <qabstractbutton.h>
 #include <qmessagebox.h>
+#include <qtreeview.h>
 
 namespace Utils {
 namespace Model {

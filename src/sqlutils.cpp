@@ -1,8 +1,9 @@
 #include "sqlutils.h"
 #include "utils.h"
+
 #include <qsqldatabase.h>
-#include <qsqlquery.h>
 #include <qsqlerror.h>
+#include <qsqlquery.h>
 
 namespace Utils {
 namespace Sql {

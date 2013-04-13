@@ -1,24 +1,24 @@
 #include "htmlbookexporter.h"
-#include "utils.h"
-#include "librarymanager.h"
 #include "authorsmanager.h"
-#include "librarybookmanager.h"
-#include "richsimplebookreader.h"
-#include "richquranreader.h"
-#include "richtafessirreader.h"
+#include "bookfilesreader.h"
 #include "bookreaderhelper.h"
+#include "bookutils.h"
 #include "htmlhelper.h"
-#include "ziphelper.h"
+#include "librarybookmanager.h"
+#include "librarymanager.h"
+#include "mainwindow.h"
+#include "qurantextformat.h"
+#include "richquranreader.h"
+#include "richsimplebookreader.h"
+#include "richtafessirreader.h"
+#include "stringutils.h"
+#include "utils.h"
 #include "xmldomhelper.h"
 #include "xmlutils.h"
-#include "stringutils.h"
-#include "mainwindow.h"
-#include "bookutils.h"
-#include "bookfilesreader.h"
-#include "qurantextformat.h"
+#include "ziphelper.h"
 
-#include <qtextstream.h>
 #include <qsettings.h>
+#include <qtextstream.h>
 
 #define IMAGES_PREFIX "images/"
 #define IMAGES_PREFIX_size 7

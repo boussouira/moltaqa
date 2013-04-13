@@ -1,28 +1,28 @@
 #include "librarymanager.h"
-#include "libraryinfo.h"
-#include "librarybook.h"
-#include "bookexception.h"
-#include "importmodel.h"
-#include "utils.h"
-#include "searchresult.h"
-#include "xmlutils.h"
-#include "librarybookmanager.h"
-#include "taffesirlistmanager.h"
-#include "booklistmanager.h"
 #include "authorsmanager.h"
 #include "bookeditor.h"
-#include "tarajemrowatmanager.h"
+#include "bookexception.h"
+#include "booklistmanager.h"
 #include "favouritesmanager.h"
-#include "searchmanager.h"
+#include "importmodel.h"
 #include "indextracker.h"
+#include "librarybook.h"
+#include "librarybookmanager.h"
+#include "libraryinfo.h"
+#include "searchmanager.h"
+#include "searchresult.h"
 #include "statisticsmanager.h"
+#include "taffesirlistmanager.h"
+#include "tarajemrowatmanager.h"
+#include "utils.h"
+#include "xmlutils.h"
 
-#include <qsqlquery.h>
-#include <qfile.h>
-#include <qdir.h>
-#include <qsqlerror.h>
-#include <qdatetime.h>
 #include <qaction.h>
+#include <qdatetime.h>
+#include <qdir.h>
+#include <qfile.h>
+#include <qsqlerror.h>
+#include <qsqlquery.h>
 
 static LibraryManager *m_instance = 0;
 

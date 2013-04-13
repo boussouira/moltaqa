@@ -1,11 +1,11 @@
 #include "filechooserwidget.h"
 #include "utils.h"
 
-#include <qlineedit.h>
-#include <qlabel.h>
 #include <qboxlayout.h>
-#include <qtoolbutton.h>
 #include <qfiledialog.h>
+#include <qlabel.h>
+#include <qlineedit.h>
+#include <qtoolbutton.h>
 
 FileChooserWidget::FileChooserWidget(QWidget *parent) :
     QWidget(parent)

@@ -1,19 +1,18 @@
 #include "bookeditor.h"
-#include "richbookreader.h"
-#include "librarybook.h"
+#include "bookexception.h"
 #include "bookpage.h"
-#include "utils.h"
-#include "mainwindow.h"
+#include "librarybook.h"
+#include "librarybookmanager.h"
 #include "libraryinfo.h"
 #include "librarymanager.h"
-#include "librarybookmanager.h"
-
+#include "mainwindow.h"
 #include "quazip.h"
 #include "quazipfile.h"
+#include "richbookreader.h"
 #include "richquranreader.h"
 #include "richsimplebookreader.h"
 #include "richtafessirreader.h"
-#include "bookexception.h"
+#include "utils.h"
 
 BookEditor::BookEditor(QObject *parent) :
     QObject(parent)

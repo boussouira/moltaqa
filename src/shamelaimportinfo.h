@@ -1,10 +1,11 @@
 #ifndef SHAMELAIMPORTINFO_H
 #define SHAMELAIMPORTINFO_H
 
-#include <qobject.h>
-#include "stringutils.h"
-#include "shamelainfo.h"
 #include "authorsmanager.h"
+#include "shamelainfo.h"
+#include "stringutils.h"
+
+#include <qobject.h>
 
 class ShamelaCategorieInfo
 {

@@ -1,10 +1,10 @@
 #ifndef BOOKSEARCHFILTER_H
 #define BOOKSEARCHFILTER_H
 
-#include "searchfiltermanager.h"
 #include "librarybook.h"
 #include "quazip.h"
 #include "quazipfile.h"
+#include "searchfiltermanager.h"
 
 #include <qdom.h>
 #include <qfile.h>

@@ -1,15 +1,16 @@
 #ifndef LIBRARYMANAGER_H
 #define LIBRARYMANAGER_H
 
-#include <qcoreapplication.h>
-#include <qhash.h>
-#include <qtconcurrentrun.h>
-#include <qfuture.h>
-#include <qfuturewatcher.h>
-#include <qstandarditemmodel.h>
-#include <qdatetime.h>
 #include "databasemanager.h"
 #include "librarybook.h"
+
+#include <qcoreapplication.h>
+#include <qdatetime.h>
+#include <qfuture.h>
+#include <qfuturewatcher.h>
+#include <qhash.h>
+#include <qstandarditemmodel.h>
+#include <qtconcurrentrun.h>
 
 class QDomElement;
 class LibraryInfo;

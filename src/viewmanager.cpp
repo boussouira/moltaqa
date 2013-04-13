@@ -1,12 +1,12 @@
 #include "viewmanager.h"
-#include "mainwindow.h"
 #include "abstarctview.h"
-#include "windowsview.h"
+#include "mainwindow.h"
 #include "utils.h"
+#include "windowsview.h"
 
-#include <qmenu.h>
 #include <qapplication.h>
 #include <qclipboard.h>
+#include <qmenu.h>
 #include <qstatusbar.h>
 
 ViewManager::ViewManager(QWidget *parent) :

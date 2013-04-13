@@ -1,9 +1,10 @@
 #ifndef BOOKSEARCHWIDGET_H
 #define BOOKSEARCHWIDGET_H
 
-#include "searchwidget.h"
 #include "librarybook.h"
+#include "searchwidget.h"
 #include "utils.h"
+
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
 

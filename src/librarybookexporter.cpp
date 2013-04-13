@@ -1,10 +1,10 @@
 #include "librarybookexporter.h"
-#include "utils.h"
-#include "librarymanager.h"
+#include "authorsmanager.h"
 #include "booklistmanager.h"
 #include "libraryinfo.h"
+#include "librarymanager.h"
+#include "utils.h"
 #include "ziphelper.h"
-#include "authorsmanager.h"
 
 LibraryBookExporter::LibraryBookExporter(QObject *parent) :
     BookExporter(parent)

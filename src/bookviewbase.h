@@ -1,8 +1,9 @@
 #ifndef BOOKVIEWBASE_H
 #define BOOKVIEWBASE_H
 
-#include <qwidget.h>
 #include "librarybook.h"
+
+#include <qwidget.h>
 
 class AbstractBookReader;
 class WebViewSearcher;

@@ -1,14 +1,14 @@
 #include "authorsview.h"
 #include "ui_authorsview.h"
 #include "authorsmanager.h"
+#include "htmlhelper.h"
 #include "librarybookmanager.h"
 #include "librarymanager.h"
-#include "modelviewfilter.h"
 #include "modelenums.h"
-#include "utils.h"
+#include "modelviewfilter.h"
 #include "stringutils.h"
+#include "utils.h"
 #include "webview.h"
-#include "htmlhelper.h"
 
 static AuthorsView *m_instance = 0;
 

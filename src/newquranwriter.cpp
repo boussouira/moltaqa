@@ -1,11 +1,12 @@
 #include "newquranwriter.h"
 #include "bookexception.h"
-#include "utils.h"
-#include "mainwindow.h"
-#include "libraryinfo.h"
 #include "librarybook.h"
-#include <qdir.h>
+#include "libraryinfo.h"
+#include "mainwindow.h"
+#include "utils.h"
+
 #include <qdatetime.h>
+#include <qdir.h>
 
 newQuranWriter::newQuranWriter()
 {

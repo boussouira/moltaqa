@@ -1,11 +1,11 @@
 #include "shamelaimportthread.h"
-#include "shamelainfo.h"
-#include "shamelamanager.h"
+#include "bookexception.h"
 #include "librarycreator.h"
 #include "shamelaimportdialog.h"
 #include "shamelaimportinfo.h"
+#include "shamelainfo.h"
+#include "shamelamanager.h"
 #include "utils.h"
-#include "bookexception.h"
 
 ShamelaImportThread::ShamelaImportThread(QObject *parent) :
     QThread(parent)

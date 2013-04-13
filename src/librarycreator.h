@@ -2,8 +2,8 @@
 #define LIBRARYCREATOR_H
 
 #include <qcoreapplication.h>
-#include <qmutex.h>
 #include <qhash.h>
+#include <qmutex.h>
 
 class LibraryInfo;
 class ShamelaManager;

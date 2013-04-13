@@ -1,19 +1,19 @@
 #include "librarysearchfilter.h"
-#include "mainwindow.h"
-#include "utils.h"
-#include "modelenums.h"
-#include "modelutils.h"
-#include "clheader.h"
+#include "booklistmanager.h"
 #include "clconstants.h"
+#include "clheader.h"
+#include "clucenequery.h"
 #include "clutils.h"
 #include "libraryenums.h"
 #include "librarymanager.h"
-#include "booklistmanager.h"
-#include "clucenequery.h"
+#include "mainwindow.h"
+#include "modelenums.h"
+#include "modelutils.h"
+#include "utils.h"
 
-#include <qsqlquery.h>
-#include <qitemselectionmodel.h>
 #include <qdatetime.h>
+#include <qitemselectionmodel.h>
+#include <qsqlquery.h>
 
 LibrarySearchFilter::LibrarySearchFilter(QObject *parent) :
     SearchFilterManager(parent)

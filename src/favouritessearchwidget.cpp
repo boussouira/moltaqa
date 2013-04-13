@@ -1,9 +1,9 @@
 #include "favouritessearchwidget.h"
-#include "ui_searchwidget.h"
 #include "favouritessearchfilter.h"
-#include "utils.h"
 #include "resultwidget.h"
 #include "sortfilterproxymodel.h"
+#include "ui_searchwidget.h"
+#include "utils.h"
 
 FavouritesSearchWidget::FavouritesSearchWidget(QWidget *parent) :
     SearchWidget(parent)

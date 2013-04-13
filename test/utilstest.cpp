@@ -1,8 +1,9 @@
 #include "utilstest.h"
 #include "utils.h"
-#include "stringutils.h"
-#include "sqlutils.h"
 #include "bookutils.h"
+#include "sqlutils.h"
+#include "stringutils.h"
+
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
 

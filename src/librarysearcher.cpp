@@ -1,22 +1,22 @@
 #include "librarysearcher.h"
-#include "mainwindow.h"
-#include "clutils.h"
-#include "clconstants.h"
-#include "librarybook.h"
-#include "utils.h"
-#include "stringutils.h"
 #include "abstractbookreader.h"
-#include "librarybookmanager.h"
-#include "searchresultreader.h"
-#include "librarymanager.h"
-#include "libraryinfo.h"
+#include "clconstants.h"
 #include "clucenequery.h"
+#include "clutils.h"
+#include "librarybook.h"
+#include "librarybookmanager.h"
+#include "libraryinfo.h"
+#include "librarymanager.h"
+#include "mainwindow.h"
 #include "searchresult.h"
+#include "searchresultreader.h"
+#include "stringutils.h"
+#include "utils.h"
 
 #include <qdatetime.h>
+#include <qfuture.h>
 #include <qsqlquery.h>
 #include <qtconcurrentmap.h>
-#include <qfuture.h>
 
 LibrarySearcher::LibrarySearcher(QObject *parent)
     : QThread(parent),

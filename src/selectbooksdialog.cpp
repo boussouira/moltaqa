@@ -1,14 +1,14 @@
 #include "selectbooksdialog.h"
 #include "ui_selectbooksdialog.h"
 #include "librarymanager.h"
-#include "modelviewfilter.h"
 #include "modelenums.h"
 #include "modelutils.h"
-#include "utils.h"
+#include "modelviewfilter.h"
 #include "sortfilterproxymodel.h"
+#include "utils.h"
 
-#include <qstandarditemmodel.h>
 #include <qmessagebox.h>
+#include <qstandarditemmodel.h>
 
 selectBooksDialog::selectBooksDialog(QWidget *parent) :
     QDialog(parent),

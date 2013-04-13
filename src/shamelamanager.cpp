@@ -1,24 +1,24 @@
 #include "shamelamanager.h"
-#include "utils.h"
-#include "modelenums.h"
 #include "bookeditor.h"
-#include "mainwindow.h"
-#include "librarymanager.h"
-#include "librarybookmanager.h"
 #include "librarybook.h"
+#include "librarybookmanager.h"
+#include "librarymanager.h"
+#include "mainwindow.h"
+#include "modelenums.h"
 #include "shamelaimportdialog.h"
+#include "shamelaimportinfo.h"
 #include "shamelainfo.h"
 #include "shamelamapper.h"
-#include "shamelaimportinfo.h"
+#include "utils.h"
 
 #ifdef USE_MDBTOOLS
 #include"mdbconverter.h"
 #endif
 
-#include <qvariant.h>
-#include <qsqlquery.h>
 #include <qsqlerror.h>
+#include <qsqlquery.h>
 #include <qstandarditemmodel.h>
+#include <qvariant.h>
 
 ShamelaManager::ShamelaManager(ShamelaInfo *info) :
      m_info(info),

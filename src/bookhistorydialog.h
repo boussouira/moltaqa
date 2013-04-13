@@ -1,9 +1,10 @@
 #ifndef BOOKHISTORYDIALOG_H
 #define BOOKHISTORYDIALOG_H
 
-#include <qdialog.h>
 #include "librarybook.h"
 #include "librarybookmanager.h"
+
+#include <qdialog.h>
 
 namespace Ui {
 class BookHistoryDialog;

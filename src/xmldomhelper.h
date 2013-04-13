@@ -1,8 +1,8 @@
 #ifndef XMLDOMHELPER_H
 #define XMLDOMHELPER_H
 
-#include <qfile.h>
 #include <qdom.h>
+#include <qfile.h>
 #include <qsharedpointer.h>
 
 class XmlDomHelper

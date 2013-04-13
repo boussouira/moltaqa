@@ -1,19 +1,19 @@
 #include "searchquerywidget.h"
 #include "ui_searchquerywidget.h"
-#include "clheader.h"
-#include "clutils.h"
-#include "clconstants.h"
 #include "arabicanalyzer.h"
+#include "clconstants.h"
+#include "clheader.h"
 #include "clucenequery.h"
-#include "utils.h"
+#include "clutils.h"
 #include "librarymanager.h"
 #include "searchmanager.h"
+#include "utils.h"
 
+#include <qcompleter.h>
+#include <qmenu.h>
 #include <qmessagebox.h>
 #include <qsettings.h>
 #include <qstringlistmodel.h>
-#include <qcompleter.h>
-#include <qmenu.h>
 
 SearchQueryWidget::SearchQueryWidget(QWidget *parent) :
     QWidget(parent),

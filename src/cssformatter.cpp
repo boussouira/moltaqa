@@ -1,5 +1,6 @@
 #include "cssformatter.h"
 #include "clutils.h"
+
 #include <qregexp.h>
 
 CssFormatter::CssFormatter()

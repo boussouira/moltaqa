@@ -1,16 +1,16 @@
 #include "richbookreader.h"
-#include "textformatter.h"
-#include "librarybook.h"
 #include "bookpage.h"
-#include "utils.h"
+#include "bookutils.h"
 #include "clutils.h"
-#include "librarymanager.h"
+#include "librarybook.h"
 #include "librarybookmanager.h"
 #include "libraryinfo.h"
+#include "librarymanager.h"
 #include "modelenums.h"
-#include "xmlutils.h"
 #include "stringutils.h"
-#include "bookutils.h"
+#include "textformatter.h"
+#include "utils.h"
+#include "xmlutils.h"
 
 #include <qstandarditemmodel.h>
 #include <qxmlstream.h>

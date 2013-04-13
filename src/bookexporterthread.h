@@ -1,9 +1,10 @@
 #ifndef BOOKEXPORTERTHREAD_H
 #define BOOKEXPORTERTHREAD_H
 
-#include <qthread.h>
-#include "librarybook.h"
 #include "exportformats.h"
+#include "librarybook.h"
+
+#include <qthread.h>
 
 class BookExporter;
 

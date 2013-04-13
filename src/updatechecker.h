@@ -1,8 +1,8 @@
 #ifndef UPDATECHECKER_H
 #define UPDATECHECKER_H
 
-#include <qobject.h>
 #include <qnetworkreply.h>
+#include <qobject.h>
 
 class UpdateInfo {
 public:

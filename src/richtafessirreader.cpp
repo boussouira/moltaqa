@@ -1,19 +1,19 @@
 #include "richtafessirreader.h"
-#include "tafessirtextformat.h"
-#include "librarybook.h"
-#include "libraryinfo.h"
 #include "bookexception.h"
-#include "mainwindow.h"
 #include "bookreaderhelper.h"
-#include "xmlutils.h"
-#include "librarymanager.h"
-#include "librarybookmanager.h"
-#include "utils.h"
-#include "stringutils.h"
 #include "bookutils.h"
+#include "librarybook.h"
+#include "librarybookmanager.h"
+#include "libraryinfo.h"
+#include "librarymanager.h"
+#include "mainwindow.h"
+#include "stringutils.h"
+#include "tafessirtextformat.h"
+#include "utils.h"
+#include "xmlutils.h"
 
-#include <qstringlist.h>
 #include <qdatetime.h>
+#include <qstringlist.h>
 
 RichTafessirReader::RichTafessirReader(QObject *parent) : RichBookReader(parent)
 {

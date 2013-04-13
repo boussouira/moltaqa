@@ -1,17 +1,17 @@
 #include "fancylineedit.h"
 
-#include <QEvent>
-#include <QDebug>
-#include <QString>
-#include <QPropertyAnimation>
+#include <QAbstractButton>
 #include <QApplication>
+#include <QDebug>
+#include <QEvent>
+#include <QLabel>
 #include <QMenu>
 #include <QMouseEvent>
-#include <QLabel>
-#include <QAbstractButton>
-#include <QPainter>
-#include <QStyle>
 #include <QPaintEvent>
+#include <QPainter>
+#include <QPropertyAnimation>
+#include <QString>
+#include <QStyle>
 
 /*!
     \class FancyLineEdit

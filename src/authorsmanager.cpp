@@ -1,13 +1,14 @@
 #include "authorsmanager.h"
-#include "mainwindow.h"
 #include "libraryinfo.h"
-#include "utils.h"
+#include "mainwindow.h"
 #include "modelenums.h"
-#include "xmlutils.h"
-#include "timeutils.h"
 #include "stringutils.h"
-#include <qstandarditemmodel.h>
+#include "timeutils.h"
+#include "utils.h"
+#include "xmlutils.h"
+
 #include <qdir.h>
+#include <qstandarditemmodel.h>
 
 AuthorsManager::AuthorsManager(QObject *parent) :
     DatabaseManager(parent)

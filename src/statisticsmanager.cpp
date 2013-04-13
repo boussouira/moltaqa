@@ -1,22 +1,22 @@
 #include "statisticsmanager.h"
+#include "authorsmanager.h"
 #include "booklistmanager.h"
-#include "mainwindow.h"
-#include "librarymanager.h"
-#include "libraryinfo.h"
 #include "librarybook.h"
+#include "librarybookmanager.h"
+#include "libraryinfo.h"
+#include "librarymanager.h"
+#include "mainwindow.h"
+#include "modelenums.h"
+#include "stringutils.h"
+#include "timeutils.h"
+#include "uploader.h"
 #include "utils.h"
 #include "xmlutils.h"
-#include "timeutils.h"
-#include "stringutils.h"
-#include "modelenums.h"
-#include "authorsmanager.h"
-#include "librarybookmanager.h"
-#include "uploader.h"
 
 #include <qdir.h>
 #include <qstandarditemmodel.h>
-#include <qxmlstream.h>
 #include <qtimer.h>
+#include <qxmlstream.h>
 
 #define UPLOAD_URL "http://localhost/moltaqa-lib/statistics/upload_file/{OS}"
 static StatisticsManager *m_instance = 0;

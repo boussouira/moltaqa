@@ -1,5 +1,6 @@
 #include "databasemanager.h"
 #include "utils.h"
+
 #include <qsqlerror.h>
 
 DatabaseManager::DatabaseManager(QObject *parent) :

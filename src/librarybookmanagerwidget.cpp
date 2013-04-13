@@ -1,29 +1,28 @@
 #include "librarybookmanagerwidget.h"
 #include "ui_librarybookmanagerwidget.h"
-#include "librarymanager.h"
-#include "librarybook.h"
-#include "selectauthordialog.h"
-#include "librarybookmanager.h"
-#include "modelenums.h"
-#include "utils.h"
+#include "authorsmanager.h"
+#include "booklistmanager.h"
+#include "bookreaderview.h"
+#include "bookwidgetmanager.h"
+#include "checkablemessagebox.h"
 #include "editwebview.h"
+#include "librarybookmanager.h"
+#include "librarymanager.h"
+#include "mainwindow.h"
+#include "modelenums.h"
 #include "modelutils.h"
 #include "modelviewfilter.h"
 #include "newbookwriter.h"
-#include "mainwindow.h"
-#include "booklistmanager.h"
-#include "bookreaderview.h"
-#include "authorsmanager.h"
-#include "bookwidgetmanager.h"
+#include "selectauthordialog.h"
 #include "sortfilterproxymodel.h"
-#include "checkablemessagebox.h"
+#include "utils.h"
 
-#include <qlineedit.h>
-#include <qtextedit.h>
-#include <qmessagebox.h>
-#include <qinputdialog.h>
-#include <qboxlayout.h>
 #include <indextracker.h>
+#include <qboxlayout.h>
+#include <qinputdialog.h>
+#include <qlineedit.h>
+#include <qmessagebox.h>
+#include <qtextedit.h>
 #include <qtoolbar.h>
 
 LibraryBookManagerWidget::LibraryBookManagerWidget(QWidget *parent) :

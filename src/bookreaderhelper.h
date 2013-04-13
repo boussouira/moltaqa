@@ -1,10 +1,10 @@
 #ifndef BOOKREADERHELPER_H
 #define BOOKREADERHELPER_H
 
-#include <qsqldatabase.h>
+#include <qcache.h>
 #include <qhash.h>
 #include <qset.h>
-#include <qcache.h>
+#include <qsqldatabase.h>
 #include <qstack.h>
 
 #include "sqlutils.h"

@@ -1,8 +1,9 @@
 #ifndef AUTHORSMANAGER_H
 #define AUTHORSMANAGER_H
 
-#include "databasemanager.h"
 #include "authorinfo.h"
+#include "databasemanager.h"
+
 #include <qhash.h>
 
 class AuthorsManager : public DatabaseManager

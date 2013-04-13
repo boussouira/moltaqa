@@ -1,13 +1,14 @@
 #include "importdelegates.h"
 #include "importmodel.h"
-#include "selectcatdialog.h"
-#include "selectauthordialog.h"
-#include "shamelamanager.h"
 #include "modelenums.h"
+#include "selectauthordialog.h"
+#include "selectcatdialog.h"
+#include "shamelamanager.h"
 
-#include "shamelainfo.h"
 #include "shamelaimportinfo.h"
+#include "shamelainfo.h"
 #include "shamelamapper.h"
+
 #include <qstandarditemmodel.h>
 
 #include <qcombobox.h>

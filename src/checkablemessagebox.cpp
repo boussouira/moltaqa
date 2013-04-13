@@ -1,10 +1,10 @@
 #include "checkablemessagebox.h"
 #include "utils.h"
 
-#include <qpushbutton.h>
-#include <qcheckbox.h>
 #include <qboxlayout.h>
+#include <qcheckbox.h>
 #include <qlabel.h>
+#include <qpushbutton.h>
 
 class CheckableMessageBoxPrivate
 {

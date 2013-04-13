@@ -1,17 +1,17 @@
 #ifndef ABSTRACTBOOKREADER_H
 #define ABSTRACTBOOKREADER_H
 
-#include <qobject.h>
 #include <qcoreapplication.h>
-#include <qfile.h>
 #include <qdom.h>
+#include <qfile.h>
+#include <qobject.h>
 
 #include "librarybook.h"
+#include "quazip.h"
+#include "quazipfile.h"
 #include "sqlutils.h"
 #include "xmldomhelper.h"
 #include "zipopener.h"
-#include "quazip.h"
-#include "quazipfile.h"
 
 class LibraryInfo;
 class BookPage;

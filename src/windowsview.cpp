@@ -3,8 +3,8 @@
 #include "modelutils.h"
 
 #include <qboxlayout.h>
-#include <qlistwidget.h>
 #include <qlabel.h>
+#include <qlistwidget.h>
 
 WindowsView::WindowsView(QWidget *parent) :
     QDialog(parent)

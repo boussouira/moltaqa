@@ -1,9 +1,9 @@
 #include "bookhistorydialog.h"
 #include "ui_bookhistorydialog.h"
-#include "librarymanager.h"
-#include "utils.h"
-#include "modelenums.h"
 #include "checkablemessagebox.h"
+#include "librarymanager.h"
+#include "modelenums.h"
+#include "utils.h"
 
 #include <qmessagebox.h>
 

@@ -2,9 +2,9 @@
 #define EDITBOOKSLISTWIDGET_H
 
 #include "controlcenterwidget.h"
-#include "librarybook.h"
-#include <qhash.h>
+
 #include <qabstractitemmodel.h>
+#include <qhash.h>
 
 namespace Ui {
     class LibraryBookManagerWidget;

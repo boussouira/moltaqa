@@ -1,9 +1,9 @@
 #include "favouritessearchfilter.h"
-#include "librarymanager.h"
-#include "favouritesmanager.h"
 #include "booklistmanager.h"
-#include "utils.h"
+#include "favouritesmanager.h"
+#include "librarymanager.h"
 #include "modelutils.h"
+#include "utils.h"
 
 FavouritesSearchFilter::FavouritesSearchFilter(QObject *parent) :
     LibrarySearchFilter(parent)

@@ -1,11 +1,12 @@
 #ifndef INDEXTRACKER_H
 #define INDEXTRACKER_H
 
-#include <qobject.h>
-#include <qrunnable.h>
-#include <qdom.h>
 #include "indextaskiter.h"
 #include "xmldomhelper.h"
+
+#include <qdom.h>
+#include <qobject.h>
+#include <qrunnable.h>
 
 class LibraryInfo;
 class LibraryManager;

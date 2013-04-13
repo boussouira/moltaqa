@@ -1,18 +1,18 @@
 #include "librarysearchwidget.h"
-#include "ui_searchwidget.h"
-#include "resultwidget.h"
+#include "arabicanalyzer.h"
+#include "clconstants.h"
 #include "clheader.h"
 #include "clutils.h"
-#include "utils.h"
-#include "clconstants.h"
-#include "arabicanalyzer.h"
-#include "searchfiltermanager.h"
-#include "librarysearchfilter.h"
 #include "librarysearcher.h"
+#include "librarysearchfilter.h"
+#include "resultwidget.h"
+#include "searchfiltermanager.h"
 #include "sortfilterproxymodel.h"
+#include "ui_searchwidget.h"
+#include "utils.h"
 
-#include <qtreeview.h>
 #include <qmessagebox.h>
+#include <qtreeview.h>
 
 LibrarySearchWidget::LibrarySearchWidget(QWidget *parent) :
     SearchWidget(parent)

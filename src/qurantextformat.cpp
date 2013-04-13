@@ -1,11 +1,12 @@
 #include "qurantextformat.h"
-#include "utils.h"
 #include "stringutils.h"
-#include <qsettings.h>
-#include <qfontmetrics.h>
+#include "utils.h"
+
 #include <qbuffer.h>
+#include <qfontmetrics.h>
 #include <qimage.h>
 #include <qpainter.h>
+#include <qsettings.h>
 
 QString ayaImagePath;
 

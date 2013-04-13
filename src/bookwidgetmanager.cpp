@@ -1,32 +1,32 @@
 #include "bookwidgetmanager.h"
-#include "tabwidget.h"
-#include "indexwidget.h"
-#include "bookslistbrowser.h"
-#include "richsimplebookreader.h"
-#include "richquranreader.h"
-#include "richtafessirreader.h"
-#include "librarymanager.h"
-#include "bookwidget.h"
 #include "bookexception.h"
-#include "openpagedialog.h"
-#include "mainwindow.h"
-#include "utils.h"
-#include "favouritesmanager.h"
-#include "bookinfodialog.h"
 #include "bookhistorydialog.h"
+#include "bookinfodialog.h"
+#include "bookslistbrowser.h"
+#include "bookviewbase.h"
+#include "favouritesmanager.h"
+#include "indexwidget.h"
+#include "librarymanager.h"
+#include "mainwindow.h"
+#include "openpagedialog.h"
+#include "richquranreader.h"
+#include "richsimplebookreader.h"
+#include "richtafessirreader.h"
+#include "tabwidget.h"
+#include "utils.h"
 
-#include <qmainwindow.h>
-#include <qmenubar.h>
-#include <qmenu.h>
 #include <qaction.h>
-#include <qtoolbar.h>
-#include <qcombobox.h>
-#include <qsplitter.h>
-#include <qboxlayout.h>
-#include <qmessagebox.h>
 #include <qapplication.h>
+#include <qboxlayout.h>
 #include <qclipboard.h>
+#include <qcombobox.h>
+#include <qmainwindow.h>
+#include <qmenu.h>
+#include <qmenubar.h>
+#include <qmessagebox.h>
+#include <qsplitter.h>
 #include <qstatusbar.h>
+#include <qtoolbar.h>
 
 BookWidgetManager::BookWidgetManager(QWidget *parent) :
     QWidget(parent)

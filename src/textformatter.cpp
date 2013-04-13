@@ -1,10 +1,11 @@
 #include "textformatter.h"
-#include "utils.h"
-#include "librarybook.h"
 #include "bookpage.h"
-#include <qurl.h>
+#include "librarybook.h"
+#include "utils.h"
+
 #include <qapplication.h>
 #include <qdir.h>
+#include <qurl.h>
 
 TextFormatter::TextFormatter(QObject *parent): QObject(parent)
 {

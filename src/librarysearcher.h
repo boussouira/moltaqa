@@ -1,9 +1,10 @@
 #ifndef LIBRARYSEARCHER_H
 #define LIBRARYSEARCHER_H
 
-#include <qthread.h>
-#include <qcache.h>
 #include "clheader.h"
+
+#include <qcache.h>
+#include <qthread.h>
 
 class LibraryInfo;
 class LibraryManager;

@@ -1,20 +1,20 @@
 #include "booklistmanager.h"
-#include "mainwindow.h"
-#include "librarymanager.h"
-#include "libraryinfo.h"
+#include "authorsmanager.h"
 #include "librarybook.h"
+#include "librarybookmanager.h"
+#include "libraryinfo.h"
+#include "librarymanager.h"
+#include "mainwindow.h"
+#include "modelenums.h"
+#include "stringutils.h"
+#include "timeutils.h"
 #include "utils.h"
 #include "xmlutils.h"
-#include "timeutils.h"
-#include "stringutils.h"
-#include "modelenums.h"
-#include "authorsmanager.h"
-#include "librarybookmanager.h"
 
 #include <qdir.h>
 #include <qstandarditemmodel.h>
-#include <qxmlstream.h>
 #include <qtconcurrentrun.h>
+#include <qxmlstream.h>
 
 BookListManager::BookListManager(QObject *parent)
     : XmlManager(parent),

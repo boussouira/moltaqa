@@ -2,6 +2,7 @@
 #define CSSFORMATTER_H
 
 #include "clheader.h"
+
 #include <qhash.h>
 
 class CssFormatter : public Formatter {

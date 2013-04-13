@@ -1,6 +1,6 @@
 #include "bookexporter.h"
-#include "librarymanager.h"
 #include "libraryinfo.h"
+#include "librarymanager.h"
 
 BookExporter::BookExporter(QObject *parent) : QObject(parent)
 {

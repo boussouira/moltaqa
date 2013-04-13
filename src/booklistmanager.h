@@ -1,8 +1,9 @@
 #ifndef BOOKLISTMANAGER_H
 #define BOOKLISTMANAGER_H
 
-#include "xmlmanager.h"
 #include "librarybook.h"
+#include "xmlmanager.h"
+
 #include <qhash.h>
 #include <qicon.h>
 
