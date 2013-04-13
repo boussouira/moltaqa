@@ -5,7 +5,6 @@
 #include <qboxlayout.h>
 #include <qlistwidget.h>
 #include <qlabel.h>
-#include <qdebug.h>
 
 WindowsView::WindowsView(QWidget *parent) :
     QDialog(parent)

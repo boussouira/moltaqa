@@ -2,7 +2,6 @@
 #include "webview.h"
 #include "webpagenam.h"
 
-#include <qdebug.h>
 #include <qnetworkrequest.h>
 #include <qwebelement.h>
 #include <qfiledialog.h>

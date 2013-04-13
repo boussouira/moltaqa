@@ -9,7 +9,6 @@
 
 #include <qnetworkrequest.h>
 #include <QNetworkAccessManager>
-#include <qdebug.h>
 #include <qnetworkreply.h>
 #include <QTimer>
 #include <qfile.h>

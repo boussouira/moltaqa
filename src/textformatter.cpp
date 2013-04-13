@@ -5,7 +5,6 @@
 #include <qurl.h>
 #include <qapplication.h>
 #include <qdir.h>
-#include <qdebug.h>
 
 TextFormatter::TextFormatter(QObject *parent): QObject(parent)
 {

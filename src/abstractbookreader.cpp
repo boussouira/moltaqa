@@ -14,8 +14,6 @@
 #include <qstandarditemmodel.h>
 #include <qstringlistmodel.h>
 #include <qxmlstream.h>
-#include <QTime>
-#include <QDebug>
 
 AbstractBookReader::AbstractBookReader(QObject *parent) : QObject(parent)
 {

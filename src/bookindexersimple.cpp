@@ -9,7 +9,6 @@
 #include "utils.h"
 #include "indextracker.h"
 
-#include <qdebug.h>
 #include <qxmlstream.h>
 #include <qfile.h>
 

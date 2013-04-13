@@ -29,7 +29,6 @@
 #include <qcombobox.h>
 #include <qstackedwidget.h>
 #include <qboxlayout.h>
-#include <qdebug.h>
 #include <qmessagebox.h>
 #include <qkeysequence.h>
 #include <QCompleter>

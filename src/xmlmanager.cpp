@@ -3,7 +3,6 @@
 #include "utils.h"
 #include <qfile.h>
 #include <qtextstream.h>
-#include <qdebug.h>
 #include <qxmlstream.h>
 
 XmlManager::XmlManager(QObject *parent) :

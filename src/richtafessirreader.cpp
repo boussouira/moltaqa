@@ -13,7 +13,6 @@
 #include "bookutils.h"
 
 #include <qstringlist.h>
-#include <qdebug.h>
 #include <qdatetime.h>
 
 RichTafessirReader::RichTafessirReader(QObject *parent) : RichBookReader(parent)

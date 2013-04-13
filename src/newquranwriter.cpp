@@ -6,7 +6,6 @@
 #include "librarybook.h"
 #include <qdir.h>
 #include <qdatetime.h>
-#include <qdebug.h>
 
 newQuranWriter::newQuranWriter()
 {

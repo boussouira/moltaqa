@@ -10,7 +10,6 @@
 
 #include <qdir.h>
 #include <qdatetime.h>
-#include <qdebug.h>
 
 NewBookWriter::NewBookWriter()
 {

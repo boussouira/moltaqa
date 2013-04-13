@@ -5,7 +5,6 @@
 #include <qcheckbox.h>
 #include <qboxlayout.h>
 #include <qlabel.h>
-#include <qdebug.h>
 
 class CheckableMessageBoxPrivate
 {

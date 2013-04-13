@@ -2,7 +2,6 @@
 #include "xmlutils.h"
 #include "utils.h"
 #include <qtextstream.h>
-#include <qdebug.h>
 
 XmlDomHelper::XmlDomHelper() :
     m_needSave(false),

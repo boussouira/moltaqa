@@ -17,7 +17,6 @@
 #include "indextracker.h"
 #include "statisticsmanager.h"
 
-#include <qdebug.h>
 #include <qsqlquery.h>
 #include <qfile.h>
 #include <qdir.h>

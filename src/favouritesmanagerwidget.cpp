@@ -8,7 +8,6 @@
 
 #include <qabstractitemmodel.h>
 #include <qmessagebox.h>
-#include <qdebug.h>
 #include <qmenu.h>
 #include <qaction.h>
 #include <qinputdialog.h>

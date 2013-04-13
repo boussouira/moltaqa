@@ -3,7 +3,6 @@
 #include <qicon.h>
 #include <qaction.h>
 #include <QHBoxLayout>
-#include <QDebug>
 #include "editwebview.h"
 #include "utils.h"
 #include "stringutils.h"

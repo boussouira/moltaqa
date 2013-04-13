@@ -7,9 +7,7 @@
 #include <qfileinfo.h>
 #include <qdir.h>
 #include <qapplication.h>
-#include <qdebug.h>
 #include <qmessagebox.h>
-#include <QDateTime>
 #include <qsettings.h>
 #include <qtreeview.h>
 #include <qheaderview.h>

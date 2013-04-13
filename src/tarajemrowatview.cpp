@@ -11,7 +11,6 @@
 #include <qstandarditemmodel.h>
 #include <qdir.h>
 #include <qurl.h>
-#include <qdebug.h>
 #include <qwebview.h>
 
 static TarajemRowatView *m_instance = 0;

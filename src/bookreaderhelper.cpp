@@ -5,7 +5,6 @@
 #include <qdir.h>
 #include <qsqlquery.h>
 #include <qvariant.h>
-#include <qdebug.h>
 #include <qstandarditemmodel.h>
 
 BookReaderHelper::BookReaderHelper()

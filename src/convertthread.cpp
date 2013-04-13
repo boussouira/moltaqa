@@ -23,7 +23,6 @@
 #include <qsqlrecord.h>
 #include <qsqlerror.h>
 #include <qdatetime.h>
-#include <qdebug.h>
 #include <qfileinfo.h>
 
 ConvertThread::ConvertThread(QObject *parent) : QThread(parent)

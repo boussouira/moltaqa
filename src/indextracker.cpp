@@ -11,7 +11,6 @@
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qdir.h>
-#include <qdebug.h>
 
 bool operator ==(const QDomElement &node, IndexTask *task)
 {

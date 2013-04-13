@@ -22,7 +22,6 @@
 #include "mdbconverter.h"
 #endif
 
-#include <qdebug.h>
 #include <qvariant.h>
 #include <qfileinfo.h>
 #include <qsqlrecord.h>

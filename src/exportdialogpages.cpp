@@ -17,7 +17,6 @@
 #include <qlabel.h>
 #include <qcombobox.h>
 #include <qcheckbox.h>
-#include <qdebug.h>
 #include <qtreeview.h>
 #include <qlistwidget.h>
 #include <qmessagebox.h>

@@ -18,7 +18,6 @@
 #include "sortfilterproxymodel.h"
 #include "checkablemessagebox.h"
 
-#include <qdebug.h>
 #include <qlineedit.h>
 #include <qtextedit.h>
 #include <qmessagebox.h>

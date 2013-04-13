@@ -5,7 +5,6 @@
 #include <qfiledialog.h>
 #include <qmessagebox.h>
 #include <qtextstream.h>
-#include <qdebug.h>
 
 NewLibraryDialog::NewLibraryDialog(QWidget *parent) :
     QDialog(parent),

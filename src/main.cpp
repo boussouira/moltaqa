@@ -13,7 +13,6 @@
 #include <qtextcodec.h>
 #include <qsettings.h>
 #include <qdatetime.h>
-#include <qdebug.h>
 #include <qdesktopservices.h>
 #include <qmessagebox.h>
 #include <qmutex.h>

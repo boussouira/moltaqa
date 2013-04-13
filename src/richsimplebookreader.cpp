@@ -10,7 +10,6 @@
 #include "bookutils.h"
 
 #include <qstringlist.h>
-#include <qdebug.h>
 #include <qdatetime.h>
 
 RichSimpleBookReader::RichSimpleBookReader(QObject *parent) :

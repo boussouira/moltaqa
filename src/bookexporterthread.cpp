@@ -9,7 +9,6 @@
 #include "epubbookexporter.h"
 #include "htmlbookexporter.h"
 #include "utils.h"
-#include <qdebug.h>
 
 BookExporterThread::BookExporterThread(QObject *parent) :
     QThread(parent)

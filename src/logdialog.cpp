@@ -10,7 +10,6 @@
 #include <qevent.h>
 #include <qdir.h>
 #include <qmessagebox.h>
-#include <qdebug.h>
 #include "checkablemessagebox.h"
 
 LogDialog::LogDialog(QWidget *parent) :

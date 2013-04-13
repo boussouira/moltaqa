@@ -6,8 +6,6 @@
 #include "stringutils.h"
 #include "webpagenam.h"
 
-#include <QDebug>
-
 EditWebView::EditWebView(QWidget *parent) : WebView(parent)
 {
     setupEditor();

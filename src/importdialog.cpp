@@ -29,7 +29,6 @@
 #include <qtoolbutton.h>
 #include <qevent.h>
 #include <qurl.h>
-#include <QTime>
 #include <qtconcurrentrun.h>
 
 ImportDialog::ImportDialog(QWidget *parent) :

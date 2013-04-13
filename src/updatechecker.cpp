@@ -1,7 +1,6 @@
 #include "updatechecker.h"
 #include "utils.h"
 #include <qmessagebox.h>
-#include <qdebug.h>
 #include <qdom.h>
 
 UpdateChecker::UpdateChecker(QObject *parent) :

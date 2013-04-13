@@ -23,7 +23,6 @@
 #include <qcombobox.h>
 #include <qsplitter.h>
 #include <qboxlayout.h>
-#include <qdebug.h>
 #include <qmessagebox.h>
 #include <qapplication.h>
 #include <qclipboard.h>

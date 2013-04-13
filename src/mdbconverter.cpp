@@ -8,7 +8,6 @@
 #include <qdatetime.h>
 #include <qtextcodec.h>
 #include <qstringlist.h>
-#include <qdebug.h>
 #include <qdir.h>
 #include <qfileinfo.h>
 #include <qhash.h>

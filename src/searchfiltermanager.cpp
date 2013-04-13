@@ -19,7 +19,6 @@
 #include <qsqlquery.h>
 #include <qitemselectionmodel.h>
 #include <qmenu.h>
-#include <qdebug.h>
 
 SearchFilterManager::SearchFilterManager(QObject *parent)
     : QObject(parent),
