@@ -1,7 +1,7 @@
 #ifndef WINDOWSVIEW_H
 #define WINDOWSVIEW_H
 
-#include <QDialog>
+#include <qdialog.h>
 
 namespace Ui {
 class WindowsView;

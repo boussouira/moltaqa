@@ -1,7 +1,7 @@
 #ifndef SELECTCATDIALOG_H
 #define SELECTCATDIALOG_H
 
-#include <QDialog>
+#include <qdialog.h>
 
 namespace Ui {
     class selectCatDialog;

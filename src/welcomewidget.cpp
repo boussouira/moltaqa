@@ -20,7 +20,7 @@
 #include <qwebframe.h>
 #include <qrunnable.h>
 #include <qtimer.h>
-#include <QVBoxLayout>
+#include <qboxlayout.h>
 
 class LibraryInfoThread : public QRunnable {
 public:

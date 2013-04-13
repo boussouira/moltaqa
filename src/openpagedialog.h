@@ -1,7 +1,7 @@
 #ifndef OPENPAGEDIALOG_H
 #define OPENPAGEDIALOG_H
 
-#include <QDialog>
+#include <qdialog.h>
 #include "librarybook.h"
 
 namespace Ui {

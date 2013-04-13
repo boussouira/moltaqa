@@ -1,7 +1,7 @@
 #ifndef SHAMELAINFO_H
 #define SHAMELAINFO_H
 
-#include <QString>
+#include <qstring.h>
 
 class ShamelaInfo
 {

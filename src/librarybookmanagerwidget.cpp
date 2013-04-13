@@ -21,8 +21,8 @@
 #include <qlineedit.h>
 #include <qtextedit.h>
 #include <qmessagebox.h>
-#include <QInputDialog>
-#include <QHBoxLayout>
+#include <qinputdialog.h>
+#include <qboxlayout.h>
 #include <indextracker.h>
 #include <qtoolbar.h>
 

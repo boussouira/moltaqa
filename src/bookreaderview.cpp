@@ -31,7 +31,7 @@
 #include <qboxlayout.h>
 #include <qmessagebox.h>
 #include <qkeysequence.h>
-#include <QCompleter>
+#include <qcompleter.h>
 #include <qprogressdialog.h>
 #include <qfile.h>
 

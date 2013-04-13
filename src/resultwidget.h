@@ -1,7 +1,7 @@
 #ifndef RESULTWIDGET_H
 #define RESULTWIDGET_H
 
-#include <QWidget>
+#include <qwidget.h>
 
 namespace Ui {
 class ResultWidget;

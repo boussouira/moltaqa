@@ -2,7 +2,7 @@
 #include "ui_bookeditorview.h"
 #include <qicon.h>
 #include <qaction.h>
-#include <QHBoxLayout>
+#include <qboxlayout.h>
 #include "editwebview.h"
 #include "utils.h"
 #include "stringutils.h"

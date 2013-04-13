@@ -1,7 +1,7 @@
 #ifndef PAGEINFO_H
 #define PAGEINFO_H
 
-#include <QString>
+#include <qstring.h>
 
 class BookPage
 {

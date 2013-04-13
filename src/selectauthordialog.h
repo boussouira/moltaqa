@@ -1,7 +1,7 @@
 #ifndef SELECTAUTHORDIALOG_H
 #define SELECTAUTHORDIALOG_H
 
-#include <QDialog>
+#include <qdialog.h>
 
 namespace Ui {
     class selectAuthorDialog;

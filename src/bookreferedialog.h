@@ -1,7 +1,7 @@
 #ifndef BOOKREFEREDIALOG_H
 #define BOOKREFEREDIALOG_H
 
-#include <QDialog>
+#include <qdialog.h>
 
 namespace Ui {
 class BookRefereDialog;

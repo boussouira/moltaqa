@@ -1,7 +1,7 @@
 #ifndef NEWLIBRARYDIALOG_H
 #define NEWLIBRARYDIALOG_H
 
-#include <QDialog>
+#include <qdialog.h>
 
 namespace Ui {
     class NewLibraryDialog;

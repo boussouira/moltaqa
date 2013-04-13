@@ -16,7 +16,7 @@
 #include <qdir.h>
 #include <qstandarditemmodel.h>
 #include <qxmlstream.h>
-#include <QTimer>
+#include <qtimer.h>
 
 #define UPLOAD_URL "http://localhost/moltaqa-lib/statistics/upload_file/{OS}"
 static StatisticsManager *m_instance = 0;

@@ -1,7 +1,7 @@
 #ifndef INDEXMANAGER_H
 #define INDEXMANAGER_H
 
-#include <QObject>
+#include <qobject.h>
 #include <qdatetime.h>
 #include "clheader.h"
 

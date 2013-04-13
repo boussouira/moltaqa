@@ -8,9 +8,9 @@
 #include "bookmediaeditor.h"
 
 #include <qnetworkrequest.h>
-#include <QNetworkAccessManager>
+#include <qnetworkaccessmanager.h>
 #include <qnetworkreply.h>
-#include <QTimer>
+#include <qtimer.h>
 #include <qfile.h>
 #include <qwebelement.h>
 #include <qimage.h>
