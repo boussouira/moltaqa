@@ -6,12 +6,11 @@
 #include <qsqlerror.h>
 #include <qhash.h>
 #include <qapplication.h>
-
 #include <qfile.h>
 #include <qdom.h>
 
-#include "quazip/quazip.h"
-#include "quazip/quazipfile.h"
+#include "quazip.h"
+#include "quazipfile.h"
 
 class newQuranWriter
 {

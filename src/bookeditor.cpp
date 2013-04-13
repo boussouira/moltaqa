@@ -8,8 +8,8 @@
 #include "librarymanager.h"
 #include "librarybookmanager.h"
 
-#include "quazip/quazip.h"
-#include "quazip/quazipfile.h"
+#include "quazip.h"
+#include "quazipfile.h"
 #include "richquranreader.h"
 #include "richsimplebookreader.h"
 #include "richtafessirreader.h"

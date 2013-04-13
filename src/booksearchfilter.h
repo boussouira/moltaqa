@@ -3,12 +3,11 @@
 
 #include "searchfiltermanager.h"
 #include "librarybook.h"
+#include "quazip.h"
+#include "quazipfile.h"
 
 #include <qdom.h>
 #include <qfile.h>
-
-#include "quazip/quazip.h"
-#include "quazip/quazipfile.h"
 
 class BookSearchFilter : public SearchFilterManager
 {

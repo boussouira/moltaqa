@@ -10,9 +10,8 @@
 #include "sqlutils.h"
 #include "xmldomhelper.h"
 #include "zipopener.h"
-
-#include "quazip/quazip.h"
-#include "quazip/quazipfile.h"
+#include "quazip.h"
+#include "quazipfile.h"
 
 class LibraryInfo;
 class BookPage;

@@ -1,6 +1,6 @@
 #include "webpagenam.h"
-#include "quazip/quazip.h"
-#include "quazip/quazipfile.h"
+#include "quazip.h"
+#include "quazipfile.h"
 #include "utils.h"
 #include "mimeutils.h"
 #include "stringutils.h"

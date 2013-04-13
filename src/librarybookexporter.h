@@ -3,8 +3,8 @@
 
 #include "bookexporter.h"
 #include "xmldomhelper.h"
-#include "quazip/quazip.h"
-#include "quazip/quazipfile.h"
+#include "quazip.h"
+#include "quazipfile.h"
 
 class LibraryBookExporter : public BookExporter
 {
