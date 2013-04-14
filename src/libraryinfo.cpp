@@ -1,5 +1,4 @@
 #include "libraryinfo.h"
-#include "bookexception.h"
 #include "utils.h"
 #include "xmlutils.h"
 #include "ziputils.h"

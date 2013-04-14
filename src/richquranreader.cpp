@@ -1,5 +1,4 @@
 #include "richquranreader.h"
-#include "bookexception.h"
 #include "bookreaderhelper.h"
 #include "clutils.h"
 #include "librarybook.h"

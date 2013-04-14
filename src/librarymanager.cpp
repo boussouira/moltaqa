@@ -1,7 +1,6 @@
 #include "librarymanager.h"
 #include "authorsmanager.h"
 #include "bookeditor.h"
-#include "bookexception.h"
 #include "booklistmanager.h"
 #include "favouritesmanager.h"
 #include "importmodel.h"

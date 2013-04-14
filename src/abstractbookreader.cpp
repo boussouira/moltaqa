@@ -1,5 +1,4 @@
 #include "abstractbookreader.h"
-#include "bookexception.h"
 #include "bookreaderhelper.h"
 #include "clucenequery.h"
 #include "clutils.h"

@@ -1,6 +1,5 @@
 #include "bookindexersimple.h"
 #include "authorsmanager.h"
-#include "bookexception.h"
 #include "bookutils.h"
 #include "clconstants.h"
 #include "clheader.h"

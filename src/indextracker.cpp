@@ -1,5 +1,4 @@
 #include "indextracker.h"
-#include "bookexception.h"
 #include "librarybookmanager.h"
 #include "librarybookmanager.h"
 #include "libraryinfo.h"

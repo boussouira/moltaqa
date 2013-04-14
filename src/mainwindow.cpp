@@ -3,7 +3,6 @@
 #include "aboutdialog.h"
 #include "authorsview.h"
 #include "bookeditorview.h"
-#include "bookexception.h"
 #include "bookreaderhelper.h"
 #include "bookreaderview.h"
 #include "bookwidget.h"

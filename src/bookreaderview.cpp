@@ -1,6 +1,5 @@
 #include "bookreaderview.h"
 #include "bookeditorview.h"
-#include "bookexception.h"
 #include "bookslistbrowser.h"
 #include "bookwidget.h"
 #include "bookwidgetmanager.h"

@@ -1,5 +1,4 @@
 #include "shamelaimportthread.h"
-#include "bookexception.h"
 #include "librarycreator.h"
 #include "shamelaimportdialog.h"
 #include "shamelaimportinfo.h"

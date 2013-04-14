@@ -1,5 +1,4 @@
 #include "newbookwriter.h"
-#include "bookexception.h"
 #include "bookutils.h"
 #include "librarybook.h"
 #include "libraryinfo.h"

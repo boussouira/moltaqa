@@ -1,5 +1,4 @@
 #include "bookwidgetmanager.h"
-#include "bookexception.h"
 #include "bookhistorydialog.h"
 #include "bookinfodialog.h"
 #include "bookslistbrowser.h"

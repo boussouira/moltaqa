@@ -1,7 +1,6 @@
 #include "bookeditorview.h"
 #include "ui_bookeditorview.h"
 #include "bookeditor.h"
-#include "bookexception.h"
 #include "bookindexeditor.h"
 #include "bookmediaeditor.h"
 #include "bookpage.h"

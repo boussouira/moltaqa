@@ -1,5 +1,4 @@
 #include "newquranwriter.h"
-#include "bookexception.h"
 #include "librarybook.h"
 #include "libraryinfo.h"
 #include "mainwindow.h"

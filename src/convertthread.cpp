@@ -1,6 +1,5 @@
 #include "convertthread.h"
 #include "authorsmanager.h"
-#include "bookexception.h"
 #include "booklistmanager.h"
 #include "bookutils.h"
 #include "importmodel.h"

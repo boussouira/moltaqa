@@ -1,5 +1,4 @@
 #include "bookeditor.h"
-#include "bookexception.h"
 #include "bookpage.h"
 #include "librarybook.h"
 #include "librarybookmanager.h"

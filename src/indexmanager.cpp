@@ -1,6 +1,5 @@
 #include "indexmanager.h"
 #include "arabicanalyzer.h"
-#include "bookexception.h"
 #include "bookindexer.h"
 #include "checkablemessagebox.h"
 #include "clconstants.h"

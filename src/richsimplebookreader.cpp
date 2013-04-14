@@ -1,6 +1,5 @@
 #include "richsimplebookreader.h"
 #include "abstractbookreader.h"
-#include "bookexception.h"
 #include "bookutils.h"
 #include "librarybook.h"
 #include "librarybookmanager.h"
@@ -8,6 +7,7 @@
 #include "librarymanager.h"
 #include "simpletextformat.h"
 #include "stringutils.h"
+#include "utils.h"
 
 #include <qdatetime.h>
 #include <qstringlist.h>

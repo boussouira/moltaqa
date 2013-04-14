@@ -1,5 +1,4 @@
 #include "richtafessirreader.h"
-#include "bookexception.h"
 #include "bookreaderhelper.h"
 #include "bookutils.h"
 #include "librarybook.h"
