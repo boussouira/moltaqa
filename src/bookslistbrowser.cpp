@@ -318,7 +318,7 @@ void BooksListBrowser::bookListMenu(QPoint /*point*/)
             MW->searchView()->newTab(SearchWidget::BookSearch, bookID);
             MW->showSearchView();
         } else if (ret == bookInfoAct) {
-            LibraryBook::Ptr book = LibraryManager::instance()->bookManager()->getLibraryBook(bookID);
+            LibraryBook::Ptr book = m_bookManager->getLibraryBook(bookID);
             ml_return_on_fail(book);
 
             BookInfoDialog *dialog = new BookInfoDialog(0);
@@ -326,7 +326,7 @@ void BooksListBrowser::bookListMenu(QPoint /*point*/)
             dialog->setup();
             dialog->show();
         } else if(ret == editBookAct) {
-            LibraryBook::Ptr book = LibraryManager::instance()->bookManager()->getLibraryBook(bookID);
+            LibraryBook::Ptr book = m_bookManager->getLibraryBook(bookID);
             ml_return_on_fail(book);
 
             MW->editorView()->editBook(book);
