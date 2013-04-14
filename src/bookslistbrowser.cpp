@@ -303,7 +303,7 @@ void BooksListBrowser::bookListMenu(QPoint /*point*/)
         menu.addSeparator();
 
         removeFromLastOpenedAct = menu.addAction(QIcon(":/images/remove.png"),
-                                                 tr("حذف من قائمة أحدث الكتب تصفحا"));
+                                                 tr("حذف من هذه اللائحة"));
     }
 
     QAction *ret = menu.exec(QCursor::pos());
