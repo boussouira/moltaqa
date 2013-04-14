@@ -77,7 +77,7 @@ void ModelViewFilter::addFilterColumn(int column, Qt::ItemDataRole role, const Q
         QAction * actFilterByAll = m_filterActionGroup->addAction(tr("الكل"));
         FilterInfo infoAll;
         infoAll.column = -1;
-        infoAll.role = role;
+        infoAll.role = Qt::DisplayRole;
         infoAll.filterName = filterName;
         actFilterByAll->setData(QVariant::fromValue(infoAll));
 
@@ -86,6 +86,9 @@ void ModelViewFilter::addFilterColumn(int column, Qt::ItemDataRole role, const Q
         actFilterByAll->setCheckable(true);
         actFilterByAll->setChecked(true);
         m_filterActionGroup->setExclusive(true);
+
+        m_filterColumn = infoAll.column;
+        m_role = infoAll.role;
 
         connect(m_filterActionGroup, SIGNAL(triggered(QAction*)), SLOT(changeFilterAction(QAction*)));
     }
