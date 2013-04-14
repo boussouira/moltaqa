@@ -1,5 +1,6 @@
 #include "bookslistbrowser.h"
 #include "ui_bookslistbrowser.h"
+#include "authorsmanager.h"
 #include "bookeditorview.h"
 #include "bookinfodialog.h"
 #include "booklistmanager.h"
@@ -13,6 +14,7 @@
 #include "searchview.h"
 #include "utils.h"
 
+#include <qclipboard.h>
 #include <qevent.h>
 #include <qmenu.h>
 #include <qmessagebox.h>
@@ -270,6 +272,7 @@ void BooksListBrowser::bookListMenu(QPoint /*point*/)
 
     int bookType = index.sibling(index.row(), 0).data(ItemRole::itemTypeRole).toInt();
     int bookID = index.sibling(index.row(), 0).data(ItemRole::idRole).toInt();
+    int authorID = index.sibling(index.row(), 1).data(ItemRole::authorIdRole).toInt();
 
     ml_return_on_fail(bookType != ItemType::CategorieItem);
 
@@ -306,6 +309,12 @@ void BooksListBrowser::bookListMenu(QPoint /*point*/)
                                                  tr("حذف من هذه اللائحة"));
     }
 
+    menu.addSeparator();
+    QMenu *copyMenu = menu.addMenu(tr("نسخ"));
+    QAction *copyBookTitleAct = copyMenu->addAction(tr("عنوان الكتاب"));
+    QAction *copyAuthorNameAct = copyMenu->addAction(tr("اسم المؤلف"));
+    copyAuthorNameAct->setEnabled(authorID);
+
     QAction *ret = menu.exec(QCursor::pos());
     if(ret) {
         if(ret == addToFavouriteAct) {
@@ -338,6 +347,16 @@ void BooksListBrowser::bookListMenu(QPoint /*point*/)
                                      tr("أحدث الكتب تصفحا"),
                                      tr("حدث خطأ أثناء حذف الكتاب من القائمة"));
             }
+        } else if(ret == copyBookTitleAct) {
+            LibraryBook::Ptr book = m_bookManager->getLibraryBook(bookID);
+            ml_return_on_fail(book);
+
+            QApplication::clipboard()->setText(book->title);
+        } else if(ret == copyAuthorNameAct) {
+            AuthorInfo::Ptr author = LibraryManager::instance()->authorsManager()->getAuthorInfo(authorID);
+            ml_return_on_fail(author);
+
+            QApplication::clipboard()->setText(author->name);
         }
     }
 }
