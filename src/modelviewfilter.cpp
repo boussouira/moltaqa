@@ -74,11 +74,12 @@ void ModelViewFilter::addFilterColumn(int column, Qt::ItemDataRole role, const Q
 
         m_filterMenu =  m_menu->addMenu(tr("بحث في"));
         m_filterActionGroup = new QActionGroup(this);
-        QAction * actFilterByAll = m_filterActionGroup->addAction(tr("الكل"));
         FilterInfo infoAll;
         infoAll.column = -1;
         infoAll.role = Qt::DisplayRole;
-        infoAll.filterName = filterName;
+        infoAll.filterName = tr("الكل");
+
+        QAction * actFilterByAll = m_filterActionGroup->addAction(infoAll.filterName);
         actFilterByAll->setData(QVariant::fromValue(infoAll));
 
         m_filterActionGroup->addAction("")->setSeparator(true);
