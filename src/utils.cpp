@@ -711,7 +711,7 @@ QString appDir()
                                       .arg(missingFiles.size())
                                       .arg(missingFileToShow.join("\n")));
 
-                qFatal("Some files are messing:\n\t%s", qPrintable(missingFiles.join("\n\t")));
+                qWarning("Some files are messing:\n\t%s", qPrintable(missingFiles.join("\n\t")));
             }
         }
     }
