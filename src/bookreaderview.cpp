@@ -512,6 +512,7 @@ void BookReaderView::getSheer()
         for(int i=0; i<list.count(); i++) {
             QWebElement element = list[i];
             QString html = "<ul>" "\n" "<li>" + element.toPlainText()+ "</li>"  "\n";
+            ++sheerCount;
 
             QWebElement child = element.parent().nextSibling().firstChild();
             while(child.tagName().toLower() == "sheer") {
