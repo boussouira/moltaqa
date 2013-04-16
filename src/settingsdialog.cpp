@@ -229,6 +229,7 @@ void SettingsDialog::resetSettings()
          << "ExportDialog/openOutDit"
 
             // Groups
+         << "CheckableMessageBox"
          << "WidgetStat"
          << "ToolBars"
          << "BooksListWidget"
