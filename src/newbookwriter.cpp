@@ -166,8 +166,6 @@ QString NewBookWriter::processPageText(int pageID, QString text)
         QString pTag = "p";
         QString pAttr;
 
-        p.remove(specialChar);
-
         if(pageTitles.size()) {
             QString cleanP = Utils::String::Arabic::clean(p);
             for(int i=0; i<pageTitles.size(); i++) {
@@ -186,7 +184,8 @@ QString NewBookWriter::processPageText(int pageID, QString text)
         htmlText.append("<"+pTag+pAttr+">");
 
         htmlText.append(p.replace(rxMateen, "<mateen>\\1</mateen>\\2")
-                        .replace(rxSheer, "<sheer>\\1</sheer>"));
+                        .replace(rxSheer, "<sheer>\\1</sheer>")
+                        .remove(specialChar));
 
         htmlText.append("</"+pTag+">");
     }
