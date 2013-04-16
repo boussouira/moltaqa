@@ -187,8 +187,8 @@ footnote p {
 }
 .tafessir_quran .quran_text {
     border-radius:0 0 10px 10px;
-    background-color: lightYellow;
-    border-color: lightGoldenrodYellow;
+    background-color: #FAFAFA;
+    border-color: #CECECE;
     border-style: none solid solid;
     border-width: medium 1px 1px;
     display: none;
@@ -197,8 +197,8 @@ footnote p {
     padding: 10px;
 }
 .tafessir_quran .toggale_quran {
-    background-color: #fefbcb;
-    border: 1px solid lightGoldenrodYellow;
+    background-color: whiteSmoke;
+    border: 1px solid #E0E0E0;
     border-radius: 10px 10px 0 0;
     cursor: pointer;
     padding: 5px;
