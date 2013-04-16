@@ -409,6 +409,12 @@ void BookMediaEditor::addMedia()
             addImage(file);
         }
 
+        QModelIndex index = Utils::Model::selectedIndex(ui->treeView);
+        if (!index.isValid() && m_imagesItem)
+            index = m_imagesItem->index();
+
+            modelSelectionChanged(index, index);
+
         Utils::Settings::set("SavedPath/BookMediaEditor",
                              QFileInfo(files.first()).absolutePath());
     }
@@ -444,6 +450,8 @@ void BookMediaEditor::removeMedia()
 
 void BookMediaEditor::modelSelectionChanged(const QModelIndex &current, const QModelIndex &/*previous*/)
 {
+    ml_return_on_fail(current.isValid());
+
     if(current.data(FileDataRole).isNull()) {
         ui->labelDetails->clear();
 
