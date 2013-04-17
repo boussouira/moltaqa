@@ -111,6 +111,7 @@
      <property name="title">
       <string>بحث عن كل</string>
      </property>
+     <addaction name="actionSearchAllMateen"/>
      <addaction name="actionSearchAllSheer"/>
     </widget>
     <addaction name="actionSearchInBook"/>
@@ -257,6 +258,11 @@
   <action name="actionSearchAllSheer">
    <property name="text">
     <string>الأبيات الشعرية</string>
+   </property>
+  </action>
+  <action name="actionSearchAllMateen">
+   <property name="text">
+    <string>المتون</string>
    </property>
   </action>
  </widget>

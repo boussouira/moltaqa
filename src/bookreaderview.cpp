@@ -180,6 +180,10 @@ void BookReaderView::createMenus()
     if(getSheerAct)
         connect(getSheerAct, SIGNAL(triggered()), SLOT(getSheer()));
 
+    QAction *getMateenAct = MW->getAction("search.all.mateen");
+    if(getMateenAct)
+        connect(getMateenAct, SIGNAL(triggered()), SLOT(getMateen()));
+
     // Navigation actions
     connect(m_actionNextPage, SIGNAL(triggered()), m_viewManager, SLOT(nextPage()));
     connect(m_actionPrevPage, SIGNAL(triggered()), m_viewManager, SLOT(previousPage()));
@@ -583,6 +587,186 @@ void BookReaderView::getSheer()
         QMessageBox::warning(this,
                              book->title,
                              tr("لم يتم العثور على أي بيت شعري في هذا الكتاب!"));
+
+        QFile::remove(filePath);
+    }
+}
+
+void BookReaderView::getMateen()
+{
+    LibraryBook::Ptr book = currentBook();
+    ml_return_on_fail(book);
+    ml_return_on_fail(currentBookWidget());
+
+    AbstractBookReader *reader = currentBookWidget()->bookReader();
+    ml_return_on_fail(reader);
+
+    QuaZip zip;
+    zip.setZipName(book->path);
+
+    if(!zip.open(QuaZip::mdUnzip)) {
+        qDebug() << "BookReaderView::getSheer Can't zip file" << book->path
+                 << "Error:" << zip.getZipError();
+        return;
+    }
+
+    QProgressDialog dialog(this);
+    dialog.setWindowTitle(book->title);
+    dialog.setLabelText(tr("جاري البحث عن المتون..."));
+    dialog.setMaximum(reader->pagesCount());
+    dialog.setMinimumDuration(0);
+    dialog.setValue(0);
+    dialog.setModal(true);
+    dialog.show();
+
+    QString tempDir = LibraryManager::instance()->libraryInfo()->tempDir();
+    QString filePath = Utils::Rand::fileName(tempDir, true, "mateen_", "html");
+
+    QFile outFile(filePath);
+    if(!outFile.open(QIODevice::WriteOnly)) {
+        qDebug() << "writePage::writeContent error when writing to " << filePath
+                 << "Error:" << outFile.errorString();
+        return;
+    }
+
+    QString ulColor;
+    QString bodyColor;
+    QString aBorderColor;
+    if(App::currentStyleName().toLower() == "black") {
+        bodyColor = "background-color:black; color: #ccc;";
+        ulColor = "#757DA7";
+        aBorderColor = "#555555";
+    } else {
+        ulColor = "#273A9D";
+        aBorderColor = "#AAAAAA";
+    }
+
+    QTextStream outStream(&outFile);
+    outStream.setCodec("utf-8");
+
+    outStream << "<html>"
+                 "<head>"
+                 "<title>" << book->title <<"</title>"
+                 "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />" "\n"
+                 "<style>" "\n";
+
+    outStream <<"body { direction:rtl;" << bodyColor << " }" "\n";
+
+    outStream << "mateen {font-weight: bold; color: " << ulColor << "}" "\n";
+
+    outStream << "a { border-bottom: 1px solid " << aBorderColor << ";"
+              << "display: block; font-size: 0.8em; text-align: left; "
+              << "text-decoration: none; color: #7DA2FF; }" "\n";
+
+    outStream << "a:visited { color: #7DA2FF; }" "\n";
+
+    outStream << "</style>"
+                 "<head>"
+                 "<body>" "\n";
+
+    int count = 0;
+    int mateenCount = 0;
+
+    BookPage page;
+    QuaZipFileInfo info;
+    QuaZipFile file(&zip);
+    for(bool more=zip.goToFirstFile(); more; more=zip.goToNextFile()) {
+        ml_return_on_fail2(zip.getCurrentFileInfo(&info),
+                           "BookReaderView::getSheer getCurrentFileInfo Error" << zip.getZipError());
+
+        int id = 0;
+        QString name = info.name;
+        if(name.startsWith(QLatin1String("pages/p"))) {
+            name = name.remove(0, 7);
+            name = name.remove(".html");
+
+            bool ok;
+            id = name.toInt(&ok);
+            if(!ok) {
+                qDebug("BookReaderView::getSheer can't convert '%s' to int", qPrintable(name));
+                continue;
+            }
+        } else {
+            continue;
+        }
+
+        if(!file.open(QIODevice::ReadOnly)) {
+            qWarning("BookReaderView::getSheer zip error %d", zip.getZipError());
+            continue;
+        }
+
+        QByteArray out;
+        if(!Utils::Files::copyData(file, out))
+            break;
+
+        page.pageID = id;
+        page.text = QString::fromUtf8(out);
+
+        QWebPage webPage;
+        webPage.mainFrame()->setHtml(page.text);
+
+        QList<QWebElement> list = webPage.mainFrame()->findAllElements("mateen").toList();
+        for(int i=0; i<list.count(); i++) {
+            QWebElement element = list[i];
+
+            QString html = "<p>" "\n";
+            html.append("<mateen>");
+            html.append(element.toPlainText());
+            html.append("</mateen>");
+
+            html.append("</p>" "\n");
+
+            ++mateenCount;
+            outStream << html;
+        }
+
+        if(list.count()) {
+            outStream << QString("<a href=\"#\" onclick=\"bookView.openPageID(%1); return false\">%2 (%1)</a>")
+                         .arg(id).arg(tr("فتح الصفحة"));
+        }
+
+        file.close();
+
+        dialog.setValue(dialog.value()+1);
+
+        if(++count > 100) {
+            qApp->processEvents();
+            count = 0;
+        }
+
+        if(dialog.wasCanceled())
+            break;
+
+        if(file.getZipError()!=UNZ_OK) {
+            qWarning("BookReaderView::getSheer Unknow zip error %d", file.getZipError());
+            continue;
+        }
+    }
+
+    outStream << "</body>" "</html>";
+
+    outStream.flush();
+    outFile.close();
+
+    if(mateenCount) {
+        QDialog *dialog = new QDialog(0);
+        dialog->setWindowIcon(windowIcon());
+        dialog->setWindowTitle(tr("%1 - عدد المتون: %2").arg(book->title).arg(mateenCount));
+
+        WebView *view = new WebView(dialog);
+        view->autoObjectAdd("bookView", currentBookWidget());
+        view->setUrl(QUrl::fromLocalFile(filePath));
+
+        QVBoxLayout *layout = new QVBoxLayout;
+        layout->setMargin(0);
+        layout->addWidget(view);
+
+        dialog->setLayout(layout);
+        dialog->show();
+    } else {
+        QMessageBox::warning(this,
+                             book->title,
+                             tr("لم يتم العثور على أي  متن في هذا الكتاب!"));
 
         QFile::remove(filePath);
     }

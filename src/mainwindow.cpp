@@ -471,6 +471,8 @@ QAction *MainWindow::getAction(QString actionId)
 {
     if(actionId == "search.all.sheer")
         return ui->actionSearchAllSheer;
+    else if (actionId == "search.all.mateen")
+        return ui->actionSearchAllMateen;
 
 #ifdef DEV_BUILD
     qWarning() << "MainWindow::getAction no Action found for:" << actionId;

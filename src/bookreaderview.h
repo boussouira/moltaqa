@@ -47,7 +47,10 @@ public slots:
     void tabChanged(int newIndex);
     void loadTafessirList();
     void removeTashkil(bool remove);
+
+    // TODO: Recode these methods properly (remove code dupliction)
     void getSheer();
+    void getMateen();
 
 protected slots:
     void editCurrentBook();
