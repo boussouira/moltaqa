@@ -8,6 +8,15 @@ echo Create directory %OUTDIR%
 mkdir %OUTDIR%
 cd %OUTDIR%
 
+cp -r D:/Programming/moltaqa-lib moltaqa-lib-src
+cd moltaqa-lib-src
+
+qmake moltaqa-lib.pro -r -spec win32-msvc2008 "CONFIG += release"
+
+c:\Qt\qtcreator\bin\jom.exe -j2
+
+cd ..
+
 mkdir bin
 
 echo Copy files:
@@ -55,7 +64,7 @@ echo -- ZLib dll
 cp D:/Programming/albahhet-vc_release/zlib1.dll bin
 
 echo -- Application
-cp D:/Programming/moltaqa-lib-vs-release/bin/moltaqa-lib.exe bin
+cp -v moltaqa-lib-src/bin/moltaqa-lib.exe bin
 
 mkdir share
 mkdir share\moltaqa-lib
