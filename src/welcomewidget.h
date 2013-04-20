@@ -23,6 +23,8 @@ protected:
 
 public slots:
     void open(QString vid);
+    QString getFontFamily();
+    QString getFontSize();
 
 protected slots:
     void showStatistics();

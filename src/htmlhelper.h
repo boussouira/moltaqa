@@ -10,6 +10,11 @@ class HtmlHelper
 public:
     HtmlHelper();
 
+    enum ExtarCSS {
+        DefaultStyle,
+        QuranStyle
+    };
+
     void insertHtmlTag(const QString &tag, const QString &text, const QString &selector="", const QString &attr="");
 
     void beginHtmlTag(const QString &tag, const QString &selector="", const QString &attr="");
@@ -23,6 +28,8 @@ public:
     void addCSS(QString cssFile, bool fullPath=false);
     void addJS(QString jsFile, bool fullPath=false);
     void addJSCode(const QString &jsCode);
+
+    void addExtraCss(ExtarCSS type = DefaultStyle);
 
     void clear();
     inline QString html() { return m_html; }

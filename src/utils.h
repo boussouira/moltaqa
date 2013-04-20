@@ -14,6 +14,12 @@
 
 #define ML_DEFAULT_STYLE "default"
 
+#define ML_QURAN_FONT_FAMILY "KFGQPC Uthman Taha Naskh"
+#define ML_QURAN_FONT_SIZE 26
+
+#define ML_DEFAULT_FONT_FAMILY "Lotus Linotype"
+#define ML_DEFAULT_FONT_SIZE 26
+
 class QSqlQuery;
 class QSqlDatabase;
 class QTreeView;

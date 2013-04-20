@@ -120,8 +120,9 @@ void AuthorsView::setCurrentAuth(AuthorInfo::Ptr info)
     html.beginHtml();
     html.beginHead();
     html.setCharset();
-    html.addCSS("default.css");
     html.setTitle(info->name);
+    html.addCSS("default.css");
+    html.addExtraCss();
     html.endHead();
 
     html.beginBody();

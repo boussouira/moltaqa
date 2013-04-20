@@ -127,6 +127,7 @@ void ResultWidget::setupWebView()
     helper.beginHead();
     helper.setCharset("utf-8");
     helper.addCSS("default.css");
+    helper.addExtraCss();
     helper.endHead();
 
     helper.beginBody();

@@ -75,9 +75,9 @@ QByteArray QuranTextFormat::getAyaNumberImage(int ayaNumber, QString bgImage)
     QString  ayaNumberStr = Utils::String::Arabic::arabicNumbers(ayaNumber);
 
     QSettings settings;
-    settings.beginGroup("Style");
-    QString fontString = settings.value("fontFamily", "Lotus Linotype").toString();
-    int fontSize = settings.value("fontSize", 24).toInt();
+    settings.beginGroup("QuranFont");
+    QString fontString = settings.value("fontFamily").toString();
+    int fontSize = settings.value("fontSize").toInt();
 
     QFont font;
     font.fromString(fontString);

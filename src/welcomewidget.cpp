@@ -117,8 +117,23 @@ void WelcomeWidget::open(QString vid)
     }
 }
 
+QString WelcomeWidget::getFontFamily()
+{
+    QSettings settings;
+    settings.beginGroup("DefaultFont");
+
+    return QString("'%1'").arg(settings.value("fontFamily").toString());
+}
+
+QString WelcomeWidget::getFontSize()
+{
+    QSettings settings;
+    settings.beginGroup("DefaultFont");
+
+    return QString("%1px").arg(settings.value("fontSize").toInt());
+}
+
 void WelcomeWidget::showStatistics()
 {
     QThreadPool::globalInstance()->start(new LibraryInfoThread(m_webView));
 }
-

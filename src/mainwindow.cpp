@@ -375,20 +375,9 @@ void MainWindow::loadSettings()
 {
     Utils::Widget::restore(this, "MainWindow", true);
 
+    SettingsDialog::checkDefaultFonts();
+
     QSettings settings;
-
-    settings.beginGroup("Style");
-    QString fontString = settings.value("fontFamily", "Lotus Linotype").toString();
-    int fontSize = settings.value("fontSize", 24).toInt();
-    settings.endGroup();
-
-    QFont font;
-    font.fromString(fontString);
-
-    QWebSettings *webSettings = QWebSettings::globalSettings();
-    webSettings->setFontFamily(QWebSettings::StandardFont, font.family());
-    webSettings->setFontSize(QWebSettings::DefaultFontSize, fontSize);
-
     if(settings.value("Update/autoCheck", true).toBool()) {
         uint current = QDateTime::currentDateTime().toTime_t();
         uint lastCheck = settings.value("Update/lastCheck", 0).toUInt();

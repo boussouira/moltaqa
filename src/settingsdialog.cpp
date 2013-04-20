@@ -13,11 +13,92 @@
 #include <qfile.h>
 #include <qfiledialog.h>
 #include <qfont.h>
+#include <qfontcombobox.h>
 #include <qmessagebox.h>
 #include <qsettings.h>
 #include <qthread.h>
 #include <qvariant.h>
 #include <qwebsettings.h>
+
+FontSelectorDialog::FontSelectorDialog(QWidget *parent) : QDialog(parent)
+{
+    setWindowTitle(tr("تغيير الخط"));
+
+    m_fontComboBox = new QFontComboBox(this);
+    m_sizeComboBox = new QComboBox(this);
+
+    m_sizeComboBox->insertItems(0, QStringList() << "9"
+                                << "10" << "11" << "12" << "13" << "14" << "15" << "16" << "17" << "18"
+                                << "20" << "22" << "24" << "26" << "28" << "30" << "32" << "34" << "36"
+                                << "40" << "44" << "48" << "56" << "64" << "72");
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(this);
+    buttonBox->setObjectName(QString::fromUtf8("buttonBox"));
+    buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Save);
+    buttonBox->setCenterButtons(true);
+
+    QHBoxLayout *fontBox = new QHBoxLayout;
+    fontBox->addWidget(new QLabel(tr("الخط:"), this));
+    fontBox->addWidget(m_fontComboBox);
+    fontBox->addStretch();
+
+    QHBoxLayout *sizeBox = new QHBoxLayout;
+    sizeBox->addWidget(new QLabel(tr("الحجم:"), this));
+    sizeBox->addWidget(m_sizeComboBox);
+    sizeBox->addStretch();
+
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->addLayout(fontBox);
+    layout->addLayout(sizeBox);
+    layout->addStretch();
+    layout->addWidget(buttonBox);
+
+    connect(buttonBox->button(QDialogButtonBox::Save), SIGNAL(clicked()), SLOT(saveFont()));
+    connect(buttonBox->button(QDialogButtonBox::Cancel), SIGNAL(clicked()), SLOT(reject()));
+}
+
+void FontSelectorDialog::loadFont(const QString &settingKey)
+{
+    QSettings settings;
+    settings.beginGroup(settingKey);
+
+    QString fontString = settings.value("fontFamily").toString();
+    int fontSize = settings.value("fontSize").toInt();
+
+    QFont font;
+    font.fromString(fontString);
+
+    if(fontSize < 9 || 72 < fontSize)
+        fontSize = 9;
+
+    m_fontComboBox->setCurrentFont(font);
+    m_sizeComboBox->setCurrentIndex(m_sizeComboBox->findText(QString::number(fontSize)));
+
+    m_fontSettingKey = settingKey;
+}
+
+QString FontSelectorDialog::selectedFontFamily()
+{
+    return m_fontComboBox->currentFont().family();
+}
+
+int FontSelectorDialog::selectedFontSize()
+{
+    return m_sizeComboBox->currentText().toInt();
+}
+
+void FontSelectorDialog::saveFont()
+{
+    QSettings settings;
+    settings.beginGroup(m_fontSettingKey);
+
+    settings.setValue("fontFamily", m_fontComboBox->currentFont().family());
+    settings.setValue("fontSize", m_sizeComboBox->currentText());
+
+    accept();
+}
+
+/******************/
 
 SettingsDialog::SettingsDialog(QWidget *parent) :
     QDialog(parent),
@@ -42,8 +123,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     connect(ui->pushClearBooksHistory, SIGNAL(clicked()), SLOT(deleteBooksHistory()));
     connect(ui->pushClearLastOpenedBooks, SIGNAL(clicked()), SLOT(deleteLastOpenedBooks()));
 
-    connect(ui->fontComboBox, SIGNAL(currentFontChanged(QFont)), SLOT(fontSettingChange()));
-    connect(ui->comboFontSize, SIGNAL(currentIndexChanged(int)), SLOT(fontSettingChange()));
+    connect(ui->pushQuranFont, SIGNAL(clicked()), SLOT(changeQuranFont()));
+    connect(ui->pushDefaultFont, SIGNAL(clicked()), SLOT(changeDefaultFont()));
 }
 
 SettingsDialog::~SettingsDialog()
@@ -52,6 +133,31 @@ SettingsDialog::~SettingsDialog()
     settings.setValue("SettingsDialog/tabIndex", ui->tabWidget->currentIndex());
 
     delete ui;
+}
+
+void SettingsDialog::checkDefaultFonts()
+{
+    QSettings settings;
+
+    settings.beginGroup("QuranFont");
+
+    if (!settings.contains("fontFamily"))
+        settings.setValue("fontFamily", ML_QURAN_FONT_FAMILY);
+
+    if (!settings.contains("fontSize"))
+        settings.setValue("fontSize", ML_QURAN_FONT_SIZE);
+
+    settings.endGroup();
+
+    settings.beginGroup("DefaultFont");
+
+    if (!settings.contains("fontFamily"))
+        settings.setValue("fontFamily", ML_DEFAULT_FONT_FAMILY);
+
+    if (!settings.contains("fontSize"))
+        settings.setValue("fontSize", ML_DEFAULT_FONT_SIZE);
+
+    settings.endGroup();
 }
 
 void SettingsDialog::loadSettings()
@@ -108,24 +214,12 @@ void SettingsDialog::loadSettings()
         }
     }
 
-    QWebSettings *webSettings = QWebSettings::globalSettings();
-    QString fontString = settings.value("fontFamily", webSettings->fontFamily(QWebSettings::StandardFont)).toString();
-    int fontSize = settings.value("fontSize", webSettings->fontSize(QWebSettings::DefaultFontSize)).toInt();
-
-    QFont font;
-    font.fromString(fontString);
-
-    if(fontSize < 9 || 72 < fontSize)
-        fontSize = 9;
-
-    ui->fontComboBox->setCurrentFont(font);
-    ui->comboFontSize->setCurrentIndex(ui->comboFontSize->findText(QString::number(fontSize)));
-
     ui->checkSingleIndexClick->setChecked(settings.value("singleIndexClick", false).toBool());
     ui->checkRemoveTashekil->setChecked(settings.value("removeTashekil", false).toBool());
     ui->checkShowQuranFirst->setChecked(settings.value("showQuranFirst", true).toBool());
     ui->checkDrawAyatNumber->setChecked(settings.value("drawAyatNumber", true).toBool());
 
+    loadFontSettings();
     loadSearchFields();
 }
 
@@ -172,6 +266,21 @@ void SettingsDialog::loadSearchFields()
     }
 }
 
+void SettingsDialog::loadFontSettings()
+{
+    QSettings settings;
+
+    QString fontString = settings.value("QuranFont/fontFamily").toString();
+    int fontSize = settings.value("QuranFont/fontSize").toInt();
+
+    ui->pushQuranFont->setText(QString("%1, %2").arg(fontString).arg(fontSize));
+
+    fontString = settings.value("DefaultFont/fontFamily").toString();
+    fontSize = settings.value("DefaultFont/fontSize").toInt();
+
+    ui->pushDefaultFont->setText(QString("%1, %2").arg(fontString).arg(fontSize));
+}
+
 void SettingsDialog::resetSettings()
 {
     ml_return_on_fail(QMessageBox::question(this,
@@ -205,8 +314,6 @@ void SettingsDialog::resetSettings()
          << "SearchWidget/showPageInfo"
          << "SearchWidget/showResultTitles"
          << "Style/name"
-         << "Style/fontFamily"
-         << "Style/fontSize"
          << "Style/singleIndexClick"
          << "Style/removeTashekil"
          << "Style/showQuranFirst"
@@ -229,6 +336,8 @@ void SettingsDialog::resetSettings()
          << "ExportDialog/openOutDit"
 
             // Groups
+         << "QuranFont"
+         << "DefaultFont"
          << "CheckableMessageBox"
          << "WidgetStat"
          << "ToolBars"
@@ -243,6 +352,7 @@ void SettingsDialog::resetSettings()
 
     m_needAppRestart = true;
 
+    checkDefaultFonts();
     loadSettings();
 }
 
@@ -320,21 +430,13 @@ void SettingsDialog::saveSettings()
 
     saveSetting(settings, "Style", "name", ui->comboStyles->itemData(ui->comboStyles->currentIndex(),
                                                         Qt::UserRole).toHash().value("dir"), true);
-    saveSetting(settings, "Style", "fontFamily", ui->fontComboBox->currentFont().toString());
-    saveSetting(settings, "Style", "fontSize", ui->comboFontSize->currentText());
 
     saveSetting(settings, "Style", "singleIndexClick", ui->checkSingleIndexClick->isChecked(), true);
     saveSetting(settings, "Style", "removeTashekil", ui->checkRemoveTashekil->isChecked(), true);
     saveSetting(settings, "Style", "showQuranFirst", ui->checkShowQuranFirst->isChecked(), true);
     saveSetting(settings, "Style", "drawAyatNumber", ui->checkDrawAyatNumber->isChecked(), true);
 
-
     QWebSettings *webSettings = QWebSettings::globalSettings();
-    webSettings->setFontFamily(QWebSettings::StandardFont,
-                               ui->fontComboBox->currentFont().toString());
-    webSettings->setFontSize(QWebSettings::DefaultFontSize,
-                             ui->comboFontSize->currentText().toInt());
-
     webSettings->clearMemoryCaches();
 
     if(m_needAppRestart) {
@@ -423,11 +525,6 @@ void SettingsDialog::updateIndex()
 void SettingsDialog::fontSettingChange()
 {
     QWebSettings *webSettings = QWebSettings::globalSettings();
-    webSettings->setFontFamily(QWebSettings::StandardFont,
-                               ui->fontComboBox->currentFont().toString());
-    webSettings->setFontSize(QWebSettings::DefaultFontSize,
-                             ui->comboFontSize->currentText().toInt());
-
     webSettings->clearMemoryCaches();
 }
 
@@ -435,4 +532,32 @@ void SettingsDialog::on_pushEditRefer_clicked()
 {
     BookRefereDialog dialog(this);
     dialog.exec();
+}
+
+void SettingsDialog::changeQuranFont()
+{
+    FontSelectorDialog dialog(this);
+    dialog.loadFont("QuranFont");
+
+    if (dialog.exec() == QDialog::Accepted) {
+        ui->pushQuranFont->setText(QString("%1, %2")
+                                   .arg(dialog.selectedFontFamily())
+                                   .arg(dialog.selectedFontSize()));
+
+        m_needAppRestart = true;
+    }
+}
+
+void SettingsDialog::changeDefaultFont()
+{
+    FontSelectorDialog dialog(this);
+    dialog.loadFont("DefaultFont");
+
+    if (dialog.exec() == QDialog::Accepted) {
+        ui->pushDefaultFont->setText(QString("%1, %2")
+                                     .arg(dialog.selectedFontFamily())
+                                     .arg(dialog.selectedFontSize()));
+
+        m_needAppRestart = true;
+    }
 }

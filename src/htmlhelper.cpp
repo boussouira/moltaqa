@@ -1,6 +1,7 @@
 #include "htmlhelper.h"
 #include "utils.h"
 
+#include <qsettings.h>
 #include <qstringlist.h>
 #include <qurl.h>
 
@@ -129,6 +130,35 @@ void HtmlHelper::addJSCode(const QString &jsCode)
     m_html.append(jsCode);
     m_html.append("\n//]]>");
     m_html.append("</script>");
+}
+
+void HtmlHelper::addExtraCss(HtmlHelper::ExtarCSS type)
+{
+    QString key;
+
+    if(type == DefaultStyle) {
+        key = "DefaultFont";
+    } else if (type == QuranStyle) {
+        key = "QuranFont";
+    } else {
+        qWarning("HtmlHelper::addExtraCss Unknow css type %d", type);
+        return;
+    }
+
+    QSettings settings;
+    settings.beginGroup(key);
+
+    QString fontString = settings.value("fontFamily").toString();
+    QString fontSize = settings.value("fontSize").toString();
+
+    beginStyle();
+
+    beginStyleSelector("body")
+            .addStyleRule("font-family", QString("'%1'").arg(fontString))
+            .addStyleRule("font-size", QString("%1px").arg(fontSize))
+            .endStyleSelector();
+
+    endStyle();
 }
 
 /**

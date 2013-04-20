@@ -31,6 +31,7 @@
 #include <qmenubar.h>
 #include <qmessagebox.h>
 #include <qprogressdialog.h>
+#include <qsettings.h>
 #include <qstackedwidget.h>
 #include <qtoolbar.h>
 
@@ -435,6 +436,12 @@ void BookReaderView::getSheer()
         return;
     }
 
+    QSettings settings;
+    settings.beginGroup("DefaultFont");
+
+    QString fontString = settings.value("fontFamily").toString();
+    int fontSize = settings.value("fontSize").toInt();
+
     QString ulColor;
     QString bodyColor;
     QString aBorderColor;
@@ -456,7 +463,9 @@ void BookReaderView::getSheer()
                  "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />" "\n"
                  "<style>" "\n";
 
-    outStream <<"body { direction:rtl;" << bodyColor << " }" "\n";
+    outStream << "body { direction:rtl;" << bodyColor
+              << "font-family: '" << fontString << "'; "
+              << "font-size: " << fontSize << "px;" << " }" "\n";
 
     outStream << "ul { list-style: decimal inside none; font-weight: bold; "
                  "color: " << ulColor << "}" "\n";
@@ -629,6 +638,12 @@ void BookReaderView::getMateen()
         return;
     }
 
+    QSettings settings;
+    settings.beginGroup("DefaultFont");
+
+    QString fontString = settings.value("fontFamily").toString();
+    int fontSize = settings.value("fontSize").toInt();
+
     QString ulColor;
     QString bodyColor;
     QString aBorderColor;
@@ -650,7 +665,9 @@ void BookReaderView::getMateen()
                  "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />" "\n"
                  "<style>" "\n";
 
-    outStream <<"body { direction:rtl;" << bodyColor << " }" "\n";
+    outStream << "body { direction:rtl;" << bodyColor
+              << "font-family: '" << fontString << "'; "
+              << "font-size: " << fontSize << "px;" << " }" "\n";
 
     outStream << "mateen {font-weight: bold; color: " << ulColor << "}" "\n";
 

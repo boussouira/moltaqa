@@ -133,9 +133,10 @@ void HtmlBookExporter::copyStyleTemplate(QString styleDirPath)
                             << fontSyleFile.errorString());
 
     QSettings settings;
-    settings.beginGroup("Style");
-    QString fontString = settings.value("fontFamily", "Lotus Linotype").toString();
-    int fontSize = settings.value("fontSize", 24).toInt();
+    settings.beginGroup((m_book->isQuran() ? "QuranFont" : "DefaultFont"));
+
+    QString fontString = settings.value("fontFamily").toString();
+    int fontSize = settings.value("fontSize").toInt();
 
     QFont font;
     font.fromString(fontString);

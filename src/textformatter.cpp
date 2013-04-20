@@ -45,6 +45,7 @@ QString TextFormatter::getHtmlView(const QString &text, const QString &jsCode)
     helper.beginHead();
     helper.setCharset("utf-8");
     helper.addCSS("default.css");
+    helper.addExtraCss(m_book->isQuran() ? HtmlHelper::QuranStyle : HtmlHelper::DefaultStyle);
 
     helper.endHead();
 
