@@ -213,10 +213,10 @@ QNetworkReply *WebPageNAM::createRequest(Operation op, const QNetworkRequest &re
             reply->setContentType("image/png");
             reply->setContent(imageData);
 
-#ifdef DEV_BUILD
-            qDebug() << "WebPageNAM: GET" << qPrintable(req.url().toString())
-                     << "->" << "Aya number" << aya;
-#endif
+//#ifdef DEV_BUILD
+//            qDebug() << "WebPageNAM: GET" << qPrintable(req.url().toString())
+//                     << "->" << "Aya number" << aya;
+//#endif
 
             return reply;
         } else {
