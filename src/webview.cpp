@@ -510,7 +510,7 @@ void WebView::contextMenuEvent(QContextMenuEvent *event)
         }
 
         if(selectedHtml().contains("<img", Qt::CaseInsensitive))
-            menu.addAction(tr("نسخ مع التنسيق"), this, SLOT(copyHtml()));
+            menu.addAction(tr("نسخ بدون صور"), this, SLOT(copyHtml()));
 
         menu.addAction(pageAction(QWebPage::Copy));
     }
