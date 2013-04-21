@@ -46,7 +46,6 @@ void EditWebView::setupEditor(const QString &text)
                 "on: {"
                 "instanceReady : function()"
                 "{ "
-                "this.dataProcessor.writer.lineBreakChars = ''; "
                 "this.dataProcessor.writer.indentationChars = ''; "
                 "this.execCommand('maximize'); }}});").arg(style.toString()));
 

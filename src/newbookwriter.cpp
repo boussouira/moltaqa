@@ -149,12 +149,14 @@ QString NewBookWriter::processPageText(int pageID, QString text)
 
         footnoteText.replace(QRegExp(_u("\\(¬?([0-9]{1,2})¬?\\)")),
                              "<sup class=\"fnb\"><a href=\"#fnb\\1\" id=\"fn\\1\">(\\1)</a></sup>");
-        footnoteText.replace("\n", "<br />");
+        footnoteText.replace("\n", "<br />" "\n");
 
-        footnoteText.prepend("<hr class=\"fns\" /><div class=\"clear\">&nbsp;</div>"
-                             "<div class=\"footnote\">");
+        footnoteText.prepend("<hr class=\"fns\" />" "\n"
+                             "<div class=\"clear\">" "\n"
+                             "&nbsp;</div>" "\n"
+                             "<div class=\"footnote\">" "\n");
 
-        footnoteText.append("</div>");
+        footnoteText.append("</div>" "\n");
 
         pageTextList[0] = pageText;
         pageTextList[1] = footnoteText;
@@ -183,13 +185,13 @@ QString NewBookWriter::processPageText(int pageID, QString text)
             }
         }
 
-        htmlText.append("<"+pTag+pAttr+">");
+        htmlText.append("<"+pTag+pAttr+">" "\n");
 
         htmlText.append(p.replace(rxMateen, "<mateen>\\1</mateen>\\2")
                         .replace(rxSheer, "<sheer>\\1</sheer>")
                         .remove(specialChar));
 
-        htmlText.append("</"+pTag+">");
+        htmlText.append("</"+pTag+">" "\n");
     }
 
     if(pageTextList.size() == 2)
