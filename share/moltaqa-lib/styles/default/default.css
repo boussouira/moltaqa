@@ -168,15 +168,15 @@ a[href^="moltaqa"] {
     color: #040643;
 }
 
-footnote {
+.footnote {
     font-size: 0.8em;
     color: #414141;
 }
-footnote a {
+.footnote a {
     color: green;
     font-size: 0.9em;
 }
-footnote p {
+.footnote p {
     margin: 0;
     padding: 0;
 }
@@ -216,6 +216,7 @@ footnote p {
 
 div.clear {
     clear: both;
+    height:0px;
 }
 .result_loading {
     border:1px #333 solid;

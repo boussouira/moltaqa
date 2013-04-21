@@ -630,11 +630,6 @@ void EPubBookExporter::writePage(BookPage *page)
 
     out += "<body>" "\n";
 
-    if(page->text.contains("<footnote>")) {
-        page->text.replace("</footnote>", "</div>");
-        page->text.replace("<footnote>", "<div class=\"footnote\">");
-    }
-
     QRegExp rx("src\\s*=\\s*\"images/");
     if(m_bookHasImages || page->text.contains(rx)) {
         page->text.replace(rx, "src=\"../images/");

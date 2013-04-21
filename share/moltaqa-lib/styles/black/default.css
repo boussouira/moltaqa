@@ -129,14 +129,14 @@ a[href^="moltaqa"] {
 #simpleBook #shorooh .shoroohBooks p:hover {
     color: #040643;
 }
-footnote {
+.footnote {
     font-size: 0.8em;
 }
-footnote a {
+.footnote a {
     color: green;
     font-size: 0.9em;
 }
-footnote p {
+.footnote p {
     margin: 0;
     padding: 0;
 }
@@ -171,6 +171,7 @@ footnote p {
 }
 div.clear {
     clear: both;
+    height:0px;
 }
 .result_loading {
     border:1px #ccc solid;
