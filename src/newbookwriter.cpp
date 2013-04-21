@@ -122,7 +122,7 @@ QString NewBookWriter::processPageText(int pageID, QString text)
 {
     QString htmlText;
     text = text.replace(QRegExp("[\\r\\n]+"), "\n");
-    text = Utils::Html::specialCharsEncode(text);
+    text = Utils::Html::basicHtmlCharsEncode(text);
 
     if(Utils::Book::hasShamelaShoorts(text))
         text = Utils::Book::fixShamelaShoorts(text);

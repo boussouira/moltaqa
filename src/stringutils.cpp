@@ -67,6 +67,15 @@ QString jsEscape(QString text)
             .replace('\r', "\\r");
 }
 
+QString basicHtmlCharsEncode(QString text)
+{
+    text.replace('&', "&amp;");
+    text.replace('<', "&lt;");
+    text.replace('>', "&gt;");
+
+    return text;
+}
+
 QString specialCharsEncode(QString text)
 {
      text.replace('&', "&amp;");
@@ -158,7 +167,7 @@ QString nl2br(QString text)
 QString format(QString text)
 {
     QString htmlText = text;
-    htmlText = specialCharsEncode(htmlText);
+    htmlText = basicHtmlCharsEncode(htmlText);
     htmlText = nl2br(htmlText);
 
     return htmlText;

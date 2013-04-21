@@ -12,6 +12,7 @@ QString removeTags(const QString &text);
 
 QString jsEscape(QString text);
 
+QString basicHtmlCharsEncode(QString text);
 QString specialCharsEncode(QString text);
 QString getTagsText(const QString &text, const QString &tag);
 
