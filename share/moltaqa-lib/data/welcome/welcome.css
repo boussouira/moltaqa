@@ -1,7 +1,6 @@
 body {
     direction: rtl;
     background: url("images/bg_01.png") repeat scroll 0 0 transparent;
-    font-size: .7em;
 }
 
 #vertical-wrapper {
