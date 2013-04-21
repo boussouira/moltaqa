@@ -6,6 +6,8 @@
 #include "utils.h"
 #include "webpagenam.h"
 
+#include <qsettings.h>
+
 EditWebView::EditWebView(QWidget *parent) : WebView(parent)
 {
     setupEditor();
@@ -14,6 +16,12 @@ EditWebView::EditWebView(QWidget *parent) : WebView(parent)
 void EditWebView::setupEditor(const QString &text)
 {
     settings()->setAttribute(QWebSettings::JavascriptCanAccessClipboard, true);
+
+    settings()->setFontFamily(QWebSettings::StandardFont,
+                              Utils::Settings::get("DefaultFont/fontFamily").toString());
+
+    settings()->setFontSize(QWebSettings::DefaultFontSize,
+                            Utils::Settings::get("DefaultFont/fontSize").toInt());
 
     QUrl style(QUrl::fromLocalFile(App::currentStyle("default.css")));
 
