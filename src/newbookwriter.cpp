@@ -145,7 +145,7 @@ QString NewBookWriter::processPageText(int pageID, QString text)
         QString footnoteText = pageTextList.last().trimmed();
 
         pageText.replace(QRegExp(_u("\\(¬?([0-9]{1,2})¬?\\)")),
-                             "<sup class=\"fnn\"><a class=\"footn\" id=\"fnb\\1\" href=\"#fn\\1\">(\\1)</a></sup>");
+                             "<sup class=\"fnn\"><a class=\"footn\" href=\"#fn\\1\" id=\"fnb\\1\">(\\1)</a></sup>");
 
         footnoteText.replace(QRegExp(_u("\\(¬?([0-9]{1,2})¬?\\)")),
                              "<sup class=\"fnb\"><a href=\"#fnb\\1\" id=\"fn\\1\">(\\1)</a></sup>");
