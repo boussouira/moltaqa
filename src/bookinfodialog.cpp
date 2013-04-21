@@ -4,6 +4,8 @@
 #include "librarybookmanager.h"
 #include "librarymanager.h"
 #include "mainwindow.h"
+#include "richsimplebookreader.h"
+#include "richtafessirreader.h"
 #include "utils.h"
 #include "webview.h"
 
@@ -127,6 +129,31 @@ void BookInfoDialog::setup()
         html.insertDT(tr("ملاحظات:"));
         // Copy the object before editing it
         html.insertDD(QString(m_book->comment).replace("\n", "<br>"));
+    }
+
+    if(!m_book->isQuran()) {
+        try {
+            RichBookReader *reader = 0;
+
+            if(m_book->isNormal())
+                reader = new RichSimpleBookReader();
+            else if(m_book->isTafessir())
+                reader = new RichTafessirReader();
+            else
+                throw BookException(tr("لم يتم التعرف على نوع الكتاب"), QString("Book Type: %1").arg(m_book->type));
+
+            reader->setBookInfo(m_book);
+            reader->openBook();
+
+            int pagesCount = reader->pagesCount();
+            if(pagesCount) {
+                html.insertDT(tr("عدد الصفحات:"));
+                html.insertDD(QString::number(pagesCount));
+            }
+
+        } catch (BookException &e) {
+            e.print();
+        }
     }
 
     if(bookMeta) {
