@@ -7,6 +7,8 @@ class QuranTextFormat;
 
 class RichQuranReader : public RichBookReader
 {
+    Q_OBJECT
+
 public:
     RichQuranReader(QObject *parent=0);
     ~RichQuranReader();

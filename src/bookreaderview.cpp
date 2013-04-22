@@ -11,6 +11,7 @@
 #include "mainwindow.h"
 #include "modelenums.h"
 #include "openpagedialog.h"
+#include "quranaudiomanager.h"
 #include "richquranreader.h"
 #include "richsimplebookreader.h"
 #include "richtafessirreader.h"
@@ -20,6 +21,9 @@
 #include "utils.h"
 #include "webview.h"
 
+#include <phonon/audiooutput.h>
+#include <phonon/mediaobject.h>
+#include <phonon/mediasource.h>
 #include <qaction.h>
 #include <qboxlayout.h>
 #include <qcombobox.h>
@@ -50,10 +54,20 @@ BookReaderView::BookReaderView(LibraryManager *libraryManager, QWidget *parent):
     createMenus();
     loadTafessirList();
 
+    m_mediaObject = new Phonon::MediaObject(this);
+    m_audioOutput = new Phonon::AudioOutput(this);
+    m_handleSourceChange = false;
+
+    Phonon::createPath(m_mediaObject, m_audioOutput);
+
     connect(m_viewManager, SIGNAL(currentTabChanged(int)), SLOT(updateActions()));
     connect(m_viewManager, SIGNAL(currentTabChanged(int)), SLOT(tabChanged(int)));
     connect(m_viewManager, SIGNAL(lastTabClosed()), SIGNAL(lastTabClosed()));
     connect(m_viewManager, SIGNAL(lastTabClosed()), SIGNAL(hideMe()));
+    connect(m_mediaObject, SIGNAL(aboutToFinish()), SLOT(playerAboutToFinnish()));
+    connect(m_mediaObject, SIGNAL(finished()), SLOT(playerFinnish()));
+    connect(m_mediaObject, SIGNAL(currentSourceChanged(Phonon::MediaSource)),
+            SLOT(playerSourceChanged(Phonon::MediaSource)));
 }
 
 BookReaderView::~BookReaderView()
@@ -126,6 +140,11 @@ void BookReaderView::createMenus()
 
     m_comboTafasir = new QComboBox(this);
 
+    m_playQuranAudio = new QAction(QIcon("/home/naruto/Programming/moltaqa-lib/share/moltaqa-lib/images/media-playback-start.png"),
+                                   tr("قراءة الآية"), this);
+
+    m_comboQuranReciter = new QComboBox(this);
+
     // Add action to their toolbars
     m_toolBarGeneral = new QToolBar(tr("عام"), this);
     m_toolBarGeneral->addAction(m_actionNewTab);
@@ -143,6 +162,9 @@ void BookReaderView::createMenus()
     m_toolBarTafesir = new QToolBar(tr("التفاسير"), this);
     m_toolBarTafesir->addWidget(m_comboTafasir);
     m_toolBarTafesir->addAction(m_openSelectedTafsir);
+    m_toolBarTafesir->addSeparator();
+    m_toolBarTafesir->addWidget(m_comboQuranReciter);
+    m_toolBarTafesir->addAction(m_playQuranAudio);
 
     m_toolBarGeneral->setObjectName("BookReaderView.General");
     m_toolBarNavigation->setObjectName("BookReaderView.Navigation");
@@ -205,6 +227,7 @@ void BookReaderView::createMenus()
     // Tafessir actions
     connect(m_openSelectedTafsir, SIGNAL(triggered()), SLOT(openTafessir()));
     connect(m_taffesirManager, SIGNAL(ModelsReady()), SLOT(loadTafessirList()));
+    connect(m_playQuranAudio, SIGNAL(triggered()), SLOT(quranPlayToggle()));
 }
 
 void BookReaderView::updateToolBars()
@@ -385,6 +408,9 @@ void BookReaderView::loadTafessirList()
     m_comboTafasir->setEditable(true);
     m_comboTafasir->completer()->setCompletionMode(QCompleter::PopupCompletion);
 
+    m_comboQuranReciter->clear();
+    m_comboQuranReciter->setModel(m_libraryManager->quranAudioManager()->recitersModel());
+
     updateToolBars();
 }
 
@@ -396,6 +422,74 @@ void BookReaderView::removeTashkil(bool remove)
     foreach (BookViewBase *book, list) {
         book->bookReader()->setRemoveTashkil(remove);
         book->reloadCurrentPage();
+    }
+}
+
+void BookReaderView::quranPlayToggle()
+{
+    if(m_mediaObject->state() == Phonon::PlayingState) {
+        m_mediaObject->pause();
+    } else if(m_mediaObject->state() == Phonon::PausedState) {
+        m_mediaObject->play();
+    } else {
+        playCurentAya();
+        qDebug() << "Stat:" << m_mediaObject->state();
+    }
+}
+
+void BookReaderView::playCurentAya()
+{
+    RichQuranReader *reader = qobject_cast<RichQuranReader*>(currentBookWidget()->bookReader());
+    ml_return_on_fail2(reader, "BookReaderView::playCurentAya no Quran reader found");
+
+    QString baseUrl = m_comboQuranReciter->itemData(m_comboQuranReciter->currentIndex()).toString();
+
+    baseUrl.append(QString("/%1%2.mp3")
+                   .arg(reader->page()->sora, 3, 10, QChar('0'))
+                   .arg(reader->page()->aya, 3, 10, QChar('0')));
+
+    qDebug() << "Play" << baseUrl;
+
+    m_handleSourceChange = false;
+    m_mediaObject->setCurrentSource(Phonon::MediaSource(baseUrl));
+    m_mediaObject->play();
+
+    m_handleSourceChange = true;
+}
+
+void BookReaderView::playerAboutToFinnish()
+{
+    RichQuranReader *reader = qobject_cast<RichQuranReader*>(currentBookWidget()->bookReader());
+    ml_return_on_fail2(reader, "BookReaderView::playCurentAya no Quran reader found");
+
+    QString baseUrl = m_comboQuranReciter->itemData(m_comboQuranReciter->currentIndex()).toString();
+
+    int sora = reader->page()->sora;
+    int aya = reader->page()->aya + 1;
+    if(aya > reader->page()->ayatCount) {
+        aya = 1;
+        ++sora;
+    }
+
+    baseUrl.append(QString("/%1%2.mp3")
+                   .arg(sora, 3, 10, QChar('0'))
+                   .arg(aya, 3, 10, QChar('0')));
+
+    qDebug() << "Enqueue" << baseUrl;
+
+    m_mediaObject->enqueue(Phonon::MediaSource(baseUrl));
+}
+
+void BookReaderView::playerFinnish()
+{
+    //currentBookWidget()->bookReader()->nextAya();
+}
+
+void BookReaderView::playerSourceChanged(const Phonon::MediaSource &source)
+{
+    if (m_handleSourceChange) {
+        qDebug() << "BookReaderView::playerSourceChanged" << source.url().path();
+        currentBookWidget()->scrollDown();
     }
 }
 

@@ -18,6 +18,12 @@ class CLuceneQuery;
 class FilterLineEdit;
 class BookWidgetManager;
 
+namespace Phonon {
+class MediaObject;
+class AudioOutput;
+class MediaSource;
+}
+
 class BookReaderView : public AbstarctView
 {
     Q_OBJECT
@@ -48,6 +54,7 @@ public slots:
     void loadTafessirList();
     void removeTashkil(bool remove);
 
+
     // TODO: Recode these methods properly (remove code dupliction)
     void getSheer();
     void getMateen();
@@ -55,8 +62,14 @@ public slots:
 protected slots:
     void editCurrentBook();
 
+    void quranPlayToggle();
+    void playerAboutToFinnish();
+    void playerFinnish();
+    void playerSourceChanged(const Phonon::MediaSource &);
+
 protected:
     void createMenus();
+    void playCurentAya();
 
 signals:
     void lastTabClosed();
@@ -80,10 +93,16 @@ private:
     QAction *m_bookInfoAct;
     QAction *m_removeTashekilAct;
     QAction *m_openSelectedTafsir;
+    QAction *m_playQuranAudio;
     QToolBar *m_toolBarGeneral;
     QToolBar *m_toolBarNavigation;
     QToolBar *m_toolBarTafesir;
     QComboBox *m_comboTafasir;
+    QComboBox *m_comboQuranReciter;
+
+    Phonon::MediaObject *m_mediaObject;
+    Phonon::AudioOutput *m_audioOutput;
+    bool m_handleSourceChange;
 };
 
 #endif // BOOKREADERVIEW_H

@@ -27,6 +27,7 @@ class FavouritesManager;
 class SearchManager;
 class QAction;
 class StatisticsManager;
+class QuranAudioManager;
 
 class LibraryManager : public DatabaseManager
 {
@@ -64,6 +65,7 @@ public:
     TarajemRowatManager *rowatManager();
     FavouritesManager *favouritesManager();
     SearchManager *searchManager();
+    QuranAudioManager *quranAudioManager();
 
     static int helpBookID() { return 101; }
     static QString helpBookUUID() { return "3491b579-a5e6-4eb7-b5b3-08a66f361849"; }
@@ -81,6 +83,7 @@ protected:
     FavouritesManager *m_favourites;
     SearchManager *m_searchManager;
     StatisticsManager *m_statisticsManager;
+    QuranAudioManager *m_quranAudioManager;
 };
 
 #endif // LIBRARYMANAGER_H

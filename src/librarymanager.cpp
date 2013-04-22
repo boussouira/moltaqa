@@ -8,6 +8,7 @@
 #include "librarybook.h"
 #include "librarybookmanager.h"
 #include "libraryinfo.h"
+#include "quranaudiomanager.h"
 #include "searchmanager.h"
 #include "searchresult.h"
 #include "statisticsmanager.h"
@@ -81,6 +82,7 @@ void LibraryManager::openManagers()
     m_rowatManager = new TarajemRowatManager(this);
     m_searchManager = new SearchManager(this);
     m_statisticsManager = new StatisticsManager(this);
+    m_quranAudioManager = new QuranAudioManager(this);
 
     m_managers.clear();
 
@@ -91,7 +93,8 @@ void LibraryManager::openManagers()
                << m_taffesirManager
                << m_rowatManager
                << m_searchManager
-               << m_statisticsManager;
+               << m_statisticsManager
+               << m_quranAudioManager;
 
     foreach (ListManager *manager, m_managers)
         manager->loadModels();
@@ -243,6 +246,11 @@ FavouritesManager *LibraryManager::favouritesManager()
 SearchManager *LibraryManager::searchManager()
 {
     return m_searchManager;
+}
+
+QuranAudioManager *LibraryManager::quranAudioManager()
+{
+    return m_quranAudioManager;
 }
 
 void LibraryManager::addHelpBook()

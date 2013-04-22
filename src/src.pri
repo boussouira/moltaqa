@@ -1,7 +1,7 @@
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
-QT += sql webkit xml
+QT += sql webkit xml phonon
 
 MOC_DIR += .moc
 OBJECTS_DIR += .obj
@@ -161,7 +161,8 @@ SOURCES += mainwindow.cpp \
     bookmediaeditor.cpp \
     bookfilesreader.cpp \
     checkablemessagebox.cpp \
-    wizardpage.cpp
+    wizardpage.cpp \
+    quranaudiomanager.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -311,7 +312,8 @@ HEADERS += mainwindow.h \
     bookmediaeditor.h \
     bookfilesreader.h \
     checkablemessagebox.h \
-    wizardpage.h
+    wizardpage.h \
+    quranaudiomanager.h
 
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
