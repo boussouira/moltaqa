@@ -42,7 +42,6 @@ BookMediaEditor::BookMediaEditor(QWidget *parent) :
 
     ui->verticalLayout->insertWidget(0, m_webView);
 
-    connect(ui->buttonBox->button(QDialogButtonBox::Ok), SIGNAL(clicked()), SLOT(accept()));
     connect(ui->pushAddMedia, SIGNAL(clicked()), SLOT(addMedia()));
     connect(ui->pushRemoveMedia, SIGNAL(clicked()), SLOT(removeMedia()));
     connect(ui->treeView, SIGNAL(doubleClicked(QModelIndex)),
