@@ -147,9 +147,6 @@
           <string>ستايل العرض</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_5">
-          <property name="margin">
-           <number>0</number>
-          </property>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
@@ -199,9 +196,6 @@
           <string>خط العرض:</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_7">
-          <property name="margin">
-           <number>0</number>
-          </property>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
