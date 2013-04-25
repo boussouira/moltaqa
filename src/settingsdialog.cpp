@@ -436,8 +436,7 @@ void SettingsDialog::saveSettings()
     saveSetting(settings, "Style", "showQuranFirst", ui->checkShowQuranFirst->isChecked(), true);
     saveSetting(settings, "Style", "drawAyatNumber", ui->checkDrawAyatNumber->isChecked(), true);
 
-    QWebSettings *webSettings = QWebSettings::globalSettings();
-    webSettings->clearMemoryCaches();
+    QWebSettings::globalSettings()->clearMemoryCaches();
 
     if(m_needAppRestart) {
         QMessageBox::information(this,
@@ -524,8 +523,7 @@ void SettingsDialog::updateIndex()
 
 void SettingsDialog::fontSettingChange()
 {
-    QWebSettings *webSettings = QWebSettings::globalSettings();
-    webSettings->clearMemoryCaches();
+    QWebSettings::globalSettings()->clearMemoryCaches();
 }
 
 void SettingsDialog::on_pushEditRefer_clicked()
