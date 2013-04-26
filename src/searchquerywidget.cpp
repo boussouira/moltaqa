@@ -280,6 +280,7 @@ void SearchQueryWidget::setupCleanMenu()
         QMenu *menu = new QMenu(line);
         QAction *clearSpecialCharAct = new QAction(tr("ابطال مفعول الاقواس وغيرها"), line);
         QAction *removeTashekilAct = new QAction(tr("حذف التشكيل"), line);
+        QAction *matchSearchAct = new QAction(tr("بحث مطابق"), line);
 
         if(line != ui->lineExactQuery) {
             menu->addAction(clearSpecialCharAct);
@@ -287,9 +288,11 @@ void SearchQueryWidget::setupCleanMenu()
         }
 
         menu->addAction(removeTashekilAct);
+        menu->addAction(matchSearchAct);
 
         connect(clearSpecialCharAct, SIGNAL(triggered()), SLOT(clearSpecialChar()));
         connect(removeTashekilAct, SIGNAL(triggered()), SLOT(removeTashekil()));
+        connect(matchSearchAct, SIGNAL(triggered()), SLOT(matchSearch()));
 
         line->setFilterMenu(menu);
     }
