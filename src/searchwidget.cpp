@@ -185,7 +185,7 @@ void SearchWidget::loadSettings()
         ui->comboSortSearch->setCurrentIndex(settings.value("sortSearch", 0).toInt());
         ui->comboSearchField->setCurrentIndex(settings.value("searchField", 0).toInt());
 
-        ui->checkShowPageInfo->setChecked(settings.value("showPageInfo", true).toBool());
+        ui->checkShowPageInfo->setChecked(settings.value("showPageInfo", false).toBool());
         ui->checkShowResultTitles->setChecked(settings.value("showResultTitles", true).toBool());
     }
 
