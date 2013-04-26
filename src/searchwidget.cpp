@@ -306,9 +306,15 @@ void SearchWidget::doneSearching()
             && Utils::Settings::get("Search/returnToSearchWidget", true).toBool()
             && !m_searcher->resultsCount()) {
         setCurrentWidget(Search);
+
+        QString warningText = tr("لم يتم العثور على ما يطابق بحثك");
+
+        if(ui->comboSearchField->currentIndex())
+            warningText += "<br>" + tr("ملاحظة: جرب البحث في كامل الصفحة");
+
         QMessageBox::warning(this,
                              tr("بحث"),
-                             tr("لم يتم العثور على ما يطابق بحثك"));
+                             warningText);
     }
 }
 
