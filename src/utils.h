@@ -14,11 +14,16 @@
 
 #define ML_DEFAULT_STYLE "default"
 
-#define ML_QURAN_FONT_FAMILY "KFGQPC Uthman Taha Naskh"
-#define ML_QURAN_FONT_SIZE 26
-
 #define ML_DEFAULT_FONT_FAMILY "Lotus Linotype"
 #define ML_DEFAULT_FONT_SIZE 26
+
+#if QT_VERSION >= 0x040805
+    #define ML_QURAN_FONT_FAMILY "KFGQPC Uthman Taha Naskh"
+#else
+    #define ML_QURAN_FONT_FAMILY ML_DEFAULT_FONT_FAMILY
+#endif
+
+#define ML_QURAN_FONT_SIZE ML_DEFAULT_FONT_SIZE
 
 class QSqlQuery;
 class QSqlDatabase;
