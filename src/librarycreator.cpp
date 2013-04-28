@@ -24,6 +24,7 @@
 
 #include <qfileinfo.h>
 #include <qsqlrecord.h>
+#include <qsqlerror.h>
 #include <qvariant.h>
 
 void RemoveShamelaShoorts(QString &pageText, ShoortsList &shoorts) {

@@ -9,6 +9,7 @@
 #include "resultwidget.h"
 #include "stringutils.h"
 #include "tabwidget.h"
+#include "utils.h"
 #include "webview.h"
 
 #include <qaction.h>

@@ -13,7 +13,6 @@
 
 #include <qdatetime.h>
 #include <qitemselectionmodel.h>
-#include <qsqlquery.h>
 
 BookSearchFilter::BookSearchFilter(QObject *parent) :
     SearchFilterManager(parent),

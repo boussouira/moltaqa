@@ -15,7 +15,6 @@
 
 #include <qdatetime.h>
 #include <qfuture.h>
-#include <qsqlquery.h>
 #include <qtconcurrentmap.h>
 
 LibrarySearcher::LibrarySearcher(QObject *parent)

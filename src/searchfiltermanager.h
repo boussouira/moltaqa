@@ -2,7 +2,6 @@
 #define SEARCHFILTERMANAGER_H
 
 #include <qobject.h>
-#include <qsqldatabase.h>
 
 #include <CLucene/StdHeader.h>
 #include <CLucene/search/BooleanClause.h>
@@ -85,7 +84,6 @@ protected:
     QTreeView *m_treeView;
     FilterLineEdit *m_lineEdit;
     LibraryInfo *m_libraryInfo;
-    QSqlDatabase m_indexDB;
     QMenu *m_menu;
     QAction *m_actFilterByBooks;
     QAction *m_actFilterByAuthors;

@@ -3,7 +3,6 @@
 
 #include <qdatetime.h>
 #include <qdom.h>
-#include <qfile.h>
 #include <qhash.h>
 #include <qxmlstream.h>
 

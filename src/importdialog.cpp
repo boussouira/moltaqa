@@ -21,10 +21,6 @@
 #include <qmessagebox.h>
 #include <qfiledialog.h>
 #include <qstandarditemmodel.h>
-#include <qsqldatabase.h>
-#include <qsqlquery.h>
-#include <qsqlrecord.h>
-#include <qsqlerror.h>
 #include <qsignalmapper.h>
 #include <qtoolbutton.h>
 #include <qevent.h>

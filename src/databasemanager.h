@@ -2,9 +2,10 @@
 #define DATABASEMANAGER_H
 
 #include "listmanager.h"
-#include "qsqldatabase.h"
-#include "qsqlquery.h"
 #include "sqlutils.h"
+
+#include <qsqldatabase.h>
+#include <qsqlquery.h>
 
 class QStandardItemModel;
 

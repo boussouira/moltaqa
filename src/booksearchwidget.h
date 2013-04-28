@@ -3,10 +3,6 @@
 
 #include "librarybook.h"
 #include "searchwidget.h"
-#include "utils.h"
-
-#include <qsqldatabase.h>
-#include <qsqlquery.h>
 
 class BookSearchFilter;
 class LibraryBookManager;

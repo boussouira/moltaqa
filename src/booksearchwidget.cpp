@@ -6,6 +6,7 @@
 #include "resultwidget.h"
 #include "sortfilterproxymodel.h"
 #include "ui_searchwidget.h"
+#include "utils.h"
 
 BookSearchWidget::BookSearchWidget(QWidget *parent) :
     SearchWidget(parent)
