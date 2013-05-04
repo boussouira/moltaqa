@@ -62,6 +62,9 @@ protected:
     int getNewBookID();
     QString getNewBookUUID();
 
+signals:
+    void bookRemoved(int bookID);
+
 protected:
     LibraryInfo *m_libraryInfo;
     AuthorsManager *m_authorsManager;

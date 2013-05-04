@@ -5,7 +5,6 @@
 #include "librarybookmanager.h"
 #include "libraryinfo.h"
 #include "librarymanager.h"
-#include "mainwindow.h"
 #include "modelenums.h"
 #include "stringutils.h"
 #include "timeutils.h"
@@ -26,7 +25,7 @@ StatisticsManager::StatisticsManager(QObject *parent) :
 {
     ml_set_instance(m_instance, this);
 
-    QDir dataDir(MW->libraryInfo()->dataDir());
+    QDir dataDir(LibraryManager::instance()->libraryInfo()->dataDir());
     m_dom.setFilePath(dataDir.filePath("usage.xml"));
 
     m_uploader = new UpLoader(this);

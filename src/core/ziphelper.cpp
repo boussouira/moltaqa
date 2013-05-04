@@ -2,7 +2,6 @@
 #include "JlCompress.h"
 #include "libraryinfo.h"
 #include "librarymanager.h"
-#include "mainwindow.h"
 #include "utils.h"
 #include "ziputils.h"
 
@@ -267,7 +266,7 @@ void ZipHelper::addFromFile(const QString &fileName, const QString &filePath, In
 
 void ZipHelper::addFromDomHelper(const QString &filename, XmlDomHelper &domHelper, ZipHelper::InsertOrder order)
 {
-    QString domPath = Utils::Rand::fileName(MW->libraryInfo()->tempDir(),
+    QString domPath = Utils::Rand::fileName(LibraryManager::instance()->libraryInfo()->tempDir(),
                                             true, "temp_dom_", "xml");
 
     domHelper.save(domPath);
@@ -317,7 +316,7 @@ void ZipHelper::addFromZip(const QString &filePath)
 
 void ZipHelper::addFromDomDocument(const QString &filename, QDomDocument &doc, ZipHelper::InsertOrder order)
 {
-    QString domPath = Utils::Rand::fileName(MW->libraryInfo()->tempDir(),
+    QString domPath = Utils::Rand::fileName(LibraryManager::instance()->libraryInfo()->tempDir(),
                                             true, "temp_dom_", "xml");
 
     QFile file;
@@ -392,7 +391,7 @@ void ZipHelper::remove(const QString &filename)
 QString ZipHelper::zip(QString zipFilePath)
 {
     QString zipPath = zipFilePath.size() ? zipFilePath
-                                         : Utils::Rand::fileName(MW->libraryInfo()->tempDir(),
+                                         : Utils::Rand::fileName(LibraryManager::instance()->libraryInfo()->tempDir(),
                                                                  true, "temp_zip_", "zip");
 
     QuaZip zip;

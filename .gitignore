@@ -13,7 +13,6 @@
 *_resource.rc
 .#*
 *.*#
-core
 .qmake.cache
 tags
 .DS_Store

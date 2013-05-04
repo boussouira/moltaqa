@@ -1,6 +1,6 @@
 #include "authorsmanager.h"
 #include "libraryinfo.h"
-#include "mainwindow.h"
+#include "librarymanager.h"
 #include "modelenums.h"
 #include "stringutils.h"
 #include "timeutils.h"
@@ -13,7 +13,7 @@
 AuthorsManager::AuthorsManager(QObject *parent) :
     DatabaseManager(parent)
 {
-    QDir dataDir(MW->libraryInfo()->dataDir());
+    QDir dataDir(LibraryManager::instance()->libraryInfo()->dataDir());
     setDatabasePath(dataDir.filePath("authors.db"));
 
     openDatabase();

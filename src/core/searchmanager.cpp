@@ -1,7 +1,6 @@
 #include "searchmanager.h"
 #include "libraryinfo.h"
 #include "librarymanager.h"
-#include "mainwindow.h"
 #include "utils.h"
 
 #include <qdir.h>
@@ -10,7 +9,7 @@
 SearchManager::SearchManager(QObject *parent) :
     DatabaseManager(parent)
 {
-    QDir dataDir(MW->libraryInfo()->dataDir());
+    QDir dataDir(LibraryManager::instance()->libraryInfo()->dataDir());
     setDatabasePath(dataDir.filePath("search.db"));
 
     openDatabase();

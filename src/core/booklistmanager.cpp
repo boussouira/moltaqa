@@ -4,7 +4,6 @@
 #include "librarybookmanager.h"
 #include "libraryinfo.h"
 #include "librarymanager.h"
-#include "mainwindow.h"
 #include "modelenums.h"
 #include "stringutils.h"
 #include "timeutils.h"
@@ -25,7 +24,7 @@ BookListManager::BookListManager(QObject *parent)
       m_bookIcon(QIcon(":/images/book.png")),
       m_catIcon(QIcon(":/images/book-cat.png"))
 {
-    QDir dataDir(MW->libraryInfo()->dataDir());
+    QDir dataDir(LibraryManager::instance()->libraryInfo()->dataDir());
     m_dom.setFilePath(dataDir.filePath("bookslist.xml"));
     m_authorsManager = LibraryManager::instance()->authorsManager();
 

@@ -1,6 +1,5 @@
 #include "librarymanager.h"
 #include "authorsmanager.h"
-#include "bookeditor.h"
 #include "booklistmanager.h"
 #include "favouritesmanager.h"
 #include "importmodel.h"
@@ -9,7 +8,6 @@
 #include "librarybookmanager.h"
 #include "libraryinfo.h"
 #include "searchmanager.h"
-#include "searchresult.h"
 #include "statisticsmanager.h"
 #include "taffesirlistmanager.h"
 #include "tarajemrowatmanager.h"
@@ -60,6 +58,8 @@ LibraryManager *LibraryManager::instance()
 
 LibraryInfo *LibraryManager::libraryInfo()
 {
+    Q_CHECK_PTR(m_libraryInfo);
+
     return m_libraryInfo;
 }
 

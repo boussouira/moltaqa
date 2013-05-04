@@ -1,10 +1,10 @@
 #include "taffesirlistmanager.h"
 #include "libraryinfo.h"
-#include "mainwindow.h"
+#include "librarymanager.h"
 #include "modelenums.h"
-#include "shamelaimportinfo.h"
 #include "utils.h"
 #include "xmlutils.h"
+#include "stringutils.h"
 
 #include <qdir.h>
 #include <qdom.h>
@@ -15,7 +15,7 @@ static TaffesirListManager *m_instance = 0;
 
 TaffesirListManager::TaffesirListManager(QObject *parent) : XmlManager(parent)
 {
-    QDir dataDir(MW->libraryInfo()->dataDir());
+    QDir dataDir(LibraryManager::instance()->libraryInfo()->dataDir());
     m_dom.setFilePath(dataDir.filePath("taffesirlist.xml"));
     m_model = 0;
 

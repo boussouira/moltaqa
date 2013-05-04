@@ -1,10 +1,7 @@
 #include "librarybookmanager.h"
 #include "authorsmanager.h"
-#include "bookreaderview.h"
-#include "bookwidgetmanager.h"
 #include "libraryinfo.h"
 #include "librarymanager.h"
-#include "mainwindow.h"
 #include "modelenums.h"
 #include "quazip.h"
 #include "quazipfile.h"
@@ -20,7 +17,7 @@ LibraryBookManager::LibraryBookManager(QObject *parent) :
     DatabaseManager(parent),
     m_quranBook(0)
 {
-    m_libraryInfo = MW->libraryInfo();
+    m_libraryInfo = LibraryManager::instance()->libraryInfo();
 
     QDir dataDir(m_libraryInfo->dataDir());
     setDatabasePath(dataDir.filePath("books.db"));
@@ -416,7 +413,9 @@ bool LibraryBookManager::removeBook(int bookID)
         return false;
     }
 
-    MW->bookReaderView()->bookWidgetManager()->closeBook(bookID);
+    emit bookRemoved(bookID);
+    // TODO: concect this to:
+    //MW->bookReaderView()->bookWidgetManager()->closeBook(bookID);
 
     if(book->id != LibraryManager::helpBookID()) {
         ml_warn_on_fail(QFile::remove(book->path),

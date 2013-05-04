@@ -5,7 +5,11 @@ QT += testlib sql
 CONFIG += qtestlib
 DESTDIR = ../bin
 
-INCLUDEPATH += ../src
+INCLUDEPATH += ../src/core
 
 HEADERS += utilstest.h
-SOURCES += utilstest.cpp ../src/utils.cpp ../src/stringutils.cpp ../src/sqlutils.cpp  ../src/bookutils.cpp
+SOURCES += utilstest.cpp \
+    ../src/core/utils.cpp \
+    ../src/core/stringutils.cpp \
+    ../src/core/sqlutils.cpp  \
+    ../src/core/bookutils.cpp

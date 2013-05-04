@@ -17,6 +17,7 @@ public:
     QString genereatedPath() { return m_genereatedPath; }
 
     void setOutDir(QString outDir) { m_outDir = outDir; }
+    void setTempDir(QString tempDir) { m_tempDir = tempDir; }
     void setRemoveTashkil(bool remove) { m_removeTashkil = remove; }
     void setAddPageNumber(bool add) { m_addPageNumber = add; }
 

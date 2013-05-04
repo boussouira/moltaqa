@@ -3,7 +3,6 @@
 #include "librarybookmanager.h"
 #include "libraryinfo.h"
 #include "librarymanager.h"
-#include "mainwindow.h"
 #include "utils.h"
 #include "xmlutils.h"
 
@@ -22,7 +21,7 @@ static IndexTracker *m_instance = 0;
 IndexTracker::IndexTracker(QObject *parent) :
     QObject(parent)
 {
-    m_libraryInfo = MW->libraryInfo();
+    m_libraryInfo = LibraryManager::instance()->libraryInfo();
     m_libraryManager = LibraryManager::instance();
     m_bookManager = m_libraryManager->bookManager();
 

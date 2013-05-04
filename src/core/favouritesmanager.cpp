@@ -2,7 +2,7 @@
 #include "authorsmanager.h"
 #include "librarybook.h"
 #include "libraryinfo.h"
-#include "mainwindow.h"
+#include "librarymanager.h"
 #include "modelenums.h"
 #include "utils.h"
 #include "xmlutils.h"
@@ -13,7 +13,7 @@
 FavouritesManager::FavouritesManager(QObject *parent) :
     BookListManager(parent)
 {
-    QDir dataDir(MW->libraryInfo()->dataDir());
+    QDir dataDir(LibraryManager::instance()->libraryInfo()->dataDir());
     m_dom.setFilePath(dataDir.filePath("favourites.xml"));
 }
 

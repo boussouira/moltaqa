@@ -2,7 +2,6 @@
 #include "authorsmanager.h"
 #include "libraryinfo.h"
 #include "librarymanager.h"
-#include "mainwindow.h"
 #include "modelenums.h"
 #include "stringutils.h"
 #include "timeutils.h"
@@ -14,7 +13,7 @@
 TarajemRowatManager::TarajemRowatManager(QObject *parent) :
     DatabaseManager(parent)
 {
-    QDir dataDir(MW->libraryInfo()->dataDir());
+    QDir dataDir(LibraryManager::instance()->libraryInfo()->dataDir());
     setDatabasePath(dataDir.filePath("rowat.db"));
 
     openDatabase();
