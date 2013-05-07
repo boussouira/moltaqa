@@ -43,10 +43,8 @@ SearchView::SearchView(QWidget *parent) : AbstarctView(parent)
     bar->addAction(actSearchInfo);
 
     bar->setObjectName("SearchView.Tools");
-    m_toolBarSearch->setObjectName("SearchView.Search");
 
     m_toolBars << bar;
-    m_toolBars << m_toolBarSearch;
 
     setLayout(m_layout);
 
@@ -66,15 +64,6 @@ void SearchView::aboutToShow()
 {
     if(!m_tabWidget->count())
         newTab(SearchWidget::LibrarySearch);
-}
-
-WebViewSearcher *SearchView::searcher()
-{
-    ml_return_val_on_fail(currentSearchWidget(), 0);
-    ml_return_val_on_fail(currentSearchWidget()->resultWidget(), 0);
-    ml_return_val_on_fail(currentSearchWidget()->currentWidget() == SearchWidget::Result, 0);
-
-    return currentSearchWidget()->resultWidget()->resultWebView()->searcher();
 }
 
 bool SearchView::canSearch(bool showMessage)

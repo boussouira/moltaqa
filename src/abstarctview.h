@@ -5,7 +5,6 @@
 #include <qwidget.h>
 
 class FilterLineEdit;
-class WebViewSearcher;
 class QToolBar;
 class QKeyEvent;
 
@@ -32,17 +31,10 @@ public:
     static QAction *actionSeparator(QObject *parent=0);
 
     virtual QString viewLink();
-    virtual WebViewSearcher *searcher();
 
 protected:
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
-
-protected slots:
-    void searchInPage();
-    void searchNext();
-    void searchPrev();
-    void updateSearchNavigation();
 
 signals:
     void hideMe();
@@ -51,10 +43,6 @@ signals:
 protected:
     QList<QToolBar*> m_toolBars;
     QList<QAction*> m_navActions;
-    QToolBar *m_toolBarSearch;
-    FilterLineEdit *m_searchEdit;
-    QAction *m_searchPrevAction;
-    QAction *m_searchNextAction;
     bool m_selectable;
     bool m_crtlKey;
 };

@@ -537,6 +537,11 @@ void WebView::keyPressEvent(QKeyEvent *event)
         if(zoom != zoomFactor() && 0.1 < zoom && zoom < 5.0) {
             setZoomFactor(zoom);
         }
+
+        if(event->key() == Qt::Key_F) {
+            m_searcher->setSearchText(selectedText().trimmed());
+            m_searcher->exec();
+        }
     }
 
     QWebView::keyPressEvent(event);

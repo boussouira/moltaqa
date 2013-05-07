@@ -17,7 +17,6 @@ class QSplitter;
 class QVBoxLayout;
 class QModelIndex;
 class QStandardItemModel;
-class WebViewSearcher;
 
 class BookWidget: public BookViewBase
 {
@@ -29,7 +28,6 @@ public:
 
     LibraryBook::Ptr book();
     AbstractBookReader *bookReader();
-    WebViewSearcher *viewSearcher();
 
     void toggleIndexWidget();
 
@@ -69,10 +67,6 @@ public slots:
     void showIndex();
     void showIndex(int tid);
     QString getBreadcrumbs();
-
-    bool search(const QString &text);
-    void searchNext();
-    void searchPrevious();
 
 signals:
     void gotFocus();
