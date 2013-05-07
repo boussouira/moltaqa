@@ -6,10 +6,7 @@ CONFIG += qtestlib
 DESTDIR = ../bin
 
 INCLUDEPATH += ../src/core
+LIBS += -L../src/core -lmoltaqa-core
 
 HEADERS += utilstest.h
-SOURCES += utilstest.cpp \
-    ../src/core/utils.cpp \
-    ../src/core/stringutils.cpp \
-    ../src/core/sqlutils.cpp  \
-    ../src/core/bookutils.cpp
+SOURCES += utilstest.cpp
