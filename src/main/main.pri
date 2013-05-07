@@ -28,7 +28,6 @@ SOURCES += aboutdialog.cpp \
     bookfilesreader.cpp \
     bookhistorydialog.cpp \
     bookindexeditor.cpp \
-    bookindexer.cpp \
     bookindexerquran.cpp \
     bookindexersimple.cpp \
     bookinfodialog.cpp \
@@ -53,6 +52,8 @@ SOURCES += aboutdialog.cpp \
     favouritesmanagerwidget.cpp \
     favouritessearchfilter.cpp \
     favouritessearchwidget.cpp \
+    fancylineedit.cpp \
+    filterlineedit.cpp \
     filechooserwidget.cpp \
     htmlbookexporter.cpp \
     importdelegates.cpp \
@@ -107,9 +108,11 @@ SOURCES += aboutdialog.cpp \
     webpage.cpp \
     webpagenam.cpp \
     webview.cpp \
+    webviewsearcher.cpp \
     welcomewidget.cpp \
     windowsview.cpp \
-    wizardpage.cpp
+    wizardpage.cpp \
+    bookindexerthread.cpp
 
 HEADERS += aboutdialog.h \
     authorsmanagerwidget.h \
@@ -120,7 +123,6 @@ HEADERS += aboutdialog.h \
     bookfilesreader.h \
     bookhistorydialog.h \
     bookindexeditor.h \
-    bookindexer.h \
     bookindexerquran.h \
     bookindexersimple.h \
     bookinfodialog.h \
@@ -146,6 +148,8 @@ HEADERS += aboutdialog.h \
     favouritesmanagerwidget.h \
     favouritessearchfilter.h \
     favouritessearchwidget.h \
+    fancylineedit.h \
+    filterlineedit.h \
     filechooserwidget.h \
     htmlbookexporter.h \
     importdelegates.h \
@@ -201,9 +205,11 @@ HEADERS += aboutdialog.h \
     webpage.h \
     webpagenam.h \
     webview.h \
+    webviewsearcher.h \
     welcomewidget.h \
     windowsview.h \
-    wizardpage.h
+    wizardpage.h \
+    bookindexerthread.h
 
 FORMS += aboutdialog.ui \
     addbookreferdialog.ui \

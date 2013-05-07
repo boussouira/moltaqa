@@ -147,9 +147,6 @@ void BookReaderView::createMenus()
     m_toolBarGeneral->setObjectName("BookReaderView.General");
     m_toolBarNavigation->setObjectName("BookReaderView.Navigation");
     m_toolBarTafesir->setObjectName("BookReaderView.Tafesir");
-    m_toolBarSearch->setObjectName("BookReaderView.Search");
-
-    updateSearchNavigation();
 
     QMenu *navMenu = new QMenu(this);
     navMenu->setTitle(tr("انتقل إلى"));
@@ -172,7 +169,6 @@ void BookReaderView::createMenus()
     m_toolBars << m_toolBarGeneral;
     m_toolBars << m_toolBarNavigation;
     m_toolBars << m_toolBarTafesir;
-    m_toolBars << m_toolBarSearch;
 
     connect(m_viewManager, SIGNAL(pageChanged()), SLOT(updateActions()));
     connect(m_actionEditBook, SIGNAL(triggered()), SLOT(editCurrentBook()));
@@ -216,8 +212,6 @@ void BookReaderView::updateToolBars()
 
         m_toolBarTafesir->setEnabled(showTafsssir);
         m_toolBarTafesir->setVisible(showTafsssir);
-
-        updateSearchNavigation();
     }
 }
 
@@ -233,12 +227,6 @@ QString BookReaderView::viewLink()
         link.append(QString("book&id=%1&page=%2").arg(bookReader->book()->uuid).arg(bookReader->page()->pageID));
 
     return link;
-}
-
-WebViewSearcher *BookReaderView::searcher()
-{
-    ml_return_val_on_fail(currentBookWidget(), 0);
-    return currentBookWidget()->viewSearcher();
 }
 
 int BookReaderView::currentBookID()

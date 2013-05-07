@@ -1,11 +1,11 @@
 #include "indexmanager.h"
 #include "arabicanalyzer.h"
-#include "bookindexer.h"
+#include "bookindexerthread.h"
 #include "checkablemessagebox.h"
 #include "clconstants.h"
 #include "indextracker.h"
 #include "libraryinfo.h"
-#include "mainwindow.h"
+#include "librarymanager.h"
 #include "statisticsmanager.h"
 #include "stringutils.h"
 #include "timeutils.h"
@@ -18,7 +18,7 @@
 
 IndexManager::IndexManager(QObject *parent) :
     QObject(parent),
-    m_library(MW->libraryInfo()),
+    m_library(LibraryManager::instance()->libraryInfo()),
     m_writer(0),
     m_indexTracker(IndexTracker::instance()),
     m_taskIter(0),
@@ -85,7 +85,7 @@ void IndexManager::start()
     ml_return_on_fail(m_taskIter->taskCount());
 
     if(m_taskIter->taskCount() > 100) {
-        int ret = CheckableMessageBox::question(MW,
+        int ret = CheckableMessageBox::question(0,
                                                 tr("تحديث الفهرس"),
                                                 tr("يجب تحديث %1" "\n" "هل تريد تحديث الفهرس الآن؟")
                                                 .arg(Utils::String::Arabic::plural(m_taskIter->taskCount(),

@@ -1,7 +1,7 @@
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
-QT += sql xml network webkit
+QT += sql xml network
 
 MOC_DIR += .moc
 OBJECTS_DIR += .obj
@@ -26,9 +26,7 @@ SOURCES += abstarctview.cpp \
     clutils.cpp \
     cssformatter.cpp \
     databasemanager.cpp \
-    fancylineedit.cpp \
     favouritesmanager.cpp \
-    filterlineedit.cpp \
     htmlhelper.cpp \
     librarybook.cpp \
     librarybookmanager.cpp \
@@ -54,7 +52,6 @@ SOURCES += abstarctview.cpp \
     timeutils.cpp \
     utils.cpp \
     uploader.cpp \
-    webviewsearcher.cpp \
     wordtypefilter.cpp \
     xmldomhelper.cpp \
     xmlmanager.cpp \
@@ -83,9 +80,7 @@ HEADERS += abstarctview.h \
     clutils.h \
     cssformatter.h \
     databasemanager.h \
-    fancylineedit.h \
     favouritesmanager.h \
-    filterlineedit.h \
     htmlhelper.h \
     librarybook.h \
     librarybookmanager.h \
@@ -112,7 +107,6 @@ HEADERS += abstarctview.h \
     timeutils.h \
     utils.h \
     uploader.h \
-    webviewsearcher.h \
     wordtypefilter.h \
     xmldomhelper.h \
     xmlmanager.h \

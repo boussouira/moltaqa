@@ -16,7 +16,6 @@ public:
 
     QString title();
     void aboutToShow();
-    WebViewSearcher *searcher();
 
     bool canSearch(bool showMessage=true);
 

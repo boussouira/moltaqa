@@ -103,11 +103,6 @@ AbstractBookReader *BookWidget::bookReader()
     return m_reader;
 }
 
-WebViewSearcher *BookWidget::viewSearcher()
-{
-    return m_view->searcher();
-}
-
 void BookWidget::loadSettings()
 {
     QByteArray sizes = Utils::Settings::get("BookWidget/splitter").toByteArray();
@@ -135,21 +130,6 @@ void BookWidget::openReader()
     m_reader->openBook();
 
     m_bookManager->increaseOpenCount(m_book->id);
-}
-
-bool BookWidget::search(const QString &text)
-{
-    return m_view->searcher()->search(text);
-}
-
-void BookWidget::searchNext()
-{
-    m_view->searcher()->next();
-}
-
-void BookWidget::searchPrevious()
-{
-    m_view->searcher()->previous();
 }
 
 bool BookWidget::eventFilter(QObject *obj, QEvent *event)

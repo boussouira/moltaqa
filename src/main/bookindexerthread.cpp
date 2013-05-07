@@ -1,4 +1,4 @@
-#include "bookindexer.h"
+#include "bookindexerthread.h"
 #include "bookindexerquran.h"
 #include "bookindexersimple.h"
 #include "clconstants.h"

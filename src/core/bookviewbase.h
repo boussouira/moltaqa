@@ -6,7 +6,6 @@
 #include <qwidget.h>
 
 class AbstractBookReader;
-class WebViewSearcher;
 
 class BookViewBase : public QWidget
 {
@@ -17,7 +16,6 @@ public:
     LibraryBook::Ptr book();
 
     virtual AbstractBookReader *bookReader()=0;
-    virtual WebViewSearcher *viewSearcher()=0;
 
     virtual void toggleIndexWidget();
 
