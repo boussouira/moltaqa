@@ -1,8 +1,6 @@
 #ifndef INDEXMANAGER_H
 #define INDEXMANAGER_H
 
-#include "clheader.h"
-
 #include <qdatetime.h>
 #include <qobject.h>
 
@@ -12,6 +10,12 @@ class IndexTracker;
 class IndexTaskIter;
 class IndexTask;
 class ArabicAnalyzer;
+
+namespace lucene {
+namespace index {
+class IndexWriter;
+}
+}
 
 class IndexManager : public QObject
 {
@@ -40,7 +44,7 @@ signals:
 
 protected:
     LibraryInfo *m_library;
-    IndexWriter *m_writer;
+    lucene::index::IndexWriter *m_writer;
     IndexTracker *m_indexTracker;
     IndexTaskIter *m_taskIter;
     QList<BookIndexerThread*> m_threads;

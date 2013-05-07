@@ -2,7 +2,6 @@
 #define BOOKREADERVIEW_H
 
 #include "abstarctview.h"
-#include "clutils.h"
 #include "librarybook.h"
 
 class BookViewBase;
