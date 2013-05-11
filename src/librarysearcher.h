@@ -1,8 +1,6 @@
 #ifndef LIBRARYSEARCHER_H
 #define LIBRARYSEARCHER_H
 
-#include "clheader.h"
-
 #include <qcache.h>
 #include <qthread.h>
 
@@ -11,6 +9,15 @@ class LibraryManager;
 class SearchResult;
 class SearchResultReader;
 class CLuceneQuery;
+namespace lucene {
+namespace search {
+class Hits;
+class IndexSearcher;
+class Query;
+class Sort;
+class SortField;
+}
+}
 
 class LibrarySearcher : public QThread
 {
@@ -72,10 +79,10 @@ protected:
     LibraryInfo *m_libraryInfo;
     LibraryManager *m_libraryManager;
     Action m_action;
-    IndexSearcher *m_searcher;
-    Hits* m_hits;
-    Query* m_query;
-    Sort *m_sort;
+    lucene::search::IndexSearcher *m_searcher;
+    lucene::search::Hits* m_hits;
+    lucene::search::Query* m_query;
+    lucene::search::Sort *m_sort;
     CLuceneQuery *m_cluceneQuery;
     SearchResultReader *m_resultReader;
     int m_currentPage;

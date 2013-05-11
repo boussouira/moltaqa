@@ -1,6 +1,7 @@
 #include "librarysearcher.h"
 #include "abstractbookreader.h"
 #include "clconstants.h"
+#include "clheader.h"
 #include "clucenequery.h"
 #include "clutils.h"
 #include "librarybook.h"

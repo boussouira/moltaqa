@@ -3,6 +3,7 @@
 #include "bookindexer.h"
 #include "checkablemessagebox.h"
 #include "clconstants.h"
+#include "clheader.h"
 #include "indextracker.h"
 #include "libraryinfo.h"
 #include "mainwindow.h"
