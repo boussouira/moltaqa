@@ -25,6 +25,7 @@
 #include "viewmanager.h"
 #include "webview.h"
 #include "welcomewidget.h"
+#include "serverapi.h"
 
 #include <qevent.h>
 #include <qfile.h>
@@ -67,6 +68,11 @@ MainWindow::MainWindow(QWidget *parent):
     setWindowTitle(App::name());
     setupProgressWidget();
     loadSettings();
+
+#ifdef DEV_BUILD
+    QMenu *menu = menuBar()->addMenu("Dev");
+    menu->addAction("Login", this, SLOT(loginTest()));
+#endif
 
     connect(ui->actionLogDialog, SIGNAL(triggered()), SLOT(showLogDialog()));
     connect(ui->actionHelp, SIGNAL(triggered()), SLOT(showHelp()));
@@ -631,3 +637,15 @@ void MainWindow::fullScreenMode()
         showFullScreen();
     }
 }
+
+#ifdef DEV_BUILD
+
+void MainWindow::loginTest()
+{
+    ServerApi *api = new ServerApi(this);
+
+    api->login("justroftest@gmail.com", "123456789", true);
+    m_welcomeWidget->setNetworkCookieJar(api->cookieJar());
+}
+
+#endif

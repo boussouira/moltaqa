@@ -5,6 +5,7 @@
 
 class LibraryBookManager;
 class WebView;
+class QNetworkCookieJar;
 
 class WelcomeWidget : public AbstarctView
 {
@@ -15,6 +16,8 @@ public:
     ~WelcomeWidget();
 
     QString title();
+
+    void setNetworkCookieJar(QNetworkCookieJar *cookieJar);
 
 protected:
     void loadSettings();

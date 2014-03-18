@@ -15,6 +15,7 @@
 #include "webview.h"
 
 #include <qboxlayout.h>
+#include <qnetworkcookiejar.h>
 #include <qmenu.h>
 #include <qrunnable.h>
 #include <qsettings.h>
@@ -74,6 +75,12 @@ WelcomeWidget::~WelcomeWidget()
 QString WelcomeWidget::title()
 {
     return tr("صفحة البداية");
+}
+
+void WelcomeWidget::setNetworkCookieJar(QNetworkCookieJar *cookieJar)
+{
+    m_webView->page()->networkAccessManager()->setCookieJar(cookieJar);
+    cookieJar->setParent(0);
 }
 
 void WelcomeWidget::loadSettings()

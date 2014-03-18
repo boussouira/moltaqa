@@ -98,6 +98,10 @@ protected slots:
 
     void fullScreenMode();
 
+#ifdef DEV_BUILD
+    void loginTest();
+#endif
+
 private:
     Ui::MainWindow *ui;
     ViewManager *m_viewManager;

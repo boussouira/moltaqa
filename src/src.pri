@@ -161,7 +161,8 @@ SOURCES += mainwindow.cpp \
     bookmediaeditor.cpp \
     bookfilesreader.cpp \
     checkablemessagebox.cpp \
-    wizardpage.cpp
+    wizardpage.cpp \
+    serverapi.cpp
 HEADERS += mainwindow.h \
     bookpage.h \
     qurantextformat.h \
@@ -311,7 +312,8 @@ HEADERS += mainwindow.h \
     bookmediaeditor.h \
     bookfilesreader.h \
     checkablemessagebox.h \
-    wizardpage.h
+    wizardpage.h \
+    serverapi.h
 
 FORMS += mainwindow.ui settingsdialog.ui \
     indexwidget.ui \
