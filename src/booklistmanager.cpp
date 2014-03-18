@@ -257,6 +257,77 @@ bool BookListManager::containsBook(int bookID)
     return m_booksCatHash.contains(bookID);
 }
 
+void BookListManager::updateCategoriesDb()
+{
+    ml_benchmark_start();
+
+    DatabaseRemover remover;
+    QDir dir(LibraryManager::instance()->libraryInfo()->dataDir());
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "updateCategoriesDb");
+    db.setDatabaseName(dir.filePath("categories.db"));
+
+    if (!db.open()) {
+        ml_warn_db_error(db);
+    }
+
+    QSqlQuery query(db);
+
+    QueryBuilder q;
+    q.setTableName("books", QueryBuilder::Delete);
+    q.exec(query);
+
+    q.setTableName("categories", QueryBuilder::Delete);
+    q.exec(query);
+
+    db.transaction();
+
+
+    QHash<int, int> categoriesBooksCount;
+
+    QHash<int, QString>::const_iterator j = m_booksCatHash.constBegin();
+    while (j != m_booksCatHash.constEnd()) {
+       LibraryBook::Ptr book = LibraryManager::instance()->bookManager()->getLibraryBook(j.key());
+        QString cats = j.value();
+        if(cats.size()) {
+            foreach(QString cat, cats.split(';', QString::SkipEmptyParts)) {
+                int catID = cat.toInt();
+                if(m_catHash.contains(catID)) {
+                    q.setTableName("books", QueryBuilder::Insert);
+                    q.set("id", j.key());
+                    q.set("uuid", book->uuid);
+                    q.set("title", book->title);
+                    q.set("type", book->type);
+                    q.set("author_id", book->authorID);
+                    q.set("author_name", book->authorName);
+                    q.set("cat_id", catID);
+
+                    q.exec(query);
+
+                    ++categoriesBooksCount[catID];
+                }
+            }
+        }
+        ++j;
+    }
+
+    QHash<int, QString>::const_iterator i = m_catHash.constBegin();
+    while (i != m_catHash.constEnd()) {
+        q.setTableName("categories", QueryBuilder::Insert);
+        q.set("id", i.key());
+        q.set("title", i.value());
+        q.set("book_count", categoriesBooksCount[i.key()]);
+
+        q.exec(query);
+        ++i;
+    }
+
+    qDebug() << "Done:" << db.commit();
+
+    ml_benchmark_elapsed("Update catories db");
+
+    remover.removeDatabase(db);
+}
+
 void BookListManager::readNode(QStandardItem *parentItem, QDomElement &element, bool withBooks)
 {
     QList<QStandardItem*> rows;

@@ -53,6 +53,8 @@ public:
 
     bool containsBook(int bookID);
 
+    void updateCategoriesDb();
+
 protected:
     void saveModel(QXmlStreamWriter &writer, QStandardItemModel *model);
     void readNode(QStandardItem *parentItem, QDomElement &element, bool withBooks=true);

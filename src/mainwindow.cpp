@@ -26,6 +26,7 @@
 #include "webview.h"
 #include "welcomewidget.h"
 #include "serverapi.h"
+#include "booklistmanager.h"
 
 #include <qevent.h>
 #include <qfile.h>
@@ -71,6 +72,7 @@ MainWindow::MainWindow(QWidget *parent):
 
 #ifdef DEV_BUILD
     QMenu *menu = menuBar()->addMenu("Dev");
+    menu->addAction("Update Categories DB", this, SLOT(updateCategoriesDB()));
     menu->addAction("Login", this, SLOT(loginTest()));
 #endif
 
@@ -639,6 +641,10 @@ void MainWindow::fullScreenMode()
 }
 
 #ifdef DEV_BUILD
+void MainWindow::updateCategoriesDB()
+{
+    m_libraryManager->bookListManager()->updateCategoriesDb();
+}
 
 void MainWindow::loginTest()
 {

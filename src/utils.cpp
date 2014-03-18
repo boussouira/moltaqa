@@ -126,6 +126,7 @@ void createDatabases(const QString &path)
     QString booksDbPath = dir.filePath("books.db");
     QString searchDbPath = dir.filePath("search.db");
     QString libraryDbPath = dir.filePath("library.db");
+    QString categoriesDbPath = dir.filePath("categories.db");
 
     {
         if(QFile::exists(booksDbPath))
@@ -272,10 +273,55 @@ void createDatabases(const QString &path)
 
         q.exec(query);
     }
+    {
+        if(QFile::exists(categoriesDbPath))
+            qDebug("createDatabases: check categories database...");
+        else
+            qDebug("createDatabases: create categories database...");
+
+        QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "createDB.categories");
+        db.setDatabaseName(categoriesDbPath);
+
+        if (!db.open()) {
+            ml_warn_db_error(db);
+        }
+
+        QSqlQuery query(db);
+
+        QueryBuilder q;
+        q.setTableName("categories", QueryBuilder::Create);
+        q.setIgnoreExistingTable(true);
+
+        q.set("id", "INTEGER PRIMARY KEY NOT NULL");
+        q.set("title", "TEXT");
+        q.set("book_count", "INT");
+
+        q.exec(query);
+
+        q.setTableName("books", QueryBuilder::Create);
+        q.setIgnoreExistingTable(true);
+
+        q.set("id", "INTEGER PRIMARY KEY NOT NULL");
+        q.set("uuid", "TEXT");
+        q.set("title", "TEXT");
+        q.set("type", "INT");
+        q.set("author_id", "INT");
+        q.set("author_name", "INT");
+        q.set("cat_id", "INT");
+
+        q.exec(query);
+
+        query.prepare("CREATE UNIQUE INDEX uuuid_index ON books (uuid)");
+        ml_query_exec(query);
+
+        query.prepare("CREATE INDEX catid_index ON books (catid)");
+        ml_query_exec(query);
+    }
 
     QSqlDatabase::removeDatabase("createDB.books");
     QSqlDatabase::removeDatabase("createDB.search");
     QSqlDatabase::removeDatabase("createDB.library");
+    QSqlDatabase::removeDatabase("createDB.categories");
 }
 }
 

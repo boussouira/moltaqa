@@ -99,6 +99,7 @@ protected slots:
     void fullScreenMode();
 
 #ifdef DEV_BUILD
+    void updateCategoriesDB();
     void loginTest();
 #endif
 
