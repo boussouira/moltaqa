@@ -176,7 +176,7 @@ void EPubBookExporter::writeBookInfo()
     html.beginHtml();
     html.beginHead();
     html.setCharset();
-    html.addCSS("Styles/main.css", true);
+    html.addCSS("../Styles/main.css", true);
     html.setTitle(m_book->title);
     html.endHead();
 
@@ -282,7 +282,7 @@ void EPubBookExporter::writeBookInfo()
     xhtml += "\n</html>";
 
 
-    write("OEBPS/Text/book_info.xhtml", xhtml, true);
+    write("OEBPS/book_info.xhtml", xhtml, true);
 }
 
 void EPubBookExporter::writeAuthorInfo()
@@ -295,7 +295,7 @@ void EPubBookExporter::writeAuthorInfo()
     HtmlHelper html;
     html.beginHead();
     html.setCharset();
-    html.addCSS("Styles/main.css", true);
+    html.addCSS("../Styles/main.css", true);
     html.setTitle(info->name);
     html.endHead();
 
@@ -380,7 +380,7 @@ void EPubBookExporter::writeAuthorInfo()
     xhtml += "\n</html>";
 
 
-    write("OEBPS/Text/author_info.xhtml", xhtml, true);
+    write("OEBPS/author_info.xhtml", xhtml, true);
 }
 
 void EPubBookExporter::writeIntro()
@@ -414,7 +414,7 @@ void EPubBookExporter::writeIntro()
     xhtml += html.html();
     xhtml += "\n</html>";
 
-    write("OEBPS/Text/intro.xhtml", xhtml, true);
+    write("OEBPS/intro.xhtml", xhtml, true);
 }
 
 void EPubBookExporter::writeContent()
@@ -442,15 +442,15 @@ void EPubBookExporter::writeContent()
         << "    <manifest>" << "\n"
         << "        <item href=\"toc.ncx\" id=\"ncx\" media-type=\"application/x-dtbncx+xml\" />" << "\n"
         << "        <item id=\"stylesheet\" href=\"Styles/main.css\" media-type=\"text/css\" />" << "\n"
-        << "        <item id=\"author_info\" href=\"Text/author_info.xhtml\" media-type=\"application/xhtml+xml\" />" << "\n"
-        << "        <item id=\"book_info\" href=\"Text/book_info.xhtml\" media-type=\"application/xhtml+xml\" />" << "\n";
+        << "        <item id=\"author_info\" href=\"author_info.xhtml\" media-type=\"application/xhtml+xml\" />" << "\n"
+        << "        <item id=\"book_info\" href=\"book_info.xhtml\" media-type=\"application/xhtml+xml\" />" << "\n";
 
     if(!m_book->isQuran())
-        out << "        <item id=\"intro\" href=\"Text/intro.xhtml\" media-type=\"application/xhtml+xml\" />" << "\n";
+        out << "        <item id=\"intro\" href=\"intro.xhtml\" media-type=\"application/xhtml+xml\" />" << "\n";
 
     foreach (QString p, m_page) {
         out << "        "
-            << QString("<item id=\"%1\" href=\"Text/%1.xhtml\" media-type=\"application/xhtml+xml\" />").arg(p)
+            << QString("<item id=\"%1\" href=\"%1.xhtml\" media-type=\"application/xhtml+xml\" />").arg(p)
             << "\n";
     }
 
@@ -466,17 +466,27 @@ void EPubBookExporter::writeContent()
         << "    <spine toc=\"ncx\">" << "\n";
 
     if(!m_book->isQuran())
-        out << "        <itemref idref=\"intro\" />" << "\n";
+        out << "        <itemref idref=\"intro\" linear=\"yes\" />" << "\n";
 
     foreach (QString p, m_page) {
-        out << "        <itemref idref=\"" << p << "\" />" << "\n";
+        out << "        <itemref idref=\"" << p << "\" linear=\"yes\" />" << "\n";
+    }
+
+    if(!m_book->isQuran()) {
+        out << "        <itemref idref=\"book_info\" linear=\"yes\" />" << "\n";
+        out << "        <itemref idref=\"author_info\" linear=\"yes\" />" << "\n";
     }
 
     out << "    </spine>" << "\n"
         << "    <guide>" << "\n"
-        << "        <reference type=\"bibliography\" title=\"Author info\" href=\"Text/author_info.xhtml\" />" << "\n"
-        << "        <reference type=\"title-page\" title=\"Book info\" href=\"Text/book_info.xhtml\" />" << "\n"
-        << "    </guide>" << "\n"
+        << "        <reference type=\"bibliography\" title=\"Author info\" href=\"author_info.xhtml\" />" << "\n"
+        << "        <reference type=\"title-page\" title=\"Book info\" href=\"book_info.xhtml\" />" << "\n";
+
+//    foreach (QString p, m_page) {
+//        out << "        " << QString("<reference type=\"text\" title=\"%1\" href=\"%1.xhtml\" />").arg(p) << "\n";
+//    }
+
+    out << "    </guide>" << "\n"
         << "</package>";
 
     out.flush();
@@ -577,7 +587,7 @@ void EPubBookExporter::writeQuranBookTOC(QTextStream &out)
 
             out << "<navPoint id=\"nav_" << m_titleCount << "\" playOrder=\"" << m_titleCount << "\">" << "\n";
             out << "<navLabel><text>" << sora->name << "</text></navLabel>" << "\n";
-            out << "<content src=\"Text/page_" << pageNum << ".xhtml\"/>" << "\n";
+            out << "<content src=\"page_" << pageNum << ".xhtml\"/>" << "\n";
             out << "</navPoint>" << "\n";
         }
     }
@@ -585,12 +595,13 @@ void EPubBookExporter::writeQuranBookTOC(QTextStream &out)
 
 void EPubBookExporter::writeTocItem(QDomElement &element, QTextStream &out)
 {
+    QString tid = element.attribute("tagID");
     int pageID = element.attribute("pageID").toInt();
     m_titleCount++;
 
     out << "<navPoint id=\"nav_" << m_titleCount << "\" playOrder=\"" << m_titleCount << "\">" << "\n";
     out << "<navLabel><text>" << element.firstChildElement("text").text() << "</text></navLabel>" << "\n";
-    out << "<content src=\"Text/page_" << pageID << ".xhtml\"/>" << "\n";
+    out << "<content src=\"page_" << m_containerPages.value(pageID) << ".xhtml#" << tid << "\"/>" << "\n";
 
     if(element.childNodes().count() > 1) {
         QDomElement child = element.firstChildElement("title");
@@ -649,7 +660,7 @@ void EPubBookExporter::writePage(BookPage *page)
 
     out += "\n" "</body>\n</html>";
 
-    write(QString("OEBPS/Text/%1.xhtml").arg(fileName), out, false);
+    write(QString("OEBPS/%1.xhtml").arg(fileName), out, false);
     m_page.append(fileName);
 }
 
