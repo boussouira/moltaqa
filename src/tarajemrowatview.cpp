@@ -7,11 +7,11 @@
 #include "stringutils.h"
 #include "tarajemrowatmanager.h"
 #include "utils.h"
+#include "webview.h"
 
 #include <qdir.h>
 #include <qstandarditemmodel.h>
 #include <qurl.h>
-#include <qwebview.h>
 
 static TarajemRowatView *m_instance = 0;
 
@@ -106,7 +106,7 @@ int TarajemRowatView::addTab(QString tabText)
     QWidget *tabRawiInfo = new QWidget();
     QVBoxLayout *layout = new QVBoxLayout(tabRawiInfo);
     layout->setContentsMargins(0, 0, 0, 0);
-    QWebView *webRawiInfo = new QWebView(tabRawiInfo);
+    WebView *webRawiInfo = new WebView(tabRawiInfo);
     webRawiInfo->setUrl(QUrl("about:blank"));
 
     layout->addWidget(webRawiInfo);
@@ -208,7 +208,7 @@ void TarajemRowatView::setCurrentTabHtml(QString title, QString html)
     QWidget *w = ui->tabWidget->widget(index);
     ml_return_on_fail(w);
 
-    QWebView *view = w->findChild<QWebView*>();
+    WebView *view = w->findChild<WebView*>();
     ml_return_on_fail(view);
 
     view->setHtml(html);

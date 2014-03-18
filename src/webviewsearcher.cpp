@@ -2,14 +2,14 @@
 #include "filterlineedit.h"
 #include "stringutils.h"
 #include "utils.h"
+#include "webview.h"
 
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qpushbutton.h>
 #include <qwebframe.h>
-#include <qwebview.h>
 
-WebViewSearcher::WebViewSearcher(QWebView *view) :
+WebViewSearcher::WebViewSearcher(WebView *view) :
     QDialog(view),
     m_webView(view),
     m_currentMatch(-1)
@@ -56,7 +56,7 @@ void WebViewSearcher::setSearchText(const QString &text)
     m_searchText = text;
 }
 
-void WebViewSearcher::setWebView(QWebView *view)
+void WebViewSearcher::setWebView(WebView *view)
 {
     clear();
     m_webView = view;

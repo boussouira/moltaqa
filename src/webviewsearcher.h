@@ -3,8 +3,8 @@
 
 #include <qdialog.h>
 
-class QWebView;
 class FilterLineEdit;
+class WebView;
 class QPushButton;
 class QLabel;
 
@@ -13,10 +13,10 @@ class WebViewSearcher : public QDialog
     Q_OBJECT
 
 public:
-    WebViewSearcher(QWebView *view=0);
+    WebViewSearcher(WebView *view=0);
 
     void setSearchText(const QString &text);
-    void setWebView(QWebView *view);
+    void setWebView(WebView *view);
     void clear();
 
     bool hasSearchResult();
@@ -38,7 +38,7 @@ protected:
     QPushButton *m_allButton;
     QLabel *m_resultLabel;
     QString m_searchText;
-    QWebView *m_webView;
+    WebView *m_webView;
     QStringList m_matches;
     int m_currentMatch;
 };
