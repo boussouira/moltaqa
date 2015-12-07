@@ -239,6 +239,21 @@ LibraryBook::Ptr LibraryBookManager::getQuranBook()
     return LibraryBook::Ptr();
 }
 
+bool LibraryBookManager::bookExists(QString bookUUID)
+{
+    if(m_uuid.contains(bookUUID))
+        return true;
+
+    QSqlQuery query(m_db);
+    query.prepare("SELECT id FROM books WHERE uuid = ?");
+    query.bindValue(0, bookUUID);
+
+    ml_query_exec(query);
+
+    return query.next();
+}
+
+
 LibraryBookMeta::Ptr LibraryBookManager::getLibraryBookMeta(int bookID)
 {
     QSqlQuery query(m_db);

@@ -32,6 +32,7 @@ protected:
 
     void write(const QString &fileName, const QString &data, bool prepend);
     void writePage(BookPage *page);
+    void writePage(QList<BookPage*> pages);
 
     void writeImages();
 
@@ -42,7 +43,9 @@ protected:
     QStringList m_page;
     QString m_bookUID;
     int m_titleCount;
+    int m_lastPageId;
     QHash<int, int> m_sowarPages; ///< Key: Sora number, Value: page number
+    QHash<int, int> m_containerPages; ///< Key: Orignal page number, Value: Container page
     QHash<QString, QString> m_images;
     bool m_bookHasImages;
 };

@@ -206,6 +206,7 @@ void BookListManager::addBook(LibraryBook::Ptr book, int parentCat)
 
     QDomElement bookElement = m_dom.domDocument().createElement("book");
     bookElement.setAttribute("id", book->id);
+    bookElement.setAttribute("uuid", book->uuid);
     bookElement.setAttribute("type", book->type);
     bookElement.setAttribute("authorid", book->authorID);
 
@@ -297,6 +298,7 @@ void BookListManager::updateCategoriesDb()
                     q.set("uuid", book->uuid);
                     q.set("title", book->title);
                     q.set("type", book->type);
+                    q.set("file_name", book->fileName);
                     q.set("author_id", book->authorID);
                     q.set("author_name", book->authorName);
                     q.set("cat_id", catID);
@@ -384,6 +386,7 @@ QList<QStandardItem*> BookListManager::readBookNode(QDomElement &element)
     QDomElement infoElement = element.firstChildElement("info");
 
     int bookID = element.attribute("id").toInt();
+    QString bookUUID = element.attribute("uuid");
     int authorID = element.attribute("authorid").toInt();
 
     LibraryBook::Type type = static_cast<LibraryBook::Type>(element.attribute("type").toInt());
@@ -393,6 +396,7 @@ QList<QStandardItem*> BookListManager::readBookNode(QDomElement &element)
     nameItem->setToolTip(infoElement.text());
     nameItem->setIcon(m_bookIcon);
     nameItem->setData(bookID, ItemRole::idRole);
+    nameItem->setData(bookUUID, ItemRole::uuidRole);
     nameItem->setData(ItemType::BookItem, ItemRole::itemTypeRole);
     nameItem->setData(type, ItemRole::typeRole);
     nameItem->setData(++m_order, ItemRole::orderRole);
@@ -432,8 +436,14 @@ void BookListManager::writeItem(QXmlStreamWriter &writer, QModelIndex &index)
         int authorID = authorIndex.data(ItemRole::authorIdRole).toInt();
         bool isQuran = index.data(ItemRole::typeRole).toInt() == LibraryBook::QuranBook;
 
+        QString uuid = index.data(ItemRole::uuidRole).toString();
+        if(uuid.isEmpty()) {
+            uuid  = LibraryManager::instance()->bookManager()->getLibraryBook(index.data(ItemRole::idRole).toInt())->uuid;
+        }
+
         writer.writeStartElement("book");
         writer.writeAttribute("id", index.data(ItemRole::idRole).toString());
+        writer.writeAttribute("uuid", uuid);
         writer.writeAttribute("type", index.data(ItemRole::typeRole).toString());
 
         if(!isQuran) {

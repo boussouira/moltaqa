@@ -32,6 +32,10 @@ public:
     void setLineEdit(FilterLineEdit *edit);
     void setTreeView(QTreeView *view);
 
+    QStandardItemModel *sourceModel();
+    QTreeView *treeView();
+    FilterLineEdit *lineEdit();
+
     void setDefautSortRole(int role);
     void setDefautSortColumn(int column, Qt::SortOrder order);
 

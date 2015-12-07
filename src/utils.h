@@ -44,6 +44,7 @@ int number(int smin, int smax);
 QString uuid();
 QString string(int size, bool upperChar=true, bool lowerChar=true, bool numbers=true);
 QString fileName(const QString &path, bool fullPath=false, QString namePrefix="book_", QString ext="mlb");
+QString emptyDir(const QString &path, QString namePrefix="temp_", bool fullPath=false, bool createDir=true);
 QString newBook(const QString &path);
 }
 

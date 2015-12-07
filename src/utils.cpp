@@ -55,6 +55,28 @@ QString fileName(const QString &path, bool fullPath, QString namePrefix, QString
         return fileName+ext;
 }
 
+QString emptyDir(const QString &path, QString namePrefix, bool fullPath, bool createDir)
+{
+    Rand::srand();
+
+    QDir dir(path);
+    QString dirName(namePrefix);
+
+    dirName.append(string(6, false));
+
+    while(dir.exists(dirName)) {
+        dirName.append(string(1, false));
+    }
+
+    if(createDir)
+        dir.mkdir(dirName);
+
+    if(fullPath)
+        return dir.filePath(dirName);
+    else
+        return dirName;
+}
+
 QString newBook(const QString &path)
 {
     QDir dir(path);
@@ -305,6 +327,7 @@ void createDatabases(const QString &path)
         q.set("uuid", "TEXT");
         q.set("title", "TEXT");
         q.set("type", "INT");
+        q.set("file_name", "TEXT");
         q.set("author_id", "INT");
         q.set("author_name", "INT");
         q.set("cat_id", "INT");

@@ -33,6 +33,8 @@ public:
     LibraryBook::Ptr getLibraryBook(QString bookUUID);
     LibraryBook::Ptr getQuranBook();
 
+    bool bookExists(QString bookUUID);
+
     LibraryBookMeta::Ptr getLibraryBookMeta(int bookID);
 
     LibraryBook::Ptr findBook(QString bookName);

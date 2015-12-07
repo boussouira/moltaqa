@@ -70,7 +70,7 @@ void EPubBookExporter::start()
     if(!m_book->isQuran()) {
         writeAuthorInfo();
         writeBookInfo();
-        writeIntro();
+//        writeIntro();
     }
 
     writeTOC();
@@ -154,18 +154,35 @@ void EPubBookExporter::writePages()
     reader->loadPages();
 
     BookPage *page = reader->page();
+    QList<BookPage*> pages;
 
-        while (reader->hasNext()) {
-            reader->nextPage();
+    while (reader->hasNext()) {
+        reader->nextPage();
 
-            if(page->text.isEmpty())
-                continue;
+        if(page->text.isEmpty()
+                /*|| page->part > 1*/)
+            continue;
 
-            if(m_book->isQuran() && !m_sowarPages.contains(page->sora))
-                m_sowarPages[page->sora] = page->pageID;
+        if(m_book->isQuran() && !m_sowarPages.contains(page->sora))
+            m_sowarPages[page->sora] = page->pageID;
 
-            writePage(page);
+        pages << page->clone();
+
+        if(pages.size() > 100) {
+            writePage(pages);
+            qDeleteAll(pages);
+            pages.clear();
         }
+
+        m_lastPageId = page->pageID;
+//        writePage(page);
+    }
+
+    if(!pages.empty()) {
+        writePage(pages);
+        qDeleteAll(pages);
+        pages.clear();
+    }
 }
 
 void EPubBookExporter::writeBookInfo()
@@ -176,7 +193,7 @@ void EPubBookExporter::writeBookInfo()
     html.beginHtml();
     html.beginHead();
     html.setCharset();
-    html.addCSS("../Styles/main.css", true);
+    html.addCSS("Styles/main.css", true);
     html.setTitle(m_book->title);
     html.endHead();
 
@@ -295,7 +312,7 @@ void EPubBookExporter::writeAuthorInfo()
     HtmlHelper html;
     html.beginHead();
     html.setCharset();
-    html.addCSS("../Styles/main.css", true);
+    html.addCSS("Styles/main.css", true);
     html.setTitle(info->name);
     html.endHead();
 
@@ -388,7 +405,7 @@ void EPubBookExporter::writeIntro()
     HtmlHelper html;
     html.beginHead();
     html.setCharset();
-    html.addCSS("../Styles/main.css", true);
+    html.addCSS("Styles/main.css", true);
     html.setTitle(m_book->title);
     html.endHead();
 
@@ -445,8 +462,8 @@ void EPubBookExporter::writeContent()
         << "        <item id=\"author_info\" href=\"author_info.xhtml\" media-type=\"application/xhtml+xml\" />" << "\n"
         << "        <item id=\"book_info\" href=\"book_info.xhtml\" media-type=\"application/xhtml+xml\" />" << "\n";
 
-    if(!m_book->isQuran())
-        out << "        <item id=\"intro\" href=\"intro.xhtml\" media-type=\"application/xhtml+xml\" />" << "\n";
+//    if(!m_book->isQuran())
+//        out << "        <item id=\"intro\" href=\"intro.xhtml\" media-type=\"application/xhtml+xml\" />" << "\n";
 
     foreach (QString p, m_page) {
         out << "        "
@@ -465,8 +482,8 @@ void EPubBookExporter::writeContent()
     out << "    </manifest>" << "\n"
         << "    <spine toc=\"ncx\">" << "\n";
 
-    if(!m_book->isQuran())
-        out << "        <itemref idref=\"intro\" linear=\"yes\" />" << "\n";
+//    if(!m_book->isQuran())
+//        out << "        <itemref idref=\"intro\" linear=\"yes\" />" << "\n";
 
     foreach (QString p, m_page) {
         out << "        <itemref idref=\"" << p << "\" linear=\"yes\" />" << "\n";
@@ -597,7 +614,12 @@ void EPubBookExporter::writeTocItem(QDomElement &element, QTextStream &out)
 {
     QString tid = element.attribute("tagID");
     int pageID = element.attribute("pageID").toInt();
+    if(pageID > m_lastPageId)
+        return;
+
     m_titleCount++;
+
+    ml_warn_on_fail(m_containerPages.contains(pageID), "EPubBookExporter::writeTocItem Page id" << pageID << "not found");
 
     out << "<navPoint id=\"nav_" << m_titleCount << "\" playOrder=\"" << m_titleCount << "\">" << "\n";
     out << "<navLabel><text>" << element.firstChildElement("text").text() << "</text></navLabel>" << "\n";
@@ -636,7 +658,7 @@ void EPubBookExporter::writePage(BookPage *page)
     out += "<head>" "\n";
     out += "<title></title>" "\n";
     out += "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>" "\n";
-    out += "<link href=\"../Styles/main.css\" rel=\"stylesheet\" type=\"text/css\" />" "\n";
+    out += "<link href=\"Styles/main.css\" rel=\"stylesheet\" type=\"text/css\" />" "\n";
     out += "</head>" "\n\n";
 
     out += "<body>" "\n";
@@ -656,6 +678,58 @@ void EPubBookExporter::writePage(BookPage *page)
         out += " - ";
         out += tr("الجزء: %1").arg(page->part);
         out += "</p>" "\n";
+    }
+
+    out += "\n" "</body>\n</html>";
+
+    write(QString("OEBPS/%1.xhtml").arg(fileName), out, false);
+    m_page.append(fileName);
+}
+
+void EPubBookExporter::writePage(QList<BookPage *> pages)
+{
+    QString fileName = QString("page_%1").arg(pages.first()->pageID);
+    QString out;
+
+    out += "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?>" "\n";
+    out += "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" " "\n"
+            "    \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">" "\n\n";
+
+    out += "<html xmlns=\"http://www.w3.org/1999/xhtml\">" "\n";
+
+    out += "<head>" "\n";
+    out += "<title></title>" "\n";
+    out += "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>" "\n";
+    out += "<link href=\"Styles/main.css\" rel=\"stylesheet\" type=\"text/css\" />" "\n";
+    out += "</head>" "\n\n";
+
+    out += "<body>" "\n";
+
+    QRegExp rx("src\\s*=\\s*\"images/");
+
+    foreach (BookPage *page, pages) {
+        if(m_bookHasImages || page->text.contains(rx)) {
+            page->text.replace(rx, "src=\"../images/");
+            m_bookHasImages = true;
+        }
+
+        QRegExp rx2("\"(#?)fn(b?[^n\"]+)\"");
+        page->text.replace(rx2, QString("\"\\1p%1_fn\\2\"").arg(page->pageID));
+
+        out += page->text;
+
+        if(m_addPageNumber && !m_book->isQuran()
+                && page->page && page->part) {
+            out += "\n" "<p class=\"center\">";
+            out += tr("الصفحة: %1").arg(page->page);
+            out += " - ";
+            out += tr("الجزء: %1").arg(page->part);
+            out += "</p>" "\n";
+        }
+
+        out += "\n" "<hr />" "\n";
+
+        m_containerPages.insert(page->pageID, pages.first()->pageID);
     }
 
     out += "\n" "</body>\n</html>";

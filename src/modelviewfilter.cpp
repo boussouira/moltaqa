@@ -36,6 +36,21 @@ void ModelViewFilter::setTreeView(QTreeView *view)
     m_treeView = view;
 }
 
+QStandardItemModel *ModelViewFilter::sourceModel()
+{
+    return m_model;
+}
+
+QTreeView *ModelViewFilter::treeView()
+{
+    return m_treeView;
+}
+
+FilterLineEdit *ModelViewFilter::lineEdit()
+{
+    return m_lineEdit;
+}
+
 void ModelViewFilter::setDefautSortRole(int role)
 {
     m_defaultRole = role;
