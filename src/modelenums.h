@@ -15,7 +15,10 @@ namespace ItemRole {
         itemTypeRole,
         bookIdRole,
         pageIdRole,
-        titleIdRole
+        titleIdRole,
+        uuidRole,
+        newBookRole,
+        fileNameRole
     };
 }
 
@@ -25,5 +28,14 @@ namespace ItemType {
         CategorieItem
     };
 }
+
+namespace ModelSort {
+    enum {
+        OrderSort,
+        BookTitleSort,
+        AuthorNameSort,
+        AuthorDeathSort
+    };
+};
 
 #endif // MODELENUMS_H

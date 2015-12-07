@@ -19,13 +19,6 @@
 #include <qmenu.h>
 #include <qmessagebox.h>
 
-enum {
-    OrderSort,
-    BookTitleSort,
-    AuthorNameSort,
-    AuthorDeathSort
-};
-
 BooksListBrowser::BooksListBrowser(QWidget *parent) :
     QDialog(parent),
     m_bookListManager(LibraryManager::instance()->bookListManager()),
@@ -167,19 +160,19 @@ void BooksListBrowser::listSortingChanged(int index)
                           ? Qt::AscendingOrder : Qt::DescendingOrder);
 
     switch (index) {
-    case OrderSort:
+    case ModelSort::OrderSort:
         column = -1;
         break;
 
-    case BookTitleSort:
+    case ModelSort::BookTitleSort:
         column = 0;
         break;
 
-    case AuthorNameSort:
+    case ModelSort::AuthorNameSort:
         column = 1;
         break;
 
-    case AuthorDeathSort:
+    case ModelSort::AuthorDeathSort:
         column = 1;
         role = ItemRole::authorDeathRole;
         break;
