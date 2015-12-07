@@ -43,6 +43,7 @@ bool hasShamelaShoorts(const QString &text)
 QString fixShamelaShoorts(QString text)
 {
     text.replace(QRegExp(_u("([\\x0621-\\x06ED]\\W)A\\b")), _u("\\1""صلى الله عليه وسلم"));
+    text.replace(QRegExp(_u("^A\\b")), _u("صلى الله عليه وسلم"));
     text.replace(QRegExp(_u("([\\x0621-\\x06ED]\\W)B([هماـ]*)\\b")), _u("\\1""رضي الله عن""\\2"));
     text.replace(QRegExp(_u("([\\x0621-\\x06ED]\\W)C\\b")), _u("\\1""رحمه الله"));
     text.replace(QRegExp(_u("([\\x0621-\\x06ED]\\W)D\\b")), _u("\\1""عز وجل"));
