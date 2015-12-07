@@ -39,6 +39,9 @@ private slots:
     void cleanFileName();
 
     void footnoteRegExp();
+
+    void shamelaShoorts_data();
+    void shamelaShoorts();
 };
 
 #endif // UTILSTEST_H
