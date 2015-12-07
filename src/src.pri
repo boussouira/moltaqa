@@ -14,7 +14,7 @@ unix {
         SOURCES += mdbconverter.cpp
 
         QMAKE_CXXFLAGS += $$system(pkg-config libmdb --cflags)
-        LIBS += /usr/lib/i386-linux-gnu/libmdb.a -lglib-2.0
+        LIBS += /usr/lib/i386-linux-gnu/libmdb.a -lglib-2.0 -lz
 }
 
 SOURCES += mainwindow.cpp \
