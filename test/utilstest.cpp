@@ -3,6 +3,7 @@
 #include "bookutils.h"
 #include "sqlutils.h"
 #include "stringutils.h"
+#include "json.h"
 
 #include <qsqldatabase.h>
 #include <qsqlquery.h>
@@ -502,6 +503,149 @@ void UtilsTest::shamelaShoorts()
 
     QCOMPARE(Utils::Book::fixShamelaShoorts(origin), expected);
     QCOMPARE(Utils::Book::hasShamelaShoorts(origin), hasShoort);
+}
+
+void UtilsTest::jsonTest()
+{
+    {
+        Json::JsonObject json("{}");
+        QVERIFY2(json.isEmpty(), "Not empty");
+        QVERIFY2(!json.hasError(), "Parsed correctly");
+
+        QCOMPARE(json.getString("name"), QLatin1String(""));
+    }
+
+    {
+        Json::JsonObject json("{\"name\": \"ahmed\", \"age\": 123}");
+        QVERIFY2(!json.isEmpty(), "Not empty");
+        QVERIFY2(!json.hasError(), "Parsed correctly");
+
+        QCOMPARE(json.getString("name"), QLatin1String("ahmed"));
+    }
+
+    {
+        Json::JsonObject json("{name\": \"ahmed\", \"age\": 123}");
+        QVERIFY2(json.isEmpty(), "Not empty");
+        QVERIFY2(json.hasError(), "Parsed correctly");
+
+        QCOMPARE(json.getString("name"), QLatin1String(""));
+    }
+
+    Json::JsonObject json = Json::JsonObject("{"
+                            "    \"type\": \"and\","
+                            "    \"postprocessors\": ["
+                            "        {"
+                            "            \"type\": \"hammersley\","
+                            "            \"points\": 16"
+                            "        },"
+                            "        {"
+                            "            \"type\": \"rounding\","
+                            "            \"round\": {"
+                            "                \"temperature\": 0,"
+                            "                \"neighbors-accepted\": 0"
+                            "            }"
+                            "        },"
+                            "        {"
+                            "            \"test\": { \"alpha\": 1 }"
+                            "            "
+                            "        }"
+                            "    "
+                            "    ],"
+                            "    \"descendants\": ["
+                            "        {"
+                            "            \"type\": \"directory\","
+                            "            \"name\": \"instance\","
+                            "            \"path\": \"../instances/comp\","
+                            "            \"match\": \".*\\.ectt\""
+                            "        },"
+                            "        {"
+                            "            \"type\": \"discrete\","
+                            "            \"name\": \"init-free-variables\","
+                            "            \"values\": [ 2 ]"
+                            "        },"
+                            "        {"
+                            "            \"type\": \"discrete\","
+                            "            \"name\": \"max-free-variables\","
+                            "            \"values\": [ 0.05 ]"
+                            "        },"
+                            "        {"
+                            "            \"type\": \"discrete\","
+                            "            \"name\": \"max-idle-iterations\","
+                            "            \"values\": [ 200 ] "
+                            "        },"
+                            "        {"
+                            "            \"type\": \"discrete\","
+                            "            \"name\": \"ms-per-variable\","
+                            "            \"values\": [ 10 ]"
+                            "        },"
+                            "        {"
+                            "            \"type\": \"discrete\","
+                            "            \"name\": \"random-relaxation\","
+                            "            \"values\": [ 0.05 ]"
+                            "        },"
+                            "        {"
+                            "            \"type\": \"discrete\","
+                            "            \"name\": \"min-temperature\","
+                            "            \"values\": [ 0.04 ]"
+                            "        },"
+                            "        {"
+                            "            \"type\": \"discrete\","
+                            "            \"name\": \"delta-probability\","
+                            "            \"values\": [ 0.05 ]"
+                            "        },"
+                            "        {"
+                            "            \"type\": \"discrete\","
+                            "            \"name\": \"cooling-rate\","
+                            "            \"values\": [ 0.98 ]"
+                            "        },"
+                            "        {"
+                            "            \"type\": \"continuous\","
+                            "            \"values\": { \"min\": 1, \"max\": 50 },"
+                            "            \"name\": \"neighbors-accepted\""
+                            "        },"
+                            "        {"
+                            "            \"type\": \"continuous\","
+                            "            \"values\": { \"min\": 0.05, \"max\": 100 },"
+                            "            \"name\": \"temperature\""
+                            "        },"
+                            "    {"
+                            "            \"type\": \"discrete\","
+                            "            \"name\": \"random-branching\","
+                            "            \"values\": [ \"random\" ]"
+                            "        },"
+                            "        {"
+                            "            \"type\": \"discrete\","
+                            "            \"name\": \"time\","
+                            "            \"values\": [ 4.3E+5 ]"
+                            "        },"
+                            "        {"
+                            "            \"type\": \"discrete\","
+                            "            \"name\": \"model\","
+                            "            \"values\": [ \"experiments\" ]"
+                            "        }"
+                            "    ]"
+                            "}");
+
+    QVERIFY2(!json.isEmpty(), "Not empty");
+    QVERIFY2(!json.hasError(), "Parsed correctly");
+
+    QCOMPARE(json.getString("type"), QLatin1String("and"));
+    Json::JsonArray descendantsArray = json.getArray("descendants");
+    QCOMPARE(descendantsArray.count(), 14);
+    /*
+    for(int i=0,l=descendantsArray.count(); i<l; i++) {
+        debug(i<< ":" << descendantsArray.getObject(i).getString("type") << " ->"
+              << descendantsArray.getObject(i).getString("name") );
+
+        Json::JsonObject o =descendantsArray.getObject(i);
+        if(o.contains("values")) {
+            Json::JsonArray vals = o.getArray("values");
+            for (int j=0; j<vals.count(); j++) {
+                debug("    Values: "<< vals.getInt(j));
+            }
+        }
+    }
+    */
 }
 
 QTEST_MAIN(UtilsTest)

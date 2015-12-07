@@ -42,6 +42,8 @@ private slots:
 
     void shamelaShoorts_data();
     void shamelaShoorts();
+
+    void jsonTest();
 };
 
 #endif // UTILSTEST_H
