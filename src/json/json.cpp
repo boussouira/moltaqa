@@ -520,16 +520,17 @@ namespace Json {
         return JsonTokenNone;
     }
 
-    JsonObject::JsonObject()
+    JsonObject::JsonObject(): m_hasError(false)
     {
     }
 
-    JsonObject::JsonObject(const QString &src)
+    JsonObject::JsonObject(const QString &src): m_hasError(false)
     {
         m_data = parse(src, m_hasError).toMap();
+        m_hasError = !m_hasError; // parse excpect a success pointer
     }
 
-    JsonObject::JsonObject(const QVariantMap &src)
+    JsonObject::JsonObject(const QVariantMap &src): m_hasError(false)
     {
         m_data = src;
     }
