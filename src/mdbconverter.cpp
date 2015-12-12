@@ -276,10 +276,8 @@ void MdbConverter::removeAllConvertedDB()
 
 void MdbConverter::init()
 {
-    mdb_init();
 }
 
 void MdbConverter::exit()
 {
-    mdb_exit();
 }
